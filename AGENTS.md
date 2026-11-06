@@ -12,7 +12,8 @@ The specification (Italian) lives in `docs/spec/`, one file per section; it is a
 
 ## Before writing code
 - Read the spec sections referenced by the task, `docs/invariants.md` and `docs/adr/`.
-- When a rule says "come Arenile", read the referenced Arenile spec/ADR in `../arenile/docs/`.
+- When a rule says "come Arenile", read the referenced Arenile spec/ADR/code in `../arenile/` to understand the
+  behaviour, then write Porto's own code. **Never copy Arenile code** (ADR 0001): same stack and patterns, new code.
 - Open decisions are in `docs/spec/33-decisioni-aperte.md`; do not decide them in code, ask.
 
 ## Non-negotiable rules (inherited from Arenile, plus harbour-specific ones)

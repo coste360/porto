@@ -43,20 +43,12 @@ Backend e frontend coincidono con Arenile (spec Arenile 3.2–3.4); le aggiunte 
 | Desktop | `cmd/porto-desktop`, webview di sistema e systray come Arenile | Spec 31.2 |
 | Mobile | Repository separato `coste360/porto-mobile` (Expo + React Native) | Spec 31.3 |
 
-### 3.3 Riuso del codice di Arenile
+### 3.3 Rapporto con Arenile
 
-Go non permette di importare `internal/` da un altro modulo. Decisione (ADR 0001):
-
-1. **M0:** i package indipendenti dal dominio balneare vengono **copiati** da Arenile in Porto mantenendo
-   percorso, test e un commento di provenienza (`// Derived from arenile <commit>`): `clock`, `money`,
-   `calendar`, `reqctx`, `crypto`, `config` (schema), `store` (connettore, coda di scrittura SQLite, migrazioni),
-   `jobs`, `domain/auth`, `domain/team`, `domain/apikey`, `domain/event` (outbox, deliverer, egress),
-   `domain/webhook`, `domain/notify` (trasporti), `http/middleware`, `http/sse`, `http/static`, `printing`,
-   `escpos`, `fiscalbridge`, `desktop`, `updates`, `xlsx`, `printout`; lato web `web/shared/src/ui`,
-   `offline`, `pwa`, i18n e lo scheletro delle SPA.
-2. **Quando entrambi i prodotti sono stabili** i package copiati vengono estratti in un modulo comune
-   (`github.com/coste360/platform`) con un ADR in entrambi i repository. Fino ad allora una correzione di
-   sicurezza su un package copiato va riportata nell'altro repository nella stessa settimana.
+Arenile è un **riferimento**, non una fonte di codice (ADR 0001). Porto usa lo stesso stack e gli stessi pattern
+architetturali (monobinario, outbox, motori puri, vincoli del database, SSE, offline idempotente, desktop con
+webview, app Expo), ma il codice si scrive da zero per il dominio portuale. Quando questa specifica dice "come
+Arenile" indica un comportamento da riprodurre, non file da copiare.
 
 ### 3.4 Regole di dipendenza
 

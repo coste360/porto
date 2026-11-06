@@ -7,7 +7,6 @@ Decisioni da prendere prima della milestone indicata. Ognuna, una volta presa, d
 | D1 | Verifica di marchio e dominio | Nome e design kit decisi (ADR 0007); manca la verifica di registrabilità del marchio e la scelta del dominio | M0 |
 | D13 | Carattere del logotipo | Il wordmark del kit è in tracciati Inter Bold: riconvertirlo in Titillium Web dai sorgenti modificabili oppure accettare l'Inter (ADR 0007) | M0 |
 | D2 | Licenza | Stessa scelta di Arenile (BSL 1.1 con conversione AGPL) oppure proprietaria: il gestionale portuale ha un mercato più ristretto e un'offerta commerciale più probabile | M0 |
-| D3 | Riuso del codice di Arenile | Copia con provenienza in M0, estrazione in un modulo comune `coste360/platform` quando entrambi sono stabili (ADR 0001) | M0 |
 | D4 | Software di fatturazione di destinazione | Esportazione Excel/CSV nel core; scegliere i software più usati dai marina clienti (o dai loro commercialisti) per il formato del file e un eventuale primo `ChargeExporter` | M5 |
 | D5 | Firma InfoCert | Verificare contratto, API e costi del servizio InfoCert per la firma avanzata/qualificata; nel frattempo `paper` e `otp` | M4 |
 | D6 | Valore legale della firma OTP per i contratti di ormeggio | Parere legale; la documentazione la presenta come firma elettronica semplice | M4 |

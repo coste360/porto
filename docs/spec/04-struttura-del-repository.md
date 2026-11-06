@@ -10,7 +10,7 @@ porto/
 │   ├── config/
 │   ├── geo/                    # Cm, Cm2, Point, Polygon, Rect ruotati, intersezioni (puro)
 │   ├── qty/                    # quantità a virgola fissa (puro)
-│   ├── clock/ money/ calendar/ reqctx/ crypto/        # copiati da Arenile (3.3)
+│   ├── clock/ money/ calendar/ reqctx/ crypto/        # primitive condivise (stessi ruoli che in Arenile)
 │   ├── http/
 │   │   ├── admin/ public/ device/ ingest/ webhooks/ middleware/ sse/ static/
 │   │   └── api/                # generato da api/openapi.yaml

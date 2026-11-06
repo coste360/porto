@@ -5,11 +5,11 @@ stato `proposta`, `accettata`, `sostituita da NNNN`. Cambiare una decisione rich
 
 Le decisioni di Arenile sull'infrastruttura (ADR Arenile 0001 monobinario, 0002 SQLite/PostgreSQL, 0003 vincolo
 unique, 0004 prezzi puri, 0005 OpenAPI spec-first, 0009 shadcn, 0012 kit della mappa, 0014 pagamenti online,
-0021 ESC/POS, 0025–0027 desktop e mobile, 0029 conflitti da riprovare) valgono anche per Porto: ADR 0001 le adotta.
+0021 ESC/POS, 0025–0027 desktop e mobile, 0029 conflitti da riprovare) valgono anche per Porto come pattern: ADR 0001 le adotta, senza copiarne il codice.
 
 | # | Titolo | Stato |
 |---|---|---|
-| [0001](0001-riuso-infrastruttura-arenile.md) | Riuso dell'infrastruttura di Arenile | proposta |
+| [0001](0001-riuso-infrastruttura-arenile.md) | Arenile come riferimento, stesso stack | accettata |
 | [0002](0002-notte-come-unita-di-occupazione.md) | La notte come unità di occupazione | proposta |
 | [0003](0003-aree-dinamiche-a-celle.md) | Aree dinamiche a celle con vincolo unique | proposta |
 | [0004](0004-mappa-in-scala-svg.md) | Mappa SVG in scala reale con culling e livelli di dettaglio | proposta |

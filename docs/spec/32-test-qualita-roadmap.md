@@ -33,7 +33,7 @@ dei file generati e delle migrazioni.
 
 ### 32.3 Roadmap e criteri di accettazione
 
-**M0 — Fondamenta.** Repository, CI, Dockerfile, compose; package copiati da Arenile (3.3) con i loro test in verde;
+**M0 — Fondamenta.** Repository, CI, Dockerfile, compose; primitive (`clock`, `money`, `calendar`, `crypto`) scritte da zero sul modello di Arenile;
 `geo`, `qty`; autenticazione, ruoli (26.1), audit, outbox, job runner, SSE; supporto agli agenti; ADR 0001–0006.
 *Accettazione:* `docker compose up` avvia un'istanza vuota, `porto admin create` permette il login, CI verde su
 SQLite e PostgreSQL.

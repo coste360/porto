@@ -1,26 +1,30 @@
-# ADR 0001 — Riuso dell'infrastruttura di Arenile
+# ADR 0001 — Arenile come riferimento, stesso stack
 
-**Stato:** proposta · **Spec:** 3, 31
+**Stato:** accettata (decisione del titolare, 2026-11-06) · **Spec:** 3, 31
 
 ## Contesto
 
-Arenile ha un'infrastruttura matura e verificata: monobinario Go, SQLite/PostgreSQL, outbox, job runner, SSE,
-autenticazione, token per dispositivo, edizione desktop con webview e ponte verso le periferiche, app mobile Expo,
-offline con coda idempotente, pipeline di build e firma. Porto ha bisogno della stessa forma su tutte le piattaforme.
-Go non consente di importare `internal/` da un altro modulo.
+Arenile ha un'infrastruttura matura: monobinario Go, SQLite/PostgreSQL, outbox, job runner, SSE, autenticazione,
+token per dispositivo, edizione desktop, app mobile Expo, offline con coda idempotente. Porto ha bisogno della stessa
+forma su tutte le piattaforme, ma è un prodotto diverso, con un dominio diverso.
 
 ## Decisione
 
-1. Porto adotta le decisioni infrastrutturali di Arenile elencate nel README degli ADR.
-2. In M0 i package indipendenti dal dominio (elenco in spec 3.3) sono copiati con i loro test e un commento di
-   provenienza con il commit di origine.
-3. Non si introduce subito un modulo comune: estrarre ora `coste360/platform` rallenterebbe Arenile, che è in
-   produzione, per un beneficio che si vede solo quando entrambi i prodotti sono stabili.
-4. Le correzioni di sicurezza su un package copiato si riportano nell'altro repository entro una settimana; la CI di
-   Porto ha un controllo che elenca i file con provenienza e il commit di Arenile da cui derivano.
+1. Porto adotta **lo stesso stack** di Arenile: Go, `chi`, OpenAPI 3.1 spec-first con `oapi-codegen`, Bun,
+   SQLite (`modernc.org/sqlite`) e PostgreSQL, `goose`, Argon2id; Vite, React, TypeScript strict, TanStack Router e
+   Query, **shadcn/ui** con Tailwind sui token del tema, i18next, react-hook-form + zod, Vitest, Playwright; Expo per
+   l'app mobile.
+2. Porto adotta gli **stessi pattern architetturali**, elencati nel README degli ADR: monobinario con SPA
+   incorporate, vincoli del database per la disponibilità, motori puri, outbox nella stessa transazione, SSE senza
+   dati personali, coda offline idempotente, edizione desktop con webview.
+3. **Il codice di Arenile non si copia.** È un riferimento da leggere per capire come un problema è stato risolto.
+   Il codice di Porto si scrive da zero, con nomi, modelli e API pensati per il dominio portuale. Si possono
+   riprendere i componenti shadcn generati dalla CLI ufficiale, che non sono codice di Arenile.
+4. Nessun modulo condiviso tra i due prodotti.
 
 ## Conseguenze
 
-- Partenza rapida e stessa esperienza su server, desktop e mobile.
-- Debito controllato: duplicazione temporanea, da chiudere con un ADR di estrazione quando i package copiati non
-  cambiano da tre mesi in nessuno dei due repository.
+- Il codice nasce senza i residui del dominio balneare, senza commenti di provenienza e senza l'obbligo di riportare le
+  correzioni tra i due repository.
+- La partenza è più lenta della copia; la compensa avere già decisioni, pattern e test di Arenile come guida.
+- Chi lavora su Porto legge Arenile per orientarsi, ma ogni scelta va riverificata sul dominio portuale.
