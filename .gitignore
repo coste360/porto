@@ -1,0 +1,10 @@
+.DS_Store
+/bin/
+/dist/
+/tmp/
+node_modules/
+*.db
+*.db-wal
+*.db-shm
+CLAUDE.local.md
+.env

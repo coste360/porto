@@ -1,0 +1,9 @@
+/* PORTO | Coste360 design tokens - 2026 */
+:root {
+  --porto-navy: #0b2542;
+  --porto-sky: #38bdf8;
+  --porto-black: #111827;
+  --porto-white: #ffffff;
+  --porto-font: "Titillium Web", "Inter", system-ui, sans-serif;
+  --porto-radius-app: 24%;
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Porto",
+  "parentBrand": "Coste360",
+  "colors": {
+    "navy": "#0b2542",
+    "sky": "#38bdf8",
+    "black": "#111827",
+    "white": "#ffffff"
+  },
+  "fonts": {
+    "brand": "Titillium Web",
+    "fallback": "Inter, sans-serif"
+  },
+  "logo": {
+    "symbolViewBox": "0 0 200 200",
+    "clearSpace": "at least 0.25x icon width",
+    "minHeightDigitalPx": 24
+  }
+}
