@@ -8,3 +8,11 @@ node_modules/
 *.db-shm
 CLAUDE.local.md
 .env
+/data/
+web/*/dist/
+e2e/test-results/
+e2e/playwright-report/
+internal/http/static/*/*
+!internal/http/static/*/.gitkeep
+# rapid property-test failure files (reproducers are printed in the test output)
+**/testdata/rapid/

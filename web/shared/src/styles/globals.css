@@ -1,0 +1,150 @@
+/*
+ * Porto web theme: the only stylesheet of the web apps (ADR 0007, plan 7.4).
+ * Brand colours come from assets/brand/porto/08_Developer_Tokens/porto-tokens.css.
+ * Components use these tokens through Tailwind utilities only: no custom CSS elsewhere.
+ */
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fontsource/titillium-web/400.css';
+@import '@fontsource/titillium-web/600.css';
+@import '@fontsource/titillium-web/700.css';
+
+@source '../../../admin/src';
+@source '../../../booking/src';
+@source '../';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  color-scheme: light;
+  --brand-navy: #0b2542;
+  --brand-sky: #38bdf8;
+  --brand-black: #111827;
+  --brand-white: #ffffff;
+
+  --radius: 0.625rem;
+
+  --background: #ffffff;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  --primary: #0b2542;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0b2542;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
+  --accent: #e0f2fe;
+  --accent-foreground: #0b2542;
+  --destructive: #b91c1c;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #cbd5e1;
+  --ring: #0369a1;
+  --link: #0369a1;
+  --chart-1: #0b2542;
+  --chart-2: #0369a1;
+  --chart-3: #38bdf8;
+  --chart-4: #64748b;
+  --chart-5: #d97706;
+  --sidebar: #0b2542;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #38bdf8;
+  --sidebar-primary-foreground: #0b2542;
+  --sidebar-accent: #132f4f;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #1e3a5f;
+  --sidebar-ring: #7dd3fc;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #07182c;
+  --foreground: #f8fafc;
+  --card: #0b2542;
+  --card-foreground: #f8fafc;
+  --popover: #0b2542;
+  --popover-foreground: #f8fafc;
+  --primary: #38bdf8;
+  --primary-foreground: #0b2542;
+  --secondary: #132f4f;
+  --secondary-foreground: #e2e8f0;
+  --muted: #132f4f;
+  --muted-foreground: #94a3b8;
+  --accent: #123a5e;
+  --accent-foreground: #f8fafc;
+  --destructive: #f87171;
+  --destructive-foreground: #0b2542;
+  --border: #1e3a5f;
+  --input: #26476e;
+  --ring: #7dd3fc;
+  --link: #7dd3fc;
+  --chart-1: #38bdf8;
+  --chart-2: #7dd3fc;
+  --chart-3: #e0f2fe;
+  --chart-4: #94a3b8;
+  --chart-5: #fbbf24;
+  --sidebar: #061424;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #38bdf8;
+  --sidebar-primary-foreground: #0b2542;
+  --sidebar-accent: #132f4f;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #1e3a5f;
+  --sidebar-ring: #7dd3fc;
+}
+
+@theme inline {
+  --font-sans: 'Titillium Web', 'Inter', system-ui, sans-serif;
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-sky: var(--brand-sky);
+  --color-brand-white: var(--brand-white);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-link: var(--link);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}

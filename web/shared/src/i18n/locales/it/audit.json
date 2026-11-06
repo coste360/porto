@@ -1,0 +1,17 @@
+{
+  "title": "Registro attività",
+  "description": "Chi ha fatto cosa, e quando.",
+  "when": "Quando",
+  "actor": "Autore",
+  "action": "Azione",
+  "entity": "Oggetto",
+  "entityFilter": "Filtra per tipo di oggetto",
+  "allEntities": "Tutti",
+  "empty": "Nessuna attività registrata.",
+  "actorTypes": {
+    "user": "Utente",
+    "api_key": "Chiave API",
+    "device": "Dispositivo",
+    "system": "Sistema"
+  }
+}

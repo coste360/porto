@@ -1,0 +1,57 @@
+# Porto: production deployment on PostgreSQL 17 (spec 31.1). Self-contained: use it instead of docker-compose.yml.
+#
+#   cp .env.example deploy/.env          # set PORTO_BASE_URL, PORTO_SECRET_KEY and POSTGRES_PASSWORD
+#   docker compose -f deploy/docker-compose.postgres.yml up -d
+#   docker compose -f deploy/docker-compose.postgres.yml exec porto /porto admin create --email ... --name ... --org ...
+#
+# POSTGRES_PASSWORD has no default: the postgres container refuses to initialise without it.
+# /data still holds the files that are not in the database (mail directory, autocert cache, backups).
+# Move an existing SQLite installation here with "porto backup" on the old one and "porto restore" on this one.
+
+name: porto
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: porto
+      POSTGRES_DB: porto
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+    volumes:
+      - porto-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U porto -d porto"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+  porto:
+    image: ghcr.io/coste360/porto:${PORTO_VERSION:-latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgres://porto:${POSTGRES_PASSWORD:-}@postgres:5432/porto?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${PORTO_PUBLISH_PORT:-8080}:8080"
+    volumes:
+      - porto-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  porto-data:
+  porto-pg-data:

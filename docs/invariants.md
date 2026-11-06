@@ -98,8 +98,14 @@ giornaliere è uguale all'importo. Verificata da: `TestAccrual_SumsToAmount` (pr
 
 ## Altri
 
-**INV-70 — Nessun dato personale negli eventi SSE e nei log.** Verificata da: `TestSSE_PayloadHasNoPII`.
-Stato: planned.
+**INV-70 — Nessun dato personale negli eventi SSE e nei log.** Verificata da: `TestSSE_PayloadHasNoPII`,
+`TestEvents_DataHasNoPII`. Stato: partial.
 
 **INV-71 — Offline senza effetti sulle risorse.** Nessuna operazione accodata offline crea o sposta allocazioni né
 emette documenti numerati. Verificata da: test Vitest della allowlist della coda. Stato: planned.
+
+**INV-72 — Audit log solo in inserimento.** Le righe di `audit_log` non si modificano né si cancellano, su SQLite e
+PostgreSQL (trigger del database). Verificata da: `TestAuditLog_InsertOnly`. Stato: partial.
+
+**INV-73 — Query operative limitate al marina.** Ogni query operativa usa il `marina_id` dello scope autorizzato;
+una risorsa di un altro marina risponde 404. Verificata da: `TestAcceptance_CrossMarinaIsolation`. Stato: partial.

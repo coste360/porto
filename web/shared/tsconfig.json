@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node", "vite/client", "vitest/globals"],
+    "paths": {
+      "@porto/shared/ui": ["./src/ui/index.ts"],
+      "@porto/shared/ui/*": ["./src/ui/*"],
+      "@porto/shared/lib/*": ["./src/lib/*"],
+      "@porto/shared/hooks/*": ["./src/hooks/*"]
+    }
+  },
+  "include": ["src", "api", "test", "vitest.config.ts"]
+}

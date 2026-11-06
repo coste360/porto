@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Ciao {{.Name}},</p>
+<p>{{if .InviterName}}{{.InviterName}} ti ha invitato{{else}}sei stato invitato{{end}} a usare Porto per {{.MarinaName}}.</p>
+<p><a href="{{.Link}}">Attiva l'account</a></p>
+<p>Il link vale fino al {{.ExpiresAt}}.</p>
+<p style="color: #666;">Porto — Coste360</p>
+</body>
+</html>

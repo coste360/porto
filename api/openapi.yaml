@@ -1,0 +1,1977 @@
+openapi: 3.1.0
+info:
+  title: Porto API
+  version: 0.1.0
+  summary: Marina and boatyard management system (Coste360 SRL).
+  description: |
+    Single spec-first contract of Porto's REST API (spec 27). M0 covers the platform foundations.
+
+    - `/api/admin/v1` — admin panel API (session cookie, API key or device token).
+    - `/api/device/v1` — paired devices (device token, spec 29).
+    - `/api/public/v1` — public marina pages (no authentication).
+
+    Conventions:
+    - errors are `application/problem+json` (RFC 9457) with a stable `type` slug;
+    - collections use cursor pagination (`?cursor=&limit=`, default 50, max 200);
+    - `Idempotency-Key` is accepted on creating `POST`s (24 h, per principal);
+    - cookie-authenticated unsafe requests send `X-CSRF-Token`, equal to the `porto_csrf` cookie;
+    - versioned resources return `ETag: "<version>"` and `PATCH` requires `If-Match`;
+    - calendar dates are `YYYY-MM-DD`, instants RFC 3339 UTC, ids UUID strings; JSON names are snake_case.
+  contact:
+    name: Coste360 SRL
+servers:
+  - url: /
+    description: Same origin as the Porto instance
+tags:
+  - name: ops
+    description: Process health
+  - name: meta
+    description: Version and capabilities
+  - name: auth
+    description: Login, session and account security
+  - name: organizations
+    description: Organizations and their owners
+  - name: marinas
+    description: Marinas
+  - name: team
+    description: Members and roles
+  - name: api-keys
+    description: API keys
+  - name: devices
+    description: Device pairing and management
+  - name: webhooks
+    description: Outgoing webhooks
+  - name: audit
+    description: Audit log
+  - name: realtime
+    description: Server-sent events
+  - name: device
+    description: API of paired devices
+  - name: public
+    description: Public marina pages
+
+paths:
+  /healthz:
+    get:
+      tags: [ops]
+      operationId: healthz
+      summary: Liveness probe
+      security: []
+      responses:
+        "200":
+          description: The process is alive
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/HealthStatus" }
+
+  /readyz:
+    get:
+      tags: [ops]
+      operationId: readyz
+      summary: Readiness probe (database reachable, migrations applied)
+      security: []
+      responses:
+        "200":
+          description: Ready
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReadyStatus" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+
+  /api/admin/v1/meta:
+    get:
+      tags: [meta]
+      operationId: getMeta
+      summary: Version, edition and capabilities of this instance
+      security: []
+      responses:
+        "200":
+          description: Instance metadata
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Meta" }
+
+  /api/admin/v1/auth/login:
+    post:
+      tags: [auth]
+      operationId: login
+      summary: Log in with email and password (plus the second factor when enrolled)
+      description: Sets the `porto_session` (HttpOnly) and `porto_csrf` cookies. A new session is always created.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LoginRequest" }
+      responses:
+        "200":
+          description: Logged in
+          headers:
+            Set-Cookie:
+              description: porto_session and porto_csrf cookies
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/admin/v1/auth/logout:
+    post:
+      tags: [auth]
+      operationId: logout
+      summary: End the current session
+      security:
+        - cookieAuth: []
+          csrfToken: []
+      responses:
+        "204": { description: Logged out, cookies cleared }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /api/admin/v1/auth/me:
+    get:
+      tags: [auth]
+      operationId: getMe
+      summary: The current user, organizations and marinas with roles and permissions
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    patch:
+      tags: [auth]
+      operationId: updateMe
+      summary: Change the name or locale of the current user
+      security:
+        - cookieAuth: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MePatch" }
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /api/admin/v1/auth/password:
+    post:
+      tags: [auth]
+      operationId: changePassword
+      summary: Change the password (other sessions are revoked)
+      security:
+        - cookieAuth: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ChangePasswordRequest" }
+      responses:
+        "204": { description: Password changed }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /api/admin/v1/auth/password-reset/request:
+    post:
+      tags: [auth]
+      operationId: requestPasswordReset
+      summary: Send a password reset email (always 204, no account enumeration)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PasswordResetRequest" }
+      responses:
+        "204": { description: Accepted }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/admin/v1/auth/password-reset/confirm:
+    post:
+      tags: [auth]
+      operationId: confirmPasswordReset
+      summary: Set a new password with a reset or invitation token (single use; every session is revoked)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PasswordResetConfirm" }
+      responses:
+        "204": { description: Password set }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/admin/v1/auth/totp/enroll:
+    post:
+      tags: [auth]
+      operationId: enrollTotp
+      summary: Start TOTP enrolment (new secret, QR code)
+      security:
+        - cookieAuth: []
+          csrfToken: []
+      responses:
+        "200":
+          description: Pending enrolment
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TotpEnrollment" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/auth/totp/confirm:
+    post:
+      tags: [auth]
+      operationId: confirmTotp
+      summary: Confirm TOTP enrolment with a code; returns the recovery codes and rotates the session
+      security:
+        - cookieAuth: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TotpCode" }
+      responses:
+        "200":
+          description: TOTP enabled
+          headers:
+            Set-Cookie:
+              description: rotated porto_session and porto_csrf cookies
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RecoveryCodes" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/auth/totp/disable:
+    post:
+      tags: [auth]
+      operationId: disableTotp
+      summary: Disable TOTP (password and current code required)
+      security:
+        - cookieAuth: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TotpDisableRequest" }
+      responses:
+        "204": { description: TOTP disabled }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /api/admin/v1/auth/recovery-codes:
+    post:
+      tags: [auth]
+      operationId: regenerateRecoveryCodes
+      summary: Replace the recovery codes (current TOTP code required)
+      security:
+        - cookieAuth: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TotpCode" }
+      responses:
+        "200":
+          description: New recovery codes
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RecoveryCodes" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /api/admin/v1/organizations:
+    get:
+      tags: [organizations]
+      operationId: listOrganizations
+      summary: Organizations of the principal
+      security: &readSecurity
+        - cookieAuth: []
+        - apiKeyAuth: []
+        - deviceAuth: []
+      responses:
+        "200":
+          description: Organizations
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OrganizationList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /api/admin/v1/organizations/{organizationId}:
+    parameters:
+      - $ref: "#/components/parameters/OrganizationId"
+    patch:
+      tags: [organizations]
+      operationId: updateOrganization
+      summary: Update the organization (organization.manage)
+      security: &writeSecurity
+        - cookieAuth: []
+          csrfToken: []
+        - apiKeyAuth: []
+        - deviceAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OrganizationPatch" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Organization" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/organizations/{organizationId}/marinas:
+    parameters:
+      - $ref: "#/components/parameters/OrganizationId"
+    get:
+      tags: [marinas]
+      operationId: listMarinas
+      summary: Marinas of the organization visible to the principal
+      security: *readSecurity
+      responses:
+        "200":
+          description: Marinas
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MarinaList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [marinas]
+      operationId: createMarina
+      summary: Create a marina (organization.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MarinaCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Marina" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/organizations/{organizationId}/owners:
+    parameters:
+      - $ref: "#/components/parameters/OrganizationId"
+    get:
+      tags: [organizations]
+      operationId: listOrgOwners
+      summary: Organization-wide owners (organization.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Owners
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MemberList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [organizations]
+      operationId: addOrgOwner
+      summary: Add an organization-wide owner (the role in the body is ignored)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MemberCreate" }
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Member" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/organizations/{organizationId}/owners/{userId}:
+    parameters:
+      - $ref: "#/components/parameters/OrganizationId"
+      - $ref: "#/components/parameters/UserId"
+    delete:
+      tags: [organizations]
+      operationId: removeOrgOwner
+      summary: Remove an organization-wide owner (the last one cannot be removed)
+      security: *writeSecurity
+      responses:
+        "204": { description: Removed }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [marinas]
+      operationId: getMarina
+      summary: A marina (marina.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Marina
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Marina" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [marinas]
+      operationId: updateMarina
+      summary: Update marina settings (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MarinaPatch" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Marina" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/archive:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [marinas]
+      operationId: archiveMarina
+      summary: Archive a marina (organization.manage)
+      security: *writeSecurity
+      responses:
+        "204": { description: Archived }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/members:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [team]
+      operationId: listMembers
+      summary: Members of the marina, organization-wide and marina-level (users.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Members
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MemberList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [team]
+      operationId: addMember
+      summary: Add a member to the marina (users.manage); a new user receives an invitation email
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MemberCreate" }
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Member" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/members/{userId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/UserId"
+    patch:
+      tags: [team]
+      operationId: updateMember
+      summary: Change the marina-level role of a member (users.manage)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MemberUpdate" }
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Member" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+    delete:
+      tags: [team]
+      operationId: removeMember
+      summary: Remove the marina-level membership of a user (users.manage)
+      security: *writeSecurity
+      responses:
+        "204": { description: Removed }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/members/{userId}/password-reset:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/UserId"
+    post:
+      tags: [team]
+      operationId: sendMemberPasswordReset
+      summary: Email a password reset link to a member (users.manage)
+      security: *writeSecurity
+      responses:
+        "202": { description: Queued }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/api-keys:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [api-keys]
+      operationId: listApiKeys
+      summary: API keys of the marina (users.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: API keys
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiKeyList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [api-keys]
+      operationId: createApiKey
+      summary: Create an API key; the secret is returned once (users.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ApiKeyCreate" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiKeyCreated" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/api-keys/{apiKeyId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - name: apiKeyId
+        in: path
+        required: true
+        schema: { type: string }
+    delete:
+      tags: [api-keys]
+      operationId: revokeApiKey
+      summary: Revoke an API key (users.manage)
+      security: *writeSecurity
+      responses:
+        "204": { description: Revoked }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/devices/pairing-codes:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [devices]
+      operationId: createPairingCode
+      summary: Create a pairing code (devices.pair_self for oneself, devices.manage for another user)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PairingCodeCreate" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PairingCode" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/devices:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [devices]
+      operationId: listDevices
+      summary: Paired devices of the marina (devices.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Devices
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DeviceList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/devices/{deviceId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - name: deviceId
+        in: path
+        required: true
+        schema: { type: string }
+    delete:
+      tags: [devices]
+      operationId: revokeDevice
+      summary: Revoke a device (devices.manage)
+      security: *writeSecurity
+      responses:
+        "204": { description: Revoked }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/event-types:
+    get:
+      tags: [webhooks]
+      operationId: listEventTypes
+      summary: Catalogue of event types
+      security: *readSecurity
+      responses:
+        "200":
+          description: Event types
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EventTypeList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /api/admin/v1/marinas/{marinaId}/webhook-endpoints:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [webhooks]
+      operationId: listWebhookEndpoints
+      summary: Webhook endpoints of the marina (users.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Endpoints
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WebhookEndpointList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [webhooks]
+      operationId: createWebhookEndpoint
+      summary: Create a webhook endpoint; the signing secret is returned once (users.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WebhookEndpointCreate" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WebhookEndpointCreated" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/webhook-endpoints/{endpointId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EndpointId"
+    get:
+      tags: [webhooks]
+      operationId: getWebhookEndpoint
+      summary: A webhook endpoint (users.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Endpoint
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WebhookEndpoint" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [webhooks]
+      operationId: updateWebhookEndpoint
+      summary: Update a webhook endpoint (users.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WebhookEndpointPatch" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WebhookEndpoint" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+    delete:
+      tags: [webhooks]
+      operationId: deleteWebhookEndpoint
+      summary: Delete a webhook endpoint (users.manage)
+      security: *writeSecurity
+      responses:
+        "204": { description: Deleted }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/webhook-endpoints/{endpointId}/rotate-secret:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EndpointId"
+    post:
+      tags: [webhooks]
+      operationId: rotateWebhookSecret
+      summary: Rotate the signing secret; the previous one stays valid for 24 hours (users.manage)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: New secret
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WebhookSecretRotated" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/webhook-endpoints/{endpointId}/test:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EndpointId"
+    post:
+      tags: [webhooks]
+      operationId: testWebhookEndpoint
+      summary: Queue a webhook.test delivery (users.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "202":
+          description: Queued
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WebhookTestResult" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/webhook-endpoints/{endpointId}/deliveries:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EndpointId"
+    get:
+      tags: [webhooks]
+      operationId: listWebhookDeliveries
+      summary: Deliveries of an endpoint, newest first (users.manage)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - name: status
+          in: query
+          required: false
+          schema: { $ref: "#/components/schemas/WebhookDeliveryStatus" }
+      responses:
+        "200":
+          description: Deliveries
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WebhookDeliveryPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/webhook-endpoints/{endpointId}/deliveries/{deliveryId}/redeliver:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EndpointId"
+      - name: deliveryId
+        in: path
+        required: true
+        schema: { type: string }
+    post:
+      tags: [webhooks]
+      operationId: redeliverWebhook
+      summary: Queue a delivery again (users.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "202": { description: Queued }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/audit-log:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [audit]
+      operationId: listAuditLog
+      summary: Audit log of the marina, newest first (audit.read)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - { name: entity_type, in: query, required: false, schema: { type: string, maxLength: 64 } }
+        - { name: entity_id, in: query, required: false, schema: { type: string, maxLength: 64 } }
+        - { name: actor_id, in: query, required: false, schema: { type: string, maxLength: 64 } }
+        - { name: from, in: query, required: false, description: Inclusive lower bound, schema: { type: string, format: date-time } }
+        - { name: to, in: query, required: false, description: Exclusive upper bound, schema: { type: string, format: date-time } }
+      responses:
+        "200":
+          description: Audit entries
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuditEntryPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/stream:
+    get:
+      tags: [realtime]
+      operationId: stream
+      summary: Server-sent events of a marina (marina.read)
+      description: |
+        `text/event-stream`. Each message has `id`, `event` (topic, e.g. `team.changed`) and `data`
+        (`{"topic","type","marina_id","entity_ids":[…]}`, ids only). Heartbeat `: ping` every 25 s.
+        Resume with `Last-Event-ID`. At most 5 concurrent streams per principal.
+      security: *readSecurity
+      parameters:
+        - { name: marina_id, in: query, required: true, schema: { type: string } }
+        - { name: Last-Event-ID, in: header, required: false, schema: { type: string, maxLength: 64 } }
+      responses:
+        "200":
+          description: Event stream
+          content:
+            text/event-stream:
+              schema: { type: string }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/device/v1/pair:
+    post:
+      tags: [device]
+      operationId: pairDevice
+      summary: Exchange a pairing code for a device token (shown once)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PairRequest" }
+      responses:
+        "201":
+          description: Paired
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PairResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/device/v1/demo-pairing:
+    post:
+      tags: [device]
+      operationId: demoPairDevice
+      summary: Pair as the demo user without a code (demo installations only)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DemoPairRequest" }
+      responses:
+        "201":
+          description: Paired
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PairResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/device/v1/self:
+    get:
+      tags: [device]
+      operationId: getDeviceSelf
+      summary: The calling device, its user, marina and permissions
+      security:
+        - deviceAuth: []
+      responses:
+        "200":
+          description: Device
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DeviceSelf" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    delete:
+      tags: [device]
+      operationId: unpairDeviceSelf
+      summary: Revoke the calling device's token
+      security:
+        - deviceAuth: []
+      responses:
+        "204": { description: Unpaired }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /api/public/v1/{slug}:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema: { type: string, maxLength: 63 }
+    get:
+      tags: [public]
+      operationId: getPublicMarina
+      summary: Public information of a marina
+      security: []
+      responses:
+        "200":
+          description: Public marina
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PublicMarina" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: porto_session
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+      description: Required together with cookieAuth on unsafe methods; equal to the porto_csrf cookie.
+    apiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: po_live_<prefix>_<secret>
+    deviceAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: po_dev_<prefix>_<secret>
+
+  headers:
+    ETag:
+      description: Version of the resource, quoted ("3")
+      schema: { type: string }
+
+  parameters:
+    OrganizationId:
+      name: organizationId
+      in: path
+      required: true
+      schema: { type: string }
+    MarinaId:
+      name: marinaId
+      in: path
+      required: true
+      schema: { type: string }
+    UserId:
+      name: userId
+      in: path
+      required: true
+      schema: { type: string }
+    EndpointId:
+      name: endpointId
+      in: path
+      required: true
+      schema: { type: string }
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema: { type: string, maxLength: 128 }
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+      schema: { type: string, minLength: 8, maxLength: 128, pattern: "^[A-Za-z0-9_\\-:.]+$" }
+    IfMatch:
+      name: If-Match
+      in: header
+      required: false
+      description: The ETag of the version being changed. Missing is 428, stale is 412.
+      schema: { type: string }
+    CSRFToken:
+      name: X-CSRF-Token
+      in: header
+      required: false
+      description: Value of the porto_csrf cookie; required on cookie-authenticated unsafe requests.
+      schema: { type: string }
+
+  responses:
+    BadRequest:
+      description: Malformed request or validation failure
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    Unauthorized:
+      description: Not authenticated, or invalid credentials
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    Forbidden:
+      description: Authenticated but not allowed
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    NotFound:
+      description: Not found (or not visible to the principal)
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    Conflict:
+      description: Conflict with the current state
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    PreconditionFailed:
+      description: If-Match does not match the current version
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    PreconditionRequired:
+      description: If-Match is required
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    UnprocessableEntity:
+      description: Idempotency-Key reused with a different request
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    TooManyRequests:
+      description: Rate limited (see Retry-After)
+      headers:
+        Retry-After:
+          schema: { type: integer }
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    ServiceUnavailable:
+      description: Not ready
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+
+  schemas:
+    ProblemType:
+      type: string
+      enum:
+        - bad_request
+        - validation_failed
+        - weak_password
+        - invalid_reset_token
+        - invalid_totp
+        - pairing_code_invalid
+        - invalid_scope
+        - invalid_webhook_url
+        - unknown_event_type
+        - unauthorized
+        - invalid_credentials
+        - totp_required
+        - forbidden
+        - csrf_failed
+        - totp_enrolment_required
+        - totp_required_by_policy
+        - not_found
+        - method_not_allowed
+        - conflict
+        - slug_taken
+        - already_member
+        - last_owner
+        - totp_already_enabled
+        - totp_not_enrolled
+        - endpoint_disabled
+        - idempotency_in_progress
+        - version_conflict
+        - unsupported_media_type
+        - idempotency_key_reused
+        - precondition_required
+        - rate_limited
+        - internal_error
+        - not_ready
+
+    FieldError:
+      type: object
+      required: [field, code]
+      properties:
+        field: { type: string }
+        code: { type: string }
+        message: { type: string }
+
+    Problem:
+      type: object
+      required: [type, title, status]
+      properties:
+        type: { $ref: "#/components/schemas/ProblemType" }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+        request_id: { type: string }
+        errors:
+          type: array
+          items: { $ref: "#/components/schemas/FieldError" }
+        retry_after_seconds: { type: integer }
+
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [ok] }
+
+    ReadyStatus:
+      type: object
+      required: [status, schema_version]
+      properties:
+        status: { type: string, enum: [ok] }
+        schema_version: { type: integer, format: int64 }
+
+    Meta:
+      type: object
+      required: [version, api_version, edition, capabilities, demo_pairing]
+      properties:
+        version: { type: string }
+        api_version: { type: string }
+        edition: { type: string, enum: [server] }
+        capabilities:
+          type: array
+          items: { type: string }
+        demo_pairing: { type: boolean }
+
+    Role:
+      type: string
+      enum: [owner, director, office, accounting, dock, yard_mgr, yard, rental, viewer]
+
+    Permission:
+      type: string
+      enum:
+        - organization.manage
+        - marina.configure
+        - marina.read
+        - users.manage
+        - devices.manage
+        - devices.pair_self
+        - audit.read
+        - customers.write
+        - customers.read
+        - contracts.write
+        - transits.desk
+        - occupancy.move
+        - presence.write
+        - occupancy.override_fit
+        - rights.manage
+        - charges.manage
+        - charges.export
+        - payments.collect
+        - payments.collect_cash
+        - refunds.issue
+        - storage.manage
+        - storage.read
+        - yard.manage
+        - yard.read
+        - yard.timesheets
+        - rental.manage
+        - maintenance.manage
+        - maintenance.report
+        - reports.all
+        - reports.operational
+        - reports.yard
+        - reports.rental
+        - map.view
+
+    Locale:
+      type: string
+      enum: [it, en]
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, maxLength: 254 }
+        password: { type: string, maxLength: 1024 }
+        totp_code: { type: string, maxLength: 16 }
+        recovery_code: { type: string, maxLength: 32 }
+
+    MeUser:
+      type: object
+      required: [id, email, name, locale, totp_enabled]
+      properties:
+        id: { type: string }
+        email: { type: string }
+        name: { type: string }
+        locale: { $ref: "#/components/schemas/Locale" }
+        totp_enabled: { type: boolean }
+
+    MeOrganization:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        role: { $ref: "#/components/schemas/Role" }
+
+    MeMarina:
+      type: object
+      required: [id, organization_id, slug, name, roles, permissions]
+      properties:
+        id: { type: string }
+        organization_id: { type: string }
+        slug: { type: string }
+        name: { type: string }
+        roles:
+          type: array
+          items: { $ref: "#/components/schemas/Role" }
+        permissions:
+          type: array
+          items: { $ref: "#/components/schemas/Permission" }
+
+    Me:
+      type: object
+      required: [user, auth_method, totp_enrolment_required, organizations, marinas]
+      properties:
+        user: { $ref: "#/components/schemas/MeUser" }
+        auth_method: { type: string, enum: [session, api_key, device] }
+        totp_enrolment_required: { type: boolean }
+        organizations:
+          type: array
+          items: { $ref: "#/components/schemas/MeOrganization" }
+        marinas:
+          type: array
+          items: { $ref: "#/components/schemas/MeMarina" }
+
+    MePatch:
+      type: object
+      properties:
+        name: { type: string, maxLength: 200 }
+        locale: { $ref: "#/components/schemas/Locale" }
+
+    ChangePasswordRequest:
+      type: object
+      required: [current_password, new_password]
+      properties:
+        current_password: { type: string, maxLength: 1024 }
+        new_password: { type: string, maxLength: 1024 }
+
+    PasswordResetRequest:
+      type: object
+      required: [email]
+      properties:
+        email: { type: string, maxLength: 254 }
+
+    PasswordResetConfirm:
+      type: object
+      required: [token, new_password]
+      properties:
+        token: { type: string, maxLength: 256 }
+        new_password: { type: string, maxLength: 1024 }
+
+    TotpEnrollment:
+      type: object
+      required: [secret, otpauth_url, qr_svg]
+      properties:
+        secret: { type: string }
+        otpauth_url: { type: string }
+        qr_svg: { type: string }
+
+    TotpCode:
+      type: object
+      required: [code]
+      properties:
+        code: { type: string, maxLength: 16 }
+
+    TotpDisableRequest:
+      type: object
+      required: [password, code]
+      properties:
+        password: { type: string, maxLength: 1024 }
+        code: { type: string, maxLength: 16 }
+
+    RecoveryCodes:
+      type: object
+      required: [codes]
+      properties:
+        codes:
+          type: array
+          items: { type: string }
+
+    Address:
+      type: object
+      properties:
+        line1: { type: string, maxLength: 200 }
+        line2: { type: string, maxLength: 200 }
+        postal_code: { type: string, maxLength: 16 }
+        city: { type: string, maxLength: 100 }
+        province: { type: string, maxLength: 8 }
+        country: { type: string, maxLength: 2, description: ISO 3166-1 alpha-2 }
+
+    Organization:
+      type: object
+      required: [id, name, vat_number, fiscal_code, billing_address, sdi_code, pec, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        vat_number: { type: string }
+        fiscal_code: { type: string }
+        billing_address: { $ref: "#/components/schemas/Address" }
+        sdi_code: { type: string }
+        pec: { type: string }
+        version: { type: integer }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    OrganizationList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Organization" }
+
+    OrganizationPatch:
+      type: object
+      properties:
+        name: { type: string, maxLength: 200 }
+        vat_number: { type: string, maxLength: 32 }
+        fiscal_code: { type: string, maxLength: 32 }
+        billing_address: { $ref: "#/components/schemas/Address" }
+        sdi_code: { type: string, maxLength: 7 }
+        pec: { type: string, maxLength: 254 }
+
+    MarinaKind:
+      type: string
+      enum: [marina, yard, both]
+
+    MarinaContacts:
+      type: object
+      properties:
+        email: { type: string, maxLength: 254 }
+        phone: { type: string, maxLength: 32 }
+        website: { type: string, maxLength: 200 }
+        vhf_channel: { type: string, maxLength: 8 }
+
+    GeoPoint:
+      type: object
+      description: WGS84 position in degrees × 10⁷ (integers)
+      required: [lat_e7, lon_e7]
+      properties:
+        lat_e7: { type: integer, format: int64 }
+        lon_e7: { type: integer, format: int64 }
+
+    Marina:
+      type: object
+      required:
+        - id
+        - organization_id
+        - slug
+        - name
+        - kind
+        - timezone
+        - currency
+        - default_locale
+        - locales
+        - contacts
+        - address
+        - geo
+        - concession_ref
+        - concession_expires_on
+        - settings
+        - theme
+        - booking_enabled
+        - allowed_embed_origins
+        - version
+        - archived_at
+        - created_at
+        - updated_at
+      properties:
+        id: { type: string }
+        organization_id: { type: string }
+        slug: { type: string }
+        name: { type: string }
+        kind: { $ref: "#/components/schemas/MarinaKind" }
+        timezone: { type: string }
+        currency: { type: string }
+        default_locale: { $ref: "#/components/schemas/Locale" }
+        locales:
+          type: array
+          items: { $ref: "#/components/schemas/Locale" }
+        contacts: { $ref: "#/components/schemas/MarinaContacts" }
+        address: { $ref: "#/components/schemas/Address" }
+        geo:
+          oneOf:
+            - $ref: "#/components/schemas/GeoPoint"
+            - type: "null"
+        concession_ref: { type: string }
+        concession_expires_on: { type: [string, "null"], format: date, x-go-type: string }
+        settings: { type: object, additionalProperties: true }
+        theme: { type: object, additionalProperties: true }
+        booking_enabled: { type: boolean }
+        allowed_embed_origins:
+          type: array
+          items: { type: string }
+        version: { type: integer }
+        archived_at: { type: [string, "null"], format: date-time }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    MarinaList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Marina" }
+
+    MarinaCreate:
+      type: object
+      required: [name, slug]
+      properties:
+        name: { type: string, maxLength: 200 }
+        slug: { type: string, minLength: 3, maxLength: 63 }
+        kind: { $ref: "#/components/schemas/MarinaKind" }
+        timezone: { type: string, maxLength: 64 }
+        currency: { type: string, maxLength: 3 }
+        default_locale: { $ref: "#/components/schemas/Locale" }
+        locales:
+          type: array
+          items: { $ref: "#/components/schemas/Locale" }
+
+    MarinaPatch:
+      type: object
+      description: Absent fields are unchanged; `geo` and `concession_expires_on` set to null are cleared.
+      properties:
+        name: { type: string, maxLength: 200 }
+        kind: { $ref: "#/components/schemas/MarinaKind" }
+        timezone: { type: string, maxLength: 64 }
+        currency: { type: string, maxLength: 3 }
+        default_locale: { $ref: "#/components/schemas/Locale" }
+        locales:
+          type: array
+          items: { $ref: "#/components/schemas/Locale" }
+        contacts: { $ref: "#/components/schemas/MarinaContacts" }
+        address: { $ref: "#/components/schemas/Address" }
+        geo:
+          oneOf:
+            - $ref: "#/components/schemas/GeoPoint"
+            - type: "null"
+        concession_ref: { type: string, maxLength: 100 }
+        concession_expires_on: { type: [string, "null"], format: date, x-go-type: string }
+        settings: { type: object, additionalProperties: true }
+        theme: { type: object, additionalProperties: true }
+        booking_enabled: { type: boolean }
+        allowed_embed_origins:
+          type: array
+          items: { type: string }
+
+    MemberScope:
+      type: string
+      enum: [organization, marina]
+
+    Member:
+      type: object
+      required: [user_id, email, name, role, scope, active, totp_enabled, invitation_pending, last_login_at]
+      properties:
+        user_id: { type: string }
+        email: { type: string }
+        name: { type: string }
+        role: { $ref: "#/components/schemas/Role" }
+        scope: { $ref: "#/components/schemas/MemberScope" }
+        active: { type: boolean }
+        totp_enabled: { type: boolean }
+        invitation_pending: { type: boolean }
+        last_login_at: { type: [string, "null"], format: date-time }
+
+    MemberList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Member" }
+
+    MemberCreate:
+      type: object
+      required: [email, name]
+      properties:
+        email: { type: string, maxLength: 254 }
+        name: { type: string, maxLength: 200 }
+        role: { $ref: "#/components/schemas/Role" }
+        locale: { $ref: "#/components/schemas/Locale" }
+
+    MemberUpdate:
+      type: object
+      required: [role]
+      properties:
+        role: { $ref: "#/components/schemas/Role" }
+
+    ApiKey:
+      type: object
+      required: [id, name, prefix, scopes, created_by, expires_at, last_used_at, revoked_at, created_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        prefix: { type: string, description: "po_live_xxxxxxxx" }
+        scopes:
+          type: array
+          items: { $ref: "#/components/schemas/Permission" }
+        created_by: { type: [string, "null"] }
+        expires_at: { type: [string, "null"], format: date-time }
+        last_used_at: { type: [string, "null"], format: date-time }
+        revoked_at: { type: [string, "null"], format: date-time }
+        created_at: { type: string, format: date-time }
+
+    ApiKeyList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/ApiKey" }
+
+    ApiKeyCreate:
+      type: object
+      required: [name, scopes]
+      properties:
+        name: { type: string, maxLength: 100 }
+        scopes:
+          type: array
+          items: { $ref: "#/components/schemas/Permission" }
+        expires_at: { type: string, format: date-time }
+
+    ApiKeyCreated:
+      type: object
+      required: [api_key, secret]
+      properties:
+        api_key: { $ref: "#/components/schemas/ApiKey" }
+        secret: { type: string, description: Shown once }
+
+    DeviceKind:
+      type: string
+      enum: [mobile, desktop]
+
+    DevicePlatform:
+      type: string
+      enum: [ios, android, windows, macos, linux, other]
+
+    PairingCodeCreate:
+      type: object
+      properties:
+        user_id: { type: string }
+        kind: { $ref: "#/components/schemas/DeviceKind" }
+        ttl_seconds: { type: integer, minimum: 60, maximum: 3600 }
+
+    PairingCode:
+      type: object
+      required: [code, expires_at, qr_payload, qr_svg]
+      properties:
+        code: { type: string, description: XXXX-XXXX }
+        expires_at: { type: string, format: date-time }
+        qr_payload: { type: string }
+        qr_svg: { type: string }
+
+    UserRef:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: string }
+        name: { type: string }
+
+    Device:
+      type: object
+      required: [id, name, platform, kind, app_version, user, token_prefix, last_used_at, revoked_at, created_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        platform: { $ref: "#/components/schemas/DevicePlatform" }
+        kind: { $ref: "#/components/schemas/DeviceKind" }
+        app_version: { type: string }
+        user: { $ref: "#/components/schemas/UserRef" }
+        token_prefix: { type: string }
+        last_used_at: { type: [string, "null"], format: date-time }
+        revoked_at: { type: [string, "null"], format: date-time }
+        created_at: { type: string, format: date-time }
+
+    DeviceList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Device" }
+
+    EventType:
+      type: object
+      required: [type, topic, public]
+      properties:
+        type: { type: string }
+        topic: { type: string }
+        public: { type: boolean, description: Can be subscribed by webhooks }
+
+    EventTypeList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/EventType" }
+
+    WebhookEndpoint:
+      type: object
+      required:
+        - id
+        - url
+        - description
+        - events
+        - active
+        - consecutive_failures
+        - disabled_at
+        - disabled_reason
+        - has_previous_secret
+        - version
+        - created_at
+        - updated_at
+      properties:
+        id: { type: string }
+        url: { type: string }
+        description: { type: string }
+        events:
+          type: array
+          items: { type: string }
+        active: { type: boolean }
+        consecutive_failures: { type: integer }
+        disabled_at: { type: [string, "null"], format: date-time }
+        disabled_reason: { type: [string, "null"] }
+        has_previous_secret: { type: boolean }
+        version: { type: integer }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    WebhookEndpointList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/WebhookEndpoint" }
+
+    WebhookEndpointCreate:
+      type: object
+      required: [url, events]
+      properties:
+        url: { type: string, maxLength: 2048 }
+        description: { type: string, maxLength: 500 }
+        events:
+          type: array
+          items: { type: string }
+
+    WebhookEndpointCreated:
+      type: object
+      required: [endpoint, secret]
+      properties:
+        endpoint: { $ref: "#/components/schemas/WebhookEndpoint" }
+        secret: { type: string, description: Shown once }
+
+    WebhookEndpointPatch:
+      type: object
+      properties:
+        url: { type: string, maxLength: 2048 }
+        description: { type: string, maxLength: 500 }
+        events:
+          type: array
+          items: { type: string }
+        active: { type: boolean }
+
+    WebhookSecretRotated:
+      type: object
+      required: [secret, previous_valid_until]
+      properties:
+        secret: { type: string }
+        previous_valid_until: { type: string, format: date-time }
+
+    WebhookTestResult:
+      type: object
+      required: [delivery_id]
+      properties:
+        delivery_id: { type: string }
+
+    WebhookDeliveryStatus:
+      type: string
+      enum: [pending, delivered, failed]
+
+    WebhookDelivery:
+      type: object
+      required:
+        - id
+        - event_id
+        - event_type
+        - status
+        - attempts
+        - last_status_code
+        - last_error
+        - response_excerpt
+        - next_attempt_at
+        - delivered_at
+        - failed_at
+        - created_at
+      properties:
+        id: { type: string }
+        event_id: { type: string }
+        event_type: { type: string }
+        status: { $ref: "#/components/schemas/WebhookDeliveryStatus" }
+        attempts: { type: integer }
+        last_status_code: { type: [integer, "null"] }
+        last_error: { type: [string, "null"] }
+        response_excerpt: { type: [string, "null"] }
+        next_attempt_at: { type: [string, "null"], format: date-time }
+        delivered_at: { type: [string, "null"], format: date-time }
+        failed_at: { type: [string, "null"], format: date-time }
+        created_at: { type: string, format: date-time }
+
+    WebhookDeliveryPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/WebhookDelivery" }
+        next_cursor: { type: [string, "null"] }
+
+    AuditActor:
+      type: object
+      required: [type, id]
+      properties:
+        type: { type: string, enum: [user, api_key, device, system] }
+        id: { type: [string, "null"] }
+
+    AuditEntry:
+      type: object
+      required: [id, actor, action, entity_type, entity_id, diff, request_id, created_at]
+      properties:
+        id: { type: string }
+        actor: { $ref: "#/components/schemas/AuditActor" }
+        action: { type: string }
+        entity_type: { type: string }
+        entity_id: { type: [string, "null"] }
+        diff: {}
+        request_id: { type: string }
+        created_at: { type: string, format: date-time }
+
+    AuditEntryPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/AuditEntry" }
+        next_cursor: { type: [string, "null"] }
+
+    PairRequest:
+      type: object
+      required: [code, name, platform, kind]
+      properties:
+        code: { type: string, maxLength: 16 }
+        name: { type: string, maxLength: 100 }
+        platform: { $ref: "#/components/schemas/DevicePlatform" }
+        kind: { $ref: "#/components/schemas/DeviceKind" }
+        app_version: { type: string, maxLength: 32 }
+
+    DemoPairRequest:
+      type: object
+      required: [name, platform, kind]
+      properties:
+        name: { type: string, maxLength: 100 }
+        platform: { $ref: "#/components/schemas/DevicePlatform" }
+        kind: { $ref: "#/components/schemas/DeviceKind" }
+        app_version: { type: string, maxLength: 32 }
+
+    MarinaRef:
+      type: object
+      required: [id, slug, name]
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        name: { type: string }
+
+    PairResult:
+      type: object
+      required: [token, device, marina, user, base_url]
+      properties:
+        token: { type: string, description: Device token, shown once }
+        device: { $ref: "#/components/schemas/Device" }
+        marina: { $ref: "#/components/schemas/MarinaRef" }
+        user: { $ref: "#/components/schemas/UserRef" }
+        base_url: { type: string }
+
+    DeviceSelf:
+      type: object
+      required: [device, user, marina, permissions]
+      properties:
+        device: { $ref: "#/components/schemas/Device" }
+        user: { $ref: "#/components/schemas/UserRef" }
+        marina: { $ref: "#/components/schemas/MarinaRef" }
+        permissions:
+          type: array
+          items: { $ref: "#/components/schemas/Permission" }
+
+    PublicMarina:
+      type: object
+      required: [slug, name, default_locale, locales, booking_enabled]
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        default_locale: { $ref: "#/components/schemas/Locale" }
+        locales:
+          type: array
+          items: { $ref: "#/components/schemas/Locale" }
+        booking_enabled: { type: boolean }

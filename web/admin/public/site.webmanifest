@@ -1,0 +1,32 @@
+{
+  "id": "/admin/",
+  "name": "Porto",
+  "short_name": "Porto",
+  "description": "Il gestionale portuale di Coste360",
+  "lang": "it",
+  "start_url": "/admin/",
+  "scope": "/admin/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/admin/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/admin/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/admin/maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#0b2542",
+  "background_color": "#ffffff"
+}

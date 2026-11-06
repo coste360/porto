@@ -1,0 +1,267 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GOLANGCI_LINT_VERSION: v2.15.0
+  NODE_VERSION: "22"
+  # Build with exactly the toolchain declared in go.mod, never an automatic download.
+  GOTOOLCHAIN: local
+
+jobs:
+  go:
+    name: Go (lint, unit, integration SQLite + PostgreSQL, race, vulns)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: porto
+          POSTGRES_PASSWORD: porto
+          POSTGRES_DB: porto_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U porto -d porto_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      # Read by internal/testutil/testdb and scripts/with-postgres.sh: integration tests run on both dialects.
+      PORTO_TEST_POSTGRES_URL: postgres://porto:porto@localhost:5432/porto_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Download modules
+        run: go mod download
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          # Built from source with the job's toolchain, so it can analyse a module on the newest Go release.
+          install-mode: goinstall
+          args: --timeout=5m
+
+      - name: Unit tests
+        run: go test ./...
+
+      - name: Integration tests (SQLite + PostgreSQL)
+        run: make test-db
+
+      - name: Concurrency tests with the race detector (SQLite + PostgreSQL)
+        run: make test-race
+
+      - name: govulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+
+  web:
+    name: Web (lint, format, typecheck, test, build, budget)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm --prefix web ci
+
+      - name: Lint (CSS guard, i18n check, ESLint)
+        run: npm --prefix web run lint
+
+      - name: Prettier
+        run: npm --prefix web run format:check
+
+      - name: Typecheck
+        run: npm --prefix web run typecheck
+
+      - name: Vitest
+        run: npm --prefix web run test
+
+      - name: Build
+        run: npm --prefix web run build
+
+      - name: Bundle budget (booking)
+        run: npm --prefix web run budget
+
+  gen-check:
+    name: Generated code is up to date
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install web dependencies
+        run: npm --prefix web ci
+
+      - name: make gen-check
+        run: make gen-check
+
+      - name: No drift anywhere in the tree after make gen
+        run: git diff --exit-code
+
+  licenses:
+    name: Dependency licences
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install web dependencies
+        run: npm --prefix web ci
+
+      - name: make licenses
+        run: make licenses
+
+  docker:
+    name: Docker image (build, Trivy, smoke)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build image (no push)
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: deploy/Dockerfile
+          load: true
+          push: false
+          tags: porto:ci
+          build-args: |
+            VERSION=ci-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: porto:ci
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
+
+      - name: Smoke test (empty instance, admin create, login)
+        env:
+          SMOKE_PASSWORD: ci-smoke-password-123
+        run: |
+          set -euo pipefail
+          docker run -d --name porto-smoke -p 127.0.0.1:8080:8080 \
+            --read-only --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges:true \
+            -e PORTO_DEV=true -e PORTO_BASE_URL=http://localhost:8080 porto:ci
+          trap 'docker logs porto-smoke || true; docker rm -f porto-smoke >/dev/null 2>&1 || true' EXIT
+          ready=false
+          for _ in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:8080/readyz >/dev/null 2>&1; then ready=true; break; fi
+            sleep 1
+          done
+          if [ "$ready" != true ]; then echo "porto did not become ready"; exit 1; fi
+          curl -fsS http://127.0.0.1:8080/healthz
+          docker exec porto-smoke /porto version
+          docker exec -e PORTO_ADMIN_PASSWORD="$SMOKE_PASSWORD" porto-smoke /porto admin create \
+            --email owner@porto.test --name "Owner CI" --org "Porto CI SRL" --marina "Marina CI" --slug ci
+          status="$(curl -s -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json' \
+            -d "{\"email\":\"owner@porto.test\",\"password\":\"${SMOKE_PASSWORD}\"}" \
+            http://127.0.0.1:8080/api/admin/v1/auth/login)"
+          echo "login: HTTP $status"
+          test "$status" = 200
+
+  e2e:
+    name: End-to-end (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            web/package-lock.json
+            e2e/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm --prefix web ci
+          npm --prefix e2e ci
+
+      - name: Install Playwright Chromium
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: make e2e
+        run: make e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            e2e/playwright-report
+            e2e/test-results
+          retention-days: 7
+
+  naming:
+    name: Naming (no residue from the reference project)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: check-naming
+        run: scripts/agents/check-naming.sh

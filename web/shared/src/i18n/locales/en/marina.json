@@ -1,0 +1,60 @@
+{
+  "settings": {
+    "title": "Marina settings",
+    "description": "General data, contacts and concession.",
+    "general": "General",
+    "name": "Name",
+    "slug": "Identifier",
+    "kind": "Facility type",
+    "timezone": "Time zone",
+    "currency": "Currency",
+    "defaultLocale": "Default language",
+    "contacts": "Contacts",
+    "email": "Email",
+    "phone": "Phone",
+    "website": "Website",
+    "vhf": "VHF channel",
+    "address": "Address",
+    "line1": "Address",
+    "line2": "Address (line 2)",
+    "postalCode": "Postal code",
+    "city": "City",
+    "province": "Province",
+    "country": "Country",
+    "concession": "State property concession",
+    "concessionRef": "Concession reference",
+    "concessionExpires": "Concession expiry",
+    "conflictTitle": "Data changed by someone else",
+    "conflictDescription": "Reload to see the latest version, then repeat your changes."
+  },
+  "kinds": {
+    "marina": "Marina",
+    "yard": "Boatyard",
+    "both": "Marina and boatyard"
+  },
+  "create": {
+    "title": "Create the first marina",
+    "titleMore": "New marina",
+    "description": "Name the marina and choose the identifier used in web addresses.",
+    "submit": "Create marina",
+    "created": "Marina created."
+  },
+  "org": {
+    "title": "Organization",
+    "description": "The company that runs the marinas.",
+    "name": "Company name",
+    "vat": "VAT number",
+    "fiscalCode": "Tax code",
+    "sdi": "Recipient code",
+    "pec": "Certified email (PEC)",
+    "billingAddress": "Registered office",
+    "marinas": "Marinas",
+    "noMarinas": "No marinas.",
+    "owners": "Organization owners",
+    "ownersDescription": "Owners have full access to every marina.",
+    "addOwner": "Add owner",
+    "removeOwnerTitle": "Remove this owner?",
+    "archived": "Archived",
+    "open": "Open"
+  }
+}

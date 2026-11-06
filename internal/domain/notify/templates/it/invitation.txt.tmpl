@@ -1,0 +1,11 @@
+Ciao {{.Name}},
+
+{{if .InviterName}}{{.InviterName}} ti ha invitato{{else}}sei stato invitato{{end}} a usare Porto per {{.MarinaName}}.
+Per attivare l'account e scegliere la password apri questo link:
+
+{{.Link}}
+
+Il link vale fino al {{.ExpiresAt}}.
+
+--
+Porto — Coste360

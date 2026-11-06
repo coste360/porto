@@ -1,0 +1,27 @@
+# Build context for deploy/Dockerfile. Keep it small and free of local state and secrets.
+.git
+.github
+.devcontainer
+.claude
+**/node_modules
+**/.DS_Store
+web/*/dist
+e2e
+tmp
+bin
+dist
+data
+*.db
+*.db-wal
+*.db-shm
+*.porto-backup
+.env
+.env.*
+!.env.example
+CLAUDE.local.md
+
+# Embedded SPA directories: the image copies fresh builds in; only the placeholders come from the context.
+internal/http/static/admin/*
+!internal/http/static/admin/.gitkeep
+internal/http/static/booking/*
+!internal/http/static/booking/.gitkeep

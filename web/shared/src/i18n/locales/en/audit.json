@@ -1,0 +1,17 @@
+{
+  "title": "Activity log",
+  "description": "Who did what, and when.",
+  "when": "When",
+  "actor": "Actor",
+  "action": "Action",
+  "entity": "Object",
+  "entityFilter": "Filter by object type",
+  "allEntities": "All",
+  "empty": "No activity recorded.",
+  "actorTypes": {
+    "user": "User",
+    "api_key": "API key",
+    "device": "Device",
+    "system": "System"
+  }
+}

@@ -1,0 +1,21 @@
+# Normalize line endings to LF everywhere.
+* text=auto eol=lf
+
+# Generated code: collapsed in diffs and excluded from language statistics.
+*.gen.go linguist-generated=true
+*_gen.go linguist-generated=true
+web/shared/api/generated/** linguist-generated=true
+
+# Binary assets.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.porto-backup binary

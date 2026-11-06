@@ -1,0 +1,27 @@
+{
+  "title": "Dispositivi",
+  "description": "Telefoni, tablet e postazioni abbinati a questo porto.",
+  "pair": "Abbina un dispositivo",
+  "pairTitle": "Abbina un dispositivo",
+  "pairDescription": "Il dispositivo lavorerà con il ruolo della persona scelta.",
+  "user": "Persona",
+  "kind": "Tipo",
+  "kinds": {
+    "mobile": "Mobile",
+    "desktop": "Desktop"
+  },
+  "generate": "Genera il codice",
+  "scan": "Inquadra il codice QR con l'app Porto, oppure inserisci il codice.",
+  "qrAlt": "Codice QR per abbinare il dispositivo",
+  "code": "Codice",
+  "expiresIn": "Scade tra {{seconds}} secondi",
+  "expired": "Il codice è scaduto. Generane uno nuovo.",
+  "name": "Nome",
+  "platform": "Piattaforma",
+  "appVersion": "Versione app",
+  "lastUsed": "Ultimo uso",
+  "empty": "Nessun dispositivo abbinato.",
+  "revokeTitle": "Revocare questo dispositivo?",
+  "revokeDescription": "Il dispositivo verrà disconnesso subito.",
+  "revoked": "Dispositivo revocato."
+}

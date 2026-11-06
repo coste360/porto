@@ -1,0 +1,123 @@
+{
+  "product": {
+    "name": "Porto",
+    "tagline": "Il gestionale portuale di Coste360",
+    "poweredBy": "powered by Porto"
+  },
+  "actions": {
+    "save": "Salva",
+    "saving": "Salvataggio…",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "create": "Crea",
+    "add": "Aggiungi",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "remove": "Rimuovi",
+    "revoke": "Revoca",
+    "confirm": "Conferma",
+    "copy": "Copia",
+    "copied": "Copiato",
+    "download": "Scarica",
+    "reload": "Ricarica",
+    "retry": "Riprova",
+    "back": "Indietro",
+    "continue": "Continua",
+    "loadMore": "Carica altri",
+    "actions": "Azioni"
+  },
+  "status": {
+    "loading": "Caricamento…",
+    "active": "Attivo",
+    "inactive": "Non attivo",
+    "revoked": "Revocato",
+    "never": "Mai",
+    "saved": "Modifiche salvate"
+  },
+  "secret": {
+    "title": "Copia ora questo valore",
+    "warning": "Per sicurezza non verrà più mostrato. Conservalo in un luogo sicuro.",
+    "done": "Ho copiato il valore"
+  },
+  "validation": {
+    "required": "Campo obbligatorio.",
+    "email": "Inserisci un indirizzo email valido.",
+    "passwordMin": "La password deve avere almeno 12 caratteri.",
+    "passwordMismatch": "Le password non coincidono.",
+    "code": "Inserisci il codice a 6 cifre.",
+    "slug": "Usa solo lettere minuscole, numeri e trattini (3-63 caratteri).",
+    "url": "Inserisci un indirizzo https valido.",
+    "atLeastOne": "Seleziona almeno un elemento."
+  },
+  "nav": {
+    "main": "Navigazione",
+    "dashboard": "Panoramica",
+    "settings": "Impostazioni del porto",
+    "team": "Team",
+    "apiKeys": "Chiavi API",
+    "devices": "Dispositivi",
+    "webhooks": "Webhook",
+    "audit": "Registro attività",
+    "administration": "Amministrazione",
+    "upcoming": "In arrivo",
+    "upcomingHint": "Disponibile nelle prossime versioni",
+    "organization": "Organizzazione",
+    "account": "Il mio account",
+    "switchMarina": "Cambia porto",
+    "openMenu": "Apri o chiudi il menu",
+    "modules": {
+      "map": "Mappa del porto",
+      "customers": "Clienti e imbarcazioni",
+      "contracts": "Contratti e transiti",
+      "charges": "Addebiti e pagamenti",
+      "storage": "Rimessaggio",
+      "yard": "Cantiere",
+      "rental": "Noleggio",
+      "booking": "Prenotazioni online",
+      "reports": "Report"
+    }
+  },
+  "user": {
+    "menu": "Menu utente",
+    "theme": "Tema",
+    "themeLight": "Chiaro",
+    "themeDark": "Scuro",
+    "themeSystem": "Sistema",
+    "language": "Lingua",
+    "logout": "Esci"
+  },
+  "locales": {
+    "it": "Italiano",
+    "en": "English"
+  },
+  "roles": {
+    "owner": "Titolare",
+    "director": "Direttore",
+    "office": "Ufficio",
+    "accounting": "Amministrazione",
+    "dock": "Ormeggiatore",
+    "yard_mgr": "Responsabile cantiere",
+    "yard": "Operaio di cantiere",
+    "rental": "Noleggio",
+    "viewer": "Sola lettura"
+  },
+  "dashboard": {
+    "title": "Panoramica",
+    "comingSoon": "La panoramica operativa arriverà nelle prossime versioni.",
+    "description": "Da qui gestisci il team, le integrazioni e le impostazioni del porto."
+  },
+  "picker": {
+    "title": "Scegli un porto",
+    "description": "Seleziona il porto su cui lavorare.",
+    "none": "Non hai ancora accesso a nessun porto.",
+    "noneHint": "Chiedi al titolare di aggiungerti al team."
+  },
+  "page": {
+    "forbidden": "Non hai accesso a questa sezione.",
+    "notFound": "Pagina non trovata.",
+    "goHome": "Torna alla home"
+  },
+  "pagination": {
+    "next": "Successivi"
+  }
+}

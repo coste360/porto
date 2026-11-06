@@ -1,0 +1,60 @@
+{
+  "settings": {
+    "title": "Impostazioni del porto",
+    "description": "Dati generali, contatti e concessione.",
+    "general": "Dati generali",
+    "name": "Nome",
+    "slug": "Identificativo",
+    "kind": "Tipo di struttura",
+    "timezone": "Fuso orario",
+    "currency": "Valuta",
+    "defaultLocale": "Lingua predefinita",
+    "contacts": "Contatti",
+    "email": "Email",
+    "phone": "Telefono",
+    "website": "Sito web",
+    "vhf": "Canale VHF",
+    "address": "Indirizzo",
+    "line1": "Indirizzo",
+    "line2": "Indirizzo (riga 2)",
+    "postalCode": "CAP",
+    "city": "Città",
+    "province": "Provincia",
+    "country": "Paese",
+    "concession": "Concessione demaniale",
+    "concessionRef": "Riferimento della concessione",
+    "concessionExpires": "Scadenza della concessione",
+    "conflictTitle": "Dati modificati da un'altra persona",
+    "conflictDescription": "Ricarica per vedere la versione aggiornata, poi ripeti le modifiche."
+  },
+  "kinds": {
+    "marina": "Porto turistico",
+    "yard": "Cantiere",
+    "both": "Porto e cantiere"
+  },
+  "create": {
+    "title": "Crea il primo porto",
+    "titleMore": "Nuovo porto",
+    "description": "Dai un nome al porto e scegli l'identificativo usato negli indirizzi web.",
+    "submit": "Crea porto",
+    "created": "Porto creato."
+  },
+  "org": {
+    "title": "Organizzazione",
+    "description": "Dati della società che gestisce i porti.",
+    "name": "Ragione sociale",
+    "vat": "Partita IVA",
+    "fiscalCode": "Codice fiscale",
+    "sdi": "Codice destinatario",
+    "pec": "PEC",
+    "billingAddress": "Sede legale",
+    "marinas": "Porti",
+    "noMarinas": "Nessun porto.",
+    "owners": "Titolari dell'organizzazione",
+    "ownersDescription": "I titolari hanno accesso completo a tutti i porti.",
+    "addOwner": "Aggiungi titolare",
+    "removeOwnerTitle": "Rimuovere questo titolare?",
+    "archived": "Archiviato",
+    "open": "Apri"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "Porto",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".",
+    "args": {
+      "GO_VERSION": "1.27.2",
+      "GOLANGCI_LINT_VERSION": "v2.15.0"
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "GOTOOLCHAIN": "local",
+    "PORTO_DATA_DIR": "${containerWorkspaceFolder}/tmp/data"
+  },
+  "forwardPorts": [8080, 5173, 5174, 8025],
+  "portsAttributes": {
+    "8080": { "label": "Porto server", "onAutoForward": "notify" },
+    "5173": { "label": "Admin SPA (Vite)", "onAutoForward": "silent" },
+    "5174": { "label": "Booking SPA (Vite)", "onAutoForward": "silent" },
+    "8025": { "label": "Mailpit", "onAutoForward": "silent" }
+  },
+  "postCreateCommand": "make setup",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "EditorConfig.EditorConfig",
+        "redhat.vscode-yaml",
+        "ms-playwright.playwright",
+        "42Crunch.vscode-openapi"
+      ],
+      "settings": {
+        "go.lintTool": "golangci-lint",
+        "gopls": {
+          "formatting.gofumpt": true,
+          "formatting.local": "github.com/coste360/porto"
+        },
+        "editor.formatOnSave": true,
+        "[go]": { "editor.defaultFormatter": "golang.go" },
+        "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" }
+      }
+    }
+  }
+}

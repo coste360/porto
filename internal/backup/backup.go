@@ -1,0 +1,372 @@
+// Package backup writes and restores portable backups: a gzip tar with manifest.json and one JSONL file per
+// table. The format does not depend on the dialect, so a backup taken on SQLite restores on PostgreSQL and the
+// other way round (spec 31.1).
+package backup
+
+import (
+	"archive/tar"
+	"bufio"
+	"bytes"
+	"compress/gzip"
+	"context"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"path"
+	"path/filepath"
+	"time"
+
+	"github.com/uptrace/bun"
+
+	"github.com/coste360/porto/internal/clock"
+	"github.com/coste360/porto/internal/store"
+)
+
+// Format identifies the backup format.
+const Format = "porto-backup/1"
+
+const manifestName = "manifest.json"
+
+// Errors.
+var (
+	ErrFormat         = errors.New("backup: not a Porto backup")
+	ErrSchemaMismatch = errors.New("backup: schema version differs from the database")
+	ErrNotEmpty       = errors.New("backup: the database is not empty (use --force to wipe it)")
+	ErrCorrupt        = errors.New("backup: archive is corrupt")
+)
+
+// Table describes one table in the archive.
+type Table struct {
+	Name    string         `json:"name"`
+	File    string         `json:"file"`
+	Rows    int64          `json:"rows"`
+	SHA256  string         `json:"sha256"`
+	Columns []store.Column `json:"columns"`
+}
+
+// Manifest describes an archive.
+type Manifest struct {
+	Format        string    `json:"format"`
+	PortoVersion  string    `json:"porto_version"`
+	SchemaVersion int64     `json:"schema_version"`
+	Dialect       string    `json:"dialect"`
+	CreatedAt     time.Time `json:"created_at"`
+	Tables        []Table   `json:"tables"`
+}
+
+// Rows returns the row count of a table in the manifest.
+func (m *Manifest) Rows(table string) int64 {
+	for _, t := range m.Tables {
+		if t.Name == table {
+			return t.Rows
+		}
+	}
+	return 0
+}
+
+// Backup writes a consistent snapshot of every table of store.BackupTables to out.
+func Backup(ctx context.Context, db *store.DB, out io.Writer, version string) (*Manifest, error) {
+	mig, err := db.Migrator()
+	if err != nil {
+		return nil, err
+	}
+	schema, err := mig.Version(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tmp, err := os.MkdirTemp("", "porto-backup-*")
+	if err != nil {
+		return nil, err
+	}
+	defer os.RemoveAll(tmp)
+
+	m := &Manifest{
+		Format: Format, PortoVersion: version, SchemaVersion: schema, Dialect: string(db.Kind),
+		CreatedAt: clock.System{}.Now().Truncate(time.Second),
+	}
+	err = db.ReadTx(ctx, func(ctx context.Context, tx bun.Tx) error {
+		for _, name := range store.BackupTables() {
+			t, err := dumpTable(ctx, tx, db.Kind, name, tmp)
+			if err != nil {
+				return err
+			}
+			m.Tables = append(m.Tables, *t)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if err := writeArchive(out, m, tmp); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func dumpTable(ctx context.Context, tx bun.IDB, d store.Dialect, name, dir string) (*Table, error) {
+	cols, err := store.TableColumns(ctx, tx, d, name)
+	if err != nil {
+		return nil, err
+	}
+	f, err := os.Create(filepath.Join(dir, name+".jsonl"))
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	sum := sha256.New()
+	w := bufio.NewWriter(io.MultiWriter(f, sum))
+	t := &Table{Name: name, File: "tables/" + name + ".jsonl", Columns: cols}
+	err = store.DumpTable(ctx, tx, name, cols, func(row []any) error {
+		obj := make(map[string]any, len(cols))
+		for i, c := range cols {
+			obj[c.Name] = row[i]
+		}
+		b, err := json.Marshal(obj)
+		if err != nil {
+			return err
+		}
+		t.Rows++
+		if _, err := w.Write(b); err != nil {
+			return err
+		}
+		return w.WriteByte('\n')
+	})
+	if err != nil {
+		return nil, fmt.Errorf("backup: %s: %w", name, err)
+	}
+	if err := w.Flush(); err != nil {
+		return nil, err
+	}
+	t.SHA256 = hex.EncodeToString(sum.Sum(nil))
+	return t, nil
+}
+
+func writeArchive(out io.Writer, m *Manifest, dir string) error {
+	gz := gzip.NewWriter(out)
+	tw := tar.NewWriter(gz)
+	mb, err := json.MarshalIndent(m, "", "  ")
+	if err != nil {
+		return err
+	}
+	if err := writeEntry(tw, manifestName, bytes.NewReader(mb), int64(len(mb)), m.CreatedAt); err != nil {
+		return err
+	}
+	for _, t := range m.Tables {
+		if err := writeFileEntry(tw, t.File, filepath.Join(dir, t.Name+".jsonl"), m.CreatedAt); err != nil {
+			return err
+		}
+	}
+	if err := tw.Close(); err != nil {
+		return err
+	}
+	return gz.Close()
+}
+
+func writeFileEntry(tw *tar.Writer, name, src string, at time.Time) error {
+	f, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	st, err := f.Stat()
+	if err != nil {
+		return err
+	}
+	return writeEntry(tw, name, f, st.Size(), at)
+}
+
+func writeEntry(tw *tar.Writer, name string, r io.Reader, size int64, at time.Time) error {
+	if err := tw.WriteHeader(&tar.Header{Name: name, Mode: 0o600, Size: size, ModTime: at, Typeflag: tar.TypeReg}); err != nil {
+		return err
+	}
+	_, err := io.Copy(tw, r)
+	return err
+}
+
+// Restore loads an archive into db. The database must be migrated to the archive's schema version and empty;
+// with force it is reset (every migration rolled back and applied again) first. Rows are inserted in one
+// transaction, in foreign key order.
+func Restore(ctx context.Context, db *store.DB, in io.Reader, force bool) (*Manifest, error) {
+	tmp, err := os.MkdirTemp("", "porto-restore-*")
+	if err != nil {
+		return nil, err
+	}
+	defer os.RemoveAll(tmp)
+	m, err := extract(in, tmp)
+	if err != nil {
+		return nil, err
+	}
+	mig, err := db.Migrator()
+	if err != nil {
+		return nil, err
+	}
+	if force {
+		if err := mig.Reset(ctx); err != nil {
+			return nil, err
+		}
+		if _, err := mig.Up(ctx); err != nil {
+			return nil, err
+		}
+	}
+	schema, err := mig.Version(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if schema != m.SchemaVersion {
+		return nil, fmt.Errorf("%w: archive %d, database %d", ErrSchemaMismatch, m.SchemaVersion, schema)
+	}
+	for _, name := range append(store.BackupTables(), "sessions", "idempotency_keys") {
+		n, err := store.CountRows(ctx, db.DB, name)
+		if err != nil {
+			return nil, err
+		}
+		if n > 0 {
+			return nil, ErrNotEmpty
+		}
+	}
+	err = db.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
+		for _, t := range m.Tables {
+			if err := loadTable(ctx, tx, db.Kind, t, filepath.Join(tmp, t.Name+".jsonl")); err != nil {
+				return fmt.Errorf("backup: restore %s: %w", t.Name, err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// extract reads the archive into dir, checking the manifest, the file list and every checksum.
+func extract(in io.Reader, dir string) (*Manifest, error) {
+	gz, err := gzip.NewReader(in)
+	if err != nil {
+		return nil, ErrFormat
+	}
+	defer gz.Close()
+	tr := tar.NewReader(gz)
+	hdr, err := tr.Next()
+	if err != nil || hdr.Name != manifestName {
+		return nil, ErrFormat
+	}
+	var m Manifest
+	if err := json.NewDecoder(io.LimitReader(tr, 1<<20)).Decode(&m); err != nil || m.Format != Format {
+		return nil, ErrFormat
+	}
+	want := map[string]Table{}
+	known := map[string]bool{}
+	for _, n := range store.BackupTables() {
+		known[n] = true
+	}
+	for _, t := range m.Tables {
+		if !known[t.Name] || t.File != "tables/"+t.Name+".jsonl" {
+			return nil, fmt.Errorf("%w: unexpected table %q", ErrCorrupt, t.Name)
+		}
+		want[t.File] = t
+	}
+	seen := map[string]bool{}
+	for {
+		hdr, err := tr.Next()
+		if errors.Is(err, io.EOF) {
+			break
+		}
+		if err != nil {
+			return nil, fmt.Errorf("%w: %v", ErrCorrupt, err) //nolint:errorlint // one wrapped sentinel is enough
+		}
+		t, ok := want[path.Clean(hdr.Name)]
+		if !ok || seen[t.File] {
+			return nil, fmt.Errorf("%w: unexpected entry %q", ErrCorrupt, hdr.Name)
+		}
+		seen[t.File] = true
+		if err := extractFile(tr, filepath.Join(dir, t.Name+".jsonl"), t.SHA256); err != nil {
+			return nil, err
+		}
+	}
+	if len(seen) != len(want) {
+		return nil, fmt.Errorf("%w: missing table files", ErrCorrupt)
+	}
+	return &m, nil
+}
+
+func extractFile(r io.Reader, dst, wantSum string) error {
+	f, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	sum := sha256.New()
+	if _, err := io.Copy(io.MultiWriter(f, sum), r); err != nil {
+		return err
+	}
+	if hex.EncodeToString(sum.Sum(nil)) != wantSum {
+		return fmt.Errorf("%w: checksum of %s", ErrCorrupt, filepath.Base(dst))
+	}
+	return nil
+}
+
+func loadTable(ctx context.Context, tx bun.IDB, d store.Dialect, t Table, src string) error {
+	cols, err := store.TableColumns(ctx, tx, d, t.Name)
+	if err != nil {
+		return err
+	}
+	f, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	names := make([]string, len(cols))
+	for i, c := range cols {
+		names[i] = c.Name
+	}
+	sc := bufio.NewScanner(f)
+	sc.Buffer(make([]byte, 0, 64<<10), 16<<20)
+	var rows int64
+	for sc.Scan() {
+		dec := json.NewDecoder(bytes.NewReader(sc.Bytes()))
+		dec.UseNumber()
+		var obj map[string]any
+		if err := dec.Decode(&obj); err != nil {
+			return fmt.Errorf("%w: line %d", ErrCorrupt, rows+1)
+		}
+		args := make([]any, len(cols))
+		for i, c := range cols {
+			v, present := obj[c.Name]
+			if !present {
+				return fmt.Errorf("%w: column %s missing", ErrCorrupt, c.Name)
+			}
+			if c.Kind == store.KindBytes && v != nil {
+				s, ok := v.(string)
+				if !ok {
+					return fmt.Errorf("%w: column %s", ErrCorrupt, c.Name)
+				}
+				b, err := base64.StdEncoding.DecodeString(s)
+				if err != nil {
+					return fmt.Errorf("%w: column %s", ErrCorrupt, c.Name)
+				}
+				v = b
+			}
+			a, err := store.ImportValue(c.Kind, v)
+			if err != nil {
+				return fmt.Errorf("column %s: %w", c.Name, err)
+			}
+			args[i] = a
+		}
+		if err := store.InsertRow(ctx, tx, t.Name, names, args); err != nil {
+			return err
+		}
+		rows++
+	}
+	if err := sc.Err(); err != nil {
+		return err
+	}
+	if rows != t.Rows {
+		return fmt.Errorf("%w: %d rows, manifest says %d", ErrCorrupt, rows, t.Rows)
+	}
+	return nil
+}

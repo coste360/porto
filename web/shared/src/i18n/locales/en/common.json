@@ -1,0 +1,123 @@
+{
+  "product": {
+    "name": "Porto",
+    "tagline": "The marina management system by Coste360",
+    "poweredBy": "powered by Porto"
+  },
+  "actions": {
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "close": "Close",
+    "create": "Create",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "remove": "Remove",
+    "revoke": "Revoke",
+    "confirm": "Confirm",
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download",
+    "reload": "Reload",
+    "retry": "Retry",
+    "back": "Back",
+    "continue": "Continue",
+    "loadMore": "Load more",
+    "actions": "Actions"
+  },
+  "status": {
+    "loading": "Loading…",
+    "active": "Active",
+    "inactive": "Inactive",
+    "revoked": "Revoked",
+    "never": "Never",
+    "saved": "Changes saved"
+  },
+  "secret": {
+    "title": "Copy this value now",
+    "warning": "For security it will not be shown again. Keep it somewhere safe.",
+    "done": "I have copied the value"
+  },
+  "validation": {
+    "required": "Required field.",
+    "email": "Enter a valid email address.",
+    "passwordMin": "The password must be at least 12 characters long.",
+    "passwordMismatch": "The passwords do not match.",
+    "code": "Enter the 6-digit code.",
+    "slug": "Use lowercase letters, digits and hyphens only (3-63 characters).",
+    "url": "Enter a valid https URL.",
+    "atLeastOne": "Select at least one item."
+  },
+  "nav": {
+    "main": "Navigation",
+    "dashboard": "Overview",
+    "settings": "Marina settings",
+    "team": "Team",
+    "apiKeys": "API keys",
+    "devices": "Devices",
+    "webhooks": "Webhooks",
+    "audit": "Activity log",
+    "administration": "Administration",
+    "upcoming": "Coming soon",
+    "upcomingHint": "Available in a future release",
+    "organization": "Organization",
+    "account": "My account",
+    "switchMarina": "Switch marina",
+    "openMenu": "Toggle menu",
+    "modules": {
+      "map": "Marina map",
+      "customers": "Customers and vessels",
+      "contracts": "Contracts and transits",
+      "charges": "Charges and payments",
+      "storage": "Dry storage",
+      "yard": "Boatyard",
+      "rental": "Rentals",
+      "booking": "Online booking",
+      "reports": "Reports"
+    }
+  },
+  "user": {
+    "menu": "User menu",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "language": "Language",
+    "logout": "Sign out"
+  },
+  "locales": {
+    "it": "Italiano",
+    "en": "English"
+  },
+  "roles": {
+    "owner": "Owner",
+    "director": "Director",
+    "office": "Office",
+    "accounting": "Accounting",
+    "dock": "Dock staff",
+    "yard_mgr": "Yard manager",
+    "yard": "Yard worker",
+    "rental": "Rentals",
+    "viewer": "Read only"
+  },
+  "dashboard": {
+    "title": "Overview",
+    "comingSoon": "The operational overview is coming in a future release.",
+    "description": "From here you manage the team, integrations and marina settings."
+  },
+  "picker": {
+    "title": "Choose a marina",
+    "description": "Select the marina to work on.",
+    "none": "You do not have access to any marina yet.",
+    "noneHint": "Ask the owner to add you to the team."
+  },
+  "page": {
+    "forbidden": "You do not have access to this section.",
+    "notFound": "Page not found.",
+    "goHome": "Back to home"
+  },
+  "pagination": {
+    "next": "Next"
+  }
+}

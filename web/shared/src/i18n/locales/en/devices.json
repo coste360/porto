@@ -1,0 +1,27 @@
+{
+  "title": "Devices",
+  "description": "Phones, tablets and workstations paired with this marina.",
+  "pair": "Pair a device",
+  "pairTitle": "Pair a device",
+  "pairDescription": "The device will work with the role of the selected person.",
+  "user": "Person",
+  "kind": "Type",
+  "kinds": {
+    "mobile": "Mobile",
+    "desktop": "Desktop"
+  },
+  "generate": "Generate code",
+  "scan": "Scan the QR code with the Porto app, or enter the code.",
+  "qrAlt": "QR code to pair the device",
+  "code": "Code",
+  "expiresIn": "Expires in {{seconds}} seconds",
+  "expired": "The code has expired. Generate a new one.",
+  "name": "Name",
+  "platform": "Platform",
+  "appVersion": "App version",
+  "lastUsed": "Last used",
+  "empty": "No paired devices.",
+  "revokeTitle": "Revoke this device?",
+  "revokeDescription": "The device will be signed out immediately.",
+  "revoked": "Device revoked."
+}

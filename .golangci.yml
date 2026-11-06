@@ -1,0 +1,280 @@
+# golangci-lint v2 configuration for Porto. Run it through `make lint` (installed by `make setup` into ./bin).
+# The depguard rules encode the package dependency rules of docs/m0-plan.md §1.1 and invariant INV-21.
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+  build-tags:
+    - integration
+
+linters:
+  default: none
+  enable:
+    - govet
+    - staticcheck
+    - errcheck
+    - ineffassign
+    - unused
+    - gosec
+    - revive
+    - misspell
+    - bodyclose
+    - noctx
+    - errorlint
+    - depguard
+    - forbidigo
+    - sloglint
+    - gocritic
+  settings:
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment # readable struct layout wins over a few bytes
+        - shadow # `err` shadowing is idiomatic
+    errcheck:
+      check-type-assertions: true
+      exclude-functions:
+        - (io.Closer).Close
+        - (net/http.ResponseWriter).Write
+    gosec:
+      excludes:
+        - G104 # unhandled errors: covered by errcheck
+        - G115 # integer conversions: int64 cents/cm/milli are range-checked in their packages
+        - G304 # file paths come from operator configuration (data dir, backup path)
+      config:
+        G306: "0640"
+    revive:
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: errorf
+        - name: exported
+        - name: increment-decrement
+        - name: indent-error-flow
+        - name: range
+        - name: receiver-naming
+        - name: redefines-builtin-id
+        - name: superfluous-else
+        - name: time-naming
+        - name: unexported-return
+        - name: unreachable-code
+        - name: var-declaration
+        - name: var-naming
+        - name: early-return
+        - name: use-any
+    misspell:
+      # Both US and UK spellings are accepted ("enrolment" is a stable API slug). Italian appears in comments
+      # that quote the specification.
+      ignore-rules:
+        - porto
+        - marina
+    errorlint:
+      errorf: true
+      asserts: true
+      comparison: true
+    gocritic:
+      enabled-tags:
+        - diagnostic
+      disabled-checks:
+        - commentFormatting
+    sloglint:
+      kv-only: true
+      key-naming-case: snake
+      args-on-sep-lines: false
+    forbidigo:
+      analyze-types: true
+      forbid:
+        - pattern: ^time\.Now$
+          msg: inject a clock.Clock (internal/clock); time.Now is allowed only in internal/clock, cmd/ and tests
+        - pattern: ^fmt\.Print(f|ln)?$
+          msg: use log/slog (or write to an io.Writer); fmt.Print* is allowed only in cmd/
+    depguard:
+      rules:
+        # Shared primitives: standard library only.
+        primitives:
+          list-mode: lax
+          files:
+            - "**/internal/clock/**"
+            - "**/internal/money/**"
+            - "**/internal/calendar/**"
+            - "**/internal/reqctx/**"
+            - "**/internal/geo/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal
+              desc: primitives depend on the standard library only (m0-plan §1.1)
+            - pkg: github.com/uptrace/bun
+              desc: primitives must not depend on the database layer
+            - pkg: net/http
+              desc: primitives must not depend on HTTP
+        # qty may use money (MulCents) and nothing else of Porto.
+        qty:
+          list-mode: lax
+          files:
+            - "**/internal/qty/**"
+          allow:
+            - github.com/coste360/porto/internal/money
+          deny:
+            - pkg: github.com/coste360/porto/internal
+              desc: qty may import internal/money only (m0-plan §1.1)
+            - pkg: github.com/uptrace/bun
+              desc: qty must not depend on the database layer
+            - pkg: net/http
+              desc: qty must not depend on HTTP
+        crypto:
+          list-mode: lax
+          files:
+            - "**/internal/crypto/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal
+              desc: internal/crypto depends on the standard library only
+        problem:
+          list-mode: lax
+          files:
+            - "**/internal/http/problem/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/http/api
+              desc: problem must not depend on generated code
+            - pkg: github.com/coste360/porto/internal/domain
+              desc: domain errors are mapped in internal/http (errmap.go), not here
+            - pkg: github.com/coste360/porto/internal/store
+              desc: problem must not depend on the store
+        # Domain services: no HTTP (except the webhook egress client and the SMTP transport), no SQL drivers.
+        domain:
+          list-mode: lax
+          files:
+            - "**/internal/domain/**"
+            - "!**/internal/domain/event/**"
+            - "!**/internal/domain/notify/**"
+          deny:
+            - pkg: net/http
+              desc: domain services are transport independent
+            - pkg: github.com/coste360/porto/internal/http
+              desc: domain must not depend on the HTTP layer
+            - pkg: modernc.org/sqlite
+              desc: SQL drivers belong to internal/store
+            - pkg: github.com/uptrace/bun/driver
+              desc: SQL drivers belong to internal/store
+            - pkg: github.com/uptrace/bun/dialect
+              desc: SQL dialects belong to internal/store
+        domain-io:
+          list-mode: lax
+          files:
+            - "**/internal/domain/event/**"
+            - "**/internal/domain/notify/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/http
+              desc: domain must not depend on the HTTP layer
+            - pkg: modernc.org/sqlite
+              desc: SQL drivers belong to internal/store
+            - pkg: github.com/uptrace/bun/driver
+              desc: SQL drivers belong to internal/store
+        # HTTP layer: talks to domain services, never to the store.
+        http:
+          list-mode: lax
+          files:
+            - "**/internal/http/**"
+            - "!**/internal/http/problem/**"
+            - "!**/internal/http/middleware/idempotency.go"
+            - "!**/internal/http/api/api.gen.go"
+          deny:
+            - pkg: github.com/coste360/porto/internal/store
+              desc: handlers call domain services; SQL lives in internal/store
+            - pkg: database/sql
+              desc: no raw SQL in the HTTP layer
+        store:
+          list-mode: lax
+          files:
+            - "**/internal/store/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/domain
+              desc: the store does not depend on domain services
+            - pkg: github.com/coste360/porto/internal/http
+              desc: the store does not depend on the HTTP layer
+        ext:
+          list-mode: lax
+          files:
+            - "**/pkg/ext/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal
+              desc: public extension interfaces must not leak internal packages
+        # Pure engines (AGENTS.md, INV-21): no database, no clock, no randomness, no I/O. The optimizer takes
+        # an explicit seed (math/rand/v2 with a seeded source is allowed there).
+        pure-engines:
+          list-mode: lax
+          files:
+            - "**/internal/domain/layout/**"
+            - "**/internal/domain/fit/**"
+            - "**/internal/domain/pricing/**"
+            - "**/internal/domain/accrual/**"
+            - "**/internal/domain/formula/**"
+            - "**/internal/domain/optimizer/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/store
+              desc: pure engines must not touch the database (INV-21)
+            - pkg: github.com/coste360/porto/internal/clock
+              desc: pure engines receive dates/instants as arguments (INV-21)
+            - pkg: github.com/uptrace/bun
+              desc: pure engines must not touch the database (INV-21)
+            - pkg: database/sql
+              desc: pure engines must not touch the database (INV-21)
+            - pkg: net/http
+              desc: pure engines do no I/O
+            - pkg: crypto/rand
+              desc: pure engines are deterministic
+            - pkg: os
+              desc: pure engines do no I/O
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - std-error-handling
+    paths:
+      - internal/http/api/api.gen.go
+      - _gen\.go$
+      - web/
+      - e2e/
+      - node_modules/
+    rules:
+      # The clock itself, the CLI and tests may read the wall clock.
+      - path: (^|/)(internal/clock/|cmd/)
+        linters: [forbidigo]
+        text: time\.Now
+      - path: _test\.go$
+        linters: [forbidigo]
+        text: time\.Now
+      # The CLI prints to the terminal.
+      - path: (^|/)cmd/
+        linters: [forbidigo]
+        text: fmt\.Print
+      # Code generators are developer tools.
+      - path: (^|/)internal/.*/internal/gen[a-z]+/
+        linters: [forbidigo, gosec]
+      - path: _test\.go$
+        linters: [gosec, errcheck, bodyclose, noctx]
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  settings:
+    gofumpt:
+      module-path: github.com/coste360/porto
+      extra-rules: false
+    goimports:
+      local-prefixes:
+        - github.com/coste360/porto
+  exclusions:
+    generated: lax
+    paths:
+      - internal/http/api/api.gen.go
+      - _gen\.go$

@@ -1,0 +1,63 @@
+# Porto: local stack for development and the M0 acceptance check (not for production: see deploy/).
+#
+#   docker compose up --build            # build the image from deploy/Dockerfile and start an empty instance
+#   open http://localhost:8080/admin/    # panel; outgoing mail is visible in Mailpit at http://localhost:8025
+#
+# Create the first owner (the password is read from the environment, never from a flag):
+#
+#   docker compose exec -e PORTO_ADMIN_PASSWORD='a-long-password' porto \
+#     /porto admin create --email owner@porto.test --name "Owner" --org "Porto Prova SRL" --marina "Marina Prova" --slug prova
+#
+# Other commands: docker compose exec porto /porto version | migrate status | backup --out /data/x.porto-backup
+# Reset everything: docker compose down -v
+#
+# PORTO_DEV=true generates the secret key on first start and keeps it in the volume (DATA_DIR/secret.key).
+
+name: porto
+
+services:
+  porto:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+      args:
+        VERSION: ${PORTO_VERSION:-dev}
+    image: porto:local
+    ports:
+      - "127.0.0.1:${PORTO_PUBLISH_PORT:-8080}:8080"
+    volumes:
+      - porto-dev-data:/data
+    environment:
+      PORTO_DEV: "true"
+      PORTO_BASE_URL: http://localhost:${PORTO_PUBLISH_PORT:-8080}
+      PORTO_LOG_LEVEL: ${PORTO_LOG_LEVEL:-info}
+      PORTO_SMTP_URL: smtp://mailpit:1025
+      PORTO_MAIL_FROM: noreply@porto.localhost
+      # Webhook test receivers on the host or in other containers live on private addresses.
+      PORTO_WEBHOOKS_ALLOW_PRIVATE: "true"
+      # Optional: create the first owner on start when the database has no users (all four or none).
+      PORTO_BOOTSTRAP_OWNER_EMAIL: ${PORTO_BOOTSTRAP_OWNER_EMAIL:-}
+      PORTO_BOOTSTRAP_OWNER_NAME: ${PORTO_BOOTSTRAP_OWNER_NAME:-}
+      PORTO_BOOTSTRAP_OWNER_ORG: ${PORTO_BOOTSTRAP_OWNER_ORG:-}
+      PORTO_ADMIN_PASSWORD: ${PORTO_ADMIN_PASSWORD:-}
+    depends_on:
+      - mailpit
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+  mailpit:
+    image: axllent/mailpit:v1.21.0
+    ports:
+      - "127.0.0.1:8025:8025"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  porto-dev-data:

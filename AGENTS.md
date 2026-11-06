@@ -8,7 +8,7 @@ booking, occupancy sensors, reports. Go backend + React SPAs in a single binary,
 same infrastructure as Arenile (`../arenile`). Maintained by Coste360 SRL.
 
 The specification (Italian) lives in `docs/spec/`, one file per section; it is authoritative.
-**Status: specification only, no code yet (pre-M0).** Start from `docs/spec/32-test-qualita-roadmap.md` (M0).
+**Status: M0 foundations in progress.** Start from `docs/spec/32-test-qualita-roadmap.md` (M0).
 
 ## Before writing code
 - Read the spec sections referenced by the task, `docs/invariants.md` and `docs/adr/`.
