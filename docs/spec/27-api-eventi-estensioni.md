@@ -19,7 +19,7 @@ in centesimi, misure in cm, `GET /api/admin/v1/meta` con versione e capacità.
 
 `/marinas`, `/maps`, `/maps/{id}/day`, `/berths`, `/dynamic-areas`, `/land-resources`, `/groups`,
 `/occupancies/search`, `/occupancies/move`, `/releases`, `/presences`, `/customers`, `/vessels`, `/documents`,
-`/docai/extract`, `/items`, `/price-lists`, `/pricing/simulate`, `/quotes`, `/contracts`, `/installments`,
+`/items`, `/price-lists`, `/pricing/simulate`, `/quotes`, `/contracts`, `/installments`,
 `/renewal-campaigns`, `/rights`, `/right-transfers`, `/mandates`, `/management-fees`, `/common-charges`,
 `/templates`, `/signature-requests`, `/charges`, `/charge-exports`, `/payments`, `/refunds`, `/credits`,
 `/cash-sessions`, `/fiscal/daily-totals`, `/reminders`, `/storage/scenarios`,
@@ -62,7 +62,6 @@ type Extensions struct {
     PaymentProviders    []PaymentProvider      // come Arenile
     FiscalDrivers       []FiscalDriver         // come Arenile
     SignatureProviders  []SignatureProvider    // 15.4
-    DocumentExtractors  []DocumentExtractor    // 22.3
     SensorSources       []SensorSource         // 24.3
     BookingChannels     []BookingChannel       // 23.2
     ChargeExporters     []ChargeExporter       // 16.5: verso il software di fatturazione esterno

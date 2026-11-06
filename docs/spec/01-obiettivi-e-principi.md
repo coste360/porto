@@ -14,14 +14,14 @@
 
 **Principi di progetto** (ereditati da Arenile, spec 1)
 - **Un binario, un'immagine, un volume.** Nessun servizio esterno obbligatorio. Le integrazioni (pagamenti
-  online, firma, IA, sensori, canali, esportazione verso la fatturazione) sono driver opzionali.
+  online, firma, sensori, canali, esportazione verso la fatturazione) sono driver opzionali.
 - **Configurazione come dati.** Le differenze tra porti si esprimono con mappe, categorie, listini, modelli e
   policy, mai con condizioni nel codice.
 - **Scala reale.** Ogni geometria è in centimetri interi; un'imbarcazione sulla mappa occupa esattamente il suo
   ingombro. Lo spazio è una risorsa misurata, non un'etichetta.
 - **Correttezza prima di tutto sull'occupazione.** Due barche nello stesso spazio nella stessa notte sono un
   difetto bloccante, garantito dai vincoli del database (sezione 10).
-- **L'operatore conferma.** Automatismi e IA propongono; dati anagrafici, spostamenti massivi e documenti fiscali
+- **L'operatore conferma.** Automatismi e ottimizzatori propongono; dati anagrafici, spostamenti massivi e documenti fiscali
   sono confermati da una persona.
 - **API-first.** Pannello, pagina pubblica e desktop usano esclusivamente le API documentate.
 - **Dati del gestore.** Esportazione completa sempre disponibile; nessun dato verso Coste360 senza una scelta

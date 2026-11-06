@@ -62,7 +62,6 @@ una sezione di questa specifica. La tabella seguente è la **matrice di tracciab
 | Report | Occupazione, efficienza occupazionale, spreco allocativo | 21.3 | M7 |
 | | Clientela, competenze, ratei e risconti | 21.3 | M7 |
 | | Addebiti e incassi dettagliati, classificazione dei ricavi, comparazione | 21.3 | M7 |
-| Intelligenza artificiale | Trascrizione documenti di identità e della barca | 22 | M4 |
 | Cloud e integrazioni | Prenotazione online, pagamenti, software di fatturazione di terze parti | 23, 16.5, 27 | M5–M8 |
 | App di prenotazione | Prenotazione immediata con pagamento anticipato | 23 | M8 |
 | Sensori | Occupazione dei posti barca in tempo reale | 24 | M12 |
@@ -87,6 +86,8 @@ una sezione di questa specifica. La tabella seguente è la **matrice di tracciab
 - Magazzino completo (lotti, inventario fisico, riordino): solo articoli di materiale con movimenti e giacenza
   (18.6).
 - Integrazioni con la piattaforma Coste360 e con directory esterne (portolano): Porto è un gestionale autonomo.
+- Intelligenza artificiale e servizi di IA esterni (trascrizione automatica dei documenti): Porto lavora offline e
+  i dati dei documenti li inserisce l'operatore (sezione 22, ADR 0008).
 - Servizio in cloud gestito (SaaS): ogni porto ha la propria installazione (sezione 31).
 - Ormeggi in seconda fila (barche affiancate a un'altra barca).
 - Comunicazioni obbligatorie alle autorità marittime o di pubblica sicurezza: estensioni per porto, dopo verifica

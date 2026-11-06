@@ -30,7 +30,7 @@ The specification (Italian) lives in `docs/spec/`, one file per section; it is a
 - Transit confirmation only from the payment webhook or the manual driver.
 - No invoicing, e-invoicing (SdI), bookkeeping or purchase invoices in the core: charges are exported. Exported
   charges are immutable; corrections are linked adjustment charges.
-- AI extraction proposes; a user confirms. Nothing extracted is saved without confirmation.
+- No AI and no external AI services (ADR 0008): Porto works offline; document data is entered by an operator.
 - Every operational query is scoped by `marina_id` from the auth context.
 - API first: change `api/openapi.yaml`, run `make gen`, then implement. Never edit generated files.
 - Never modify a migration already on `main`; add a new one, for both dialects.

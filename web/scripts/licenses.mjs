@@ -8,7 +8,10 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** Allowed SPDX ids (docs/m0-plan.md §0.7, §7.1). OFL-1.1 only for the font package. */
+/**
+ * Allowed SPDX ids (docs/m0-plan.md §0.7, §7.1): licences compatible with BSL 1.1 and AGPL-3.0, the same policy as
+ * Arenile. 0BSD, CC0-1.0 and BlueOak-1.0.0 are permissive and approved. OFL-1.1 only for the font package.
+ */
 export const ALLOWED = new Set([
   'MIT',
   'BSD-2-Clause',
@@ -23,8 +26,8 @@ export const ALLOWED = new Set([
 export const FONT_ONLY = { 'OFL-1.1': ['@fontsource/titillium-web'] };
 
 /**
- * Per-package exceptions, `name: reason`. Each one needs the orchestrator's approval.
- * PENDING APPROVAL: isbot is a transitive dependency of @tanstack/react-router.
+ * Per-package exceptions, `name: reason`. Each one needs the maintainers' approval.
+ * isbot: approved (Unlicense, public domain dedication), same as in Arenile.
  */
 export const EXCEPTIONS = new Map([
   ['isbot', 'Unlicense (public domain dedication); transitive dep of @tanstack/react-router'],

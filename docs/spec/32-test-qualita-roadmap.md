@@ -55,7 +55,7 @@ incoerenze tra allocazioni e righe di occupazione; 3.000 elementi fluidi sul tab
 
 **M4 — Contrattualistica completa.** Preventivo → contratto automatico, rate e scadenzario, rinnovi semplificati e
 massivi, charter, diritti d'uso, cessioni, mandati, oneri, spese condominiali, modelli di stampa e renderer PDF,
-firma (`paper`, `otp`, interfaccia per InfoCert), acquisizione documenti con IA, comunicazioni ai clienti, motore
+firma (`paper`, `otp`, interfaccia per InfoCert), comunicazioni ai clienti, motore
 delle scadenze. *Accettazione:* campagna di rinnovo di 300 contratti dalla proposta alla firma e all'acconto senza
 interventi sul database; ripartizione delle spese su 400 posti con somma esatta.
 

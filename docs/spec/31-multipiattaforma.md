@@ -7,7 +7,7 @@ di Coste360 per funzionare.
 
 ### 31.1 Modi di installazione
 
-| Dove gira il server | Internet | Prenotazione online, firma remota, IA | Note |
+| Dove gira il server | Internet | Prenotazione online, firma remota | Note |
 |---|---|---|---|
 | **Server online del gestore**: VPS o Docker | necessaria | sì | Serve solo per la prenotazione online e l'accesso da fuori porto: `ghcr.io/coste360/porto`, compose con SQLite o PostgreSQL |
 | **Desktop locale**: PC dell'ufficio del porto | non necessaria | no (l'esportazione per la fatturazione funziona) | 31.2, con modalità rete locale |
@@ -30,7 +30,7 @@ Launcher `cmd/porto-desktop`, identico a quello di Arenile (spec Arenile 29.1) e
 - **Modalità remota:** client di un'istanza online con token per dispositivo, kiosk per il banco, **ponte verso le
   periferiche locali**: stampante delle ricevute, registratore telematico (`FiscalDriver` locale), lettore QR,
   stampante di etichette.
-- Pagina pubblica, pagamenti online, firma remota e IA non sono disponibili in
+- Pagina pubblica, pagamenti online, firma remota non sono disponibili in
   modalità locale: il pannello spiega come passare a un'istanza online.
 
 ### 31.3 Uso dal telefono e dal tablet

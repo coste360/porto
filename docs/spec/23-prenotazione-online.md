@@ -24,7 +24,7 @@ disponibilità mostrata è quella reale del gestionale, senza sincronizzazioni.
       POST /quote        → pricing.Quote (puro), nessuna scrittura
 3 conferma               POST /bookings → transito held + allocazione concreta scelta da occupancy.Search (10.7)
                                           (una transazione: allocazione hold, audit, outbox)
-4 dati del cliente e della barca, documenti (foto della licenza e della polizza; IA solo con consenso, 22.4)
+4 dati del cliente e della barca, documenti (foto della licenza e della polizza, verificate dall'ufficio)
 5 pagamento              POST /bookings/{id}/pay → gateway (Stripe Checkout), hold esteso fino a 30 minuti
 6 webhook del gateway    → transito confirmed, allocazione hold → transit, addebito pagato (in esportazione se chiede fattura)
 7 email di conferma con istruzioni di arrivo: canale VHF, telefono dell'ormeggiatore, posto (se la policy lo

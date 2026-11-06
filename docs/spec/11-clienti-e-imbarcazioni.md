@@ -34,7 +34,7 @@
 Archivio documentale per cliente e barca (`documents`): tipo (carta d'identità, passaporto, patente, patente
 nautica, licenza di navigazione, certificato di iscrizione, polizza assicurativa, certificato di sicurezza,
 dichiarazione di potenza, contratto firmato, delega, altro), file (PDF o immagine, cifrato a riposo), numero,
-emissione, **scadenza**, dati estratti (con IA facoltativa, sezione 22) e chi li ha confermati.
+emissione, **scadenza**, inseriti dall'operatore, e chi li ha registrati.
 
 ### 11.4 Cruscotto del cliente
 

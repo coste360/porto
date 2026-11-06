@@ -12,6 +12,5 @@ Aggiunte del dominio portuale:
   cliente anonimizzato mantiene negli addebiti esportati lo snapshot dei dati fiscali, che serve a ricostruire le
   fatture emesse all'esterno.
 - **Ingestione dei sensori** isolata: le chiavi dei dispositivi possono solo scrivere letture del proprio marina.
-- **IA:** invio a fornitori esterni solo con attivazione esplicita e informativa (22.4).
 - **Firma elettronica:** PDF firmati con hash registrato; evidenze OTP conservate con il documento.
 - **Ruoli** con separazione tra operatività e amministrazione (26.1); TOTP consigliato per `accounting`.

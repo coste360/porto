@@ -15,7 +15,7 @@ runner, outbox e le SPA React incorporate con `embed.FS`.
 │  http/admin · http/public · http/device · http/ingest · http/sse · http/webhooks                         │
 │                         │                                                                                │
 │  domain/*  harbor (mappa) · occupancy · fit · pricing · contract · charge · payment · cash · fiscal ·    │
-│            customer · vessel · storage · yard · rental · maintenance · sensor · report · docai · notify  │
+│            customer · vessel · storage · yard · rental · maintenance · sensor · report · notify          │
 │                         │                                                                                │
 │  store (Bun, unico posto con SQL) ──► outbox_events ──► jobs (dispatcher, scadenze, rate, solleciti,     │
 │                                                              hold scaduti, solleciti, sensori)           │

@@ -41,7 +41,6 @@ porto/
 │   │   ├── sensor/             # dispositivi, letture, stati, anomalie
 │   │   ├── profile/            # scheda pubblica del porto
 │   │   ├── online/ checkout/   # pagina pubblica e flusso di prenotazione
-│   │   ├── docai/              # estrazione documenti (porta DocumentExtractor)
 │   │   ├── report/             # report di sola lettura
 │   │   ├── notify/ event/ webhook/ apikey/ auth/ team/   # da Arenile
 │   ├── store/                  # repository Bun, unico posto con SQL

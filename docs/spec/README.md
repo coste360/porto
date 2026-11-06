@@ -50,7 +50,7 @@ La specifica è **autorevole**: il codice segue la specifica, una deviazione ric
 
 **Analisi, canali e servizi**
 21. [Report e cruscotto statistico](21-report-e-cruscotto.md)
-22. [Intelligenza artificiale: acquisizione documenti](22-intelligenza-artificiale.md)
+22. [Intelligenza artificiale: esclusa](22-intelligenza-artificiale.md)
 23. [Prenotazione online dei posti barca](23-prenotazione-online.md)
 24. [Sensori di occupazione in tempo reale](24-sensori-occupazione.md)
 25. [Scheda pubblica del porto](25-scheda-pubblica.md)
