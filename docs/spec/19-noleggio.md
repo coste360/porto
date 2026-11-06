@@ -26,7 +26,7 @@
 
 ### 19.4 Consegna e restituzione
 
-- **Consegna** (check-out), anche dall'app mobile: identità e patente (con acquisizione IA, sezione 22), firma del
+- **Consegna** (check-out), anche dal telefono o dal tablet: identità e patente (con acquisizione IA, sezione 22), firma del
   contratto di noleggio (15.4, firma su schermo o OTP), cauzione (preautorizzazione con il gateway o contanti),
   checklist della barca, livello del carburante, ore motore, foto.
 - **Restituzione** (check-in): ora effettiva (ritardo addebitato secondo la formula), carburante e ore motore,

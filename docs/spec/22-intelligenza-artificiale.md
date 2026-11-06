@@ -9,7 +9,7 @@ senza conferma.
 
 ### 22.2 Flusso
 
-1. L'operatore (pannello, desktop o app mobile con la fotocamera) carica foto o PDF del documento e ne indica il tipo
+1. L'operatore (pannello, anche dal telefono con la fotocamera, o desktop) carica foto o PDF del documento e ne indica il tipo
    (o lascia che il sistema lo riconosca).
 2. Il dominio `docai` invia l'immagine al driver configurato e riceve una struttura tipizzata per tipo di documento
    (schema JSON versionato in `internal/domain/docai/schemas`), con un livello di confidenza per campo.

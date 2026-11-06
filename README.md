@@ -3,7 +3,7 @@
 Gestionale per porti turistici e cantieri nautici di Coste360 SRL.
 
 Stato: **specifica** (prima di M0). Stessa infrastruttura multipiattaforma di Arenile: server Docker, edizione desktop
-per Windows, macOS e Linux, app mobile per lo staff.
+per Windows, macOS e Linux; lo staff usa il pannello dal telefono (PWA).
 
 - Specifica: [`docs/spec/`](docs/spec/README.md)
 - Invarianti: [`docs/invariants.md`](docs/invariants.md)

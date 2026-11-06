@@ -52,4 +52,4 @@ Un'uscita prevista (fine contratto, varo programmato, commessa) di una barca non
 **Applicare un'ipotesi:** `POST /storage/scenarios/{id}/apply` esegue tutte le mosse in una transazione con la
 primitiva di spostamento (10.5) rivalidando ogni posizione sullo stato attuale; un solo conflitto annulla tutto e
 riporta l'elenco. Le mosse applicate generano la lista di lavoro dei movimenti per il piazzale (ordine consigliato,
-mezzi necessari), consultabile dall'app mobile.
+mezzi necessari), consultabile dal telefono.

@@ -66,9 +66,10 @@ sospesi. *Accettazione:* in un anno simulato di rate, transiti e servizi ogni ad
 esattamente una volta; saldi dei clienti, incassi e rimborsi coincidono; nessun abbinamento supera i limiti con 100
 tentativi paralleli.
 
-**M6 — Multipiattaforma.** Edizione desktop (locale, rete locale, remota con ponte), app mobile per ormeggiatori con
-offline, pagina *Dispositivi*. *Accettazione:* come Arenile M6 e M7 (installazione senza terminale in meno di 10
-minuti, abbinamento del telefono in meno di un minuto, operazioni offline senza duplicati alla riconnessione).
+**M6 — Multipiattaforma.** Edizione desktop (locale, rete locale, remota con ponte), pannello per ormeggiatori sul telefono con
+offline, pagina *Dispositivi*. *Accettazione:* come Arenile M6 (installazione senza terminale in meno di 10
+minuti); dal telefono in rete locale l'ormeggiatore apre il pannello in meno di un minuto con il QR; operazioni
+offline senza duplicati alla riconnessione.
 
 **M7 — Report e cruscotto.** Tutti i report del 21.3, cruscotto con drill-down, confronti. *Accettazione:* ogni
 indicatore del cruscotto coincide con la somma dei record del suo drill-down sui dati demo.
@@ -86,7 +87,7 @@ bloccate, e applicarla non lascia mai lo stato a metà.
 margini, mezzi di sollevamento. *Accettazione:* il preventivo di un'antivegetativa per una barca di 12 m è calcolato
 senza inserire prezzi a mano e il consuntivo riconcilia ore, materiali e costi esterni.
 
-**M11 — Noleggio.** Flotta, planner orario/mezza giornata/giorno, consegna e restituzione da mobile, cauzioni,
+**M11 — Noleggio.** Flotta, planner orario/mezza giornata/giorno, consegna e restituzione dal telefono, cauzioni,
 vendita online. *Accettazione:* nessuna doppia prenotazione di un'unità con 100 tentativi paralleli; consegna e
 restituzione da telefono in meno di 3 minuti ciascuna.
 

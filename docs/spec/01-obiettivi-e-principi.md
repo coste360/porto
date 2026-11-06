@@ -23,6 +23,6 @@
   difetto bloccante, garantito dai vincoli del database (sezione 10).
 - **L'operatore conferma.** Automatismi e IA propongono; dati anagrafici, spostamenti massivi e documenti fiscali
   sono confermati da una persona.
-- **API-first.** Pannello, pagina pubblica, desktop e app mobile usano esclusivamente le API documentate.
+- **API-first.** Pannello, pagina pubblica e desktop usano esclusivamente le API documentate.
 - **Dati del gestore.** Esportazione completa sempre disponibile; nessun dato verso Coste360 senza una scelta
   esplicita.

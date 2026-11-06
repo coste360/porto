@@ -16,7 +16,7 @@ carattere di Arenile (ADR Arenile 0018) e del design system Coste360.
    nome del prodotto. Restano da fare la verifica di marchio e dominio (sezione 33, D1).
 2. **File:** il kit sta in `assets/brand/porto/` con la struttura originale e un `NOTICE.md`: tutti i diritti
    riservati a Coste360 SRL, esclusi dalla licenza del codice. Le copie usate dalle app (`web/shared/src/brand/`,
-   icone di desktop e mobile) sono verificate identiche agli originali da un test, come in Arenile.
+   icone del desktop) sono verificate identiche agli originali da un test, come in Arenile.
 3. **Uso nell'interfaccia** (stesse regole di Arenile):
    - il marchio passa solo da un componente condiviso `BrandLogo` (`web/shared/src/ui/patterns/Brand.tsx`);
    - nessuna app carica Titillium Web solo per il logo: i loghi standard sono in tracciati;
@@ -30,7 +30,6 @@ carattere di Arenile (ADR Arenile 0018) e del design system Coste360.
    - pannello e pagina pubblica: favicon, `site.webmanifest`, icona PWA mascherabile;
    - edizione desktop: icone `porto_app_*` per `.exe`, `.app` e AppImage, simbolo monocromatico per la barra di
      sistema;
-   - app mobile: icone 1024 per gli store;
    - email: firma "Porto — Coste360" con il simbolo come immagine inline;
    - pagina pubblica: solo "powered by Porto", perché il marchio del porto resta in primo piano (spec 25).
 

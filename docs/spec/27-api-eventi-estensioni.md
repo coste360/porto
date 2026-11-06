@@ -5,7 +5,7 @@
 | Prefisso | Uso | Autenticazione |
 |---|---|---|
 | `/api/admin/v1` | pannello, desktop, integrazioni | sessione, chiave API |
-| `/api/device/v1` | app mobile e desktop remoto | token per dispositivo (`Authorization`) |
+| `/api/device/v1` | desktop remoto | token per dispositivo (`Authorization`) |
 | `/api/public/v1/{slug}` | pagina pubblica, widget, scheda del porto | nessuna o link magico; rate limit |
 | `/api/ingest/v1` | sensori e gateway | chiave del dispositivo, HMAC |
 | `/webhooks/{payments,signature}/{provider}/{marina_id}` | callback dei provider | firma del provider |

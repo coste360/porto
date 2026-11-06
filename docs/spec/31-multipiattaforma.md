@@ -1,4 +1,4 @@
-## 31. Multipiattaforma: deploy, desktop e app mobile
+## 31. Multipiattaforma: deploy, desktop e telefono
 
 Porto adotta **la stessa infrastruttura multipiattaforma di Arenile** (spec Arenile 24 e 29): un solo server per
 marina con l'archivio, e più client che si collegano allo stesso modo. **Non è un servizio in cloud:** il server è
@@ -33,23 +33,22 @@ Launcher `cmd/porto-desktop`, identico a quello di Arenile (spec Arenile 29.1) e
 - Pagina pubblica, pagamenti online, firma remota e IA non sono disponibili in
   modalità locale: il pannello spiega come passare a un'istanza online.
 
-### 31.3 App mobile
+### 31.3 Uso dal telefono e dal tablet
 
-Repository separato `coste360/porto-mobile` (Expo + React Native + TypeScript), client generato da
-`api/openapi.yaml` pubblicato come asset di release, abbinamento con QR e token per dispositivo, privacy first
-(nessuna telemetria, nessun dato verso Coste360), offline con coda (29.2), demo abbinabile come Arenile (ADR Arenile
-0027). Un'unica app con funzioni filtrate dal ruolo:
+Lo staff in banchina, in cantiere, al piazzale e al noleggio usa **il pannello web dal telefono**: è responsive e
+installabile come PWA, con la coda offline della sezione 29.2. Le schermate del lavoro in movimento hanno una versione
+pensata per il telefono, con le funzioni filtrate dal ruolo:
 
 | Ruolo | Funzioni |
 |---|---|
-| Ormeggiatore | Mappa del giorno con contesti, arrivi e partenze, registrazione presenze, scansione del QR del transito, arrivo non previsto (barca e posto), misura della barca, foto, rilasci, blocchi, letture dei contatori, segnalazioni di manutenzione, incasso in contanti |
+| Ormeggiatore | Mappa del giorno con contesti, arrivi e partenze, registrazione presenze, scansione del QR del transito con la fotocamera, arrivo non previsto (barca e posto), misura della barca, foto, rilasci, blocchi, letture dei contatori, segnalazioni di manutenzione, incasso in contanti |
 | Capo cantiere e operaio | Attività del giorno, avvio e arresto delle ore, checklist e foto, consumo di materiali, calendario del travel lift |
 | Piazzale | Lista dei movimenti dell'ipotesi applicata, planner della rimessa in sola lettura |
 | Noleggio | Consegna e restituzione con checklist, foto, carburante, cauzione, firma su schermo |
 | Manutenzione | Interventi assegnati, esito, foto |
 | Direzione | Cruscotto, mappa, scadenze |
 
-Fotocamera per documenti (IA, 22) e QR; nessuna notifica push nella prima versione (come Arenile).
+Un'app mobile nativa non fa parte di questo repository; se servirà, avrà un repository proprio.
 
 ### 31.4 Comandi e configurazione
 

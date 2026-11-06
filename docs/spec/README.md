@@ -10,7 +10,7 @@ clienti e imbarcazioni, listini, contratti di ormeggio e transiti, cessioni e on
 esportazione verso il software di fatturazione (la fattura resta fuori, come in Arenile), rimessaggio, cantiere, noleggio, prenotazione online dei posti barca, sensori di occupazione e report.
 
 Riusa **la stessa infrastruttura di Arenile** (`../arenile`): un binario Go con SPA React incorporate, SQLite di
-default o PostgreSQL, edizione desktop per Windows, macOS e Linux, app mobile per lo staff, API OpenAPI spec-first,
+default o PostgreSQL, edizione desktop per Windows, macOS e Linux, pannello utilizzabile dal telefono, API OpenAPI spec-first,
 outbox degli eventi, job runner in-process. Dove una regola è identica ad Arenile la specifica lo dice e rimanda
 alla sezione di Arenile invece di ripeterla; dove il dominio portuale richiede altro, la regola è scritta qui.
 
@@ -61,7 +61,7 @@ La specifica è **autorevole**: il codice segue la specifica, una deviazione ric
 28. [Notifiche e comunicazioni](28-notifiche-e-comunicazioni.md)
 29. [Tempo reale, offline e internazionalizzazione](29-tempo-reale-offline-i18n.md)
 30. [Sicurezza, privacy e GDPR](30-sicurezza-privacy.md)
-31. [Multipiattaforma: deploy, desktop e app mobile](31-multipiattaforma.md)
+31. [Multipiattaforma: deploy, desktop e telefono](31-multipiattaforma.md)
 32. [Test, qualità e roadmap](32-test-qualita-roadmap.md)
 33. [Decisioni aperte](33-decisioni-aperte.md)
 

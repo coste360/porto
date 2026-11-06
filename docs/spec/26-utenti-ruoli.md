@@ -34,5 +34,5 @@ personalizzati (insiemi di permessi) dopo la prima versione.
 
 Identica ad Arenile (spec Arenile 16.2): Argon2id, sessioni `HttpOnly` con CSRF double-submit, TOTP (obbligatorio
 per `owner` e `accounting` se attivato), reset con token monouso, limiti dei tentativi, `ext.AuthProvider` per SSO,
-chiavi API con scope e prefisso visibile (`po_live_…`), **token per dispositivo** per l'app mobile e l'edizione
-desktop remota (spec Arenile 29.2), chiavi dei sensori (24.2). CLI `porto admin create`.
+chiavi API con scope e prefisso visibile (`po_live_…`), **token per dispositivo** per l'edizione desktop remota
+(spec Arenile 29.2), chiavi dei sensori (24.2). CLI `porto admin create`.

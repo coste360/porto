@@ -6,7 +6,7 @@ Stessa forma di Arenile (spec Arenile 3, ADR Arenile 0001–0005): un binario Go
 runner, outbox e le SPA React incorporate con `embed.FS`.
 
 ```
- browser ufficio / desktop          browser diportista / sito del porto      app mobile staff      sensori
+ browser ufficio / desktop          browser diportista / sito del porto      desktop remoto        sensori
         │ /admin/ /api/admin/v1/*            │ /b/{slug} /api/public/v1/{slug}/*   │ /api/device/v1    │ /api/ingest/v1
         ▼                                    ▼                                     ▼                   ▼
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -41,13 +41,12 @@ Backend e frontend coincidono con Arenile (spec Arenile 3.2–3.4); le aggiunte 
 | Planner (noleggio, cantiere, rimesse) | Componente griglia temporale condiviso in `web/shared/src/planner` (SVG) | Nessuna libreria Gantt esterna |
 | Grafici | Componenti shadcn chart (Recharts) già nel kit | Solo pannello |
 | Desktop | `cmd/porto-desktop`, webview di sistema e systray come Arenile | Spec 31.2 |
-| Mobile | Repository separato `coste360/porto-mobile` (Expo + React Native) | Spec 31.3 |
 
 ### 3.3 Rapporto con Arenile
 
 Arenile è un **riferimento**, non una fonte di codice (ADR 0001). Porto usa lo stesso stack e gli stessi pattern
 architetturali (monobinario, outbox, motori puri, vincoli del database, SSE, offline idempotente, desktop con
-webview, app Expo), ma il codice si scrive da zero per il dominio portuale. Quando questa specifica dice "come
+webview), ma il codice si scrive da zero per il dominio portuale. Quando questa specifica dice "come
 Arenile" indica un comportamento da riprodurre, non file da copiare.
 
 ### 3.4 Regole di dipendenza

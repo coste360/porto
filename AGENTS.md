@@ -4,7 +4,7 @@ Porto ("porto" in the logotype) is a management system for marinas and boatyards
 fields, dynamic areas, yards, sheds, land resources), customers and vessels, price lists, mooring contracts and
 transits, berth rights and common charges, charges and payments (invoices are issued outside Porto, as in Arenile:
 we export charges to the invoicing software), dry storage, boatyard, rentals, online berth
-booking, occupancy sensors, reports. Go backend + React SPAs in a single binary, desktop edition and mobile app,
+booking, occupancy sensors, reports. Go backend + React SPAs in a single binary, desktop edition (the mobile app is out of this repository),
 same infrastructure as Arenile (`../arenile`). Maintained by Coste360 SRL.
 
 The specification (Italian) lives in `docs/spec/`, one file per section; it is authoritative.

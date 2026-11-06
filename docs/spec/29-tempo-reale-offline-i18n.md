@@ -10,7 +10,7 @@ Stesse regole di Arenile (spec Arenile 21.2, ADR Arenile 0029): PWA con shell in
 marina corrente in IndexedDB per 48 ore (mappe, vista del giorno, arrivi e partenze, attività assegnate), coda delle
 operazioni con `Idempotency-Key` generata all'accodamento.
 
-**Consentite offline** (pannello, desktop remoto, app mobile): registrazione di arrivo e partenza di barche con
+**Consentite offline** (pannello anche dal telefono, desktop remoto): registrazione di arrivo e partenza di barche con
 allocazione esistente, note e foto, letture dei contatori, ore lavorate e completamento di attività di cantiere,
 esito degli interventi di manutenzione, checklist di consegna e restituzione del noleggio già confermato, incasso in
 contanti su documenti o transiti esistenti.

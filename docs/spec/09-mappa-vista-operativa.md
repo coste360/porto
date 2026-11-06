@@ -102,7 +102,7 @@ barca.
 
 - Pannello laterale del giorno: arrivi attesi (transiti, rientri annunciati), partenze attese, barche fuori, barche
   arrivate senza prenotazione (da sensori o segnalazione).
-- Registrazione di arrivo e partenza dalla scheda, dall'elenco o dall'app dell'ormeggiatore, con ora, ormeggiatore,
+- Registrazione di arrivo e partenza dalla scheda, dall'elenco o dal pannello sul telefono dell'ormeggiatore, con ora, ormeggiatore,
   note e foto facoltativa.
 - **Arrivo non previsto:** l'ormeggiatore indica barca (anche nuova, dimensioni stimate) e posto: il sistema crea
   un transito in `held` sul posto (se libero) da completare in ufficio.

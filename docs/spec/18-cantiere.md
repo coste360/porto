@@ -57,7 +57,7 @@ come quelli degli ormeggi (13.2) e diventa commessa.
 
 ### 18.6 Consuntivazione, costi e profitti
 
-- **Ore lavorate** (`timesheets`): avvio e arresto dall'app mobile o inserimento manuale, per attività; approvazione
+- **Ore lavorate** (`timesheets`): avvio e arresto dal telefono o inserimento manuale, per attività; approvazione
   del responsabile.
 - **Materiali:** articoli `material` con giacenza per magazzino, movimenti (carico manuale o da CSV,
   scarico su commessa, rettifica); la giacenza non scende sotto zero salvo permesso (avviso).
@@ -71,5 +71,5 @@ come quelli degli ormeggi (13.2) e diventa commessa.
 
 Travel lift, gru e carrelli come risorse prenotabili a fasce di 15 minuti (`equipment_slots`,
 `unique(equipment_id, date, slot)`), con operatore abilitato. Alaggi e vari si prenotano dalla commessa, dal
-contratto di rimessaggio o dallo spostamento acqua ↔ terra (9.4); il calendario del giorno è visibile nell'app
-mobile.
+contratto di rimessaggio o dallo spostamento acqua ↔ terra (9.4); il calendario del giorno è visibile anche
+dal telefono.

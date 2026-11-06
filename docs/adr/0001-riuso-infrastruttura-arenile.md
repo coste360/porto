@@ -12,8 +12,8 @@ forma su tutte le piattaforme, ma è un prodotto diverso, con un dominio diverso
 
 1. Porto adotta **lo stesso stack** di Arenile: Go, `chi`, OpenAPI 3.1 spec-first con `oapi-codegen`, Bun,
    SQLite (`modernc.org/sqlite`) e PostgreSQL, `goose`, Argon2id; Vite, React, TypeScript strict, TanStack Router e
-   Query, **shadcn/ui** con Tailwind sui token del tema, i18next, react-hook-form + zod, Vitest, Playwright; Expo per
-   l'app mobile.
+   Query, **shadcn/ui** con Tailwind sui token del tema, i18next, react-hook-form + zod, Vitest, Playwright. L'app mobile
+   non fa parte di questo repository.
 2. Porto adotta gli **stessi pattern architetturali**, elencati nel README degli ADR: monobinario con SPA
    incorporate, vincoli del database per la disponibilità, motori puri, outbox nella stessa transazione, SSE senza
    dati personali, coda offline idempotente, edizione desktop con webview.

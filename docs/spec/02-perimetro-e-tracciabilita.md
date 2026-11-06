@@ -67,7 +67,7 @@ una sezione di questa specifica. La tabella seguente è la **matrice di tracciab
 | App di prenotazione | Prenotazione immediata con pagamento anticipato | 23 | M8 |
 | Sensori | Occupazione dei posti barca in tempo reale | 24 | M12 |
 | Portolano | Scheda tecnica pubblica del singolo porto (la directory dei porti è fuori perimetro) | 25 | M12 |
-| Multipiattaforma | Server del gestore, desktop, app mobile (non SaaS) | 31 | M6 |
+| Multipiattaforma | Server del gestore, desktop, pannello dal telefono (non SaaS); app mobile nativa fuori da questo repository | 31 | M6 |
 | **Aggiunte Porto** | Vista a tessere, legenda come filtro, contesto Anomalie, disposizione con Salva/Ripristina, riquadro "Da collocare" | 9.1, 9.2, 9.4 | M3 |
 | | Ricerca con posti di barche fuori, calendario degli ormeggi | 9.6, 9.7 | M3 |
 | | Richieste e domanda persa | 13.2, 21.3 | M3, M7 |
