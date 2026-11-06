@@ -50,7 +50,7 @@ COMMIT
 
 - Il piano (righe da inserire) è calcolato da una funzione pura (`occupancy/plan.go`) a partire dall'ingombro e
   dal periodo; l'applicazione partecipa alla transazione del chiamante (`bun.IDB`), come `inventory` di Arenile.
-- Le scritture concorrenti su SQLite passano dalla coda FIFO del connettore (`sqlitegate.go`, copiato da Arenile).
+- Le scritture concorrenti su SQLite passano dalla coda FIFO del connettore (come `sqlitegate.go` di Arenile, riscritta in Porto).
 - `ConflictError` riporta risorsa, notti, celle e allocazione in conflitto, così il pannello propone alternative.
 
 ### 10.4 Tipi di occupazione
