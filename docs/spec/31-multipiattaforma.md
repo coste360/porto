@@ -36,7 +36,16 @@ Launcher `cmd/porto-desktop`, identico a quello di Arenile (spec Arenile 29.1) e
 ### 31.3 Uso dal telefono e dal tablet
 
 Lo staff in banchina, in cantiere, al piazzale e al noleggio usa **il pannello web dal telefono**: è responsive e
-installabile come PWA, con la coda offline della sezione 29.2. Le schermate del lavoro in movimento hanno una versione
+installabile come PWA, con la coda offline della sezione 29.2.
+
+Il telefono non contiene un server: apre il pannello di un server raggiungibile, quindi funziona solo con
+- un'**installazione server** (online o in sede): da qualsiasi rete se è esposta su internet, altrimenti dalla rete
+  del porto;
+- l'**edizione desktop su Mac o Windows con la modalità rete locale attiva** (31.2): solo dalla Wi-Fi del porto, con il
+  PC acceso e l'app aperta, collegandosi con il QR mostrato dall'app.
+
+Con l'edizione desktop in sola modalità locale (server su `127.0.0.1`) il pannello è raggiungibile solo dal PC
+stesso. Fuori copertura, la coda offline conserva le operazioni consentite (29.2) fino al ritorno della connessione. Le schermate del lavoro in movimento hanno una versione
 pensata per il telefono, con le funzioni filtrate dal ruolo:
 
 | Ruolo | Funzioni |
