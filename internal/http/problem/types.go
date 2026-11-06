@@ -41,6 +41,17 @@ const (
 	RateLimited           Type = "rate_limited"
 	InternalError         Type = "internal_error"
 	NotReady              Type = "not_ready"
+
+	// M1 (m1-plan §4.5).
+	MapInvalid          Type = "map_invalid"
+	MapNotEmpty         Type = "map_not_empty"
+	MapNotGeoreferenced Type = "map_not_georeferenced"
+	InvalidFile         Type = "invalid_file"
+	FileTooLarge        Type = "file_too_large"
+	CSVInvalid          Type = "csv_invalid"
+	CustomerAnonymized  Type = "customer_anonymized"
+	CustomerMerged      Type = "customer_merged"
+	DownloadLinkExpired Type = "download_link_expired"
 )
 
 type typeInfo struct {
@@ -84,6 +95,15 @@ var registry = map[Type]typeInfo{
 	RateLimited:           {http.StatusTooManyRequests, "Too many requests"},
 	InternalError:         {http.StatusInternalServerError, "Internal error"},
 	NotReady:              {http.StatusServiceUnavailable, "Service not ready"},
+	MapInvalid:            {http.StatusUnprocessableEntity, "The map breaks a validation rule"},
+	MapNotEmpty:           {http.StatusConflict, "The map still has berths, areas or land resources"},
+	MapNotGeoreferenced:   {http.StatusConflict, "The map is not georeferenced"},
+	InvalidFile:           {http.StatusBadRequest, "Invalid file"},
+	FileTooLarge:          {http.StatusRequestEntityTooLarge, "File too large"},
+	CSVInvalid:            {http.StatusBadRequest, "Invalid CSV"},
+	CustomerAnonymized:    {http.StatusConflict, "The customer is anonymised"},
+	CustomerMerged:        {http.StatusConflict, "The customer was merged into another"},
+	DownloadLinkExpired:   {http.StatusForbidden, "Download link expired or invalid"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

@@ -1,0 +1,101 @@
+{
+  "format": "porto-harbor-kit/1",
+  "id": "porto-basic",
+  "assets": [
+    {
+      "id": "harbour_office",
+      "category": "services",
+      "label_key": "assets.harbour_office"
+    },
+    {
+      "id": "fuel_station",
+      "category": "services",
+      "label_key": "assets.fuel_station"
+    },
+    {
+      "id": "toilets",
+      "category": "services",
+      "label_key": "assets.toilets"
+    },
+    {
+      "id": "showers",
+      "category": "services",
+      "label_key": "assets.showers"
+    },
+    {
+      "id": "laundry",
+      "category": "services",
+      "label_key": "assets.laundry"
+    },
+    {
+      "id": "travel_lift",
+      "category": "operations",
+      "label_key": "assets.travel_lift"
+    },
+    {
+      "id": "crane",
+      "category": "operations",
+      "label_key": "assets.crane"
+    },
+    {
+      "id": "slipway",
+      "category": "operations",
+      "label_key": "assets.slipway"
+    },
+    {
+      "id": "light_red",
+      "category": "navigation",
+      "label_key": "assets.light_red"
+    },
+    {
+      "id": "light_green",
+      "category": "navigation",
+      "label_key": "assets.light_green"
+    },
+    {
+      "id": "lighthouse",
+      "category": "navigation",
+      "label_key": "assets.lighthouse"
+    },
+    {
+      "id": "fire_hydrant",
+      "category": "safety",
+      "label_key": "assets.fire_hydrant"
+    },
+    {
+      "id": "waste_collection",
+      "category": "environment",
+      "label_key": "assets.waste_collection"
+    },
+    {
+      "id": "waste_oil",
+      "category": "environment",
+      "label_key": "assets.waste_oil"
+    },
+    {
+      "id": "pump_out",
+      "category": "environment",
+      "label_key": "assets.pump_out"
+    },
+    {
+      "id": "parking",
+      "category": "services",
+      "label_key": "assets.parking"
+    },
+    {
+      "id": "entrance",
+      "category": "navigation",
+      "label_key": "assets.entrance"
+    },
+    {
+      "id": "bar",
+      "category": "services",
+      "label_key": "assets.bar"
+    },
+    {
+      "id": "restaurant",
+      "category": "services",
+      "label_key": "assets.restaurant"
+    }
+  ]
+}

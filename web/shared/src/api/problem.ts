@@ -1,5 +1,7 @@
 /** RFC 9457 problem+json errors as returned by the Porto API (plan §4.4). */
 
+import type { MapIssue } from './schema';
+
 export type ProblemFieldError = { field: string; code: string; message?: string };
 
 /** Stable problem slugs (plan §4.4); the UI shows each through `errors:<slug>`. */
@@ -37,6 +39,16 @@ export const PROBLEM_TYPES = [
   'rate_limited',
   'internal_error',
   'not_ready',
+  // M1
+  'map_invalid',
+  'map_not_empty',
+  'map_not_georeferenced',
+  'invalid_file',
+  'file_too_large',
+  'csv_invalid',
+  'customer_anonymized',
+  'customer_merged',
+  'download_link_expired',
 ] as const;
 
 export type ProblemType = (typeof PROBLEM_TYPES)[number];
@@ -76,6 +88,8 @@ export class ProblemError extends Error {
   readonly detail: string | undefined;
   readonly errors: ProblemFieldError[];
   readonly retryAfterSeconds: number | undefined;
+  /** Map validation issues of a map_invalid problem (M1). */
+  readonly issues: MapIssue[];
 
   constructor(init: {
     type: string;
@@ -84,6 +98,7 @@ export class ProblemError extends Error {
     detail?: string | undefined;
     errors?: ProblemFieldError[];
     retryAfterSeconds?: number | undefined;
+    issues?: MapIssue[];
   }) {
     super(init.title ?? init.type);
     this.name = 'ProblemError';
@@ -93,6 +108,7 @@ export class ProblemError extends Error {
     this.detail = init.detail;
     this.errors = init.errors ?? [];
     this.retryAfterSeconds = init.retryAfterSeconds;
+    this.issues = init.issues ?? [];
   }
 
   /** i18n key for this problem, always present in the `errors` namespace. */
@@ -123,6 +139,12 @@ export class ProblemError extends Error {
         detail: typeof body.detail === 'string' ? body.detail : undefined,
         errors,
         retryAfterSeconds,
+        issues: Array.isArray(body.issues)
+          ? body.issues.filter(
+              (i): i is MapIssue =>
+                isRecord(i) && typeof i.code === 'string' && Array.isArray(i.refs),
+            )
+          : [],
       });
     }
     return new ProblemError({

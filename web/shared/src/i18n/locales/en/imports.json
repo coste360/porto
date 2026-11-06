@@ -1,0 +1,104 @@
+{
+  "title": "Berth import",
+  "description": "Import berths from a CSV file along the piers of the map “{{map}}”.",
+  "steps": {
+    "label": "Import steps",
+    "file": "File",
+    "columns": "Columns",
+    "placement": "Placement",
+    "report": "Check and import"
+  },
+  "file": {
+    "label": "CSV file",
+    "hint": "CSV up to 4 MB and 5,000 rows. From Excel, save the sheet as CSV.",
+    "loaded": "{{name}}: {{count}} data rows.",
+    "tooLarge": "The file is larger than 4 MB.",
+    "tooManyRows": "The file has more than 5,000 rows.",
+    "empty": "The file has no rows.",
+    "delimiter": "Delimiter",
+    "delimiters": {
+      "comma": "Comma (,)",
+      "semicolon": "Semicolon (;)",
+      "tab": "Tab"
+    },
+    "hasHeader": "The first row holds the column names",
+    "units": "Units",
+    "unitsM": "Metres",
+    "unitsCm": "Centimetres"
+  },
+  "columns": {
+    "columnN": "Column {{n}}",
+    "none": "Not present",
+    "requiredMark": "(required)",
+    "missing": "Match at least code, pier, length and width.",
+    "preview": "Preview of the first rows ({{count}})",
+    "fields": {
+      "code": "Berth code",
+      "pier": "Pier",
+      "length": "Length",
+      "width": "Width",
+      "depth": "Depth",
+      "price_class": "Price class",
+      "side": "Side",
+      "mooring_type": "Mooring type"
+    }
+  },
+  "placement": {
+    "start": "Where to start",
+    "starts": {
+      "after_existing": "After the last existing berth of the pier",
+      "root": "From the start of the pier"
+    },
+    "sidePolicy": "Berth side",
+    "sidePolicies": {
+      "alternate": "Alternate left and right",
+      "column": "Use the “Side” column of the file",
+      "left": "All on the left",
+      "right": "All on the right"
+    },
+    "sideColumnHint": "The file has a “Side” column: choose “Use the column” to follow it.",
+    "piers": "Piers in the file",
+    "unknownPier": "{{code}} (not on the map)",
+    "noPiers": "The map has no piers yet: draw them in the editor before importing."
+  },
+  "report": {
+    "title": "Dry run result",
+    "appliedTitle": "Import completed",
+    "total": "Rows",
+    "valid": "Valid",
+    "rejected": "Rejected",
+    "duplicates": "Duplicates",
+    "rejectedTitle": "Rejected rows",
+    "duplicatesTitle": "Duplicate codes",
+    "plannedTitle": "Berths to create ({{count}})",
+    "row": "Row",
+    "field": "Field",
+    "error": "Error",
+    "code": "Code",
+    "pier": "Pier",
+    "side": "Side",
+    "duplicateLine": "Row {{row}}: {{code}} ({{reason}})",
+    "reasons": {
+      "code_in_file": "repeated in the file",
+      "code_on_map": "already on the map"
+    },
+    "sides": {
+      "left": "Left",
+      "right": "Right",
+      "head": "Head",
+      "none": "None"
+    },
+    "download": "Download the report (CSV)"
+  },
+  "run": {
+    "dryRun": "Dry run",
+    "apply": "Import",
+    "running": "Working…",
+    "applied": "Berths imported: {{count}}.",
+    "rejectedSkipped": "The rejected rows ({{count}}) will not be imported.",
+    "openEditor": "Open the map in the editor",
+    "conflict": "The map was changed in the meantime. Reload it and run the check again.",
+    "mapInvalid": "The resulting map is not valid:",
+    "issue": "{{code}} ({{count}} elements)"
+  }
+}

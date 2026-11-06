@@ -1,0 +1,24 @@
+{
+  "title": "Map symbols",
+  "assets": {
+    "harbour_office": "Harbour office",
+    "fuel_station": "Fuel station",
+    "toilets": "Toilets",
+    "showers": "Showers",
+    "laundry": "Laundry",
+    "travel_lift": "Travel lift",
+    "crane": "Crane",
+    "slipway": "Slipway",
+    "light_red": "Red light",
+    "light_green": "Green light",
+    "lighthouse": "Lighthouse",
+    "fire_hydrant": "Fire hydrant",
+    "waste_collection": "Waste collection",
+    "waste_oil": "Waste oil",
+    "pump_out": "Pump-out",
+    "parking": "Parking",
+    "entrance": "Entrance",
+    "bar": "Bar",
+    "restaurant": "Restaurant"
+  }
+}

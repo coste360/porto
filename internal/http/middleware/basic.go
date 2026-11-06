@@ -236,6 +236,20 @@ func BodyLimit(n int64) func(http.Handler) http.Handler {
 	}
 }
 
+// BodyLimitByPolicy applies the per-operation body limit of the contract (x-porto-max-body-bytes, default
+// DefaultMaxBodyBytes). It runs after Route; the global BodyLimit stays the hard cap.
+func BodyLimitByPolicy(ps Policies) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			n := DefaultMaxBodyBytes
+			if pol, ok := ps.Lookup(r.Method, reqctx.From(r.Context()).Route); ok && pol.MaxBodyBytes > 0 {
+				n = pol.MaxBodyBytes
+			}
+			BodyLimit(n)(next).ServeHTTP(w, r)
+		})
+	}
+}
+
 // Route records the chi route pattern of the matched operation in reqctx (logs, idempotency scope, policies).
 func Route() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
@@ -248,10 +262,16 @@ func Route() func(http.Handler) http.Handler {
 	}
 }
 
-// RequireJSON rejects request bodies that are not JSON with 415 (the API only speaks JSON).
-func RequireJSON() func(http.Handler) http.Handler {
+// RequireJSON rejects request bodies that are not JSON with 415. Operations whose contract declares only binary
+// content types (uploads) are exempt: their service checks the type after authorising, so that a request for
+// another marina is still 404.
+func RequireJSON(ps Policies) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if pol, ok := ps.Lookup(r.Method, reqctx.From(r.Context()).Route); ok && pol.BinaryBody() {
+				next.ServeHTTP(w, r)
+				return
+			}
 			if r.ContentLength != 0 && unsafeMethod(r.Method) {
 				ct := strings.ToLower(strings.TrimSpace(strings.Split(r.Header.Get("Content-Type"), ";")[0]))
 				if ct != "" && ct != "application/json" && !strings.HasSuffix(ct, "+json") {

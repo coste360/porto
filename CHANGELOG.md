@@ -8,6 +8,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M1 — Mappa del porto e anagrafiche (spec 32.3), contract:
+
+- Migrations `00002_harbor.sql` (stored files, harbour settings, maps, structures, pedestals, berths, dynamic
+  areas, land resources, decorations, berth groups) and `00003_registry.sql` (customers, consents, vessels, vessel
+  parties, documents, deadlines, deadline policies) for SQLite and PostgreSQL; new tables in backups.
+- OpenAPI operations for maps, map documents, generators, backgrounds, import and export, berth CSV import, berths,
+  berth groups, harbour settings, customers, consents, vessels, documents with files and deadlines.
+- Permission `harbor.configure` (owner, director); events `config.map_changed`, `customer.created`,
+  `customer.anonymized` and SSE topics `map.changed`, `registry.changed`; new problem types.
+- Per-operation request body limits (`x-porto-max-body-bytes`) and raw binary uploads.
+- Encrypted file store under `PORTO_DATA_DIR/files`, included in `porto backup` and `porto restore`.
+- Illustration kit `porto-basic` (original line symbols) with sanitising generators for Go and TypeScript.
+- Web foundations: shadcn components (accordion, calendar, context menu, hover card, menubar, pagination,
+  progress, resizable, slider, toggle, toggle group), `LengthInput`, `DatePicker`, `ElementCombobox`, i18n
+  namespaces, query keys, navigation and route stubs.
+
 M0 — Fondamenta (spec 32.3):
 
 - Repository layout, `Makefile` (`setup`, `dev`, `seed`, `gen`, `gen-check`, `fmt`, `lint`, `test`, `test-db`,

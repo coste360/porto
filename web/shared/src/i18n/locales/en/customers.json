@@ -1,0 +1,166 @@
+{
+  "title": "Customers",
+  "description": "People and companies: tax data, contacts, consents, vessels and documents.",
+  "new": "New customer",
+  "search": "Search",
+  "searchPlaceholder": "Name, tax code, VAT, email, phone or vessel",
+  "empty": "No customers found.",
+  "anonymized": "Anonymised customer",
+  "noCategory": "No category",
+  "filters": {
+    "category": "Category",
+    "allCategories": "All categories",
+    "tag": "Tag",
+    "archived": "Archived only"
+  },
+  "kind": {
+    "person": "Person",
+    "company": "Company"
+  },
+  "categories": {
+    "member": "Member",
+    "resident": "Resident",
+    "affiliated": "Affiliated",
+    "charter": "Charter",
+    "yard": "Boatyard"
+  },
+  "columns": {
+    "name": "Customer",
+    "fiscal": "Tax code / VAT",
+    "contact": "Contacts",
+    "vessels": "Vessels",
+    "status": "Tags and status"
+  },
+  "status": {
+    "archived": "Archived",
+    "anonymized": "Anonymised",
+    "merged": "Merged into another customer"
+  },
+  "fields": {
+    "kind": "Customer type",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "companyName": "Company name",
+    "fiscalCode": "Tax code",
+    "vatNumber": "VAT number",
+    "sdiCode": "SdI recipient code",
+    "pec": "PEC (certified email)",
+    "address": {
+      "line1": "Address",
+      "line2": "Address (second line)",
+      "postalCode": "Postal code",
+      "city": "City",
+      "province": "Province",
+      "country": "Country (ISO code, e.g. IT)"
+    },
+    "nationality": "Nationality (ISO code, e.g. IT)",
+    "locale": "Language",
+    "emails": "Emails",
+    "phones": "Phones",
+    "contactLabel": "Label",
+    "category": "Category",
+    "tags": "Tags",
+    "tagsHint": "Comma separated.",
+    "paymentDays": "Payment terms (days)",
+    "endOfMonth": "End of month",
+    "iban": "IBAN",
+    "ibanHint": "Used for SEPA direct debit. Never shown in clear.",
+    "ibanCurrent": "Stored IBAN: {{iban}}. Type a new one to replace it.",
+    "ibanClear": "Remove the stored IBAN",
+    "notes": "Notes"
+  },
+  "validation": {
+    "fiscalCode": "Invalid tax code.",
+    "vat": "Invalid VAT number.",
+    "iban": "Invalid IBAN.",
+    "paymentDays": "Enter a number of days (0-999).",
+    "country": "Use the two-letter code (e.g. IT).",
+    "invalid": "Invalid value."
+  },
+  "form": {
+    "createTitle": "New customer",
+    "sectionIdentity": "Identity",
+    "sectionFiscal": "Tax data",
+    "billingAddress": "Billing address",
+    "sectionContacts": "Contacts",
+    "sectionOther": "Other data",
+    "addEmail": "Add email",
+    "addPhone": "Add phone",
+    "removeContact": "Remove the contact",
+    "created": "Customer created.",
+    "saved": "Customer updated."
+  },
+  "duplicates": {
+    "title": "Possible duplicates",
+    "description": "The customer was created. These customers share the tax code, the VAT number or an email:",
+    "open": "Open the new customer",
+    "pageHint": "Other customers ({{count}}) may be the same person or company. Use Merge to bring them together."
+  },
+  "tabs": {
+    "data": "Data",
+    "vessels": "Vessels",
+    "documents": "Documents",
+    "consents": "Consents",
+    "deadlines": "Deadlines"
+  },
+  "actions": {
+    "archive": "Archive",
+    "unarchive": "Restore",
+    "archived": "Customer archived.",
+    "unarchived": "Customer restored.",
+    "merge": "Merge duplicates",
+    "export": "Export (GDPR)",
+    "exported": "Export downloaded.",
+    "anonymize": "Anonymise"
+  },
+  "merge": {
+    "title": "Merge duplicate customers",
+    "description": "The chosen customers are merged into {{name}}: vessels, documents, deadlines and consents move to this customer and the duplicates are archived.",
+    "search": "Search the duplicates",
+    "none": "No customers to merge.",
+    "selected": "Selected: {{count}} (at most {{max}}).",
+    "confirmText": "Merge these customers ({{count}})? This cannot be undone.",
+    "confirm": "Merge",
+    "done": "Customers merged.",
+    "openTarget": "Open the customer it was merged into"
+  },
+  "anonymize": {
+    "title": "Anonymise the customer",
+    "description": "Name, contacts, tax data, IBAN, address and notes are erased, together with documents and files. Consents are kept as proof, without personal data. This cannot be undone.",
+    "confirmWord": "ANONYMISE",
+    "typeToConfirm": "Type {{word}} to confirm",
+    "confirm": "Anonymise permanently",
+    "done": "Customer anonymised."
+  },
+  "vessels": {
+    "empty": "No linked vessels.",
+    "add": "New vessel of this customer",
+    "roles": "Roles"
+  },
+  "consents": {
+    "kind": "Consent",
+    "kinds": {
+      "privacy": "Privacy",
+      "marketing": "Marketing",
+      "third_party": "Sharing with third parties"
+    },
+    "sources": {
+      "desk": "Office",
+      "online": "Online",
+      "import": "Import",
+      "api": "API"
+    },
+    "source": "Source",
+    "value": "Choice",
+    "granted": "Granted",
+    "denied": "Denied",
+    "none": "Not recorded",
+    "policyVersion": "Policy version",
+    "record": "Record a consent",
+    "recorded": "Consent recorded.",
+    "recordedAt": "Date",
+    "by": "Recorded by",
+    "history": "Consent history",
+    "empty": "No consents recorded."
+  }
+}

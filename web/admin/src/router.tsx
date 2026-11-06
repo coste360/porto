@@ -30,6 +30,9 @@ import { TeamPage } from './pages/TeamPage';
 import { TotpSetupPage } from './pages/TotpSetupPage';
 import { WebhooksPage } from './pages/WebhooksPage';
 import { safeRedirect } from './lib/hash';
+import { berthImportRoutes } from './features/berth-import/routes';
+import { mapRoutes } from './features/maps/routes';
+import { registryRoutes } from './features/registry/routes';
 
 export type RouterContext = { queryClient: QueryClient; api: ApiClient };
 
@@ -120,6 +123,9 @@ const marinaRoute = createRoute({
   component: AppShell,
 });
 
+/** The marina route, parent of the M1 feature route factories (features/<name>/routes.tsx). */
+export type MarinaRoute = typeof marinaRoute;
+
 const dashboardRoute = createRoute({
   getParentRoute: () => marinaRoute,
   path: '/',
@@ -171,6 +177,9 @@ export const routeTree = rootRoute.addChildren([
       devicesRoute,
       webhooksRoute,
       auditRoute,
+      ...mapRoutes(marinaRoute),
+      ...registryRoutes(marinaRoute),
+      ...berthImportRoutes(marinaRoute),
     ]),
   ]),
 ]);

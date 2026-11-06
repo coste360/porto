@@ -112,3 +112,50 @@ export function newIdempotencyKey(): string {
   }
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
 }
+
+export type UploadBinaryOptions = {
+  /** PUT (document file) or POST (map background). */
+  method: 'PUT' | 'POST';
+  /** Declared content type of the file (image/png, image/jpeg, image/svg+xml, application/pdf). */
+  contentType: string;
+  /** Extra headers (If-Match, X-File-Name). */
+  headers?: Record<string, string>;
+  fetch?: typeof fetch;
+  readCsrf?: () => string | undefined;
+  signal?: AbortSignal;
+};
+
+/**
+ * Uploads a raw binary body (m1-plan §4.1: uploads are not multipart) to an admin API path such as
+ * `/api/admin/v1/marinas/{m}/documents/{d}/file`, with the CSRF header. Returns the JSON response, or throws a
+ * ProblemError (415 unsupported_media_type, 413 file_too_large, 400 invalid_file, ...).
+ */
+export async function uploadBinary<T>(
+  path: string,
+  body: Blob | ArrayBuffer | Uint8Array,
+  options: UploadBinaryOptions,
+): Promise<{ data: T; response: Response }> {
+  const headers = new Headers({
+    Accept: 'application/json, application/problem+json',
+    'Content-Type': options.contentType,
+    ...options.headers,
+  });
+  const token = (options.readCsrf ?? (() => readCookie(CSRF_COOKIE)))();
+  if (token) headers.set(CSRF_HEADER, token);
+  const doFetch = options.fetch ?? fetch;
+  let response: Response;
+  try {
+    response = await doFetch(path, {
+      method: options.method,
+      body: body as BodyInit,
+      headers,
+      credentials: 'same-origin',
+      signal: options.signal,
+    });
+  } catch {
+    throw new ProblemError({ type: 'internal_error', status: 0 });
+  }
+  if (!response.ok) throw await ProblemError.fromResponse(response);
+  const text = await response.text();
+  return { data: (text ? JSON.parse(text) : undefined) as T, response };
+}

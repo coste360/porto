@@ -27,14 +27,34 @@ type SeedResult struct {
 	OwnerEmail     string
 	Password       string // the password of every demo user; generated when none was given
 	Users          []string
+
+	// M1 counts of the data created by this run (0 when that part already existed, m1-plan §6).
+	Maps      int
+	Berths    int
+	Customers int
+	Vessels   int
+	Documents int
 }
 
 // SeedDemo creates a minimal demo: organization "Porto Demo", marina "Marina Demo" (slug demo) and one user per
-// role (<role>@demo.porto.test), all with the same password. It is a no-op when the demo marina exists. When
-// password is empty a random one is generated and returned (shown once by the CLI).
+// role (<role>@demo.porto.test), all with the same password. When password is empty a random one is generated
+// and returned (shown once by the CLI). Then it seeds the M1 data through the domain services (m1-plan §6): the
+// harbour when the marina has no maps, the registry when it has no customers. Every part is idempotent: with an
+// existing demo marina the users are left alone and only the missing parts are seeded.
 func (a *App) SeedDemo(ctx context.Context, password string) (*SeedResult, error) {
 	if m, err := store.MarinaBySlug(ctx, a.DB.DB, DemoMarinaSlug); err == nil {
-		return &SeedResult{OrganizationID: m.OrganizationID, MarinaID: m.ID}, nil
+		res := &SeedResult{OrganizationID: m.OrganizationID, MarinaID: m.ID}
+		owner, err := store.UserByEmail(ctx, a.DB.DB, string(auth.RoleOwner)+"@"+DemoEmailDomain)
+		if err != nil {
+			if errors.Is(err, store.ErrNotFound) {
+				return res, nil // demo marina without its demo owner: leave it alone
+			}
+			return nil, err
+		}
+		if err := a.seedM1(ctx, demoOwner(owner.ID, m.OrganizationID), res); err != nil {
+			return nil, err
+		}
+		return res, nil
 	} else if !errors.Is(err, store.ErrNotFound) {
 		return nil, err
 	}
@@ -57,10 +77,7 @@ func (a *App) SeedDemo(ctx context.Context, password string) (*SeedResult, error
 		Created: true, OrganizationID: res.OrganizationID, MarinaID: res.MarinaID, OwnerEmail: owner,
 		Password: password, Users: []string{owner},
 	}
-	p := &auth.Principal{
-		Kind: auth.KindUser, UserID: res.UserID,
-		Grants: []auth.Grant{{OrganizationID: res.OrganizationID, Role: auth.RoleOwner}},
-	}
+	p := demoOwner(res.UserID, res.OrganizationID)
 	for _, role := range auth.Roles() {
 		if role == auth.RoleOwner {
 			continue
@@ -77,5 +94,27 @@ func (a *App) SeedDemo(ctx context.Context, password string) (*SeedResult, error
 		}
 		out.Users = append(out.Users, email)
 	}
+	if err := a.seedM1(ctx, p, out); err != nil {
+		return nil, err
+	}
 	return out, nil
+}
+
+func demoOwner(userID, orgID string) *auth.Principal {
+	return &auth.Principal{
+		Kind: auth.KindUser, UserID: userID,
+		Grants: []auth.Grant{{OrganizationID: orgID, Role: auth.RoleOwner}},
+	}
+}
+
+// seedM1 seeds the harbour (seed_harbor.go, when the marina has no maps) and the registry (seed_registry.go,
+// when it has no customers). Each part decides its own idempotency.
+func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) error {
+	if err := a.seedHarbor(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: harbour: %w", err)
+	}
+	if err := a.seedRegistry(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: registry: %w", err)
+	}
+	return nil
 }

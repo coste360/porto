@@ -63,3 +63,43 @@ export function formatCents(cents: number, currency = 'EUR', locale = 'it'): str
   const sign = negative ? '-' : '';
   return symbolFirst ? `${sign}${symbol}${amount}` : `${sign}${amount} ${symbol}`;
 }
+
+/**
+ * Parses a decimal string ("12,5", "-12.3456") to an integer scaled by 10^decimals, rounding half-even on the
+ * extra digits. Digit-string arithmetic only (no float). Returns null for anything that is not a plain decimal.
+ */
+function parseScaled(text: string, decimals: number): number | null {
+  const match = /^\s*([+-]?)(\d+)(?:[.,](\d*))?\s*$/.exec(text);
+  if (!match) return null;
+  const [, sign, whole, fracRaw = ''] = match;
+  const kept = fracRaw.slice(0, decimals).padEnd(decimals, '0');
+  const rest = fracRaw.slice(decimals);
+  let value = BigInt(whole + kept);
+  if (rest !== '' && /[1-9]/.test(rest)) {
+    const first = rest.charCodeAt(0) - 48;
+    const tail = /[1-9]/.test(rest.slice(1));
+    const odd = value % 2n === 1n;
+    if (first > 5 || (first === 5 && (tail || odd))) value += 1n;
+  }
+  if (sign === '-') value = -value;
+  const n = Number(value);
+  return Number.isSafeInteger(n) ? n : null;
+}
+
+/** Metres typed by the user ("12,50", "12.5", "7") → integer centimetres; at most two decimals, else null. */
+export function parseMetresToCm(text: string): number | null {
+  const match = /^\s*[+-]?\d+(?:[.,](\d*))?\s*$/.exec(text);
+  if (!match || (match[1]?.length ?? 0) > 2) return null;
+  return parseScaled(text, 2);
+}
+
+/** WGS84 degrees × 10^7 → exact decimal string: 123456789 → "12.3456789". */
+export function formatE7(value: number): string {
+  const { negative, whole, frac } = splitInt(value, 10_000_000);
+  return `${negative ? '-' : ''}${whole}.${frac}`;
+}
+
+/** Decimal degrees typed by the user ("45.4371908", "12,3") → degrees × 10^7, half-even beyond 7 decimals. */
+export function parseDecimalToE7(text: string): number | null {
+  return parseScaled(text, 7);
+}

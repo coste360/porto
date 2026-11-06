@@ -46,6 +46,7 @@ var specMatrix = map[Permission][]Role{
 	PermReportsYard:          {RoleOwner, RoleDirector, RoleAccounting, RoleViewer, RoleYardMgr},
 	PermReportsRental:        {RoleOwner, RoleDirector, RoleAccounting, RoleViewer, RoleRental},
 	PermMapView:              {RoleOwner, RoleDirector, RoleOffice, RoleAccounting, RoleDock, RoleYardMgr, RoleYard, RoleRental, RoleViewer},
+	PermHarborConfigure:      {RoleOwner, RoleDirector},
 }
 
 func TestRoles_MatrixMatchesSpec(t *testing.T) {

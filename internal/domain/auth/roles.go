@@ -64,6 +64,9 @@ const (
 	PermReportsYard          Permission = "reports.yard"
 	PermReportsRental        Permission = "reports.rental"
 	PermMapView              Permission = "map.view"
+	// PermHarborConfigure is the harbour map configuration (maps, elements, groups, harbour settings; spec 8 and
+	// 26.1 "configurazione ... mappa"), owner and director only. Added in M1.
+	PermHarborConfigure Permission = "harbor.configure"
 )
 
 // Permissions returns every permission.
@@ -75,7 +78,7 @@ func Permissions() []Permission {
 		PermChargesManage, PermChargesExport, PermPaymentsCollect, PermPaymentsCollectCash, PermRefundsIssue,
 		PermStorageManage, PermStorageRead, PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage,
 		PermMaintenanceManage, PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard,
-		PermReportsRental, PermMapView,
+		PermReportsRental, PermMapView, PermHarborConfigure,
 	}
 }
 
@@ -92,7 +95,7 @@ var rolePermissions = map[Role][]Permission{
 		PermChargesManage, PermChargesExport, PermPaymentsCollect, PermPaymentsCollectCash, PermRefundsIssue,
 		PermStorageManage, PermStorageRead, PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage,
 		PermMaintenanceManage, PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard,
-		PermReportsRental, PermMapView,
+		PermReportsRental, PermMapView, PermHarborConfigure,
 	},
 	RoleDirector: {
 		PermMarinaConfigure, PermMarinaRead, PermDevicesManage, PermDevicesPairSelf, PermAuditRead,
@@ -101,7 +104,7 @@ var rolePermissions = map[Role][]Permission{
 		PermPaymentsCollect, PermPaymentsCollectCash, PermRefundsIssue, PermStorageManage, PermStorageRead,
 		PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage, PermMaintenanceManage,
 		PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard, PermReportsRental,
-		PermMapView,
+		PermMapView, PermHarborConfigure,
 	},
 	RoleOffice: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersWrite, PermCustomersRead, PermContractsWrite,

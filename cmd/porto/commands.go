@@ -9,6 +9,7 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"text/tabwriter"
@@ -286,13 +287,16 @@ func cmdSeedDemo(ctx context.Context, args []string, e env) error {
 	if err != nil {
 		return describe(err)
 	}
+	m1 := fmt.Sprintf("maps %d, berths %d, customers %d, vessels %d, documents %d",
+		res.Maps, res.Berths, res.Customers, res.Vessels, res.Documents)
 	if !res.Created {
-		fmt.Fprintf(e.stdout, "demo marina %q already exists (%s): nothing to do\n", app.DemoMarinaSlug, res.MarinaID)
+		fmt.Fprintf(e.stdout, "demo marina %q already exists (%s); added: %s\n", app.DemoMarinaSlug, res.MarinaID, m1)
 		return nil
 	}
 	fmt.Fprintf(e.stdout, "demo organization %q, marina %q (slug %s)\n", app.DemoOrganization, app.DemoMarinaName, app.DemoMarinaSlug)
 	fmt.Fprintf(e.stdout, "users (one per role): %s\n", strings.Join(res.Users, ", "))
 	fmt.Fprintf(e.stdout, "owner login: %s\n", res.OwnerEmail)
+	fmt.Fprintf(e.stdout, "harbour and registry: %s\n", m1)
 	if pw == "" {
 		// Shown once: it is not stored anywhere in clear.
 		fmt.Fprintf(e.stdout, "generated password (shown once): %s\n", res.Password)
@@ -327,7 +331,7 @@ func cmdBackup(ctx context.Context, args []string, e env) error {
 		}
 		w = f
 	}
-	m, err := backup.Backup(ctx, db, w, version)
+	m, err := backup.Backup(ctx, db, w, version, filepath.Join(cfg.DataDir, "files"))
 	if f != nil {
 		if cerr := f.Close(); err == nil {
 			err = cerr
@@ -343,7 +347,7 @@ func cmdBackup(ctx context.Context, args []string, e env) error {
 	for _, t := range m.Tables {
 		rows += t.Rows
 	}
-	fmt.Fprintf(e.stderr, "backup: %d tables, %d rows, schema %d, dialect %s\n", len(m.Tables), rows, m.SchemaVersion, m.Dialect)
+	fmt.Fprintf(e.stderr, "backup: %d tables, %d rows, %d files, schema %d, dialect %s\n", len(m.Tables), rows, len(m.Files), m.SchemaVersion, m.Dialect)
 	return nil
 }
 
@@ -382,7 +386,7 @@ func cmdRestore(ctx context.Context, args []string, e env) error {
 		defer f.Close()
 		r = f
 	}
-	m, err := backup.Restore(ctx, db, r, force)
+	m, err := backup.Restore(ctx, db, r, force, filepath.Join(cfg.DataDir, "files"))
 	if err != nil {
 		return err
 	}

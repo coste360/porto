@@ -775,12 +775,759 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/marinas/{marinaId}/maps": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Maps of the marina, by sort order (map.view) */
+        get: operations["listMaps"];
+        put?: never;
+        /** Create an empty map (harbor.configure) */
+        post: operations["createMap"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Set the order of the marina's maps; every map id exactly once (harbor.configure) */
+        post: operations["reorderMaps"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Import a map export (porto-map/1) as a new map; ids are remapped (harbor.configure) */
+        post: operations["importMap"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        /** The full map document (map.view) */
+        get: operations["getMap"];
+        /** Replace the whole map document (meta and every element) in one transaction; new elements carry a key, saved ones their id. Validated with ValidateMap inside the transaction (harbor.configure) */
+        put: operations["saveMap"];
+        post?: never;
+        /** Delete a map without berths, dynamic areas or land resources (harbor.configure) */
+        delete: operations["deleteMap"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Dry-run validation of a map document; nothing is written (harbor.configure) */
+        post: operations["validateMap"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview of a generator (pier, quay berths, linear area, buoy field, land grid, surface area); returns unsaved elements with keys, applied by the next saveMap (harbor.configure) */
+        post: operations["generateMapElements"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}/background": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload a background image (PNG, JPEG or SVG, at most 15 MiB, raw body). Content is sniffed; the calibration is saved with the map document (harbor.configure) */
+        post: operations["uploadMapBackground"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}/background/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        /** Background image bytes, immutable (served with a sandbox Content-Security-Policy and nosniff) (map.view) */
+        get: operations["getMapBackground"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        /** Download the map as porto-map/1 JSON (default) or as a GeoJSON FeatureCollection (georeferenced maps only) (harbor.configure) */
+        get: operations["exportMap"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}/concession/geojson": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Convert a GeoJSON polygon (WGS84) into a map outline in cm with the map's (or the given) georeference; nothing is written (harbor.configure) */
+        post: operations["convertConcessionGeojson"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}/berth-import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Import berths from CSV along existing piers: dry run (report only) or apply (all or nothing, through the same save path as saveMap; If-Match required) (harbor.configure) */
+        post: operations["importBerthsCsv"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/berths": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Berths of the marina, by map and code (map.view) */
+        get: operations["listBerths"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/berth-groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Berth groups with member counts (map.view) */
+        get: operations["listBerthGroups"];
+        put?: never;
+        /** Create a berth group (harbor.configure) */
+        post: operations["createBerthGroup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/berth-groups/{groupId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                groupId: components["parameters"]["GroupId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a berth group and its memberships (harbor.configure) */
+        delete: operations["deleteBerthGroup"];
+        options?: never;
+        head?: never;
+        /** Update a berth group (harbor.configure) */
+        patch: operations["updateBerthGroup"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/harbor-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Harbour settings (price-class rule, LOA tolerance, default grid) (map.view) */
+        get: operations["getHarborSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update harbour settings (harbor.configure) */
+        patch: operations["updateHarborSettings"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Search customers by name, fiscal code, VAT, phone, email or vessel name/registration (customers.read) */
+        get: operations["listCustomers"];
+        put?: never;
+        /** Create a customer; suspected duplicates are returned, not refused (customers.write) */
+        post: operations["createCustomer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        /** A customer (customers.read) */
+        get: operations["getCustomer"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update a customer (customers.write) */
+        patch: operations["updateCustomer"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        /** Customer page data (M1 subset of spec 11.4) (customers.read) */
+        get: operations["getCustomerOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive a customer (customers.write) */
+        post: operations["archiveCustomer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore an archived customer (customers.write) */
+        post: operations["unarchiveCustomer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Merge duplicate customers into this one (the target); sources are archived (customers.write) */
+        post: operations["mergeCustomers"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/anonymize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Anonymise a customer (GDPR): personal data blanked, documents and files deleted, consents kept without personal data; irreversible (customers.write) */
+        post: operations["anonymizeCustomer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        /** GDPR export of a customer's data as JSON (Content-Disposition attachment) (customers.read) */
+        get: operations["exportCustomer"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        /** Consent history of a customer, newest first (customers.read) */
+        get: operations["listConsents"];
+        put?: never;
+        /** Record a new consent version (insert-only) (customers.write) */
+        post: operations["recordConsent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/vessels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Search vessels by name or registration (customers.read) */
+        get: operations["listVessels"];
+        put?: never;
+        /** Create a vessel, optionally with its parties (customers.write) */
+        post: operations["createVessel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        /** A vessel with parties and documents (customers.read) */
+        get: operations["getVessel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update a vessel (customers.write) */
+        patch: operations["updateVessel"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/parties": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace the parties of a vessel; owner shares sum to at most 1000 (customers.write) */
+        put: operations["replaceVesselParties"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/measurements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record measured dimensions (customers.write or presence.write) */
+        post: operations["recordVesselMeasurement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive a vessel (customers.write) */
+        post: operations["archiveVessel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore an archived vessel (customers.write) */
+        post: operations["unarchiveVessel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Documents of customers and vessels (customers.read) */
+        get: operations["listDocuments"];
+        put?: never;
+        /** Create a document (metadata); an expiry creates its deadline in the same transaction (customers.write) */
+        post: operations["createDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/documents/{documentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        /** A document (customers.read) */
+        get: operations["getDocument"];
+        put?: never;
+        post?: never;
+        /** Delete a document with its file and deadline (customers.write) */
+        delete: operations["deleteDocument"];
+        options?: never;
+        head?: never;
+        /** Update a document; its deadline follows the expiry (customers.write) */
+        patch: operations["updateDocument"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/documents/{documentId}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        /** Download the document file through a signed link from createDocumentFileUrl (exp and sig are checked in the service; served inline, no-store, sandbox CSP, nosniff) (customers.read) */
+        get: operations["getDocumentFile"];
+        /** Upload or replace the document file (PDF, PNG or JPEG, at most 15 MiB, raw body), encrypted at rest (customers.write) */
+        put: operations["uploadDocumentFile"];
+        post?: never;
+        /** Remove the document file (customers.write) */
+        delete: operations["deleteDocumentFile"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/documents/{documentId}/file-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A short-lived (5 minutes) signed download link bound to the calling user (customers.read) */
+        post: operations["createDocumentFileURL"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/deadlines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Deadlines by due date (customers.read) */
+        get: operations["listDeadlines"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/deadlines/{deadlineId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                deadlineId: components["parameters"]["DeadlineId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Mark a deadline done or dismissed, or change its note (customers.write) */
+        patch: operations["updateDeadline"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/deadline-policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Lead days per deadline kind, defaults included (customers.read) */
+        get: operations["listDeadlinePolicies"];
+        /** Replace the lead days of the given kinds (marina.configure) */
+        put: operations["replaceDeadlinePolicies"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired";
         FieldError: {
             field: string;
             code: string;
@@ -795,6 +1542,8 @@ export interface components {
             request_id?: string;
             errors?: components["schemas"]["FieldError"][];
             retry_after_seconds?: number;
+            /** @description Map validation issues (map_invalid) */
+            issues?: components["schemas"]["MapIssue"][];
         };
         HealthStatus: {
             /** @enum {string} */
@@ -817,7 +1566,7 @@ export interface components {
         /** @enum {string} */
         Role: "owner" | "director" | "office" | "accounting" | "dock" | "yard_mgr" | "yard" | "rental" | "viewer";
         /** @enum {string} */
-        Permission: "organization.manage" | "marina.configure" | "marina.read" | "users.manage" | "devices.manage" | "devices.pair_self" | "audit.read" | "customers.write" | "customers.read" | "contracts.write" | "transits.desk" | "occupancy.move" | "presence.write" | "occupancy.override_fit" | "rights.manage" | "charges.manage" | "charges.export" | "payments.collect" | "payments.collect_cash" | "refunds.issue" | "storage.manage" | "storage.read" | "yard.manage" | "yard.read" | "yard.timesheets" | "rental.manage" | "maintenance.manage" | "maintenance.report" | "reports.all" | "reports.operational" | "reports.yard" | "reports.rental" | "map.view";
+        Permission: "organization.manage" | "marina.configure" | "marina.read" | "users.manage" | "devices.manage" | "devices.pair_self" | "audit.read" | "customers.write" | "customers.read" | "contracts.write" | "transits.desk" | "occupancy.move" | "presence.write" | "occupancy.override_fit" | "rights.manage" | "charges.manage" | "charges.export" | "payments.collect" | "payments.collect_cash" | "refunds.issue" | "storage.manage" | "storage.read" | "yard.manage" | "yard.read" | "yard.timesheets" | "rental.manage" | "maintenance.manage" | "maintenance.report" | "reports.all" | "reports.operational" | "reports.yard" | "reports.rental" | "map.view" | "harbor.configure";
         /** @enum {string} */
         Locale: "it" | "en";
         LoginRequest: {
@@ -1231,6 +1980,1149 @@ export interface components {
             locales: components["schemas"]["Locale"][];
             booking_enabled: boolean;
         };
+        /**
+         * Format: int64
+         * @description Length in integer centimetres
+         */
+        Cm: number;
+        /**
+         * Format: int64
+         * @description Strictly positive length in integer centimetres
+         */
+        PositiveCm: number;
+        /**
+         * Format: int64
+         * @description Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+         */
+        RectSideCm: number;
+        /**
+         * Format: int64
+         * @description Angle in tenths of a degree, 0 = +x, 900 = +y (y down, clockwise on screen)
+         */
+        RotationDd: number;
+        Point: {
+            /** Format: int64 */
+            x: number;
+            /** Format: int64 */
+            y: number;
+        };
+        /** @description Simple polygon in map cm (3 to 10 000 vertices, not closed explicitly) */
+        Polygon: components["schemas"]["Point"][];
+        /** @description Rotated rectangle; anchor = midpoint of the mooring (or access) side */
+        Rect: {
+            anchor: components["schemas"]["Point"];
+            width_cm: components["schemas"]["PositiveCm"];
+            length_cm: components["schemas"]["PositiveCm"];
+            rotation_dd: components["schemas"]["RotationDd"];
+        };
+        I18nText: {
+            it: string;
+            en?: string;
+        };
+        /** @description Reference to a map element inside one document: the id of a saved element or the key of a new element of the same request */
+        ElementRef: string;
+        /** @description Client key of a new element, unique in the request */
+        ElementKey: string;
+        Code: string;
+        /** @enum {string} */
+        MapKind: "water" | "yard" | "shed" | "parking" | "boxes" | "other";
+        MapCounts: {
+            structures: number;
+            berths: number;
+            dynamic_areas: number;
+            land_resources: number;
+            pedestals: number;
+            decorations: number;
+        };
+        MapSummary: {
+            id: string;
+            kind: components["schemas"]["MapKind"];
+            name: components["schemas"]["I18nText"];
+            icon: string;
+            width_cm: components["schemas"]["Cm"];
+            height_cm: components["schemas"]["Cm"];
+            sort_order: number;
+            version: number;
+            counts: components["schemas"]["MapCounts"];
+            georeferenced: boolean;
+            has_background: boolean;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        MapSummaryList: {
+            items: components["schemas"]["MapSummary"][];
+        };
+        MapCreate: {
+            kind: components["schemas"]["MapKind"];
+            name: components["schemas"]["I18nText"];
+            icon?: string;
+            /** Format: int64 */
+            width_cm: number;
+            /** Format: int64 */
+            height_cm: number;
+            /** Format: int64 */
+            grid_cm?: number;
+        };
+        MapReorder: {
+            map_ids: string[];
+        };
+        MapBackground: {
+            file_id: string;
+            /** @enum {string} */
+            content_type: "image/png" | "image/jpeg" | "image/svg+xml";
+            /** Format: int64 */
+            width_px: number;
+            /** Format: int64 */
+            height_px: number;
+            origin: components["schemas"]["Point"];
+            /**
+             * Format: int64
+             * @description Milli-centimetres per image pixel (integer, at least 1)
+             */
+            scale_mcm_per_px: number;
+            rotation_dd: components["schemas"]["RotationDd"];
+            opacity_pct: number;
+            visible: boolean;
+        };
+        ControlPoint: {
+            /** Format: int64 */
+            x: number;
+            /** Format: int64 */
+            y: number;
+            /** Format: int64 */
+            lat_e7: number;
+            /** Format: int64 */
+            lon_e7: number;
+        };
+        /** @description Affine georeference from three non-collinear control points (WGS84 × 1e7) */
+        Georef: {
+            points: components["schemas"]["ControlPoint"][];
+        };
+        MapMeta: {
+            kind: components["schemas"]["MapKind"];
+            name: components["schemas"]["I18nText"];
+            icon: string;
+            /** Format: int64 */
+            width_cm: number;
+            /** Format: int64 */
+            height_cm: number;
+            /** Format: int64 */
+            grid_cm: number;
+            sort_order: number;
+            background: components["schemas"]["MapBackground"] | null;
+            georef: components["schemas"]["Georef"] | null;
+            concession_outline: components["schemas"]["Polygon"] | null;
+            water_polygons: components["schemas"]["Polygon"][];
+            land_polygons: components["schemas"]["Polygon"][];
+        };
+        /** @enum {string} */
+        StructureKind: "quay" | "pier" | "finger" | "breakwater" | "channel" | "walkway";
+        /** @enum {string} */
+        Side: "left" | "right" | "head" | "none";
+        /** @description Depth along the structure axis, from from_cm to to_cm */
+        DepthSpan: {
+            from_cm: components["schemas"]["Cm"];
+            to_cm: components["schemas"]["Cm"];
+            depth_cm: components["schemas"]["PositiveCm"];
+        };
+        Structure: {
+            /** @description Saved element id (omit for a new element) */
+            id?: string;
+            key?: components["schemas"]["ElementKey"];
+            kind: components["schemas"]["StructureKind"];
+            code: components["schemas"]["Code"];
+            name?: string;
+            /** @description Polyline (quay, pier, walkway, breakwater line) or polygon (closed = true) */
+            points?: components["schemas"]["Point"][];
+            closed?: boolean;
+            rect?: components["schemas"]["Rect"];
+            width_cm?: components["schemas"]["PositiveCm"];
+            parent_id?: components["schemas"]["ElementRef"];
+            sides?: components["schemas"]["Side"][];
+            floating?: boolean;
+            depth_profile?: components["schemas"]["DepthSpan"][];
+            elevation_cm?: components["schemas"]["Cm"];
+            bollard_spacing_cm?: components["schemas"]["PositiveCm"];
+        };
+        /** @enum {string} */
+        MooringType: "mooring_line" | "finger" | "alongside" | "piles" | "buoy";
+        /** @enum {string} */
+        PowerPhase: "single" | "three";
+        Berth: {
+            /** @description Saved element id (omit for a new element) */
+            id?: string;
+            key?: components["schemas"]["ElementKey"];
+            code: components["schemas"]["Code"];
+            structure_id?: components["schemas"]["ElementRef"];
+            side: components["schemas"]["Side"];
+            /**
+             * Format: int64
+             * @description Order along the structure
+             */
+            position: number;
+            anchor: components["schemas"]["Point"];
+            rotation_dd: components["schemas"]["RotationDd"];
+            width_cm: components["schemas"]["RectSideCm"];
+            length_cm: components["schemas"]["RectSideCm"];
+            max_loa_cm?: components["schemas"]["PositiveCm"];
+            max_beam_cm?: components["schemas"]["PositiveCm"];
+            depth_cm?: components["schemas"]["PositiveCm"];
+            max_air_draft_cm?: components["schemas"]["PositiveCm"];
+            /** Format: int64 */
+            max_displacement_kg?: number;
+            mooring_type: components["schemas"]["MooringType"];
+            swing_radius_cm?: components["schemas"]["PositiveCm"];
+            overhang_allowed: boolean;
+            pedestal_id?: components["schemas"]["ElementRef"];
+            pedestal_socket?: string;
+            /** @enum {integer} */
+            power_a?: 16 | 32 | 63 | 125;
+            power_phase?: components["schemas"]["PowerPhase"];
+            water: boolean;
+            wifi: boolean;
+            price_class?: string;
+            attributes: string[];
+            online_sellable: boolean;
+            active: boolean;
+            group_ids: string[];
+        };
+        /** @enum {string} */
+        AreaKind: "linear" | "surface";
+        /** @enum {string} */
+        MooringMode: "stern_to" | "alongside";
+        DynamicArea: {
+            /** @description Saved element id (omit for a new element) */
+            id?: string;
+            key?: components["schemas"]["ElementKey"];
+            kind: components["schemas"]["AreaKind"];
+            code: components["schemas"]["Code"];
+            structure_id?: components["schemas"]["ElementRef"];
+            side?: components["schemas"]["Side"];
+            from_cm?: components["schemas"]["Cm"];
+            to_cm?: components["schemas"]["Cm"];
+            outline?: components["schemas"]["Polygon"];
+            mooring_mode?: components["schemas"]["MooringMode"];
+            /** Format: int64 */
+            cell_cm?: number;
+            /** Format: int64 */
+            margin_cm?: number;
+            max_loa_cm?: components["schemas"]["PositiveCm"];
+            max_beam_cm?: components["schemas"]["PositiveCm"];
+            max_height_cm?: components["schemas"]["PositiveCm"];
+            /** Format: int64 */
+            max_weight_kg?: number;
+            supports?: ("cradle" | "trailer" | "rack")[];
+            depth_profile?: components["schemas"]["DepthSpan"][];
+            blocked_cells: number[];
+            exits: number[];
+            /**
+             * Format: int64
+             * @enum {integer}
+             */
+            grid_rotation_dd: 0 | 900 | 1800 | 2700;
+            /**
+             * Format: int64
+             * @description Computed at save
+             */
+            readonly cell_count?: number;
+            price_class?: string;
+            active: boolean;
+            group_ids: string[];
+        };
+        /** @enum {string} */
+        LandKind: "parking" | "box" | "storeroom" | "locker" | "cradle" | "trailer_spot" | "custom";
+        LandResource: {
+            /** @description Saved element id (omit for a new element) */
+            id?: string;
+            key?: components["schemas"]["ElementKey"];
+            kind: components["schemas"]["LandKind"];
+            code: components["schemas"]["Code"];
+            anchor: components["schemas"]["Point"];
+            rotation_dd: components["schemas"]["RotationDd"];
+            width_cm: components["schemas"]["RectSideCm"];
+            length_cm: components["schemas"]["RectSideCm"];
+            price_class?: string;
+            attributes: string[];
+            active: boolean;
+            group_ids: string[];
+        };
+        /** @enum {string} */
+        UtilityKind: "power" | "water";
+        PedestalSocket: {
+            code: string;
+            kind: components["schemas"]["UtilityKind"];
+            /** @enum {integer} */
+            amps?: 16 | 32 | 63 | 125;
+            phase?: components["schemas"]["PowerPhase"];
+        };
+        PedestalMeter: {
+            kind: components["schemas"]["UtilityKind"];
+            serial: string;
+        };
+        Pedestal: {
+            /** @description Saved element id (omit for a new element) */
+            id?: string;
+            key?: components["schemas"]["ElementKey"];
+            code: components["schemas"]["Code"];
+            position: components["schemas"]["Point"];
+            sockets: components["schemas"]["PedestalSocket"][];
+            meters: components["schemas"]["PedestalMeter"][];
+        };
+        /** @enum {string} */
+        DecorationKind: "symbol" | "text" | "depth_label" | "north_arrow" | "scale_bar";
+        Decoration: {
+            /** @description Saved element id (omit for a new element) */
+            id?: string;
+            key?: components["schemas"]["ElementKey"];
+            kind: components["schemas"]["DecorationKind"];
+            /** @description Illustration kit asset id (kind = symbol) */
+            asset?: string;
+            variant?: string;
+            position?: components["schemas"]["Point"];
+            rotation_dd?: components["schemas"]["RotationDd"];
+            size_cm?: components["schemas"]["PositiveCm"];
+            points?: components["schemas"]["Point"][];
+            label?: components["schemas"]["I18nText"];
+            depth_cm?: components["schemas"]["Cm"];
+        };
+        MapElements: {
+            structures: components["schemas"]["Structure"][];
+            berths: components["schemas"]["Berth"][];
+            dynamic_areas: components["schemas"]["DynamicArea"][];
+            land_resources: components["schemas"]["LandResource"][];
+            pedestals: components["schemas"]["Pedestal"][];
+            decorations: components["schemas"]["Decoration"][];
+        };
+        MapDocument: components["schemas"]["MapMeta"] & components["schemas"]["MapElements"] & {
+            id: string;
+            version: number;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        MapSaveRequest: components["schemas"]["MapMeta"] & components["schemas"]["MapElements"];
+        /** @enum {string} */
+        MapIssueSeverity: "error" | "warning";
+        MapIssue: {
+            /** @description ValidateMap rule (m1-plan §2.3), e.g. berth_overlap */
+            code: string;
+            severity: components["schemas"]["MapIssueSeverity"];
+            element_type: string;
+            refs: string[];
+            field?: string;
+            /** @description Numbers only (cm, counts) */
+            params?: {
+                [key: string]: number;
+            };
+        };
+        MapValidationReport: {
+            errors: components["schemas"]["MapIssue"][];
+            warnings: components["schemas"]["MapIssue"][];
+        };
+        MapSaveResult: {
+            document: components["schemas"]["MapDocument"];
+            /** @description Element key of the request → new id */
+            id_map: {
+                [key: string]: string;
+            };
+            warnings: components["schemas"]["MapIssue"][];
+        };
+        MapExportGroupMember: {
+            resource_type: components["schemas"]["GroupResourceType"];
+            code: components["schemas"]["Code"];
+        };
+        MapExportGroup: {
+            code: components["schemas"]["Code"];
+            name: components["schemas"]["I18nText"];
+            kind: components["schemas"]["BerthGroupKind"];
+            members: components["schemas"]["MapExportGroupMember"][];
+        };
+        MapExport: {
+            /** @enum {string} */
+            format: "porto-map/1";
+            /** Format: date-time */
+            exported_at: string;
+            map: components["schemas"]["MapSaveRequest"];
+            groups: components["schemas"]["MapExportGroup"][];
+        };
+        /** @enum {string} */
+        GeneratorType: "pier" | "quay_berths" | "linear_area" | "buoy_field" | "land_grid" | "surface_area";
+        Numbering: {
+            /** @enum {string} */
+            scheme: "continuous" | "odd_left_even_right" | "per_side";
+            prefix?: string;
+            /**
+             * Format: int64
+             * @default 1
+             */
+            start: number;
+            pad?: number;
+        };
+        PierGenerator: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "pier";
+            key_prefix: string;
+            origin: components["schemas"]["Point"];
+            rotation_dd: components["schemas"]["RotationDd"];
+            length_cm: components["schemas"]["PositiveCm"];
+            width_cm: components["schemas"]["PositiveCm"];
+            floating?: boolean;
+            code: components["schemas"]["Code"];
+            root_id?: components["schemas"]["ElementRef"];
+            sides: ("left" | "right")[];
+            /** @description 0 = fill the length */
+            berths_per_side?: number;
+            start_offset_cm?: components["schemas"]["Cm"];
+            berth_width_cm: components["schemas"]["RectSideCm"];
+            berth_length_cm: components["schemas"]["RectSideCm"];
+            berth_width_end_cm?: components["schemas"]["Cm"];
+            berth_length_end_cm?: components["schemas"]["Cm"];
+            finger_every?: number;
+            finger_width_cm?: components["schemas"]["Cm"];
+            finger_length_cm?: components["schemas"]["Cm"];
+            head_berths?: number;
+            mooring_type?: components["schemas"]["MooringType"];
+            numbering: components["schemas"]["Numbering"];
+            depth_cm?: components["schemas"]["Cm"];
+            group_id?: string;
+        };
+        QuayBerthsGenerator: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "quay_berths";
+            key_prefix: string;
+            quay_id: components["schemas"]["ElementRef"];
+            from_cm: components["schemas"]["Cm"];
+            to_cm: components["schemas"]["Cm"];
+            /** @enum {string} */
+            side: "left" | "right";
+            berth_width_cm: components["schemas"]["RectSideCm"];
+            /** @description 0 = fill by width */
+            count?: number;
+            berth_length_cm: components["schemas"]["RectSideCm"];
+            mooring_type?: components["schemas"]["MooringType"];
+            numbering: components["schemas"]["Numbering"];
+            group_id?: string;
+        };
+        LinearAreaGenerator: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "linear_area";
+            key_prefix: string;
+            code: components["schemas"]["Code"];
+            structure_id: components["schemas"]["ElementRef"];
+            /** @enum {string} */
+            side: "left" | "right" | "head";
+            from_cm: components["schemas"]["Cm"];
+            to_cm: components["schemas"]["Cm"];
+            mode: components["schemas"]["MooringMode"];
+            cell_cm?: components["schemas"]["Cm"];
+            margin_cm?: components["schemas"]["Cm"];
+            max_loa_cm?: components["schemas"]["Cm"];
+            max_beam_cm?: components["schemas"]["Cm"];
+            group_id?: string;
+        };
+        BuoyFieldGenerator: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "buoy_field";
+            key_prefix: string;
+            outline: components["schemas"]["Polygon"];
+            swing_radius_cm: components["schemas"]["PositiveCm"];
+            /** @enum {string} */
+            layout: "grid" | "staggered";
+            spacing_cm?: components["schemas"]["Cm"];
+            max_loa_cm?: components["schemas"]["Cm"];
+            numbering: components["schemas"]["Numbering"];
+            group_id?: string;
+        };
+        LandGridGenerator: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "land_grid";
+            key_prefix: string;
+            origin: components["schemas"]["Point"];
+            rotation_dd: components["schemas"]["RotationDd"];
+            rows: number;
+            cols: number;
+            item_width_cm: components["schemas"]["RectSideCm"];
+            item_length_cm: components["schemas"]["RectSideCm"];
+            aisle_cm?: components["schemas"]["Cm"];
+            aisle_every?: number;
+            kind: components["schemas"]["LandKind"];
+            numbering: components["schemas"]["Numbering"];
+            group_id?: string;
+        };
+        SurfaceLane: {
+            from: components["schemas"]["Point"];
+            to: components["schemas"]["Point"];
+            width_cm: components["schemas"]["PositiveCm"];
+        };
+        SurfaceAreaGenerator: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "surface_area";
+            key_prefix: string;
+            code: components["schemas"]["Code"];
+            outline: components["schemas"]["Polygon"];
+            cell_cm: components["schemas"]["PositiveCm"];
+            /**
+             * Format: int64
+             * @enum {integer}
+             */
+            grid_rotation_dd?: 0 | 900 | 1800 | 2700;
+            exits?: components["schemas"]["Point"][];
+            lanes?: components["schemas"]["SurfaceLane"][];
+            margin_cm?: components["schemas"]["Cm"];
+            max_loa_cm?: components["schemas"]["Cm"];
+            max_height_cm?: components["schemas"]["Cm"];
+            group_id?: string;
+        };
+        GeneratorParams: components["schemas"]["PierGenerator"] | components["schemas"]["QuayBerthsGenerator"] | components["schemas"]["LinearAreaGenerator"] | components["schemas"]["BuoyFieldGenerator"] | components["schemas"]["LandGridGenerator"] | components["schemas"]["SurfaceAreaGenerator"];
+        GenerateRequest: {
+            generator: components["schemas"]["GeneratorParams"];
+            /** @description The current unsaved document; when given, the result carries a report of document + elements */
+            document?: components["schemas"]["MapSaveRequest"];
+        };
+        GenerateResult: {
+            elements: components["schemas"]["MapElements"];
+            report?: components["schemas"]["MapValidationReport"];
+            counts: components["schemas"]["MapCounts"];
+        };
+        MapBackgroundFile: {
+            file_id: string;
+            /** @enum {string} */
+            content_type: "image/png" | "image/jpeg" | "image/svg+xml";
+            /** Format: int64 */
+            width_px: number;
+            /** Format: int64 */
+            height_px: number;
+            /** Format: int64 */
+            size_bytes: number;
+        };
+        ConcessionGeojsonRequest: {
+            /** @description A GeoJSON Polygon, Feature or FeatureCollection with one polygon (WGS84) */
+            geojson: {
+                [key: string]: unknown;
+            };
+            georef?: components["schemas"]["Georef"];
+        };
+        ConcessionGeojsonResult: {
+            outline: components["schemas"]["Polygon"];
+        };
+        /** @description Zero-based column index of each field in the CSV */
+        BerthImportMapping: {
+            code: number;
+            pier: number;
+            length: number;
+            width: number;
+            depth?: number;
+            price_class?: number;
+            side?: number;
+            mooring_type?: number;
+        };
+        BerthImportPlacement: {
+            /** @enum {string} */
+            start: "after_existing" | "root";
+            /** @enum {string} */
+            side_policy: "alternate" | "column" | "left" | "right";
+        };
+        BerthImportRequest: {
+            csv: string;
+            /**
+             * @description Column separator (default comma)
+             * @enum {string}
+             */
+            delimiter?: "comma" | "semicolon" | "tab";
+            has_header: boolean;
+            mapping: components["schemas"]["BerthImportMapping"];
+            /** @enum {string} */
+            units: "m" | "cm";
+            placement: components["schemas"]["BerthImportPlacement"];
+            dry_run: boolean;
+        };
+        BerthImportRejected: {
+            row: number;
+            errors: components["schemas"]["FieldError"][];
+        };
+        BerthImportDuplicate: {
+            row: number;
+            code: string;
+            /** @enum {string} */
+            reason: "code_in_file" | "code_on_map";
+        };
+        BerthImportPlanned: {
+            row: number;
+            code: string;
+            pier: string;
+            side: components["schemas"]["Side"];
+        };
+        BerthImportReport: {
+            rows_total: number;
+            valid: number;
+            rejected: components["schemas"]["BerthImportRejected"][];
+            duplicates: components["schemas"]["BerthImportDuplicate"][];
+            planned: components["schemas"]["BerthImportPlanned"][];
+            document?: components["schemas"]["MapSaveResult"];
+        };
+        BerthSummary: {
+            id: string;
+            map_id: string;
+            code: string;
+            structure_code: string | null;
+            width_cm: components["schemas"]["Cm"];
+            length_cm: components["schemas"]["Cm"];
+            max_loa_cm: components["schemas"]["Cm"];
+            max_beam_cm: components["schemas"]["Cm"];
+            /** Format: int64 */
+            depth_cm: number | null;
+            price_class: string | null;
+            mooring_type: components["schemas"]["MooringType"];
+            active: boolean;
+        };
+        BerthPage: {
+            items: components["schemas"]["BerthSummary"][];
+            next_cursor: string | null;
+        };
+        /** @enum {string} */
+        BerthGroupKind: "structure" | "transit" | "area" | "custom";
+        /** @enum {string} */
+        GroupResourceType: "berth" | "dynamic_area" | "land_resource";
+        BerthGroupMemberCounts: {
+            berth: number;
+            dynamic_area: number;
+            land_resource: number;
+        };
+        BerthGroup: {
+            id: string;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            kind: components["schemas"]["BerthGroupKind"];
+            sort_order: number;
+            member_counts: components["schemas"]["BerthGroupMemberCounts"];
+            version: number;
+        };
+        BerthGroupList: {
+            items: components["schemas"]["BerthGroup"][];
+        };
+        BerthGroupCreate: {
+            code: components["schemas"]["Code"];
+            name: components["schemas"]["I18nText"];
+            kind?: components["schemas"]["BerthGroupKind"];
+        };
+        BerthGroupPatch: {
+            code?: components["schemas"]["Code"];
+            name?: components["schemas"]["I18nText"];
+            kind?: components["schemas"]["BerthGroupKind"];
+            sort_order?: number;
+        };
+        PriceBand: {
+            max_cm: components["schemas"]["PositiveCm"];
+            class: string;
+        };
+        /** @description Width bands → price class, sorted by max_cm; fallback above the last band */
+        PriceClassRule: {
+            /** @enum {string} */
+            basis: "width";
+            bands: components["schemas"]["PriceBand"][];
+            fallback: string;
+        };
+        HarborSettings: {
+            price_class_rule: components["schemas"]["PriceClassRule"];
+            /** Format: int64 */
+            loa_tolerance_cm: number;
+            /** Format: int64 */
+            default_grid_cm: number;
+            version: number;
+        };
+        HarborSettingsPatch: {
+            price_class_rule?: components["schemas"]["PriceClassRule"];
+            /** Format: int64 */
+            loa_tolerance_cm?: number;
+            /** Format: int64 */
+            default_grid_cm?: number;
+        };
+        /** @enum {string} */
+        CustomerKind: "person" | "company";
+        /** @enum {string} */
+        CustomerCategory: "member" | "resident" | "affiliated" | "charter" | "yard";
+        ContactEntry: {
+            label: string;
+            value: string;
+        };
+        PaymentTerms: {
+            days: number;
+            end_of_month: boolean;
+        };
+        Customer: {
+            id: string;
+            kind: components["schemas"]["CustomerKind"];
+            first_name: string;
+            last_name: string;
+            company_name: string;
+            /** @description Empty for an anonymised customer */
+            display_name: string;
+            fiscal_code: string | null;
+            vat_number: string | null;
+            sdi_code: string | null;
+            pec: string | null;
+            billing_address: components["schemas"]["Address"];
+            nationality: string | null;
+            locale: components["schemas"]["Locale"];
+            emails: components["schemas"]["ContactEntry"][];
+            phones: components["schemas"]["ContactEntry"][];
+            category: components["schemas"]["CustomerCategory"] | null;
+            tags: string[];
+            payment_terms: components["schemas"]["PaymentTerms"] | null;
+            /** @description Masked, e.g. "IT•• •••• 1234"; the IBAN is never returned */
+            iban_masked: string | null;
+            notes: string;
+            merged_into_id: string | null;
+            /** Format: date-time */
+            anonymized_at: string | null;
+            /** Format: date-time */
+            archived_at: string | null;
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        CustomerInput: {
+            kind: components["schemas"]["CustomerKind"];
+            first_name?: string;
+            last_name?: string;
+            company_name?: string;
+            fiscal_code?: string;
+            vat_number?: string;
+            sdi_code?: string;
+            pec?: string;
+            billing_address?: components["schemas"]["Address"];
+            nationality?: string;
+            locale?: components["schemas"]["Locale"];
+            emails?: components["schemas"]["ContactEntry"][];
+            phones?: components["schemas"]["ContactEntry"][];
+            category?: components["schemas"]["CustomerCategory"];
+            tags?: string[];
+            payment_terms?: components["schemas"]["PaymentTerms"];
+            iban?: string;
+            notes?: string;
+        };
+        /** @description Partial update; null clears a nullable field, "" clears the IBAN */
+        CustomerPatch: {
+            kind?: components["schemas"]["CustomerKind"];
+            first_name?: string;
+            last_name?: string;
+            company_name?: string;
+            fiscal_code?: string | null;
+            vat_number?: string | null;
+            sdi_code?: string | null;
+            pec?: string | null;
+            billing_address?: components["schemas"]["Address"];
+            nationality?: string | null;
+            locale?: components["schemas"]["Locale"];
+            emails?: components["schemas"]["ContactEntry"][];
+            phones?: components["schemas"]["ContactEntry"][];
+            category?: components["schemas"]["CustomerCategory"] | null;
+            tags?: string[];
+            payment_terms?: components["schemas"]["PaymentTerms"] | null;
+            iban?: string;
+            notes?: string;
+        };
+        CustomerSummary: {
+            id: string;
+            kind: components["schemas"]["CustomerKind"];
+            display_name: string;
+            fiscal_code: string | null;
+            vat_number: string | null;
+            category: components["schemas"]["CustomerCategory"] | null;
+            tags: string[];
+            primary_email: string | null;
+            primary_phone: string | null;
+            vessel_count: number;
+            /** Format: date-time */
+            archived_at: string | null;
+            /** Format: date-time */
+            anonymized_at: string | null;
+            merged_into_id: string | null;
+        };
+        CustomerPage: {
+            items: components["schemas"]["CustomerSummary"][];
+            next_cursor: string | null;
+        };
+        CustomerCreated: {
+            customer: components["schemas"]["Customer"];
+            possible_duplicates: components["schemas"]["CustomerSummary"][];
+        };
+        CustomerVesselLink: {
+            vessel: components["schemas"]["VesselSummary"];
+            roles: components["schemas"]["VesselPartyRole"][];
+            /** Format: int64 */
+            share_millis: number | null;
+        };
+        CustomerOverview: {
+            customer: components["schemas"]["Customer"];
+            vessels: components["schemas"]["CustomerVesselLink"][];
+            documents: components["schemas"]["Document"][];
+            deadlines: components["schemas"]["Deadline"][];
+            /** @description The current consent of each kind */
+            consents: components["schemas"]["Consent"][];
+            duplicates: components["schemas"]["CustomerSummary"][];
+        };
+        CustomerMergeRequest: {
+            source_ids: string[];
+        };
+        CustomerAnonymizeRequest: {
+            /** @enum {boolean} */
+            confirm: true;
+        };
+        CustomerExport: {
+            /** @enum {string} */
+            format: "porto-customer/1";
+            /** Format: date-time */
+            exported_at: string;
+            customer: components["schemas"]["Customer"];
+            consents: components["schemas"]["Consent"][];
+            vessels: components["schemas"]["Vessel"][];
+            parties: components["schemas"]["VesselPartyRow"][];
+            documents: components["schemas"]["Document"][];
+            deadlines: components["schemas"]["Deadline"][];
+        };
+        /** @enum {string} */
+        ConsentKind: "privacy" | "marketing" | "third_party";
+        /** @enum {string} */
+        ConsentSource: "desk" | "online" | "import" | "api";
+        Consent: {
+            id: string;
+            kind: components["schemas"]["ConsentKind"];
+            policy_version: string;
+            granted: boolean;
+            source: components["schemas"]["ConsentSource"];
+            recorded_by: components["schemas"]["UserRef"] | null;
+            /** Format: date-time */
+            recorded_at: string;
+        };
+        ConsentList: {
+            items: components["schemas"]["Consent"][];
+        };
+        ConsentInput: {
+            kind: components["schemas"]["ConsentKind"];
+            policy_version: string;
+            granted: boolean;
+            source: components["schemas"]["ConsentSource"];
+        };
+        /** @enum {string} */
+        HullType: "monohull_motor" | "monohull_sail" | "catamaran" | "trimaran" | "rib" | "gozzo" | "other";
+        /** @enum {string} */
+        Fuel: "petrol" | "diesel" | "electric" | "hybrid" | "none" | "other";
+        /** @enum {string} */
+        DimensionsSource: "declared" | "measured";
+        /**
+         * @description Legal unit class from the effective LOA (natante, imbarcazione, nave)
+         * @enum {string}
+         */
+        UnitClass: "natante" | "imbarcazione" | "nave";
+        /** @enum {string} */
+        VesselPartyRole: "owner" | "operator" | "skipper" | "billing" | "contact";
+        Engine: {
+            make?: string;
+            model?: string;
+            /** Format: int64 */
+            power_kw?: number;
+            /** Format: int64 */
+            power_hp?: number;
+            serial?: string;
+            /** Format: int64 */
+            hours?: number;
+        };
+        VesselParty: {
+            customer_id: string;
+            display_name: string;
+            role: components["schemas"]["VesselPartyRole"];
+            /** Format: int64 */
+            share_millis: number | null;
+        };
+        /** @description A party link as stored (GDPR export) */
+        VesselPartyRow: {
+            vessel_id: string;
+            customer_id: string;
+            role: components["schemas"]["VesselPartyRole"];
+            /** Format: int64 */
+            share_millis: number | null;
+        };
+        VesselPartyInput: {
+            customer_id: string;
+            role: components["schemas"]["VesselPartyRole"];
+            /**
+             * Format: int64
+             * @description Owners only
+             */
+            share_millis?: number;
+        };
+        VesselPartiesReplace: {
+            parties: components["schemas"]["VesselPartyInput"][];
+        };
+        Vessel: {
+            id: string;
+            name: string;
+            registration: string | null;
+            registry_office: string | null;
+            flag: string | null;
+            home_port: string | null;
+            hull_type: components["schemas"]["HullType"];
+            model: string | null;
+            builder: string | null;
+            year_built: number | null;
+            hull_color: string | null;
+            hull_material: string | null;
+            loa_cm: components["schemas"]["Cm"];
+            /** Format: int64 */
+            lwl_cm: number | null;
+            beam_cm: components["schemas"]["Cm"];
+            /** Format: int64 */
+            draft_cm: number | null;
+            /** Format: int64 */
+            air_draft_cm: number | null;
+            /** Format: int64 */
+            displacement_kg: number | null;
+            /** Format: int64 */
+            measured_loa_cm: number | null;
+            /** Format: int64 */
+            measured_beam_cm: number | null;
+            /** Format: int64 */
+            measured_draft_cm: number | null;
+            /** Format: int64 */
+            measured_air_draft_cm: number | null;
+            /** Format: date-time */
+            measured_at: string | null;
+            measured_by: components["schemas"]["UserRef"] | null;
+            dimensions_source: components["schemas"]["DimensionsSource"];
+            effective_loa_cm: components["schemas"]["Cm"];
+            effective_beam_cm: components["schemas"]["Cm"];
+            /** Format: int64 */
+            effective_draft_cm: number | null;
+            unit_class: components["schemas"]["UnitClass"];
+            engines: components["schemas"]["Engine"][];
+            fuel: components["schemas"]["Fuel"] | null;
+            power_required_a: number | null;
+            notes: string;
+            parties: components["schemas"]["VesselParty"][];
+            documents: components["schemas"]["Document"][];
+            /** Format: date-time */
+            archived_at: string | null;
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        VesselInput: {
+            name: string;
+            registration?: string;
+            registry_office?: string;
+            flag?: string;
+            home_port?: string;
+            hull_type?: components["schemas"]["HullType"];
+            model?: string;
+            builder?: string;
+            year_built?: number;
+            hull_color?: string;
+            hull_material?: string;
+            loa_cm: components["schemas"]["PositiveCm"];
+            lwl_cm?: components["schemas"]["PositiveCm"];
+            beam_cm: components["schemas"]["PositiveCm"];
+            draft_cm?: components["schemas"]["PositiveCm"];
+            air_draft_cm?: components["schemas"]["PositiveCm"];
+            /** Format: int64 */
+            displacement_kg?: number;
+            engines?: components["schemas"]["Engine"][];
+            fuel?: components["schemas"]["Fuel"];
+            /** @enum {integer} */
+            power_required_a?: 16 | 32 | 63 | 125;
+            notes?: string;
+            parties?: components["schemas"]["VesselPartyInput"][];
+        };
+        /** @description Partial update; null clears a nullable field */
+        VesselPatch: {
+            name?: string;
+            registration?: string | null;
+            registry_office?: string | null;
+            flag?: string | null;
+            home_port?: string | null;
+            hull_type?: components["schemas"]["HullType"];
+            model?: string | null;
+            builder?: string | null;
+            year_built?: number | null;
+            hull_color?: string | null;
+            hull_material?: string | null;
+            loa_cm?: components["schemas"]["PositiveCm"];
+            /** Format: int64 */
+            lwl_cm?: number | null;
+            beam_cm?: components["schemas"]["PositiveCm"];
+            /** Format: int64 */
+            draft_cm?: number | null;
+            /** Format: int64 */
+            air_draft_cm?: number | null;
+            /** Format: int64 */
+            displacement_kg?: number | null;
+            dimensions_source?: components["schemas"]["DimensionsSource"];
+            engines?: components["schemas"]["Engine"][];
+            fuel?: components["schemas"]["Fuel"] | null;
+            power_required_a?: number | null;
+            notes?: string;
+        };
+        VesselMeasurementInput: {
+            loa_cm: components["schemas"]["PositiveCm"];
+            beam_cm: components["schemas"]["PositiveCm"];
+            draft_cm?: components["schemas"]["PositiveCm"];
+            air_draft_cm?: components["schemas"]["PositiveCm"];
+        };
+        VesselOwnerRef: {
+            customer_id: string;
+            display_name: string;
+        };
+        VesselSummary: {
+            id: string;
+            name: string;
+            registration: string | null;
+            hull_type: components["schemas"]["HullType"];
+            loa_cm: components["schemas"]["Cm"];
+            beam_cm: components["schemas"]["Cm"];
+            effective_loa_cm: components["schemas"]["Cm"];
+            effective_beam_cm: components["schemas"]["Cm"];
+            dimensions_source: components["schemas"]["DimensionsSource"];
+            unit_class: components["schemas"]["UnitClass"];
+            owners: components["schemas"]["VesselOwnerRef"][];
+            /** Format: date-time */
+            archived_at: string | null;
+        };
+        VesselPage: {
+            items: components["schemas"]["VesselSummary"][];
+            next_cursor: string | null;
+        };
+        /** @enum {string} */
+        DocumentOwnerType: "customer" | "vessel";
+        /** @enum {string} */
+        DocumentType: "identity_card" | "passport" | "driving_licence" | "boating_licence" | "navigation_licence" | "registration_certificate" | "insurance_policy" | "safety_certificate" | "power_declaration" | "signed_contract" | "proxy" | "photo" | "other";
+        Document: {
+            id: string;
+            owner_type: components["schemas"]["DocumentOwnerType"];
+            customer_id: string | null;
+            vessel_id: string | null;
+            type: components["schemas"]["DocumentType"];
+            /** @description Decrypted document number */
+            number: string | null;
+            issuer: string | null;
+            /** Format: date */
+            issued_on: string | null;
+            /** Format: date */
+            expires_on: string | null;
+            has_file: boolean;
+            file_name: string | null;
+            content_type: string | null;
+            /** Format: int64 */
+            size_bytes: number | null;
+            notes: string;
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        DocumentPage: {
+            items: components["schemas"]["Document"][];
+            next_cursor: string | null;
+        };
+        DocumentInput: {
+            owner_type: components["schemas"]["DocumentOwnerType"];
+            customer_id?: string;
+            vessel_id?: string;
+            type: components["schemas"]["DocumentType"];
+            number?: string;
+            issuer?: string;
+            /** Format: date */
+            issued_on?: string;
+            /** Format: date */
+            expires_on?: string;
+            notes?: string;
+        };
+        /** @description Partial update; null clears a nullable field (clearing expires_on removes the deadline) */
+        DocumentPatch: {
+            type?: components["schemas"]["DocumentType"];
+            number?: string | null;
+            issuer?: string | null;
+            /** Format: date */
+            issued_on?: string | null;
+            /** Format: date */
+            expires_on?: string | null;
+            notes?: string;
+        };
+        DocumentFileUrl: {
+            url: string;
+            /** Format: date-time */
+            expires_at: string;
+        };
+        /** @enum {string} */
+        DeadlineStatus: "open" | "done" | "dismissed";
+        /** @enum {string} */
+        DeadlineUrgency: "overdue" | "due_soon" | "later";
+        /**
+         * @description M1 kinds (from document types); later milestones add more
+         * @enum {string}
+         */
+        DeadlineKind: "identity_document" | "boating_licence" | "navigation_licence" | "registration_certificate" | "insurance" | "safety_certificate" | "power_declaration" | "other_document";
+        /** @enum {string} */
+        DeadlineSourceType: "document";
+        CustomerRef: {
+            id: string;
+            display_name: string;
+        };
+        VesselRef: {
+            id: string;
+            name: string;
+        };
+        Deadline: {
+            id: string;
+            kind: components["schemas"]["DeadlineKind"];
+            source_type: components["schemas"]["DeadlineSourceType"];
+            source_id: string;
+            customer: components["schemas"]["CustomerRef"] | null;
+            vessel: components["schemas"]["VesselRef"] | null;
+            document_type: components["schemas"]["DocumentType"] | null;
+            /** Format: date */
+            due_on: string;
+            status: components["schemas"]["DeadlineStatus"];
+            urgency: components["schemas"]["DeadlineUrgency"];
+            note: string;
+            version: number;
+        };
+        DeadlinePage: {
+            items: components["schemas"]["Deadline"][];
+            next_cursor: string | null;
+        };
+        DeadlinePatch: {
+            status?: components["schemas"]["DeadlineStatus"];
+            note?: string;
+        };
+        DeadlinePolicy: {
+            kind: components["schemas"]["DeadlineKind"];
+            lead_days: number[];
+        };
+        DeadlinePolicyList: {
+            items: components["schemas"]["DeadlinePolicy"][];
+        };
     };
     responses: {
         /** @description Malformed request or validation failure */
@@ -1315,6 +3207,33 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description Request body above the operation's limit, or file above 15 MiB (file_too_large) */
+        PayloadTooLarge: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
+        /** @description Content type not accepted by the operation */
+        UnsupportedMediaType: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
+        /** @description The map document breaks a blocking validation rule (map_invalid, with issues), or an idempotency key was reused */
+        MapInvalid: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
         /** @description Not ready */
         ServiceUnavailable: {
             headers: {
@@ -1336,6 +3255,13 @@ export interface components {
         IdempotencyKey: string;
         /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
         IfMatch: string;
+        MapId: string;
+        FileId: string;
+        GroupId: string;
+        CustomerId: string;
+        VesselId: string;
+        DocumentId: string;
+        DeadlineId: string;
         /** @description Value of the porto_csrf cookie; required on cookie-authenticated unsafe requests. */
         CSRFToken: string;
     };
@@ -2745,6 +4671,1708 @@ export interface operations {
             };
             404: components["responses"]["NotFound"];
             429: components["responses"]["TooManyRequests"];
+        };
+    };
+    listMaps: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Maps */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapSummaryList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createMap: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MapCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapDocument"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    reorderMaps: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MapReorder"];
+            };
+        };
+        responses: {
+            /** @description Reordered */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    importMap: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MapExport"];
+            };
+        };
+        responses: {
+            /** @description Imported */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapSummary"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            413: components["responses"]["PayloadTooLarge"];
+            422: components["responses"]["MapInvalid"];
+        };
+    };
+    getMap: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Map document */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapDocument"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    saveMap: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MapSaveRequest"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapSaveResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            413: components["responses"]["PayloadTooLarge"];
+            422: components["responses"]["MapInvalid"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    deleteMap: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    validateMap: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MapSaveRequest"];
+            };
+        };
+        responses: {
+            /** @description Validation report */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapValidationReport"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            413: components["responses"]["PayloadTooLarge"];
+        };
+    };
+    generateMapElements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GenerateRequest"];
+            };
+        };
+        responses: {
+            /** @description Generated elements */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerateResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            413: components["responses"]["PayloadTooLarge"];
+        };
+    };
+    uploadMapBackground: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "image/png": string;
+                "image/jpeg": string;
+                "image/svg+xml": string;
+            };
+        };
+        responses: {
+            /** @description Stored */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapBackgroundFile"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+        };
+    };
+    getMapBackground: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/png": string;
+                    "image/jpeg": string;
+                    "image/svg+xml": string;
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    exportMap: {
+        parameters: {
+            query?: {
+                format?: "json" | "geojson";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Export (Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapExport"];
+                    "application/geo+json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    convertConcessionGeojson: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConcessionGeojsonRequest"];
+            };
+        };
+        responses: {
+            /** @description Outline */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConcessionGeojsonResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    importBerthsCsv: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BerthImportRequest"];
+            };
+        };
+        responses: {
+            /** @description Report (with the saved document when applied) */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BerthImportReport"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            413: components["responses"]["PayloadTooLarge"];
+            422: components["responses"]["MapInvalid"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listBerths: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+                map_id?: string;
+                group_id?: string;
+                /** @description Code prefix or substring */
+                q?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Berths */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BerthPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listBerthGroups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Groups */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BerthGroupList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createBerthGroup: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BerthGroupCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BerthGroup"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    deleteBerthGroup: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                groupId: components["parameters"]["GroupId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateBerthGroup: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                groupId: components["parameters"]["GroupId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BerthGroupPatch"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BerthGroup"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getHarborSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HarborSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateHarborSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HarborSettingsPatch"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HarborSettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listCustomers: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+                q?: string;
+                category?: components["schemas"]["CustomerCategory"];
+                tag?: string;
+                /** @description Include only archived customers */
+                archived?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Customers */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createCustomer: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomerInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerCreated"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    getCustomer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Customer */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Customer"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateCustomer: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomerPatch"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Customer"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getCustomerOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Overview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerOverview"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    archiveCustomer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Archived */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    unarchiveCustomer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Restored */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    mergeCustomers: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomerMergeRequest"];
+            };
+        };
+        responses: {
+            /** @description Merged target */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Customer"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    anonymizeCustomer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomerAnonymizeRequest"];
+            };
+        };
+        responses: {
+            /** @description Anonymised */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    exportCustomer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Export */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerExport"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listConsents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Consents */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    recordConsent: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsentInput"];
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Consent"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    listVessels: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+                q?: string;
+                customer_id?: string;
+                hull_type?: components["schemas"]["HullType"];
+                archived?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Vessels */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VesselPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createVessel: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VesselInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Vessel"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    getVessel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Vessel */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Vessel"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateVessel: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VesselPatch"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Vessel"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    replaceVesselParties: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VesselPartiesReplace"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Vessel"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    recordVesselMeasurement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VesselMeasurementInput"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Vessel"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    archiveVessel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Archived */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    unarchiveVessel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                vesselId: components["parameters"]["VesselId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Restored */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    listDocuments: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+                customer_id?: string;
+                vessel_id?: string;
+                type?: components["schemas"]["DocumentType"];
+                expires_before?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Documents */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createDocument: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocumentInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Document"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    getDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Document */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Document"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    deleteDocument: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateDocument: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocumentPatch"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Document"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getDocumentFile: {
+        parameters: {
+            query?: {
+                exp?: number;
+                sig?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description File bytes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                    "image/png": string;
+                    "image/jpeg": string;
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    uploadDocumentFile: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Original file name (sanitised, at most 120 characters kept) */
+                "X-File-Name"?: string;
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/pdf": string;
+                "image/png": string;
+                "image/jpeg": string;
+            };
+        };
+        responses: {
+            /** @description Stored */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Document"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+        };
+    };
+    deleteDocumentFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createDocumentFileURL: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Signed link */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentFileUrl"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listDeadlines: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+                /** @description Default open */
+                status?: components["schemas"]["DeadlineStatus"];
+                kind?: components["schemas"]["DeadlineKind"];
+                urgency?: components["schemas"]["DeadlineUrgency"];
+                due_before?: string;
+                due_after?: string;
+                customer_id?: string;
+                vessel_id?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deadlines */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeadlinePage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateDeadline: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                deadlineId: components["parameters"]["DeadlineId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeadlinePatch"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Deadline"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listDeadlinePolicies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Policies */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeadlinePolicyList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    replaceDeadlinePolicies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeadlinePolicyList"];
+            };
+        };
+        responses: {
+            /** @description Policies */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeadlinePolicyList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
         };
     };
 }

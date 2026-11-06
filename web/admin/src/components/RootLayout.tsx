@@ -7,7 +7,8 @@ export function RootLayout() {
   return (
     <TooltipProvider>
       <Outlet />
-      <Toaster richColors closeButton />
+      {/* Theme-token colours (popover); sonner's richColors palette fails WCAG AA contrast. */}
+      <Toaster closeButton />
     </TooltipProvider>
   );
 }

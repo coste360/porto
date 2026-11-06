@@ -19,7 +19,28 @@ type Policy struct {
 	Methods []reqctx.AuthMethod
 	// CSRF is true when the cookie alternative also requires the csrfToken scheme.
 	CSRF bool
+	// MaxBodyBytes is the request body limit of the operation (x-porto-max-body-bytes); 0 = the default.
+	MaxBodyBytes int64
+	// BodyTypes are the request content types the operation declares (empty = no request body).
+	BodyTypes []string
 }
+
+// BinaryBody reports whether the operation takes a raw (non-JSON) body: it declares request content types and
+// none of them is JSON. Such bodies reach the handler as they are; the service checks the type after
+// authorising (m1-plan §4.1).
+func (p Policy) BinaryBody() bool {
+	if len(p.BodyTypes) == 0 {
+		return false
+	}
+	for _, t := range p.BodyTypes {
+		if isJSONType(t) {
+			return false
+		}
+	}
+	return true
+}
+
+func isJSONType(ct string) bool { return ct == "application/json" || strings.HasSuffix(ct, "+json") }
 
 // Public reports whether the operation needs no authentication.
 func (p Policy) Public() bool { return len(p.Methods) == 0 }
@@ -43,8 +64,12 @@ var schemeMethods = map[string]reqctx.AuthMethod{
 }
 
 type specOperation struct {
-	OperationID string                 `yaml:"operationId"`
-	Security    *[]map[string][]string `yaml:"security"`
+	OperationID  string                 `yaml:"operationId"`
+	Security     *[]map[string][]string `yaml:"security"`
+	MaxBodyBytes int64                  `yaml:"x-porto-max-body-bytes"`
+	RequestBody  *struct {
+		Content map[string]yaml.Node `yaml:"content"`
+	} `yaml:"requestBody"`
 }
 
 type specDocument struct {
@@ -75,7 +100,16 @@ func ParsePolicies(spec []byte) (Policies, error) {
 			if op.Security != nil {
 				reqs = *op.Security
 			}
-			p := Policy{OperationID: op.OperationID}
+			if op.MaxBodyBytes < 0 || op.MaxBodyBytes > MaxBodyCap {
+				return nil, fmt.Errorf("middleware: %s %s: x-porto-max-body-bytes out of range", name, path)
+			}
+			p := Policy{OperationID: op.OperationID, MaxBodyBytes: op.MaxBodyBytes}
+			if op.RequestBody != nil {
+				for ct := range op.RequestBody.Content {
+					p.BodyTypes = append(p.BodyTypes, strings.ToLower(ct))
+				}
+				slices.Sort(p.BodyTypes)
+			}
 			for _, alt := range reqs {
 				var method reqctx.AuthMethod
 				csrf := false
@@ -106,6 +140,14 @@ func ParsePolicies(spec []byte) (Policies, error) {
 	}
 	return out, nil
 }
+
+// Request body limits (m1-plan §4.1, D20).
+const (
+	// DefaultMaxBodyBytes applies to operations without x-porto-max-body-bytes.
+	DefaultMaxBodyBytes int64 = 1 << 20
+	// MaxBodyCap is the hard cap of every request body (the global BodyLimit).
+	MaxBodyCap int64 = 16 << 20
+)
 
 // unsafeMethod reports whether an HTTP method can change state.
 func unsafeMethod(m string) bool {

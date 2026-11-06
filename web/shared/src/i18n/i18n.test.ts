@@ -18,5 +18,13 @@ describe('i18n', () => {
     expect(detectLocale('en')).toBe('en');
     expect(detectLocale(null, ['en-GB', 'it'])).toBe('en');
     expect(detectLocale('de', ['fr-FR'])).toBe('it');
+    expect(detectLocale(null, ['it-IT', 'en'])).toBe('it');
+  });
+
+  it('defaults to Italian for browsers whose preferred language is neither it nor en', () => {
+    expect(detectLocale(null, ['de-DE', 'de', 'en-US', 'en'])).toBe('it');
+    expect(detectLocale(null, ['fr-FR'])).toBe('it');
+    expect(detectLocale(null, [])).toBe('it');
+    expect(detectLocale(null, ['EN-us'])).toBe('en');
   });
 });

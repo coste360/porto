@@ -43,8 +43,8 @@ HAS_API     = $(wildcard api/openapi.yaml)
 HAS_API_CFG = $(wildcard api/oapi-codegen.yaml)
 HAS_CMD     = $(wildcard cmd/porto/*.go)
 
-GO_GENERATED  := internal/http/api/api.gen.go internal/geo/sintable_gen.go
-WEB_GENERATED := web/shared/api/generated
+GO_GENERATED  := internal/http/api/api.gen.go internal/geo/sintable_gen.go internal/domain/layout/kitassets_gen.go
+WEB_GENERATED := web/shared/api/generated web/shared/src/map/kit/generated
 STATIC_DIR    := internal/http/static
 LICENSES_OK   := MIT,BSD-2-Clause,BSD-3-Clause,Apache-2.0,ISC,MPL-2.0
 
@@ -113,12 +113,13 @@ seed: ## Seed the local dev database with the demo marina
 # ---------------------------------------------------------------------------
 
 .PHONY: gen
-gen: ## Regenerate code: OpenAPI server, trig table, TypeScript client
+gen: ## Regenerate code: OpenAPI server, trig table, kit asset ids, TypeScript client and kit symbols
 	@set -euo pipefail; \
 	if [ -n "$(HAS_API)" ] && [ -n "$(HAS_API_CFG)" ]; then \
 		go tool oapi-codegen -config api/oapi-codegen.yaml api/openapi.yaml; \
 	else $(call skip,gen api,api/openapi.yaml); fi; \
 	go generate ./internal/geo/...; \
+	go generate ./internal/domain/layout/...; \
 	if [ -n "$(HAS_WEB)" ]; then npm --prefix web run gen; \
 	else $(call skip,gen web,web/package.json); fi
 

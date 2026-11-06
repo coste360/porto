@@ -4,3 +4,4 @@ shared/api/generated
 shared/src/brand
 package-lock.json
 coverage
+shared/src/map/kit/generated

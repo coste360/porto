@@ -19,6 +19,26 @@ func BackupTables() []string {
 		"webhook_endpoints",
 		"webhook_deliveries",
 		"message_log",
+		// M1 harbour (00002_harbor)
+		"stored_files",
+		"harbor_settings",
+		"maps",
+		"harbor_structures",
+		"pedestals",
+		"berths",
+		"dynamic_areas",
+		"land_resources",
+		"map_decorations",
+		"berth_groups",
+		"berth_group_members",
+		// M1 registry (00003_registry)
+		"customers",
+		"consents",
+		"vessels",
+		"vessel_parties",
+		"documents",
+		"deadlines",
+		"deadline_policies",
 	}
 }
 

@@ -1,0 +1,56 @@
+{
+  "title": "Scadenze",
+  "description": "Documenti e assicurazioni in scadenza di clienti e barche.",
+  "empty": "Nessuna scadenza.",
+  "urgency": {
+    "overdue": "Scadute",
+    "due_soon": "In scadenza",
+    "later": "Più avanti"
+  },
+  "statuses": {
+    "open": "Aperta",
+    "done": "Gestita",
+    "dismissed": "Ignorata"
+  },
+  "kinds": {
+    "identity_document": "Documento d'identità",
+    "boating_licence": "Patente nautica",
+    "navigation_licence": "Licenza di navigazione",
+    "registration_certificate": "Certificato d'iscrizione",
+    "insurance": "Assicurazione",
+    "safety_certificate": "Certificato di sicurezza",
+    "power_declaration": "Dichiarazione di potenza",
+    "other_document": "Altro documento"
+  },
+  "filters": {
+    "status": "Stato",
+    "kind": "Tipo",
+    "allKinds": "Tutti i tipi",
+    "urgency": "Urgenza",
+    "allUrgencies": "Tutte"
+  },
+  "columns": {
+    "due": "Scadenza",
+    "kind": "Tipo",
+    "subject": "Cliente e barca",
+    "status": "Stato"
+  },
+  "markDone": "Gestita",
+  "dismiss": "Ignora",
+  "reopen": "Riapri",
+  "updated": "Scadenza aggiornata.",
+  "policies": {
+    "title": "Anticipi di avviso",
+    "description": "Per ogni tipo di scadenza, quanti giorni prima diventa «in scadenza».",
+    "leadDays": "Giorni di anticipo",
+    "leadDaysHint": "Uno o più numeri di giorni separati da virgola, es. 60, 15.",
+    "invalid": "Usa numeri interi di giorni tra 0 e 730, separati da virgola.",
+    "saved": "Anticipi salvati."
+  },
+  "dashboard": {
+    "title": "Scadenze",
+    "description": "Documenti e assicurazioni di clienti e barche.",
+    "viewAll": "Vedi tutte",
+    "more": "{{count}}+"
+  }
+}

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -203,5 +204,88 @@ func TestRequestID_EchoesValidAndReplacesInvalid(t *testing.T) {
 	rec = do(h, "GET", "/", func(r *http.Request) { r.Header.Set(RequestIDHeader, "bad id\n") })
 	if got := rec.Body.String(); got == "" || strings.Contains(got, "bad") {
 		t.Fatalf("got %q", got)
+	}
+}
+
+const bodySpec = `
+paths:
+  /api/admin/v1/small:
+    post:
+      operationId: small
+      security: []
+      requestBody:
+        content:
+          application/json: { schema: { type: object } }
+  /api/admin/v1/big:
+    put:
+      operationId: big
+      security: []
+      x-porto-max-body-bytes: 4096
+      requestBody:
+        content:
+          application/pdf: { schema: { type: string, format: binary } }
+          image/png: { schema: { type: string, format: binary } }
+`
+
+func TestPolicies_BodyLimitAndContentTypes(t *testing.T) {
+	ps, err := ParsePolicies([]byte(bodySpec))
+	if err != nil {
+		t.Fatal(err)
+	}
+	small, _ := ps.Lookup("POST", "/api/admin/v1/small")
+	big, _ := ps.Lookup("PUT", "/api/admin/v1/big")
+	if small.MaxBodyBytes != 0 || small.BinaryBody() || len(small.BodyTypes) != 1 {
+		t.Fatalf("small = %+v", small)
+	}
+	if big.MaxBodyBytes != 4096 || !big.BinaryBody() || strings.Join(big.BodyTypes, ",") != "application/pdf,image/png" {
+		t.Fatalf("big = %+v", big)
+	}
+	tooBig := strings.Replace(bodySpec, "4096", "999999999", 1)
+	if _, err := ParsePolicies([]byte(tooBig)); err == nil {
+		t.Fatal("limit above the hard cap accepted")
+	}
+}
+
+func TestBodyLimit_PerOperation(t *testing.T) {
+	ps, err := ParsePolicies([]byte(bodySpec))
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := chi.NewRouter()
+	r.Use(RequestID())
+	read := func(w http.ResponseWriter, r *http.Request) {
+		if _, err := io.Copy(io.Discard, r.Body); err != nil {
+			w.WriteHeader(http.StatusRequestEntityTooLarge)
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}
+	r.Group(func(r chi.Router) {
+		r.Use(Route(), BodyLimitByPolicy(ps), RequireJSON(ps))
+		r.Post("/api/admin/v1/small", read)
+		r.Put("/api/admin/v1/big", read)
+	})
+	send := func(method, path, ct string, n int) int {
+		req := httptest.NewRequest(method, path, strings.NewReader(strings.Repeat("a", n)))
+		req.Header.Set("Content-Type", ct)
+		rec := httptest.NewRecorder()
+		r.ServeHTTP(rec, req)
+		return rec.Code
+	}
+	cases := []struct {
+		name, method, path, ct string
+		n, want                int
+	}{
+		{"default limit ok", "POST", "/api/admin/v1/small", "application/json", int(DefaultMaxBodyBytes), http.StatusNoContent},
+		{"default limit exceeded", "POST", "/api/admin/v1/small", "application/json", int(DefaultMaxBodyBytes) + 1, http.StatusRequestEntityTooLarge},
+		{"json op refuses binary", "POST", "/api/admin/v1/small", "application/pdf", 10, http.StatusUnsupportedMediaType},
+		{"operation limit ok", "PUT", "/api/admin/v1/big", "application/pdf", 4096, http.StatusNoContent},
+		{"operation limit exceeded", "PUT", "/api/admin/v1/big", "application/pdf", 4097, http.StatusRequestEntityTooLarge},
+		{"binary op lets any type through", "PUT", "/api/admin/v1/big", "image/gif", 10, http.StatusNoContent},
+	}
+	for _, c := range cases {
+		if got := send(c.method, c.path, c.ct, c.n); got != c.want {
+			t.Errorf("%s: status %d, want %d", c.name, got, c.want)
+		}
 	}
 }

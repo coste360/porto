@@ -22,13 +22,19 @@ import (
 	"github.com/coste360/porto/internal/domain/audit"
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
+	"github.com/coste360/porto/internal/domain/customer"
+	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/device"
+	"github.com/coste360/porto/internal/domain/document"
 	"github.com/coste360/porto/internal/domain/event"
+	"github.com/coste360/porto/internal/domain/harbor"
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/meta"
 	"github.com/coste360/porto/internal/domain/notify"
 	"github.com/coste360/porto/internal/domain/team"
+	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/domain/webhook"
+	"github.com/coste360/porto/internal/filestore"
 	httpserver "github.com/coste360/porto/internal/http"
 	"github.com/coste360/porto/internal/http/admin"
 	httpdevice "github.com/coste360/porto/internal/http/device"
@@ -76,6 +82,14 @@ type App struct {
 	Deliverer  *webhook.Deliverer
 	Outbox     *event.Outbox
 	Bus        *sse.ReplayBus
+
+	// M1
+	Files     *filestore.Store
+	Harbor    *harbor.Service
+	Customers *customer.Service
+	Vessels   *vessel.Service
+	Documents *document.Service
+	Deadlines *deadline.Service
 
 	ownDB bool
 }
@@ -141,6 +155,22 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	a.Devices = device.NewService(db, clk, aw, a.Outbox, log, device.Options{
 		BaseURL: cfg.BaseURL.String(), DemoUserEmail: cfg.DemoPairingUser, DemoMarinaSlug: cfg.DemoPairingMarina,
 	})
+	a.Files = filestore.New(filepath.Join(cfg.DataDir, "files"), cfg.Keys)
+	a.Harbor = harbor.NewService(harbor.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
+	})
+	a.Customers = customer.NewService(customer.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
+	})
+	a.Vessels = vessel.NewService(vessel.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
+	})
+	a.Deadlines = deadline.NewService(deadline.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
+	})
+	a.Documents = document.NewService(document.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
+	})
 	policy := event.EgressPolicy{AllowPrivate: cfg.WebhooksAllowPrivate, AllowHTTP: cfg.WebhooksAllowPrivate}
 	a.Webhooks = webhook.NewService(db, clk, cfg.Keys, aw, a.Outbox, policy, log)
 	a.Deliverer = webhook.NewDeliverer(db, clk, cfg.Keys, event.NewEgress(policy, webhook.DeliveryTimeout), aw, a.Version, log)
@@ -163,6 +193,8 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			Clock: clk, Auth: authSvc, Team: a.Team, Marinas: a.Marinas, APIKeys: a.APIKeys, Devices: a.Devices,
 			Webhooks: a.Webhooks, Audit: auditlog.NewService(db, aw), SSE: sse.NewServer(a.Bus, a.Bus, log),
 			Meta: meta.Get(cfg, a.Version), SecureCookies: cfg.SecureCookies(),
+			Harbor: a.Harbor, Customers: a.Customers, Vessels: a.Vessels, Documents: a.Documents,
+			Deadlines: a.Deadlines,
 		},
 		Device:               &httpdevice.Handler{Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String()},
 		Public:               &public.Handler{Marinas: a.Marinas},

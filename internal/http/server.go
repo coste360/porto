@@ -25,8 +25,9 @@ import (
 	"github.com/coste360/porto/internal/http/static"
 )
 
-// MaxBodyBytes is the request body limit (m0-plan §5).
-const MaxBodyBytes = 1 << 20
+// MaxBodyBytes is the hard cap of every request body (m1-plan §4.1); each operation has its own, smaller or
+// equal limit from the contract (x-porto-max-body-bytes, default 1 MiB), applied per operation.
+const MaxBodyBytes = middleware.MaxBodyCap
 
 // Fixed limits (m0-plan §5).
 const (
@@ -140,6 +141,7 @@ func NewRouter(d Deps) (http.Handler, error) {
 	perOp := []func(http.Handler) http.Handler{
 		middleware.Route(),
 		middleware.Authenticate(d.Authenticator),
+		middleware.BodyLimitByPolicy(policies),
 		middleware.Enforce(policies, middleware.EnforceOptions{TOTPAllowed: totpEnrolmentOperations}),
 		middleware.RateLimit(policies, middleware.RateLimitOptions{
 			ByIP: map[string]*middleware.Limiter{
@@ -149,7 +151,7 @@ func NewRouter(d Deps) (http.Handler, error) {
 			},
 			APIKey: middleware.NewLimiter(d.Clock, apiKeyPerMinute, time.Minute),
 		}),
-		middleware.RequireJSON(),
+		middleware.RequireJSON(policies),
 		middleware.Idempotency(middleware.IdempotencyOptions{Store: d.Idempotency, Clock: d.Clock}),
 	}
 	slices.Reverse(perOp)

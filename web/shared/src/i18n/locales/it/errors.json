@@ -32,5 +32,14 @@
   "precondition_required": "Ricarica i dati prima di salvare.",
   "rate_limited": "Troppi tentativi. Riprova tra poco.",
   "internal_error": "Errore imprevisto. Riprova più tardi.",
-  "not_ready": "Il servizio non è ancora pronto. Riprova tra poco."
+  "not_ready": "Il servizio non è ancora pronto. Riprova tra poco.",
+  "map_invalid": "La mappa non rispetta le regole di validazione: correggi gli errori indicati.",
+  "map_not_empty": "La mappa contiene ancora posti barca, aree o risorse a terra.",
+  "map_not_georeferenced": "La mappa non è georeferenziata.",
+  "invalid_file": "File non valido o non corrispondente al tipo dichiarato.",
+  "file_too_large": "Il file supera la dimensione massima di 15 MB.",
+  "csv_invalid": "Il file CSV non è valido.",
+  "customer_anonymized": "Il cliente è stato anonimizzato e non può essere modificato.",
+  "customer_merged": "Il cliente è stato unito a un altro e non può essere modificato.",
+  "download_link_expired": "Il link di download è scaduto o non è valido. Richiedine uno nuovo."
 }

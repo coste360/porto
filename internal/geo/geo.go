@@ -105,8 +105,9 @@ func Orientation(a, b, c Point) int {
 	}
 }
 
-// divRound returns num/den rounded half-even. den > 0.
-func divRound(num, den int64) int64 {
+// DivRoundHalfEven returns num/den rounded half-even; den > 0. It is the single rounding helper of the
+// integer geometry (geo, layout): every rounded division goes through it (.claude/rules/geometry.md).
+func DivRoundHalfEven(num, den int64) int64 {
 	neg := num < 0
 	u := uint64(num)
 	if neg {
@@ -128,8 +129,8 @@ func Rotate(p, center Point, a Angle) Point {
 	s, c := Sin(a), Cos(a)
 	dx, dy := int64(p.X-center.X), int64(p.Y-center.Y)
 	return Point{
-		X: center.X + Cm(divRound(dx*c-dy*s, TrigScale)),
-		Y: center.Y + Cm(divRound(dx*s+dy*c, TrigScale)),
+		X: center.X + Cm(DivRoundHalfEven(dx*c-dy*s, TrigScale)),
+		Y: center.Y + Cm(DivRoundHalfEven(dx*s+dy*c, TrigScale)),
 	}
 }
 

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { createFetchMock, problem } from '../testing';
-import { CSRF_HEADER, createApiClient, ifMatch, unwrap } from './client';
+import { CSRF_HEADER, createApiClient, ifMatch, unwrap, uploadBinary } from './client';
 import { ProblemError } from './problem';
 
 describe('api client', () => {
@@ -66,5 +66,47 @@ describe('api client', () => {
 
   it('formats If-Match as a quoted version', () => {
     expect(ifMatch(7)).toBe('"7"');
+  });
+});
+
+describe('uploadBinary', () => {
+  it('sends the raw body with content type and CSRF header, and parses the JSON answer', async () => {
+    const calls: Request[] = [];
+    const fake: typeof fetch = async (input, init) => {
+      calls.push(new Request(input as string, init));
+      return new Response(JSON.stringify({ id: 'd1' }), { status: 200, headers: { ETag: '"2"' } });
+    };
+    const { data, response } = await uploadBinary<{ id: string }>(
+      'http://local/api/admin/v1/marinas/m/documents/d/file',
+      new Uint8Array([37, 80, 68, 70]),
+      {
+        method: 'PUT',
+        contentType: 'application/pdf',
+        headers: { 'X-File-Name': 'a.pdf' },
+        fetch: fake,
+        readCsrf: () => 'tok',
+      },
+    );
+    expect(data.id).toBe('d1');
+    expect(response.headers.get('ETag')).toBe('"2"');
+    expect(calls[0]?.method).toBe('PUT');
+    expect(calls[0]?.headers.get('Content-Type')).toBe('application/pdf');
+    expect(calls[0]?.headers.get('X-CSRF-Token')).toBe('tok');
+    expect(calls[0]?.headers.get('X-File-Name')).toBe('a.pdf');
+  });
+
+  it('throws a ProblemError on errors', async () => {
+    const fake: typeof fetch = async () =>
+      new Response(JSON.stringify({ type: 'file_too_large', title: 'x', status: 413 }), {
+        status: 413,
+        headers: { 'Content-Type': 'application/problem+json' },
+      });
+    await expect(
+      uploadBinary('http://local/x', new Uint8Array([1]), {
+        method: 'POST',
+        contentType: 'image/png',
+        fetch: fake,
+      }),
+    ).rejects.toMatchObject({ type: 'file_too_large', status: 413 });
   });
 });

@@ -14,13 +14,14 @@ export function isLocale(value: unknown): value is Locale {
   return typeof value === 'string' && (SUPPORTED_LOCALES as readonly string[]).includes(value);
 }
 
-/** Picks it/en from an explicit value (e.g. `?lang=`), then the browser languages. */
+/**
+ * Picks it/en from an explicit value (e.g. `?lang=`), then the browser's preferred language. Only the first
+ * browser language counts: a German browser that also lists English gets Italian, the source language, which
+ * is also the default for every locale other than it and en.
+ */
 export function detectLocale(explicit?: string | null, languages?: readonly string[]): Locale {
-  const candidates = [
-    explicit ?? undefined,
-    ...(languages ?? (typeof navigator !== 'undefined' ? navigator.languages : [])),
-  ];
-  for (const candidate of candidates) {
+  const browser = languages ?? (typeof navigator !== 'undefined' ? navigator.languages : []);
+  for (const candidate of [explicit ?? undefined, browser[0]]) {
     const base = candidate?.toLowerCase().split('-')[0];
     if (isLocale(base)) return base;
   }

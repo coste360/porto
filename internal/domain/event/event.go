@@ -33,10 +33,27 @@ const (
 	WebhookTest         = "webhook.test"
 )
 
+// M1 event types (version 1, m1-plan §4.6). Only config.map_changed, customer.created and customer.anonymized
+// are public (spec 27.3); the others feed SSE and cache invalidation only.
+const (
+	ConfigMapChanged   = "config.map_changed"
+	CustomerCreated    = "customer.created"
+	CustomerAnonymized = "customer.anonymized"
+	CustomerUpdated    = "customer.updated"
+	CustomerMerged     = "customer.merged"
+	VesselChanged      = "vessel.changed"
+	DocumentChanged    = "document.changed"
+	DeadlineChanged    = "deadline.changed"
+)
+
 // SSE topics.
 const (
 	TopicMarina = "marina.changed"
 	TopicTeam   = "team.changed"
+	// TopicMap carries harbour map, berth group and harbour settings changes (M1).
+	TopicMap = "map.changed"
+	// TopicRegistry carries customer, vessel, document and deadline changes (M1).
+	TopicRegistry = "registry.changed"
 )
 
 // TypeInfo describes an event type. Public types can be subscribed by webhook endpoints; Topic is the SSE event
@@ -60,6 +77,14 @@ var catalogue = []TypeInfo{
 	{DevicePaired, TopicTeam, true},
 	{DeviceRevoked, TopicTeam, true},
 	{WebhookTest, "", false},
+	{ConfigMapChanged, TopicMap, true},
+	{CustomerCreated, TopicRegistry, true},
+	{CustomerAnonymized, TopicRegistry, true},
+	{CustomerUpdated, TopicRegistry, false},
+	{CustomerMerged, TopicRegistry, false},
+	{VesselChanged, TopicRegistry, false},
+	{DocumentChanged, TopicRegistry, false},
+	{DeadlineChanged, TopicRegistry, false},
 }
 
 // Types returns the catalogue of event types.

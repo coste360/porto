@@ -48,7 +48,7 @@ garantiscono le invarianti.
 `customers` (persona o società, fiscali, SdI, consensi, categoria, condizioni di pagamento, IBAN), `vessels`
 (dimensioni dichiarate e misurate, `dimensions_source`, tipo, motori, bandiera, matricola), `vessel_parties`
 (vessel_id, customer_id, role, share_millis), `documents` (owner_type, owner_id, type, number, issued_on,
-expires_on, file_ref cifrato, extracted (json), extracted_by, confirmed_by), `deadlines` (source_type, source_id,
+expires_on, file_ref cifrato), `deadlines` (source_type, source_id,
 due_on, kind, notified_at[]).
 
 ### 6.5 Catalogo, listini, contratti

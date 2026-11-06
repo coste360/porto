@@ -1,0 +1,171 @@
+{
+  "title": "Harbour maps",
+  "description": "Water area, yards, sheds and parking of the marina.",
+  "empty": "No maps yet: create one to start.",
+  "listLabel": "Maps",
+  "georeferenced": "Georeferenced",
+  "units": {
+    "m": "m"
+  },
+  "kind": {
+    "water": "Water area",
+    "yard": "Yard",
+    "shed": "Shed",
+    "parking": "Parking",
+    "boxes": "Boxes",
+    "other": "Other"
+  },
+  "counts": {
+    "berths": "Berths: {{count}}",
+    "structures": "Structures: {{count}}",
+    "areas": "Dynamic areas: {{count}}",
+    "landResources": "Land resources: {{count}}"
+  },
+  "actions": {
+    "open": "Open",
+    "edit": "Edit in the editor",
+    "print": "Print",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "importBerths": "Import berths from CSV"
+  },
+  "create": {
+    "action": "New map",
+    "title": "New map",
+    "kind": "Type",
+    "nameIt": "Name (Italian)",
+    "nameEn": "Name (English)",
+    "width": "Width",
+    "height": "Height",
+    "grid": "Grid step",
+    "gridHint": "Used for snapping in the editor."
+  },
+  "validation": {
+    "size": "Enter a size between 1 m and 5 km.",
+    "grid": "Enter a step between 1 cm and 100 m."
+  },
+  "import": {
+    "action": "Import JSON",
+    "done": "Map imported.",
+    "invalidFile": "The file is not a valid Porto map export."
+  },
+  "export": {
+    "action": "Export",
+    "json": "Configuration (JSON)",
+    "geojson": "GeoJSON"
+  },
+  "delete": {
+    "title": "Delete the map?",
+    "description": "Only maps without berths, dynamic areas and land resources can be deleted. Structures and decorations are deleted with the map.",
+    "done": "Map deleted."
+  },
+  "viewer": {
+    "toolbar": "Map controls",
+    "fit": "Fit to view",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "canvas": "Harbour map"
+  },
+  "layers": {
+    "title": "Layers",
+    "background": "Background",
+    "water_land": "Water and land",
+    "grid": "Grid",
+    "structures": "Structures",
+    "berths": "Berths",
+    "areas": "Dynamic areas",
+    "land_resources": "Land resources",
+    "pedestals": "Pedestals",
+    "decorations": "Decorations",
+    "labels": "Labels",
+    "concession": "Concession perimeter"
+  },
+  "list": {
+    "title": "Berths by structure",
+    "empty": "No berths on the map.",
+    "buoys": "Buoy field",
+    "unattached": "Berths without a structure",
+    "noBerths": "No berths on this structure.",
+    "selectStructure": "Select all: {{name}}"
+  },
+  "element": {
+    "berth": "Berth {{code}}",
+    "buoy": "Buoy {{code}}",
+    "area": "Dynamic area {{code}}",
+    "land": "Land resource {{code}}",
+    "pedestal": "Pedestal {{code}}",
+    "structure": {
+      "quay": "Quay {{code}}",
+      "pier": "Pier {{code}}",
+      "finger": "Finger {{code}}",
+      "breakwater": "Breakwater {{code}}",
+      "channel": "Channel {{code}}",
+      "walkway": "Walkway {{code}}"
+    },
+    "decoration": {
+      "symbol": "Symbol",
+      "text": "Text",
+      "depth_label": "Depth label",
+      "north_arrow": "North arrow",
+      "scale_bar": "Scale bar"
+    }
+  },
+  "print": {
+    "options": "Print options",
+    "paper": "Paper",
+    "orientation": "Orientation",
+    "portrait": "Portrait",
+    "landscape": "Landscape",
+    "scale": "Scale",
+    "fit": "Fit to page",
+    "action": "Print",
+    "cropped": "The map does not fit the page at this scale: the top-left part is printed.",
+    "sheet": "Map print sheet",
+    "scaleLabel": "Scale 1:{{n}}",
+    "legend": "Legend",
+    "priceClasses": "Price classes",
+    "scaleBar": "Scale bar"
+  },
+  "settings": {
+    "title": "Map settings",
+    "description": "Berth groups, price classes proposed from the width, length tolerance and default grid.",
+    "rulesTitle": "Rules",
+    "rulesHint": "A berth gets the class of the first band whose maximum width covers the berth width.",
+    "loaTolerance": "Length tolerance",
+    "loaToleranceHint": "How much the maximum length overall may exceed the berth length.",
+    "defaultGrid": "Default grid of new maps",
+    "bands": "Width bands",
+    "bandMax": "Width up to",
+    "bandClass": "Class",
+    "addBand": "Add band",
+    "removeBand": "Remove band {{n}}",
+    "fallback": "Class beyond the last band",
+    "fallbackHint": "Leave empty for no class.",
+    "validation": {
+      "tolerance": "Enter a tolerance between 0 and 5 m.",
+      "grid": "Enter a step between 1 cm and 100 m.",
+      "bandMax": "Enter a valid width.",
+      "bandDuplicate": "Two bands have the same width."
+    }
+  },
+  "groups": {
+    "title": "Groups",
+    "description": "Sets of berths, areas and resources, also overlapping: used by price lists, online quotas, reports and filters.",
+    "create": "New group",
+    "edit": "Edit group",
+    "empty": "No groups.",
+    "code": "Code",
+    "name": "Name",
+    "kind": "Type",
+    "members": "Members",
+    "memberCount": "{{count}} members",
+    "deleteTitle": "Delete group {{code}}?",
+    "deleteHint": "The elements stay on the map: only the group membership is removed.",
+    "kinds": {
+      "structure": "Structure",
+      "transit": "Transits",
+      "area": "Area",
+      "custom": "Custom"
+    }
+  }
+}

@@ -7,7 +7,12 @@ export type MarinaRoutePath =
   | '/m/$marinaId/api-keys'
   | '/m/$marinaId/devices'
   | '/m/$marinaId/webhooks'
-  | '/m/$marinaId/audit';
+  | '/m/$marinaId/audit'
+  | '/m/$marinaId/maps'
+  | '/m/$marinaId/customers'
+  | '/m/$marinaId/vessels'
+  | '/m/$marinaId/deadlines'
+  | '/m/$marinaId/harbor-settings';
 
 export type NavItem = {
   id: string;
@@ -19,6 +24,31 @@ export type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
   { id: 'dashboard', to: '/m/$marinaId', labelKey: 'common:nav.dashboard', anyOf: ['marina.read'] },
+  { id: 'maps', to: '/m/$marinaId/maps', labelKey: 'common:nav.maps', anyOf: ['map.view'] },
+  {
+    id: 'customers',
+    to: '/m/$marinaId/customers',
+    labelKey: 'common:nav.customers',
+    anyOf: ['customers.read'],
+  },
+  {
+    id: 'vessels',
+    to: '/m/$marinaId/vessels',
+    labelKey: 'common:nav.vessels',
+    anyOf: ['customers.read'],
+  },
+  {
+    id: 'deadlines',
+    to: '/m/$marinaId/deadlines',
+    labelKey: 'common:nav.deadlines',
+    anyOf: ['customers.read'],
+  },
+  {
+    id: 'harbor-settings',
+    to: '/m/$marinaId/harbor-settings',
+    labelKey: 'common:nav.harborSettings',
+    anyOf: ['harbor.configure'],
+  },
   {
     id: 'settings',
     to: '/m/$marinaId/settings',
@@ -49,8 +79,6 @@ export const NAV_ITEMS: NavItem[] = [
 
 /** Modules of the next milestones, listed disabled in the sidebar. */
 export const UPCOMING_MODULES = [
-  'common:nav.modules.map',
-  'common:nav.modules.customers',
   'common:nav.modules.contracts',
   'common:nav.modules.charges',
   'common:nav.modules.storage',

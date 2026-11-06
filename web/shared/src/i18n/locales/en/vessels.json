@@ -1,0 +1,160 @@
+{
+  "title": "Vessels",
+  "description": "Vessels with declared and measured dimensions, engines, owners and documents.",
+  "new": "New vessel",
+  "search": "Search",
+  "searchPlaceholder": "Name or registration",
+  "empty": "No vessels found.",
+  "units": { "m": "m" },
+  "filters": {
+    "hullType": "Type",
+    "allHullTypes": "All types",
+    "owner": "Owner",
+    "anyOwner": "Any owner",
+    "archived": "Archived only"
+  },
+  "hullTypes": {
+    "monohull_motor": "Motor",
+    "monohull_sail": "Sail",
+    "catamaran": "Catamaran",
+    "trimaran": "Trimaran",
+    "rib": "RIB",
+    "gozzo": "Gozzo",
+    "other": "Other"
+  },
+  "fuels": {
+    "petrol": "Petrol",
+    "diesel": "Diesel",
+    "electric": "Electric",
+    "hybrid": "Hybrid",
+    "none": "None",
+    "other": "Other"
+  },
+  "unitClasses": {
+    "natante": "Natante (under 10 m)",
+    "imbarcazione": "Imbarcazione (10-24 m)",
+    "nave": "Pleasure ship (over 24 m)"
+  },
+  "dimensionsSource": {
+    "declared": "Declared dimensions",
+    "measured": "Measured dimensions"
+  },
+  "columns": {
+    "name": "Vessel",
+    "registration": "Registration",
+    "dimensions": "Length × beam",
+    "unitClass": "Unit class",
+    "owners": "Owners"
+  },
+  "status": { "archived": "Archived" },
+  "fields": {
+    "name": "Name",
+    "registration": "Registration number",
+    "registryOffice": "Registry office",
+    "flag": "Flag (ISO code)",
+    "homePort": "Port of registry",
+    "hullType": "Type",
+    "model": "Model",
+    "builder": "Builder",
+    "yearBuilt": "Year built",
+    "hullColor": "Hull colour",
+    "hullMaterial": "Hull material",
+    "loa": "Length overall",
+    "lwl": "Waterline length",
+    "beam": "Beam",
+    "draft": "Draft",
+    "airDraft": "Air draft",
+    "displacementKg": "Displacement (kg)",
+    "dimensionsSource": "Dimensions in use",
+    "fuel": "Fuel",
+    "noFuel": "Not given",
+    "powerRequired": "Shore power required",
+    "noPower": "Not given",
+    "amperes": "{{value}} A",
+    "notes": "Notes"
+  },
+  "validation": {
+    "positiveLength": "Enter a length in metres greater than zero (at most two decimals).",
+    "year": "Enter a four-digit year.",
+    "integer": "Enter a whole number."
+  },
+  "form": {
+    "createTitle": "New vessel",
+    "sectionIdentity": "Identification",
+    "sectionDimensions": "Declared dimensions",
+    "declaredHint": "Lengths are in metres. Dimensions measured on the dock are recorded with “Record measurements”.",
+    "sectionOther": "Other data",
+    "created": "Vessel created.",
+    "saved": "Vessel updated."
+  },
+  "dimensions": {
+    "title": "Dimensions",
+    "effective": "In use",
+    "declared": "Declared",
+    "measured": "Measured",
+    "notMeasured": "Not measured yet",
+    "measuredAt": "Measured on"
+  },
+  "engines": {
+    "title": "Engines",
+    "empty": "No engines given.",
+    "add": "Add engine",
+    "item": "Engine {{n}}",
+    "remove": "Remove engine {{n}}",
+    "make": "Make",
+    "model": "Model",
+    "serial": "Serial number",
+    "powerKw": "Power (kW)",
+    "powerHp": "Power (hp)",
+    "hours": "Engine hours"
+  },
+  "parties": {
+    "title": "Owners and contacts",
+    "description": "Owners with their share, operator, skipper, billing party and contacts.",
+    "empty": "No linked customers.",
+    "add": "Add customer",
+    "customer": "Customer",
+    "customerN": "Customer {{n}}",
+    "pickCustomer": "Choose a customer",
+    "searchCustomer": "Search a customer…",
+    "noCustomers": "No customers found.",
+    "role": "Role",
+    "roles": {
+      "owner": "Owner",
+      "operator": "Operator",
+      "skipper": "Skipper",
+      "billing": "Billing party",
+      "contact": "Contact"
+    },
+    "share": "Share",
+    "percent": "%",
+    "remove": "Remove customer {{n}}",
+    "ownerTotal": "Owner shares: {{value}}%",
+    "save": "Save owners and contacts",
+    "saved": "Owners and contacts updated.",
+    "validation": {
+      "customerRequired": "Choose a customer.",
+      "duplicate": "This customer already has this role.",
+      "shareRequired": "Enter the ownership share.",
+      "shareInvalid": "Invalid share: 0.1 to 100 with at most one decimal.",
+      "sharesExceed": "The owner shares exceed 100%."
+    }
+  },
+  "measurement": {
+    "action": "Record measurements",
+    "title": "Dimensions measured on the dock",
+    "description": "Measured dimensions replace the declared ones for prices and berth assignment.",
+    "saved": "Measurements recorded."
+  },
+  "tabs": {
+    "data": "Data",
+    "parties": "Owners and contacts",
+    "documents": "Documents"
+  },
+  "actions": {
+    "archive": "Archive",
+    "unarchive": "Restore",
+    "archived": "Vessel archived.",
+    "unarchived": "Vessel restored."
+  }
+}

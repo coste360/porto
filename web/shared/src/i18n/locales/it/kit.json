@@ -1,0 +1,24 @@
+{
+  "title": "Simboli della mappa",
+  "assets": {
+    "harbour_office": "Ufficio del porto",
+    "fuel_station": "Distributore di carburante",
+    "toilets": "Servizi igienici",
+    "showers": "Docce",
+    "laundry": "Lavanderia",
+    "travel_lift": "Travel lift",
+    "crane": "Gru",
+    "slipway": "Scivolo",
+    "light_red": "Fanale rosso",
+    "light_green": "Fanale verde",
+    "lighthouse": "Faro",
+    "fire_hydrant": "Idrante",
+    "waste_collection": "Raccolta rifiuti",
+    "waste_oil": "Raccolta oli esausti",
+    "pump_out": "Svuotamento acque nere",
+    "parking": "Parcheggio",
+    "entrance": "Ingresso",
+    "bar": "Bar",
+    "restaurant": "Ristorante"
+  }
+}

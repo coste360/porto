@@ -1,0 +1,56 @@
+{
+  "title": "Documenti",
+  "empty": "Nessun documento.",
+  "add": "Aggiungi documento",
+  "createTitle": "Nuovo documento",
+  "editTitle": "Modifica documento",
+  "types": {
+    "identity_card": "Carta d'identità",
+    "passport": "Passaporto",
+    "driving_licence": "Patente di guida",
+    "boating_licence": "Patente nautica",
+    "navigation_licence": "Licenza di navigazione",
+    "registration_certificate": "Certificato d'iscrizione",
+    "insurance_policy": "Polizza assicurativa",
+    "safety_certificate": "Certificato di sicurezza",
+    "power_declaration": "Dichiarazione di potenza",
+    "signed_contract": "Contratto firmato",
+    "proxy": "Delega",
+    "photo": "Fotografia",
+    "other": "Altro"
+  },
+  "fields": {
+    "type": "Tipo",
+    "number": "Numero",
+    "issuer": "Rilasciato da",
+    "issuedOn": "Data di rilascio",
+    "expiresOn": "Scadenza",
+    "notes": "Note",
+    "file": "File"
+  },
+  "validation": {
+    "date": "Data non valida.",
+    "expiryBeforeIssue": "La scadenza non può precedere il rilascio."
+  },
+  "pickDate": "Scegli una data",
+  "noExpiry": "Nessuna scadenza",
+  "expired": "Scaduto",
+  "noFile": "Nessun file",
+  "view": "Apri il file",
+  "upload": "Carica file",
+  "replace": "Sostituisci file",
+  "uploaded": "File caricato.",
+  "removeFile": "Rimuovi il file",
+  "fileRemoved": "File rimosso.",
+  "fileHint": "PDF, PNG o JPEG fino a 15 MB. Il file è cifrato e si apre solo con un link temporaneo.",
+  "fileErrors": {
+    "too_large": "Il file supera i 15 MB.",
+    "type": "Formato non supportato: usa PDF, PNG o JPEG.",
+    "empty": "Il file è vuoto."
+  },
+  "created": "Documento creato.",
+  "saved": "Documento aggiornato.",
+  "deleted": "Documento eliminato.",
+  "deleteTitle": "Eliminare il documento?",
+  "deleteDescription": "Il documento, il suo file e la scadenza collegata vengono eliminati."
+}

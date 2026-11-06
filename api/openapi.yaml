@@ -4,7 +4,9 @@ info:
   version: 0.1.0
   summary: Marina and boatyard management system (Coste360 SRL).
   description: |
-    Single spec-first contract of Porto's REST API (spec 27). M0 covers the platform foundations.
+    Single spec-first contract of Porto's REST API (spec 27). M0 covers the platform foundations; M1 adds the
+    harbour map (maps, elements, generators, berth groups, harbour settings) and the registry (customers,
+    vessels, documents, deadlines).
 
     - `/api/admin/v1` — admin panel API (session cookie, API key or device token).
     - `/api/device/v1` — paired devices (device token, spec 29).
@@ -16,7 +18,10 @@ info:
     - `Idempotency-Key` is accepted on creating `POST`s (24 h, per principal);
     - cookie-authenticated unsafe requests send `X-CSRF-Token`, equal to the `porto_csrf` cookie;
     - versioned resources return `ETag: "<version>"` and `PATCH` requires `If-Match`;
-    - calendar dates are `YYYY-MM-DD`, instants RFC 3339 UTC, ids UUID strings; JSON names are snake_case.
+    - calendar dates are `YYYY-MM-DD`, instants RFC 3339 UTC, ids UUID strings; JSON names are snake_case;
+    - lengths are integer centimetres (`*_cm`), angles `rotation_dd` in tenths of a degree, masses kg;
+    - `x-porto-max-body-bytes` on an operation sets its request body limit (default 1 MiB, hard cap 16 MiB);
+      upload operations take a raw binary body with the declared content types.
   contact:
     name: Coste360 SRL
 servers:
@@ -49,6 +54,18 @@ tags:
     description: API of paired devices
   - name: public
     description: Public marina pages
+  - name: maps
+    description: Harbour maps, map documents, generators, import and export
+  - name: harbor
+    description: Berths, berth groups and harbour settings
+  - name: customers
+    description: Customers, consents, merge, GDPR export and anonymisation
+  - name: vessels
+    description: Vessels, parties and measurements
+  - name: documents
+    description: Customer and vessel documents with encrypted files
+  - name: deadlines
+    description: Deadlines from document expiries and their policies
 
 paths:
   /healthz:
@@ -1074,6 +1091,1302 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "429": { $ref: "#/components/responses/TooManyRequests" }
 
+  # ---------------------------------------------------------------------------------------------------------------
+  # M1 harbour (spec 07, 08; m1-plan §4.3). Map writes need harbor.configure, reads map.view.
+  # ---------------------------------------------------------------------------------------------------------------
+  /api/admin/v1/marinas/{marinaId}/maps:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [maps]
+      operationId: listMaps
+      summary: Maps of the marina, by sort order (map.view)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Maps
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MapSummaryList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [maps]
+      operationId: createMap
+      summary: Create an empty map (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MapCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MapDocument" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/reorder:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [maps]
+      operationId: reorderMaps
+      summary: Set the order of the marina's maps; every map id exactly once (harbor.configure)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MapReorder" }
+      responses:
+        "204": { description: Reordered }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/import:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [maps]
+      operationId: importMap
+      summary: Import a map export (porto-map/1) as a new map; ids are remapped (harbor.configure)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MapExport" }
+      responses:
+        "201":
+          description: Imported
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MapSummary" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "422": { $ref: "#/components/responses/MapInvalid" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+    get:
+      tags: [maps]
+      operationId: getMap
+      summary: The full map document (map.view)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Map document
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MapDocument" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [maps]
+      operationId: saveMap
+      summary: >-
+        Replace the whole map document (meta and every element) in one transaction; new elements carry a key,
+        saved ones their id. Validated with ValidateMap inside the transaction (harbor.configure)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MapSaveRequest" }
+      responses:
+        "200":
+          description: Saved
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MapSaveResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "422": { $ref: "#/components/responses/MapInvalid" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+    delete:
+      tags: [maps]
+      operationId: deleteMap
+      summary: Delete a map without berths, dynamic areas or land resources (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204": { description: Deleted }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}/validate:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+    post:
+      tags: [maps]
+      operationId: validateMap
+      summary: Dry-run validation of a map document; nothing is written (harbor.configure)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MapSaveRequest" }
+      responses:
+        "200":
+          description: Validation report
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MapValidationReport" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}/generate:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+    post:
+      tags: [maps]
+      operationId: generateMapElements
+      summary: >-
+        Preview of a generator (pier, quay berths, linear area, buoy field, land grid, surface area); returns
+        unsaved elements with keys, applied by the next saveMap (harbor.configure)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/GenerateRequest" }
+      responses:
+        "200":
+          description: Generated elements
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GenerateResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}/background:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+    post:
+      tags: [maps]
+      operationId: uploadMapBackground
+      summary: >-
+        Upload a background image (PNG, JPEG or SVG, at most 15 MiB, raw body). Content is sniffed; the
+        calibration is saved with the map document (harbor.configure)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 16777216
+      requestBody:
+        required: true
+        content:
+          image/png:
+            schema: { type: string, format: binary }
+          image/jpeg:
+            schema: { type: string, format: binary }
+          image/svg+xml:
+            schema: { type: string, format: binary }
+      responses:
+        "201":
+          description: Stored
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MapBackgroundFile" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}/background/{fileId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+      - $ref: "#/components/parameters/FileId"
+    get:
+      tags: [maps]
+      operationId: getMapBackground
+      summary: >-
+        Background image bytes, immutable (served with a sandbox Content-Security-Policy and nosniff) (map.view)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Image
+          content:
+            image/png:
+              schema: { type: string, format: binary }
+            image/jpeg:
+              schema: { type: string, format: binary }
+            image/svg+xml:
+              schema: { type: string, format: binary }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}/export:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+    get:
+      tags: [maps]
+      operationId: exportMap
+      summary: >-
+        Download the map as porto-map/1 JSON (default) or as a GeoJSON FeatureCollection (georeferenced maps
+        only) (harbor.configure)
+      security: *readSecurity
+      parameters:
+        - name: format
+          in: query
+          required: false
+          schema: { type: string, enum: [json, geojson], default: json }
+      responses:
+        "200":
+          description: Export (Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MapExport" }
+            application/geo+json:
+              schema: { type: object, additionalProperties: true }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}/concession/geojson:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+    post:
+      tags: [maps]
+      operationId: convertConcessionGeojson
+      summary: >-
+        Convert a GeoJSON polygon (WGS84) into a map outline in cm with the map's (or the given) georeference;
+        nothing is written (harbor.configure)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ConcessionGeojsonRequest" }
+      responses:
+        "200":
+          description: Outline
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ConcessionGeojsonResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}/berth-import:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+    post:
+      tags: [maps]
+      operationId: importBerthsCsv
+      summary: >-
+        Import berths from CSV along existing piers: dry run (report only) or apply (all or nothing, through the
+        same save path as saveMap; If-Match required) (harbor.configure)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 4194304
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BerthImportRequest" }
+      responses:
+        "200":
+          description: Report (with the saved document when applied)
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BerthImportReport" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "422": { $ref: "#/components/responses/MapInvalid" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/berths:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [harbor]
+      operationId: listBerths
+      summary: Berths of the marina, by map and code (map.view)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - { name: map_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: group_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: q, in: query, required: false, description: Code prefix or substring, schema: { type: string, maxLength: 64 } }
+      responses:
+        "200":
+          description: Berths
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BerthPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/berth-groups:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [harbor]
+      operationId: listBerthGroups
+      summary: Berth groups with member counts (map.view)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Groups
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BerthGroupList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [harbor]
+      operationId: createBerthGroup
+      summary: Create a berth group (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BerthGroupCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BerthGroup" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/berth-groups/{groupId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/GroupId"
+    patch:
+      tags: [harbor]
+      operationId: updateBerthGroup
+      summary: Update a berth group (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BerthGroupPatch" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BerthGroup" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+    delete:
+      tags: [harbor]
+      operationId: deleteBerthGroup
+      summary: Delete a berth group and its memberships (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204": { description: Deleted }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/harbor-settings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [harbor]
+      operationId: getHarborSettings
+      summary: Harbour settings (price-class rule, LOA tolerance, default grid) (map.view)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Settings
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/HarborSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [harbor]
+      operationId: updateHarborSettings
+      summary: Update harbour settings (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/HarborSettingsPatch" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/HarborSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  # ---------------------------------------------------------------------------------------------------------------
+  # M1 registry (spec 11; m1-plan §4.4). Reads need customers.read, writes customers.write.
+  # ---------------------------------------------------------------------------------------------------------------
+  /api/admin/v1/marinas/{marinaId}/customers:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [customers]
+      operationId: listCustomers
+      summary: Search customers by name, fiscal code, VAT, phone, email or vessel name/registration (customers.read)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - { name: q, in: query, required: false, schema: { type: string, maxLength: 100 } }
+        - { name: category, in: query, required: false, schema: { $ref: "#/components/schemas/CustomerCategory" } }
+        - { name: tag, in: query, required: false, schema: { type: string, maxLength: 50 } }
+        - { name: archived, in: query, required: false, description: Include only archived customers, schema: { type: boolean, default: false } }
+      responses:
+        "200":
+          description: Customers
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CustomerPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [customers]
+      operationId: createCustomer
+      summary: Create a customer; suspected duplicates are returned, not refused (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CustomerInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CustomerCreated" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    get:
+      tags: [customers]
+      operationId: getCustomer
+      summary: A customer (customers.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Customer
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Customer" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [customers]
+      operationId: updateCustomer
+      summary: Update a customer (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CustomerPatch" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Customer" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/overview:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    get:
+      tags: [customers]
+      operationId: getCustomerOverview
+      summary: Customer page data (M1 subset of spec 11.4) (customers.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Overview
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CustomerOverview" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/archive:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    post:
+      tags: [customers]
+      operationId: archiveCustomer
+      summary: Archive a customer (customers.write)
+      security: *writeSecurity
+      responses:
+        "204": { description: Archived }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/unarchive:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    post:
+      tags: [customers]
+      operationId: unarchiveCustomer
+      summary: Restore an archived customer (customers.write)
+      security: *writeSecurity
+      responses:
+        "204": { description: Restored }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/merge:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    post:
+      tags: [customers]
+      operationId: mergeCustomers
+      summary: Merge duplicate customers into this one (the target); sources are archived (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CustomerMergeRequest" }
+      responses:
+        "200":
+          description: Merged target
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Customer" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/anonymize:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    post:
+      tags: [customers]
+      operationId: anonymizeCustomer
+      summary: >-
+        Anonymise a customer (GDPR): personal data blanked, documents and files deleted, consents kept without
+        personal data; irreversible (customers.write)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CustomerAnonymizeRequest" }
+      responses:
+        "204": { description: Anonymised }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/export:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    get:
+      tags: [customers]
+      operationId: exportCustomer
+      summary: GDPR export of a customer's data as JSON (Content-Disposition attachment) (customers.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Export
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CustomerExport" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/consents:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    get:
+      tags: [customers]
+      operationId: listConsents
+      summary: Consent history of a customer, newest first (customers.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Consents
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ConsentList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [customers]
+      operationId: recordConsent
+      summary: Record a new consent version (insert-only) (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ConsentInput" }
+      responses:
+        "201":
+          description: Recorded
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Consent" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/vessels:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [vessels]
+      operationId: listVessels
+      summary: Search vessels by name or registration (customers.read)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - { name: q, in: query, required: false, schema: { type: string, maxLength: 100 } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: hull_type, in: query, required: false, schema: { $ref: "#/components/schemas/HullType" } }
+        - { name: archived, in: query, required: false, schema: { type: boolean, default: false } }
+      responses:
+        "200":
+          description: Vessels
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/VesselPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [vessels]
+      operationId: createVessel
+      summary: Create a vessel, optionally with its parties (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/VesselInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Vessel" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/VesselId"
+    get:
+      tags: [vessels]
+      operationId: getVessel
+      summary: A vessel with parties and documents (customers.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Vessel
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Vessel" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [vessels]
+      operationId: updateVessel
+      summary: Update a vessel (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/VesselPatch" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Vessel" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/parties:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/VesselId"
+    put:
+      tags: [vessels]
+      operationId: replaceVesselParties
+      summary: Replace the parties of a vessel; owner shares sum to at most 1000 (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/VesselPartiesReplace" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Vessel" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/measurements:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/VesselId"
+    post:
+      tags: [vessels]
+      operationId: recordVesselMeasurement
+      summary: Record measured dimensions (customers.write or presence.write)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/VesselMeasurementInput" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Vessel" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/archive:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/VesselId"
+    post:
+      tags: [vessels]
+      operationId: archiveVessel
+      summary: Archive a vessel (customers.write)
+      security: *writeSecurity
+      responses:
+        "204": { description: Archived }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/unarchive:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/VesselId"
+    post:
+      tags: [vessels]
+      operationId: unarchiveVessel
+      summary: Restore an archived vessel (customers.write)
+      security: *writeSecurity
+      responses:
+        "204": { description: Restored }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/documents:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [documents]
+      operationId: listDocuments
+      summary: Documents of customers and vessels (customers.read)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: vessel_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: type, in: query, required: false, schema: { $ref: "#/components/schemas/DocumentType" } }
+        - { name: expires_before, in: query, required: false, schema: { type: string, format: date, x-go-type: string } }
+      responses:
+        "200":
+          description: Documents
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DocumentPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [documents]
+      operationId: createDocument
+      summary: Create a document (metadata); an expiry creates its deadline in the same transaction (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DocumentInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Document" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/documents/{documentId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/DocumentId"
+    get:
+      tags: [documents]
+      operationId: getDocument
+      summary: A document (customers.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Document
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Document" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [documents]
+      operationId: updateDocument
+      summary: Update a document; its deadline follows the expiry (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DocumentPatch" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Document" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+    delete:
+      tags: [documents]
+      operationId: deleteDocument
+      summary: Delete a document with its file and deadline (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204": { description: Deleted }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/DocumentId"
+    get:
+      tags: [documents]
+      operationId: getDocumentFile
+      summary: >-
+        Download the document file through a signed link from createDocumentFileUrl (exp and sig are checked in
+        the service; served inline, no-store, sandbox CSP, nosniff) (customers.read)
+      security: *readSecurity
+      parameters:
+        - { name: exp, in: query, required: false, schema: { type: integer, format: int64 } }
+        - { name: sig, in: query, required: false, schema: { type: string, maxLength: 128 } }
+      responses:
+        "200":
+          description: File bytes
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+            image/png:
+              schema: { type: string, format: binary }
+            image/jpeg:
+              schema: { type: string, format: binary }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [documents]
+      operationId: uploadDocumentFile
+      summary: >-
+        Upload or replace the document file (PDF, PNG or JPEG, at most 15 MiB, raw body), encrypted at rest
+        (customers.write)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 16777216
+      parameters:
+        - name: X-File-Name
+          in: header
+          required: false
+          description: Original file name (sanitised, at most 120 characters kept)
+          schema: { type: string, maxLength: 255 }
+      requestBody:
+        required: true
+        content:
+          application/pdf:
+            schema: { type: string, format: binary }
+          image/png:
+            schema: { type: string, format: binary }
+          image/jpeg:
+            schema: { type: string, format: binary }
+      responses:
+        "200":
+          description: Stored
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Document" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+    delete:
+      tags: [documents]
+      operationId: deleteDocumentFile
+      summary: Remove the document file (customers.write)
+      security: *writeSecurity
+      responses:
+        "204": { description: Removed }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file-url:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/DocumentId"
+    post:
+      tags: [documents]
+      operationId: createDocumentFileURL
+      summary: A short-lived (5 minutes) signed download link bound to the calling user (customers.read)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: Signed link
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DocumentFileUrl" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/deadlines:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [deadlines]
+      operationId: listDeadlines
+      summary: Deadlines by due date (customers.read)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - { name: status, in: query, required: false, description: Default open, schema: { $ref: "#/components/schemas/DeadlineStatus" } }
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/DeadlineKind" } }
+        - { name: urgency, in: query, required: false, schema: { $ref: "#/components/schemas/DeadlineUrgency" } }
+        - { name: due_before, in: query, required: false, schema: { type: string, format: date, x-go-type: string } }
+        - { name: due_after, in: query, required: false, schema: { type: string, format: date, x-go-type: string } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: vessel_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+      responses:
+        "200":
+          description: Deadlines
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DeadlinePage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/deadlines/{deadlineId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/DeadlineId"
+    patch:
+      tags: [deadlines]
+      operationId: updateDeadline
+      summary: Mark a deadline done or dismissed, or change its note (customers.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DeadlinePatch" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Deadline" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/deadline-policies:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [deadlines]
+      operationId: listDeadlinePolicies
+      summary: Lead days per deadline kind, defaults included (customers.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Policies
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DeadlinePolicyList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [deadlines]
+      operationId: replaceDeadlinePolicies
+      summary: Replace the lead days of the given kinds (marina.configure)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DeadlinePolicyList" }
+      responses:
+        "200":
+          description: Policies
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DeadlinePolicyList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
 components:
   securitySchemes:
     cookieAuth:
@@ -1142,6 +2455,41 @@ components:
       required: false
       description: The ETag of the version being changed. Missing is 428, stale is 412.
       schema: { type: string }
+    MapId:
+      name: mapId
+      in: path
+      required: true
+      schema: { type: string }
+    FileId:
+      name: fileId
+      in: path
+      required: true
+      schema: { type: string }
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      schema: { type: string }
+    CustomerId:
+      name: customerId
+      in: path
+      required: true
+      schema: { type: string }
+    VesselId:
+      name: vesselId
+      in: path
+      required: true
+      schema: { type: string }
+    DocumentId:
+      name: documentId
+      in: path
+      required: true
+      schema: { type: string }
+    DeadlineId:
+      name: deadlineId
+      in: path
+      required: true
+      schema: { type: string }
     CSRFToken:
       name: X-CSRF-Token
       in: header
@@ -1198,6 +2546,21 @@ components:
       content:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
+    PayloadTooLarge:
+      description: Request body above the operation's limit, or file above 15 MiB (file_too_large)
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    UnsupportedMediaType:
+      description: Content type not accepted by the operation
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    MapInvalid:
+      description: The map document breaks a blocking validation rule (map_invalid, with issues), or an idempotency key was reused
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
     ServiceUnavailable:
       description: Not ready
       content:
@@ -1241,6 +2604,15 @@ components:
         - rate_limited
         - internal_error
         - not_ready
+        - map_invalid
+        - map_not_empty
+        - map_not_georeferenced
+        - invalid_file
+        - file_too_large
+        - csv_invalid
+        - customer_anonymized
+        - customer_merged
+        - download_link_expired
 
     FieldError:
       type: object
@@ -1264,6 +2636,10 @@ components:
           type: array
           items: { $ref: "#/components/schemas/FieldError" }
         retry_after_seconds: { type: integer }
+        issues:
+          description: Map validation issues (map_invalid)
+          type: array
+          items: { $ref: "#/components/schemas/MapIssue" }
 
     HealthStatus:
       type: object
@@ -1330,6 +2706,7 @@ components:
         - reports.yard
         - reports.rental
         - map.view
+        - harbor.configure
 
     Locale:
       type: string
@@ -1975,3 +3352,1736 @@ components:
           type: array
           items: { $ref: "#/components/schemas/Locale" }
         booking_enabled: { type: boolean }
+
+    # ---- M1 shared geometry (integer cm, angles in tenths of a degree) ----
+
+    Cm:
+      description: Length in integer centimetres
+      type: integer
+      format: int64
+
+    PositiveCm:
+      description: Strictly positive length in integer centimetres
+      type: integer
+      format: int64
+      minimum: 1
+
+    RectSideCm:
+      description: Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+      type: integer
+      format: int64
+      minimum: 2
+
+    RotationDd:
+      description: Angle in tenths of a degree, 0 = +x, 900 = +y (y down, clockwise on screen)
+      type: integer
+      format: int64
+      minimum: 0
+      maximum: 3599
+
+    Point:
+      type: object
+      required: [x, y]
+      properties:
+        x: { type: integer, format: int64 }
+        y: { type: integer, format: int64 }
+
+    Polygon:
+      description: Simple polygon in map cm (3 to 10 000 vertices, not closed explicitly)
+      type: array
+      minItems: 3
+      maxItems: 10000
+      items: { $ref: "#/components/schemas/Point" }
+
+    Rect:
+      description: Rotated rectangle; anchor = midpoint of the mooring (or access) side
+      type: object
+      required: [anchor, width_cm, length_cm, rotation_dd]
+      properties:
+        anchor: { $ref: "#/components/schemas/Point" }
+        width_cm: { $ref: "#/components/schemas/PositiveCm" }
+        length_cm: { $ref: "#/components/schemas/PositiveCm" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+
+    I18nText:
+      type: object
+      required: [it]
+      properties:
+        it: { type: string, minLength: 1, maxLength: 200 }
+        en: { type: string, maxLength: 200 }
+
+    ElementRef:
+      description: >-
+        Reference to a map element inside one document: the id of a saved element or the key of a new element of
+        the same request
+      type: string
+      minLength: 1
+      maxLength: 64
+      pattern: "^[A-Za-z0-9_:-]+$"
+
+    ElementKey:
+      description: Client key of a new element, unique in the request
+      type: string
+      minLength: 1
+      maxLength: 64
+      pattern: "^[A-Za-z0-9_:-]+$"
+
+    Code:
+      type: string
+      minLength: 1
+      maxLength: 32
+
+    # ---- M1 harbour ----
+
+    MapKind:
+      type: string
+      enum: [water, yard, shed, parking, boxes, other]
+
+    MapCounts:
+      type: object
+      required: [structures, berths, dynamic_areas, land_resources, pedestals, decorations]
+      properties:
+        structures: { type: integer }
+        berths: { type: integer }
+        dynamic_areas: { type: integer }
+        land_resources: { type: integer }
+        pedestals: { type: integer }
+        decorations: { type: integer }
+
+    MapSummary:
+      type: object
+      required: [id, kind, name, icon, width_cm, height_cm, sort_order, version, counts, georeferenced, has_background, updated_at]
+      properties:
+        id: { type: string }
+        kind: { $ref: "#/components/schemas/MapKind" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        icon: { type: string }
+        width_cm: { $ref: "#/components/schemas/Cm" }
+        height_cm: { $ref: "#/components/schemas/Cm" }
+        sort_order: { type: integer }
+        version: { type: integer }
+        counts: { $ref: "#/components/schemas/MapCounts" }
+        georeferenced: { type: boolean }
+        has_background: { type: boolean }
+        updated_at: { type: string, format: date-time }
+
+    MapSummaryList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/MapSummary" }
+
+    MapCreate:
+      type: object
+      required: [kind, name, width_cm, height_cm]
+      properties:
+        kind: { $ref: "#/components/schemas/MapKind" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        icon: { type: string, maxLength: 32 }
+        width_cm: { type: integer, format: int64, minimum: 100, maximum: 500000 }
+        height_cm: { type: integer, format: int64, minimum: 100, maximum: 500000 }
+        grid_cm: { type: integer, format: int64, minimum: 1, maximum: 10000 }
+
+    MapReorder:
+      type: object
+      required: [map_ids]
+      properties:
+        map_ids:
+          type: array
+          maxItems: 200
+          items: { type: string }
+
+    MapBackground:
+      type: object
+      required: [file_id, content_type, width_px, height_px, origin, scale_mcm_per_px, rotation_dd, opacity_pct, visible]
+      properties:
+        file_id: { type: string }
+        content_type: { type: string, enum: [image/png, image/jpeg, image/svg+xml] }
+        width_px: { type: integer, format: int64, minimum: 1 }
+        height_px: { type: integer, format: int64, minimum: 1 }
+        origin: { $ref: "#/components/schemas/Point" }
+        scale_mcm_per_px:
+          description: Milli-centimetres per image pixel (integer, at least 1)
+          type: integer
+          format: int64
+          minimum: 1
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        opacity_pct: { type: integer, minimum: 0, maximum: 100 }
+        visible: { type: boolean }
+
+    ControlPoint:
+      type: object
+      required: [x, y, lat_e7, lon_e7]
+      properties:
+        x: { type: integer, format: int64 }
+        y: { type: integer, format: int64 }
+        lat_e7: { type: integer, format: int64, minimum: -900000000, maximum: 900000000 }
+        lon_e7: { type: integer, format: int64, minimum: -1800000000, maximum: 1800000000 }
+
+    Georef:
+      description: Affine georeference from three non-collinear control points (WGS84 × 1e7)
+      type: object
+      required: [points]
+      properties:
+        points:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items: { $ref: "#/components/schemas/ControlPoint" }
+
+    MapMeta:
+      type: object
+      required: [kind, name, icon, width_cm, height_cm, grid_cm, sort_order, background, georef, concession_outline, water_polygons, land_polygons]
+      properties:
+        kind: { $ref: "#/components/schemas/MapKind" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        icon: { type: string, maxLength: 32 }
+        width_cm: { type: integer, format: int64, minimum: 100, maximum: 500000 }
+        height_cm: { type: integer, format: int64, minimum: 100, maximum: 500000 }
+        grid_cm: { type: integer, format: int64, minimum: 1, maximum: 10000 }
+        sort_order: { type: integer }
+        background:
+          oneOf:
+            - $ref: "#/components/schemas/MapBackground"
+            - type: "null"
+        georef:
+          oneOf:
+            - $ref: "#/components/schemas/Georef"
+            - type: "null"
+        concession_outline:
+          oneOf:
+            - $ref: "#/components/schemas/Polygon"
+            - type: "null"
+        water_polygons:
+          type: array
+          maxItems: 200
+          items: { $ref: "#/components/schemas/Polygon" }
+        land_polygons:
+          type: array
+          maxItems: 200
+          items: { $ref: "#/components/schemas/Polygon" }
+
+    StructureKind:
+      type: string
+      enum: [quay, pier, finger, breakwater, channel, walkway]
+
+    Side:
+      type: string
+      enum: [left, right, head, none]
+
+    DepthSpan:
+      description: Depth along the structure axis, from from_cm to to_cm
+      type: object
+      required: [from_cm, to_cm, depth_cm]
+      properties:
+        from_cm: { $ref: "#/components/schemas/Cm" }
+        to_cm: { $ref: "#/components/schemas/Cm" }
+        depth_cm: { $ref: "#/components/schemas/PositiveCm" }
+
+    Structure:
+      type: object
+      required: [kind, code]
+      properties:
+        id: { type: string, description: Saved element id (omit for a new element) }
+        key: { $ref: "#/components/schemas/ElementKey" }
+        kind: { $ref: "#/components/schemas/StructureKind" }
+        code: { $ref: "#/components/schemas/Code" }
+        name: { type: string, maxLength: 100 }
+        points:
+          description: Polyline (quay, pier, walkway, breakwater line) or polygon (closed = true)
+          type: array
+          maxItems: 10000
+          items: { $ref: "#/components/schemas/Point" }
+        closed: { type: boolean }
+        rect: { $ref: "#/components/schemas/Rect" }
+        width_cm: { $ref: "#/components/schemas/PositiveCm" }
+        parent_id: { $ref: "#/components/schemas/ElementRef" }
+        sides:
+          type: array
+          maxItems: 3
+          items: { $ref: "#/components/schemas/Side" }
+        floating: { type: boolean }
+        depth_profile:
+          type: array
+          maxItems: 1000
+          items: { $ref: "#/components/schemas/DepthSpan" }
+        elevation_cm: { $ref: "#/components/schemas/Cm" }
+        bollard_spacing_cm: { $ref: "#/components/schemas/PositiveCm" }
+
+    MooringType:
+      type: string
+      enum: [mooring_line, finger, alongside, piles, buoy]
+
+    PowerPhase:
+      type: string
+      enum: [single, three]
+
+    Berth:
+      type: object
+      required: [code, side, position, anchor, rotation_dd, width_cm, length_cm, mooring_type, overhang_allowed, water, wifi, attributes, online_sellable, active, group_ids]
+      properties:
+        id: { type: string, description: Saved element id (omit for a new element) }
+        key: { $ref: "#/components/schemas/ElementKey" }
+        code: { $ref: "#/components/schemas/Code" }
+        structure_id: { $ref: "#/components/schemas/ElementRef" }
+        side: { $ref: "#/components/schemas/Side" }
+        position: { type: integer, format: int64, description: Order along the structure }
+        anchor: { $ref: "#/components/schemas/Point" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        width_cm: { $ref: "#/components/schemas/RectSideCm" }
+        length_cm: { $ref: "#/components/schemas/RectSideCm" }
+        max_loa_cm: { $ref: "#/components/schemas/PositiveCm" }
+        max_beam_cm: { $ref: "#/components/schemas/PositiveCm" }
+        depth_cm: { $ref: "#/components/schemas/PositiveCm" }
+        max_air_draft_cm: { $ref: "#/components/schemas/PositiveCm" }
+        max_displacement_kg: { type: integer, format: int64, minimum: 1 }
+        mooring_type: { $ref: "#/components/schemas/MooringType" }
+        swing_radius_cm: { $ref: "#/components/schemas/PositiveCm" }
+        overhang_allowed: { type: boolean }
+        pedestal_id: { $ref: "#/components/schemas/ElementRef" }
+        pedestal_socket: { type: string, maxLength: 16 }
+        power_a: { type: integer, enum: [16, 32, 63, 125] }
+        power_phase: { $ref: "#/components/schemas/PowerPhase" }
+        water: { type: boolean }
+        wifi: { type: boolean }
+        price_class: { type: string, maxLength: 16 }
+        attributes:
+          type: array
+          maxItems: 20
+          items: { type: string, maxLength: 32 }
+        online_sellable: { type: boolean }
+        active: { type: boolean }
+        group_ids:
+          type: array
+          maxItems: 50
+          items: { type: string }
+
+    AreaKind:
+      type: string
+      enum: [linear, surface]
+
+    MooringMode:
+      type: string
+      enum: [stern_to, alongside]
+
+    DynamicArea:
+      type: object
+      required: [kind, code, blocked_cells, exits, grid_rotation_dd, active, group_ids]
+      properties:
+        id: { type: string, description: Saved element id (omit for a new element) }
+        key: { $ref: "#/components/schemas/ElementKey" }
+        kind: { $ref: "#/components/schemas/AreaKind" }
+        code: { $ref: "#/components/schemas/Code" }
+        structure_id: { $ref: "#/components/schemas/ElementRef" }
+        side: { $ref: "#/components/schemas/Side" }
+        from_cm: { $ref: "#/components/schemas/Cm" }
+        to_cm: { $ref: "#/components/schemas/Cm" }
+        outline: { $ref: "#/components/schemas/Polygon" }
+        mooring_mode: { $ref: "#/components/schemas/MooringMode" }
+        cell_cm: { type: integer, format: int64, minimum: 10, maximum: 1000 }
+        margin_cm: { type: integer, format: int64, minimum: 0, maximum: 1000 }
+        max_loa_cm: { $ref: "#/components/schemas/PositiveCm" }
+        max_beam_cm: { $ref: "#/components/schemas/PositiveCm" }
+        max_height_cm: { $ref: "#/components/schemas/PositiveCm" }
+        max_weight_kg: { type: integer, format: int64, minimum: 1 }
+        supports:
+          type: array
+          maxItems: 3
+          items: { type: string, enum: [cradle, trailer, rack] }
+        depth_profile:
+          type: array
+          maxItems: 1000
+          items: { $ref: "#/components/schemas/DepthSpan" }
+        blocked_cells:
+          type: array
+          maxItems: 1000000
+          items: { type: integer, minimum: 0 }
+        exits:
+          type: array
+          maxItems: 10000
+          items: { type: integer, minimum: 0 }
+        grid_rotation_dd: { type: integer, format: int64, enum: [0, 900, 1800, 2700] }
+        cell_count: { type: integer, format: int64, readOnly: true, description: Computed at save }
+        price_class: { type: string, maxLength: 16 }
+        active: { type: boolean }
+        group_ids:
+          type: array
+          maxItems: 50
+          items: { type: string }
+
+    LandKind:
+      type: string
+      enum: [parking, box, storeroom, locker, cradle, trailer_spot, custom]
+
+    LandResource:
+      type: object
+      required: [kind, code, anchor, rotation_dd, width_cm, length_cm, attributes, active, group_ids]
+      properties:
+        id: { type: string, description: Saved element id (omit for a new element) }
+        key: { $ref: "#/components/schemas/ElementKey" }
+        kind: { $ref: "#/components/schemas/LandKind" }
+        code: { $ref: "#/components/schemas/Code" }
+        anchor: { $ref: "#/components/schemas/Point" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        width_cm: { $ref: "#/components/schemas/RectSideCm" }
+        length_cm: { $ref: "#/components/schemas/RectSideCm" }
+        price_class: { type: string, maxLength: 16 }
+        attributes:
+          type: array
+          maxItems: 20
+          items: { type: string, maxLength: 32 }
+        active: { type: boolean }
+        group_ids:
+          type: array
+          maxItems: 50
+          items: { type: string }
+
+    UtilityKind:
+      type: string
+      enum: [power, water]
+
+    PedestalSocket:
+      type: object
+      required: [code, kind]
+      properties:
+        code: { type: string, minLength: 1, maxLength: 16 }
+        kind: { $ref: "#/components/schemas/UtilityKind" }
+        amps: { type: integer, enum: [16, 32, 63, 125] }
+        phase: { $ref: "#/components/schemas/PowerPhase" }
+
+    PedestalMeter:
+      type: object
+      required: [kind, serial]
+      properties:
+        kind: { $ref: "#/components/schemas/UtilityKind" }
+        serial: { type: string, minLength: 1, maxLength: 64 }
+
+    Pedestal:
+      type: object
+      required: [code, position, sockets, meters]
+      properties:
+        id: { type: string, description: Saved element id (omit for a new element) }
+        key: { $ref: "#/components/schemas/ElementKey" }
+        code: { $ref: "#/components/schemas/Code" }
+        position: { $ref: "#/components/schemas/Point" }
+        sockets:
+          type: array
+          maxItems: 16
+          items: { $ref: "#/components/schemas/PedestalSocket" }
+        meters:
+          type: array
+          maxItems: 16
+          items: { $ref: "#/components/schemas/PedestalMeter" }
+
+    DecorationKind:
+      type: string
+      enum: [symbol, text, depth_label, north_arrow, scale_bar]
+
+    Decoration:
+      type: object
+      required: [kind]
+      properties:
+        id: { type: string, description: Saved element id (omit for a new element) }
+        key: { $ref: "#/components/schemas/ElementKey" }
+        kind: { $ref: "#/components/schemas/DecorationKind" }
+        asset: { type: string, maxLength: 64, description: Illustration kit asset id (kind = symbol) }
+        variant: { type: string, maxLength: 32 }
+        position: { $ref: "#/components/schemas/Point" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        size_cm: { $ref: "#/components/schemas/PositiveCm" }
+        points:
+          type: array
+          maxItems: 10000
+          items: { $ref: "#/components/schemas/Point" }
+        label: { $ref: "#/components/schemas/I18nText" }
+        depth_cm: { $ref: "#/components/schemas/Cm" }
+
+    MapElements:
+      type: object
+      required: [structures, berths, dynamic_areas, land_resources, pedestals, decorations]
+      properties:
+        structures:
+          type: array
+          maxItems: 20000
+          items: { $ref: "#/components/schemas/Structure" }
+        berths:
+          type: array
+          maxItems: 20000
+          items: { $ref: "#/components/schemas/Berth" }
+        dynamic_areas:
+          type: array
+          maxItems: 20000
+          items: { $ref: "#/components/schemas/DynamicArea" }
+        land_resources:
+          type: array
+          maxItems: 20000
+          items: { $ref: "#/components/schemas/LandResource" }
+        pedestals:
+          type: array
+          maxItems: 20000
+          items: { $ref: "#/components/schemas/Pedestal" }
+        decorations:
+          type: array
+          maxItems: 20000
+          items: { $ref: "#/components/schemas/Decoration" }
+
+    MapDocument:
+      allOf:
+        - $ref: "#/components/schemas/MapMeta"
+        - $ref: "#/components/schemas/MapElements"
+        - type: object
+          required: [id, version, updated_at]
+          properties:
+            id: { type: string }
+            version: { type: integer }
+            updated_at: { type: string, format: date-time }
+
+    MapSaveRequest:
+      allOf:
+        - $ref: "#/components/schemas/MapMeta"
+        - $ref: "#/components/schemas/MapElements"
+
+    MapIssueSeverity:
+      type: string
+      enum: [error, warning]
+
+    MapIssue:
+      type: object
+      required: [code, severity, element_type, refs]
+      properties:
+        code:
+          description: ValidateMap rule (m1-plan §2.3), e.g. berth_overlap
+          type: string
+        severity: { $ref: "#/components/schemas/MapIssueSeverity" }
+        element_type: { type: string }
+        refs:
+          type: array
+          items: { type: string }
+        field: { type: string }
+        params:
+          description: Numbers only (cm, counts)
+          type: object
+          additionalProperties: { type: integer, format: int64 }
+
+    MapValidationReport:
+      type: object
+      required: [errors, warnings]
+      properties:
+        errors:
+          type: array
+          items: { $ref: "#/components/schemas/MapIssue" }
+        warnings:
+          type: array
+          items: { $ref: "#/components/schemas/MapIssue" }
+
+    MapSaveResult:
+      type: object
+      required: [document, id_map, warnings]
+      properties:
+        document: { $ref: "#/components/schemas/MapDocument" }
+        id_map:
+          description: Element key of the request → new id
+          type: object
+          additionalProperties: { type: string }
+        warnings:
+          type: array
+          items: { $ref: "#/components/schemas/MapIssue" }
+
+    MapExportGroupMember:
+      type: object
+      required: [resource_type, code]
+      properties:
+        resource_type: { $ref: "#/components/schemas/GroupResourceType" }
+        code: { $ref: "#/components/schemas/Code" }
+
+    MapExportGroup:
+      type: object
+      required: [code, name, kind, members]
+      properties:
+        code: { $ref: "#/components/schemas/Code" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        kind: { $ref: "#/components/schemas/BerthGroupKind" }
+        members:
+          type: array
+          maxItems: 20000
+          items: { $ref: "#/components/schemas/MapExportGroupMember" }
+
+    MapExport:
+      type: object
+      required: [format, exported_at, map, groups]
+      properties:
+        format: { type: string, enum: [porto-map/1] }
+        exported_at: { type: string, format: date-time }
+        map: { $ref: "#/components/schemas/MapSaveRequest" }
+        groups:
+          type: array
+          maxItems: 500
+          items: { $ref: "#/components/schemas/MapExportGroup" }
+
+    GeneratorType:
+      type: string
+      enum: [pier, quay_berths, linear_area, buoy_field, land_grid, surface_area]
+
+    Numbering:
+      type: object
+      required: [scheme]
+      properties:
+        scheme: { type: string, enum: [continuous, odd_left_even_right, per_side] }
+        prefix: { type: string, maxLength: 16 }
+        start: { type: integer, format: int64, minimum: 0, default: 1 }
+        pad: { type: integer, minimum: 0, maximum: 3 }
+
+    PierGenerator:
+      type: object
+      required: [type, key_prefix, origin, rotation_dd, length_cm, width_cm, code, sides, berth_width_cm, berth_length_cm, numbering]
+      properties:
+        type: { type: string, enum: [pier] }
+        key_prefix: { type: string, minLength: 1, maxLength: 16, pattern: "^[A-Za-z0-9_:-]+$" }
+        origin: { $ref: "#/components/schemas/Point" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        length_cm: { $ref: "#/components/schemas/PositiveCm" }
+        width_cm: { $ref: "#/components/schemas/PositiveCm" }
+        floating: { type: boolean }
+        code: { $ref: "#/components/schemas/Code" }
+        root_id: { $ref: "#/components/schemas/ElementRef" }
+        sides:
+          type: array
+          minItems: 1
+          maxItems: 2
+          items: { type: string, enum: [left, right] }
+        berths_per_side: { type: integer, minimum: 0, description: 0 = fill the length }
+        start_offset_cm: { $ref: "#/components/schemas/Cm" }
+        berth_width_cm: { $ref: "#/components/schemas/RectSideCm" }
+        berth_length_cm: { $ref: "#/components/schemas/RectSideCm" }
+        berth_width_end_cm: { $ref: "#/components/schemas/Cm" }
+        berth_length_end_cm: { $ref: "#/components/schemas/Cm" }
+        finger_every: { type: integer, minimum: 0 }
+        finger_width_cm: { $ref: "#/components/schemas/Cm" }
+        finger_length_cm: { $ref: "#/components/schemas/Cm" }
+        head_berths: { type: integer, minimum: 0, maximum: 4 }
+        mooring_type: { $ref: "#/components/schemas/MooringType" }
+        numbering: { $ref: "#/components/schemas/Numbering" }
+        depth_cm: { $ref: "#/components/schemas/Cm" }
+        group_id: { type: string }
+
+    QuayBerthsGenerator:
+      type: object
+      required: [type, key_prefix, quay_id, from_cm, to_cm, side, berth_width_cm, berth_length_cm, numbering]
+      properties:
+        type: { type: string, enum: [quay_berths] }
+        key_prefix: { type: string, minLength: 1, maxLength: 16, pattern: "^[A-Za-z0-9_:-]+$" }
+        quay_id: { $ref: "#/components/schemas/ElementRef" }
+        from_cm: { $ref: "#/components/schemas/Cm" }
+        to_cm: { $ref: "#/components/schemas/Cm" }
+        side: { type: string, enum: [left, right] }
+        berth_width_cm: { $ref: "#/components/schemas/RectSideCm" }
+        count: { type: integer, minimum: 0, description: 0 = fill by width }
+        berth_length_cm: { $ref: "#/components/schemas/RectSideCm" }
+        mooring_type: { $ref: "#/components/schemas/MooringType" }
+        numbering: { $ref: "#/components/schemas/Numbering" }
+        group_id: { type: string }
+
+    LinearAreaGenerator:
+      type: object
+      required: [type, key_prefix, code, structure_id, side, from_cm, to_cm, mode]
+      properties:
+        type: { type: string, enum: [linear_area] }
+        key_prefix: { type: string, minLength: 1, maxLength: 16, pattern: "^[A-Za-z0-9_:-]+$" }
+        code: { $ref: "#/components/schemas/Code" }
+        structure_id: { $ref: "#/components/schemas/ElementRef" }
+        side: { type: string, enum: [left, right, head] }
+        from_cm: { $ref: "#/components/schemas/Cm" }
+        to_cm: { $ref: "#/components/schemas/Cm" }
+        mode: { $ref: "#/components/schemas/MooringMode" }
+        cell_cm: { $ref: "#/components/schemas/Cm" }
+        margin_cm: { $ref: "#/components/schemas/Cm" }
+        max_loa_cm: { $ref: "#/components/schemas/Cm" }
+        max_beam_cm: { $ref: "#/components/schemas/Cm" }
+        group_id: { type: string }
+
+    BuoyFieldGenerator:
+      type: object
+      required: [type, key_prefix, outline, swing_radius_cm, layout, numbering]
+      properties:
+        type: { type: string, enum: [buoy_field] }
+        key_prefix: { type: string, minLength: 1, maxLength: 16, pattern: "^[A-Za-z0-9_:-]+$" }
+        outline: { $ref: "#/components/schemas/Polygon" }
+        swing_radius_cm: { $ref: "#/components/schemas/PositiveCm" }
+        layout: { type: string, enum: [grid, staggered] }
+        spacing_cm: { $ref: "#/components/schemas/Cm" }
+        max_loa_cm: { $ref: "#/components/schemas/Cm" }
+        numbering: { $ref: "#/components/schemas/Numbering" }
+        group_id: { type: string }
+
+    LandGridGenerator:
+      type: object
+      required: [type, key_prefix, origin, rotation_dd, rows, cols, item_width_cm, item_length_cm, kind, numbering]
+      properties:
+        type: { type: string, enum: [land_grid] }
+        key_prefix: { type: string, minLength: 1, maxLength: 16, pattern: "^[A-Za-z0-9_:-]+$" }
+        origin: { $ref: "#/components/schemas/Point" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        rows: { type: integer, minimum: 1 }
+        cols: { type: integer, minimum: 1 }
+        item_width_cm: { $ref: "#/components/schemas/RectSideCm" }
+        item_length_cm: { $ref: "#/components/schemas/RectSideCm" }
+        aisle_cm: { $ref: "#/components/schemas/Cm" }
+        aisle_every: { type: integer, minimum: 0 }
+        kind: { $ref: "#/components/schemas/LandKind" }
+        numbering: { $ref: "#/components/schemas/Numbering" }
+        group_id: { type: string }
+
+    SurfaceLane:
+      type: object
+      required: [from, to, width_cm]
+      properties:
+        from: { $ref: "#/components/schemas/Point" }
+        to: { $ref: "#/components/schemas/Point" }
+        width_cm: { $ref: "#/components/schemas/PositiveCm" }
+
+    SurfaceAreaGenerator:
+      type: object
+      required: [type, key_prefix, code, outline, cell_cm]
+      properties:
+        type: { type: string, enum: [surface_area] }
+        key_prefix: { type: string, minLength: 1, maxLength: 16, pattern: "^[A-Za-z0-9_:-]+$" }
+        code: { $ref: "#/components/schemas/Code" }
+        outline: { $ref: "#/components/schemas/Polygon" }
+        cell_cm: { $ref: "#/components/schemas/PositiveCm" }
+        grid_rotation_dd: { type: integer, format: int64, enum: [0, 900, 1800, 2700] }
+        exits:
+          type: array
+          maxItems: 100
+          items: { $ref: "#/components/schemas/Point" }
+        lanes:
+          type: array
+          maxItems: 100
+          items: { $ref: "#/components/schemas/SurfaceLane" }
+        margin_cm: { $ref: "#/components/schemas/Cm" }
+        max_loa_cm: { $ref: "#/components/schemas/Cm" }
+        max_height_cm: { $ref: "#/components/schemas/Cm" }
+        group_id: { type: string }
+
+    GeneratorParams:
+      oneOf:
+        - $ref: "#/components/schemas/PierGenerator"
+        - $ref: "#/components/schemas/QuayBerthsGenerator"
+        - $ref: "#/components/schemas/LinearAreaGenerator"
+        - $ref: "#/components/schemas/BuoyFieldGenerator"
+        - $ref: "#/components/schemas/LandGridGenerator"
+        - $ref: "#/components/schemas/SurfaceAreaGenerator"
+      discriminator:
+        propertyName: type
+        mapping:
+          pier: "#/components/schemas/PierGenerator"
+          quay_berths: "#/components/schemas/QuayBerthsGenerator"
+          linear_area: "#/components/schemas/LinearAreaGenerator"
+          buoy_field: "#/components/schemas/BuoyFieldGenerator"
+          land_grid: "#/components/schemas/LandGridGenerator"
+          surface_area: "#/components/schemas/SurfaceAreaGenerator"
+
+    GenerateRequest:
+      type: object
+      required: [generator]
+      properties:
+        generator: { $ref: "#/components/schemas/GeneratorParams" }
+        document:
+          description: The current unsaved document; when given, the result carries a report of document + elements
+          allOf:
+            - $ref: "#/components/schemas/MapSaveRequest"
+
+    GenerateResult:
+      type: object
+      required: [elements, counts]
+      properties:
+        elements: { $ref: "#/components/schemas/MapElements" }
+        report: { $ref: "#/components/schemas/MapValidationReport" }
+        counts: { $ref: "#/components/schemas/MapCounts" }
+
+    MapBackgroundFile:
+      type: object
+      required: [file_id, content_type, width_px, height_px, size_bytes]
+      properties:
+        file_id: { type: string }
+        content_type: { type: string, enum: [image/png, image/jpeg, image/svg+xml] }
+        width_px: { type: integer, format: int64 }
+        height_px: { type: integer, format: int64 }
+        size_bytes: { type: integer, format: int64 }
+
+    ConcessionGeojsonRequest:
+      type: object
+      required: [geojson]
+      properties:
+        geojson:
+          description: A GeoJSON Polygon, Feature or FeatureCollection with one polygon (WGS84)
+          type: object
+          additionalProperties: true
+        georef: { $ref: "#/components/schemas/Georef" }
+
+    ConcessionGeojsonResult:
+      type: object
+      required: [outline]
+      properties:
+        outline: { $ref: "#/components/schemas/Polygon" }
+
+    BerthImportMapping:
+      description: Zero-based column index of each field in the CSV
+      type: object
+      required: [code, pier, length, width]
+      properties:
+        code: { type: integer, minimum: 0 }
+        pier: { type: integer, minimum: 0 }
+        length: { type: integer, minimum: 0 }
+        width: { type: integer, minimum: 0 }
+        depth: { type: integer, minimum: 0 }
+        price_class: { type: integer, minimum: 0 }
+        side: { type: integer, minimum: 0 }
+        mooring_type: { type: integer, minimum: 0 }
+
+    BerthImportPlacement:
+      type: object
+      required: [start, side_policy]
+      properties:
+        start: { type: string, enum: [after_existing, root] }
+        side_policy: { type: string, enum: [alternate, column, left, right] }
+
+    BerthImportRequest:
+      type: object
+      required: [csv, has_header, mapping, units, placement, dry_run]
+      properties:
+        csv: { type: string, maxLength: 4000000 }
+        delimiter: { type: string, enum: [comma, semicolon, tab], description: Column separator (default comma) }
+        has_header: { type: boolean }
+        mapping: { $ref: "#/components/schemas/BerthImportMapping" }
+        units: { type: string, enum: [m, cm] }
+        placement: { $ref: "#/components/schemas/BerthImportPlacement" }
+        dry_run: { type: boolean }
+
+    BerthImportRejected:
+      type: object
+      required: [row, errors]
+      properties:
+        row: { type: integer }
+        errors:
+          type: array
+          items: { $ref: "#/components/schemas/FieldError" }
+
+    BerthImportDuplicate:
+      type: object
+      required: [row, code, reason]
+      properties:
+        row: { type: integer }
+        code: { type: string }
+        reason: { type: string, enum: [code_in_file, code_on_map] }
+
+    BerthImportPlanned:
+      type: object
+      required: [row, code, pier, side]
+      properties:
+        row: { type: integer }
+        code: { type: string }
+        pier: { type: string }
+        side: { $ref: "#/components/schemas/Side" }
+
+    BerthImportReport:
+      type: object
+      required: [rows_total, valid, rejected, duplicates, planned]
+      properties:
+        rows_total: { type: integer }
+        valid: { type: integer }
+        rejected:
+          type: array
+          items: { $ref: "#/components/schemas/BerthImportRejected" }
+        duplicates:
+          type: array
+          items: { $ref: "#/components/schemas/BerthImportDuplicate" }
+        planned:
+          type: array
+          items: { $ref: "#/components/schemas/BerthImportPlanned" }
+        document: { $ref: "#/components/schemas/MapSaveResult" }
+
+    BerthSummary:
+      type: object
+      required: [id, map_id, code, structure_code, width_cm, length_cm, max_loa_cm, max_beam_cm, depth_cm, price_class, mooring_type, active]
+      properties:
+        id: { type: string }
+        map_id: { type: string }
+        code: { type: string }
+        structure_code: { type: [string, "null"] }
+        width_cm: { $ref: "#/components/schemas/Cm" }
+        length_cm: { $ref: "#/components/schemas/Cm" }
+        max_loa_cm: { $ref: "#/components/schemas/Cm" }
+        max_beam_cm: { $ref: "#/components/schemas/Cm" }
+        depth_cm: { type: [integer, "null"], format: int64 }
+        price_class: { type: [string, "null"] }
+        mooring_type: { $ref: "#/components/schemas/MooringType" }
+        active: { type: boolean }
+
+    BerthPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/BerthSummary" }
+        next_cursor: { type: [string, "null"] }
+
+    BerthGroupKind:
+      type: string
+      enum: [structure, transit, area, custom]
+
+    GroupResourceType:
+      type: string
+      enum: [berth, dynamic_area, land_resource]
+
+    BerthGroupMemberCounts:
+      type: object
+      required: [berth, dynamic_area, land_resource]
+      properties:
+        berth: { type: integer }
+        dynamic_area: { type: integer }
+        land_resource: { type: integer }
+
+    BerthGroup:
+      type: object
+      required: [id, code, name, kind, sort_order, member_counts, version]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        kind: { $ref: "#/components/schemas/BerthGroupKind" }
+        sort_order: { type: integer }
+        member_counts: { $ref: "#/components/schemas/BerthGroupMemberCounts" }
+        version: { type: integer }
+
+    BerthGroupList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/BerthGroup" }
+
+    BerthGroupCreate:
+      type: object
+      required: [code, name]
+      properties:
+        code: { $ref: "#/components/schemas/Code" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        kind: { $ref: "#/components/schemas/BerthGroupKind" }
+
+    BerthGroupPatch:
+      type: object
+      properties:
+        code: { $ref: "#/components/schemas/Code" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        kind: { $ref: "#/components/schemas/BerthGroupKind" }
+        sort_order: { type: integer }
+
+    PriceBand:
+      type: object
+      required: [max_cm, class]
+      properties:
+        max_cm: { $ref: "#/components/schemas/PositiveCm" }
+        class: { type: string, minLength: 1, maxLength: 16 }
+
+    PriceClassRule:
+      description: Width bands → price class, sorted by max_cm; fallback above the last band
+      type: object
+      required: [basis, bands, fallback]
+      properties:
+        basis: { type: string, enum: [width] }
+        bands:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/PriceBand" }
+        fallback: { type: string, maxLength: 16 }
+
+    HarborSettings:
+      type: object
+      required: [price_class_rule, loa_tolerance_cm, default_grid_cm, version]
+      properties:
+        price_class_rule: { $ref: "#/components/schemas/PriceClassRule" }
+        loa_tolerance_cm: { type: integer, format: int64, minimum: 0, maximum: 500 }
+        default_grid_cm: { type: integer, format: int64, minimum: 1, maximum: 10000 }
+        version: { type: integer }
+
+    HarborSettingsPatch:
+      type: object
+      properties:
+        price_class_rule: { $ref: "#/components/schemas/PriceClassRule" }
+        loa_tolerance_cm: { type: integer, format: int64, minimum: 0, maximum: 500 }
+        default_grid_cm: { type: integer, format: int64, minimum: 1, maximum: 10000 }
+
+    # ---- M1 registry ----
+
+    CustomerKind:
+      type: string
+      enum: [person, company]
+
+    CustomerCategory:
+      type: string
+      enum: [member, resident, affiliated, charter, yard]
+
+    ContactEntry:
+      type: object
+      required: [label, value]
+      properties:
+        label: { type: string, maxLength: 32 }
+        value: { type: string, minLength: 1, maxLength: 254 }
+
+    PaymentTerms:
+      type: object
+      required: [days, end_of_month]
+      properties:
+        days: { type: integer, minimum: 0, maximum: 365 }
+        end_of_month: { type: boolean }
+
+    Customer:
+      type: object
+      required:
+        - id
+        - kind
+        - first_name
+        - last_name
+        - company_name
+        - display_name
+        - fiscal_code
+        - vat_number
+        - sdi_code
+        - pec
+        - billing_address
+        - nationality
+        - locale
+        - emails
+        - phones
+        - category
+        - tags
+        - payment_terms
+        - iban_masked
+        - notes
+        - merged_into_id
+        - anonymized_at
+        - archived_at
+        - version
+        - created_at
+        - updated_at
+      properties:
+        id: { type: string }
+        kind: { $ref: "#/components/schemas/CustomerKind" }
+        first_name: { type: string }
+        last_name: { type: string }
+        company_name: { type: string }
+        display_name: { type: string, description: Empty for an anonymised customer }
+        fiscal_code: { type: [string, "null"] }
+        vat_number: { type: [string, "null"] }
+        sdi_code: { type: [string, "null"] }
+        pec: { type: [string, "null"] }
+        billing_address: { $ref: "#/components/schemas/Address" }
+        nationality: { type: [string, "null"] }
+        locale: { $ref: "#/components/schemas/Locale" }
+        emails:
+          type: array
+          items: { $ref: "#/components/schemas/ContactEntry" }
+        phones:
+          type: array
+          items: { $ref: "#/components/schemas/ContactEntry" }
+        category:
+          oneOf:
+            - $ref: "#/components/schemas/CustomerCategory"
+            - type: "null"
+        tags:
+          type: array
+          items: { type: string }
+        payment_terms:
+          oneOf:
+            - $ref: "#/components/schemas/PaymentTerms"
+            - type: "null"
+        iban_masked: { type: [string, "null"], description: 'Masked, e.g. "IT•• •••• 1234"; the IBAN is never returned' }
+        notes: { type: string }
+        merged_into_id: { type: [string, "null"] }
+        anonymized_at: { type: [string, "null"], format: date-time }
+        archived_at: { type: [string, "null"], format: date-time }
+        version: { type: integer }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    CustomerInput:
+      type: object
+      required: [kind]
+      properties:
+        kind: { $ref: "#/components/schemas/CustomerKind" }
+        first_name: { type: string, maxLength: 100 }
+        last_name: { type: string, maxLength: 100 }
+        company_name: { type: string, maxLength: 200 }
+        fiscal_code: { type: string, maxLength: 16 }
+        vat_number: { type: string, maxLength: 20 }
+        sdi_code: { type: string, maxLength: 7 }
+        pec: { type: string, maxLength: 254 }
+        billing_address: { $ref: "#/components/schemas/Address" }
+        nationality: { type: string, minLength: 2, maxLength: 2 }
+        locale: { $ref: "#/components/schemas/Locale" }
+        emails:
+          type: array
+          maxItems: 10
+          items: { $ref: "#/components/schemas/ContactEntry" }
+        phones:
+          type: array
+          maxItems: 10
+          items: { $ref: "#/components/schemas/ContactEntry" }
+        category: { $ref: "#/components/schemas/CustomerCategory" }
+        tags:
+          type: array
+          maxItems: 20
+          items: { type: string, maxLength: 50 }
+        payment_terms: { $ref: "#/components/schemas/PaymentTerms" }
+        iban: { type: string, maxLength: 42, writeOnly: true }
+        notes: { type: string, maxLength: 4000 }
+
+    CustomerPatch:
+      description: Partial update; null clears a nullable field, "" clears the IBAN
+      type: object
+      properties:
+        kind: { $ref: "#/components/schemas/CustomerKind" }
+        first_name: { type: string, maxLength: 100 }
+        last_name: { type: string, maxLength: 100 }
+        company_name: { type: string, maxLength: 200 }
+        fiscal_code: { type: [string, "null"], maxLength: 16 }
+        vat_number: { type: [string, "null"], maxLength: 20 }
+        sdi_code: { type: [string, "null"], maxLength: 7 }
+        pec: { type: [string, "null"], maxLength: 254 }
+        billing_address: { $ref: "#/components/schemas/Address" }
+        nationality: { type: [string, "null"], maxLength: 2 }
+        locale: { $ref: "#/components/schemas/Locale" }
+        emails:
+          type: array
+          maxItems: 10
+          items: { $ref: "#/components/schemas/ContactEntry" }
+        phones:
+          type: array
+          maxItems: 10
+          items: { $ref: "#/components/schemas/ContactEntry" }
+        category:
+          oneOf:
+            - $ref: "#/components/schemas/CustomerCategory"
+            - type: "null"
+        tags:
+          type: array
+          maxItems: 20
+          items: { type: string, maxLength: 50 }
+        payment_terms:
+          oneOf:
+            - $ref: "#/components/schemas/PaymentTerms"
+            - type: "null"
+        iban: { type: string, maxLength: 42, writeOnly: true }
+        notes: { type: string, maxLength: 4000 }
+
+    CustomerSummary:
+      type: object
+      required: [id, kind, display_name, fiscal_code, vat_number, category, tags, primary_email, primary_phone, vessel_count, archived_at, anonymized_at, merged_into_id]
+      properties:
+        id: { type: string }
+        kind: { $ref: "#/components/schemas/CustomerKind" }
+        display_name: { type: string }
+        fiscal_code: { type: [string, "null"] }
+        vat_number: { type: [string, "null"] }
+        category:
+          oneOf:
+            - $ref: "#/components/schemas/CustomerCategory"
+            - type: "null"
+        tags:
+          type: array
+          items: { type: string }
+        primary_email: { type: [string, "null"] }
+        primary_phone: { type: [string, "null"] }
+        vessel_count: { type: integer }
+        archived_at: { type: [string, "null"], format: date-time }
+        anonymized_at: { type: [string, "null"], format: date-time }
+        merged_into_id: { type: [string, "null"] }
+
+    CustomerPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/CustomerSummary" }
+        next_cursor: { type: [string, "null"] }
+
+    CustomerCreated:
+      type: object
+      required: [customer, possible_duplicates]
+      properties:
+        customer: { $ref: "#/components/schemas/Customer" }
+        possible_duplicates:
+          type: array
+          items: { $ref: "#/components/schemas/CustomerSummary" }
+
+    CustomerVesselLink:
+      type: object
+      required: [vessel, roles, share_millis]
+      properties:
+        vessel: { $ref: "#/components/schemas/VesselSummary" }
+        roles:
+          type: array
+          items: { $ref: "#/components/schemas/VesselPartyRole" }
+        share_millis: { type: [integer, "null"], format: int64 }
+
+    CustomerOverview:
+      type: object
+      required: [customer, vessels, documents, deadlines, consents, duplicates]
+      properties:
+        customer: { $ref: "#/components/schemas/Customer" }
+        vessels:
+          type: array
+          items: { $ref: "#/components/schemas/CustomerVesselLink" }
+        documents:
+          type: array
+          items: { $ref: "#/components/schemas/Document" }
+        deadlines:
+          type: array
+          items: { $ref: "#/components/schemas/Deadline" }
+        consents:
+          description: The current consent of each kind
+          type: array
+          items: { $ref: "#/components/schemas/Consent" }
+        duplicates:
+          type: array
+          items: { $ref: "#/components/schemas/CustomerSummary" }
+
+    CustomerMergeRequest:
+      type: object
+      required: [source_ids]
+      properties:
+        source_ids:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items: { type: string }
+
+    CustomerAnonymizeRequest:
+      type: object
+      required: [confirm]
+      properties:
+        confirm: { type: boolean, enum: [true] }
+
+    CustomerExport:
+      type: object
+      required: [format, exported_at, customer, consents, vessels, parties, documents, deadlines]
+      properties:
+        format: { type: string, enum: [porto-customer/1] }
+        exported_at: { type: string, format: date-time }
+        customer: { $ref: "#/components/schemas/Customer" }
+        consents:
+          type: array
+          items: { $ref: "#/components/schemas/Consent" }
+        vessels:
+          type: array
+          items: { $ref: "#/components/schemas/Vessel" }
+        parties:
+          type: array
+          items: { $ref: "#/components/schemas/VesselPartyRow" }
+        documents:
+          type: array
+          items: { $ref: "#/components/schemas/Document" }
+        deadlines:
+          type: array
+          items: { $ref: "#/components/schemas/Deadline" }
+
+    ConsentKind:
+      type: string
+      enum: [privacy, marketing, third_party]
+
+    ConsentSource:
+      type: string
+      enum: [desk, online, import, api]
+
+    Consent:
+      type: object
+      required: [id, kind, policy_version, granted, source, recorded_by, recorded_at]
+      properties:
+        id: { type: string }
+        kind: { $ref: "#/components/schemas/ConsentKind" }
+        policy_version: { type: string }
+        granted: { type: boolean }
+        source: { $ref: "#/components/schemas/ConsentSource" }
+        recorded_by:
+          oneOf:
+            - $ref: "#/components/schemas/UserRef"
+            - type: "null"
+        recorded_at: { type: string, format: date-time }
+
+    ConsentList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Consent" }
+
+    ConsentInput:
+      type: object
+      required: [kind, policy_version, granted, source]
+      properties:
+        kind: { $ref: "#/components/schemas/ConsentKind" }
+        policy_version: { type: string, minLength: 1, maxLength: 32 }
+        granted: { type: boolean }
+        source: { $ref: "#/components/schemas/ConsentSource" }
+
+    HullType:
+      type: string
+      enum: [monohull_motor, monohull_sail, catamaran, trimaran, rib, gozzo, other]
+
+    Fuel:
+      type: string
+      enum: [petrol, diesel, electric, hybrid, none, other]
+
+    DimensionsSource:
+      type: string
+      enum: [declared, measured]
+
+    UnitClass:
+      description: Legal unit class from the effective LOA (natante, imbarcazione, nave)
+      type: string
+      enum: [natante, imbarcazione, nave]
+
+    VesselPartyRole:
+      type: string
+      enum: [owner, operator, skipper, billing, contact]
+
+    Engine:
+      type: object
+      properties:
+        make: { type: string, maxLength: 100 }
+        model: { type: string, maxLength: 100 }
+        power_kw: { type: integer, format: int64, minimum: 0 }
+        power_hp: { type: integer, format: int64, minimum: 0 }
+        serial: { type: string, maxLength: 64 }
+        hours: { type: integer, format: int64, minimum: 0 }
+
+    VesselParty:
+      type: object
+      required: [customer_id, display_name, role, share_millis]
+      properties:
+        customer_id: { type: string }
+        display_name: { type: string }
+        role: { $ref: "#/components/schemas/VesselPartyRole" }
+        share_millis: { type: [integer, "null"], format: int64 }
+
+    VesselPartyRow:
+      description: A party link as stored (GDPR export)
+      type: object
+      required: [vessel_id, customer_id, role, share_millis]
+      properties:
+        vessel_id: { type: string }
+        customer_id: { type: string }
+        role: { $ref: "#/components/schemas/VesselPartyRole" }
+        share_millis: { type: [integer, "null"], format: int64 }
+
+    VesselPartyInput:
+      type: object
+      required: [customer_id, role]
+      properties:
+        customer_id: { type: string }
+        role: { $ref: "#/components/schemas/VesselPartyRole" }
+        share_millis: { type: integer, format: int64, minimum: 1, maximum: 1000, description: Owners only }
+
+    VesselPartiesReplace:
+      type: object
+      required: [parties]
+      properties:
+        parties:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/VesselPartyInput" }
+
+    Vessel:
+      type: object
+      required:
+        - id
+        - name
+        - registration
+        - registry_office
+        - flag
+        - home_port
+        - hull_type
+        - model
+        - builder
+        - year_built
+        - hull_color
+        - hull_material
+        - loa_cm
+        - lwl_cm
+        - beam_cm
+        - draft_cm
+        - air_draft_cm
+        - displacement_kg
+        - measured_loa_cm
+        - measured_beam_cm
+        - measured_draft_cm
+        - measured_air_draft_cm
+        - measured_at
+        - measured_by
+        - dimensions_source
+        - effective_loa_cm
+        - effective_beam_cm
+        - effective_draft_cm
+        - unit_class
+        - engines
+        - fuel
+        - power_required_a
+        - notes
+        - parties
+        - documents
+        - archived_at
+        - version
+        - created_at
+        - updated_at
+      properties:
+        id: { type: string }
+        name: { type: string }
+        registration: { type: [string, "null"] }
+        registry_office: { type: [string, "null"] }
+        flag: { type: [string, "null"] }
+        home_port: { type: [string, "null"] }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+        model: { type: [string, "null"] }
+        builder: { type: [string, "null"] }
+        year_built: { type: [integer, "null"] }
+        hull_color: { type: [string, "null"] }
+        hull_material: { type: [string, "null"] }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        lwl_cm: { type: [integer, "null"], format: int64 }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        draft_cm: { type: [integer, "null"], format: int64 }
+        air_draft_cm: { type: [integer, "null"], format: int64 }
+        displacement_kg: { type: [integer, "null"], format: int64 }
+        measured_loa_cm: { type: [integer, "null"], format: int64 }
+        measured_beam_cm: { type: [integer, "null"], format: int64 }
+        measured_draft_cm: { type: [integer, "null"], format: int64 }
+        measured_air_draft_cm: { type: [integer, "null"], format: int64 }
+        measured_at: { type: [string, "null"], format: date-time }
+        measured_by:
+          oneOf:
+            - $ref: "#/components/schemas/UserRef"
+            - type: "null"
+        dimensions_source: { $ref: "#/components/schemas/DimensionsSource" }
+        effective_loa_cm: { $ref: "#/components/schemas/Cm" }
+        effective_beam_cm: { $ref: "#/components/schemas/Cm" }
+        effective_draft_cm: { type: [integer, "null"], format: int64 }
+        unit_class: { $ref: "#/components/schemas/UnitClass" }
+        engines:
+          type: array
+          items: { $ref: "#/components/schemas/Engine" }
+        fuel:
+          oneOf:
+            - $ref: "#/components/schemas/Fuel"
+            - type: "null"
+        power_required_a: { type: [integer, "null"] }
+        notes: { type: string }
+        parties:
+          type: array
+          items: { $ref: "#/components/schemas/VesselParty" }
+        documents:
+          type: array
+          items: { $ref: "#/components/schemas/Document" }
+        archived_at: { type: [string, "null"], format: date-time }
+        version: { type: integer }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    VesselInput:
+      type: object
+      required: [name, loa_cm, beam_cm]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100 }
+        registration: { type: string, maxLength: 50 }
+        registry_office: { type: string, maxLength: 100 }
+        flag: { type: string, minLength: 2, maxLength: 2 }
+        home_port: { type: string, maxLength: 100 }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+        model: { type: string, maxLength: 100 }
+        builder: { type: string, maxLength: 100 }
+        year_built: { type: integer, minimum: 1800, maximum: 2200 }
+        hull_color: { type: string, maxLength: 50 }
+        hull_material: { type: string, maxLength: 50 }
+        loa_cm: { $ref: "#/components/schemas/PositiveCm" }
+        lwl_cm: { $ref: "#/components/schemas/PositiveCm" }
+        beam_cm: { $ref: "#/components/schemas/PositiveCm" }
+        draft_cm: { $ref: "#/components/schemas/PositiveCm" }
+        air_draft_cm: { $ref: "#/components/schemas/PositiveCm" }
+        displacement_kg: { type: integer, format: int64, minimum: 1 }
+        engines:
+          type: array
+          maxItems: 6
+          items: { $ref: "#/components/schemas/Engine" }
+        fuel: { $ref: "#/components/schemas/Fuel" }
+        power_required_a: { type: integer, enum: [16, 32, 63, 125] }
+        notes: { type: string, maxLength: 4000 }
+        parties:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/VesselPartyInput" }
+
+    VesselPatch:
+      description: Partial update; null clears a nullable field
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100 }
+        registration: { type: [string, "null"], maxLength: 50 }
+        registry_office: { type: [string, "null"], maxLength: 100 }
+        flag: { type: [string, "null"], maxLength: 2 }
+        home_port: { type: [string, "null"], maxLength: 100 }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+        model: { type: [string, "null"], maxLength: 100 }
+        builder: { type: [string, "null"], maxLength: 100 }
+        year_built: { type: [integer, "null"], minimum: 1800, maximum: 2200 }
+        hull_color: { type: [string, "null"], maxLength: 50 }
+        hull_material: { type: [string, "null"], maxLength: 50 }
+        loa_cm: { $ref: "#/components/schemas/PositiveCm" }
+        lwl_cm: { type: [integer, "null"], format: int64, minimum: 1 }
+        beam_cm: { $ref: "#/components/schemas/PositiveCm" }
+        draft_cm: { type: [integer, "null"], format: int64, minimum: 1 }
+        air_draft_cm: { type: [integer, "null"], format: int64, minimum: 1 }
+        displacement_kg: { type: [integer, "null"], format: int64, minimum: 1 }
+        dimensions_source: { $ref: "#/components/schemas/DimensionsSource" }
+        engines:
+          type: array
+          maxItems: 6
+          items: { $ref: "#/components/schemas/Engine" }
+        fuel:
+          oneOf:
+            - $ref: "#/components/schemas/Fuel"
+            - type: "null"
+        power_required_a: { type: [integer, "null"] }
+        notes: { type: string, maxLength: 4000 }
+
+    VesselMeasurementInput:
+      type: object
+      required: [loa_cm, beam_cm]
+      properties:
+        loa_cm: { $ref: "#/components/schemas/PositiveCm" }
+        beam_cm: { $ref: "#/components/schemas/PositiveCm" }
+        draft_cm: { $ref: "#/components/schemas/PositiveCm" }
+        air_draft_cm: { $ref: "#/components/schemas/PositiveCm" }
+
+    VesselOwnerRef:
+      type: object
+      required: [customer_id, display_name]
+      properties:
+        customer_id: { type: string }
+        display_name: { type: string }
+
+    VesselSummary:
+      type: object
+      required: [id, name, registration, hull_type, loa_cm, beam_cm, effective_loa_cm, effective_beam_cm, dimensions_source, unit_class, owners, archived_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        registration: { type: [string, "null"] }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        effective_loa_cm: { $ref: "#/components/schemas/Cm" }
+        effective_beam_cm: { $ref: "#/components/schemas/Cm" }
+        dimensions_source: { $ref: "#/components/schemas/DimensionsSource" }
+        unit_class: { $ref: "#/components/schemas/UnitClass" }
+        owners:
+          type: array
+          items: { $ref: "#/components/schemas/VesselOwnerRef" }
+        archived_at: { type: [string, "null"], format: date-time }
+
+    VesselPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/VesselSummary" }
+        next_cursor: { type: [string, "null"] }
+
+    DocumentOwnerType:
+      type: string
+      enum: [customer, vessel]
+
+    DocumentType:
+      type: string
+      enum:
+        - identity_card
+        - passport
+        - driving_licence
+        - boating_licence
+        - navigation_licence
+        - registration_certificate
+        - insurance_policy
+        - safety_certificate
+        - power_declaration
+        - signed_contract
+        - proxy
+        - photo
+        - other
+
+    Document:
+      type: object
+      required: [id, owner_type, customer_id, vessel_id, type, number, issuer, issued_on, expires_on, has_file, file_name, content_type, size_bytes, notes, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        owner_type: { $ref: "#/components/schemas/DocumentOwnerType" }
+        customer_id: { type: [string, "null"] }
+        vessel_id: { type: [string, "null"] }
+        type: { $ref: "#/components/schemas/DocumentType" }
+        number: { type: [string, "null"], description: Decrypted document number }
+        issuer: { type: [string, "null"] }
+        issued_on: { type: [string, "null"], format: date, x-go-type: string }
+        expires_on: { type: [string, "null"], format: date, x-go-type: string }
+        has_file: { type: boolean }
+        file_name: { type: [string, "null"] }
+        content_type: { type: [string, "null"] }
+        size_bytes: { type: [integer, "null"], format: int64 }
+        notes: { type: string }
+        version: { type: integer }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    DocumentPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Document" }
+        next_cursor: { type: [string, "null"] }
+
+    DocumentInput:
+      type: object
+      required: [owner_type, type]
+      properties:
+        owner_type: { $ref: "#/components/schemas/DocumentOwnerType" }
+        customer_id: { type: string }
+        vessel_id: { type: string }
+        type: { $ref: "#/components/schemas/DocumentType" }
+        number: { type: string, maxLength: 64 }
+        issuer: { type: string, maxLength: 200 }
+        issued_on: { type: string, format: date, x-go-type: string }
+        expires_on: { type: string, format: date, x-go-type: string }
+        notes: { type: string, maxLength: 4000 }
+
+    DocumentPatch:
+      description: Partial update; null clears a nullable field (clearing expires_on removes the deadline)
+      type: object
+      properties:
+        type: { $ref: "#/components/schemas/DocumentType" }
+        number: { type: [string, "null"], maxLength: 64 }
+        issuer: { type: [string, "null"], maxLength: 200 }
+        issued_on: { type: [string, "null"], format: date, x-go-type: string }
+        expires_on: { type: [string, "null"], format: date, x-go-type: string }
+        notes: { type: string, maxLength: 4000 }
+
+    DocumentFileUrl:
+      type: object
+      required: [url, expires_at]
+      properties:
+        url: { type: string }
+        expires_at: { type: string, format: date-time }
+
+    DeadlineStatus:
+      type: string
+      enum: [open, done, dismissed]
+
+    DeadlineUrgency:
+      type: string
+      enum: [overdue, due_soon, later]
+
+    DeadlineKind:
+      description: M1 kinds (from document types); later milestones add more
+      type: string
+      enum:
+        - identity_document
+        - boating_licence
+        - navigation_licence
+        - registration_certificate
+        - insurance
+        - safety_certificate
+        - power_declaration
+        - other_document
+
+    DeadlineSourceType:
+      type: string
+      enum: [document]
+
+    CustomerRef:
+      type: object
+      required: [id, display_name]
+      properties:
+        id: { type: string }
+        display_name: { type: string }
+
+    VesselRef:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: string }
+        name: { type: string }
+
+    Deadline:
+      type: object
+      required: [id, kind, source_type, source_id, customer, vessel, document_type, due_on, status, urgency, note, version]
+      properties:
+        id: { type: string }
+        kind: { $ref: "#/components/schemas/DeadlineKind" }
+        source_type: { $ref: "#/components/schemas/DeadlineSourceType" }
+        source_id: { type: string }
+        customer:
+          oneOf:
+            - $ref: "#/components/schemas/CustomerRef"
+            - type: "null"
+        vessel:
+          oneOf:
+            - $ref: "#/components/schemas/VesselRef"
+            - type: "null"
+        document_type:
+          oneOf:
+            - $ref: "#/components/schemas/DocumentType"
+            - type: "null"
+        due_on: { type: string, format: date, x-go-type: string }
+        status: { $ref: "#/components/schemas/DeadlineStatus" }
+        urgency: { $ref: "#/components/schemas/DeadlineUrgency" }
+        note: { type: string }
+        version: { type: integer }
+
+    DeadlinePage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Deadline" }
+        next_cursor: { type: [string, "null"] }
+
+    DeadlinePatch:
+      type: object
+      properties:
+        status: { $ref: "#/components/schemas/DeadlineStatus" }
+        note: { type: string, maxLength: 1000 }
+
+    DeadlinePolicy:
+      type: object
+      required: [kind, lead_days]
+      properties:
+        kind: { $ref: "#/components/schemas/DeadlineKind" }
+        lead_days:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items: { type: integer, minimum: 1, maximum: 730 }
+
+    DeadlinePolicyList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/DeadlinePolicy" }

@@ -1,0 +1,160 @@
+{
+  "title": "Imbarcazioni",
+  "description": "Barche con dimensioni dichiarate e misurate, motori, proprietari e documenti.",
+  "new": "Nuova barca",
+  "search": "Cerca",
+  "searchPlaceholder": "Nome o matricola",
+  "empty": "Nessuna barca trovata.",
+  "units": { "m": "m" },
+  "filters": {
+    "hullType": "Tipo",
+    "allHullTypes": "Tutti i tipi",
+    "owner": "Proprietario",
+    "anyOwner": "Qualsiasi proprietario",
+    "archived": "Solo archiviate"
+  },
+  "hullTypes": {
+    "monohull_motor": "Motore",
+    "monohull_sail": "Vela",
+    "catamaran": "Catamarano",
+    "trimaran": "Trimarano",
+    "rib": "Gommone",
+    "gozzo": "Gozzo",
+    "other": "Altro"
+  },
+  "fuels": {
+    "petrol": "Benzina",
+    "diesel": "Gasolio",
+    "electric": "Elettrica",
+    "hybrid": "Ibrida",
+    "none": "Nessuna",
+    "other": "Altro"
+  },
+  "unitClasses": {
+    "natante": "Natante",
+    "imbarcazione": "Imbarcazione",
+    "nave": "Nave da diporto"
+  },
+  "dimensionsSource": {
+    "declared": "Dimensioni dichiarate",
+    "measured": "Dimensioni misurate"
+  },
+  "columns": {
+    "name": "Barca",
+    "registration": "Matricola",
+    "dimensions": "Lunghezza × baglio",
+    "unitClass": "Tipo di unità",
+    "owners": "Proprietari"
+  },
+  "status": { "archived": "Archiviata" },
+  "fields": {
+    "name": "Nome",
+    "registration": "Matricola o numero di iscrizione",
+    "registryOffice": "Ufficio d'iscrizione",
+    "flag": "Bandiera (codice ISO)",
+    "homePort": "Porto di registrazione",
+    "hullType": "Tipo",
+    "model": "Modello",
+    "builder": "Cantiere costruttore",
+    "yearBuilt": "Anno di costruzione",
+    "hullColor": "Colore dello scafo",
+    "hullMaterial": "Materiale dello scafo",
+    "loa": "Lunghezza fuori tutto",
+    "lwl": "Lunghezza al galleggiamento",
+    "beam": "Baglio",
+    "draft": "Pescaggio",
+    "airDraft": "Altezza dal galleggiamento",
+    "displacementKg": "Dislocamento (kg)",
+    "dimensionsSource": "Dimensioni usate",
+    "fuel": "Alimentazione",
+    "noFuel": "Non indicata",
+    "powerRequired": "Potenza elettrica richiesta",
+    "noPower": "Non indicata",
+    "amperes": "{{value}} A",
+    "notes": "Note"
+  },
+  "validation": {
+    "positiveLength": "Inserisci una misura in metri maggiore di zero (al massimo due decimali).",
+    "year": "Inserisci un anno di quattro cifre.",
+    "integer": "Inserisci un numero intero."
+  },
+  "form": {
+    "createTitle": "Nuova barca",
+    "sectionIdentity": "Identificazione",
+    "sectionDimensions": "Dimensioni dichiarate",
+    "declaredHint": "Le misure sono in metri. Quelle rilevate in banchina si registrano con «Registra misure».",
+    "sectionOther": "Altri dati",
+    "created": "Barca creata.",
+    "saved": "Barca aggiornata."
+  },
+  "dimensions": {
+    "title": "Dimensioni",
+    "effective": "In uso",
+    "declared": "Dichiarate",
+    "measured": "Misurate",
+    "notMeasured": "Non ancora misurata",
+    "measuredAt": "Misurata il"
+  },
+  "engines": {
+    "title": "Motori",
+    "empty": "Nessun motore indicato.",
+    "add": "Aggiungi motore",
+    "item": "Motore {{n}}",
+    "remove": "Rimuovi il motore {{n}}",
+    "make": "Marca",
+    "model": "Modello",
+    "serial": "Matricola",
+    "powerKw": "Potenza (kW)",
+    "powerHp": "Potenza (CV)",
+    "hours": "Ore di moto"
+  },
+  "parties": {
+    "title": "Proprietari e referenti",
+    "description": "Proprietari con la loro quota, conduttore, skipper, intestatario degli addebiti e contatti.",
+    "empty": "Nessun cliente collegato.",
+    "add": "Aggiungi cliente",
+    "customer": "Cliente",
+    "customerN": "Cliente {{n}}",
+    "pickCustomer": "Scegli un cliente",
+    "searchCustomer": "Cerca un cliente…",
+    "noCustomers": "Nessun cliente trovato.",
+    "role": "Ruolo",
+    "roles": {
+      "owner": "Proprietario",
+      "operator": "Conduttore",
+      "skipper": "Skipper",
+      "billing": "Intestatario addebiti",
+      "contact": "Contatto"
+    },
+    "share": "Quota",
+    "percent": "%",
+    "remove": "Rimuovi il cliente {{n}}",
+    "ownerTotal": "Quote dei proprietari: {{value}}%",
+    "save": "Salva proprietari e referenti",
+    "saved": "Proprietari e referenti aggiornati.",
+    "validation": {
+      "customerRequired": "Scegli un cliente.",
+      "duplicate": "Questo cliente ha già questo ruolo.",
+      "shareRequired": "Indica la quota di proprietà.",
+      "shareInvalid": "Quota non valida: da 0,1 a 100 con al massimo un decimale.",
+      "sharesExceed": "Le quote dei proprietari superano il 100%."
+    }
+  },
+  "measurement": {
+    "action": "Registra misure",
+    "title": "Misure rilevate in banchina",
+    "description": "Le misure rilevate sostituiscono quelle dichiarate per listini e assegnazioni dei posti.",
+    "saved": "Misure registrate."
+  },
+  "tabs": {
+    "data": "Dati",
+    "parties": "Proprietari e referenti",
+    "documents": "Documenti"
+  },
+  "actions": {
+    "archive": "Archivia",
+    "unarchive": "Ripristina",
+    "archived": "Barca archiviata.",
+    "unarchived": "Barca ripristinata."
+  }
+}

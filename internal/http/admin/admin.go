@@ -11,11 +11,16 @@ import (
 	"github.com/coste360/porto/internal/domain/apikey"
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
+	"github.com/coste360/porto/internal/domain/customer"
+	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/device"
+	"github.com/coste360/porto/internal/domain/document"
 	"github.com/coste360/porto/internal/domain/event"
+	"github.com/coste360/porto/internal/domain/harbor"
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/meta"
 	"github.com/coste360/porto/internal/domain/team"
+	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/domain/webhook"
 	"github.com/coste360/porto/internal/http/api"
 	"github.com/coste360/porto/internal/http/middleware"
@@ -39,6 +44,13 @@ type Handler struct {
 	SSE           *sse.Server
 	Meta          meta.Meta
 	SecureCookies bool
+
+	// M1
+	Harbor    *harbor.Service
+	Customers *customer.Service
+	Vessels   *vessel.Service
+	Documents *document.Service
+	Deadlines *deadline.Service
 }
 
 func principal(r *http.Request) *auth.Principal {

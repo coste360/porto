@@ -16,14 +16,20 @@ Verificata da: `TestConcurrency_BerthAllocation`, `TestConcurrency_CellAllocatio
 
 **INV-02 — Celle disgiunte implicano barche fisicamente separate.** Se due posizionamenti sulla stessa area hanno
 insiemi di celle disgiunti, i loro ingombri (con margini) non si intersecano. Verificata da:
-`TestFootprint_DisjointCellsImplyNoOverlap` (property test). Stato: planned.
+`TestFootprint_DisjointCellsImplyNoOverlap` (property test), con `TestFootprint_ParityVectors` per la parità Go ↔
+TypeScript. In M1 vale per `layout.Footprint`; le allocazioni arrivano in M3. Stato: partial.
 
 **INV-03 — Ogni allocazione è coerente con le sue righe.** Per ogni allocazione attiva le righe di occupazione sono
 esattamente quelle prodotte da `Footprint × notti` della sua posizione e del suo periodo. Verificata da:
 `TestAllocation_RowsMatchFootprint` (property test, tag `integration`). Stato: planned.
 
-**INV-04 — Nessuna mappa salvata ha posti sovrapposti.** Verificata da: `TestValidateMap_RejectsOverlap`,
-`TestGenerator_NoOverlap`. Stato: planned.
+**INV-04 — Nessuna mappa salvata ha posti sovrapposti.** Un solo percorso di scrittura (`applyDocument`) valida lo
+stato completo della mappa dopo il salvataggio dentro la stessa transazione, serializzata sulla versione della
+mappa (m1-plan §3.3). Rettangoli di posti e risorse a terra più stretti di `layout.MinRectSide` (2 cm) sono
+rifiutati come `invalid_geometry`, perché sotto quella misura il controllo di sovrapposizione con tolleranza non
+è definito. Verificata da: `TestValidateMap_RejectsOverlap`, `TestGenerator_NoOverlap`,
+`TestHarbor_SavedMapsNeverOverlap`, `TestHarbor_SingleWritePath`, `TestAcceptance_M1_RejectsOverlappingSave`,
+`TestConcurrency_MapSaveSingleWinner`. Stato: implemented.
 
 **INV-05 — Hold scaduti non bloccano le vendite.** Un hold con `expires_at < now` viene ignorato e ripulito al
 momento del conflitto anche se il job non è passato. Verificata da: `TestOccupancy_ExpiredHoldIsReclaimed`.
@@ -99,7 +105,7 @@ giornaliere è uguale all'importo. Verificata da: `TestAccrual_SumsToAmount` (pr
 ## Altri
 
 **INV-70 — Nessun dato personale negli eventi SSE e nei log.** Verificata da: `TestSSE_PayloadHasNoPII`,
-`TestEvents_DataHasNoPII`. Stato: partial.
+`TestEvents_DataHasNoPII` (con i campioni degli eventi M1 di mappa e anagrafiche), `TestLogs_NoPII`. Stato: partial.
 
 **INV-71 — Offline senza effetti sulle risorse.** Nessuna operazione accodata offline crea o sposta allocazioni né
 emette documenti numerati. Verificata da: test Vitest della allowlist della coda. Stato: planned.
@@ -108,4 +114,13 @@ emette documenti numerati. Verificata da: test Vitest della allowlist della coda
 PostgreSQL (trigger del database). Verificata da: `TestAuditLog_InsertOnly`. Stato: partial.
 
 **INV-73 — Query operative limitate al marina.** Ogni query operativa usa il `marina_id` dello scope autorizzato;
-una risorsa di un altro marina risponde 404. Verificata da: `TestAcceptance_CrossMarinaIsolation`. Stato: partial.
+una risorsa di un altro marina risponde 404. Verificata da: `TestAcceptance_CrossMarinaIsolation` (tutte le rotte
+con `{marinaId}`, comprese quelle M1 di mappa, clienti, imbarcazioni, documenti e scadenze),
+`TestAcceptance_CrossMarinaResourceIds` (il proprio `{marinaId}` con id di risorse di un altro marina),
+`TestStore_ElementReferencesStayInMarina` e `TestRegistryStore_MergeTargetStaysInMarina` (FK composite
+`(…_id, marina_id)` per strutture, colonnine, struttura padre e cliente di destinazione della fusione). Stato: partial.
+
+**INV-74 — Documenti cifrati a riposo e serviti solo con link firmati.** I file dei documenti (e gli sfondi delle
+mappe) sono salvati cifrati con il KeyRing sotto `PORTO_DATA_DIR/files`, legati a marina e id; il download di un
+documento richiede `customers.read` e un link firmato di 5 minuti legato all'utente. Verificata da:
+`TestDocument_FileEncryptedAtRest`, `TestDocument_SignedURLExpires`. Stato: implemented.

@@ -173,8 +173,8 @@ func TestWriteError_UnmappedIsInternal(t *testing.T) {
 func TestTypes_Registry(t *testing.T) {
 	slug := regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	all := All()
-	if len(all) != 33 {
-		t.Fatalf("declared %d types, want 33 (m0-plan §4.4)", len(all))
+	if len(all) != 42 {
+		t.Fatalf("declared %d types, want 42 (m0-plan §4.4 + m1-plan §4.5)", len(all))
 	}
 	for _, ty := range all {
 		if !slug.MatchString(string(ty)) {
@@ -191,6 +191,8 @@ func TestTypes_Registry(t *testing.T) {
 		ValidationFailed: 400, InvalidTOTP: 400, InvalidCredentials: 401, CSRFFailed: 403, NotFound: 404,
 		MethodNotAllowed: 405, LastOwner: 409, VersionConflict: 412, UnsupportedMediaType: 415,
 		IdempotencyKeyReused: 422, PreconditionRequired: 428, RateLimited: 429, InternalError: 500, NotReady: 503,
+		MapInvalid: 422, MapNotEmpty: 409, MapNotGeoreferenced: 409, InvalidFile: 400, FileTooLarge: 413,
+		CSVInvalid: 400, CustomerAnonymized: 409, CustomerMerged: 409, DownloadLinkExpired: 403,
 	}
 	for ty, s := range want {
 		if StatusOf(ty) != s {
@@ -206,5 +208,23 @@ func TestNew_Defaults(t *testing.T) {
 	p := New(Forbidden, Instance("/x"))
 	if p.Type != Forbidden || p.Status != 403 || p.Title != "Forbidden" || p.Instance != "/x" {
 		t.Fatalf("New = %+v", p)
+	}
+}
+
+func TestWrite_Issues(t *testing.T) {
+	rec := httptest.NewRecorder()
+	Write(rec, request(http.MethodPut), MapInvalid, WithIssues([]map[string]any{{"code": "berth_overlap", "refs": []string{"a", "b"}}}))
+	body := decode(t, rec)
+	if rec.Code != http.StatusUnprocessableEntity || body["type"] != "map_invalid" {
+		t.Fatalf("status %d, body %v", rec.Code, body)
+	}
+	issues, _ := body["issues"].([]any)
+	if len(issues) != 1 {
+		t.Fatalf("issues = %v", body["issues"])
+	}
+	rec = httptest.NewRecorder()
+	Write(rec, request(http.MethodPut), NotFound)
+	if _, ok := decode(t, rec)["issues"]; ok {
+		t.Fatal("issues should be omitted")
 	}
 }

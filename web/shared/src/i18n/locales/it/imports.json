@@ -1,0 +1,104 @@
+{
+  "title": "Importazione posti barca",
+  "description": "Importa i posti barca da un file CSV lungo i pontili della mappa «{{map}}».",
+  "steps": {
+    "label": "Passaggi dell'importazione",
+    "file": "File",
+    "columns": "Colonne",
+    "placement": "Posizionamento",
+    "report": "Verifica e importazione"
+  },
+  "file": {
+    "label": "File CSV",
+    "hint": "CSV fino a 4 MB e 5.000 righe. Da Excel salva il foglio come CSV.",
+    "loaded": "{{name}}: {{count}} righe di dati.",
+    "tooLarge": "Il file supera i 4 MB.",
+    "tooManyRows": "Il file supera le 5.000 righe.",
+    "empty": "Il file non contiene righe.",
+    "delimiter": "Separatore",
+    "delimiters": {
+      "comma": "Virgola (,)",
+      "semicolon": "Punto e virgola (;)",
+      "tab": "Tabulazione"
+    },
+    "hasHeader": "La prima riga contiene i nomi delle colonne",
+    "units": "Unità delle misure",
+    "unitsM": "Metri",
+    "unitsCm": "Centimetri"
+  },
+  "columns": {
+    "columnN": "Colonna {{n}}",
+    "none": "Non presente",
+    "requiredMark": "(obbligatorio)",
+    "missing": "Abbina almeno codice, pontile, lunghezza e larghezza.",
+    "preview": "Anteprima delle prime righe ({{count}})",
+    "fields": {
+      "code": "Codice del posto",
+      "pier": "Pontile",
+      "length": "Lunghezza",
+      "width": "Larghezza",
+      "depth": "Profondità",
+      "price_class": "Classe tariffaria",
+      "side": "Lato",
+      "mooring_type": "Tipo di ormeggio"
+    }
+  },
+  "placement": {
+    "start": "Da dove iniziare",
+    "starts": {
+      "after_existing": "Dopo l'ultimo posto esistente del pontile",
+      "root": "Dall'inizio del pontile"
+    },
+    "sidePolicy": "Lato dei posti",
+    "sidePolicies": {
+      "alternate": "Alterna sinistra e destra",
+      "column": "Usa la colonna «Lato» del file",
+      "left": "Tutti a sinistra",
+      "right": "Tutti a destra"
+    },
+    "sideColumnHint": "Il file ha una colonna «Lato»: scegli «Usa la colonna» per rispettarla.",
+    "piers": "Pontili nel file",
+    "unknownPier": "{{code}} (non sulla mappa)",
+    "noPiers": "La mappa non ha ancora pontili: disegnali nell'editor prima di importare."
+  },
+  "report": {
+    "title": "Risultato della prova",
+    "appliedTitle": "Importazione completata",
+    "total": "Righe",
+    "valid": "Valide",
+    "rejected": "Scartate",
+    "duplicates": "Duplicati",
+    "rejectedTitle": "Righe scartate",
+    "duplicatesTitle": "Codici duplicati",
+    "plannedTitle": "Posti da creare ({{count}})",
+    "row": "Riga",
+    "field": "Campo",
+    "error": "Errore",
+    "code": "Codice",
+    "pier": "Pontile",
+    "side": "Lato",
+    "duplicateLine": "Riga {{row}}: {{code}} ({{reason}})",
+    "reasons": {
+      "code_in_file": "ripetuto nel file",
+      "code_on_map": "già presente sulla mappa"
+    },
+    "sides": {
+      "left": "Sinistra",
+      "right": "Destra",
+      "head": "Testata",
+      "none": "Nessuno"
+    },
+    "download": "Scarica il report (CSV)"
+  },
+  "run": {
+    "dryRun": "Prova senza salvare",
+    "apply": "Importa",
+    "running": "Elaborazione…",
+    "applied": "Posti importati: {{count}}.",
+    "rejectedSkipped": "Le righe scartate ({{count}}) non verranno importate.",
+    "openEditor": "Apri la mappa nell'editor",
+    "conflict": "La mappa è stata modificata nel frattempo. Ricaricala e ripeti la prova.",
+    "mapInvalid": "La mappa risultante non è valida:",
+    "issue": "{{code}} ({{count}} elementi)"
+  }
+}

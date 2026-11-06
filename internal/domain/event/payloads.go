@@ -37,6 +37,67 @@ type WebhookTestData struct {
 	EndpointID string `json:"endpoint_id"`
 }
 
+// Change values of M1 events.
+const (
+	ChangeCreated    = "created"
+	ChangeUpdated    = "updated"
+	ChangeDeleted    = "deleted"
+	ChangeImported   = "imported"
+	ChangeReordered  = "reordered"
+	ChangeGroups     = "groups"
+	ChangeSettings   = "settings"
+	ChangeArchived   = "archived"
+	ChangeUnarchived = "unarchived"
+	ChangeConsent    = "consent"
+	ChangeParties    = "parties"
+	ChangeMeasured   = "measured"
+	ChangeFile       = "file"
+)
+
+// MapChangedData is the data of config.map_changed. MapID and Version are empty for marina-wide changes
+// (reordered, groups, settings).
+type MapChangedData struct {
+	MapID   string `json:"map_id,omitempty"`
+	Version int    `json:"version,omitempty"`
+	Change  string `json:"change"` // created, updated, deleted, imported, reordered, groups, settings
+}
+
+// CustomerData is the data of customer.created and customer.anonymized.
+type CustomerData struct {
+	CustomerID string `json:"customer_id"`
+}
+
+// CustomerUpdatedData is the data of customer.updated.
+type CustomerUpdatedData struct {
+	CustomerID string `json:"customer_id"`
+	Change     string `json:"change"` // updated, archived, unarchived, consent
+}
+
+// CustomerMergedData is the data of customer.merged: the target and the merged sources.
+type CustomerMergedData struct {
+	CustomerID string   `json:"customer_id"`
+	SourceIDs  []string `json:"source_ids"`
+}
+
+// VesselChangedData is the data of vessel.changed.
+type VesselChangedData struct {
+	VesselID string `json:"vessel_id"`
+	Change   string `json:"change"` // created, updated, parties, measured, archived, unarchived
+}
+
+// DocumentChangedData is the data of document.changed.
+type DocumentChangedData struct {
+	DocumentID string `json:"document_id"`
+	OwnerType  string `json:"owner_type"` // customer, vessel
+	Change     string `json:"change"`     // created, updated, deleted, file
+}
+
+// DeadlineChangedData is the data of deadline.changed.
+type DeadlineChangedData struct {
+	DeadlineID string `json:"deadline_id"`
+	Change     string `json:"change"` // updated
+}
+
 const sampleID = "01900000-0000-7000-8000-000000000000"
 
 // Samples returns one example payload per event type.
@@ -54,5 +115,13 @@ func Samples() map[string]any {
 		DevicePaired:        DeviceData{DeviceID: sampleID, UserID: sampleID, Kind: "mobile"},
 		DeviceRevoked:       DeviceData{DeviceID: sampleID, UserID: sampleID},
 		WebhookTest:         WebhookTestData{EndpointID: sampleID},
+		ConfigMapChanged:    MapChangedData{MapID: sampleID, Version: 2, Change: ChangeUpdated},
+		CustomerCreated:     CustomerData{CustomerID: sampleID},
+		CustomerAnonymized:  CustomerData{CustomerID: sampleID},
+		CustomerUpdated:     CustomerUpdatedData{CustomerID: sampleID, Change: ChangeConsent},
+		CustomerMerged:      CustomerMergedData{CustomerID: sampleID, SourceIDs: []string{sampleID}},
+		VesselChanged:       VesselChangedData{VesselID: sampleID, Change: ChangeMeasured},
+		DocumentChanged:     DocumentChangedData{DocumentID: sampleID, OwnerType: "customer", Change: ChangeFile},
+		DeadlineChanged:     DeadlineChangedData{DeadlineID: sampleID, Change: ChangeUpdated},
 	}
 }

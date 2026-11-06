@@ -1,0 +1,56 @@
+{
+  "title": "Deadlines",
+  "description": "Expiring documents and insurance policies of customers and vessels.",
+  "empty": "No deadlines.",
+  "urgency": {
+    "overdue": "Overdue",
+    "due_soon": "Due soon",
+    "later": "Later"
+  },
+  "statuses": {
+    "open": "Open",
+    "done": "Handled",
+    "dismissed": "Dismissed"
+  },
+  "kinds": {
+    "identity_document": "Identity document",
+    "boating_licence": "Boating licence",
+    "navigation_licence": "Navigation licence",
+    "registration_certificate": "Registration certificate",
+    "insurance": "Insurance",
+    "safety_certificate": "Safety certificate",
+    "power_declaration": "Power declaration",
+    "other_document": "Other document"
+  },
+  "filters": {
+    "status": "Status",
+    "kind": "Type",
+    "allKinds": "All types",
+    "urgency": "Urgency",
+    "allUrgencies": "All"
+  },
+  "columns": {
+    "due": "Due",
+    "kind": "Type",
+    "subject": "Customer and vessel",
+    "status": "Status"
+  },
+  "markDone": "Handled",
+  "dismiss": "Dismiss",
+  "reopen": "Reopen",
+  "updated": "Deadline updated.",
+  "policies": {
+    "title": "Reminder lead times",
+    "description": "For each kind of deadline, how many days before it becomes “due soon”.",
+    "leadDays": "Lead days",
+    "leadDaysHint": "One or more day counts separated by commas, e.g. 60, 15.",
+    "invalid": "Use whole day counts between 0 and 730, separated by commas.",
+    "saved": "Lead times saved."
+  },
+  "dashboard": {
+    "title": "Deadlines",
+    "description": "Documents and insurance policies of customers and vessels.",
+    "viewAll": "View all",
+    "more": "{{count}}+"
+  }
+}

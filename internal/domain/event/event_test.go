@@ -229,6 +229,23 @@ func TestTypes_Catalogue(t *testing.T) {
 			}
 			continue
 		}
+		// M1 types (m1-plan §4.6): only the spec 27.3 ones are public.
+		m1 := map[string]TypeInfo{
+			ConfigMapChanged:   {ConfigMapChanged, TopicMap, true},
+			CustomerCreated:    {CustomerCreated, TopicRegistry, true},
+			CustomerAnonymized: {CustomerAnonymized, TopicRegistry, true},
+			CustomerUpdated:    {CustomerUpdated, TopicRegistry, false},
+			CustomerMerged:     {CustomerMerged, TopicRegistry, false},
+			VesselChanged:      {VesselChanged, TopicRegistry, false},
+			DocumentChanged:    {DocumentChanged, TopicRegistry, false},
+			DeadlineChanged:    {DeadlineChanged, TopicRegistry, false},
+		}
+		if want, ok := m1[ti.Type]; ok {
+			if ti != want {
+				t.Errorf("%s: %+v, want %+v", ti.Type, ti, want)
+			}
+			continue
+		}
 		wantTopic := TopicTeam
 		if strings.HasPrefix(ti.Type, "organization.") || strings.HasPrefix(ti.Type, "marina.") {
 			wantTopic = TopicMarina

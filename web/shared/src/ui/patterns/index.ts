@@ -6,3 +6,6 @@ export { SecretReveal, type SecretRevealProps } from './SecretReveal';
 export { ProblemAlert, type ProblemAlertProps } from './ProblemAlert';
 export { DataTable, type DataTableProps } from './DataTable';
 export { FormField, type FormFieldProps } from './FormField';
+export { LengthInput, type LengthInputProps } from './LengthInput';
+export { DatePicker, fromIsoDate, toIsoDate, type DatePickerProps } from './DatePicker';
+export { ElementCombobox, type ComboboxOption, type ElementComboboxProps } from './ElementCombobox';

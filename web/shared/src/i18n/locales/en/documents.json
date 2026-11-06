@@ -1,0 +1,56 @@
+{
+  "title": "Documents",
+  "empty": "No documents.",
+  "add": "Add document",
+  "createTitle": "New document",
+  "editTitle": "Edit document",
+  "types": {
+    "identity_card": "Identity card",
+    "passport": "Passport",
+    "driving_licence": "Driving licence",
+    "boating_licence": "Boating licence",
+    "navigation_licence": "Navigation licence",
+    "registration_certificate": "Registration certificate",
+    "insurance_policy": "Insurance policy",
+    "safety_certificate": "Safety certificate",
+    "power_declaration": "Power declaration",
+    "signed_contract": "Signed contract",
+    "proxy": "Proxy",
+    "photo": "Photo",
+    "other": "Other"
+  },
+  "fields": {
+    "type": "Type",
+    "number": "Number",
+    "issuer": "Issued by",
+    "issuedOn": "Issue date",
+    "expiresOn": "Expiry",
+    "notes": "Notes",
+    "file": "File"
+  },
+  "validation": {
+    "date": "Invalid date.",
+    "expiryBeforeIssue": "The expiry cannot be before the issue date."
+  },
+  "pickDate": "Pick a date",
+  "noExpiry": "No expiry",
+  "expired": "Expired",
+  "noFile": "No file",
+  "view": "Open the file",
+  "upload": "Upload file",
+  "replace": "Replace file",
+  "uploaded": "File uploaded.",
+  "removeFile": "Remove the file",
+  "fileRemoved": "File removed.",
+  "fileHint": "PDF, PNG or JPEG up to 15 MB. The file is encrypted and opens only through a short-lived link.",
+  "fileErrors": {
+    "too_large": "The file is larger than 15 MB.",
+    "type": "Unsupported format: use PDF, PNG or JPEG.",
+    "empty": "The file is empty."
+  },
+  "created": "Document created.",
+  "saved": "Document updated.",
+  "deleted": "Document deleted.",
+  "deleteTitle": "Delete the document?",
+  "deleteDescription": "The document, its file and its deadline are deleted."
+}

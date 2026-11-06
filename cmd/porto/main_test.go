@@ -5,10 +5,13 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/coste360/porto/internal/migrations"
 )
 
 type result struct {
@@ -41,9 +44,18 @@ func runCLI(t *testing.T, vars map[string]string, stdin string, args ...string) 
 	return result{code, out.String(), errb.String()}
 }
 
+func latestSchema(t *testing.T) int64 {
+	t.Helper()
+	v, err := migrations.Latest(migrations.SQLite)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return v
+}
+
 func TestCLI_Version(t *testing.T) {
 	r := runCLI(t, nil, "", "version")
-	if r.code != 0 || !strings.HasPrefix(r.stdout, "porto dev (go") || !strings.Contains(r.stdout, "schema 1)") {
+	if r.code != 0 || !strings.HasPrefix(r.stdout, "porto dev (go") || !strings.Contains(r.stdout, fmt.Sprintf("schema %d)", latestSchema(t))) {
 		t.Fatalf("%+v", r)
 	}
 }
@@ -62,7 +74,7 @@ func TestCLI_MigrateStatus(t *testing.T) {
 	if r.code != 1 || !strings.Contains(r.stdout, "00001_init.sql") || !strings.Contains(r.stderr, "pending") {
 		t.Fatalf("before up: %+v", r)
 	}
-	if r := runCLI(t, vars, "", "migrate", "up"); r.code != 0 || !strings.Contains(r.stdout, "schema version 1") {
+	if r := runCLI(t, vars, "", "migrate", "up"); r.code != 0 || !strings.Contains(r.stdout, fmt.Sprintf("schema version %d", latestSchema(t))) {
 		t.Fatalf("up: %+v", r)
 	}
 	r = runCLI(t, vars, "", "migrate", "status", "--check")
@@ -103,7 +115,7 @@ func TestCLI_SeedBackupRestore(t *testing.T) {
 	if r.code != 0 || !strings.Contains(r.stdout, "owner@demo.porto.test") || strings.Contains(r.stdout, "demo-password-123") {
 		t.Fatalf("seed: %+v", r)
 	}
-	if r := runCLI(t, vars, "", "seed", "demo"); r.code != 0 || !strings.Contains(r.stdout, "nothing to do") {
+	if r := runCLI(t, vars, "", "seed", "demo"); r.code != 0 || !strings.Contains(r.stdout, "already exists") {
 		t.Fatalf("seed again: %+v", r)
 	}
 	file := filepath.Join(t.TempDir(), "b.porto-backup")

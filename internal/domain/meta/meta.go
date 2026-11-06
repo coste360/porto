@@ -19,10 +19,14 @@ type Meta struct {
 // Get returns the metadata of an instance configured by cfg and built as version.
 func Get(cfg *config.Config, version string) Meta {
 	return Meta{
-		Version:      version,
-		APIVersion:   APIVersion,
-		Edition:      Edition,
-		Capabilities: []string{"auth.totp", "auth.password_reset", "devices.pairing", "webhooks", "sse"},
-		DemoPairing:  cfg != nil && cfg.DemoPairingEnabled(),
+		Version:    version,
+		APIVersion: APIVersion,
+		Edition:    Edition,
+		Capabilities: []string{
+			"auth.totp", "auth.password_reset", "devices.pairing", "webhooks", "sse",
+			// M1
+			"harbor.editor", "harbor.georef", "harbor.berth_import", "registry.customers", "registry.documents",
+		},
+		DemoPairing: cfg != nil && cfg.DemoPairingEnabled(),
 	}
 }

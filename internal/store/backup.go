@@ -40,11 +40,22 @@ type Column struct {
 var (
 	sqliteBoolColumns = []string{
 		"marinas.booking_enabled", "users.active", "sessions.totp_verified", "webhook_endpoints.active",
+		// M1 (00002_harbor, 00003_registry)
+		"berths.overhang_allowed", "berths.water", "berths.wifi", "berths.online_sellable", "berths.active",
+		"dynamic_areas.active", "land_resources.active", "consents.granted",
 	}
 	sqliteJSONColumns = []string{
 		"organizations.billing_address", "marinas.locales", "marinas.contacts", "marinas.address", "marinas.geo",
 		"marinas.settings", "marinas.theme", "marinas.allowed_embed_origins", "api_keys.scopes", "audit_log.diff",
 		"outbox_events.payload", "webhook_endpoints.events",
+		// M1 (00002_harbor, 00003_registry)
+		"harbor_settings.price_class_rule", "maps.name", "maps.background", "maps.georef", "maps.concession_outline",
+		"maps.water_polygons", "maps.land_polygons", "harbor_structures.geometry", "harbor_structures.attributes",
+		"pedestals.sockets", "pedestals.meters", "berths.attributes", "dynamic_areas.outline", "dynamic_areas.supports",
+		"dynamic_areas.depth_profile", "dynamic_areas.blocked_cells", "dynamic_areas.exits", "land_resources.attributes",
+		"map_decorations.geometry", "map_decorations.label", "berth_groups.name", "customers.billing_address",
+		"customers.emails", "customers.phones", "customers.tags", "customers.payment_terms", "vessels.engines",
+		"deadlines.notified_at", "deadline_policies.lead_days",
 	}
 )
 
@@ -311,5 +322,11 @@ func InsertRow(ctx context.Context, db bun.IDB, table string, cols []string, arg
 	marks := strings.TrimSuffix(strings.Repeat("?, ", len(args)), ", ")
 	all := append([]any{bun.Ident(table), bun.Safe(strings.Join(quoted, ", "))}, args...)
 	_, err := db.NewRaw("INSERT INTO ? (?) VALUES ("+marks+")", all...).Exec(ctx)
+	return err
+}
+
+// SetColumnByID sets one column of the row with the given id (used by restore for self-referencing keys).
+func SetColumnByID(ctx context.Context, db bun.IDB, table, column, id string, value any) error {
+	_, err := db.NewRaw("UPDATE ? SET ? = ? WHERE id = ?", bun.Ident(table), bun.Ident(column), value, id).Exec(ctx)
 	return err
 }

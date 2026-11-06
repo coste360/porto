@@ -1,0 +1,166 @@
+{
+  "title": "Clienti",
+  "description": "Persone e società: dati fiscali, contatti, consensi, barche e documenti.",
+  "new": "Nuovo cliente",
+  "search": "Cerca",
+  "searchPlaceholder": "Nome, codice fiscale, P. IVA, email, telefono o barca",
+  "empty": "Nessun cliente trovato.",
+  "anonymized": "Cliente anonimizzato",
+  "noCategory": "Nessuna categoria",
+  "filters": {
+    "category": "Categoria",
+    "allCategories": "Tutte le categorie",
+    "tag": "Etichetta",
+    "archived": "Solo archiviati"
+  },
+  "kind": {
+    "person": "Persona fisica",
+    "company": "Società"
+  },
+  "categories": {
+    "member": "Socio",
+    "resident": "Residente",
+    "affiliated": "Convenzionato",
+    "charter": "Charter",
+    "yard": "Cantiere"
+  },
+  "columns": {
+    "name": "Cliente",
+    "fiscal": "Codice fiscale / P. IVA",
+    "contact": "Contatti",
+    "vessels": "Barche",
+    "status": "Etichette e stato"
+  },
+  "status": {
+    "archived": "Archiviato",
+    "anonymized": "Anonimizzato",
+    "merged": "Unito a un altro cliente"
+  },
+  "fields": {
+    "kind": "Tipo di cliente",
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "companyName": "Ragione sociale",
+    "fiscalCode": "Codice fiscale",
+    "vatNumber": "Partita IVA",
+    "sdiCode": "Codice destinatario SdI",
+    "pec": "PEC",
+    "address": {
+      "line1": "Indirizzo",
+      "line2": "Indirizzo (seconda riga)",
+      "postalCode": "CAP",
+      "city": "Città",
+      "province": "Provincia",
+      "country": "Paese (codice ISO, es. IT)"
+    },
+    "nationality": "Nazionalità (codice ISO, es. IT)",
+    "locale": "Lingua",
+    "emails": "Email",
+    "phones": "Telefoni",
+    "contactLabel": "Etichetta",
+    "category": "Categoria",
+    "tags": "Etichette",
+    "tagsHint": "Separate da virgola.",
+    "paymentDays": "Pagamento a giorni",
+    "endOfMonth": "Fine mese",
+    "iban": "IBAN",
+    "ibanHint": "Usato per l'addebito SEPA. Non viene mai mostrato in chiaro.",
+    "ibanCurrent": "IBAN registrato: {{iban}}. Scrivine uno nuovo per sostituirlo.",
+    "ibanClear": "Rimuovi l'IBAN registrato",
+    "notes": "Note"
+  },
+  "validation": {
+    "fiscalCode": "Codice fiscale non valido.",
+    "vat": "Partita IVA non valida.",
+    "iban": "IBAN non valido.",
+    "paymentDays": "Inserisci un numero di giorni (0-999).",
+    "country": "Usa il codice di due lettere (es. IT).",
+    "invalid": "Valore non valido."
+  },
+  "form": {
+    "createTitle": "Nuovo cliente",
+    "sectionIdentity": "Anagrafica",
+    "sectionFiscal": "Dati fiscali",
+    "billingAddress": "Indirizzo di fatturazione",
+    "sectionContacts": "Contatti",
+    "sectionOther": "Altri dati",
+    "addEmail": "Aggiungi email",
+    "addPhone": "Aggiungi telefono",
+    "removeContact": "Rimuovi il contatto",
+    "created": "Cliente creato.",
+    "saved": "Cliente aggiornato."
+  },
+  "duplicates": {
+    "title": "Possibili duplicati",
+    "description": "Il cliente è stato creato. Questi clienti hanno lo stesso codice fiscale, la stessa partita IVA o un'email in comune:",
+    "open": "Apri il nuovo cliente",
+    "pageHint": "Altri clienti ({{count}}) potrebbero essere la stessa persona o società. Usa Unisci per riunirli."
+  },
+  "tabs": {
+    "data": "Dati",
+    "vessels": "Barche",
+    "documents": "Documenti",
+    "consents": "Consensi",
+    "deadlines": "Scadenze"
+  },
+  "actions": {
+    "archive": "Archivia",
+    "unarchive": "Ripristina",
+    "archived": "Cliente archiviato.",
+    "unarchived": "Cliente ripristinato.",
+    "merge": "Unisci duplicati",
+    "export": "Esporta (GDPR)",
+    "exported": "Esportazione scaricata.",
+    "anonymize": "Anonimizza"
+  },
+  "merge": {
+    "title": "Unisci clienti duplicati",
+    "description": "I clienti scelti confluiscono in {{name}}: barche, documenti, scadenze e consensi passano a questo cliente e i duplicati vengono archiviati.",
+    "search": "Cerca i duplicati",
+    "none": "Nessun cliente da unire.",
+    "selected": "Selezionati: {{count}} (al massimo {{max}}).",
+    "confirmText": "Confermi l'unione di questi clienti ({{count}})? L'operazione non si può annullare.",
+    "confirm": "Unisci",
+    "done": "Clienti uniti.",
+    "openTarget": "Apri il cliente in cui è stato unito"
+  },
+  "anonymize": {
+    "title": "Anonimizza il cliente",
+    "description": "Nome, contatti, dati fiscali, IBAN, indirizzo e note vengono cancellati, insieme ai documenti e ai file. I consensi restano come prova, senza dati personali. L'operazione è irreversibile.",
+    "confirmWord": "ANONIMIZZA",
+    "typeToConfirm": "Per confermare scrivi {{word}}",
+    "confirm": "Anonimizza definitivamente",
+    "done": "Cliente anonimizzato."
+  },
+  "vessels": {
+    "empty": "Nessuna barca collegata.",
+    "add": "Nuova barca di questo cliente",
+    "roles": "Ruoli"
+  },
+  "consents": {
+    "kind": "Consenso",
+    "kinds": {
+      "privacy": "Privacy",
+      "marketing": "Marketing",
+      "third_party": "Comunicazione a terzi"
+    },
+    "sources": {
+      "desk": "Ufficio",
+      "online": "Online",
+      "import": "Importazione",
+      "api": "API"
+    },
+    "source": "Origine",
+    "value": "Scelta",
+    "granted": "Concesso",
+    "denied": "Negato",
+    "none": "Non registrato",
+    "policyVersion": "Versione dell'informativa",
+    "record": "Registra un consenso",
+    "recorded": "Consenso registrato.",
+    "recordedAt": "Data",
+    "by": "Registrato da",
+    "history": "Storico dei consensi",
+    "empty": "Nessun consenso registrato."
+  }
+}

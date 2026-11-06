@@ -77,6 +77,7 @@
     "reports.operational": "Operational reports",
     "reports.yard": "Boatyard reports",
     "reports.rental": "Rental reports",
-    "map.view": "View the map"
+    "map.view": "View the map",
+    "harbor.configure": "Configure the harbour map"
   }
 }

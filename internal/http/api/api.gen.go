@@ -4,6 +4,7 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -12,6 +13,24 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/oapi-codegen/runtime"
 )
+
+// Defines values for AreaKind.
+const (
+	Linear  AreaKind = "linear"
+	Surface AreaKind = "surface"
+)
+
+// Valid indicates whether the value is a known member of the AreaKind enum.
+func (e AreaKind) Valid() bool {
+	switch e {
+	case Linear:
+		return true
+	case Surface:
+		return true
+	default:
+		return false
+	}
+}
 
 // Defines values for AuditActorType.
 const (
@@ -31,6 +50,426 @@ func (e AuditActorType) Valid() bool {
 	case AuditActorTypeSystem:
 		return true
 	case AuditActorTypeUser:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BerthPowerA.
+const (
+	BerthPowerAN125 BerthPowerA = 125
+	BerthPowerAN16  BerthPowerA = 16
+	BerthPowerAN32  BerthPowerA = 32
+	BerthPowerAN63  BerthPowerA = 63
+)
+
+// Valid indicates whether the value is a known member of the BerthPowerA enum.
+func (e BerthPowerA) Valid() bool {
+	switch e {
+	case BerthPowerAN125:
+		return true
+	case BerthPowerAN16:
+		return true
+	case BerthPowerAN32:
+		return true
+	case BerthPowerAN63:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BerthGroupKind.
+const (
+	BerthGroupKindArea      BerthGroupKind = "area"
+	BerthGroupKindCustom    BerthGroupKind = "custom"
+	BerthGroupKindStructure BerthGroupKind = "structure"
+	BerthGroupKindTransit   BerthGroupKind = "transit"
+)
+
+// Valid indicates whether the value is a known member of the BerthGroupKind enum.
+func (e BerthGroupKind) Valid() bool {
+	switch e {
+	case BerthGroupKindArea:
+		return true
+	case BerthGroupKindCustom:
+		return true
+	case BerthGroupKindStructure:
+		return true
+	case BerthGroupKindTransit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BerthImportDuplicateReason.
+const (
+	CodeInFile BerthImportDuplicateReason = "code_in_file"
+	CodeOnMap  BerthImportDuplicateReason = "code_on_map"
+)
+
+// Valid indicates whether the value is a known member of the BerthImportDuplicateReason enum.
+func (e BerthImportDuplicateReason) Valid() bool {
+	switch e {
+	case CodeInFile:
+		return true
+	case CodeOnMap:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BerthImportPlacementSidePolicy.
+const (
+	BerthImportPlacementSidePolicyAlternate BerthImportPlacementSidePolicy = "alternate"
+	BerthImportPlacementSidePolicyColumn    BerthImportPlacementSidePolicy = "column"
+	BerthImportPlacementSidePolicyLeft      BerthImportPlacementSidePolicy = "left"
+	BerthImportPlacementSidePolicyRight     BerthImportPlacementSidePolicy = "right"
+)
+
+// Valid indicates whether the value is a known member of the BerthImportPlacementSidePolicy enum.
+func (e BerthImportPlacementSidePolicy) Valid() bool {
+	switch e {
+	case BerthImportPlacementSidePolicyAlternate:
+		return true
+	case BerthImportPlacementSidePolicyColumn:
+		return true
+	case BerthImportPlacementSidePolicyLeft:
+		return true
+	case BerthImportPlacementSidePolicyRight:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BerthImportPlacementStart.
+const (
+	AfterExisting BerthImportPlacementStart = "after_existing"
+	Root          BerthImportPlacementStart = "root"
+)
+
+// Valid indicates whether the value is a known member of the BerthImportPlacementStart enum.
+func (e BerthImportPlacementStart) Valid() bool {
+	switch e {
+	case AfterExisting:
+		return true
+	case Root:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BerthImportRequestDelimiter.
+const (
+	Comma     BerthImportRequestDelimiter = "comma"
+	Semicolon BerthImportRequestDelimiter = "semicolon"
+	Tab       BerthImportRequestDelimiter = "tab"
+)
+
+// Valid indicates whether the value is a known member of the BerthImportRequestDelimiter enum.
+func (e BerthImportRequestDelimiter) Valid() bool {
+	switch e {
+	case Comma:
+		return true
+	case Semicolon:
+		return true
+	case Tab:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BerthImportRequestUnits.
+const (
+	BerthImportRequestUnitsCm BerthImportRequestUnits = "cm"
+	BerthImportRequestUnitsM  BerthImportRequestUnits = "m"
+)
+
+// Valid indicates whether the value is a known member of the BerthImportRequestUnits enum.
+func (e BerthImportRequestUnits) Valid() bool {
+	switch e {
+	case BerthImportRequestUnitsCm:
+		return true
+	case BerthImportRequestUnitsM:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BuoyFieldGeneratorLayout.
+const (
+	Grid      BuoyFieldGeneratorLayout = "grid"
+	Staggered BuoyFieldGeneratorLayout = "staggered"
+)
+
+// Valid indicates whether the value is a known member of the BuoyFieldGeneratorLayout enum.
+func (e BuoyFieldGeneratorLayout) Valid() bool {
+	switch e {
+	case Grid:
+		return true
+	case Staggered:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BuoyFieldGeneratorType.
+const (
+	BuoyFieldGeneratorTypeBuoyField BuoyFieldGeneratorType = "buoy_field"
+)
+
+// Valid indicates whether the value is a known member of the BuoyFieldGeneratorType enum.
+func (e BuoyFieldGeneratorType) Valid() bool {
+	switch e {
+	case BuoyFieldGeneratorTypeBuoyField:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ConsentKind.
+const (
+	Marketing  ConsentKind = "marketing"
+	Privacy    ConsentKind = "privacy"
+	ThirdParty ConsentKind = "third_party"
+)
+
+// Valid indicates whether the value is a known member of the ConsentKind enum.
+func (e ConsentKind) Valid() bool {
+	switch e {
+	case Marketing:
+		return true
+	case Privacy:
+		return true
+	case ThirdParty:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ConsentSource.
+const (
+	Api    ConsentSource = "api"
+	Desk   ConsentSource = "desk"
+	Import ConsentSource = "import"
+	Online ConsentSource = "online"
+)
+
+// Valid indicates whether the value is a known member of the ConsentSource enum.
+func (e ConsentSource) Valid() bool {
+	switch e {
+	case Api:
+		return true
+	case Desk:
+		return true
+	case Import:
+		return true
+	case Online:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CustomerAnonymizeRequestConfirm.
+const (
+	True CustomerAnonymizeRequestConfirm = true
+)
+
+// Valid indicates whether the value is a known member of the CustomerAnonymizeRequestConfirm enum.
+func (e CustomerAnonymizeRequestConfirm) Valid() bool {
+	switch e {
+	case True:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CustomerCategory.
+const (
+	CustomerCategoryAffiliated CustomerCategory = "affiliated"
+	CustomerCategoryCharter    CustomerCategory = "charter"
+	CustomerCategoryMember     CustomerCategory = "member"
+	CustomerCategoryResident   CustomerCategory = "resident"
+	CustomerCategoryYard       CustomerCategory = "yard"
+)
+
+// Valid indicates whether the value is a known member of the CustomerCategory enum.
+func (e CustomerCategory) Valid() bool {
+	switch e {
+	case CustomerCategoryAffiliated:
+		return true
+	case CustomerCategoryCharter:
+		return true
+	case CustomerCategoryMember:
+		return true
+	case CustomerCategoryResident:
+		return true
+	case CustomerCategoryYard:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CustomerExportFormat.
+const (
+	PortoCustomer1 CustomerExportFormat = "porto-customer/1"
+)
+
+// Valid indicates whether the value is a known member of the CustomerExportFormat enum.
+func (e CustomerExportFormat) Valid() bool {
+	switch e {
+	case PortoCustomer1:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CustomerKind.
+const (
+	Company CustomerKind = "company"
+	Person  CustomerKind = "person"
+)
+
+// Valid indicates whether the value is a known member of the CustomerKind enum.
+func (e CustomerKind) Valid() bool {
+	switch e {
+	case Company:
+		return true
+	case Person:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DeadlineKind.
+const (
+	DeadlineKindBoatingLicence          DeadlineKind = "boating_licence"
+	DeadlineKindIdentityDocument        DeadlineKind = "identity_document"
+	DeadlineKindInsurance               DeadlineKind = "insurance"
+	DeadlineKindNavigationLicence       DeadlineKind = "navigation_licence"
+	DeadlineKindOtherDocument           DeadlineKind = "other_document"
+	DeadlineKindPowerDeclaration        DeadlineKind = "power_declaration"
+	DeadlineKindRegistrationCertificate DeadlineKind = "registration_certificate"
+	DeadlineKindSafetyCertificate       DeadlineKind = "safety_certificate"
+)
+
+// Valid indicates whether the value is a known member of the DeadlineKind enum.
+func (e DeadlineKind) Valid() bool {
+	switch e {
+	case DeadlineKindBoatingLicence:
+		return true
+	case DeadlineKindIdentityDocument:
+		return true
+	case DeadlineKindInsurance:
+		return true
+	case DeadlineKindNavigationLicence:
+		return true
+	case DeadlineKindOtherDocument:
+		return true
+	case DeadlineKindPowerDeclaration:
+		return true
+	case DeadlineKindRegistrationCertificate:
+		return true
+	case DeadlineKindSafetyCertificate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DeadlineSourceType.
+const (
+	DeadlineSourceTypeDocument DeadlineSourceType = "document"
+)
+
+// Valid indicates whether the value is a known member of the DeadlineSourceType enum.
+func (e DeadlineSourceType) Valid() bool {
+	switch e {
+	case DeadlineSourceTypeDocument:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DeadlineStatus.
+const (
+	Dismissed DeadlineStatus = "dismissed"
+	Done      DeadlineStatus = "done"
+	Open      DeadlineStatus = "open"
+)
+
+// Valid indicates whether the value is a known member of the DeadlineStatus enum.
+func (e DeadlineStatus) Valid() bool {
+	switch e {
+	case Dismissed:
+		return true
+	case Done:
+		return true
+	case Open:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DeadlineUrgency.
+const (
+	DueSoon DeadlineUrgency = "due_soon"
+	Later   DeadlineUrgency = "later"
+	Overdue DeadlineUrgency = "overdue"
+)
+
+// Valid indicates whether the value is a known member of the DeadlineUrgency enum.
+func (e DeadlineUrgency) Valid() bool {
+	switch e {
+	case DueSoon:
+		return true
+	case Later:
+		return true
+	case Overdue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DecorationKind.
+const (
+	DepthLabel DecorationKind = "depth_label"
+	NorthArrow DecorationKind = "north_arrow"
+	ScaleBar   DecorationKind = "scale_bar"
+	Symbol     DecorationKind = "symbol"
+	Text       DecorationKind = "text"
+)
+
+// Valid indicates whether the value is a known member of the DecorationKind enum.
+func (e DecorationKind) Valid() bool {
+	switch e {
+	case DepthLabel:
+		return true
+	case NorthArrow:
+		return true
+	case ScaleBar:
+		return true
+	case Symbol:
+		return true
+	case Text:
 		return true
 	default:
 		return false
@@ -57,28 +496,241 @@ func (e DeviceKind) Valid() bool {
 
 // Defines values for DevicePlatform.
 const (
-	Android DevicePlatform = "android"
-	Ios     DevicePlatform = "ios"
-	Linux   DevicePlatform = "linux"
-	Macos   DevicePlatform = "macos"
-	Other   DevicePlatform = "other"
-	Windows DevicePlatform = "windows"
+	DevicePlatformAndroid DevicePlatform = "android"
+	DevicePlatformIos     DevicePlatform = "ios"
+	DevicePlatformLinux   DevicePlatform = "linux"
+	DevicePlatformMacos   DevicePlatform = "macos"
+	DevicePlatformOther   DevicePlatform = "other"
+	DevicePlatformWindows DevicePlatform = "windows"
 )
 
 // Valid indicates whether the value is a known member of the DevicePlatform enum.
 func (e DevicePlatform) Valid() bool {
 	switch e {
-	case Android:
+	case DevicePlatformAndroid:
 		return true
-	case Ios:
+	case DevicePlatformIos:
 		return true
-	case Linux:
+	case DevicePlatformLinux:
 		return true
-	case Macos:
+	case DevicePlatformMacos:
 		return true
-	case Other:
+	case DevicePlatformOther:
 		return true
-	case Windows:
+	case DevicePlatformWindows:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DimensionsSource.
+const (
+	Declared DimensionsSource = "declared"
+	Measured DimensionsSource = "measured"
+)
+
+// Valid indicates whether the value is a known member of the DimensionsSource enum.
+func (e DimensionsSource) Valid() bool {
+	switch e {
+	case Declared:
+		return true
+	case Measured:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DocumentOwnerType.
+const (
+	DocumentOwnerTypeCustomer DocumentOwnerType = "customer"
+	DocumentOwnerTypeVessel   DocumentOwnerType = "vessel"
+)
+
+// Valid indicates whether the value is a known member of the DocumentOwnerType enum.
+func (e DocumentOwnerType) Valid() bool {
+	switch e {
+	case DocumentOwnerTypeCustomer:
+		return true
+	case DocumentOwnerTypeVessel:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DocumentType.
+const (
+	DocumentTypeBoatingLicence          DocumentType = "boating_licence"
+	DocumentTypeDrivingLicence          DocumentType = "driving_licence"
+	DocumentTypeIdentityCard            DocumentType = "identity_card"
+	DocumentTypeInsurancePolicy         DocumentType = "insurance_policy"
+	DocumentTypeNavigationLicence       DocumentType = "navigation_licence"
+	DocumentTypeOther                   DocumentType = "other"
+	DocumentTypePassport                DocumentType = "passport"
+	DocumentTypePhoto                   DocumentType = "photo"
+	DocumentTypePowerDeclaration        DocumentType = "power_declaration"
+	DocumentTypeProxy                   DocumentType = "proxy"
+	DocumentTypeRegistrationCertificate DocumentType = "registration_certificate"
+	DocumentTypeSafetyCertificate       DocumentType = "safety_certificate"
+	DocumentTypeSignedContract          DocumentType = "signed_contract"
+)
+
+// Valid indicates whether the value is a known member of the DocumentType enum.
+func (e DocumentType) Valid() bool {
+	switch e {
+	case DocumentTypeBoatingLicence:
+		return true
+	case DocumentTypeDrivingLicence:
+		return true
+	case DocumentTypeIdentityCard:
+		return true
+	case DocumentTypeInsurancePolicy:
+		return true
+	case DocumentTypeNavigationLicence:
+		return true
+	case DocumentTypeOther:
+		return true
+	case DocumentTypePassport:
+		return true
+	case DocumentTypePhoto:
+		return true
+	case DocumentTypePowerDeclaration:
+		return true
+	case DocumentTypeProxy:
+		return true
+	case DocumentTypeRegistrationCertificate:
+		return true
+	case DocumentTypeSafetyCertificate:
+		return true
+	case DocumentTypeSignedContract:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DynamicAreaGridRotationDd.
+const (
+	DynamicAreaGridRotationDdN0    DynamicAreaGridRotationDd = 0
+	DynamicAreaGridRotationDdN1800 DynamicAreaGridRotationDd = 1800
+	DynamicAreaGridRotationDdN2700 DynamicAreaGridRotationDd = 2700
+	DynamicAreaGridRotationDdN900  DynamicAreaGridRotationDd = 900
+)
+
+// Valid indicates whether the value is a known member of the DynamicAreaGridRotationDd enum.
+func (e DynamicAreaGridRotationDd) Valid() bool {
+	switch e {
+	case DynamicAreaGridRotationDdN0:
+		return true
+	case DynamicAreaGridRotationDdN1800:
+		return true
+	case DynamicAreaGridRotationDdN2700:
+		return true
+	case DynamicAreaGridRotationDdN900:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DynamicAreaSupports.
+const (
+	DynamicAreaSupportsCradle  DynamicAreaSupports = "cradle"
+	DynamicAreaSupportsRack    DynamicAreaSupports = "rack"
+	DynamicAreaSupportsTrailer DynamicAreaSupports = "trailer"
+)
+
+// Valid indicates whether the value is a known member of the DynamicAreaSupports enum.
+func (e DynamicAreaSupports) Valid() bool {
+	switch e {
+	case DynamicAreaSupportsCradle:
+		return true
+	case DynamicAreaSupportsRack:
+		return true
+	case DynamicAreaSupportsTrailer:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for Fuel.
+const (
+	FuelDiesel   Fuel = "diesel"
+	FuelElectric Fuel = "electric"
+	FuelHybrid   Fuel = "hybrid"
+	FuelNone     Fuel = "none"
+	FuelOther    Fuel = "other"
+	FuelPetrol   Fuel = "petrol"
+)
+
+// Valid indicates whether the value is a known member of the Fuel enum.
+func (e Fuel) Valid() bool {
+	switch e {
+	case FuelDiesel:
+		return true
+	case FuelElectric:
+		return true
+	case FuelHybrid:
+		return true
+	case FuelNone:
+		return true
+	case FuelOther:
+		return true
+	case FuelPetrol:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GeneratorType.
+const (
+	GeneratorTypeBuoyField   GeneratorType = "buoy_field"
+	GeneratorTypeLandGrid    GeneratorType = "land_grid"
+	GeneratorTypeLinearArea  GeneratorType = "linear_area"
+	GeneratorTypePier        GeneratorType = "pier"
+	GeneratorTypeQuayBerths  GeneratorType = "quay_berths"
+	GeneratorTypeSurfaceArea GeneratorType = "surface_area"
+)
+
+// Valid indicates whether the value is a known member of the GeneratorType enum.
+func (e GeneratorType) Valid() bool {
+	switch e {
+	case GeneratorTypeBuoyField:
+		return true
+	case GeneratorTypeLandGrid:
+		return true
+	case GeneratorTypeLinearArea:
+		return true
+	case GeneratorTypePier:
+		return true
+	case GeneratorTypeQuayBerths:
+		return true
+	case GeneratorTypeSurfaceArea:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GroupResourceType.
+const (
+	GroupResourceTypeBerth        GroupResourceType = "berth"
+	GroupResourceTypeDynamicArea  GroupResourceType = "dynamic_area"
+	GroupResourceTypeLandResource GroupResourceType = "land_resource"
+)
+
+// Valid indicates whether the value is a known member of the GroupResourceType enum.
+func (e GroupResourceType) Valid() bool {
+	switch e {
+	case GroupResourceTypeBerth:
+		return true
+	case GroupResourceTypeDynamicArea:
+		return true
+	case GroupResourceTypeLandResource:
 		return true
 	default:
 		return false
@@ -100,6 +752,123 @@ func (e HealthStatusStatus) Valid() bool {
 	}
 }
 
+// Defines values for HullType.
+const (
+	HullTypeCatamaran     HullType = "catamaran"
+	HullTypeGozzo         HullType = "gozzo"
+	HullTypeMonohullMotor HullType = "monohull_motor"
+	HullTypeMonohullSail  HullType = "monohull_sail"
+	HullTypeOther         HullType = "other"
+	HullTypeRib           HullType = "rib"
+	HullTypeTrimaran      HullType = "trimaran"
+)
+
+// Valid indicates whether the value is a known member of the HullType enum.
+func (e HullType) Valid() bool {
+	switch e {
+	case HullTypeCatamaran:
+		return true
+	case HullTypeGozzo:
+		return true
+	case HullTypeMonohullMotor:
+		return true
+	case HullTypeMonohullSail:
+		return true
+	case HullTypeOther:
+		return true
+	case HullTypeRib:
+		return true
+	case HullTypeTrimaran:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LandGridGeneratorType.
+const (
+	LandGridGeneratorTypeLandGrid LandGridGeneratorType = "land_grid"
+)
+
+// Valid indicates whether the value is a known member of the LandGridGeneratorType enum.
+func (e LandGridGeneratorType) Valid() bool {
+	switch e {
+	case LandGridGeneratorTypeLandGrid:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LandKind.
+const (
+	LandKindBox         LandKind = "box"
+	LandKindCradle      LandKind = "cradle"
+	LandKindCustom      LandKind = "custom"
+	LandKindLocker      LandKind = "locker"
+	LandKindParking     LandKind = "parking"
+	LandKindStoreroom   LandKind = "storeroom"
+	LandKindTrailerSpot LandKind = "trailer_spot"
+)
+
+// Valid indicates whether the value is a known member of the LandKind enum.
+func (e LandKind) Valid() bool {
+	switch e {
+	case LandKindBox:
+		return true
+	case LandKindCradle:
+		return true
+	case LandKindCustom:
+		return true
+	case LandKindLocker:
+		return true
+	case LandKindParking:
+		return true
+	case LandKindStoreroom:
+		return true
+	case LandKindTrailerSpot:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LinearAreaGeneratorSide.
+const (
+	LinearAreaGeneratorSideHead  LinearAreaGeneratorSide = "head"
+	LinearAreaGeneratorSideLeft  LinearAreaGeneratorSide = "left"
+	LinearAreaGeneratorSideRight LinearAreaGeneratorSide = "right"
+)
+
+// Valid indicates whether the value is a known member of the LinearAreaGeneratorSide enum.
+func (e LinearAreaGeneratorSide) Valid() bool {
+	switch e {
+	case LinearAreaGeneratorSideHead:
+		return true
+	case LinearAreaGeneratorSideLeft:
+		return true
+	case LinearAreaGeneratorSideRight:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LinearAreaGeneratorType.
+const (
+	LinearAreaGeneratorTypeLinearArea LinearAreaGeneratorType = "linear_area"
+)
+
+// Valid indicates whether the value is a known member of the LinearAreaGeneratorType enum.
+func (e LinearAreaGeneratorType) Valid() bool {
+	switch e {
+	case LinearAreaGeneratorTypeLinearArea:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for Locale.
 const (
 	En Locale = "en"
@@ -112,6 +881,111 @@ func (e Locale) Valid() bool {
 	case En:
 		return true
 	case It:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MapBackgroundContentType.
+const (
+	MapBackgroundContentTypeImagejpeg   MapBackgroundContentType = "image/jpeg"
+	MapBackgroundContentTypeImagepng    MapBackgroundContentType = "image/png"
+	MapBackgroundContentTypeImagesvgXml MapBackgroundContentType = "image/svg+xml"
+)
+
+// Valid indicates whether the value is a known member of the MapBackgroundContentType enum.
+func (e MapBackgroundContentType) Valid() bool {
+	switch e {
+	case MapBackgroundContentTypeImagejpeg:
+		return true
+	case MapBackgroundContentTypeImagepng:
+		return true
+	case MapBackgroundContentTypeImagesvgXml:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MapBackgroundFileContentType.
+const (
+	MapBackgroundFileContentTypeImagejpeg   MapBackgroundFileContentType = "image/jpeg"
+	MapBackgroundFileContentTypeImagepng    MapBackgroundFileContentType = "image/png"
+	MapBackgroundFileContentTypeImagesvgXml MapBackgroundFileContentType = "image/svg+xml"
+)
+
+// Valid indicates whether the value is a known member of the MapBackgroundFileContentType enum.
+func (e MapBackgroundFileContentType) Valid() bool {
+	switch e {
+	case MapBackgroundFileContentTypeImagejpeg:
+		return true
+	case MapBackgroundFileContentTypeImagepng:
+		return true
+	case MapBackgroundFileContentTypeImagesvgXml:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MapExportFormat.
+const (
+	PortoMap1 MapExportFormat = "porto-map/1"
+)
+
+// Valid indicates whether the value is a known member of the MapExportFormat enum.
+func (e MapExportFormat) Valid() bool {
+	switch e {
+	case PortoMap1:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MapIssueSeverity.
+const (
+	Error   MapIssueSeverity = "error"
+	Warning MapIssueSeverity = "warning"
+)
+
+// Valid indicates whether the value is a known member of the MapIssueSeverity enum.
+func (e MapIssueSeverity) Valid() bool {
+	switch e {
+	case Error:
+		return true
+	case Warning:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MapKind.
+const (
+	MapKindBoxes   MapKind = "boxes"
+	MapKindOther   MapKind = "other"
+	MapKindParking MapKind = "parking"
+	MapKindShed    MapKind = "shed"
+	MapKindWater   MapKind = "water"
+	MapKindYard    MapKind = "yard"
+)
+
+// Valid indicates whether the value is a known member of the MapKind enum.
+func (e MapKind) Valid() bool {
+	switch e {
+	case MapKindBoxes:
+		return true
+	case MapKindOther:
+		return true
+	case MapKindParking:
+		return true
+	case MapKindShed:
+		return true
+	case MapKindWater:
+		return true
+	case MapKindYard:
 		return true
 	default:
 		return false
@@ -193,6 +1067,96 @@ func (e MetaEdition) Valid() bool {
 	}
 }
 
+// Defines values for MooringMode.
+const (
+	MooringModeAlongside MooringMode = "alongside"
+	MooringModeSternTo   MooringMode = "stern_to"
+)
+
+// Valid indicates whether the value is a known member of the MooringMode enum.
+func (e MooringMode) Valid() bool {
+	switch e {
+	case MooringModeAlongside:
+		return true
+	case MooringModeSternTo:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MooringType.
+const (
+	MooringTypeAlongside   MooringType = "alongside"
+	MooringTypeBuoy        MooringType = "buoy"
+	MooringTypeFinger      MooringType = "finger"
+	MooringTypeMooringLine MooringType = "mooring_line"
+	MooringTypePiles       MooringType = "piles"
+)
+
+// Valid indicates whether the value is a known member of the MooringType enum.
+func (e MooringType) Valid() bool {
+	switch e {
+	case MooringTypeAlongside:
+		return true
+	case MooringTypeBuoy:
+		return true
+	case MooringTypeFinger:
+		return true
+	case MooringTypeMooringLine:
+		return true
+	case MooringTypePiles:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for NumberingScheme.
+const (
+	Continuous       NumberingScheme = "continuous"
+	OddLeftEvenRight NumberingScheme = "odd_left_even_right"
+	PerSide          NumberingScheme = "per_side"
+)
+
+// Valid indicates whether the value is a known member of the NumberingScheme enum.
+func (e NumberingScheme) Valid() bool {
+	switch e {
+	case Continuous:
+		return true
+	case OddLeftEvenRight:
+		return true
+	case PerSide:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PedestalSocketAmps.
+const (
+	PedestalSocketAmpsN125 PedestalSocketAmps = 125
+	PedestalSocketAmpsN16  PedestalSocketAmps = 16
+	PedestalSocketAmpsN32  PedestalSocketAmps = 32
+	PedestalSocketAmpsN63  PedestalSocketAmps = 63
+)
+
+// Valid indicates whether the value is a known member of the PedestalSocketAmps enum.
+func (e PedestalSocketAmps) Valid() bool {
+	switch e {
+	case PedestalSocketAmpsN125:
+		return true
+	case PedestalSocketAmpsN16:
+		return true
+	case PedestalSocketAmpsN32:
+		return true
+	case PedestalSocketAmpsN63:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for Permission.
 const (
 	AuditRead            Permission = "audit.read"
@@ -203,6 +1167,7 @@ const (
 	CustomersWrite       Permission = "customers.write"
 	DevicesManage        Permission = "devices.manage"
 	DevicesPairSelf      Permission = "devices.pair_self"
+	HarborConfigure      Permission = "harbor.configure"
 	MaintenanceManage    Permission = "maintenance.manage"
 	MaintenanceReport    Permission = "maintenance.report"
 	MapView              Permission = "map.view"
@@ -248,6 +1213,8 @@ func (e Permission) Valid() bool {
 	case DevicesManage:
 		return true
 	case DevicesPairSelf:
+		return true
+	case HarborConfigure:
 		return true
 	case MaintenanceManage:
 		return true
@@ -304,23 +1271,98 @@ func (e Permission) Valid() bool {
 	}
 }
 
+// Defines values for PierGeneratorSides.
+const (
+	PierGeneratorSidesLeft  PierGeneratorSides = "left"
+	PierGeneratorSidesRight PierGeneratorSides = "right"
+)
+
+// Valid indicates whether the value is a known member of the PierGeneratorSides enum.
+func (e PierGeneratorSides) Valid() bool {
+	switch e {
+	case PierGeneratorSidesLeft:
+		return true
+	case PierGeneratorSidesRight:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PierGeneratorType.
+const (
+	PierGeneratorTypePier PierGeneratorType = "pier"
+)
+
+// Valid indicates whether the value is a known member of the PierGeneratorType enum.
+func (e PierGeneratorType) Valid() bool {
+	switch e {
+	case PierGeneratorTypePier:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PowerPhase.
+const (
+	Single PowerPhase = "single"
+	Three  PowerPhase = "three"
+)
+
+// Valid indicates whether the value is a known member of the PowerPhase enum.
+func (e PowerPhase) Valid() bool {
+	switch e {
+	case Single:
+		return true
+	case Three:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PriceClassRuleBasis.
+const (
+	Width PriceClassRuleBasis = "width"
+)
+
+// Valid indicates whether the value is a known member of the PriceClassRuleBasis enum.
+func (e PriceClassRuleBasis) Valid() bool {
+	switch e {
+	case Width:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ProblemType.
 const (
 	ProblemTypeAlreadyMember         ProblemType = "already_member"
 	ProblemTypeBadRequest            ProblemType = "bad_request"
 	ProblemTypeConflict              ProblemType = "conflict"
 	ProblemTypeCsrfFailed            ProblemType = "csrf_failed"
+	ProblemTypeCsvInvalid            ProblemType = "csv_invalid"
+	ProblemTypeCustomerAnonymized    ProblemType = "customer_anonymized"
+	ProblemTypeCustomerMerged        ProblemType = "customer_merged"
+	ProblemTypeDownloadLinkExpired   ProblemType = "download_link_expired"
 	ProblemTypeEndpointDisabled      ProblemType = "endpoint_disabled"
+	ProblemTypeFileTooLarge          ProblemType = "file_too_large"
 	ProblemTypeForbidden             ProblemType = "forbidden"
 	ProblemTypeIdempotencyInProgress ProblemType = "idempotency_in_progress"
 	ProblemTypeIdempotencyKeyReused  ProblemType = "idempotency_key_reused"
 	ProblemTypeInternalError         ProblemType = "internal_error"
 	ProblemTypeInvalidCredentials    ProblemType = "invalid_credentials"
+	ProblemTypeInvalidFile           ProblemType = "invalid_file"
 	ProblemTypeInvalidResetToken     ProblemType = "invalid_reset_token"
 	ProblemTypeInvalidScope          ProblemType = "invalid_scope"
 	ProblemTypeInvalidTotp           ProblemType = "invalid_totp"
 	ProblemTypeInvalidWebhookUrl     ProblemType = "invalid_webhook_url"
 	ProblemTypeLastOwner             ProblemType = "last_owner"
+	ProblemTypeMapInvalid            ProblemType = "map_invalid"
+	ProblemTypeMapNotEmpty           ProblemType = "map_not_empty"
+	ProblemTypeMapNotGeoreferenced   ProblemType = "map_not_georeferenced"
 	ProblemTypeMethodNotAllowed      ProblemType = "method_not_allowed"
 	ProblemTypeNotFound              ProblemType = "not_found"
 	ProblemTypeNotReady              ProblemType = "not_ready"
@@ -352,7 +1394,17 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeCsrfFailed:
 		return true
+	case ProblemTypeCsvInvalid:
+		return true
+	case ProblemTypeCustomerAnonymized:
+		return true
+	case ProblemTypeCustomerMerged:
+		return true
+	case ProblemTypeDownloadLinkExpired:
+		return true
 	case ProblemTypeEndpointDisabled:
+		return true
+	case ProblemTypeFileTooLarge:
 		return true
 	case ProblemTypeForbidden:
 		return true
@@ -364,6 +1416,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeInvalidCredentials:
 		return true
+	case ProblemTypeInvalidFile:
+		return true
 	case ProblemTypeInvalidResetToken:
 		return true
 	case ProblemTypeInvalidScope:
@@ -373,6 +1427,12 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeInvalidWebhookUrl:
 		return true
 	case ProblemTypeLastOwner:
+		return true
+	case ProblemTypeMapInvalid:
+		return true
+	case ProblemTypeMapNotEmpty:
+		return true
+	case ProblemTypeMapNotGeoreferenced:
 		return true
 	case ProblemTypeMethodNotAllowed:
 		return true
@@ -409,6 +1469,39 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeVersionConflict:
 		return true
 	case ProblemTypeWeakPassword:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for QuayBerthsGeneratorSide.
+const (
+	QuayBerthsGeneratorSideLeft  QuayBerthsGeneratorSide = "left"
+	QuayBerthsGeneratorSideRight QuayBerthsGeneratorSide = "right"
+)
+
+// Valid indicates whether the value is a known member of the QuayBerthsGeneratorSide enum.
+func (e QuayBerthsGeneratorSide) Valid() bool {
+	switch e {
+	case QuayBerthsGeneratorSideLeft:
+		return true
+	case QuayBerthsGeneratorSideRight:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for QuayBerthsGeneratorType.
+const (
+	QuayBerthsGeneratorTypeQuayBerths QuayBerthsGeneratorType = "quay_berths"
+)
+
+// Valid indicates whether the value is a known member of the QuayBerthsGeneratorType enum.
+func (e QuayBerthsGeneratorType) Valid() bool {
+	switch e {
+	case QuayBerthsGeneratorTypeQuayBerths:
 		return true
 	default:
 		return false
@@ -469,6 +1562,189 @@ func (e Role) Valid() bool {
 	}
 }
 
+// Defines values for Side.
+const (
+	SideHead  Side = "head"
+	SideLeft  Side = "left"
+	SideNone  Side = "none"
+	SideRight Side = "right"
+)
+
+// Valid indicates whether the value is a known member of the Side enum.
+func (e Side) Valid() bool {
+	switch e {
+	case SideHead:
+		return true
+	case SideLeft:
+		return true
+	case SideNone:
+		return true
+	case SideRight:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StructureKind.
+const (
+	StructureKindBreakwater StructureKind = "breakwater"
+	StructureKindChannel    StructureKind = "channel"
+	StructureKindFinger     StructureKind = "finger"
+	StructureKindPier       StructureKind = "pier"
+	StructureKindQuay       StructureKind = "quay"
+	StructureKindWalkway    StructureKind = "walkway"
+)
+
+// Valid indicates whether the value is a known member of the StructureKind enum.
+func (e StructureKind) Valid() bool {
+	switch e {
+	case StructureKindBreakwater:
+		return true
+	case StructureKindChannel:
+		return true
+	case StructureKindFinger:
+		return true
+	case StructureKindPier:
+		return true
+	case StructureKindQuay:
+		return true
+	case StructureKindWalkway:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SurfaceAreaGeneratorGridRotationDd.
+const (
+	SurfaceAreaGeneratorGridRotationDdN0    SurfaceAreaGeneratorGridRotationDd = 0
+	SurfaceAreaGeneratorGridRotationDdN1800 SurfaceAreaGeneratorGridRotationDd = 1800
+	SurfaceAreaGeneratorGridRotationDdN2700 SurfaceAreaGeneratorGridRotationDd = 2700
+	SurfaceAreaGeneratorGridRotationDdN900  SurfaceAreaGeneratorGridRotationDd = 900
+)
+
+// Valid indicates whether the value is a known member of the SurfaceAreaGeneratorGridRotationDd enum.
+func (e SurfaceAreaGeneratorGridRotationDd) Valid() bool {
+	switch e {
+	case SurfaceAreaGeneratorGridRotationDdN0:
+		return true
+	case SurfaceAreaGeneratorGridRotationDdN1800:
+		return true
+	case SurfaceAreaGeneratorGridRotationDdN2700:
+		return true
+	case SurfaceAreaGeneratorGridRotationDdN900:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SurfaceAreaGeneratorType.
+const (
+	SurfaceAreaGeneratorTypeSurfaceArea SurfaceAreaGeneratorType = "surface_area"
+)
+
+// Valid indicates whether the value is a known member of the SurfaceAreaGeneratorType enum.
+func (e SurfaceAreaGeneratorType) Valid() bool {
+	switch e {
+	case SurfaceAreaGeneratorTypeSurfaceArea:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UnitClass.
+const (
+	Imbarcazione UnitClass = "imbarcazione"
+	Natante      UnitClass = "natante"
+	Nave         UnitClass = "nave"
+)
+
+// Valid indicates whether the value is a known member of the UnitClass enum.
+func (e UnitClass) Valid() bool {
+	switch e {
+	case Imbarcazione:
+		return true
+	case Natante:
+		return true
+	case Nave:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UtilityKind.
+const (
+	UtilityKindPower UtilityKind = "power"
+	UtilityKindWater UtilityKind = "water"
+)
+
+// Valid indicates whether the value is a known member of the UtilityKind enum.
+func (e UtilityKind) Valid() bool {
+	switch e {
+	case UtilityKindPower:
+		return true
+	case UtilityKindWater:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for VesselInputPowerRequiredA.
+const (
+	VesselInputPowerRequiredAN125 VesselInputPowerRequiredA = 125
+	VesselInputPowerRequiredAN16  VesselInputPowerRequiredA = 16
+	VesselInputPowerRequiredAN32  VesselInputPowerRequiredA = 32
+	VesselInputPowerRequiredAN63  VesselInputPowerRequiredA = 63
+)
+
+// Valid indicates whether the value is a known member of the VesselInputPowerRequiredA enum.
+func (e VesselInputPowerRequiredA) Valid() bool {
+	switch e {
+	case VesselInputPowerRequiredAN125:
+		return true
+	case VesselInputPowerRequiredAN16:
+		return true
+	case VesselInputPowerRequiredAN32:
+		return true
+	case VesselInputPowerRequiredAN63:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for VesselPartyRole.
+const (
+	VesselPartyRoleBilling  VesselPartyRole = "billing"
+	VesselPartyRoleContact  VesselPartyRole = "contact"
+	VesselPartyRoleOperator VesselPartyRole = "operator"
+	VesselPartyRoleOwner    VesselPartyRole = "owner"
+	VesselPartyRoleSkipper  VesselPartyRole = "skipper"
+)
+
+// Valid indicates whether the value is a known member of the VesselPartyRole enum.
+func (e VesselPartyRole) Valid() bool {
+	switch e {
+	case VesselPartyRoleBilling:
+		return true
+	case VesselPartyRoleContact:
+		return true
+	case VesselPartyRoleOperator:
+		return true
+	case VesselPartyRoleOwner:
+		return true
+	case VesselPartyRoleSkipper:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for WebhookDeliveryStatus.
 const (
 	Delivered WebhookDeliveryStatus = "delivered"
@@ -484,6 +1760,24 @@ func (e WebhookDeliveryStatus) Valid() bool {
 	case Failed:
 		return true
 	case Pending:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ExportMapParamsFormat.
+const (
+	Geojson ExportMapParamsFormat = "geojson"
+	Json    ExportMapParamsFormat = "json"
+)
+
+// Valid indicates whether the value is a known member of the ExportMapParamsFormat enum.
+func (e ExportMapParamsFormat) Valid() bool {
+	switch e {
+	case Geojson:
+		return true
+	case Json:
 		return true
 	default:
 		return false
@@ -537,6 +1831,9 @@ type ApiKeyList struct {
 	Items []ApiKey `json:"items"`
 }
 
+// AreaKind defines model for AreaKind.
+type AreaKind string
+
 // AuditActor defines model for AuditActor.
 type AuditActor struct {
 	Id   *string        `json:"id"`
@@ -564,11 +1861,563 @@ type AuditEntryPage struct {
 	NextCursor *string      `json:"next_cursor"`
 }
 
+// Berth defines model for Berth.
+type Berth struct {
+	Active     bool     `json:"active"`
+	Anchor     Point    `json:"anchor"`
+	Attributes []string `json:"attributes"`
+	Code       Code     `json:"code"`
+
+	// DepthCm Strictly positive length in integer centimetres
+	DepthCm  *PositiveCm `json:"depth_cm,omitempty"`
+	GroupIds []string    `json:"group_ids"`
+
+	// Id Saved element id (omit for a new element)
+	Id *string `json:"id,omitempty"`
+
+	// Key Client key of a new element, unique in the request
+	Key *ElementKey `json:"key,omitempty"`
+
+	// LengthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+	LengthCm RectSideCm `json:"length_cm"`
+
+	// MaxAirDraftCm Strictly positive length in integer centimetres
+	MaxAirDraftCm *PositiveCm `json:"max_air_draft_cm,omitempty"`
+
+	// MaxBeamCm Strictly positive length in integer centimetres
+	MaxBeamCm         *PositiveCm `json:"max_beam_cm,omitempty"`
+	MaxDisplacementKg *int64      `json:"max_displacement_kg,omitempty"`
+
+	// MaxLoaCm Strictly positive length in integer centimetres
+	MaxLoaCm        *PositiveCm `json:"max_loa_cm,omitempty"`
+	MooringType     MooringType `json:"mooring_type"`
+	OnlineSellable  bool        `json:"online_sellable"`
+	OverhangAllowed bool        `json:"overhang_allowed"`
+
+	// PedestalId Reference to a map element inside one document: the id of a saved element or the key of a new element of the same request
+	PedestalId     *ElementRef `json:"pedestal_id,omitempty"`
+	PedestalSocket *string     `json:"pedestal_socket,omitempty"`
+
+	// Position Order along the structure
+	Position   int64        `json:"position"`
+	PowerA     *BerthPowerA `json:"power_a,omitempty"`
+	PowerPhase *PowerPhase  `json:"power_phase,omitempty"`
+	PriceClass *string      `json:"price_class,omitempty"`
+
+	// RotationDd Angle in tenths of a degree, 0 = +x, 900 = +y (y down, clockwise on screen)
+	RotationDd RotationDd `json:"rotation_dd"`
+	Side       Side       `json:"side"`
+
+	// StructureId Reference to a map element inside one document: the id of a saved element or the key of a new element of the same request
+	StructureId *ElementRef `json:"structure_id,omitempty"`
+
+	// SwingRadiusCm Strictly positive length in integer centimetres
+	SwingRadiusCm *PositiveCm `json:"swing_radius_cm,omitempty"`
+	Water         bool        `json:"water"`
+
+	// WidthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+	WidthCm RectSideCm `json:"width_cm"`
+	Wifi    bool       `json:"wifi"`
+}
+
+// BerthPowerA defines model for Berth.PowerA.
+type BerthPowerA int
+
+// BerthGroup defines model for BerthGroup.
+type BerthGroup struct {
+	Code         string                 `json:"code"`
+	Id           string                 `json:"id"`
+	Kind         BerthGroupKind         `json:"kind"`
+	MemberCounts BerthGroupMemberCounts `json:"member_counts"`
+	Name         I18nText               `json:"name"`
+	SortOrder    int                    `json:"sort_order"`
+	Version      int                    `json:"version"`
+}
+
+// BerthGroupCreate defines model for BerthGroupCreate.
+type BerthGroupCreate struct {
+	Code Code            `json:"code"`
+	Kind *BerthGroupKind `json:"kind,omitempty"`
+	Name I18nText        `json:"name"`
+}
+
+// BerthGroupKind defines model for BerthGroupKind.
+type BerthGroupKind string
+
+// BerthGroupList defines model for BerthGroupList.
+type BerthGroupList struct {
+	Items []BerthGroup `json:"items"`
+}
+
+// BerthGroupMemberCounts defines model for BerthGroupMemberCounts.
+type BerthGroupMemberCounts struct {
+	Berth        int `json:"berth"`
+	DynamicArea  int `json:"dynamic_area"`
+	LandResource int `json:"land_resource"`
+}
+
+// BerthGroupPatch defines model for BerthGroupPatch.
+type BerthGroupPatch struct {
+	Code      *Code           `json:"code,omitempty"`
+	Kind      *BerthGroupKind `json:"kind,omitempty"`
+	Name      *I18nText       `json:"name,omitempty"`
+	SortOrder *int            `json:"sort_order,omitempty"`
+}
+
+// BerthImportDuplicate defines model for BerthImportDuplicate.
+type BerthImportDuplicate struct {
+	Code   string                     `json:"code"`
+	Reason BerthImportDuplicateReason `json:"reason"`
+	Row    int                        `json:"row"`
+}
+
+// BerthImportDuplicateReason defines model for BerthImportDuplicate.Reason.
+type BerthImportDuplicateReason string
+
+// BerthImportMapping Zero-based column index of each field in the CSV
+type BerthImportMapping struct {
+	Code        int  `json:"code"`
+	Depth       *int `json:"depth,omitempty"`
+	Length      int  `json:"length"`
+	MooringType *int `json:"mooring_type,omitempty"`
+	Pier        int  `json:"pier"`
+	PriceClass  *int `json:"price_class,omitempty"`
+	Side        *int `json:"side,omitempty"`
+	Width       int  `json:"width"`
+}
+
+// BerthImportPlacement defines model for BerthImportPlacement.
+type BerthImportPlacement struct {
+	SidePolicy BerthImportPlacementSidePolicy `json:"side_policy"`
+	Start      BerthImportPlacementStart      `json:"start"`
+}
+
+// BerthImportPlacementSidePolicy defines model for BerthImportPlacement.SidePolicy.
+type BerthImportPlacementSidePolicy string
+
+// BerthImportPlacementStart defines model for BerthImportPlacement.Start.
+type BerthImportPlacementStart string
+
+// BerthImportPlanned defines model for BerthImportPlanned.
+type BerthImportPlanned struct {
+	Code string `json:"code"`
+	Pier string `json:"pier"`
+	Row  int    `json:"row"`
+	Side Side   `json:"side"`
+}
+
+// BerthImportRejected defines model for BerthImportRejected.
+type BerthImportRejected struct {
+	Errors []FieldError `json:"errors"`
+	Row    int          `json:"row"`
+}
+
+// BerthImportReport defines model for BerthImportReport.
+type BerthImportReport struct {
+	Document   *MapSaveResult         `json:"document,omitempty"`
+	Duplicates []BerthImportDuplicate `json:"duplicates"`
+	Planned    []BerthImportPlanned   `json:"planned"`
+	Rejected   []BerthImportRejected  `json:"rejected"`
+	RowsTotal  int                    `json:"rows_total"`
+	Valid      int                    `json:"valid"`
+}
+
+// BerthImportRequest defines model for BerthImportRequest.
+type BerthImportRequest struct {
+	Csv string `json:"csv"`
+
+	// Delimiter Column separator (default comma)
+	Delimiter *BerthImportRequestDelimiter `json:"delimiter,omitempty"`
+	DryRun    bool                         `json:"dry_run"`
+	HasHeader bool                         `json:"has_header"`
+
+	// Mapping Zero-based column index of each field in the CSV
+	Mapping   BerthImportMapping      `json:"mapping"`
+	Placement BerthImportPlacement    `json:"placement"`
+	Units     BerthImportRequestUnits `json:"units"`
+}
+
+// BerthImportRequestDelimiter Column separator (default comma)
+type BerthImportRequestDelimiter string
+
+// BerthImportRequestUnits defines model for BerthImportRequest.Units.
+type BerthImportRequestUnits string
+
+// BerthPage defines model for BerthPage.
+type BerthPage struct {
+	Items      []BerthSummary `json:"items"`
+	NextCursor *string        `json:"next_cursor"`
+}
+
+// BerthSummary defines model for BerthSummary.
+type BerthSummary struct {
+	Active  bool   `json:"active"`
+	Code    string `json:"code"`
+	DepthCm *int64 `json:"depth_cm"`
+	Id      string `json:"id"`
+
+	// LengthCm Length in integer centimetres
+	LengthCm Cm     `json:"length_cm"`
+	MapId    string `json:"map_id"`
+
+	// MaxBeamCm Length in integer centimetres
+	MaxBeamCm Cm `json:"max_beam_cm"`
+
+	// MaxLoaCm Length in integer centimetres
+	MaxLoaCm      Cm          `json:"max_loa_cm"`
+	MooringType   MooringType `json:"mooring_type"`
+	PriceClass    *string     `json:"price_class"`
+	StructureCode *string     `json:"structure_code"`
+
+	// WidthCm Length in integer centimetres
+	WidthCm Cm `json:"width_cm"`
+}
+
+// BuoyFieldGenerator defines model for BuoyFieldGenerator.
+type BuoyFieldGenerator struct {
+	GroupId   *string                  `json:"group_id,omitempty"`
+	KeyPrefix string                   `json:"key_prefix"`
+	Layout    BuoyFieldGeneratorLayout `json:"layout"`
+
+	// MaxLoaCm Length in integer centimetres
+	MaxLoaCm  *Cm       `json:"max_loa_cm,omitempty"`
+	Numbering Numbering `json:"numbering"`
+
+	// Outline Simple polygon in map cm (3 to 10 000 vertices, not closed explicitly)
+	Outline Polygon `json:"outline"`
+
+	// SpacingCm Length in integer centimetres
+	SpacingCm *Cm `json:"spacing_cm,omitempty"`
+
+	// SwingRadiusCm Strictly positive length in integer centimetres
+	SwingRadiusCm PositiveCm             `json:"swing_radius_cm"`
+	Type          BuoyFieldGeneratorType `json:"type"`
+}
+
+// BuoyFieldGeneratorLayout defines model for BuoyFieldGenerator.Layout.
+type BuoyFieldGeneratorLayout string
+
+// BuoyFieldGeneratorType defines model for BuoyFieldGenerator.Type.
+type BuoyFieldGeneratorType string
+
 // ChangePasswordRequest defines model for ChangePasswordRequest.
 type ChangePasswordRequest struct {
 	CurrentPassword string `json:"current_password"`
 	NewPassword     string `json:"new_password"`
 }
+
+// Cm Length in integer centimetres
+type Cm = int64
+
+// Code defines model for Code.
+type Code = string
+
+// ConcessionGeojsonRequest defines model for ConcessionGeojsonRequest.
+type ConcessionGeojsonRequest struct {
+	// Geojson A GeoJSON Polygon, Feature or FeatureCollection with one polygon (WGS84)
+	Geojson map[string]interface{} `json:"geojson"`
+
+	// Georef Affine georeference from three non-collinear control points (WGS84 × 1e7)
+	Georef *Georef `json:"georef,omitempty"`
+}
+
+// ConcessionGeojsonResult defines model for ConcessionGeojsonResult.
+type ConcessionGeojsonResult struct {
+	// Outline Simple polygon in map cm (3 to 10 000 vertices, not closed explicitly)
+	Outline Polygon `json:"outline"`
+}
+
+// Consent defines model for Consent.
+type Consent struct {
+	Granted       bool          `json:"granted"`
+	Id            string        `json:"id"`
+	Kind          ConsentKind   `json:"kind"`
+	PolicyVersion string        `json:"policy_version"`
+	RecordedAt    time.Time     `json:"recorded_at"`
+	RecordedBy    *UserRef      `json:"recorded_by"`
+	Source        ConsentSource `json:"source"`
+}
+
+// ConsentInput defines model for ConsentInput.
+type ConsentInput struct {
+	Granted       bool          `json:"granted"`
+	Kind          ConsentKind   `json:"kind"`
+	PolicyVersion string        `json:"policy_version"`
+	Source        ConsentSource `json:"source"`
+}
+
+// ConsentKind defines model for ConsentKind.
+type ConsentKind string
+
+// ConsentList defines model for ConsentList.
+type ConsentList struct {
+	Items []Consent `json:"items"`
+}
+
+// ConsentSource defines model for ConsentSource.
+type ConsentSource string
+
+// ContactEntry defines model for ContactEntry.
+type ContactEntry struct {
+	Label string `json:"label"`
+	Value string `json:"value"`
+}
+
+// ControlPoint defines model for ControlPoint.
+type ControlPoint struct {
+	LatE7 int64 `json:"lat_e7"`
+	LonE7 int64 `json:"lon_e7"`
+	X     int64 `json:"x"`
+	Y     int64 `json:"y"`
+}
+
+// Customer defines model for Customer.
+type Customer struct {
+	AnonymizedAt   *time.Time        `json:"anonymized_at"`
+	ArchivedAt     *time.Time        `json:"archived_at"`
+	BillingAddress Address           `json:"billing_address"`
+	Category       *CustomerCategory `json:"category"`
+	CompanyName    string            `json:"company_name"`
+	CreatedAt      time.Time         `json:"created_at"`
+
+	// DisplayName Empty for an anonymised customer
+	DisplayName string         `json:"display_name"`
+	Emails      []ContactEntry `json:"emails"`
+	FirstName   string         `json:"first_name"`
+	FiscalCode  *string        `json:"fiscal_code"`
+
+	// IbanMasked Masked, e.g. "IT•• •••• 1234"; the IBAN is never returned
+	IbanMasked   *string        `json:"iban_masked"`
+	Id           string         `json:"id"`
+	Kind         CustomerKind   `json:"kind"`
+	LastName     string         `json:"last_name"`
+	Locale       Locale         `json:"locale"`
+	MergedIntoId *string        `json:"merged_into_id"`
+	Nationality  *string        `json:"nationality"`
+	Notes        string         `json:"notes"`
+	PaymentTerms *PaymentTerms  `json:"payment_terms"`
+	Pec          *string        `json:"pec"`
+	Phones       []ContactEntry `json:"phones"`
+	SdiCode      *string        `json:"sdi_code"`
+	Tags         []string       `json:"tags"`
+	UpdatedAt    time.Time      `json:"updated_at"`
+	VatNumber    *string        `json:"vat_number"`
+	Version      int            `json:"version"`
+}
+
+// CustomerAnonymizeRequest defines model for CustomerAnonymizeRequest.
+type CustomerAnonymizeRequest struct {
+	Confirm CustomerAnonymizeRequestConfirm `json:"confirm"`
+}
+
+// CustomerAnonymizeRequestConfirm defines model for CustomerAnonymizeRequest.Confirm.
+type CustomerAnonymizeRequestConfirm bool
+
+// CustomerCategory defines model for CustomerCategory.
+type CustomerCategory string
+
+// CustomerCreated defines model for CustomerCreated.
+type CustomerCreated struct {
+	Customer           Customer          `json:"customer"`
+	PossibleDuplicates []CustomerSummary `json:"possible_duplicates"`
+}
+
+// CustomerExport defines model for CustomerExport.
+type CustomerExport struct {
+	Consents   []Consent            `json:"consents"`
+	Customer   Customer             `json:"customer"`
+	Deadlines  []Deadline           `json:"deadlines"`
+	Documents  []Document           `json:"documents"`
+	ExportedAt time.Time            `json:"exported_at"`
+	Format     CustomerExportFormat `json:"format"`
+	Parties    []VesselPartyRow     `json:"parties"`
+	Vessels    []Vessel             `json:"vessels"`
+}
+
+// CustomerExportFormat defines model for CustomerExport.Format.
+type CustomerExportFormat string
+
+// CustomerInput defines model for CustomerInput.
+type CustomerInput struct {
+	BillingAddress *Address          `json:"billing_address,omitempty"`
+	Category       *CustomerCategory `json:"category,omitempty"`
+	CompanyName    *string           `json:"company_name,omitempty"`
+	Emails         *[]ContactEntry   `json:"emails,omitempty"`
+	FirstName      *string           `json:"first_name,omitempty"`
+	FiscalCode     *string           `json:"fiscal_code,omitempty"`
+	Iban           *string           `json:"iban,omitempty"`
+	Kind           CustomerKind      `json:"kind"`
+	LastName       *string           `json:"last_name,omitempty"`
+	Locale         *Locale           `json:"locale,omitempty"`
+	Nationality    *string           `json:"nationality,omitempty"`
+	Notes          *string           `json:"notes,omitempty"`
+	PaymentTerms   *PaymentTerms     `json:"payment_terms,omitempty"`
+	Pec            *string           `json:"pec,omitempty"`
+	Phones         *[]ContactEntry   `json:"phones,omitempty"`
+	SdiCode        *string           `json:"sdi_code,omitempty"`
+	Tags           *[]string         `json:"tags,omitempty"`
+	VatNumber      *string           `json:"vat_number,omitempty"`
+}
+
+// CustomerKind defines model for CustomerKind.
+type CustomerKind string
+
+// CustomerMergeRequest defines model for CustomerMergeRequest.
+type CustomerMergeRequest struct {
+	SourceIds []string `json:"source_ids"`
+}
+
+// CustomerOverview defines model for CustomerOverview.
+type CustomerOverview struct {
+	// Consents The current consent of each kind
+	Consents   []Consent            `json:"consents"`
+	Customer   Customer             `json:"customer"`
+	Deadlines  []Deadline           `json:"deadlines"`
+	Documents  []Document           `json:"documents"`
+	Duplicates []CustomerSummary    `json:"duplicates"`
+	Vessels    []CustomerVesselLink `json:"vessels"`
+}
+
+// CustomerPage defines model for CustomerPage.
+type CustomerPage struct {
+	Items      []CustomerSummary `json:"items"`
+	NextCursor *string           `json:"next_cursor"`
+}
+
+// CustomerPatch Partial update; null clears a nullable field, "" clears the IBAN
+type CustomerPatch struct {
+	BillingAddress *Address          `json:"billing_address,omitempty"`
+	Category       *CustomerCategory `json:"category,omitempty"`
+	CompanyName    *string           `json:"company_name,omitempty"`
+	Emails         *[]ContactEntry   `json:"emails,omitempty"`
+	FirstName      *string           `json:"first_name,omitempty"`
+	FiscalCode     *string           `json:"fiscal_code,omitempty"`
+	Iban           *string           `json:"iban,omitempty"`
+	Kind           *CustomerKind     `json:"kind,omitempty"`
+	LastName       *string           `json:"last_name,omitempty"`
+	Locale         *Locale           `json:"locale,omitempty"`
+	Nationality    *string           `json:"nationality,omitempty"`
+	Notes          *string           `json:"notes,omitempty"`
+	PaymentTerms   *PaymentTerms     `json:"payment_terms,omitempty"`
+	Pec            *string           `json:"pec,omitempty"`
+	Phones         *[]ContactEntry   `json:"phones,omitempty"`
+	SdiCode        *string           `json:"sdi_code,omitempty"`
+	Tags           *[]string         `json:"tags,omitempty"`
+	VatNumber      *string           `json:"vat_number,omitempty"`
+}
+
+// CustomerRef defines model for CustomerRef.
+type CustomerRef struct {
+	DisplayName string `json:"display_name"`
+	Id          string `json:"id"`
+}
+
+// CustomerSummary defines model for CustomerSummary.
+type CustomerSummary struct {
+	AnonymizedAt *time.Time        `json:"anonymized_at"`
+	ArchivedAt   *time.Time        `json:"archived_at"`
+	Category     *CustomerCategory `json:"category"`
+	DisplayName  string            `json:"display_name"`
+	FiscalCode   *string           `json:"fiscal_code"`
+	Id           string            `json:"id"`
+	Kind         CustomerKind      `json:"kind"`
+	MergedIntoId *string           `json:"merged_into_id"`
+	PrimaryEmail *string           `json:"primary_email"`
+	PrimaryPhone *string           `json:"primary_phone"`
+	Tags         []string          `json:"tags"`
+	VatNumber    *string           `json:"vat_number"`
+	VesselCount  int               `json:"vessel_count"`
+}
+
+// CustomerVesselLink defines model for CustomerVesselLink.
+type CustomerVesselLink struct {
+	Roles       []VesselPartyRole `json:"roles"`
+	ShareMillis *int64            `json:"share_millis"`
+	Vessel      VesselSummary     `json:"vessel"`
+}
+
+// Deadline defines model for Deadline.
+type Deadline struct {
+	Customer     *CustomerRef  `json:"customer"`
+	DocumentType *DocumentType `json:"document_type"`
+	DueOn        string        `json:"due_on"`
+	Id           string        `json:"id"`
+
+	// Kind M1 kinds (from document types); later milestones add more
+	Kind       DeadlineKind       `json:"kind"`
+	Note       string             `json:"note"`
+	SourceId   string             `json:"source_id"`
+	SourceType DeadlineSourceType `json:"source_type"`
+	Status     DeadlineStatus     `json:"status"`
+	Urgency    DeadlineUrgency    `json:"urgency"`
+	Version    int                `json:"version"`
+	Vessel     *VesselRef         `json:"vessel"`
+}
+
+// DeadlineKind M1 kinds (from document types); later milestones add more
+type DeadlineKind string
+
+// DeadlinePage defines model for DeadlinePage.
+type DeadlinePage struct {
+	Items      []Deadline `json:"items"`
+	NextCursor *string    `json:"next_cursor"`
+}
+
+// DeadlinePatch defines model for DeadlinePatch.
+type DeadlinePatch struct {
+	Note   *string         `json:"note,omitempty"`
+	Status *DeadlineStatus `json:"status,omitempty"`
+}
+
+// DeadlinePolicy defines model for DeadlinePolicy.
+type DeadlinePolicy struct {
+	// Kind M1 kinds (from document types); later milestones add more
+	Kind     DeadlineKind `json:"kind"`
+	LeadDays []int        `json:"lead_days"`
+}
+
+// DeadlinePolicyList defines model for DeadlinePolicyList.
+type DeadlinePolicyList struct {
+	Items []DeadlinePolicy `json:"items"`
+}
+
+// DeadlineSourceType defines model for DeadlineSourceType.
+type DeadlineSourceType string
+
+// DeadlineStatus defines model for DeadlineStatus.
+type DeadlineStatus string
+
+// DeadlineUrgency defines model for DeadlineUrgency.
+type DeadlineUrgency string
+
+// Decoration defines model for Decoration.
+type Decoration struct {
+	// Asset Illustration kit asset id (kind = symbol)
+	Asset *string `json:"asset,omitempty"`
+
+	// DepthCm Length in integer centimetres
+	DepthCm *Cm `json:"depth_cm,omitempty"`
+
+	// Id Saved element id (omit for a new element)
+	Id *string `json:"id,omitempty"`
+
+	// Key Client key of a new element, unique in the request
+	Key      *ElementKey    `json:"key,omitempty"`
+	Kind     DecorationKind `json:"kind"`
+	Label    *I18nText      `json:"label,omitempty"`
+	Points   *[]Point       `json:"points,omitempty"`
+	Position *Point         `json:"position,omitempty"`
+
+	// RotationDd Angle in tenths of a degree, 0 = +x, 900 = +y (y down, clockwise on screen)
+	RotationDd *RotationDd `json:"rotation_dd,omitempty"`
+
+	// SizeCm Strictly positive length in integer centimetres
+	SizeCm  *PositiveCm `json:"size_cm,omitempty"`
+	Variant *string     `json:"variant,omitempty"`
+}
+
+// DecorationKind defines model for DecorationKind.
+type DecorationKind string
 
 // DemoPairRequest defines model for DemoPairRequest.
 type DemoPairRequest struct {
@@ -576,6 +2425,18 @@ type DemoPairRequest struct {
 	Kind       DeviceKind     `json:"kind"`
 	Name       string         `json:"name"`
 	Platform   DevicePlatform `json:"platform"`
+}
+
+// DepthSpan Depth along the structure axis, from from_cm to to_cm
+type DepthSpan struct {
+	// DepthCm Strictly positive length in integer centimetres
+	DepthCm PositiveCm `json:"depth_cm"`
+
+	// FromCm Length in integer centimetres
+	FromCm Cm `json:"from_cm"`
+
+	// ToCm Length in integer centimetres
+	ToCm Cm `json:"to_cm"`
 }
 
 // Device defines model for Device.
@@ -611,6 +2472,144 @@ type DeviceSelf struct {
 	User        UserRef      `json:"user"`
 }
 
+// DimensionsSource defines model for DimensionsSource.
+type DimensionsSource string
+
+// Document defines model for Document.
+type Document struct {
+	ContentType *string   `json:"content_type"`
+	CreatedAt   time.Time `json:"created_at"`
+	CustomerId  *string   `json:"customer_id"`
+	ExpiresOn   *string   `json:"expires_on"`
+	FileName    *string   `json:"file_name"`
+	HasFile     bool      `json:"has_file"`
+	Id          string    `json:"id"`
+	IssuedOn    *string   `json:"issued_on"`
+	Issuer      *string   `json:"issuer"`
+	Notes       string    `json:"notes"`
+
+	// Number Decrypted document number
+	Number    *string           `json:"number"`
+	OwnerType DocumentOwnerType `json:"owner_type"`
+	SizeBytes *int64            `json:"size_bytes"`
+	Type      DocumentType      `json:"type"`
+	UpdatedAt time.Time         `json:"updated_at"`
+	Version   int               `json:"version"`
+	VesselId  *string           `json:"vessel_id"`
+}
+
+// DocumentFileUrl defines model for DocumentFileUrl.
+type DocumentFileUrl struct {
+	ExpiresAt time.Time `json:"expires_at"`
+	Url       string    `json:"url"`
+}
+
+// DocumentInput defines model for DocumentInput.
+type DocumentInput struct {
+	CustomerId *string           `json:"customer_id,omitempty"`
+	ExpiresOn  *string           `json:"expires_on,omitempty"`
+	IssuedOn   *string           `json:"issued_on,omitempty"`
+	Issuer     *string           `json:"issuer,omitempty"`
+	Notes      *string           `json:"notes,omitempty"`
+	Number     *string           `json:"number,omitempty"`
+	OwnerType  DocumentOwnerType `json:"owner_type"`
+	Type       DocumentType      `json:"type"`
+	VesselId   *string           `json:"vessel_id,omitempty"`
+}
+
+// DocumentOwnerType defines model for DocumentOwnerType.
+type DocumentOwnerType string
+
+// DocumentPage defines model for DocumentPage.
+type DocumentPage struct {
+	Items      []Document `json:"items"`
+	NextCursor *string    `json:"next_cursor"`
+}
+
+// DocumentPatch Partial update; null clears a nullable field (clearing expires_on removes the deadline)
+type DocumentPatch struct {
+	ExpiresOn *string       `json:"expires_on,omitempty"`
+	IssuedOn  *string       `json:"issued_on,omitempty"`
+	Issuer    *string       `json:"issuer,omitempty"`
+	Notes     *string       `json:"notes,omitempty"`
+	Number    *string       `json:"number,omitempty"`
+	Type      *DocumentType `json:"type,omitempty"`
+}
+
+// DocumentType defines model for DocumentType.
+type DocumentType string
+
+// DynamicArea defines model for DynamicArea.
+type DynamicArea struct {
+	Active       bool   `json:"active"`
+	BlockedCells []int  `json:"blocked_cells"`
+	CellCm       *int64 `json:"cell_cm,omitempty"`
+
+	// CellCount Computed at save
+	CellCount    *int64       `json:"cell_count,omitempty"`
+	Code         Code         `json:"code"`
+	DepthProfile *[]DepthSpan `json:"depth_profile,omitempty"`
+	Exits        []int        `json:"exits"`
+
+	// FromCm Length in integer centimetres
+	FromCm         *Cm                       `json:"from_cm,omitempty"`
+	GridRotationDd DynamicAreaGridRotationDd `json:"grid_rotation_dd"`
+	GroupIds       []string                  `json:"group_ids"`
+
+	// Id Saved element id (omit for a new element)
+	Id *string `json:"id,omitempty"`
+
+	// Key Client key of a new element, unique in the request
+	Key      *ElementKey `json:"key,omitempty"`
+	Kind     AreaKind    `json:"kind"`
+	MarginCm *int64      `json:"margin_cm,omitempty"`
+
+	// MaxBeamCm Strictly positive length in integer centimetres
+	MaxBeamCm *PositiveCm `json:"max_beam_cm,omitempty"`
+
+	// MaxHeightCm Strictly positive length in integer centimetres
+	MaxHeightCm *PositiveCm `json:"max_height_cm,omitempty"`
+
+	// MaxLoaCm Strictly positive length in integer centimetres
+	MaxLoaCm    *PositiveCm  `json:"max_loa_cm,omitempty"`
+	MaxWeightKg *int64       `json:"max_weight_kg,omitempty"`
+	MooringMode *MooringMode `json:"mooring_mode,omitempty"`
+
+	// Outline Simple polygon in map cm (3 to 10 000 vertices, not closed explicitly)
+	Outline    *Polygon `json:"outline,omitempty"`
+	PriceClass *string  `json:"price_class,omitempty"`
+	Side       *Side    `json:"side,omitempty"`
+
+	// StructureId Reference to a map element inside one document: the id of a saved element or the key of a new element of the same request
+	StructureId *ElementRef            `json:"structure_id,omitempty"`
+	Supports    *[]DynamicAreaSupports `json:"supports,omitempty"`
+
+	// ToCm Length in integer centimetres
+	ToCm *Cm `json:"to_cm,omitempty"`
+}
+
+// DynamicAreaGridRotationDd defines model for DynamicArea.GridRotationDd.
+type DynamicAreaGridRotationDd int64
+
+// DynamicAreaSupports defines model for DynamicArea.Supports.
+type DynamicAreaSupports string
+
+// ElementKey Client key of a new element, unique in the request
+type ElementKey = string
+
+// ElementRef Reference to a map element inside one document: the id of a saved element or the key of a new element of the same request
+type ElementRef = string
+
+// Engine defines model for Engine.
+type Engine struct {
+	Hours   *int64  `json:"hours,omitempty"`
+	Make    *string `json:"make,omitempty"`
+	Model   *string `json:"model,omitempty"`
+	PowerHp *int64  `json:"power_hp,omitempty"`
+	PowerKw *int64  `json:"power_kw,omitempty"`
+	Serial  *string `json:"serial,omitempty"`
+}
+
 // EventType defines model for EventType.
 type EventType struct {
 	// Public Can be subscribed by webhooks
@@ -631,10 +2630,62 @@ type FieldError struct {
 	Message *string `json:"message,omitempty"`
 }
 
+// Fuel defines model for Fuel.
+type Fuel string
+
+// GenerateRequest defines model for GenerateRequest.
+type GenerateRequest struct {
+	// Document The current unsaved document; when given, the result carries a report of document + elements
+	Document  *MapSaveRequest `json:"document,omitempty"`
+	Generator GeneratorParams `json:"generator"`
+}
+
+// GenerateResult defines model for GenerateResult.
+type GenerateResult struct {
+	Counts   MapCounts            `json:"counts"`
+	Elements MapElements          `json:"elements"`
+	Report   *MapValidationReport `json:"report,omitempty"`
+}
+
+// GeneratorParams defines model for GeneratorParams.
+type GeneratorParams struct {
+	union json.RawMessage
+}
+
+// GeneratorType defines model for GeneratorType.
+type GeneratorType string
+
 // GeoPoint WGS84 position in degrees × 10⁷ (integers)
 type GeoPoint struct {
 	LatE7 int64 `json:"lat_e7"`
 	LonE7 int64 `json:"lon_e7"`
+}
+
+// Georef Affine georeference from three non-collinear control points (WGS84 × 1e7)
+type Georef struct {
+	Points []ControlPoint `json:"points"`
+}
+
+// GroupResourceType defines model for GroupResourceType.
+type GroupResourceType string
+
+// HarborSettings defines model for HarborSettings.
+type HarborSettings struct {
+	DefaultGridCm  int64 `json:"default_grid_cm"`
+	LoaToleranceCm int64 `json:"loa_tolerance_cm"`
+
+	// PriceClassRule Width bands → price class, sorted by max_cm; fallback above the last band
+	PriceClassRule PriceClassRule `json:"price_class_rule"`
+	Version        int            `json:"version"`
+}
+
+// HarborSettingsPatch defines model for HarborSettingsPatch.
+type HarborSettingsPatch struct {
+	DefaultGridCm  *int64 `json:"default_grid_cm,omitempty"`
+	LoaToleranceCm *int64 `json:"loa_tolerance_cm,omitempty"`
+
+	// PriceClassRule Width bands → price class, sorted by max_cm; fallback above the last band
+	PriceClassRule *PriceClassRule `json:"price_class_rule,omitempty"`
 }
 
 // HealthStatus defines model for HealthStatus.
@@ -645,6 +2696,107 @@ type HealthStatus struct {
 // HealthStatusStatus defines model for HealthStatus.Status.
 type HealthStatusStatus string
 
+// HullType defines model for HullType.
+type HullType string
+
+// I18nText defines model for I18nText.
+type I18nText struct {
+	En *string `json:"en,omitempty"`
+	It string  `json:"it"`
+}
+
+// LandGridGenerator defines model for LandGridGenerator.
+type LandGridGenerator struct {
+	// AisleCm Length in integer centimetres
+	AisleCm    *Cm     `json:"aisle_cm,omitempty"`
+	AisleEvery *int    `json:"aisle_every,omitempty"`
+	Cols       int     `json:"cols"`
+	GroupId    *string `json:"group_id,omitempty"`
+
+	// ItemLengthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+	ItemLengthCm RectSideCm `json:"item_length_cm"`
+
+	// ItemWidthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+	ItemWidthCm RectSideCm `json:"item_width_cm"`
+	KeyPrefix   string     `json:"key_prefix"`
+	Kind        LandKind   `json:"kind"`
+	Numbering   Numbering  `json:"numbering"`
+	Origin      Point      `json:"origin"`
+
+	// RotationDd Angle in tenths of a degree, 0 = +x, 900 = +y (y down, clockwise on screen)
+	RotationDd RotationDd            `json:"rotation_dd"`
+	Rows       int                   `json:"rows"`
+	Type       LandGridGeneratorType `json:"type"`
+}
+
+// LandGridGeneratorType defines model for LandGridGenerator.Type.
+type LandGridGeneratorType string
+
+// LandKind defines model for LandKind.
+type LandKind string
+
+// LandResource defines model for LandResource.
+type LandResource struct {
+	Active     bool     `json:"active"`
+	Anchor     Point    `json:"anchor"`
+	Attributes []string `json:"attributes"`
+	Code       Code     `json:"code"`
+	GroupIds   []string `json:"group_ids"`
+
+	// Id Saved element id (omit for a new element)
+	Id *string `json:"id,omitempty"`
+
+	// Key Client key of a new element, unique in the request
+	Key  *ElementKey `json:"key,omitempty"`
+	Kind LandKind    `json:"kind"`
+
+	// LengthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+	LengthCm   RectSideCm `json:"length_cm"`
+	PriceClass *string    `json:"price_class,omitempty"`
+
+	// RotationDd Angle in tenths of a degree, 0 = +x, 900 = +y (y down, clockwise on screen)
+	RotationDd RotationDd `json:"rotation_dd"`
+
+	// WidthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+	WidthCm RectSideCm `json:"width_cm"`
+}
+
+// LinearAreaGenerator defines model for LinearAreaGenerator.
+type LinearAreaGenerator struct {
+	// CellCm Length in integer centimetres
+	CellCm *Cm  `json:"cell_cm,omitempty"`
+	Code   Code `json:"code"`
+
+	// FromCm Length in integer centimetres
+	FromCm    Cm      `json:"from_cm"`
+	GroupId   *string `json:"group_id,omitempty"`
+	KeyPrefix string  `json:"key_prefix"`
+
+	// MarginCm Length in integer centimetres
+	MarginCm *Cm `json:"margin_cm,omitempty"`
+
+	// MaxBeamCm Length in integer centimetres
+	MaxBeamCm *Cm `json:"max_beam_cm,omitempty"`
+
+	// MaxLoaCm Length in integer centimetres
+	MaxLoaCm *Cm                     `json:"max_loa_cm,omitempty"`
+	Mode     MooringMode             `json:"mode"`
+	Side     LinearAreaGeneratorSide `json:"side"`
+
+	// StructureId Reference to a map element inside one document: the id of a saved element or the key of a new element of the same request
+	StructureId ElementRef `json:"structure_id"`
+
+	// ToCm Length in integer centimetres
+	ToCm Cm                      `json:"to_cm"`
+	Type LinearAreaGeneratorType `json:"type"`
+}
+
+// LinearAreaGeneratorSide defines model for LinearAreaGenerator.Side.
+type LinearAreaGeneratorSide string
+
+// LinearAreaGeneratorType defines model for LinearAreaGenerator.Type.
+type LinearAreaGeneratorType string
+
 // Locale defines model for Locale.
 type Locale string
 
@@ -654,6 +2806,220 @@ type LoginRequest struct {
 	Password     string  `json:"password"`
 	RecoveryCode *string `json:"recovery_code,omitempty"`
 	TotpCode     *string `json:"totp_code,omitempty"`
+}
+
+// MapBackground defines model for MapBackground.
+type MapBackground struct {
+	ContentType MapBackgroundContentType `json:"content_type"`
+	FileId      string                   `json:"file_id"`
+	HeightPx    int64                    `json:"height_px"`
+	OpacityPct  int                      `json:"opacity_pct"`
+	Origin      Point                    `json:"origin"`
+
+	// RotationDd Angle in tenths of a degree, 0 = +x, 900 = +y (y down, clockwise on screen)
+	RotationDd RotationDd `json:"rotation_dd"`
+
+	// ScaleMcmPerPx Milli-centimetres per image pixel (integer, at least 1)
+	ScaleMcmPerPx int64 `json:"scale_mcm_per_px"`
+	Visible       bool  `json:"visible"`
+	WidthPx       int64 `json:"width_px"`
+}
+
+// MapBackgroundContentType defines model for MapBackground.ContentType.
+type MapBackgroundContentType string
+
+// MapBackgroundFile defines model for MapBackgroundFile.
+type MapBackgroundFile struct {
+	ContentType MapBackgroundFileContentType `json:"content_type"`
+	FileId      string                       `json:"file_id"`
+	HeightPx    int64                        `json:"height_px"`
+	SizeBytes   int64                        `json:"size_bytes"`
+	WidthPx     int64                        `json:"width_px"`
+}
+
+// MapBackgroundFileContentType defines model for MapBackgroundFile.ContentType.
+type MapBackgroundFileContentType string
+
+// MapCounts defines model for MapCounts.
+type MapCounts struct {
+	Berths        int `json:"berths"`
+	Decorations   int `json:"decorations"`
+	DynamicAreas  int `json:"dynamic_areas"`
+	LandResources int `json:"land_resources"`
+	Pedestals     int `json:"pedestals"`
+	Structures    int `json:"structures"`
+}
+
+// MapCreate defines model for MapCreate.
+type MapCreate struct {
+	GridCm   *int64   `json:"grid_cm,omitempty"`
+	HeightCm int64    `json:"height_cm"`
+	Icon     *string  `json:"icon,omitempty"`
+	Kind     MapKind  `json:"kind"`
+	Name     I18nText `json:"name"`
+	WidthCm  int64    `json:"width_cm"`
+}
+
+// MapDocument defines model for MapDocument.
+type MapDocument struct {
+	Background        *MapBackground `json:"background"`
+	Berths            []Berth        `json:"berths"`
+	ConcessionOutline *Polygon       `json:"concession_outline"`
+	Decorations       []Decoration   `json:"decorations"`
+	DynamicAreas      []DynamicArea  `json:"dynamic_areas"`
+	Georef            *Georef        `json:"georef"`
+	GridCm            int64          `json:"grid_cm"`
+	HeightCm          int64          `json:"height_cm"`
+	Icon              string         `json:"icon"`
+	Id                string         `json:"id"`
+	Kind              MapKind        `json:"kind"`
+	LandPolygons      []Polygon      `json:"land_polygons"`
+	LandResources     []LandResource `json:"land_resources"`
+	Name              I18nText       `json:"name"`
+	Pedestals         []Pedestal     `json:"pedestals"`
+	SortOrder         int            `json:"sort_order"`
+	Structures        []Structure    `json:"structures"`
+	UpdatedAt         time.Time      `json:"updated_at"`
+	Version           int            `json:"version"`
+	WaterPolygons     []Polygon      `json:"water_polygons"`
+	WidthCm           int64          `json:"width_cm"`
+}
+
+// MapElements defines model for MapElements.
+type MapElements struct {
+	Berths        []Berth        `json:"berths"`
+	Decorations   []Decoration   `json:"decorations"`
+	DynamicAreas  []DynamicArea  `json:"dynamic_areas"`
+	LandResources []LandResource `json:"land_resources"`
+	Pedestals     []Pedestal     `json:"pedestals"`
+	Structures    []Structure    `json:"structures"`
+}
+
+// MapExport defines model for MapExport.
+type MapExport struct {
+	ExportedAt time.Time        `json:"exported_at"`
+	Format     MapExportFormat  `json:"format"`
+	Groups     []MapExportGroup `json:"groups"`
+	Map        MapSaveRequest   `json:"map"`
+}
+
+// MapExportFormat defines model for MapExport.Format.
+type MapExportFormat string
+
+// MapExportGroup defines model for MapExportGroup.
+type MapExportGroup struct {
+	Code    Code                   `json:"code"`
+	Kind    BerthGroupKind         `json:"kind"`
+	Members []MapExportGroupMember `json:"members"`
+	Name    I18nText               `json:"name"`
+}
+
+// MapExportGroupMember defines model for MapExportGroupMember.
+type MapExportGroupMember struct {
+	Code         Code              `json:"code"`
+	ResourceType GroupResourceType `json:"resource_type"`
+}
+
+// MapIssue defines model for MapIssue.
+type MapIssue struct {
+	// Code ValidateMap rule (m1-plan §2.3), e.g. berth_overlap
+	Code        string  `json:"code"`
+	ElementType string  `json:"element_type"`
+	Field       *string `json:"field,omitempty"`
+
+	// Params Numbers only (cm, counts)
+	Params   *map[string]int64 `json:"params,omitempty"`
+	Refs     []string          `json:"refs"`
+	Severity MapIssueSeverity  `json:"severity"`
+}
+
+// MapIssueSeverity defines model for MapIssueSeverity.
+type MapIssueSeverity string
+
+// MapKind defines model for MapKind.
+type MapKind string
+
+// MapMeta defines model for MapMeta.
+type MapMeta struct {
+	Background        *MapBackground `json:"background"`
+	ConcessionOutline *Polygon       `json:"concession_outline"`
+	Georef            *Georef        `json:"georef"`
+	GridCm            int64          `json:"grid_cm"`
+	HeightCm          int64          `json:"height_cm"`
+	Icon              string         `json:"icon"`
+	Kind              MapKind        `json:"kind"`
+	LandPolygons      []Polygon      `json:"land_polygons"`
+	Name              I18nText       `json:"name"`
+	SortOrder         int            `json:"sort_order"`
+	WaterPolygons     []Polygon      `json:"water_polygons"`
+	WidthCm           int64          `json:"width_cm"`
+}
+
+// MapReorder defines model for MapReorder.
+type MapReorder struct {
+	MapIds []string `json:"map_ids"`
+}
+
+// MapSaveRequest defines model for MapSaveRequest.
+type MapSaveRequest struct {
+	Background        *MapBackground `json:"background"`
+	Berths            []Berth        `json:"berths"`
+	ConcessionOutline *Polygon       `json:"concession_outline"`
+	Decorations       []Decoration   `json:"decorations"`
+	DynamicAreas      []DynamicArea  `json:"dynamic_areas"`
+	Georef            *Georef        `json:"georef"`
+	GridCm            int64          `json:"grid_cm"`
+	HeightCm          int64          `json:"height_cm"`
+	Icon              string         `json:"icon"`
+	Kind              MapKind        `json:"kind"`
+	LandPolygons      []Polygon      `json:"land_polygons"`
+	LandResources     []LandResource `json:"land_resources"`
+	Name              I18nText       `json:"name"`
+	Pedestals         []Pedestal     `json:"pedestals"`
+	SortOrder         int            `json:"sort_order"`
+	Structures        []Structure    `json:"structures"`
+	WaterPolygons     []Polygon      `json:"water_polygons"`
+	WidthCm           int64          `json:"width_cm"`
+}
+
+// MapSaveResult defines model for MapSaveResult.
+type MapSaveResult struct {
+	Document MapDocument `json:"document"`
+
+	// IdMap Element key of the request → new id
+	IdMap    map[string]string `json:"id_map"`
+	Warnings []MapIssue        `json:"warnings"`
+}
+
+// MapSummary defines model for MapSummary.
+type MapSummary struct {
+	Counts        MapCounts `json:"counts"`
+	Georeferenced bool      `json:"georeferenced"`
+	HasBackground bool      `json:"has_background"`
+
+	// HeightCm Length in integer centimetres
+	HeightCm  Cm        `json:"height_cm"`
+	Icon      string    `json:"icon"`
+	Id        string    `json:"id"`
+	Kind      MapKind   `json:"kind"`
+	Name      I18nText  `json:"name"`
+	SortOrder int       `json:"sort_order"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Version   int       `json:"version"`
+
+	// WidthCm Length in integer centimetres
+	WidthCm Cm `json:"width_cm"`
+}
+
+// MapSummaryList defines model for MapSummaryList.
+type MapSummaryList struct {
+	Items []MapSummary `json:"items"`
+}
+
+// MapValidationReport defines model for MapValidationReport.
+type MapValidationReport struct {
+	Errors   []MapIssue `json:"errors"`
+	Warnings []MapIssue `json:"warnings"`
 }
 
 // Marina defines model for Marina.
@@ -825,6 +3191,23 @@ type Meta struct {
 // MetaEdition defines model for Meta.Edition.
 type MetaEdition string
 
+// MooringMode defines model for MooringMode.
+type MooringMode string
+
+// MooringType defines model for MooringType.
+type MooringType string
+
+// Numbering defines model for Numbering.
+type Numbering struct {
+	Pad    *int            `json:"pad,omitempty"`
+	Prefix *string         `json:"prefix,omitempty"`
+	Scheme NumberingScheme `json:"scheme"`
+	Start  *int64          `json:"start,omitempty"`
+}
+
+// NumberingScheme defines model for Numbering.Scheme.
+type NumberingScheme string
+
 // Organization defines model for Organization.
 type Organization struct {
 	BillingAddress Address   `json:"billing_address"`
@@ -901,19 +3284,151 @@ type PasswordResetRequest struct {
 	Email string `json:"email"`
 }
 
+// PaymentTerms defines model for PaymentTerms.
+type PaymentTerms struct {
+	Days       int  `json:"days"`
+	EndOfMonth bool `json:"end_of_month"`
+}
+
+// Pedestal defines model for Pedestal.
+type Pedestal struct {
+	Code Code `json:"code"`
+
+	// Id Saved element id (omit for a new element)
+	Id *string `json:"id,omitempty"`
+
+	// Key Client key of a new element, unique in the request
+	Key      *ElementKey      `json:"key,omitempty"`
+	Meters   []PedestalMeter  `json:"meters"`
+	Position Point            `json:"position"`
+	Sockets  []PedestalSocket `json:"sockets"`
+}
+
+// PedestalMeter defines model for PedestalMeter.
+type PedestalMeter struct {
+	Kind   UtilityKind `json:"kind"`
+	Serial string      `json:"serial"`
+}
+
+// PedestalSocket defines model for PedestalSocket.
+type PedestalSocket struct {
+	Amps  *PedestalSocketAmps `json:"amps,omitempty"`
+	Code  string              `json:"code"`
+	Kind  UtilityKind         `json:"kind"`
+	Phase *PowerPhase         `json:"phase,omitempty"`
+}
+
+// PedestalSocketAmps defines model for PedestalSocket.Amps.
+type PedestalSocketAmps int
+
 // Permission defines model for Permission.
 type Permission string
 
+// PierGenerator defines model for PierGenerator.
+type PierGenerator struct {
+	// BerthLengthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+	BerthLengthCm RectSideCm `json:"berth_length_cm"`
+
+	// BerthLengthEndCm Length in integer centimetres
+	BerthLengthEndCm *Cm `json:"berth_length_end_cm,omitempty"`
+
+	// BerthWidthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+	BerthWidthCm RectSideCm `json:"berth_width_cm"`
+
+	// BerthWidthEndCm Length in integer centimetres
+	BerthWidthEndCm *Cm `json:"berth_width_end_cm,omitempty"`
+
+	// BerthsPerSide 0 = fill the length
+	BerthsPerSide *int `json:"berths_per_side,omitempty"`
+	Code          Code `json:"code"`
+
+	// DepthCm Length in integer centimetres
+	DepthCm     *Cm  `json:"depth_cm,omitempty"`
+	FingerEvery *int `json:"finger_every,omitempty"`
+
+	// FingerLengthCm Length in integer centimetres
+	FingerLengthCm *Cm `json:"finger_length_cm,omitempty"`
+
+	// FingerWidthCm Length in integer centimetres
+	FingerWidthCm *Cm     `json:"finger_width_cm,omitempty"`
+	Floating      *bool   `json:"floating,omitempty"`
+	GroupId       *string `json:"group_id,omitempty"`
+	HeadBerths    *int    `json:"head_berths,omitempty"`
+	KeyPrefix     string  `json:"key_prefix"`
+
+	// LengthCm Strictly positive length in integer centimetres
+	LengthCm    PositiveCm   `json:"length_cm"`
+	MooringType *MooringType `json:"mooring_type,omitempty"`
+	Numbering   Numbering    `json:"numbering"`
+	Origin      Point        `json:"origin"`
+
+	// RootId Reference to a map element inside one document: the id of a saved element or the key of a new element of the same request
+	RootId *ElementRef `json:"root_id,omitempty"`
+
+	// RotationDd Angle in tenths of a degree, 0 = +x, 900 = +y (y down, clockwise on screen)
+	RotationDd RotationDd           `json:"rotation_dd"`
+	Sides      []PierGeneratorSides `json:"sides"`
+
+	// StartOffsetCm Length in integer centimetres
+	StartOffsetCm *Cm               `json:"start_offset_cm,omitempty"`
+	Type          PierGeneratorType `json:"type"`
+
+	// WidthCm Strictly positive length in integer centimetres
+	WidthCm PositiveCm `json:"width_cm"`
+}
+
+// PierGeneratorSides defines model for PierGenerator.Sides.
+type PierGeneratorSides string
+
+// PierGeneratorType defines model for PierGenerator.Type.
+type PierGeneratorType string
+
+// Point defines model for Point.
+type Point struct {
+	X int64 `json:"x"`
+	Y int64 `json:"y"`
+}
+
+// Polygon Simple polygon in map cm (3 to 10 000 vertices, not closed explicitly)
+type Polygon = []Point
+
+// PositiveCm Strictly positive length in integer centimetres
+type PositiveCm = int64
+
+// PowerPhase defines model for PowerPhase.
+type PowerPhase string
+
+// PriceBand defines model for PriceBand.
+type PriceBand struct {
+	Class string `json:"class"`
+
+	// MaxCm Strictly positive length in integer centimetres
+	MaxCm PositiveCm `json:"max_cm"`
+}
+
+// PriceClassRule Width bands → price class, sorted by max_cm; fallback above the last band
+type PriceClassRule struct {
+	Bands    []PriceBand         `json:"bands"`
+	Basis    PriceClassRuleBasis `json:"basis"`
+	Fallback string              `json:"fallback"`
+}
+
+// PriceClassRuleBasis defines model for PriceClassRule.Basis.
+type PriceClassRuleBasis string
+
 // Problem defines model for Problem.
 type Problem struct {
-	Detail            *string       `json:"detail,omitempty"`
-	Errors            *[]FieldError `json:"errors,omitempty"`
-	Instance          *string       `json:"instance,omitempty"`
-	RequestId         *string       `json:"request_id,omitempty"`
-	RetryAfterSeconds *int          `json:"retry_after_seconds,omitempty"`
-	Status            int           `json:"status"`
-	Title             string        `json:"title"`
-	Type              ProblemType   `json:"type"`
+	Detail   *string       `json:"detail,omitempty"`
+	Errors   *[]FieldError `json:"errors,omitempty"`
+	Instance *string       `json:"instance,omitempty"`
+
+	// Issues Map validation issues (map_invalid)
+	Issues            *[]MapIssue `json:"issues,omitempty"`
+	RequestId         *string     `json:"request_id,omitempty"`
+	RetryAfterSeconds *int        `json:"retry_after_seconds,omitempty"`
+	Status            int         `json:"status"`
+	Title             string      `json:"title"`
+	Type              ProblemType `json:"type"`
 }
 
 // ProblemType defines model for ProblemType.
@@ -927,6 +3442,39 @@ type PublicMarina struct {
 	Name           string   `json:"name"`
 	Slug           string   `json:"slug"`
 }
+
+// QuayBerthsGenerator defines model for QuayBerthsGenerator.
+type QuayBerthsGenerator struct {
+	// BerthLengthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+	BerthLengthCm RectSideCm `json:"berth_length_cm"`
+
+	// BerthWidthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+	BerthWidthCm RectSideCm `json:"berth_width_cm"`
+
+	// Count 0 = fill by width
+	Count *int `json:"count,omitempty"`
+
+	// FromCm Length in integer centimetres
+	FromCm      Cm           `json:"from_cm"`
+	GroupId     *string      `json:"group_id,omitempty"`
+	KeyPrefix   string       `json:"key_prefix"`
+	MooringType *MooringType `json:"mooring_type,omitempty"`
+	Numbering   Numbering    `json:"numbering"`
+
+	// QuayId Reference to a map element inside one document: the id of a saved element or the key of a new element of the same request
+	QuayId ElementRef              `json:"quay_id"`
+	Side   QuayBerthsGeneratorSide `json:"side"`
+
+	// ToCm Length in integer centimetres
+	ToCm Cm                      `json:"to_cm"`
+	Type QuayBerthsGeneratorType `json:"type"`
+}
+
+// QuayBerthsGeneratorSide defines model for QuayBerthsGenerator.Side.
+type QuayBerthsGeneratorSide string
+
+// QuayBerthsGeneratorType defines model for QuayBerthsGenerator.Type.
+type QuayBerthsGeneratorType string
 
 // ReadyStatus defines model for ReadyStatus.
 type ReadyStatus struct {
@@ -942,8 +3490,108 @@ type RecoveryCodes struct {
 	Codes []string `json:"codes"`
 }
 
+// Rect Rotated rectangle; anchor = midpoint of the mooring (or access) side
+type Rect struct {
+	Anchor Point `json:"anchor"`
+
+	// LengthCm Strictly positive length in integer centimetres
+	LengthCm PositiveCm `json:"length_cm"`
+
+	// RotationDd Angle in tenths of a degree, 0 = +x, 900 = +y (y down, clockwise on screen)
+	RotationDd RotationDd `json:"rotation_dd"`
+
+	// WidthCm Strictly positive length in integer centimetres
+	WidthCm PositiveCm `json:"width_cm"`
+}
+
+// RectSideCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
+type RectSideCm = int64
+
 // Role defines model for Role.
 type Role string
+
+// RotationDd Angle in tenths of a degree, 0 = +x, 900 = +y (y down, clockwise on screen)
+type RotationDd = int64
+
+// Side defines model for Side.
+type Side string
+
+// Structure defines model for Structure.
+type Structure struct {
+	// BollardSpacingCm Strictly positive length in integer centimetres
+	BollardSpacingCm *PositiveCm  `json:"bollard_spacing_cm,omitempty"`
+	Closed           *bool        `json:"closed,omitempty"`
+	Code             Code         `json:"code"`
+	DepthProfile     *[]DepthSpan `json:"depth_profile,omitempty"`
+
+	// ElevationCm Length in integer centimetres
+	ElevationCm *Cm   `json:"elevation_cm,omitempty"`
+	Floating    *bool `json:"floating,omitempty"`
+
+	// Id Saved element id (omit for a new element)
+	Id *string `json:"id,omitempty"`
+
+	// Key Client key of a new element, unique in the request
+	Key  *ElementKey   `json:"key,omitempty"`
+	Kind StructureKind `json:"kind"`
+	Name *string       `json:"name,omitempty"`
+
+	// ParentId Reference to a map element inside one document: the id of a saved element or the key of a new element of the same request
+	ParentId *ElementRef `json:"parent_id,omitempty"`
+
+	// Points Polyline (quay, pier, walkway, breakwater line) or polygon (closed = true)
+	Points *[]Point `json:"points,omitempty"`
+
+	// Rect Rotated rectangle; anchor = midpoint of the mooring (or access) side
+	Rect  *Rect   `json:"rect,omitempty"`
+	Sides *[]Side `json:"sides,omitempty"`
+
+	// WidthCm Strictly positive length in integer centimetres
+	WidthCm *PositiveCm `json:"width_cm,omitempty"`
+}
+
+// StructureKind defines model for StructureKind.
+type StructureKind string
+
+// SurfaceAreaGenerator defines model for SurfaceAreaGenerator.
+type SurfaceAreaGenerator struct {
+	// CellCm Strictly positive length in integer centimetres
+	CellCm         PositiveCm                          `json:"cell_cm"`
+	Code           Code                                `json:"code"`
+	Exits          *[]Point                            `json:"exits,omitempty"`
+	GridRotationDd *SurfaceAreaGeneratorGridRotationDd `json:"grid_rotation_dd,omitempty"`
+	GroupId        *string                             `json:"group_id,omitempty"`
+	KeyPrefix      string                              `json:"key_prefix"`
+	Lanes          *[]SurfaceLane                      `json:"lanes,omitempty"`
+
+	// MarginCm Length in integer centimetres
+	MarginCm *Cm `json:"margin_cm,omitempty"`
+
+	// MaxHeightCm Length in integer centimetres
+	MaxHeightCm *Cm `json:"max_height_cm,omitempty"`
+
+	// MaxLoaCm Length in integer centimetres
+	MaxLoaCm *Cm `json:"max_loa_cm,omitempty"`
+
+	// Outline Simple polygon in map cm (3 to 10 000 vertices, not closed explicitly)
+	Outline Polygon                  `json:"outline"`
+	Type    SurfaceAreaGeneratorType `json:"type"`
+}
+
+// SurfaceAreaGeneratorGridRotationDd defines model for SurfaceAreaGenerator.GridRotationDd.
+type SurfaceAreaGeneratorGridRotationDd int64
+
+// SurfaceAreaGeneratorType defines model for SurfaceAreaGenerator.Type.
+type SurfaceAreaGeneratorType string
+
+// SurfaceLane defines model for SurfaceLane.
+type SurfaceLane struct {
+	From Point `json:"from"`
+	To   Point `json:"to"`
+
+	// WidthCm Strictly positive length in integer centimetres
+	WidthCm PositiveCm `json:"width_cm"`
+}
 
 // TotpCode defines model for TotpCode.
 type TotpCode struct {
@@ -963,10 +3611,229 @@ type TotpEnrollment struct {
 	Secret     string `json:"secret"`
 }
 
+// UnitClass Legal unit class from the effective LOA (natante, imbarcazione, nave)
+type UnitClass string
+
 // UserRef defines model for UserRef.
 type UserRef struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
+}
+
+// UtilityKind defines model for UtilityKind.
+type UtilityKind string
+
+// Vessel defines model for Vessel.
+type Vessel struct {
+	AirDraftCm *int64     `json:"air_draft_cm"`
+	ArchivedAt *time.Time `json:"archived_at"`
+
+	// BeamCm Length in integer centimetres
+	BeamCm           Cm               `json:"beam_cm"`
+	Builder          *string          `json:"builder"`
+	CreatedAt        time.Time        `json:"created_at"`
+	DimensionsSource DimensionsSource `json:"dimensions_source"`
+	DisplacementKg   *int64           `json:"displacement_kg"`
+	Documents        []Document       `json:"documents"`
+	DraftCm          *int64           `json:"draft_cm"`
+
+	// EffectiveBeamCm Length in integer centimetres
+	EffectiveBeamCm  Cm     `json:"effective_beam_cm"`
+	EffectiveDraftCm *int64 `json:"effective_draft_cm"`
+
+	// EffectiveLoaCm Length in integer centimetres
+	EffectiveLoaCm Cm       `json:"effective_loa_cm"`
+	Engines        []Engine `json:"engines"`
+	Flag           *string  `json:"flag"`
+	Fuel           *Fuel    `json:"fuel"`
+	HomePort       *string  `json:"home_port"`
+	HullColor      *string  `json:"hull_color"`
+	HullMaterial   *string  `json:"hull_material"`
+	HullType       HullType `json:"hull_type"`
+	Id             string   `json:"id"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm              Cm            `json:"loa_cm"`
+	LwlCm              *int64        `json:"lwl_cm"`
+	MeasuredAirDraftCm *int64        `json:"measured_air_draft_cm"`
+	MeasuredAt         *time.Time    `json:"measured_at"`
+	MeasuredBeamCm     *int64        `json:"measured_beam_cm"`
+	MeasuredBy         *UserRef      `json:"measured_by"`
+	MeasuredDraftCm    *int64        `json:"measured_draft_cm"`
+	MeasuredLoaCm      *int64        `json:"measured_loa_cm"`
+	Model              *string       `json:"model"`
+	Name               string        `json:"name"`
+	Notes              string        `json:"notes"`
+	Parties            []VesselParty `json:"parties"`
+	PowerRequiredA     *int          `json:"power_required_a"`
+	Registration       *string       `json:"registration"`
+	RegistryOffice     *string       `json:"registry_office"`
+
+	// UnitClass Legal unit class from the effective LOA (natante, imbarcazione, nave)
+	UnitClass UnitClass `json:"unit_class"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Version   int       `json:"version"`
+	YearBuilt *int      `json:"year_built"`
+}
+
+// VesselInput defines model for VesselInput.
+type VesselInput struct {
+	// AirDraftCm Strictly positive length in integer centimetres
+	AirDraftCm *PositiveCm `json:"air_draft_cm,omitempty"`
+
+	// BeamCm Strictly positive length in integer centimetres
+	BeamCm         PositiveCm `json:"beam_cm"`
+	Builder        *string    `json:"builder,omitempty"`
+	DisplacementKg *int64     `json:"displacement_kg,omitempty"`
+
+	// DraftCm Strictly positive length in integer centimetres
+	DraftCm      *PositiveCm `json:"draft_cm,omitempty"`
+	Engines      *[]Engine   `json:"engines,omitempty"`
+	Flag         *string     `json:"flag,omitempty"`
+	Fuel         *Fuel       `json:"fuel,omitempty"`
+	HomePort     *string     `json:"home_port,omitempty"`
+	HullColor    *string     `json:"hull_color,omitempty"`
+	HullMaterial *string     `json:"hull_material,omitempty"`
+	HullType     *HullType   `json:"hull_type,omitempty"`
+
+	// LoaCm Strictly positive length in integer centimetres
+	LoaCm PositiveCm `json:"loa_cm"`
+
+	// LwlCm Strictly positive length in integer centimetres
+	LwlCm          *PositiveCm                `json:"lwl_cm,omitempty"`
+	Model          *string                    `json:"model,omitempty"`
+	Name           string                     `json:"name"`
+	Notes          *string                    `json:"notes,omitempty"`
+	Parties        *[]VesselPartyInput        `json:"parties,omitempty"`
+	PowerRequiredA *VesselInputPowerRequiredA `json:"power_required_a,omitempty"`
+	Registration   *string                    `json:"registration,omitempty"`
+	RegistryOffice *string                    `json:"registry_office,omitempty"`
+	YearBuilt      *int                       `json:"year_built,omitempty"`
+}
+
+// VesselInputPowerRequiredA defines model for VesselInput.PowerRequiredA.
+type VesselInputPowerRequiredA int
+
+// VesselMeasurementInput defines model for VesselMeasurementInput.
+type VesselMeasurementInput struct {
+	// AirDraftCm Strictly positive length in integer centimetres
+	AirDraftCm *PositiveCm `json:"air_draft_cm,omitempty"`
+
+	// BeamCm Strictly positive length in integer centimetres
+	BeamCm PositiveCm `json:"beam_cm"`
+
+	// DraftCm Strictly positive length in integer centimetres
+	DraftCm *PositiveCm `json:"draft_cm,omitempty"`
+
+	// LoaCm Strictly positive length in integer centimetres
+	LoaCm PositiveCm `json:"loa_cm"`
+}
+
+// VesselOwnerRef defines model for VesselOwnerRef.
+type VesselOwnerRef struct {
+	CustomerId  string `json:"customer_id"`
+	DisplayName string `json:"display_name"`
+}
+
+// VesselPage defines model for VesselPage.
+type VesselPage struct {
+	Items      []VesselSummary `json:"items"`
+	NextCursor *string         `json:"next_cursor"`
+}
+
+// VesselPartiesReplace defines model for VesselPartiesReplace.
+type VesselPartiesReplace struct {
+	Parties []VesselPartyInput `json:"parties"`
+}
+
+// VesselParty defines model for VesselParty.
+type VesselParty struct {
+	CustomerId  string          `json:"customer_id"`
+	DisplayName string          `json:"display_name"`
+	Role        VesselPartyRole `json:"role"`
+	ShareMillis *int64          `json:"share_millis"`
+}
+
+// VesselPartyInput defines model for VesselPartyInput.
+type VesselPartyInput struct {
+	CustomerId string          `json:"customer_id"`
+	Role       VesselPartyRole `json:"role"`
+
+	// ShareMillis Owners only
+	ShareMillis *int64 `json:"share_millis,omitempty"`
+}
+
+// VesselPartyRole defines model for VesselPartyRole.
+type VesselPartyRole string
+
+// VesselPartyRow A party link as stored (GDPR export)
+type VesselPartyRow struct {
+	CustomerId  string          `json:"customer_id"`
+	Role        VesselPartyRole `json:"role"`
+	ShareMillis *int64          `json:"share_millis"`
+	VesselId    string          `json:"vessel_id"`
+}
+
+// VesselPatch Partial update; null clears a nullable field
+type VesselPatch struct {
+	AirDraftCm *int64 `json:"air_draft_cm,omitempty"`
+
+	// BeamCm Strictly positive length in integer centimetres
+	BeamCm           *PositiveCm       `json:"beam_cm,omitempty"`
+	Builder          *string           `json:"builder,omitempty"`
+	DimensionsSource *DimensionsSource `json:"dimensions_source,omitempty"`
+	DisplacementKg   *int64            `json:"displacement_kg,omitempty"`
+	DraftCm          *int64            `json:"draft_cm,omitempty"`
+	Engines          *[]Engine         `json:"engines,omitempty"`
+	Flag             *string           `json:"flag,omitempty"`
+	Fuel             *Fuel             `json:"fuel,omitempty"`
+	HomePort         *string           `json:"home_port,omitempty"`
+	HullColor        *string           `json:"hull_color,omitempty"`
+	HullMaterial     *string           `json:"hull_material,omitempty"`
+	HullType         *HullType         `json:"hull_type,omitempty"`
+
+	// LoaCm Strictly positive length in integer centimetres
+	LoaCm          *PositiveCm `json:"loa_cm,omitempty"`
+	LwlCm          *int64      `json:"lwl_cm,omitempty"`
+	Model          *string     `json:"model,omitempty"`
+	Name           *string     `json:"name,omitempty"`
+	Notes          *string     `json:"notes,omitempty"`
+	PowerRequiredA *int        `json:"power_required_a,omitempty"`
+	Registration   *string     `json:"registration,omitempty"`
+	RegistryOffice *string     `json:"registry_office,omitempty"`
+	YearBuilt      *int        `json:"year_built,omitempty"`
+}
+
+// VesselRef defines model for VesselRef.
+type VesselRef struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// VesselSummary defines model for VesselSummary.
+type VesselSummary struct {
+	ArchivedAt *time.Time `json:"archived_at"`
+
+	// BeamCm Length in integer centimetres
+	BeamCm           Cm               `json:"beam_cm"`
+	DimensionsSource DimensionsSource `json:"dimensions_source"`
+
+	// EffectiveBeamCm Length in integer centimetres
+	EffectiveBeamCm Cm `json:"effective_beam_cm"`
+
+	// EffectiveLoaCm Length in integer centimetres
+	EffectiveLoaCm Cm       `json:"effective_loa_cm"`
+	HullType       HullType `json:"hull_type"`
+	Id             string   `json:"id"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm        Cm               `json:"loa_cm"`
+	Name         string           `json:"name"`
+	Owners       []VesselOwnerRef `json:"owners"`
+	Registration *string          `json:"registration"`
+
+	// UnitClass Legal unit class from the effective LOA (natante, imbarcazione, nave)
+	UnitClass UnitClass `json:"unit_class"`
 }
 
 // WebhookDelivery defines model for WebhookDelivery.
@@ -1055,8 +3922,23 @@ type CSRFToken = string
 // Cursor defines model for Cursor.
 type Cursor = string
 
+// CustomerId defines model for CustomerId.
+type CustomerId = string
+
+// DeadlineId defines model for DeadlineId.
+type DeadlineId = string
+
+// DocumentId defines model for DocumentId.
+type DocumentId = string
+
 // EndpointId defines model for EndpointId.
 type EndpointId = string
+
+// FileId defines model for FileId.
+type FileId = string
+
+// GroupId defines model for GroupId.
+type GroupId = string
 
 // IdempotencyKey defines model for IdempotencyKey.
 type IdempotencyKey = string
@@ -1067,6 +3949,9 @@ type IfMatch = string
 // Limit defines model for Limit.
 type Limit = int
 
+// MapId defines model for MapId.
+type MapId = string
+
 // MarinaId defines model for MarinaId.
 type MarinaId = string
 
@@ -1075,6 +3960,9 @@ type OrganizationId = string
 
 // UserId defines model for UserId.
 type UserId = string
+
+// VesselId defines model for VesselId.
+type VesselId = string
 
 // BadRequest defines model for BadRequest.
 type BadRequest = Problem
@@ -1085,8 +3973,14 @@ type Conflict = Problem
 // Forbidden defines model for Forbidden.
 type Forbidden = Problem
 
+// MapInvalid defines model for MapInvalid.
+type MapInvalid = Problem
+
 // NotFound defines model for NotFound.
 type NotFound = Problem
+
+// PayloadTooLarge defines model for PayloadTooLarge.
+type PayloadTooLarge = Problem
 
 // PreconditionFailed defines model for PreconditionFailed.
 type PreconditionFailed = Problem
@@ -1105,6 +3999,9 @@ type Unauthorized = Problem
 
 // UnprocessableEntity defines model for UnprocessableEntity.
 type UnprocessableEntity = Problem
+
+// UnsupportedMediaType defines model for UnsupportedMediaType.
+type UnsupportedMediaType = Problem
 
 // UpdateMarinaParams defines parameters for UpdateMarina.
 type UpdateMarinaParams struct {
@@ -1133,16 +4030,214 @@ type ListAuditLogParams struct {
 	To *time.Time `form:"to,omitempty" json:"to,omitempty"`
 }
 
+// CreateBerthGroupParams defines parameters for CreateBerthGroup.
+type CreateBerthGroupParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DeleteBerthGroupParams defines parameters for DeleteBerthGroup.
+type DeleteBerthGroupParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdateBerthGroupParams defines parameters for UpdateBerthGroup.
+type UpdateBerthGroupParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListBerthsParams defines parameters for ListBerths.
+type ListBerthsParams struct {
+	Cursor  *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit   *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+	MapId   *string `form:"map_id,omitempty" json:"map_id,omitempty"`
+	GroupId *string `form:"group_id,omitempty" json:"group_id,omitempty"`
+
+	// Q Code prefix or substring
+	Q *string `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// ListCustomersParams defines parameters for ListCustomers.
+type ListCustomersParams struct {
+	Cursor   *Cursor           `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit    *Limit            `form:"limit,omitempty" json:"limit,omitempty"`
+	Q        *string           `form:"q,omitempty" json:"q,omitempty"`
+	Category *CustomerCategory `form:"category,omitempty" json:"category,omitempty"`
+	Tag      *string           `form:"tag,omitempty" json:"tag,omitempty"`
+
+	// Archived Include only archived customers
+	Archived *bool `form:"archived,omitempty" json:"archived,omitempty"`
+}
+
+// CreateCustomerParams defines parameters for CreateCustomer.
+type CreateCustomerParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateCustomerParams defines parameters for UpdateCustomer.
+type UpdateCustomerParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// RecordConsentParams defines parameters for RecordConsent.
+type RecordConsentParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// MergeCustomersParams defines parameters for MergeCustomers.
+type MergeCustomersParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListDeadlinesParams defines parameters for ListDeadlines.
+type ListDeadlinesParams struct {
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Status Default open
+	Status     *DeadlineStatus  `form:"status,omitempty" json:"status,omitempty"`
+	Kind       *DeadlineKind    `form:"kind,omitempty" json:"kind,omitempty"`
+	Urgency    *DeadlineUrgency `form:"urgency,omitempty" json:"urgency,omitempty"`
+	DueBefore  *string          `form:"due_before,omitempty" json:"due_before,omitempty"`
+	DueAfter   *string          `form:"due_after,omitempty" json:"due_after,omitempty"`
+	CustomerId *string          `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+	VesselId   *string          `form:"vessel_id,omitempty" json:"vessel_id,omitempty"`
+}
+
+// UpdateDeadlineParams defines parameters for UpdateDeadline.
+type UpdateDeadlineParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
 // CreatePairingCodeParams defines parameters for CreatePairingCode.
 type CreatePairingCodeParams struct {
 	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
+// ListDocumentsParams defines parameters for ListDocuments.
+type ListDocumentsParams struct {
+	Cursor        *Cursor       `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit         *Limit        `form:"limit,omitempty" json:"limit,omitempty"`
+	CustomerId    *string       `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+	VesselId      *string       `form:"vessel_id,omitempty" json:"vessel_id,omitempty"`
+	Type          *DocumentType `form:"type,omitempty" json:"type,omitempty"`
+	ExpiresBefore *string       `form:"expires_before,omitempty" json:"expires_before,omitempty"`
+}
+
+// CreateDocumentParams defines parameters for CreateDocument.
+type CreateDocumentParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DeleteDocumentParams defines parameters for DeleteDocument.
+type DeleteDocumentParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdateDocumentParams defines parameters for UpdateDocument.
+type UpdateDocumentParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// GetDocumentFileParams defines parameters for GetDocumentFile.
+type GetDocumentFileParams struct {
+	Exp *int64  `form:"exp,omitempty" json:"exp,omitempty"`
+	Sig *string `form:"sig,omitempty" json:"sig,omitempty"`
+}
+
+// UploadDocumentFileParams defines parameters for UploadDocumentFile.
+type UploadDocumentFileParams struct {
+	// XFileName Original file name (sanitised, at most 120 characters kept)
+	XFileName *string `json:"X-File-Name,omitempty"`
+}
+
+// UpdateHarborSettingsParams defines parameters for UpdateHarborSettings.
+type UpdateHarborSettingsParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// CreateMapParams defines parameters for CreateMap.
+type CreateMapParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ImportMapParams defines parameters for ImportMap.
+type ImportMapParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DeleteMapParams defines parameters for DeleteMap.
+type DeleteMapParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// SaveMapParams defines parameters for SaveMap.
+type SaveMapParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ImportBerthsCsvParams defines parameters for ImportBerthsCsv.
+type ImportBerthsCsvParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ExportMapParams defines parameters for ExportMap.
+type ExportMapParams struct {
+	Format *ExportMapParamsFormat `form:"format,omitempty" json:"format,omitempty"`
+}
+
+// ExportMapParamsFormat defines parameters for ExportMap.
+type ExportMapParamsFormat string
+
 // AddMemberParams defines parameters for AddMember.
 type AddMemberParams struct {
 	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ListVesselsParams defines parameters for ListVessels.
+type ListVesselsParams struct {
+	Cursor     *Cursor   `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit      *Limit    `form:"limit,omitempty" json:"limit,omitempty"`
+	Q          *string   `form:"q,omitempty" json:"q,omitempty"`
+	CustomerId *string   `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+	HullType   *HullType `form:"hull_type,omitempty" json:"hull_type,omitempty"`
+	Archived   *bool     `form:"archived,omitempty" json:"archived,omitempty"`
+}
+
+// CreateVesselParams defines parameters for CreateVessel.
+type CreateVesselParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateVesselParams defines parameters for UpdateVessel.
+type UpdateVesselParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ReplaceVesselPartiesParams defines parameters for ReplaceVesselParties.
+type ReplaceVesselPartiesParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
 // CreateWebhookEndpointParams defines parameters for CreateWebhookEndpoint.
@@ -1236,14 +4331,86 @@ type UpdateMarinaJSONRequestBody = MarinaPatch
 // CreateApiKeyJSONRequestBody defines body for CreateApiKey for application/json ContentType.
 type CreateApiKeyJSONRequestBody = ApiKeyCreate
 
+// CreateBerthGroupJSONRequestBody defines body for CreateBerthGroup for application/json ContentType.
+type CreateBerthGroupJSONRequestBody = BerthGroupCreate
+
+// UpdateBerthGroupJSONRequestBody defines body for UpdateBerthGroup for application/json ContentType.
+type UpdateBerthGroupJSONRequestBody = BerthGroupPatch
+
+// CreateCustomerJSONRequestBody defines body for CreateCustomer for application/json ContentType.
+type CreateCustomerJSONRequestBody = CustomerInput
+
+// UpdateCustomerJSONRequestBody defines body for UpdateCustomer for application/json ContentType.
+type UpdateCustomerJSONRequestBody = CustomerPatch
+
+// AnonymizeCustomerJSONRequestBody defines body for AnonymizeCustomer for application/json ContentType.
+type AnonymizeCustomerJSONRequestBody = CustomerAnonymizeRequest
+
+// RecordConsentJSONRequestBody defines body for RecordConsent for application/json ContentType.
+type RecordConsentJSONRequestBody = ConsentInput
+
+// MergeCustomersJSONRequestBody defines body for MergeCustomers for application/json ContentType.
+type MergeCustomersJSONRequestBody = CustomerMergeRequest
+
+// ReplaceDeadlinePoliciesJSONRequestBody defines body for ReplaceDeadlinePolicies for application/json ContentType.
+type ReplaceDeadlinePoliciesJSONRequestBody = DeadlinePolicyList
+
+// UpdateDeadlineJSONRequestBody defines body for UpdateDeadline for application/json ContentType.
+type UpdateDeadlineJSONRequestBody = DeadlinePatch
+
 // CreatePairingCodeJSONRequestBody defines body for CreatePairingCode for application/json ContentType.
 type CreatePairingCodeJSONRequestBody = PairingCodeCreate
+
+// CreateDocumentJSONRequestBody defines body for CreateDocument for application/json ContentType.
+type CreateDocumentJSONRequestBody = DocumentInput
+
+// UpdateDocumentJSONRequestBody defines body for UpdateDocument for application/json ContentType.
+type UpdateDocumentJSONRequestBody = DocumentPatch
+
+// UpdateHarborSettingsJSONRequestBody defines body for UpdateHarborSettings for application/json ContentType.
+type UpdateHarborSettingsJSONRequestBody = HarborSettingsPatch
+
+// CreateMapJSONRequestBody defines body for CreateMap for application/json ContentType.
+type CreateMapJSONRequestBody = MapCreate
+
+// ImportMapJSONRequestBody defines body for ImportMap for application/json ContentType.
+type ImportMapJSONRequestBody = MapExport
+
+// ReorderMapsJSONRequestBody defines body for ReorderMaps for application/json ContentType.
+type ReorderMapsJSONRequestBody = MapReorder
+
+// SaveMapJSONRequestBody defines body for SaveMap for application/json ContentType.
+type SaveMapJSONRequestBody = MapSaveRequest
+
+// ImportBerthsCsvJSONRequestBody defines body for ImportBerthsCsv for application/json ContentType.
+type ImportBerthsCsvJSONRequestBody = BerthImportRequest
+
+// ConvertConcessionGeojsonJSONRequestBody defines body for ConvertConcessionGeojson for application/json ContentType.
+type ConvertConcessionGeojsonJSONRequestBody = ConcessionGeojsonRequest
+
+// GenerateMapElementsJSONRequestBody defines body for GenerateMapElements for application/json ContentType.
+type GenerateMapElementsJSONRequestBody = GenerateRequest
+
+// ValidateMapJSONRequestBody defines body for ValidateMap for application/json ContentType.
+type ValidateMapJSONRequestBody = MapSaveRequest
 
 // AddMemberJSONRequestBody defines body for AddMember for application/json ContentType.
 type AddMemberJSONRequestBody = MemberCreate
 
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
+
+// CreateVesselJSONRequestBody defines body for CreateVessel for application/json ContentType.
+type CreateVesselJSONRequestBody = VesselInput
+
+// UpdateVesselJSONRequestBody defines body for UpdateVessel for application/json ContentType.
+type UpdateVesselJSONRequestBody = VesselPatch
+
+// RecordVesselMeasurementJSONRequestBody defines body for RecordVesselMeasurement for application/json ContentType.
+type RecordVesselMeasurementJSONRequestBody = VesselMeasurementInput
+
+// ReplaceVesselPartiesJSONRequestBody defines body for ReplaceVesselParties for application/json ContentType.
+type ReplaceVesselPartiesJSONRequestBody = VesselPartiesReplace
 
 // CreateWebhookEndpointJSONRequestBody defines body for CreateWebhookEndpoint for application/json ContentType.
 type CreateWebhookEndpointJSONRequestBody = WebhookEndpointCreate
@@ -1265,6 +4432,251 @@ type DemoPairDeviceJSONRequestBody = DemoPairRequest
 
 // PairDeviceJSONRequestBody defines body for PairDevice for application/json ContentType.
 type PairDeviceJSONRequestBody = PairRequest
+
+// AsPierGenerator returns the union data inside the GeneratorParams as a PierGenerator
+func (t GeneratorParams) AsPierGenerator() (PierGenerator, error) {
+	var body PierGenerator
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPierGenerator overwrites any union data inside the GeneratorParams as the provided PierGenerator
+func (t *GeneratorParams) FromPierGenerator(v PierGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"pier"}`))
+	t.union = b
+	return err
+}
+
+// MergePierGenerator performs a merge with any union data inside the GeneratorParams, using the provided PierGenerator
+func (t *GeneratorParams) MergePierGenerator(v PierGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"pier"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsQuayBerthsGenerator returns the union data inside the GeneratorParams as a QuayBerthsGenerator
+func (t GeneratorParams) AsQuayBerthsGenerator() (QuayBerthsGenerator, error) {
+	var body QuayBerthsGenerator
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromQuayBerthsGenerator overwrites any union data inside the GeneratorParams as the provided QuayBerthsGenerator
+func (t *GeneratorParams) FromQuayBerthsGenerator(v QuayBerthsGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"quay_berths"}`))
+	t.union = b
+	return err
+}
+
+// MergeQuayBerthsGenerator performs a merge with any union data inside the GeneratorParams, using the provided QuayBerthsGenerator
+func (t *GeneratorParams) MergeQuayBerthsGenerator(v QuayBerthsGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"quay_berths"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsLinearAreaGenerator returns the union data inside the GeneratorParams as a LinearAreaGenerator
+func (t GeneratorParams) AsLinearAreaGenerator() (LinearAreaGenerator, error) {
+	var body LinearAreaGenerator
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromLinearAreaGenerator overwrites any union data inside the GeneratorParams as the provided LinearAreaGenerator
+func (t *GeneratorParams) FromLinearAreaGenerator(v LinearAreaGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"linear_area"}`))
+	t.union = b
+	return err
+}
+
+// MergeLinearAreaGenerator performs a merge with any union data inside the GeneratorParams, using the provided LinearAreaGenerator
+func (t *GeneratorParams) MergeLinearAreaGenerator(v LinearAreaGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"linear_area"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsBuoyFieldGenerator returns the union data inside the GeneratorParams as a BuoyFieldGenerator
+func (t GeneratorParams) AsBuoyFieldGenerator() (BuoyFieldGenerator, error) {
+	var body BuoyFieldGenerator
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromBuoyFieldGenerator overwrites any union data inside the GeneratorParams as the provided BuoyFieldGenerator
+func (t *GeneratorParams) FromBuoyFieldGenerator(v BuoyFieldGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"buoy_field"}`))
+	t.union = b
+	return err
+}
+
+// MergeBuoyFieldGenerator performs a merge with any union data inside the GeneratorParams, using the provided BuoyFieldGenerator
+func (t *GeneratorParams) MergeBuoyFieldGenerator(v BuoyFieldGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"buoy_field"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsLandGridGenerator returns the union data inside the GeneratorParams as a LandGridGenerator
+func (t GeneratorParams) AsLandGridGenerator() (LandGridGenerator, error) {
+	var body LandGridGenerator
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromLandGridGenerator overwrites any union data inside the GeneratorParams as the provided LandGridGenerator
+func (t *GeneratorParams) FromLandGridGenerator(v LandGridGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"land_grid"}`))
+	t.union = b
+	return err
+}
+
+// MergeLandGridGenerator performs a merge with any union data inside the GeneratorParams, using the provided LandGridGenerator
+func (t *GeneratorParams) MergeLandGridGenerator(v LandGridGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"land_grid"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsSurfaceAreaGenerator returns the union data inside the GeneratorParams as a SurfaceAreaGenerator
+func (t GeneratorParams) AsSurfaceAreaGenerator() (SurfaceAreaGenerator, error) {
+	var body SurfaceAreaGenerator
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromSurfaceAreaGenerator overwrites any union data inside the GeneratorParams as the provided SurfaceAreaGenerator
+func (t *GeneratorParams) FromSurfaceAreaGenerator(v SurfaceAreaGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"surface_area"}`))
+	t.union = b
+	return err
+}
+
+// MergeSurfaceAreaGenerator performs a merge with any union data inside the GeneratorParams, using the provided SurfaceAreaGenerator
+func (t *GeneratorParams) MergeSurfaceAreaGenerator(v SurfaceAreaGenerator) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	b, err = runtime.JSONMerge(b, []byte(`{"type":"surface_area"}`))
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t GeneratorParams) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"type"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t GeneratorParams) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "buoy_field":
+		return t.AsBuoyFieldGenerator()
+	case "land_grid":
+		return t.AsLandGridGenerator()
+	case "linear_area":
+		return t.AsLinearAreaGenerator()
+	case "pier":
+		return t.AsPierGenerator()
+	case "quay_berths":
+		return t.AsQuayBerthsGenerator()
+	case "surface_area":
+		return t.AsSurfaceAreaGenerator()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
+}
+
+func (t GeneratorParams) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *GeneratorParams) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -1325,6 +4737,69 @@ type ServerInterface interface {
 	// ListAuditLog Audit log of the marina, newest first (audit.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/audit-log)
 	ListAuditLog(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListAuditLogParams)
+	// ListBerthGroups Berth groups with member counts (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/berth-groups)
+	ListBerthGroups(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// CreateBerthGroup Create a berth group (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/berth-groups)
+	CreateBerthGroup(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateBerthGroupParams)
+	// DeleteBerthGroup Delete a berth group and its memberships (harbor.configure)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/berth-groups/{groupId})
+	DeleteBerthGroup(w http.ResponseWriter, r *http.Request, marinaId MarinaId, groupId GroupId, params DeleteBerthGroupParams)
+	// UpdateBerthGroup Update a berth group (harbor.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/berth-groups/{groupId})
+	UpdateBerthGroup(w http.ResponseWriter, r *http.Request, marinaId MarinaId, groupId GroupId, params UpdateBerthGroupParams)
+	// ListBerths Berths of the marina, by map and code (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/berths)
+	ListBerths(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListBerthsParams)
+	// ListCustomers Search customers by name, fiscal code, VAT, phone, email or vessel name/registration (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/customers)
+	ListCustomers(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListCustomersParams)
+	// CreateCustomer Create a customer; suspected duplicates are returned, not refused (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/customers)
+	CreateCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateCustomerParams)
+	// GetCustomer A customer (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId})
+	GetCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// UpdateCustomer Update a customer (customers.write)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/customers/{customerId})
+	UpdateCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params UpdateCustomerParams)
+	// AnonymizeCustomer Anonymise a customer (GDPR): personal data blanked, documents and files deleted, consents kept without personal data; irreversible (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/anonymize)
+	AnonymizeCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// ArchiveCustomer Archive a customer (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/archive)
+	ArchiveCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// ListConsents Consent history of a customer, newest first (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/consents)
+	ListConsents(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// RecordConsent Record a new consent version (insert-only) (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/consents)
+	RecordConsent(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params RecordConsentParams)
+	// ExportCustomer GDPR export of a customer's data as JSON (Content-Disposition attachment) (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/export)
+	ExportCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// MergeCustomers Merge duplicate customers into this one (the target); sources are archived (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/merge)
+	MergeCustomers(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params MergeCustomersParams)
+	// GetCustomerOverview Customer page data (M1 subset of spec 11.4) (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/overview)
+	GetCustomerOverview(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// UnarchiveCustomer Restore an archived customer (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/unarchive)
+	UnarchiveCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// ListDeadlinePolicies Lead days per deadline kind, defaults included (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/deadline-policies)
+	ListDeadlinePolicies(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// ReplaceDeadlinePolicies Replace the lead days of the given kinds (marina.configure)
+	// (PUT /api/admin/v1/marinas/{marinaId}/deadline-policies)
+	ReplaceDeadlinePolicies(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// ListDeadlines Deadlines by due date (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/deadlines)
+	ListDeadlines(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListDeadlinesParams)
+	// UpdateDeadline Mark a deadline done or dismissed, or change its note (customers.write)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/deadlines/{deadlineId})
+	UpdateDeadline(w http.ResponseWriter, r *http.Request, marinaId MarinaId, deadlineId DeadlineId, params UpdateDeadlineParams)
 	// ListDevices Paired devices of the marina (devices.manage)
 	// (GET /api/admin/v1/marinas/{marinaId}/devices)
 	ListDevices(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -1334,6 +4809,81 @@ type ServerInterface interface {
 	// RevokeDevice Revoke a device (devices.manage)
 	// (DELETE /api/admin/v1/marinas/{marinaId}/devices/{deviceId})
 	RevokeDevice(w http.ResponseWriter, r *http.Request, marinaId MarinaId, deviceId string)
+	// ListDocuments Documents of customers and vessels (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/documents)
+	ListDocuments(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListDocumentsParams)
+	// CreateDocument Create a document (metadata); an expiry creates its deadline in the same transaction (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/documents)
+	CreateDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateDocumentParams)
+	// DeleteDocument Delete a document with its file and deadline (customers.write)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/documents/{documentId})
+	DeleteDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId, params DeleteDocumentParams)
+	// GetDocument A document (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/documents/{documentId})
+	GetDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId)
+	// UpdateDocument Update a document; its deadline follows the expiry (customers.write)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/documents/{documentId})
+	UpdateDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId, params UpdateDocumentParams)
+	// DeleteDocumentFile Remove the document file (customers.write)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file)
+	DeleteDocumentFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId)
+	// GetDocumentFile Download the document file through a signed link from createDocumentFileUrl (exp and sig are checked in the service; served inline, no-store, sandbox CSP, nosniff) (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file)
+	GetDocumentFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId, params GetDocumentFileParams)
+	// UploadDocumentFile Upload or replace the document file (PDF, PNG or JPEG, at most 15 MiB, raw body), encrypted at rest (customers.write)
+	// (PUT /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file)
+	UploadDocumentFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId, params UploadDocumentFileParams)
+	// CreateDocumentFileURL A short-lived (5 minutes) signed download link bound to the calling user (customers.read)
+	// (POST /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file-url)
+	CreateDocumentFileURL(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId)
+	// GetHarborSettings Harbour settings (price-class rule, LOA tolerance, default grid) (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/harbor-settings)
+	GetHarborSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// UpdateHarborSettings Update harbour settings (harbor.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/harbor-settings)
+	UpdateHarborSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateHarborSettingsParams)
+	// ListMaps Maps of the marina, by sort order (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/maps)
+	ListMaps(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// CreateMap Create an empty map (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/maps)
+	CreateMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateMapParams)
+	// ImportMap Import a map export (porto-map/1) as a new map; ids are remapped (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/maps/import)
+	ImportMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ImportMapParams)
+	// ReorderMaps Set the order of the marina's maps; every map id exactly once (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/maps/reorder)
+	ReorderMaps(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// DeleteMap Delete a map without berths, dynamic areas or land resources (harbor.configure)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/maps/{mapId})
+	DeleteMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params DeleteMapParams)
+	// GetMap The full map document (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId})
+	GetMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId)
+	// SaveMap Replace the whole map document (meta and every element) in one transaction; new elements carry a key, saved ones their id. Validated with ValidateMap inside the transaction (harbor.configure)
+	// (PUT /api/admin/v1/marinas/{marinaId}/maps/{mapId})
+	SaveMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params SaveMapParams)
+	// UploadMapBackground Upload a background image (PNG, JPEG or SVG, at most 15 MiB, raw body). Content is sniffed; the calibration is saved with the map document (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/maps/{mapId}/background)
+	UploadMapBackground(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId)
+	// GetMapBackground Background image bytes, immutable (served with a sandbox Content-Security-Policy and nosniff) (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId}/background/{fileId})
+	GetMapBackground(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, fileId FileId)
+	// ImportBerthsCsv Import berths from CSV along existing piers: dry run (report only) or apply (all or nothing, through the same save path as saveMap; If-Match required) (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/maps/{mapId}/berth-import)
+	ImportBerthsCsv(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params ImportBerthsCsvParams)
+	// ConvertConcessionGeojson Convert a GeoJSON polygon (WGS84) into a map outline in cm with the map's (or the given) georeference; nothing is written (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/maps/{mapId}/concession/geojson)
+	ConvertConcessionGeojson(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId)
+	// ExportMap Download the map as porto-map/1 JSON (default) or as a GeoJSON FeatureCollection (georeferenced maps only) (harbor.configure)
+	// (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId}/export)
+	ExportMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params ExportMapParams)
+	// GenerateMapElements Preview of a generator (pier, quay berths, linear area, buoy field, land grid, surface area); returns unsaved elements with keys, applied by the next saveMap (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/maps/{mapId}/generate)
+	GenerateMapElements(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId)
+	// ValidateMap Dry-run validation of a map document; nothing is written (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/maps/{mapId}/validate)
+	ValidateMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId)
 	// ListMembers Members of the marina, organization-wide and marina-level (users.manage)
 	// (GET /api/admin/v1/marinas/{marinaId}/members)
 	ListMembers(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -1349,6 +4899,30 @@ type ServerInterface interface {
 	// SendMemberPasswordReset Email a password reset link to a member (users.manage)
 	// (POST /api/admin/v1/marinas/{marinaId}/members/{userId}/password-reset)
 	SendMemberPasswordReset(w http.ResponseWriter, r *http.Request, marinaId MarinaId, userId UserId)
+	// ListVessels Search vessels by name or registration (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/vessels)
+	ListVessels(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListVesselsParams)
+	// CreateVessel Create a vessel, optionally with its parties (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/vessels)
+	CreateVessel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateVesselParams)
+	// GetVessel A vessel with parties and documents (customers.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/vessels/{vesselId})
+	GetVessel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId)
+	// UpdateVessel Update a vessel (customers.write)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/vessels/{vesselId})
+	UpdateVessel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId, params UpdateVesselParams)
+	// ArchiveVessel Archive a vessel (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/archive)
+	ArchiveVessel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId)
+	// RecordVesselMeasurement Record measured dimensions (customers.write or presence.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/measurements)
+	RecordVesselMeasurement(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId)
+	// ReplaceVesselParties Replace the parties of a vessel; owner shares sum to at most 1000 (customers.write)
+	// (PUT /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/parties)
+	ReplaceVesselParties(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId, params ReplaceVesselPartiesParams)
+	// UnarchiveVessel Restore an archived vessel (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/unarchive)
+	UnarchiveVessel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId)
 	// ListWebhookEndpoints Webhook endpoints of the marina (users.manage)
 	// (GET /api/admin/v1/marinas/{marinaId}/webhook-endpoints)
 	ListWebhookEndpoints(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -1544,6 +5118,132 @@ func (_ Unimplemented) ListAuditLog(w http.ResponseWriter, r *http.Request, mari
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ListBerthGroups Berth groups with member counts (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/berth-groups)
+func (_ Unimplemented) ListBerthGroups(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateBerthGroup Create a berth group (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/berth-groups)
+func (_ Unimplemented) CreateBerthGroup(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateBerthGroupParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteBerthGroup Delete a berth group and its memberships (harbor.configure)
+// (DELETE /api/admin/v1/marinas/{marinaId}/berth-groups/{groupId})
+func (_ Unimplemented) DeleteBerthGroup(w http.ResponseWriter, r *http.Request, marinaId MarinaId, groupId GroupId, params DeleteBerthGroupParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateBerthGroup Update a berth group (harbor.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/berth-groups/{groupId})
+func (_ Unimplemented) UpdateBerthGroup(w http.ResponseWriter, r *http.Request, marinaId MarinaId, groupId GroupId, params UpdateBerthGroupParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListBerths Berths of the marina, by map and code (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/berths)
+func (_ Unimplemented) ListBerths(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListBerthsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListCustomers Search customers by name, fiscal code, VAT, phone, email or vessel name/registration (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/customers)
+func (_ Unimplemented) ListCustomers(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListCustomersParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateCustomer Create a customer; suspected duplicates are returned, not refused (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/customers)
+func (_ Unimplemented) CreateCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateCustomerParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetCustomer A customer (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId})
+func (_ Unimplemented) GetCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateCustomer Update a customer (customers.write)
+// (PATCH /api/admin/v1/marinas/{marinaId}/customers/{customerId})
+func (_ Unimplemented) UpdateCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params UpdateCustomerParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// AnonymizeCustomer Anonymise a customer (GDPR): personal data blanked, documents and files deleted, consents kept without personal data; irreversible (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/anonymize)
+func (_ Unimplemented) AnonymizeCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ArchiveCustomer Archive a customer (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/archive)
+func (_ Unimplemented) ArchiveCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListConsents Consent history of a customer, newest first (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/consents)
+func (_ Unimplemented) ListConsents(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RecordConsent Record a new consent version (insert-only) (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/consents)
+func (_ Unimplemented) RecordConsent(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params RecordConsentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ExportCustomer GDPR export of a customer's data as JSON (Content-Disposition attachment) (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/export)
+func (_ Unimplemented) ExportCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// MergeCustomers Merge duplicate customers into this one (the target); sources are archived (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/merge)
+func (_ Unimplemented) MergeCustomers(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params MergeCustomersParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetCustomerOverview Customer page data (M1 subset of spec 11.4) (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/overview)
+func (_ Unimplemented) GetCustomerOverview(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UnarchiveCustomer Restore an archived customer (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/unarchive)
+func (_ Unimplemented) UnarchiveCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListDeadlinePolicies Lead days per deadline kind, defaults included (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/deadline-policies)
+func (_ Unimplemented) ListDeadlinePolicies(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ReplaceDeadlinePolicies Replace the lead days of the given kinds (marina.configure)
+// (PUT /api/admin/v1/marinas/{marinaId}/deadline-policies)
+func (_ Unimplemented) ReplaceDeadlinePolicies(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListDeadlines Deadlines by due date (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/deadlines)
+func (_ Unimplemented) ListDeadlines(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListDeadlinesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateDeadline Mark a deadline done or dismissed, or change its note (customers.write)
+// (PATCH /api/admin/v1/marinas/{marinaId}/deadlines/{deadlineId})
+func (_ Unimplemented) UpdateDeadline(w http.ResponseWriter, r *http.Request, marinaId MarinaId, deadlineId DeadlineId, params UpdateDeadlineParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListDevices Paired devices of the marina (devices.manage)
 // (GET /api/admin/v1/marinas/{marinaId}/devices)
 func (_ Unimplemented) ListDevices(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
@@ -1559,6 +5259,156 @@ func (_ Unimplemented) CreatePairingCode(w http.ResponseWriter, r *http.Request,
 // RevokeDevice Revoke a device (devices.manage)
 // (DELETE /api/admin/v1/marinas/{marinaId}/devices/{deviceId})
 func (_ Unimplemented) RevokeDevice(w http.ResponseWriter, r *http.Request, marinaId MarinaId, deviceId string) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListDocuments Documents of customers and vessels (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/documents)
+func (_ Unimplemented) ListDocuments(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListDocumentsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateDocument Create a document (metadata); an expiry creates its deadline in the same transaction (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/documents)
+func (_ Unimplemented) CreateDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateDocumentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteDocument Delete a document with its file and deadline (customers.write)
+// (DELETE /api/admin/v1/marinas/{marinaId}/documents/{documentId})
+func (_ Unimplemented) DeleteDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId, params DeleteDocumentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetDocument A document (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/documents/{documentId})
+func (_ Unimplemented) GetDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateDocument Update a document; its deadline follows the expiry (customers.write)
+// (PATCH /api/admin/v1/marinas/{marinaId}/documents/{documentId})
+func (_ Unimplemented) UpdateDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId, params UpdateDocumentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteDocumentFile Remove the document file (customers.write)
+// (DELETE /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file)
+func (_ Unimplemented) DeleteDocumentFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetDocumentFile Download the document file through a signed link from createDocumentFileUrl (exp and sig are checked in the service; served inline, no-store, sandbox CSP, nosniff) (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file)
+func (_ Unimplemented) GetDocumentFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId, params GetDocumentFileParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UploadDocumentFile Upload or replace the document file (PDF, PNG or JPEG, at most 15 MiB, raw body), encrypted at rest (customers.write)
+// (PUT /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file)
+func (_ Unimplemented) UploadDocumentFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId, params UploadDocumentFileParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateDocumentFileURL A short-lived (5 minutes) signed download link bound to the calling user (customers.read)
+// (POST /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file-url)
+func (_ Unimplemented) CreateDocumentFileURL(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetHarborSettings Harbour settings (price-class rule, LOA tolerance, default grid) (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/harbor-settings)
+func (_ Unimplemented) GetHarborSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateHarborSettings Update harbour settings (harbor.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/harbor-settings)
+func (_ Unimplemented) UpdateHarborSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateHarborSettingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListMaps Maps of the marina, by sort order (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/maps)
+func (_ Unimplemented) ListMaps(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateMap Create an empty map (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/maps)
+func (_ Unimplemented) CreateMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateMapParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ImportMap Import a map export (porto-map/1) as a new map; ids are remapped (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/maps/import)
+func (_ Unimplemented) ImportMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ImportMapParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ReorderMaps Set the order of the marina's maps; every map id exactly once (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/maps/reorder)
+func (_ Unimplemented) ReorderMaps(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteMap Delete a map without berths, dynamic areas or land resources (harbor.configure)
+// (DELETE /api/admin/v1/marinas/{marinaId}/maps/{mapId})
+func (_ Unimplemented) DeleteMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params DeleteMapParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetMap The full map document (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId})
+func (_ Unimplemented) GetMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SaveMap Replace the whole map document (meta and every element) in one transaction; new elements carry a key, saved ones their id. Validated with ValidateMap inside the transaction (harbor.configure)
+// (PUT /api/admin/v1/marinas/{marinaId}/maps/{mapId})
+func (_ Unimplemented) SaveMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params SaveMapParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UploadMapBackground Upload a background image (PNG, JPEG or SVG, at most 15 MiB, raw body). Content is sniffed; the calibration is saved with the map document (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/maps/{mapId}/background)
+func (_ Unimplemented) UploadMapBackground(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetMapBackground Background image bytes, immutable (served with a sandbox Content-Security-Policy and nosniff) (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId}/background/{fileId})
+func (_ Unimplemented) GetMapBackground(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, fileId FileId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ImportBerthsCsv Import berths from CSV along existing piers: dry run (report only) or apply (all or nothing, through the same save path as saveMap; If-Match required) (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/maps/{mapId}/berth-import)
+func (_ Unimplemented) ImportBerthsCsv(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params ImportBerthsCsvParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ConvertConcessionGeojson Convert a GeoJSON polygon (WGS84) into a map outline in cm with the map's (or the given) georeference; nothing is written (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/maps/{mapId}/concession/geojson)
+func (_ Unimplemented) ConvertConcessionGeojson(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ExportMap Download the map as porto-map/1 JSON (default) or as a GeoJSON FeatureCollection (georeferenced maps only) (harbor.configure)
+// (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId}/export)
+func (_ Unimplemented) ExportMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params ExportMapParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GenerateMapElements Preview of a generator (pier, quay berths, linear area, buoy field, land grid, surface area); returns unsaved elements with keys, applied by the next saveMap (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/maps/{mapId}/generate)
+func (_ Unimplemented) GenerateMapElements(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ValidateMap Dry-run validation of a map document; nothing is written (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/maps/{mapId}/validate)
+func (_ Unimplemented) ValidateMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -1589,6 +5439,54 @@ func (_ Unimplemented) UpdateMember(w http.ResponseWriter, r *http.Request, mari
 // SendMemberPasswordReset Email a password reset link to a member (users.manage)
 // (POST /api/admin/v1/marinas/{marinaId}/members/{userId}/password-reset)
 func (_ Unimplemented) SendMemberPasswordReset(w http.ResponseWriter, r *http.Request, marinaId MarinaId, userId UserId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListVessels Search vessels by name or registration (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/vessels)
+func (_ Unimplemented) ListVessels(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListVesselsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateVessel Create a vessel, optionally with its parties (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/vessels)
+func (_ Unimplemented) CreateVessel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateVesselParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetVessel A vessel with parties and documents (customers.read)
+// (GET /api/admin/v1/marinas/{marinaId}/vessels/{vesselId})
+func (_ Unimplemented) GetVessel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateVessel Update a vessel (customers.write)
+// (PATCH /api/admin/v1/marinas/{marinaId}/vessels/{vesselId})
+func (_ Unimplemented) UpdateVessel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId, params UpdateVesselParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ArchiveVessel Archive a vessel (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/archive)
+func (_ Unimplemented) ArchiveVessel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RecordVesselMeasurement Record measured dimensions (customers.write or presence.write)
+// (POST /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/measurements)
+func (_ Unimplemented) RecordVesselMeasurement(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ReplaceVesselParties Replace the parties of a vessel; owner shares sum to at most 1000 (customers.write)
+// (PUT /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/parties)
+func (_ Unimplemented) ReplaceVesselParties(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId, params ReplaceVesselPartiesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UnarchiveVessel Restore an archived vessel (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/unarchive)
+func (_ Unimplemented) UnarchiveVessel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, vesselId VesselId) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -2252,6 +6150,1130 @@ func (siw *ServerInterfaceWrapper) ListAuditLog(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
+// ListBerthGroups operation middleware
+func (siw *ServerInterfaceWrapper) ListBerthGroups(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListBerthGroups(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateBerthGroup operation middleware
+func (siw *ServerInterfaceWrapper) CreateBerthGroup(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateBerthGroupParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateBerthGroup(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteBerthGroup operation middleware
+func (siw *ServerInterfaceWrapper) DeleteBerthGroup(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "groupId" -------------
+	var groupId GroupId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "groupId", chi.URLParam(r, "groupId"), &groupId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteBerthGroupParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteBerthGroup(w, r, marinaId, groupId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateBerthGroup operation middleware
+func (siw *ServerInterfaceWrapper) UpdateBerthGroup(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "groupId" -------------
+	var groupId GroupId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "groupId", chi.URLParam(r, "groupId"), &groupId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "groupId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateBerthGroupParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateBerthGroup(w, r, marinaId, groupId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListBerths operation middleware
+func (siw *ServerInterfaceWrapper) ListBerths(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListBerthsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_id", r.URL.Query(), &params.GroupId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "q"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "q", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListBerths(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCustomers operation middleware
+func (siw *ServerInterfaceWrapper) ListCustomers(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListCustomersParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "q"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "q", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "tag" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "tag", r.URL.Query(), &params.Tag, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "tag"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "tag", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "archived" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "archived", r.URL.Query(), &params.Archived, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "archived"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "archived", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCustomers(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateCustomer operation middleware
+func (siw *ServerInterfaceWrapper) CreateCustomer(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateCustomerParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateCustomer(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCustomer operation middleware
+func (siw *ServerInterfaceWrapper) GetCustomer(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCustomer(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateCustomer operation middleware
+func (siw *ServerInterfaceWrapper) UpdateCustomer(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateCustomerParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateCustomer(w, r, marinaId, customerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AnonymizeCustomer operation middleware
+func (siw *ServerInterfaceWrapper) AnonymizeCustomer(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AnonymizeCustomer(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ArchiveCustomer operation middleware
+func (siw *ServerInterfaceWrapper) ArchiveCustomer(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ArchiveCustomer(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListConsents operation middleware
+func (siw *ServerInterfaceWrapper) ListConsents(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListConsents(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RecordConsent operation middleware
+func (siw *ServerInterfaceWrapper) RecordConsent(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RecordConsentParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RecordConsent(w, r, marinaId, customerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ExportCustomer operation middleware
+func (siw *ServerInterfaceWrapper) ExportCustomer(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ExportCustomer(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// MergeCustomers operation middleware
+func (siw *ServerInterfaceWrapper) MergeCustomers(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params MergeCustomersParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.MergeCustomers(w, r, marinaId, customerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCustomerOverview operation middleware
+func (siw *ServerInterfaceWrapper) GetCustomerOverview(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCustomerOverview(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnarchiveCustomer operation middleware
+func (siw *ServerInterfaceWrapper) UnarchiveCustomer(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnarchiveCustomer(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListDeadlinePolicies operation middleware
+func (siw *ServerInterfaceWrapper) ListDeadlinePolicies(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListDeadlinePolicies(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReplaceDeadlinePolicies operation middleware
+func (siw *ServerInterfaceWrapper) ReplaceDeadlinePolicies(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReplaceDeadlinePolicies(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListDeadlines operation middleware
+func (siw *ServerInterfaceWrapper) ListDeadlines(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListDeadlinesParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "urgency" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "urgency", r.URL.Query(), &params.Urgency, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "urgency"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "urgency", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "due_before" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "due_before", r.URL.Query(), &params.DueBefore, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "due_before"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "due_before", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "due_after" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "due_after", r.URL.Query(), &params.DueAfter, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "due_after"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "due_after", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "vessel_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vessel_id", r.URL.Query(), &params.VesselId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "vessel_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vessel_id", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListDeadlines(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateDeadline operation middleware
+func (siw *ServerInterfaceWrapper) UpdateDeadline(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "deadlineId" -------------
+	var deadlineId DeadlineId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "deadlineId", chi.URLParam(r, "deadlineId"), &deadlineId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "deadlineId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateDeadlineParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateDeadline(w, r, marinaId, deadlineId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListDevices operation middleware
 func (siw *ServerInterfaceWrapper) ListDevices(w http.ResponseWriter, r *http.Request) {
 
@@ -2354,6 +7376,1184 @@ func (siw *ServerInterfaceWrapper) RevokeDevice(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.RevokeDevice(w, r, marinaId, deviceId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListDocuments operation middleware
+func (siw *ServerInterfaceWrapper) ListDocuments(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListDocumentsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "vessel_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vessel_id", r.URL.Query(), &params.VesselId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "vessel_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vessel_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "type", r.URL.Query(), &params.Type, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "expires_before" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "expires_before", r.URL.Query(), &params.ExpiresBefore, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "expires_before"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "expires_before", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListDocuments(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateDocument operation middleware
+func (siw *ServerInterfaceWrapper) CreateDocument(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateDocumentParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateDocument(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteDocument operation middleware
+func (siw *ServerInterfaceWrapper) DeleteDocument(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId DocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteDocumentParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteDocument(w, r, marinaId, documentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetDocument operation middleware
+func (siw *ServerInterfaceWrapper) GetDocument(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId DocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetDocument(w, r, marinaId, documentId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateDocument operation middleware
+func (siw *ServerInterfaceWrapper) UpdateDocument(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId DocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateDocumentParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateDocument(w, r, marinaId, documentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteDocumentFile operation middleware
+func (siw *ServerInterfaceWrapper) DeleteDocumentFile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId DocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteDocumentFile(w, r, marinaId, documentId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetDocumentFile operation middleware
+func (siw *ServerInterfaceWrapper) GetDocumentFile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId DocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetDocumentFileParams
+
+	// ------------- Optional query parameter "exp" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "exp", r.URL.Query(), &params.Exp, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "exp"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "exp", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "sig" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "sig", r.URL.Query(), &params.Sig, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sig"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sig", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetDocumentFile(w, r, marinaId, documentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UploadDocumentFile operation middleware
+func (siw *ServerInterfaceWrapper) UploadDocumentFile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId DocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UploadDocumentFileParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "X-File-Name" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("X-File-Name")]; found {
+		var XFileName string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-File-Name", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "X-File-Name", valueList[0], &XFileName, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-File-Name", Err: err})
+			return
+		}
+
+		params.XFileName = &XFileName
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UploadDocumentFile(w, r, marinaId, documentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateDocumentFileURL operation middleware
+func (siw *ServerInterfaceWrapper) CreateDocumentFileURL(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId DocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateDocumentFileURL(w, r, marinaId, documentId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetHarborSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetHarborSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetHarborSettings(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateHarborSettings operation middleware
+func (siw *ServerInterfaceWrapper) UpdateHarborSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateHarborSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateHarborSettings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListMaps operation middleware
+func (siw *ServerInterfaceWrapper) ListMaps(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListMaps(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateMap operation middleware
+func (siw *ServerInterfaceWrapper) CreateMap(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateMapParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateMap(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ImportMap operation middleware
+func (siw *ServerInterfaceWrapper) ImportMap(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ImportMapParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ImportMap(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReorderMaps operation middleware
+func (siw *ServerInterfaceWrapper) ReorderMaps(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReorderMaps(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteMap operation middleware
+func (siw *ServerInterfaceWrapper) DeleteMap(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteMapParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteMap(w, r, marinaId, mapId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMap operation middleware
+func (siw *ServerInterfaceWrapper) GetMap(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMap(w, r, marinaId, mapId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SaveMap operation middleware
+func (siw *ServerInterfaceWrapper) SaveMap(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SaveMapParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SaveMap(w, r, marinaId, mapId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UploadMapBackground operation middleware
+func (siw *ServerInterfaceWrapper) UploadMapBackground(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UploadMapBackground(w, r, marinaId, mapId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMapBackground operation middleware
+func (siw *ServerInterfaceWrapper) GetMapBackground(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "fileId" -------------
+	var fileId FileId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "fileId", chi.URLParam(r, "fileId"), &fileId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fileId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMapBackground(w, r, marinaId, mapId, fileId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ImportBerthsCsv operation middleware
+func (siw *ServerInterfaceWrapper) ImportBerthsCsv(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ImportBerthsCsvParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ImportBerthsCsv(w, r, marinaId, mapId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ConvertConcessionGeojson operation middleware
+func (siw *ServerInterfaceWrapper) ConvertConcessionGeojson(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ConvertConcessionGeojson(w, r, marinaId, mapId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ExportMap operation middleware
+func (siw *ServerInterfaceWrapper) ExportMap(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ExportMapParams
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ExportMap(w, r, marinaId, mapId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GenerateMapElements operation middleware
+func (siw *ServerInterfaceWrapper) GenerateMapElements(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GenerateMapElements(w, r, marinaId, mapId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ValidateMap operation middleware
+func (siw *ServerInterfaceWrapper) ValidateMap(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ValidateMap(w, r, marinaId, mapId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -2535,6 +8735,421 @@ func (siw *ServerInterfaceWrapper) SendMemberPasswordReset(w http.ResponseWriter
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SendMemberPasswordReset(w, r, marinaId, userId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListVessels operation middleware
+func (siw *ServerInterfaceWrapper) ListVessels(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListVesselsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "q"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "q", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "hull_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "hull_type", r.URL.Query(), &params.HullType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "hull_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "hull_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "archived" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "archived", r.URL.Query(), &params.Archived, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "archived"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "archived", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListVessels(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateVessel operation middleware
+func (siw *ServerInterfaceWrapper) CreateVessel(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateVesselParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateVessel(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetVessel operation middleware
+func (siw *ServerInterfaceWrapper) GetVessel(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "vesselId" -------------
+	var vesselId VesselId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "vesselId", chi.URLParam(r, "vesselId"), &vesselId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vesselId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetVessel(w, r, marinaId, vesselId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateVessel operation middleware
+func (siw *ServerInterfaceWrapper) UpdateVessel(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "vesselId" -------------
+	var vesselId VesselId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "vesselId", chi.URLParam(r, "vesselId"), &vesselId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vesselId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateVesselParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateVessel(w, r, marinaId, vesselId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ArchiveVessel operation middleware
+func (siw *ServerInterfaceWrapper) ArchiveVessel(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "vesselId" -------------
+	var vesselId VesselId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "vesselId", chi.URLParam(r, "vesselId"), &vesselId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vesselId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ArchiveVessel(w, r, marinaId, vesselId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RecordVesselMeasurement operation middleware
+func (siw *ServerInterfaceWrapper) RecordVesselMeasurement(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "vesselId" -------------
+	var vesselId VesselId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "vesselId", chi.URLParam(r, "vesselId"), &vesselId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vesselId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RecordVesselMeasurement(w, r, marinaId, vesselId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReplaceVesselParties operation middleware
+func (siw *ServerInterfaceWrapper) ReplaceVesselParties(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "vesselId" -------------
+	var vesselId VesselId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "vesselId", chi.URLParam(r, "vesselId"), &vesselId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vesselId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ReplaceVesselPartiesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReplaceVesselParties(w, r, marinaId, vesselId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnarchiveVessel operation middleware
+func (siw *ServerInterfaceWrapper) UnarchiveVessel(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "vesselId" -------------
+	var vesselId VesselId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "vesselId", chi.URLParam(r, "vesselId"), &vesselId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vesselId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnarchiveVessel(w, r, marinaId, vesselId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -3712,6 +10327,168 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/public/v1/{slug}", wrapper.GetPublicMarina)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps", wrapper.ListMaps)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps", wrapper.CreateMap)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/reorder", wrapper.ReorderMaps)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/import", wrapper.ImportMap)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}", wrapper.DeleteMap)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}", wrapper.GetMap)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}", wrapper.SaveMap)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}/validate", wrapper.ValidateMap)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}/generate", wrapper.GenerateMapElements)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}/background", wrapper.UploadMapBackground)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}/background/{fileId}", wrapper.GetMapBackground)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}/export", wrapper.ExportMap)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}/concession/geojson", wrapper.ConvertConcessionGeojson)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}/berth-import", wrapper.ImportBerthsCsv)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/berths", wrapper.ListBerths)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/berth-groups", wrapper.ListBerthGroups)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/berth-groups", wrapper.CreateBerthGroup)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/berth-groups/{groupId}", wrapper.DeleteBerthGroup)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/berth-groups/{groupId}", wrapper.UpdateBerthGroup)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/harbor-settings", wrapper.GetHarborSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/harbor-settings", wrapper.UpdateHarborSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers", wrapper.ListCustomers)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers", wrapper.CreateCustomer)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}", wrapper.GetCustomer)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}", wrapper.UpdateCustomer)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/overview", wrapper.GetCustomerOverview)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/archive", wrapper.ArchiveCustomer)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/unarchive", wrapper.UnarchiveCustomer)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/merge", wrapper.MergeCustomers)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/anonymize", wrapper.AnonymizeCustomer)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/export", wrapper.ExportCustomer)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/consents", wrapper.ListConsents)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/consents", wrapper.RecordConsent)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/vessels", wrapper.ListVessels)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/vessels", wrapper.CreateVessel)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}", wrapper.GetVessel)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}", wrapper.UpdateVessel)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/parties", wrapper.ReplaceVesselParties)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/measurements", wrapper.RecordVesselMeasurement)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/archive", wrapper.ArchiveVessel)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/vessels/{vesselId}/unarchive", wrapper.UnarchiveVessel)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/documents", wrapper.ListDocuments)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/documents", wrapper.CreateDocument)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/documents/{documentId}", wrapper.DeleteDocument)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/documents/{documentId}", wrapper.GetDocument)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/documents/{documentId}", wrapper.UpdateDocument)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/documents/{documentId}/file", wrapper.DeleteDocumentFile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/documents/{documentId}/file", wrapper.GetDocumentFile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/documents/{documentId}/file", wrapper.UploadDocumentFile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/documents/{documentId}/file-url", wrapper.CreateDocumentFileURL)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/deadlines", wrapper.ListDeadlines)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/deadlines/{deadlineId}", wrapper.UpdateDeadline)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/deadline-policies", wrapper.ListDeadlinePolicies)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/deadline-policies", wrapper.ReplaceDeadlinePolicies)
 	})
 
 	return r

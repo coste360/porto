@@ -34,6 +34,8 @@ type Problem struct {
 	RequestID         string       `json:"request_id,omitempty"`
 	Errors            []FieldError `json:"errors,omitempty"`
 	RetryAfterSeconds int          `json:"retry_after_seconds,omitempty"`
+	// Issues carries the map validation issues of map_invalid (M1).
+	Issues any `json:"issues,omitempty"`
 }
 
 // Option customizes a Problem.
@@ -55,6 +57,9 @@ func RetryAfter(d time.Duration) Option {
 
 // Status overrides the default status (for example invalid_totp is 401 on login).
 func Status(code int) Option { return func(p *Problem) { p.Status = code } }
+
+// WithIssues sets the issues member (map_invalid). v must marshal to a JSON array of MapIssue.
+func WithIssues(v any) Option { return func(p *Problem) { p.Issues = v } }
 
 // Instance sets the instance member.
 func Instance(s string) Option { return func(p *Problem) { p.Instance = s } }

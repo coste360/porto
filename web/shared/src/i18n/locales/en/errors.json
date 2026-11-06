@@ -32,5 +32,14 @@
   "precondition_required": "Reload the data before saving.",
   "rate_limited": "Too many attempts. Try again shortly.",
   "internal_error": "Unexpected error. Try again later.",
-  "not_ready": "The service is not ready yet. Try again shortly."
+  "not_ready": "The service is not ready yet. Try again shortly.",
+  "map_invalid": "The map breaks validation rules: fix the reported errors.",
+  "map_not_empty": "The map still has berths, areas or land resources.",
+  "map_not_georeferenced": "The map is not georeferenced.",
+  "invalid_file": "Invalid file, or it does not match the declared type.",
+  "file_too_large": "The file is larger than the 15 MB limit.",
+  "csv_invalid": "The CSV file is not valid.",
+  "customer_anonymized": "The customer has been anonymised and cannot be changed.",
+  "customer_merged": "The customer was merged into another one and cannot be changed.",
+  "download_link_expired": "The download link has expired or is not valid. Request a new one."
 }

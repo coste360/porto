@@ -2,7 +2,12 @@ import type { QueryClient } from '@tanstack/react-query';
 
 import { keysForTopic } from './queryKeys';
 
-export const SSE_TOPICS = ['marina.changed', 'team.changed'] as const;
+export const SSE_TOPICS = [
+  'marina.changed',
+  'team.changed',
+  'map.changed',
+  'registry.changed',
+] as const;
 
 export type EventSourceFactory = (url: string) => EventSource;
 

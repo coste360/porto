@@ -75,7 +75,12 @@
       "rental": "Noleggio",
       "booking": "Prenotazioni online",
       "reports": "Report"
-    }
+    },
+    "maps": "Mappe",
+    "customers": "Clienti",
+    "vessels": "Imbarcazioni",
+    "deadlines": "Scadenze",
+    "harborSettings": "Impostazioni della mappa"
   },
   "user": {
     "menu": "Menu utente",

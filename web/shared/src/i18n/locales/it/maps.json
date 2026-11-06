@@ -1,0 +1,171 @@
+{
+  "title": "Mappe del porto",
+  "description": "Specchio acqueo, piazzali, capannoni e parcheggi del porto.",
+  "empty": "Nessuna mappa: creane una per iniziare.",
+  "listLabel": "Mappe",
+  "georeferenced": "Georeferenziata",
+  "units": {
+    "m": "m"
+  },
+  "kind": {
+    "water": "Specchio acqueo",
+    "yard": "Piazzale",
+    "shed": "Capannone",
+    "parking": "Parcheggio",
+    "boxes": "Box",
+    "other": "Altro"
+  },
+  "counts": {
+    "berths": "Posti: {{count}}",
+    "structures": "Strutture: {{count}}",
+    "areas": "Aree dinamiche: {{count}}",
+    "landResources": "Risorse a terra: {{count}}"
+  },
+  "actions": {
+    "open": "Apri",
+    "edit": "Modifica nell'editor",
+    "print": "Stampa",
+    "moveUp": "Sposta prima",
+    "moveDown": "Sposta dopo",
+    "importBerths": "Importa posti da CSV"
+  },
+  "create": {
+    "action": "Nuova mappa",
+    "title": "Nuova mappa",
+    "kind": "Tipo",
+    "nameIt": "Nome (italiano)",
+    "nameEn": "Nome (inglese)",
+    "width": "Larghezza",
+    "height": "Altezza",
+    "grid": "Passo della griglia",
+    "gridHint": "Usato per lo snapping nell'editor."
+  },
+  "validation": {
+    "size": "Inserisci una misura tra 1 m e 5 km.",
+    "grid": "Inserisci un passo tra 1 cm e 100 m."
+  },
+  "import": {
+    "action": "Importa JSON",
+    "done": "Mappa importata.",
+    "invalidFile": "Il file non è un'esportazione di mappa Porto valida."
+  },
+  "export": {
+    "action": "Esporta",
+    "json": "Configurazione (JSON)",
+    "geojson": "GeoJSON"
+  },
+  "delete": {
+    "title": "Eliminare la mappa?",
+    "description": "Si possono eliminare solo le mappe senza posti, aree dinamiche e risorse a terra. Strutture e decorazioni vengono eliminate con la mappa.",
+    "done": "Mappa eliminata."
+  },
+  "viewer": {
+    "toolbar": "Comandi della mappa",
+    "fit": "Adatta alla vista",
+    "zoomIn": "Ingrandisci",
+    "zoomOut": "Riduci",
+    "canvas": "Mappa del porto"
+  },
+  "layers": {
+    "title": "Livelli",
+    "background": "Sfondo",
+    "water_land": "Acqua e terra",
+    "grid": "Griglia",
+    "structures": "Strutture",
+    "berths": "Posti",
+    "areas": "Aree dinamiche",
+    "land_resources": "Risorse a terra",
+    "pedestals": "Colonnine",
+    "decorations": "Decorazioni",
+    "labels": "Etichette",
+    "concession": "Perimetro della concessione"
+  },
+  "list": {
+    "title": "Posti per struttura",
+    "empty": "Nessun posto sulla mappa.",
+    "buoys": "Campo boe",
+    "unattached": "Posti senza struttura",
+    "noBerths": "Nessun posto su questa struttura.",
+    "selectStructure": "Seleziona tutto: {{name}}"
+  },
+  "element": {
+    "berth": "Posto {{code}}",
+    "buoy": "Boa {{code}}",
+    "area": "Area dinamica {{code}}",
+    "land": "Risorsa a terra {{code}}",
+    "pedestal": "Colonnina {{code}}",
+    "structure": {
+      "quay": "Banchina {{code}}",
+      "pier": "Pontile {{code}}",
+      "finger": "Finger {{code}}",
+      "breakwater": "Diga {{code}}",
+      "channel": "Canale {{code}}",
+      "walkway": "Passerella {{code}}"
+    },
+    "decoration": {
+      "symbol": "Simbolo",
+      "text": "Testo",
+      "depth_label": "Fondale",
+      "north_arrow": "Freccia del nord",
+      "scale_bar": "Scala grafica"
+    }
+  },
+  "print": {
+    "options": "Opzioni di stampa",
+    "paper": "Formato",
+    "orientation": "Orientamento",
+    "portrait": "Verticale",
+    "landscape": "Orizzontale",
+    "scale": "Scala",
+    "fit": "Adatta al foglio",
+    "action": "Stampa",
+    "cropped": "La mappa non entra nel foglio a questa scala: viene stampata la parte in alto a sinistra.",
+    "sheet": "Foglio di stampa della mappa",
+    "scaleLabel": "Scala 1:{{n}}",
+    "legend": "Legenda",
+    "priceClasses": "Categorie di prezzo",
+    "scaleBar": "Scala grafica"
+  },
+  "settings": {
+    "title": "Impostazioni della mappa",
+    "description": "Gruppi di posti, categorie di prezzo proposte dalla larghezza, tolleranza della lunghezza e griglia predefinita.",
+    "rulesTitle": "Regole",
+    "rulesHint": "La categoria di un posto è quella della prima fascia la cui larghezza massima contiene la larghezza del posto.",
+    "loaTolerance": "Tolleranza sulla lunghezza",
+    "loaToleranceHint": "Di quanto la lunghezza massima ammessa può superare la lunghezza del posto.",
+    "defaultGrid": "Griglia predefinita delle nuove mappe",
+    "bands": "Fasce di larghezza",
+    "bandMax": "Larghezza fino a",
+    "bandClass": "Categoria",
+    "addBand": "Aggiungi fascia",
+    "removeBand": "Rimuovi la fascia {{n}}",
+    "fallback": "Categoria oltre l'ultima fascia",
+    "fallbackHint": "Lascia vuoto per nessuna categoria.",
+    "validation": {
+      "tolerance": "Inserisci una tolleranza tra 0 e 5 m.",
+      "grid": "Inserisci un passo tra 1 cm e 100 m.",
+      "bandMax": "Inserisci una larghezza valida.",
+      "bandDuplicate": "Due fasce hanno la stessa larghezza."
+    }
+  },
+  "groups": {
+    "title": "Gruppi",
+    "description": "Insiemi di posti, aree e risorse, anche sovrapposti: usati da listini, quote online, report e filtri.",
+    "create": "Nuovo gruppo",
+    "edit": "Modifica gruppo",
+    "empty": "Nessun gruppo.",
+    "code": "Codice",
+    "name": "Nome",
+    "kind": "Tipo",
+    "members": "Elementi",
+    "memberCount": "{{count}} elementi",
+    "deleteTitle": "Eliminare il gruppo {{code}}?",
+    "deleteHint": "Gli elementi restano sulla mappa: viene tolta solo l'appartenenza al gruppo.",
+    "kinds": {
+      "structure": "Struttura",
+      "transit": "Transiti",
+      "area": "Area",
+      "custom": "Personalizzato"
+    }
+  }
+}

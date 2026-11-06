@@ -75,7 +75,12 @@
       "rental": "Rentals",
       "booking": "Online booking",
       "reports": "Reports"
-    }
+    },
+    "maps": "Maps",
+    "customers": "Customers",
+    "vessels": "Vessels",
+    "deadlines": "Deadlines",
+    "harborSettings": "Map settings"
   },
   "user": {
     "menu": "User menu",

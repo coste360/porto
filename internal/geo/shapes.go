@@ -79,7 +79,7 @@ func (p Polygon) Area() Cm2 {
 	if a < 0 {
 		a = -a
 	}
-	return Cm2(divRound(a, 2))
+	return Cm2(DivRoundHalfEven(a, 2))
 }
 
 // Bounds returns the bounding box.
@@ -250,8 +250,8 @@ func (r Rect) Corners() [4]Point {
 	// left = (uy, -ux); offsets are computed over 2·TrigScale so that odd widths stay exact until rounding.
 	corner := func(side, far int64) Point {
 		return Point{
-			X: r.Anchor.X + Cm(divRound(side*uy*w+far*2*ux*l, 2*TrigScale)),
-			Y: r.Anchor.Y + Cm(divRound(-side*ux*w+far*2*uy*l, 2*TrigScale)),
+			X: r.Anchor.X + Cm(DivRoundHalfEven(side*uy*w+far*2*ux*l, 2*TrigScale)),
+			Y: r.Anchor.Y + Cm(DivRoundHalfEven(-side*ux*w+far*2*uy*l, 2*TrigScale)),
 		}
 	}
 	return [4]Point{corner(1, 0), corner(-1, 0), corner(-1, 1), corner(1, 1)}
