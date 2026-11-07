@@ -25,6 +25,12 @@ import (
 	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/domain/webhook"
 	"github.com/coste360/porto/internal/http/problem"
+
+	"github.com/coste360/porto/internal/csvimport"
+	"github.com/coste360/porto/internal/domain/docs"
+	"github.com/coste360/porto/internal/domain/magiclink"
+	"github.com/coste360/porto/internal/domain/rights"
+	"github.com/coste360/porto/internal/domain/signature"
 )
 
 // sentinels maps domain sentinel errors to problem types (m0-plan §4.4). Order matters only where one error
@@ -114,6 +120,32 @@ var sentinels = []struct {
 	{domainerr.ErrNotFound, problem.NotFound},
 	{domainerr.ErrVersionMismatch, problem.VersionConflict},
 	{domainerr.ErrConflict, problem.Conflict},
+	// M4 (m4-plan §7.4)
+	{contract.ErrRenewalExists, problem.RenewalExists},
+	{contract.ErrProposalClosed, problem.ProposalClosed},
+	{contract.ErrCustomerEmailMissing, problem.CustomerEmailMissing},
+	{contract.ErrPaperScanRequired, problem.PaperScanRequired},
+	{contract.ErrVesselInOtherFleet, problem.VesselInOtherFleet},
+	{contract.ErrVesselNotInFleet, problem.VesselNotInFleet},
+	{rights.ErrTableActive, problem.TableActive},
+	{rights.ErrMandateOverlap, problem.MandateOverlap},
+	{rights.ErrInvalidTransition, problem.InvalidTransition},
+	{rights.ErrVersionMismatch, problem.VersionConflict},
+	{docs.ErrTemplateLimits, problem.TemplateLimits},
+	{docs.ErrNotReady, problem.NotReady},
+	{docs.ErrCodeTaken, problem.CodeTaken},
+	{docs.ErrKindNotPublishable, problem.ValidationFailed},
+	{docs.ErrImmutable, problem.Conflict},
+	{signature.ErrOTPLocked, problem.OTPLocked},
+	{signature.ErrOTPRateLimited, problem.OTPRateLimited},
+	{signature.ErrSignatureOpen, problem.SignatureOpen},
+	{signature.ErrInvalidWebhookSignature, problem.InvalidSignature},
+	{signature.ErrProviderUnknown, problem.ProviderUnknown},
+	{signature.ErrPaperScanRequired, problem.PaperScanRequired},
+	{magiclink.ErrInvalid, problem.LinkInvalid},
+	{csvimport.ErrCSVInvalid, problem.CSVInvalid},
+	{csvimport.ErrNotUndoable, problem.ImportNotUndoable},
+	{csvimport.ErrUnknownEntity, problem.ValidationFailed},
 	{ErrBadJSON, problem.BadRequest},
 	{errUnsupportedMedia, problem.UnsupportedMediaType},
 }
@@ -134,6 +166,9 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 	if t, opts, ok := mapOccupancy(err); ok {
 		return t, opts, true
 	}
+	if t, opts, ok := mapM4(err); ok {
+		return t, opts, true
+	}
 	var v *auth.ValidationError
 	if errors.As(err, &v) {
 		fields := make([]problem.FieldError, 0, len(v.Fields))
@@ -152,6 +187,60 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 		if errors.Is(err, s.err) {
 			return s.typ, nil, true
 		}
+	}
+	return "", nil, false
+}
+
+// mapM4 maps the typed errors of M4 that carry details (m4-plan §7.4). Details hold ids, codes and integers only.
+func mapM4(err error) (problem.Type, []problem.Option, bool) {
+	if ie, ok := errors.AsType[*contract.InsuranceError](err); ok {
+		return problem.InsuranceRequired, []problem.Option{problem.WithDetails(map[string]string{"vessel_id": ie.VesselID})}, true
+	}
+	if errors.Is(err, contract.ErrInsuranceRequired) {
+		return problem.InsuranceRequired, nil, true
+	}
+	if se, ok := errors.AsType[*contract.SettleError](err); ok {
+		return problem.Conflict, []problem.Option{problem.WithDetails(map[string]string{"id": se.ID})}, true
+	}
+	if te, ok := errors.AsType[*docs.TemplateError](err); ok {
+		issues := te.Issues
+		if issues == nil {
+			issues = []docs.TemplateIssue{}
+		}
+		// Wrapped in an object: clients keep only object details (web ProblemError).
+		return problem.TemplateInvalid, []problem.Option{problem.WithDetails(map[string]any{"issues": issues})}, true
+	}
+	if errors.Is(err, docs.ErrTemplateInvalid) {
+		return problem.TemplateInvalid, nil, true
+	}
+	if oe, ok := errors.AsType[*signature.OTPError](err); ok {
+		return problem.OTPInvalid, []problem.Option{problem.WithDetails(map[string]int{"attempts_left": oe.AttemptsLeft})}, true
+	}
+	if errors.Is(err, signature.ErrOTPInvalid) {
+		return problem.OTPInvalid, nil, true
+	}
+	if se, ok := errors.AsType[*rights.SumError](err); ok {
+		typ := problem.SharesInvalid
+		if errors.Is(se.Err, rights.ErrTableIncomplete) {
+			typ = problem.TableIncomplete
+		}
+		return typ, []problem.Option{problem.WithDetails(map[string]int64{"sum_millis": se.SumMillis})}, true
+	}
+	if errors.Is(err, rights.ErrSharesInvalid) {
+		return problem.SharesInvalid, nil, true
+	}
+	if errors.Is(err, rights.ErrTableIncomplete) {
+		return problem.TableIncomplete, nil, true
+	}
+	if re, ok := errors.AsType[*rights.RequirementsError](err); ok {
+		issues := re.Issues
+		if issues == nil {
+			issues = []rights.RequirementIssue{}
+		}
+		return problem.TransferRequirements, []problem.Option{problem.WithDetails(map[string]any{"issues": issues})}, true
+	}
+	if errors.Is(err, rights.ErrTransferRequirements) {
+		return problem.TransferRequirements, nil, true
 	}
 	return "", nil, false
 }

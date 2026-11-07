@@ -1,0 +1,9 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+please find attached the statement of the management mandate of your berth.
+{{with v . "period"}}Period: {{.}}
+{{end}}{{with v . "amount"}}Your share: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

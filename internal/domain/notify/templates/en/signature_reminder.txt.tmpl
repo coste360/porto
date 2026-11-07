@@ -1,0 +1,12 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+a reminder that the document below is still waiting for your signature.
+{{with v . "document_title"}}Document: {{.}}
+{{end}}{{with v . "deadline_on"}}Sign by: {{.}}
+{{end}}
+{{with v . "link"}}Open and sign the document:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

@@ -1,0 +1,244 @@
+{
+  "list": {
+    "title": "Diritti d'uso",
+    "description": "Diritti d'uso dei posti barca con titolari, quote e barche autorizzate.",
+    "status": "Stato",
+    "berth": "Posto",
+    "kind": "Tipo",
+    "holders": "Titolari",
+    "period": "Periodo",
+    "mandate": "Mandato attivo",
+    "unpaid": "Oneri non pagati",
+    "empty": "Nessun diritto."
+  },
+  "detail": {
+    "title": "Titolo",
+    "heading": "Diritto d'uso del posto {{code}}",
+    "chainPdf": "Catena dei titolari (PDF)",
+    "chain": "Catena dei titolari",
+    "transfer": "Cedi",
+    "end": "Termina",
+    "cancel": "Annulla",
+    "endHint": "Il diritto termina alla data indicata; le notti successive tornano al marina.",
+    "cancelHint": "Annulla un diritto inserito per errore; il motivo viene registrato.",
+    "endOn": "Dalla data"
+  },
+  "transfers": {
+    "title": "Cessioni",
+    "description": "Cessioni dei diritti con requisiti, diritto di subentro e firme.",
+    "new": "Nuova cessione",
+    "wizardDescription": "Chi cede, chi subentra con le quote, la data e come trattare gli oneri dell'anno.",
+    "right": "Diritto",
+    "effective": "Decorrenza",
+    "feesPolicy": "Oneri dell'anno",
+    "feesPolicies": {
+      "reassign": "Passano al subentrante",
+      "prorata": "Divisi pro rata"
+    },
+    "price": "Prezzo dichiarato",
+    "from": "Cedenti",
+    "to": "Subentranti",
+    "fee": "Diritto di subentro",
+    "requirementsWarning": "Il titolare ha oneri non pagati: la cessione può essere bloccata.",
+    "create": "Crea cessione",
+    "empty": "Nessuna cessione."
+  },
+  "transfer": {
+    "title": "Cessione",
+    "summary": "Riepilogo",
+    "requirements": "Requisiti",
+    "requirementsOk": "Nessun onere scaduto dei cedenti.",
+    "policy": {
+      "block": "Con oneri scaduti la cessione è bloccata.",
+      "warn": "Gli oneri scaduti sono solo segnalati."
+    },
+    "issues": {
+      "unsettled_fees": "Oneri di gestione non pagati",
+      "unsettled_common_charges": "Spese comuni non pagate"
+    },
+    "completePaper": "Firmata su carta",
+    "cancel": "Annulla cessione",
+    "newRight": "Nuovo diritto",
+    "openRight": "Apri il nuovo diritto"
+  },
+  "mandates": {
+    "title": "Mandati di gestione",
+    "description": "Mandati di gestione: il marina vende le notti del titolare e ne calcola la quota.",
+    "new": "Nuovo mandato",
+    "formDescription": "Le notti del mandato tornano vendibili; il titolare riceve la sua quota dei ricavi.",
+    "period": "Periodo",
+    "from": "Dal",
+    "to": "Al",
+    "share": "Quota del titolare (%)",
+    "shareValue": "{{pct}} %",
+    "min": "Minimo garantito",
+    "revenue": "Ricavi",
+    "channelsLabel": "Canali di vendita",
+    "channels": {
+      "transit": "Transiti",
+      "period": "Contratti a periodo"
+    },
+    "settlement": "Liquidazione",
+    "settlements": {
+      "credit": "Credito sugli oneri",
+      "transfer": "Bonifico"
+    },
+    "create": "Crea mandato",
+    "empty": "Nessun mandato.",
+    "errors": {
+      "right": "Scegli il diritto.",
+      "period": "Il periodo non è valido.",
+      "past": "Il mandato parte da oggi in poi.",
+      "share": "La quota è tra 0 e 100 %.",
+      "channels": "Scegli almeno un canale.",
+      "settlement": "Scegli la liquidazione."
+    }
+  },
+  "mandate": {
+    "title": "Mandato di gestione",
+    "terms": "Condizioni",
+    "revenues": "Ricavi del periodo",
+    "contract": "Contratto",
+    "nights": "Notti",
+    "ownerShare": "Quota del titolare",
+    "total": "Totale",
+    "topUp": "Integrazione al minimo garantito",
+    "noRevenue": "Nessun ricavo ancora.",
+    "csv": "Rendiconto CSV",
+    "pdf": "Rendiconto PDF",
+    "end": "Termina in anticipo",
+    "cancel": "Annulla",
+    "endHint": "Le notti ancora libere tornano al titolare; quelle già vendute restano vendute.",
+    "cancelHint": "Annulla il mandato; le notti già vendute restano vendute."
+  },
+  "fees": {
+    "title": "Oneri di gestione",
+    "description": "Tabelle degli oneri dell'anno, simulazione, confronto con l'anno precedente ed emissione delle rate.",
+    "basis": "Base di calcolo",
+    "year": "Anno",
+    "newTable": "Nuova tabella",
+    "defaultName": "Oneri {{year}}",
+    "tables": "Tabelle",
+    "noTables": "Nessuna tabella per l'anno.",
+    "rows": "{{count}} righe",
+    "status": {
+      "draft": "Bozza",
+      "active": "Attiva"
+    },
+    "activate": "Attiva",
+    "name": "Nome",
+    "istat": "Adeguamento ISTAT (%)",
+    "category": "Categoria",
+    "fromCm": "Da (lunghezza)",
+    "toCm": "A (lunghezza)",
+    "ratePerM2": "Tariffa al m²",
+    "amount": "Importo",
+    "removeRow": "Togli riga",
+    "addRow": "Aggiungi riga",
+    "runs": "Calcoli",
+    "runsHint": "Simula, controlla totali, differenze ed esclusi, poi emetti le rate dei titolari.",
+    "table": "Tabella",
+    "newRun": "Nuovo calcolo",
+    "simulate": "Simula",
+    "issue": "Emetti",
+    "discard": "Scarta",
+    "rights": "Diritti",
+    "previous": "Anno precedente",
+    "total": "Totale",
+    "diff": "Differenza con l'anno precedente",
+    "excluded": "{{count}} diritti esclusi",
+    "exclusion": {
+      "no_rate": "Nessuna tariffa",
+      "no_category": "Nessuna categoria",
+      "no_holders": "Nessun titolare",
+      "outside_year": "Fuori dall'anno"
+    },
+    "lines": "{{count}} righe emesse"
+  },
+  "concession": {
+    "title": "Concessione",
+    "description": "Concessione demaniale del marina e adempimenti con le loro scadenze.",
+    "card": "Scheda della concessione",
+    "saved": "Concessione salvata.",
+    "authority": "Autorità concedente",
+    "deed_kind": "Tipo di atto",
+    "deed_number": "Numero dell'atto",
+    "granted_on": "Rilasciata il",
+    "expires_on": "Scade il",
+    "annual_fee": "Canone annuo",
+    "status": "Stato",
+    "statuses": {
+      "active": "Attiva",
+      "expired": "Scaduta",
+      "revoked": "Revocata"
+    },
+    "prescriptions": "Prescrizioni",
+    "obligations": "Adempimenti",
+    "obligationsHint": "Ogni adempimento diventa una scadenza per l'ufficio.",
+    "kind": "Tipo",
+    "dueOn": "Scadenza",
+    "descriptionLabel": "Descrizione",
+    "amount": "Importo",
+    "recurrence": "Ricorrenza",
+    "recurrences": {
+      "none": "Una volta",
+      "yearly": "Ogni anno"
+    },
+    "yearly": "Annuale",
+    "doneOn": "Fatto il {{date}}",
+    "markDone": "Segna fatto",
+    "remove": "Elimina adempimento",
+    "add": "Aggiungi adempimento"
+  },
+  "pending": "Questa pagina arriva con M4.",
+  "lens": {
+    "title": "Diritti d'uso",
+    "legend": {
+      "marina": "Del marina",
+      "holder": "Del titolare",
+      "mandate": "In gestione (mandato)",
+      "unpaid": "Oneri non pagati",
+      "none": "Senza diritto"
+    }
+  },
+  "wizard": {
+    "new": "Nuovo diritto d'uso",
+    "description": "Scegli il posto sulla mappa, il titolo, i titolari con le quote (somma 1000 ‰) e la barca autorizzata.",
+    "fromOn": "Dal",
+    "toOn": "Al (ultima notte)",
+    "invalid": "Completa posto, tipo, data e quote dei titolari.",
+    "create": "Crea diritto"
+  },
+  "title": {
+    "deed": "Atto",
+    "number": "Numero",
+    "notary": "Notaio",
+    "date": "Data dell'atto"
+  },
+  "holders": {
+    "title": "Titolari",
+    "customer": "Titolare {{n}}",
+    "share": "Quota (‰)",
+    "remove": "Togli il titolare {{n}}",
+    "add": "Aggiungi titolare",
+    "equal": "Quote uguali",
+    "sum": "Somma {{sum}} ‰ (mancano {{remaining}})",
+    "millis": "{{millis}} ‰",
+    "errors": {
+      "none": "Serve almeno un titolare.",
+      "customer": "Scegli il cliente di ogni titolare.",
+      "duplicate": "Lo stesso cliente compare due volte.",
+      "share_range": "Ogni quota è un numero intero da 1 a 1000.",
+      "sum": "Le quote devono sommare 1000 ‰."
+    }
+  },
+  "vessels": {
+    "title": "Barche autorizzate",
+    "hint": "La barca principale occupa il posto; le altre possono ormeggiare dopo averla cambiata.",
+    "primary": "Principale",
+    "fitBlocked": "Non entra nel posto",
+    "makePrimary": "Rendi principale",
+    "remove": "Togli",
+    "add": "Aggiungi barca"
+  }
+}

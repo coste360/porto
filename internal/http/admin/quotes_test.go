@@ -43,7 +43,9 @@ func TestQuoteHandlers_Scenario(t *testing.T) {
 	}
 	c.expect(t, 428, "precondition_required", "PATCH", Q, body, nil)
 	c.expect(t, 200, "", "PATCH", Q, body, &q, "If-Match", etag(q.Version))
-	c.expect(t, 200, "", "POST", Q+"/send", nil, &q, "If-Match", etag(q.Version))
+	var sent api.QuoteSendResult
+	c.expect(t, 200, "", "POST", Q+"/send?manual=true", nil, &sent, "If-Match", etag(q.Version))
+	q = sent.Quote
 	if q.Status != "sent" || q.SentAt == nil {
 		t.Fatalf("sent %+v", q)
 	}

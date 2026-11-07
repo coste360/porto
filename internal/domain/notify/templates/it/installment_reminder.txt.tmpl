@@ -1,0 +1,12 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+ti ricordiamo la rata indicata. Se hai già pagato, ignora questo messaggio.
+{{with v . "contract_code"}}Causale: {{.}}
+{{end}}{{with v . "amount"}}Importo: {{.}}
+{{end}}{{with v . "due_on"}}Scadenza: {{.}}
+{{end}}{{with v . "iban"}}IBAN: {{.}}
+{{end}}{{with v . "bank_holder"}}Intestatario: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

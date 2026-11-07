@@ -1,0 +1,17 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+we propose to renew your contract. You can accept or decline online.
+{{with v . "contract_code"}}Current contract: {{.}}
+{{end}}{{with v . "starts_on"}}New period from: {{.}}
+{{end}}{{with v . "ends_on"}}To: {{.}}
+{{end}}{{with v . "old_total"}}Current amount: {{.}}
+{{end}}{{with v . "new_total"}}New amount: {{.}}
+{{end}}{{with v . "deadline_on"}}Reply by: {{.}}
+{{end}}{{with v . "message"}}Message: {{.}}
+{{end}}
+{{with v . "link"}}View the proposal:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

@@ -17,6 +17,11 @@ describe('nav', () => {
       'pricing.configure',
       'contracts.read',
       'presence.write',
+      'contracts.write',
+      'rights.manage',
+      'templates.configure',
+      'communications.send',
+      'providers.configure',
     ]).map((i) => i.id);
     expect(ids).toEqual(NAV_ITEMS.map((i) => i.id));
   });
@@ -63,6 +68,11 @@ describe('nav', () => {
       'quotes',
       'contracts',
       'inquiries',
+      'installments',
+      'renewals',
+      'charters',
+      'waitlist',
+      'signatures',
     ]);
     expect(visibleNavItems(['presence.write']).map((i) => i.id)).toEqual(['dock']);
   });
@@ -71,5 +81,27 @@ describe('nav', () => {
     expect(UPCOMING_MODULES.length).toBeGreaterThan(0);
     expect(UPCOMING_MODULES).not.toContain('common:nav.modules.map');
     expect(UPCOMING_MODULES).not.toContain('common:nav.modules.customers');
+  });
+
+  it('shows the M4 pages by permission', () => {
+    expect(visibleNavItems(['rights.manage']).map((i) => i.id)).toEqual([
+      'rights',
+      'transfers',
+      'mandates',
+      'fees',
+      'common-charges',
+      'holder-installments',
+      'concession',
+      'imports',
+    ]);
+    expect(visibleNavItems(['templates.configure']).map((i) => i.id)).toEqual(['templates']);
+    expect(visibleNavItems(['communications.send']).map((i) => i.id)).toEqual(['communications']);
+    expect(visibleNavItems(['providers.configure']).map((i) => i.id)).toEqual([
+      'signature-settings',
+    ]);
+    expect(visibleNavItems(['contracts.write']).map((i) => i.id)).toEqual([
+      'imports',
+      'contract-settings',
+    ]);
   });
 });

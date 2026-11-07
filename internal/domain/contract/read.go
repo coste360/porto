@@ -40,6 +40,12 @@ type Detail struct {
 	ShowRef         bool
 	ShowNotes       bool
 	PresenceState   string
+
+	// M4: charter fields, the renewal proposal of a successor and the successor of a renewed source.
+	Charter           *store.CharterContract
+	FleetName         string
+	RenewalProposalID string
+	SuccessorID       string
 }
 
 // Summary is a contract or transit in a list.
@@ -54,8 +60,11 @@ type Summary struct {
 }
 
 func seriesOf(kind string) string {
-	if kind == KindTransit {
+	switch kind {
+	case KindTransit:
 		return SeriesTransit
+	case KindCharter:
+		return SeriesCharter
 	}
 	return SeriesMooring
 }
@@ -158,6 +167,24 @@ func (s *Service) detail(ctx context.Context, db bun.IDB, scope store.MarinaScop
 	}
 	if vp, err := store.GetVesselPresence(ctx, db, scope, c.VesselID); err == nil {
 		d.PresenceState = vp.State
+	}
+	if c.Kind == KindCharter {
+		if ch, err := store.GetCharterContract(ctx, db, scope, c.ID); err == nil {
+			d.Charter = ch
+			if f, err := store.GetCharterFleet(ctx, db, scope, ch.FleetID); err == nil {
+				d.FleetName = f.Name
+			}
+		}
+	}
+	// The open proposal renewing this contract (renewal_proposal_id); a successor without one shows the proposal it
+	// comes from.
+	if pr, err := store.OpenProposalOfSource(ctx, db, scope, c.ID); err == nil && pr != nil {
+		d.RenewalProposalID = pr.ID
+	} else if pr, err := store.ProposalOfSuccessor(ctx, db, scope, c.ID); err == nil && pr != nil {
+		d.RenewalProposalID = pr.ID
+	}
+	if succ, err := store.SignedSuccessorOf(ctx, db, scope, c.ID); err == nil && succ != nil {
+		d.SuccessorID = succ.ID
 	}
 	return d, nil
 }

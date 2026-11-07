@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>questo è il codice per firmare il documento. Non comunicarlo a nessuno.</p>
+<table>
+{{with v . "code"}}<tr><td>Codice</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "document_title"}}<tr><td>Documento</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "expires_at"}}<tr><td>Valido fino alle</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

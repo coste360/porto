@@ -108,6 +108,109 @@ export const queryKeys = {
     trim(['marina', marinaId, 'desk', 'movements', date, mapId]),
   presences: (marinaId: string, date?: string) =>
     trim(['marina', marinaId, 'desk', 'presences', date]),
+
+  // M4 contracts (m4-plan §8.2): instalments, renewals, charter, addenda, waiting list and contract settings under
+  // the desk root (invalidated by contract.changed).
+  installments: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'desk', 'installments', filters]),
+  contractInstallments: (marinaId: string, contractId?: string) =>
+    trim(['marina', marinaId, 'desk', 'contract-installments', contractId]),
+  addenda: (marinaId: string, contractId?: string) =>
+    trim(['marina', marinaId, 'desk', 'addenda', contractId]),
+  renewals: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'desk', 'renewals', filters]),
+  campaign: (marinaId: string, campaignId?: string) =>
+    trim(['marina', marinaId, 'desk', 'campaign', campaignId]),
+  campaignProposals: (
+    marinaId: string,
+    campaignId?: string,
+    filters?: Record<string, string | undefined>,
+  ) => trim(['marina', marinaId, 'desk', 'campaign-proposals', campaignId, filters]),
+  proposal: (marinaId: string, proposalId?: string) =>
+    trim(['marina', marinaId, 'desk', 'proposal', proposalId]),
+  charters: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'desk', 'charters', filters]),
+  fleets: (marinaId: string) => ['marina', marinaId, 'desk', 'fleets'] as const,
+  fleet: (marinaId: string, fleetId?: string) =>
+    trim(['marina', marinaId, 'desk', 'fleet', fleetId]),
+  waitlist: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'desk', 'waitlist', filters]),
+  contractSettings: (marinaId: string) =>
+    ['marina', marinaId, 'desk', 'contract-settings'] as const,
+
+  // M4 rights: everything under ['marina', id, 'rights'] (invalidated by rights.changed).
+  rights: (marinaId: string) => ['marina', marinaId, 'rights'] as const,
+  rightsList: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'rights', 'list', filters]),
+  right: (marinaId: string, rightId?: string) =>
+    trim(['marina', marinaId, 'rights', 'right', rightId]),
+  rightHistory: (marinaId: string, berthId?: string) =>
+    trim(['marina', marinaId, 'rights', 'history', berthId]),
+  mapRights: (marinaId: string, mapId?: string, date?: string) =>
+    trim(['marina', marinaId, 'rights', 'map', mapId, date]),
+  transfers: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'rights', 'transfers', filters]),
+  transfer: (marinaId: string, transferId?: string) =>
+    trim(['marina', marinaId, 'rights', 'transfer', transferId]),
+  mandates: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'rights', 'mandates', filters]),
+  mandate: (marinaId: string, mandateId?: string) =>
+    trim(['marina', marinaId, 'rights', 'mandate', mandateId]),
+  feeTables: (marinaId: string, year?: string) =>
+    trim(['marina', marinaId, 'rights', 'fee-tables', year]),
+  feeRuns: (marinaId: string, year?: string) =>
+    trim(['marina', marinaId, 'rights', 'fee-runs', year]),
+  feeRun: (marinaId: string, feeRunId?: string) =>
+    trim(['marina', marinaId, 'rights', 'fee-run', feeRunId]),
+  millesimalTables: (marinaId: string) =>
+    ['marina', marinaId, 'rights', 'millesimal-tables'] as const,
+  millesimalTable: (marinaId: string, tableId?: string) =>
+    trim(['marina', marinaId, 'rights', 'millesimal-table', tableId]),
+  budgets: (marinaId: string) => ['marina', marinaId, 'rights', 'budgets'] as const,
+  budget: (marinaId: string, budgetId?: string) =>
+    trim(['marina', marinaId, 'rights', 'budget', budgetId]),
+  commonRuns: (marinaId: string, budgetId?: string) =>
+    trim(['marina', marinaId, 'rights', 'common-runs', budgetId]),
+  commonRun: (marinaId: string, runId?: string) =>
+    trim(['marina', marinaId, 'rights', 'common-run', runId]),
+  holderInstallments: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'rights', 'holder-installments', filters]),
+  concession: (marinaId: string) => ['marina', marinaId, 'rights', 'concession'] as const,
+
+  // M4 documents, signatures, communications and imports under ['marina', id, 'docs'] (invalidated by
+  // documents.changed). The M1 registry documents keep queryKeys.documents.
+  docsArea: (marinaId: string) => ['marina', marinaId, 'docs'] as const,
+  templateKinds: (marinaId: string) => ['marina', marinaId, 'docs', 'template-kinds'] as const,
+  templates: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'docs', 'templates', filters]),
+  template: (marinaId: string, templateId?: string) =>
+    trim(['marina', marinaId, 'docs', 'template', templateId]),
+  templateVersions: (marinaId: string, templateId?: string) =>
+    trim(['marina', marinaId, 'docs', 'template-versions', templateId]),
+  generatedDocs: (marinaId: string, subjectType?: string, subjectId?: string) =>
+    trim(['marina', marinaId, 'docs', 'generated', subjectType, subjectId]),
+  generatedDoc: (marinaId: string, documentId?: string) =>
+    trim(['marina', marinaId, 'docs', 'generated-doc', documentId]),
+  signatures: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'docs', 'signatures', filters]),
+  signature: (marinaId: string, requestId?: string) =>
+    trim(['marina', marinaId, 'docs', 'signature', requestId]),
+  signatureSettings: (marinaId: string) =>
+    ['marina', marinaId, 'docs', 'signature-settings'] as const,
+  communications: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'docs', 'communications', filters]),
+  communication: (marinaId: string, campaignId?: string) =>
+    trim(['marina', marinaId, 'docs', 'communication', campaignId]),
+  communicationRecipients: (marinaId: string, campaignId?: string) =>
+    trim(['marina', marinaId, 'docs', 'communication-recipients', campaignId]),
+  imports: (marinaId: string) => ['marina', marinaId, 'docs', 'imports'] as const,
+  importRun: (marinaId: string, runId?: string) =>
+    trim(['marina', marinaId, 'docs', 'import', runId]),
+  customerMessages: (marinaId: string, customerId?: string) =>
+    trim(['marina', marinaId, 'docs', 'customer-messages', customerId]),
+
+  // M4 customer magic-link pages (booking SPA): never under a marina id, the token is the only credential.
+  publicLink: (slug: string, token: string) => ['public', slug, 'link', token] as const,
 };
 
 /** Drops the trailing undefined segments, so a key with fewer arguments is a prefix of the full one. */
@@ -168,6 +271,18 @@ export function keysForMessage(msg: StreamMessage, marinaId: string): QueryKey[]
         queryKeys.inquiries(marinaId),
         queryKeys.movements(marinaId),
         queryKeys.dayView(marinaId),
+        // M4: instalments, renewals, charter, addenda, waiting list (m4-plan §7.5).
+        queryKeys.installments(marinaId),
+        queryKeys.contractInstallments(marinaId),
+        queryKeys.addenda(marinaId),
+        queryKeys.renewals(marinaId),
+        queryKeys.campaign(marinaId),
+        queryKeys.campaignProposals(marinaId),
+        queryKeys.proposal(marinaId),
+        queryKeys.charters(marinaId),
+        queryKeys.fleets(marinaId),
+        queryKeys.fleet(marinaId),
+        queryKeys.waitlist(marinaId),
       ];
     default:
       return keysForTopic(msg.topic, marinaId);
@@ -189,6 +304,13 @@ export function keysForTopic(topic: string, marinaId: string): QueryKey[] {
     case 'pricing.changed':
       // settings, revenue classes, items, categories, lists, matrices and coverage live under pricing.
       return [queryKeys.pricing(marinaId)];
+    case 'rights.changed':
+      // rights, map rights, transfers, mandates, fees, millesimal tables, budgets, runs, holder instalments and
+      // the concession live under rights (M4).
+      return [queryKeys.rights(marinaId)];
+    case 'documents.changed':
+      // templates, generated documents, signatures, communications, imports and customer messages (M4).
+      return [queryKeys.docsArea(marinaId)];
     default:
       return [];
   }

@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},</p>
+<p>this is the code to sign the document. Do not share it with anyone.</p>
+<table>
+{{with v . "code"}}<tr><td>Code</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "document_title"}}<tr><td>Document</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "expires_at"}}<tr><td>Valid until</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>una scadenza del porto richiede attenzione. Apri lo scadenzario per i dettagli.</p>
+<table>
+{{with v . "deadline_kind"}}<tr><td>Scadenza</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "due_on"}}<tr><td>Data</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "contract_code"}}<tr><td>Riferimento</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+{{with v . "link"}}<p><a href="{{.}}">Apri lo scadenzario</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

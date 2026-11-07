@@ -1,4 +1,7 @@
-import type { Page } from '@playwright/test';
+import { readFileSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
+
+import { test, type Page } from '@playwright/test';
 
 import {
   addPierThroughApi,
@@ -9,6 +12,7 @@ import {
   type BerthDoc,
   type MapDoc,
 } from './map';
+import { RUN_DIR } from './env';
 
 // M3 occupancy helpers for the Playwright specs (m3-plan §9.5; signatures fixed). Everything goes through the
 // admin API with the page session: a fresh marina per harbour (no price-list overlap with other specs),
@@ -35,6 +39,62 @@ function lastNight(departure: string): string {
   return t.toISOString().slice(0, 10);
 }
 
+/**
+ * Marinas created by the helpers and not archived yet. A spec whose set-up fails before it learns the marina id
+ * cannot archive it; `login` archives these leftovers so the owner keeps a single marina (specs run serially in
+ * one worker, so the set spans the suite).
+ */
+// Persisted in the run directory: Playwright restarts the worker after a failed test, which drops module state.
+const REGISTRY = path.join(RUN_DIR, 'open-harbours.json');
+
+function readRegistry(): Record<string, string> {
+  try {
+    return JSON.parse(readFileSync(REGISTRY, 'utf8')) as Record<string, string>;
+  } catch {
+    return {};
+  }
+}
+
+function writeRegistry(r: Record<string, string>) {
+  writeFileSync(REGISTRY, JSON.stringify(r));
+}
+
+function track(marinaId: string) {
+  writeRegistry({ ...readRegistry(), [marinaId]: test.info().testId });
+}
+
+function untrack(marinaId: string) {
+  const r = readRegistry();
+  delete r[marinaId];
+  writeRegistry(r);
+}
+
+function leftovers(): string[] {
+  const current = test.info().testId;
+  return Object.entries(readRegistry())
+    .filter(([, owner]) => owner !== current)
+    .map(([id]) => id);
+}
+
+export function openHarbourCount(): number {
+  return leftovers().length;
+}
+
+export async function archiveLeftoverHarbours(page: Page): Promise<void> {
+  for (const id of leftovers()) {
+    const res = await page.request.fetch(`/api/admin/v1/marinas/${id}/archive`, {
+      method: 'POST',
+      headers: { 'X-CSRF-Token': await csrfOf(page) },
+    });
+    if (res.ok() || res.status() === 404 || res.status() === 409) untrack(id);
+  }
+}
+
+async function csrfOf(page: Page): Promise<string> {
+  const cookies = await page.context().cookies();
+  return cookies.find((c) => c.name === 'porto_csrf')?.value ?? '';
+}
+
 async function createFreshMarina(page: Page): Promise<string> {
   const me = await adminRequest<{ organizations: { id: string }[] }>(
     page,
@@ -48,6 +108,7 @@ async function createFreshMarina(page: Page): Promise<string> {
     `/api/admin/v1/organizations/${me.data.organizations[0]!.id}/marinas`,
     { body: { name: `Marina ${slug}`, slug, timezone: 'Europe/Rome' } },
   );
+  track(marina.data.id);
   return marina.data.id;
 }
 
@@ -149,6 +210,7 @@ export async function archiveOpsHarbour(page: Page, marinaId: string): Promise<v
   await adminRequest(page, 'POST', `/api/admin/v1/marinas/${marinaId}/archive`, {
     expectStatus: 204,
   });
+  untrack(marinaId);
 }
 
 /**
@@ -158,7 +220,8 @@ export async function archiveOpsHarbour(page: Page, marinaId: string): Promise<v
 export async function setupPrices(page: Page, marinaId: string): Promise<void> {
   const api = marinaApi(marinaId);
   const year = Number(marinaDay().slice(0, 4));
-  const from = `${year}-01-01`;
+  // From the previous year: the M4 renewal scenarios create contracts that started last year.
+  const from = `${year - 1}-01-01`;
   const to = `${year + 1}-12-31`;
   const classes = await adminRequest<{ items: { id: string; code: string }[] }>(
     page,
@@ -188,7 +251,7 @@ export async function setupPrices(page: Page, marinaId: string): Promise<void> {
     name: { it: 'Listino occupazione' },
     valid_from: from,
     valid_to: to,
-    contract_types: ['transit', 'annual'],
+    contract_types: ['transit', 'annual', 'seasonal'],
   };
   const created = await adminRequest<{
     id: string;
@@ -207,7 +270,8 @@ export async function setupPrices(page: Page, marinaId: string): Promise<void> {
           ...created.data.settings,
           dimension_source: 'vessel',
           length_rounding: { step_cm: 10, mode: 'up' },
-          primary_items: { transit: trn, annual: ann },
+          primary_items: { transit: trn, annual: ann, seasonal: ann },
+          season_window: { from, to },
         },
         periods: [
           {
@@ -238,6 +302,18 @@ export async function setupPrices(page: Page, marinaId: string): Promise<void> {
             basis: 'per_meter',
             unit: 'year',
             unit_cents: 10_000,
+            scope: { contract_types: ['annual'] },
+          },
+          {
+            // Seasonal stays (and M4 charters, priced as seasonal): per metre and season.
+            key: 'r:sea',
+            stage: 'base',
+            name: 'Stagionale',
+            item_id: ann,
+            basis: 'per_meter',
+            unit: 'season',
+            unit_cents: 30_000,
+            scope: { contract_types: ['seasonal'] },
           },
         ],
       },

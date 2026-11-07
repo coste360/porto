@@ -19,7 +19,10 @@ export async function login(
     );
     await fillLogin(page, email, password);
     const res = await response;
-    if (res.status() !== 429 || attempt >= 2) break;
+    if (res.status() !== 429 || attempt >= 2) {
+      if (res.ok() && (await archiveLeftovers(page))) await page.goto('/admin/');
+      break;
+    }
     const wait = Math.min(Number(res.headers()['retry-after'] ?? '5') || 5, 60) + 1;
     test.info().setTimeout(test.info().timeout + wait * 1000);
     await page.waitForTimeout(wait * 1000);
@@ -43,4 +46,12 @@ export async function logout(page: Page) {
   await page.getByRole('button', { name: /Menu utente/ }).click();
   await page.getByRole('menuitem', { name: 'Esci' }).click();
   await expect(page).toHaveURL(/\/admin\/login/);
+}
+
+/** Archives the marinas a failed spec left behind (see archiveLeftoverHarbours); true when it archived any. */
+async function archiveLeftovers(page: Page): Promise<boolean> {
+  const { archiveLeftoverHarbours, openHarbourCount } = await import('./occupancy');
+  if (openHarbourCount() === 0) return false;
+  await archiveLeftoverHarbours(page);
+  return true;
 }

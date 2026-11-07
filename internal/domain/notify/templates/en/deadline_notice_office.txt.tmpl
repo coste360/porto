@@ -1,0 +1,13 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+a marina deadline needs attention. Open the deadline list for the details.
+{{with v . "deadline_kind"}}Deadline: {{.}}
+{{end}}{{with v . "due_on"}}Date: {{.}}
+{{end}}{{with v . "contract_code"}}Reference: {{.}}
+{{end}}
+{{with v . "link"}}Open the deadline list:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

@@ -1,0 +1,585 @@
+{
+  "fields": {
+    "addendum": {
+      "delta": "Difference",
+      "description": "Description",
+      "effective_on": "Effective date",
+      "installments": "Instalments",
+      "kind": "Kind",
+      "lines": "Lines",
+      "new_total": "New total",
+      "new_vessel": "New vessel",
+      "old_total": "Previous total",
+      "seq": "Number"
+    },
+    "adjustment": {
+      "amount": "Amount",
+      "kind": "Kind",
+      "reason": "Reason"
+    },
+    "bank": {
+      "bank": "Bank",
+      "bic": "BIC",
+      "holder": "Holder",
+      "iban": "IBAN"
+    },
+    "billing_customer": "Billing customer",
+    "common": {
+      "holder": "Holder",
+      "installments": "Instalments",
+      "items": "Items",
+      "kind": "Kind",
+      "lines": "Lines",
+      "total": "Total",
+      "year": "Year"
+    },
+    "common_item": {
+      "allocated": "Allocated",
+      "amount": "Amount",
+      "item": "Item",
+      "marina_share": "Marina share",
+      "table": "Table"
+    },
+    "common_line": {
+      "berth": "Berth",
+      "berth_share": "Berth share",
+      "holder_amount": "Holder amount",
+      "item": "Item",
+      "item_amount": "Item amount",
+      "millis": "Thousandths",
+      "table": "Table"
+    },
+    "communication": {
+      "contracts": "Contracts",
+      "vessels": "Vessels"
+    },
+    "contract": {
+      "berths": "Berths",
+      "code": "Code",
+      "ends_on": "End",
+      "installments": "Instalments",
+      "issued_on": "Issue date",
+      "kind": "Kind",
+      "lines": "Lines",
+      "notes": "Notes",
+      "price": "Price",
+      "signed_on": "Signature date",
+      "starts_on": "Start",
+      "term": "Term"
+    },
+    "customer": "Customer",
+    "evidence": {
+      "declared_identity": "Declared identity",
+      "document_sha256": "Document fingerprint",
+      "document_title": "Document title",
+      "email_hash": "Email fingerprint",
+      "ip": "IP address",
+      "name": "Name",
+      "opened_at": "Opened at",
+      "otp_sent_at": "Code sent at",
+      "request_id": "Request id",
+      "role": "Role",
+      "signed_at": "Signed at",
+      "signers": "Signers",
+      "user_agent_sha256": "Browser fingerprint"
+    },
+    "fee": {
+      "amount": "Amount",
+      "base": "Base",
+      "days": "Days",
+      "holder": "Holder",
+      "holder_amount": "Holder amount",
+      "installments": "Instalments",
+      "istat": "ISTAT update",
+      "share": "Share",
+      "updated": "Updated amount",
+      "year": "Year"
+    },
+    "fleet": {
+      "changeover_weekday": "Changeover day",
+      "name": "Name",
+      "pricing_mode": "Pricing mode",
+      "vessels": "Vessels"
+    },
+    "groups": {
+      "addendum": "Addendum",
+      "contract": "Contract",
+      "fleet": "Fleet",
+      "installment": "Instalment",
+      "marina": "Marina",
+      "policy": "Conditions",
+      "quote": "Quote",
+      "right": "Right of use",
+      "vessel": "Vessel"
+    },
+    "holder": {
+      "amount": "Amount",
+      "party": "Party",
+      "share": "Share"
+    },
+    "holder_chain": {
+      "berth": "Berth",
+      "entries": "Entries",
+      "holders": "Holders",
+      "right": "Right of use",
+      "status": "Status"
+    },
+    "installment": {
+      "amount": "Amount",
+      "due_on": "Due date",
+      "issue_on": "Issue date",
+      "kind": "Kind",
+      "open": "Open instalments",
+      "overdue": "Overdue",
+      "payment_reference": "Payment reference",
+      "seq": "Number",
+      "status": "Status"
+    },
+    "mandate": {
+      "from": "From",
+      "holder": "Holder",
+      "lines": "Lines",
+      "min_guaranteed": "Guaranteed minimum",
+      "owner_share": "Owner share",
+      "owner_share_bp": "Owner share (%)",
+      "revenue": "Revenue",
+      "to": "To",
+      "top_up": "Minimum top-up"
+    },
+    "mandate_line": {
+      "contract_code": "Contract code",
+      "first_night": "First night",
+      "last_night": "Last night",
+      "nights": "Nights",
+      "owner_share": "Owner share",
+      "revenue": "Revenue"
+    },
+    "map_print": {
+      "date": "Date",
+      "lens": "Lens",
+      "map_name": "Map name"
+    },
+    "marina": {
+      "address": "Address",
+      "bank": "Bank",
+      "concession_expires_on": "Concession expiry",
+      "email": "Email",
+      "fiscal_code": "Fiscal code",
+      "legal_name": "Legal name",
+      "name": "Name",
+      "phone": "Phone",
+      "vat_number": "VAT number",
+      "website": "Website"
+    },
+    "party": {
+      "address": "Address",
+      "code": "Code",
+      "company_name": "Company name",
+      "display_name": "Name",
+      "email": "Email",
+      "first_name": "First name",
+      "fiscal_code": "Fiscal code",
+      "kind": "Kind",
+      "last_name": "Last name",
+      "phone": "Phone",
+      "vat_number": "VAT number"
+    },
+    "place": {
+      "code": "Code",
+      "first_night": "First night",
+      "last_night": "Last night",
+      "length": "Length",
+      "map": "Map",
+      "structure": "Structure",
+      "type": "Type",
+      "width": "Width"
+    },
+    "policy": {
+      "cancellation_notice_days": "Cancellation notice (days)",
+      "deposit": "Deposit",
+      "deposit_bp": "Deposit (%)",
+      "deposit_due_days": "Deposit due days",
+      "early_payment_discount_bp": "Early payment discount (%)",
+      "installments_count": "Number of instalments",
+      "penalty_bp": "Penalty (%)",
+      "refund": "Refund",
+      "renewal_notice_days": "Renewal notice (days)",
+      "sepa": "SEPA direct debit",
+      "tacit_renewal": "Tacit renewal"
+    },
+    "price": {
+      "adjustments": "Adjustments",
+      "deposit": "Deposit",
+      "lines": "Lines",
+      "net": "Net",
+      "total": "Total",
+      "vat": "VAT"
+    },
+    "price_line": {
+      "amount": "Amount",
+      "description": "Description",
+      "qty": "Quantity",
+      "unit": "Unit",
+      "unit_price": "Unit price",
+      "vat_rate": "VAT rate"
+    },
+    "quote": {
+      "code": "Code",
+      "ends_on": "End",
+      "issued_on": "Issue date",
+      "kind": "Kind",
+      "link": "Link",
+      "notes": "Notes",
+      "options": "Options",
+      "starts_on": "Start",
+      "term": "Term",
+      "valid_until": "Valid until"
+    },
+    "quote_option": {
+      "label": "Label",
+      "placements": "Places",
+      "price": "Price",
+      "seq": "Number"
+    },
+    "renewal": {
+      "berths": "Berths",
+      "contract": "Contract",
+      "deadline": "Deadline",
+      "early_payment_total": "Early payment total",
+      "installments": "Instalments",
+      "link": "Link",
+      "message": "Message",
+      "new_contract": "New contract",
+      "new_price": "New price",
+      "old_price": "Current price"
+    },
+    "right": {
+      "berth": "Berth",
+      "from_on": "From",
+      "kind": "Kind",
+      "title_date": "Title date",
+      "title_deed": "Deed",
+      "title_notary": "Notary",
+      "title_number": "Title number",
+      "to_on": "To"
+    },
+    "transfer": {
+      "declared_price": "Declared price",
+      "effective_on": "Effective date",
+      "from": "From",
+      "takeover_fee": "Takeover fee",
+      "to": "To"
+    },
+    "vessel": {
+      "beam": "Beam",
+      "draft": "Draft",
+      "flag": "Flag",
+      "hull_type": "Hull type",
+      "loa": "Length overall",
+      "name": "Name",
+      "registration": "Registration"
+    }
+  },
+  "templateKind": {
+    "quote": "Quote",
+    "contract_annual": "Annual contract",
+    "contract_seasonal": "Seasonal contract",
+    "contract_monthly": "Monthly contract",
+    "contract_period": "Period contract",
+    "charter": "Charter contract",
+    "general_conditions": "General conditions",
+    "harbour_rules": "Harbour rules",
+    "letter": "Letter",
+    "addendum": "Addendum",
+    "renewal_proposal": "Renewal proposal",
+    "payment_request": "Payment request",
+    "reminder": "Reminder",
+    "installment_notice": "Instalment notice",
+    "holder_chain": "Holder chain",
+    "mandate_statement": "Mandate statement",
+    "fee_notice": "Management fee notice",
+    "common_charges_holder": "Common charges per holder",
+    "common_charges_items": "Common charges per item",
+    "transfer": "Transfer",
+    "communication": "Communication",
+    "signature_evidence": "Signature evidence",
+    "map_print": "Map print",
+    "receipt": "Receipt",
+    "statement_of_account": "Statement of account",
+    "yard_work_order": "Yard work order",
+    "yard_quote": "Yard quote",
+    "rental_contract": "Rental contract",
+    "rental_handover": "Rental handover"
+  },
+  "fieldType": {
+    "text": "Text",
+    "notes": "Notes",
+    "int": "Number",
+    "cents": "Amount",
+    "cm": "Length",
+    "bp": "Percentage",
+    "millis": "Thousandths",
+    "date": "Date",
+    "datetime": "Date and time",
+    "bool": "Yes/no",
+    "list": "List",
+    "object": "Group"
+  },
+  "installmentStatus": {
+    "scheduled": "Scheduled",
+    "issued": "Issued",
+    "partially_paid": "Partially paid",
+    "paid": "Paid",
+    "cancelled": "Cancelled",
+    "overdue": "Overdue"
+  },
+  "installmentKind": {
+    "deposit": "Deposit",
+    "installment": "Instalment",
+    "single": "Single payment"
+  },
+  "settlementMethod": {
+    "bank_transfer": "Bank transfer",
+    "cash": "Cash",
+    "card_pos": "Card (POS)",
+    "cheque": "Cheque",
+    "other": "Other"
+  },
+  "planChoice": {
+    "standard": "Standard plan",
+    "early_payment": "Early payment"
+  },
+  "campaignStatus": {
+    "draft": "Draft",
+    "sending": "Sending",
+    "open": "Open",
+    "closed": "Closed",
+    "discarded": "Discarded"
+  },
+  "proposalStatus": {
+    "previewed": "Previewed",
+    "proposed": "Proposed",
+    "sent": "Sent",
+    "accepted": "Accepted",
+    "signed": "Signed",
+    "completed": "Completed",
+    "declined": "Declined",
+    "expired": "Expired",
+    "excluded": "Excluded"
+  },
+  "exclusionReason": {
+    "arrears": "Arrears",
+    "insurance_expired": "Insurance expired",
+    "already_renewed": "Already renewed",
+    "no_price": "No price list",
+    "berth_unavailable": "Berth unavailable",
+    "manual": "Manual exclusion"
+  },
+  "addendumKind": {
+    "service_add": "Service added",
+    "service_remove": "Service removed",
+    "parking": "Parking",
+    "billing_customer": "Billing customer change",
+    "price_change": "Price change",
+    "vessel_change": "Vessel change"
+  },
+  "addendumStatus": {
+    "draft": "Draft",
+    "awaiting_signature": "Awaiting signature",
+    "active": "Active",
+    "cancelled": "Cancelled"
+  },
+  "charterPricingMode": {
+    "per_berth": "Per berth",
+    "per_vessel": "Per vessel",
+    "flat": "Flat"
+  },
+  "waitlistStatus": {
+    "waiting": "Waiting",
+    "offered": "Offered",
+    "converted": "Converted",
+    "withdrawn": "Withdrawn"
+  },
+  "rightKind": {
+    "ownership_share": "Ownership share",
+    "long_term_use": "Long-term use",
+    "membership": "Membership"
+  },
+  "rightStatus": {
+    "active": "Active",
+    "transferred": "Transferred",
+    "ended": "Ended",
+    "cancelled": "Cancelled"
+  },
+  "transferStatus": {
+    "draft": "Draft",
+    "awaiting_signature": "Awaiting signature",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "mandateStatus": {
+    "active": "Active",
+    "ended": "Ended",
+    "cancelled": "Cancelled"
+  },
+  "mapRightStatus": {
+    "marina": "Marina",
+    "holder": "Holder",
+    "mandate": "Under mandate"
+  },
+  "feeBasis": {
+    "per_category": "Per category",
+    "per_m2_berth": "Per m² of berth",
+    "per_length_band": "Per length band"
+  },
+  "feeRunStatus": {
+    "draft": "Draft",
+    "simulated": "Simulated",
+    "issued": "Issued",
+    "discarded": "Discarded"
+  },
+  "millesimalTableStatus": {
+    "draft": "Draft",
+    "active": "Active",
+    "archived": "Archived"
+  },
+  "budgetStatus": {
+    "draft": "Draft",
+    "approved": "Approved",
+    "closed": "Closed"
+  },
+  "commonRunKind": {
+    "advance": "Advance",
+    "balance": "Balance"
+  },
+  "commonRunStatus": {
+    "draft": "Draft",
+    "issued": "Issued",
+    "discarded": "Discarded"
+  },
+  "holderInstallmentSource": {
+    "management_fee": "Management fee",
+    "common_advance": "Common charges advance",
+    "common_balance": "Common charges balance",
+    "transfer_fee": "Takeover fee"
+  },
+  "obligationKind": {
+    "fee_instalment": "Fee instalment",
+    "deposit": "Deposit",
+    "insurance": "Insurance",
+    "periodic_report": "Periodic report",
+    "other": "Other"
+  },
+  "templateVersionStatus": {
+    "draft": "Draft",
+    "published": "Published",
+    "superseded": "Superseded"
+  },
+  "documentStatus": {
+    "pending": "Pending",
+    "rendering": "Rendering",
+    "ready": "Ready",
+    "failed": "Failed",
+    "superseded": "Superseded"
+  },
+  "signatureDriver": {
+    "paper": "Paper signature",
+    "otp": "Simple electronic signature (code)",
+    "provider": "External provider"
+  },
+  "signatureStatus": {
+    "pending_document": "Preparing document",
+    "sent": "Sent",
+    "partially_signed": "Partially signed",
+    "signed": "Signed",
+    "declined": "Declined",
+    "expired": "Expired",
+    "cancelled": "Cancelled"
+  },
+  "signerStatus": {
+    "waiting": "Waiting",
+    "invited": "Invited",
+    "signed": "Signed",
+    "declined": "Declined"
+  },
+  "signerRole": {
+    "customer": "Customer",
+    "co_holder": "Co-holder",
+    "outgoing_holder": "Outgoing holder",
+    "incoming_holder": "Incoming holder",
+    "legal_representative": "Legal representative",
+    "marina": "Marina"
+  },
+  "orderMode": {
+    "sequential": "In order",
+    "parallel": "In parallel"
+  },
+  "commCategory": {
+    "service": "Service",
+    "promotional": "Promotional"
+  },
+  "commStatus": {
+    "draft": "Draft",
+    "scheduled": "Scheduled",
+    "sending": "Sending",
+    "sent": "Sent",
+    "cancelled": "Cancelled"
+  },
+  "recipientStatus": {
+    "pending": "Pending",
+    "queued": "Queued",
+    "skipped_no_consent": "Skipped: no consent",
+    "skipped_no_email": "Skipped: no email",
+    "failed": "Failed"
+  },
+  "importEntity": {
+    "customers_vessels": "Customers and vessels",
+    "contracts": "Contracts",
+    "rights": "Rights of use",
+    "deadlines": "Deadlines"
+  },
+  "importStatus": {
+    "dry_run": "Dry run",
+    "applied": "Applied",
+    "undone": "Undone",
+    "failed": "Failed"
+  },
+  "deadlineKind": {
+    "contract_end": "Contract end",
+    "installment_due": "Instalment due",
+    "holder_installment_due": "Holder instalment due",
+    "right_end": "Right end",
+    "mandate_end": "Mandate end",
+    "concession_expiry": "Concession expiry",
+    "concession_obligation": "Concession obligation",
+    "renewal_deadline": "Renewal deadline",
+    "tacit_renewal_blocked": "Tacit renewal blocked",
+    "waitlist_offer": "Waiting list offer",
+    "document_failed": "Document failed",
+    "signature_expiring": "Signature expiring"
+  },
+  "deadlineChannel": {
+    "panel": "Panel",
+    "customer_email": "Customer email",
+    "office_email": "Office email"
+  },
+  "insurancePolicy": {
+    "warn": "Warn",
+    "block": "Block"
+  },
+  "requiredField": {
+    "address": "Address",
+    "fiscal_code": "Fiscal code",
+    "birth_date": "Birth date",
+    "vessel_registration": "Vessel registration",
+    "insurance_expiry": "Insurance expiry",
+    "insurance_document": "Insurance policy",
+    "identity_document": "Identity document"
+  },
+  "linkPurpose": {
+    "quote": "Quote",
+    "renewal": "Renewal",
+    "signature": "Signature",
+    "unsubscribe": "Unsubscribe"
+  }
+}

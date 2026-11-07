@@ -216,6 +216,12 @@ linters:
             - "**/internal/domain/accrual/**"
             - "**/internal/domain/formula/**"
             - "**/internal/domain/optimizer/**"
+            # M4 (m4-plan §0.7)
+            - "**/internal/domain/schedule/**"
+            - "**/internal/domain/allot/**"
+            - "**/internal/domain/docs/tmpl/**"
+            - "**/internal/domain/docs/markdown/**"
+            - "**/internal/domain/docs/layout/**"
           deny:
             - pkg: github.com/coste360/porto/internal/store
               desc: pure engines must not touch the database (INV-21)
@@ -242,6 +248,11 @@ linters:
             - "**/internal/domain/pricing/**"
             - "**/internal/domain/accrual/**"
             - "**/internal/domain/formula/**"
+            - "**/internal/domain/schedule/**"
+            - "**/internal/domain/allot/**"
+            - "**/internal/domain/docs/tmpl/**"
+            - "**/internal/domain/docs/markdown/**"
+            - "**/internal/domain/docs/layout/**"
             # Seeded generators of the layout and fit parity vectors (test data, not the engines).
             - "!**/internal/domain/layout/internal/vectors/**"
             - "!**/internal/domain/fit/internal/genvectors/**"

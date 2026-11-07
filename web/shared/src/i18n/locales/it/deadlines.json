@@ -20,7 +20,19 @@
     "insurance": "Assicurazione",
     "safety_certificate": "Certificato di sicurezza",
     "power_declaration": "Dichiarazione di potenza",
-    "other_document": "Altro documento"
+    "other_document": "Altro documento",
+    "contract_end": "Fine contratto",
+    "installment_due": "Rata in scadenza",
+    "holder_installment_due": "Rata del titolare",
+    "right_end": "Fine diritto d'uso",
+    "mandate_end": "Fine mandato",
+    "concession_expiry": "Scadenza concessione",
+    "concession_obligation": "Adempimento concessione",
+    "renewal_deadline": "Termine del rinnovo",
+    "tacit_renewal_blocked": "Rinnovo tacito bloccato",
+    "waitlist_offer": "Posto per la lista d'attesa",
+    "document_failed": "Documento non generato",
+    "signature_expiring": "Firma in scadenza"
   },
   "filters": {
     "status": "Stato",
@@ -45,12 +57,17 @@
     "leadDays": "Giorni di anticipo",
     "leadDaysHint": "Uno o più numeri di giorni separati da virgola, es. 60, 15.",
     "invalid": "Usa numeri interi di giorni tra 0 e 730, separati da virgola.",
-    "saved": "Anticipi salvati."
+    "saved": "Anticipi salvati.",
+    "channels": "Canali di avviso"
   },
   "dashboard": {
     "title": "Scadenze",
     "description": "Documenti e assicurazioni di clienti e barche.",
     "viewAll": "Vedi tutte",
     "more": "{{count}}+"
+  },
+  "engine": {
+    "sync": "Aggiorna ora",
+    "synced": "Scadenze aggiornate: {{created}} nuove, {{updated}} aggiornate, {{closed}} chiuse."
   }
 }

@@ -237,6 +237,8 @@ export function useMarkQuoteSent(marinaId: string) {
       api.POST(`${M}/quotes/{quoteId}/send`, {
         params: {
           path: { marinaId, quoteId: v.id },
+          // M3 "segna come inviato": only the mark, no email (the M4 send by email is useSendQuote).
+          query: { manual: true },
           header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
         },
       }),

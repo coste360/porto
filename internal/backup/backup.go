@@ -61,10 +61,15 @@ var deferredColumns = map[string][]string{
 // draft, so lists are restored as drafts and get their status once every table (rules, item snapshot) is in.
 // inquiries and quotes (M3) point forward to quotes, quote options and contracts: they are inserted as NULL and
 // set at the end.
+// M4: active millesimal tables and issued fee and common charge runs freeze their entries, lines and allocations
+// (INV-41, INV-44), so they are restored as drafts and get their status at the end, like price lists.
 var lateColumns = map[string]map[string]any{
-	"price_lists": {"status": "draft"},
-	"inquiries":   {"quote_id": nil, "contract_id": nil},
-	"quotes":      {"accepted_option_id": nil, "contract_id": nil},
+	"price_lists":         {"status": "draft"},
+	"inquiries":           {"quote_id": nil, "contract_id": nil},
+	"quotes":              {"accepted_option_id": nil, "contract_id": nil},
+	"millesimal_tables":   {"status": "draft"},
+	"management_fee_runs": {"status": "draft"},
+	"common_charge_runs":  {"status": "draft"},
 }
 
 // lateUpdate is a column value set after the whole archive is loaded.

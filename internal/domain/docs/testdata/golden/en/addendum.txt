@@ -1,0 +1,20 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Addendum no. 1 to contract ORM-2027-0042
+Between Porto Demo and Mario Rossi, effective from 1 April 2027, the contract is amended as follows.
+Cambio dell'unità ormeggiata.
+New vessel: Grecale (11.90 m).
+Previous amount €4,850.00, new amount €4,970.00 (difference €120.00).
+No. | Due | Amount
+3 | 30/06/2027 | €1,131.66
+4 | 30/09/2027 | €1,131.68
+All other conditions of the contract are unchanged.
+[signature customer]
+The customer
+Name:
+Date and signature:
+[signature marina]
+The marina
+Name:
+Date and signature:
+Porto Demo S.r.l. · VAT 01234567890 · Page 1 of 1

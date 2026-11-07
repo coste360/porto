@@ -249,7 +249,9 @@ licenses: ## Check third-party Go and npm licences against the allow-list (Porto
 	@set -euo pipefail; \
 	go tool go-licenses check ./... --ignore $(MODULE) --allowed_licenses=$(LICENSES_OK); \
 	if [ -n "$(HAS_WEB)" ]; then npm --prefix web run licenses; \
-	else $(call skip,licenses web,web/package.json); fi
+	else $(call skip,licenses web,web/package.json); fi; \
+	if [ -d scripts/brand/node_modules ]; then node web/scripts/licenses.mjs scripts/brand; \
+	else $(call skip,licenses brand,scripts/brand/node_modules); fi
 
 .PHONY: clean
 clean: ## Remove build outputs (keeps bin/golangci-lint and .gitkeep files)
@@ -258,3 +260,8 @@ clean: ## Remove build outputs (keeps bin/golangci-lint and .gitkeep files)
 	for app in admin booking; do \
 		[ -d "$(STATIC_DIR)/$$app" ] && find "$(STATIC_DIR)/$$app" -mindepth 1 -not -name .gitkeep -exec rm -rf {} + || true; \
 	done
+
+.PHONY: brand
+brand: ## Rebuild assets/brand/porto/outlined/ (wordmark outlined from Titillium Web 700)
+	npm --prefix scripts/brand ci --no-audit --no-fund
+	npm --prefix scripts/brand run build

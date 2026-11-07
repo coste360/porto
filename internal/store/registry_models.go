@@ -163,10 +163,12 @@ type Deadline struct {
 type DeadlinePolicy struct {
 	bun.BaseModel `bun:"table:deadline_policies"`
 
-	ID        string    `bun:"id,pk"`
-	MarinaID  string    `bun:"marina_id"`
-	Kind      string    `bun:"kind"`
-	LeadDays  JSON      `bun:"lead_days"` // []int, sorted desc
+	ID       string `bun:"id,pk"`
+	MarinaID string `bun:"marina_id"`
+	Kind     string `bun:"kind"`
+	LeadDays JSON   `bun:"lead_days"` // []int, sorted desc
+	// Channels (M4): panel, customer_email, office_email (JSON array; the column default is ["panel"]).
+	Channels  JSON      `bun:"channels"`
 	CreatedAt time.Time `bun:"created_at"`
 	UpdatedAt time.Time `bun:"updated_at"`
 }

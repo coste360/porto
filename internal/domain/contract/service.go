@@ -18,11 +18,18 @@ import (
 
 	"github.com/coste360/porto/internal/calendar"
 	"github.com/coste360/porto/internal/clock"
+	"github.com/coste360/porto/internal/crypto"
 	"github.com/coste360/porto/internal/domain/audit"
 	"github.com/coste360/porto/internal/domain/auth"
+	"github.com/coste360/porto/internal/domain/docs"
+	"github.com/coste360/porto/internal/domain/document"
 	"github.com/coste360/porto/internal/domain/event"
+	"github.com/coste360/porto/internal/domain/magiclink"
+	"github.com/coste360/porto/internal/domain/notify"
 	"github.com/coste360/porto/internal/domain/occupancy"
 	"github.com/coste360/porto/internal/domain/pricelist"
+	"github.com/coste360/porto/internal/domain/signature"
+	"github.com/coste360/porto/internal/filestore"
 	"github.com/coste360/porto/internal/store"
 )
 
@@ -35,6 +42,20 @@ type Deps struct {
 	Log       *slog.Logger
 	Occupancy *occupancy.Service
 	Prices    *pricelist.Service
+
+	// M4 (m4-plan §2): documents, signature, customer links, emails, encryption and the holder instalments of
+	// rights for the installments.issue job.
+	Keys       *crypto.KeyRing
+	Files      *filestore.Store
+	Notify     *notify.Service
+	Docs       *docs.Service
+	Signatures *signature.Service
+	Links      *magiclink.Service
+	Holders    HolderIssuer
+	// Documents stores the documents customers upload through their links (M1 documents); nil = refused.
+	Documents *document.Service
+	// Mailer queues the customer emails of M4 (quote, proposal, payment request, ...); nil = no email.
+	Mailer Mailer
 }
 
 // Service is the contract service.
@@ -46,6 +67,14 @@ type Service struct {
 	// write transaction of transit creation and confirmation (its error rolls the transaction back).
 	afterPrice   func()
 	beforeCommit func() error
+
+	// M4 collaborators (collaborators.go); nil disables the step.
+	composer documentComposer
+	signer   signatureOpener
+	links    linkIssuer
+	mailer   Mailer
+	// afterDocument runs after the document row of a quote acceptance is composed (tests force a failure).
+	afterDocument func() error
 }
 
 func (s *Service) priced() {
@@ -69,6 +98,19 @@ func NewService(d Deps) *Service {
 	s := &Service{d: d}
 	if d.Occupancy != nil {
 		s.alloc = d.Occupancy
+	}
+	if d.Docs != nil {
+		s.composer = d.Docs
+	}
+	if d.Signatures != nil {
+		s.signer = d.Signatures
+	}
+	if d.Links != nil {
+		s.links = d.Links
+	}
+	s.mailer = d.Mailer
+	if s.mailer == nil && d.Notify != nil {
+		s.mailer = notifyMailer{d.Notify}
 	}
 	return s
 }

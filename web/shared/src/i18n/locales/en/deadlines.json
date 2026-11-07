@@ -20,7 +20,19 @@
     "insurance": "Insurance",
     "safety_certificate": "Safety certificate",
     "power_declaration": "Power declaration",
-    "other_document": "Other document"
+    "other_document": "Other document",
+    "contract_end": "Contract end",
+    "installment_due": "Instalment due",
+    "holder_installment_due": "Holder instalment",
+    "right_end": "Right of use end",
+    "mandate_end": "Mandate end",
+    "concession_expiry": "Concession expiry",
+    "concession_obligation": "Concession obligation",
+    "renewal_deadline": "Renewal deadline",
+    "tacit_renewal_blocked": "Tacit renewal blocked",
+    "waitlist_offer": "Berth for the waiting list",
+    "document_failed": "Document not generated",
+    "signature_expiring": "Signature expiring"
   },
   "filters": {
     "status": "Status",
@@ -45,12 +57,17 @@
     "leadDays": "Lead days",
     "leadDaysHint": "One or more day counts separated by commas, e.g. 60, 15.",
     "invalid": "Use whole day counts between 0 and 730, separated by commas.",
-    "saved": "Lead times saved."
+    "saved": "Lead times saved.",
+    "channels": "Notice channels"
   },
   "dashboard": {
     "title": "Deadlines",
     "description": "Documents and insurance policies of customers and vessels.",
     "viewAll": "View all",
     "more": "{{count}}+"
+  },
+  "engine": {
+    "sync": "Sync now",
+    "synced": "Deadlines synced: {{created}} new, {{updated}} updated, {{closed}} closed."
   }
 }

@@ -1,0 +1,15 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+ti inviamo il preventivo richiesto. Trovi il documento in allegato.
+{{with v . "quote_code"}}Preventivo: {{.}}
+{{end}}{{with v . "starts_on"}}Dal: {{.}}
+{{end}}{{with v . "ends_on"}}Al: {{.}}
+{{end}}{{with v . "amount"}}Totale: {{.}}
+{{end}}{{with v . "valid_until"}}Valido fino al: {{.}}
+{{end}}
+{{with v . "link"}}Vedi e accetta il preventivo:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

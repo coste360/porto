@@ -90,6 +90,7 @@ func ctrPolicyIn(in *api.ContractPolicy) *contract.PolicyInput {
 		rp := string(*in.ReleasePolicy)
 		out.ReleasePolicy = &rp
 	}
+	ctrClausesIn(out, in)
 	return out
 }
 
@@ -118,7 +119,7 @@ func ctrReason(r *http.Request, w http.ResponseWriter) (string, bool) {
 // writeContract answers with a contract or transit and its ETag.
 func writeContract(w http.ResponseWriter, d *contract.Detail, status int) {
 	respond.SetETag(w, d.Row.Version)
-	respond.JSON(w, status, view.Contract(d))
+	respond.JSON(w, status, view.ContractM4(d))
 }
 
 // ListContracts implements api.ServerInterface (GET .../contracts).
@@ -209,7 +210,15 @@ func (h *Handler) ActivateContract(w http.ResponseWriter, r *http.Request, marin
 	if !ok {
 		return
 	}
-	c, err := h.Contracts.ActivateContract(r.Context(), principal(r), marinaID, contractID, ifMatch)
+	var in *api.ContractActivate
+	if !respond.DecodeOrFail(w, r, &in, true) {
+		return
+	}
+	ai := contract.ActivateInput{}
+	if in != nil {
+		ai.PaperScanFileID = str(in.PaperScanFileId)
+	}
+	c, err := h.Contracts.ActivateContractWith(r.Context(), principal(r), marinaID, contractID, ifMatch, ai)
 	if err != nil {
 		respond.Error(w, r, err)
 		return
@@ -252,6 +261,72 @@ func (h *Handler) TerminateContract(w http.ResponseWriter, r *http.Request, mari
 		return
 	}
 	c, err := h.Contracts.TerminateContract(r.Context(), principal(r), marinaID, contractID, ifMatch, eff, in.Reason)
+	if err != nil {
+		respond.Error(w, r, err)
+		return
+	}
+	writeContract(w, c, http.StatusOK)
+}
+
+// ctrSignatureIn converts a signature request body.
+func ctrSignatureIn(in *api.SignatureRequestInput) contract.SignatureInput {
+	var out contract.SignatureInput
+	if in == nil {
+		return out
+	}
+	out.Driver = str(enumPtr(in.Driver))
+	out.Sequential = in.OrderMode != nil && *in.OrderMode == api.Sequential
+	if in.Signers != nil {
+		for _, s := range *in.Signers {
+			out.Signers = append(out.Signers, contract.SignerInput{Role: string(s.Role), CustomerID: str(s.CustomerId), UserID: str(s.UserId)})
+		}
+	}
+	return out
+}
+
+// RequestContractSignature implements api.ServerInterface (POST .../contracts/{contractId}/request-signature).
+func (h *Handler) RequestContractSignature(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, contractID api.ContractId, params api.RequestContractSignatureParams) {
+	ifMatch, ok := respond.IfMatch(w, r, params.IfMatch)
+	if !ok {
+		return
+	}
+	var in *api.SignatureRequestInput
+	if !respond.DecodeOrFail(w, r, &in, true) {
+		return
+	}
+	c, err := h.Contracts.RequestContractSignature(r.Context(), principal(r), marinaID, contractID, ifMatch, ctrSignatureIn(in))
+	if err != nil {
+		respond.Error(w, r, err)
+		return
+	}
+	writeContract(w, c, http.StatusOK)
+}
+
+// SuspendContract implements api.ServerInterface (POST .../contracts/{contractId}/suspend).
+func (h *Handler) SuspendContract(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, contractID api.ContractId, params api.SuspendContractParams) {
+	ifMatch, ok := respond.IfMatch(w, r, params.IfMatch)
+	if !ok {
+		return
+	}
+	var in api.ReasonRequired
+	if !respond.DecodeOrFail(w, r, &in, false) {
+		return
+	}
+	c, err := h.Contracts.SuspendContract(r.Context(), principal(r), marinaID, contractID, ifMatch, in.Reason)
+	if err != nil {
+		respond.Error(w, r, err)
+		return
+	}
+	writeContract(w, c, http.StatusOK)
+}
+
+// ResumeContract implements api.ServerInterface (POST .../contracts/{contractId}/resume).
+func (h *Handler) ResumeContract(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, contractID api.ContractId, params api.ResumeContractParams) {
+	ifMatch, ok := respond.IfMatch(w, r, params.IfMatch)
+	if !ok {
+		return
+	}
+	c, err := h.Contracts.ResumeContract(r.Context(), principal(r), marinaID, contractID, ifMatch)
 	if err != nil {
 		respond.Error(w, r, err)
 		return

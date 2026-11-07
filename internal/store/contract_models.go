@@ -108,6 +108,9 @@ type Quote struct {
 	SentAt           time.Time     `bun:"sent_at,nullzero"`
 	DecidedAt        time.Time     `bun:"decided_at,nullzero"`
 	DeclineReason    string        `bun:"decline_reason"`
+	LinkRotatedAt    time.Time     `bun:"link_rotated_at,nullzero"` // M4: last send that rotated the magic link
+	SentCount        int           `bun:"sent_count"`               // M4
+	AcceptedVia      string        `bun:"accepted_via,nullzero"`    // M4: panel, link
 	CreatedByUserID  string        `bun:"created_by_user_id,nullzero"`
 	Version          int           `bun:"version"`
 	CreatedAt        time.Time     `bun:"created_at"`
@@ -181,10 +184,20 @@ type Contract struct {
 	CancelReason          string        `bun:"cancel_reason"`
 	TerminatedOn          calendar.Date `bun:"terminated_on,nullzero"`
 	TerminateReason       string        `bun:"terminate_reason"`
-	CreatedByUserID       string        `bun:"created_by_user_id,nullzero"`
-	Version               int           `bun:"version"`
-	CreatedAt             time.Time     `bun:"created_at"`
-	UpdatedAt             time.Time     `bun:"updated_at"`
+	// M4 (00007_contracts_m4)
+	SignedAt               time.Time `bun:"signed_at,nullzero"`
+	SignedDocumentID       string    `bun:"signed_document_id,nullzero"`
+	SignatureRequestID     string    `bun:"signature_request_id,nullzero"`
+	SuspendedAt            time.Time `bun:"suspended_at,nullzero"`
+	SuspendReason          string    `bun:"suspend_reason,nullzero"`
+	RenewedAt              time.Time `bun:"renewed_at,nullzero"`
+	TerminationAmountCents *int64    `bun:"termination_amount_cents"` // refund < 0, penalty > 0; nil = not computed
+	InstallmentPlanVersion int       `bun:"installment_plan_version"`
+	Charter                bool      `bun:"charter"`
+	CreatedByUserID        string    `bun:"created_by_user_id,nullzero"`
+	Version                int       `bun:"version"`
+	CreatedAt              time.Time `bun:"created_at"`
+	UpdatedAt              time.Time `bun:"updated_at"`
 }
 
 // ContractLine is a row of contract_lines: a resource line (with allocations) or a service line.

@@ -34,12 +34,18 @@ type PriceAdjustment struct {
 	OldCents      int64         `json:"old_cents"`
 	NewCents      int64         `json:"new_cents"`
 	PriceListID   string        `json:"price_list_id"`
+	// M4: addenda, change of vessel and early payment (m4-plan §3.3, §3.5).
+	AddendumID string `json:"addendum_id,omitempty"`
 }
 
 // PriceAdjustment.Kind: a repriced move, and its reversal by the undo of the move (old and new swapped).
 const (
 	AdjustmentMove     = "move"
 	AdjustmentMoveUndo = "move_undo"
+	// M4.
+	AdjustmentEarlyPayment = "early_payment"
+	AdjustmentAddendum     = "addendum"
+	AdjustmentVesselChange = "vessel_change"
 )
 
 // movePriceUndo is one repriced contract in the undo entry of a move (occupancy.MovePrice.Undo).

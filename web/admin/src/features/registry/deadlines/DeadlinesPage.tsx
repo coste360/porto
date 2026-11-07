@@ -1,4 +1,4 @@
-import { SettingsIcon } from 'lucide-react';
+import { RefreshCwIcon, SettingsIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -6,6 +6,7 @@ import {
   useDeadlinePolicies,
   useDeadlines,
   useReplaceDeadlinePolicies,
+  useSyncDeadlines,
   type Deadline,
   type DeadlinePolicy,
   type Schemas,
@@ -13,6 +14,7 @@ import {
 import { useT } from '@porto/shared/i18n';
 import { Button } from '@porto/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@porto/shared/ui/card';
+import { Checkbox } from '@porto/shared/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -39,6 +41,24 @@ import { parseLeadDays } from '../lib/format';
 import { DeadlineTable } from './DeadlineTable';
 
 const ALL = '__all__';
+
+/** Kinds produced by the M4 deadline engine (spec 11.5, m4-plan §6.8), after the M1 document kinds. */
+const ENGINE_KINDS = [
+  'contract_end',
+  'installment_due',
+  'holder_installment_due',
+  'right_end',
+  'mandate_end',
+  'concession_expiry',
+  'concession_obligation',
+  'renewal_deadline',
+  'tacit_renewal_blocked',
+  'waitlist_offer',
+  'document_failed',
+  'signature_expiring',
+] as const satisfies readonly Schemas['DeadlineKind'][];
+const ALL_DEADLINE_KINDS: readonly Schemas['DeadlineKind'][] = [...DEADLINE_KINDS, ...ENGINE_KINDS];
+const CHANNELS: readonly Schemas['DeadlineChannel'][] = ['panel', 'customer_email', 'office_email'];
 type Kind = Schemas['DeadlineKind'];
 type Status = Schemas['DeadlineStatus'];
 type Urgency = Schemas['DeadlineUrgency'];
@@ -50,6 +70,8 @@ export function DeadlinesPage() {
   const [kind, setKind] = useState<Kind | ''>('');
   const [urgency, setUrgency] = useState<Urgency | ''>('');
   const [policiesOpen, setPoliciesOpen] = useState(false);
+  const { marinaId } = useCurrentMarina();
+  const sync = useSyncDeadlines(marinaId);
 
   return (
     <RequirePermission allowed={can('customers.read')}>
@@ -57,14 +79,31 @@ export function DeadlinesPage() {
         title={t('deadlines:title')}
         description={t('deadlines:description')}
         actions={
-          can('marina.configure') ? (
-            <Button variant="outline" onClick={() => setPoliciesOpen(true)}>
-              <SettingsIcon />
-              {t('deadlines:policies.title')}
-            </Button>
-          ) : null
+          <>
+            {can('contracts.write') ? (
+              <Button
+                variant="outline"
+                disabled={sync.isPending}
+                onClick={() =>
+                  sync.mutate(undefined, {
+                    onSuccess: (r) => toast.success(t('deadlines:engine.synced', r)),
+                  })
+                }
+              >
+                <RefreshCwIcon />
+                {t('deadlines:engine.sync')}
+              </Button>
+            ) : null}
+            {can('marina.configure') ? (
+              <Button variant="outline" onClick={() => setPoliciesOpen(true)}>
+                <SettingsIcon />
+                {t('deadlines:policies.title')}
+              </Button>
+            ) : null}
+          </>
         }
       />
+      {sync.isError ? <ProblemAlert error={sync.error} /> : null}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end">
         <FilterSelect
           id="deadlines-status"
@@ -82,7 +121,7 @@ export function DeadlinesPage() {
           value={kind}
           allLabel={t('deadlines:filters.allKinds')}
           onChange={(v) => setKind(v as Kind | '')}
-          options={DEADLINE_KINDS.map((k) => ({ value: k, label: t(`deadlines:kinds.${k}`) }))}
+          options={ALL_DEADLINE_KINDS.map((k) => ({ value: k, label: t(`deadlines:kinds.${k}`) }))}
         />
         {status === 'open' ? (
           <FilterSelect
@@ -216,7 +255,7 @@ function PoliciesDialog({
   const policies = useDeadlinePolicies(marinaId);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-screen overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{t('deadlines:policies.title')}</DialogTitle>
           <DialogDescription>{t('deadlines:policies.description')}</DialogDescription>
@@ -240,6 +279,9 @@ function PoliciesForm({ items, onDone }: { items: DeadlinePolicy[]; onDone: () =
   const [texts, setTexts] = useState<Record<string, string>>(() =>
     Object.fromEntries(items.map((p) => [p.kind, p.lead_days.join(', ')])),
   );
+  const [channels, setChannels] = useState<Record<string, Schemas['DeadlineChannel'][]>>(() =>
+    Object.fromEntries(items.map((p) => [p.kind, p.channels ?? ['panel']])),
+  );
   const parsed = items.map((p) => ({ kind: p.kind, days: parseLeadDays(texts[p.kind] ?? '') }));
   const invalid = parsed.some((p) => p.days === null);
   return (
@@ -250,7 +292,11 @@ function PoliciesForm({ items, onDone }: { items: DeadlinePolicy[]; onDone: () =
         e.preventDefault();
         if (invalid) return;
         replace.mutate(
-          parsed.map((p) => ({ kind: p.kind, lead_days: p.days ?? [] })),
+          parsed.map((p) => ({
+            kind: p.kind,
+            lead_days: p.days ?? [],
+            channels: channels[p.kind] ?? ['panel'],
+          })),
           {
             onSuccess: () => {
               toast.success(t('deadlines:policies.saved'));
@@ -276,6 +322,32 @@ function PoliciesForm({ items, onDone }: { items: DeadlinePolicy[]; onDone: () =
                 onChange={(e) => setTexts((prev) => ({ ...prev, [p.kind]: e.target.value }))}
               />
               {p.days === null ? <FieldError>{t('deadlines:policies.invalid')}</FieldError> : null}
+              <div
+                className="flex flex-wrap gap-3"
+                role="group"
+                aria-label={t('deadlines:policies.channels')}
+              >
+                {CHANNELS.map((c) => (
+                  <Field key={c} orientation="horizontal" className="w-auto">
+                    <Checkbox
+                      id={`policy-${p.kind}-${c}`}
+                      checked={(channels[p.kind] ?? ['panel']).includes(c)}
+                      onCheckedChange={(v) =>
+                        setChannels((prev) => {
+                          const cur = prev[p.kind] ?? ['panel'];
+                          return {
+                            ...prev,
+                            [p.kind]: v === true ? [...cur, c] : cur.filter((x) => x !== c),
+                          };
+                        })
+                      }
+                    />
+                    <FieldLabel htmlFor={`policy-${p.kind}-${c}`}>
+                      {t(`docsEnums:deadlineChannel.${c}`)}
+                    </FieldLabel>
+                  </Field>
+                ))}
+              </div>
             </Field>
           ))}
           <FieldDescription>{t('deadlines:policies.leadDaysHint')}</FieldDescription>

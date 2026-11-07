@@ -1,10 +1,17 @@
-// Package public implements /api/public/v1: what anyone may read about a marina (M0: name and locales).
+// Package public implements /api/public/v1: what anyone may read about a marina (M0: name and locales) and, from
+// M4, the customer magic-link pages (/api/public/v1/{slug}/links/{token}; the token is the only credential and is
+// never logged).
 package public
 
 import (
 	"net/http"
 
+	"github.com/coste360/porto/internal/domain/comms"
+	"github.com/coste360/porto/internal/domain/contract"
+	"github.com/coste360/porto/internal/domain/docs"
+	"github.com/coste360/porto/internal/domain/magiclink"
 	"github.com/coste360/porto/internal/domain/marina"
+	"github.com/coste360/porto/internal/domain/signature"
 	"github.com/coste360/porto/internal/http/api"
 	"github.com/coste360/porto/internal/http/respond"
 	"github.com/coste360/porto/internal/http/view"
@@ -13,6 +20,14 @@ import (
 // Handler serves the public API.
 type Handler struct {
 	Marinas *marina.Service
+
+	// M4 customer magic-link pages (m4-plan §7.3.6): quote and renewal (CONTRACTS), signing and unsubscribe
+	// (DOCUMENTS).
+	Contracts  *contract.Service
+	Links      *magiclink.Service
+	Signatures *signature.Service
+	Comms      *comms.Service
+	Docs       *docs.Service
 }
 
 // GetPublicMarina implements api.ServerInterface.

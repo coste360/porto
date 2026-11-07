@@ -1,0 +1,106 @@
+{
+  "list": {
+    "title": "Communications",
+    "description": "Messages to customers by group, contract, presence or map selection.",
+    "new": "New communication",
+    "status": "Status",
+    "name": "Name",
+    "category": "Category",
+    "sentAt": "Sent on",
+    "empty": "No communications."
+  },
+  "detail": {
+    "title": "Communication"
+  },
+  "pending": "This page arrives with M4.",
+  "wizard": {
+    "title": "New communication",
+    "description": "Recipients, content, attachments, preview and send.",
+    "steps": "Communication steps",
+    "step": {
+      "audience": "Recipients",
+      "content": "Content",
+      "attachments": "Attachments",
+      "preview": "Preview",
+      "send": "Send"
+    },
+    "template": "Template",
+    "freeText": "Free text",
+    "subject": "Subject",
+    "body": "Text (Markdown, with customer fields)",
+    "bodyHint": "Use the customer fields between double braces, as in the print templates.",
+    "promotionalHint": "Promotional messages go only to customers who consented and carry the unsubscribe link.",
+    "attachments": "Attached documents (ids separated by commas)",
+    "attachmentsHint": "Attachments are read at send time; up to 10 MB in total.",
+    "sampleCustomer": "Preview for the customer",
+    "refresh": "Refresh preview",
+    "sendNow": "Send now",
+    "sent": "Communication being sent.",
+    "scheduleOn": "Schedule for",
+    "schedule": "Schedule",
+    "scheduled": "Communication scheduled."
+  },
+  "preview": {
+    "count": "Recipients",
+    "deliverable": "Will receive the email",
+    "noConsent": "No consent",
+    "noEmail": "No email"
+  },
+  "audience": {
+    "mode": "Selection mode",
+    "modes": {
+      "filter": "By criteria",
+      "customers": "Chosen customers",
+      "map": "On the map"
+    },
+    "kinds": "Contracts",
+    "kind": {
+      "mooring": "Mooring",
+      "transit": "Transit",
+      "charter": "Charter"
+    },
+    "holders": "Holders of rights of use",
+    "terms": "Term",
+    "groups": "Berth groups",
+    "presentFrom": "Present from",
+    "presentTo": "Present to",
+    "deadlines": "With deadlines within (days)",
+    "customer": "Customer",
+    "add": "Add",
+    "remove": "Remove {{name}}",
+    "removeShort": "×",
+    "map": "Map",
+    "mapCanvas": "Map for selecting berths",
+    "selected": "{{count}} berths selected",
+    "selectAll": "All",
+    "clear": "None"
+  },
+  "errors": {
+    "audience": {
+      "empty": "Choose at least one criterion.",
+      "range": "The presence period is reversed.",
+      "days": "Days are a number from 1 to 365.",
+      "customers": "Add at least one customer.",
+      "selection": "Select at least one berth on the map."
+    },
+    "content": {
+      "name": "Name the communication.",
+      "content": "Choose a template or write subject and text."
+    }
+  },
+  "monitor": {
+    "cancel": "Cancel the scheduled send",
+    "scheduledAt": "Scheduled for {{at}}",
+    "sentAt": "Sent on {{at}}",
+    "customer": "Customer",
+    "status": "Status",
+    "delivery": "Delivery",
+    "deliveries": {
+      "queued": "Queued",
+      "sending": "Sending",
+      "sent": "Sent",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Payment reminder
+Mario Rossi
+A reminder about the following instalment.
+No. | Due | Amount
+1 | 21/11/2026 | €1,455.00
+Contract ORM-2027-0042.
+Bank transfer to IBAN IT60X0542811101000000123456 held by Porto Demo S.r.l., reference
+ORM-2027-0042.
+The instalment is overdue.
+Porto Demo S.r.l. · VAT 01234567890 · Page 1 of 1

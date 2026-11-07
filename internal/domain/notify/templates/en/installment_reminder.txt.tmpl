@@ -1,0 +1,12 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+a reminder about the instalment below. If you have already paid, please ignore this message.
+{{with v . "contract_code"}}Reference: {{.}}
+{{end}}{{with v . "amount"}}Amount: {{.}}
+{{end}}{{with v . "due_on"}}Due on: {{.}}
+{{end}}{{with v . "iban"}}IBAN: {{.}}
+{{end}}{{with v . "bank_holder"}}Account holder: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

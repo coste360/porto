@@ -2,7 +2,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { describe, expect, it, vi } from 'vitest';
 
 import { keysForMessage, queryKeys } from './queryKeys';
-import { SSE_DEBOUNCE_MS, subscribeMarinaStream } from './sse';
+import { SSE_DEBOUNCE_MS, SSE_TOPICS, subscribeMarinaStream } from './sse';
 
 class FakeEventSource extends EventTarget {
   url: string;
@@ -104,5 +104,20 @@ describe('keysForMessage', () => {
     expect(keysForMessage({ ...base, topic: 'pricing.changed' }, 'm1')).toEqual([
       queryKeys.pricing('m1'),
     ]);
+  });
+
+  it('invalidates the M4 areas', () => {
+    const base = { type: 'x', marina_id: 'm1', entity_ids: [] };
+    expect(keysForMessage({ ...base, topic: 'rights.changed' }, 'm1')).toEqual([
+      queryKeys.rights('m1'),
+    ]);
+    expect(keysForMessage({ ...base, topic: 'documents.changed' }, 'm1')).toEqual([
+      queryKeys.docsArea('m1'),
+    ]);
+    const contract = keysForMessage({ ...base, topic: 'contract.changed' }, 'm1');
+    expect(contract).toContainEqual(queryKeys.installments('m1'));
+    expect(contract).toContainEqual(queryKeys.renewals('m1'));
+    expect(SSE_TOPICS).toContain('rights.changed');
+    expect(SSE_TOPICS).toContain('documents.changed');
   });
 });

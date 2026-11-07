@@ -1,0 +1,21 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Quote no. PRV-2026-0101
+Dear Mario Rossi, we offer the mooring of the vessel Libeccio (RM 1234 D), length 11.34 m, beam 3.80
+m from 1 January 2027 to 1 January 2028.
+Option 1: Pontile B
+Berth | Structure | From | To
+B-12 | Pontile B | 01/01/2027 | 31/12/2027
+Item | Amount
+Ormeggio annuale posto B-12 | €4,500.00
+Acqua ed energia | €350.00
+Total €4,850.00, deposit on signature €1,455.00.
+Option 2: Pontile C
+Berth | Structure | From | To
+C-03 | Pontile C | 01/01/2027 | 31/12/2027
+Item | Amount
+Ormeggio annuale posto B-12 | €4,500.00
+Total €4,520.00.
+This quote is valid until 30 November 2026.
+You can accept it online: https://porto-demo.example/b/demo/m/quote/DEMO
+Porto Demo S.r.l. · VAT 01234567890 · Page 1 of 1

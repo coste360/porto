@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},</p>
+<p>please sign the document below. You sign online with a code sent by email (simple electronic signature).</p>
+<table>
+{{with v . "document_title"}}<tr><td>Document</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "contract_code"}}<tr><td>Reference</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "deadline_on"}}<tr><td>Sign by</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+{{with v . "link"}}<p><a href="{{.}}">Open and sign the document</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},</p>
+<p>we propose to renew your contract. You can accept or decline online.</p>
+<table>
+{{with v . "contract_code"}}<tr><td>Current contract</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "starts_on"}}<tr><td>New period from</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "ends_on"}}<tr><td>To</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "old_total"}}<tr><td>Current amount</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "new_total"}}<tr><td>New amount</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "deadline_on"}}<tr><td>Reply by</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "message"}}<tr><td>Message</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+{{with v . "link"}}<p><a href="{{.}}">View the proposal</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

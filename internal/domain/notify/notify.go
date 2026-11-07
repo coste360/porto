@@ -14,6 +14,7 @@ import (
 	"log/slog"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/uptrace/bun"
@@ -41,6 +42,9 @@ type Service struct {
 	log          *slog.Logger
 	recipientKey []byte
 	wake         chan struct{}
+
+	attachMu sync.RWMutex
+	attach   AttachmentLoader
 }
 
 // NewService returns a Service. baseURL is PORTO_BASE_URL (links in mails).
@@ -163,7 +167,7 @@ func (s *Service) DeliverDue(ctx context.Context, limit int) (int, error) {
 	sent := 0
 	for i := range rows {
 		row := &rows[i]
-		msg, err := s.prepare(row)
+		msg, err := s.prepare(ctx, row)
 		if err == nil {
 			var providerID string
 			providerID, err = s.transport.Send(ctx, msg)
@@ -204,7 +208,7 @@ func retryDelay(failed int) time.Duration {
 	return d
 }
 
-func (s *Service) prepare(row *store.Message) (Message, error) {
+func (s *Service) prepare(ctx context.Context, row *store.Message) (Message, error) {
 	to, err := s.keys.DecryptString(row.RecipientEnc, "notify.recipient:"+row.ID)
 	if err != nil {
 		return Message{}, fmt.Errorf("notify: decrypt recipient: %w", err)
@@ -221,9 +225,14 @@ func (s *Service) prepare(row *store.Message) (Message, error) {
 	if err != nil {
 		return Message{}, err
 	}
+	atts, err := s.loadAttachments(ctx, row.MarinaID, data.Attachments)
+	if err != nil {
+		return Message{}, err
+	}
 	return Message{
 		ID: row.ID, Template: row.Template, Locale: row.Locale, To: to, RecipientHash: row.RecipientHash,
-		Subject: r.Subject, Text: r.Text, HTML: r.HTML, Date: s.clock.Now().UTC(),
+		Subject: r.Subject, Text: r.Text, HTML: r.HTML, Date: s.clock.Now().UTC(), Attachments: atts,
+		Headers: data.Headers,
 	}, nil
 }
 

@@ -1,8 +1,6 @@
 package contract
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"slices"
 	"strings"
@@ -145,57 +143,6 @@ func overrideReason(in *FitOverrideInput) *string {
 func cleanText(s string, maxRunes int) (string, bool) {
 	s = strings.TrimSpace(s)
 	return s, len([]rune(s)) <= maxRunes
-}
-
-// defaultPolicy returns the contract policy defaults of the marina settings (m3-plan §4.7).
-func defaultPolicy(st *store.OccupancySettings) Policy {
-	return Policy{Version: PolicyVersion, RepriceOnMove: st.RepriceOnMove, ReleasePolicy: st.ReleasePolicy, AllowSegments: true}
-}
-
-// PolicyInput are the policy fields given by a client (nil = default).
-type PolicyInput struct {
-	Version       *int
-	RepriceOnMove *bool
-	ReleasePolicy *string
-	AllowSegments *bool
-}
-
-// mergePolicy applies in on base and validates the result.
-func mergePolicy(v *auth.ValidationError, base Policy, in *PolicyInput) Policy {
-	if in == nil {
-		return base
-	}
-	if in.Version != nil && *in.Version != PolicyVersion {
-		v.Add("policy.version", "invalid")
-	}
-	if in.RepriceOnMove != nil {
-		base.RepriceOnMove = *in.RepriceOnMove
-	}
-	if in.ReleasePolicy != nil {
-		if *in.ReleasePolicy != ReleaseNever && *in.ReleasePolicy != ReleaseWithConsent {
-			v.Add("policy.release_policy", "invalid")
-		}
-		base.ReleasePolicy = *in.ReleasePolicy
-	}
-	if in.AllowSegments != nil {
-		base.AllowSegments = *in.AllowSegments
-	}
-	return base
-}
-
-// DecodePolicy reads a stored policy, rejecting unknown keys (m3-plan §4.7). An empty document is the zero
-// policy.
-func DecodePolicy(raw store.JSON) (Policy, error) {
-	var p Policy
-	if len(raw) == 0 || string(raw) == "{}" {
-		return p, nil
-	}
-	dec := json.NewDecoder(bytes.NewReader(raw))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&p); err != nil {
-		return Policy{}, fmt.Errorf("contract policy: %w", err)
-	}
-	return p, nil
 }
 
 // endOfDay returns the last second of a local date as an instant (quote expiries, m3-plan §3.3).

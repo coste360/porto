@@ -1,0 +1,63 @@
+{
+  "list": {
+    "title": "Charters",
+    "description": "Charter company fleets, charter contracts and vessel rotation.",
+    "contracts": "Charter contracts",
+    "code": "Code",
+    "fleet": "Fleet",
+    "period": "Period",
+    "total": "Total",
+    "empty": "No charter contracts."
+  },
+  "pending": "This page arrives with M4.",
+  "fleet": {
+    "title": "Fleets",
+    "new": "New fleet",
+    "edit": "Edit fleet",
+    "description": "The vessels of a fleet rotate on the contract berths without repricing.",
+    "company": "Charter company",
+    "name": "Fleet name",
+    "addVessel": "Add vessel",
+    "removeVessel": "Remove {{name}}",
+    "empty": "No fleets."
+  },
+  "wizard": {
+    "new": "New charter contract",
+    "description": "Contract berths, initial vessel for each berth and pricing mode.",
+    "startsOn": "Start",
+    "endsOn": "End",
+    "mode": "Pricing",
+    "changeover": "Changeover day",
+    "flat": "Flat amount",
+    "vessel": "Vessel",
+    "addPlacement": "Add berth",
+    "removePlacement": "Remove berth",
+    "create": "Create contract",
+    "errors": {
+      "fleet": "Choose the fleet.",
+      "period": "The period is not valid.",
+      "placements": "Add at least one berth.",
+      "vessel": "Each berth needs a fleet vessel.",
+      "duplicate": "A vessel can be on one berth only.",
+      "flat": "A flat price needs an amount and a reason."
+    }
+  },
+  "weekdays": {
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday",
+    "7": "Sunday"
+  },
+  "rotation": {
+    "open": "Rotation",
+    "title": "Rotation of {{code}}",
+    "description": "Drag a vessel onto a berth (or pick it) to move it from a night: if another fleet vessel is there, the two swap.",
+    "fromNight": "From the night of",
+    "vessels": "Fleet vessels",
+    "changed": "Changed",
+    "apply": "Apply the rotation"
+  }
+}

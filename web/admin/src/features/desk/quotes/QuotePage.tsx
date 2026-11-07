@@ -6,6 +6,7 @@ import {
   useDeclineQuote,
   useMarkQuoteSent,
   useQuote,
+  type PlanChoice,
   type Quote,
 } from '@porto/shared/api';
 import { useT } from '@porto/shared/i18n';
@@ -28,6 +29,7 @@ import { PageHeader } from '@porto/shared/ui/patterns';
 import { RadioGroup, RadioGroupItem } from '@porto/shared/ui/radio-group';
 
 import { useCurrentMarina } from '../../../auth/hooks';
+import { AcceptPlanFields, SendQuoteDialog } from '../../contracts-m4/public';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../../components/PageStates';
 import { DeskProblemAlert } from '../components/DeskProblemAlert';
 import { draftFromQuote, expiryCountdown } from '../lib/quote';
@@ -64,7 +66,7 @@ function QuoteDetail({
 }) {
   const { t, i18n } = useT();
   const [editing, setEditing] = useState(false);
-  const [dialog, setDialog] = useState<'accept' | 'decline' | null>(null);
+  const [dialog, setDialog] = useState<'accept' | 'decline' | 'send' | null>(null);
   const send = useMarkQuoteSent(marinaId);
   const open = quote.status === 'draft' || quote.status === 'sent';
   const left = expiryCountdown(quote.expires_at, new Date());
@@ -116,6 +118,11 @@ function QuoteDetail({
                   </Button>
                 </>
               ) : null}
+              <Button variant="outline" onClick={() => setDialog('send')}>
+                {quote.status === 'draft'
+                  ? t('contractsM4:quote.send')
+                  : t('contractsM4:quote.resend')}
+              </Button>
               <Button onClick={() => setDialog('accept')}>{t('desk:quote.accept')}</Button>
               <Button variant="outline" onClick={() => setDialog('decline')}>
                 {t('desk:quote.decline')}
@@ -199,6 +206,9 @@ function QuoteDetail({
       {dialog === 'accept' ? (
         <AcceptDialog marinaId={marinaId} quote={quote} onClose={() => setDialog(null)} />
       ) : null}
+      {dialog === 'send' ? (
+        <SendQuoteDialog marinaId={marinaId} quote={quote} onClose={() => setDialog(null)} />
+      ) : null}
       {dialog === 'decline' ? (
         <DeclineDialog marinaId={marinaId} quote={quote} onClose={() => setDialog(null)} />
       ) : null}
@@ -220,6 +230,7 @@ function AcceptDialog({
   const accept = useAcceptQuote(marinaId);
   const [optionId, setOptionId] = useState(quote.options[0]?.id ?? '');
   const [activate, setActivate] = useState(false);
+  const [plan, setPlan] = useState<PlanChoice>('standard');
   const [confirm, setConfirm] = useState<{ reference: string; payAtDeparture: boolean } | null>(
     null,
   );
@@ -253,6 +264,9 @@ function AcceptDialog({
             />
             <FieldLabel htmlFor="accept-activate">{t('desk:quote.activateNow')}</FieldLabel>
           </Field>
+        ) : null}
+        {quote.kind === 'mooring' ? (
+          <AcceptPlanFields value={plan} onChange={setPlan} />
         ) : (
           <>
             <Field orientation="horizontal">
@@ -284,7 +298,9 @@ function AcceptDialog({
                   version: quote.version,
                   body: {
                     option_id: optionId,
-                    ...(quote.kind === 'mooring' ? { activate } : {}),
+                    ...(quote.kind === 'mooring'
+                      ? { activate, ...(plan !== 'standard' ? { plan } : {}) }
+                      : {}),
                     ...(confirm
                       ? {
                           confirm: {

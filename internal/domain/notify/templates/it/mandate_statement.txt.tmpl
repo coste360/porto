@@ -1,0 +1,9 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+ti inviamo il rendiconto del mandato di gestione del tuo posto barca. Trovi il dettaglio in allegato.
+{{with v . "period"}}Periodo: {{.}}
+{{end}}{{with v . "amount"}}Tua quota: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

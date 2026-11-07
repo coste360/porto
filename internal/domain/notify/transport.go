@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"encoding/base64"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"mime"
 	"mime/multipart"
@@ -32,6 +34,8 @@ type Message struct {
 	Text          string
 	HTML          string
 	Date          time.Time
+	Attachments   []Attachment      // M4: multipart/mixed when present
+	Headers       map[string]string // M4: List-Unsubscribe, List-Unsubscribe-Post
 }
 
 // Transport sends messages.
@@ -39,10 +43,61 @@ type Transport interface {
 	Send(ctx context.Context, m Message) (providerID string, err error)
 }
 
-// buildRFC5322 renders m as a multipart/alternative message.
+// buildRFC5322 renders m as a multipart/alternative message, wrapped in multipart/mixed with the attachments when
+// there are any.
 func buildRFC5322(from string, m Message) ([]byte, error) {
 	var body bytes.Buffer
 	mw := multipart.NewWriter(&body)
+	contentType := "multipart/alternative; boundary=" + mw.Boundary()
+	alt := mw
+	var mixed *multipart.Writer
+	if len(m.Attachments) > 0 {
+		mixed = mw
+		contentType = "multipart/mixed; boundary=" + mixed.Boundary()
+		var inner bytes.Buffer
+		alt = multipart.NewWriter(&inner)
+		if err := writeAlternative(alt, m); err != nil {
+			return nil, err
+		}
+		h := textproto.MIMEHeader{}
+		h.Set("Content-Type", "multipart/alternative; boundary="+alt.Boundary())
+		w, err := mixed.CreatePart(h)
+		if err != nil {
+			return nil, err
+		}
+		if _, err := w.Write(inner.Bytes()); err != nil {
+			return nil, err
+		}
+		for _, a := range m.Attachments {
+			h := textproto.MIMEHeader{}
+			h.Set("Content-Type", a.ContentType)
+			h.Set("Content-Transfer-Encoding", "base64")
+			h.Set("Content-Disposition", mime.FormatMediaType("attachment", map[string]string{"filename": a.Name}))
+			w, err := mixed.CreatePart(h)
+			if err != nil {
+				return nil, err
+			}
+			enc := base64.StdEncoding.EncodeToString(a.Content)
+			for len(enc) > 76 {
+				if _, err := io.WriteString(w, enc[:76]+"\r\n"); err != nil {
+					return nil, err
+				}
+				enc = enc[76:]
+			}
+			if _, err := io.WriteString(w, enc+"\r\n"); err != nil {
+				return nil, err
+			}
+		}
+		if err := mixed.Close(); err != nil {
+			return nil, err
+		}
+	} else if err := writeAlternative(alt, m); err != nil {
+		return nil, err
+	}
+	return assemble(from, m, contentType, body.Bytes()), nil
+}
+
+func writeAlternative(mw *multipart.Writer, m Message) error {
 	for _, part := range []struct{ ctype, content string }{
 		{"text/plain; charset=utf-8", m.Text},
 		{"text/html; charset=utf-8", m.HTML},
@@ -52,20 +107,20 @@ func buildRFC5322(from string, m Message) ([]byte, error) {
 		h.Set("Content-Transfer-Encoding", "quoted-printable")
 		w, err := mw.CreatePart(h)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		qp := quotedprintable.NewWriter(w)
 		if _, err := qp.Write([]byte(part.content)); err != nil {
-			return nil, err
+			return err
 		}
 		if err := qp.Close(); err != nil {
-			return nil, err
+			return err
 		}
 	}
-	if err := mw.Close(); err != nil {
-		return nil, err
-	}
+	return mw.Close()
+}
 
+func assemble(from string, m Message, contentType string, body []byte) []byte {
 	domain := "porto.local"
 	if a, err := mail.ParseAddress(from); err == nil {
 		if _, d, ok := strings.Cut(a.Address, "@"); ok {
@@ -80,11 +135,16 @@ func buildRFC5322(from string, m Message) ([]byte, error) {
 	header("Date", m.Date.UTC().Format(time.RFC1123Z))
 	header("Message-ID", "<"+m.ID+"@"+domain+">")
 	header("MIME-Version", "1.0")
-	header("Content-Type", "multipart/alternative; boundary="+mw.Boundary())
+	header("Content-Type", contentType)
 	header("Auto-Submitted", "auto-generated")
+	for _, k := range []string{"List-Unsubscribe", "List-Unsubscribe-Post"} {
+		if v := m.Headers[k]; v != "" && !strings.ContainsAny(v, "\r\n") {
+			header(k, v)
+		}
+	}
 	out.WriteString("\r\n")
-	out.Write(body.Bytes())
-	return out.Bytes(), nil
+	out.Write(body)
+	return out.Bytes()
 }
 
 // FileTransport writes each message as an RFC 5322 .eml file (development and tests).

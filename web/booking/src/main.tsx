@@ -5,14 +5,18 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { ApiProvider, createApiClient } from '@porto/shared/api';
-import { I18nextProvider, detectLocale, initI18n } from '@porto/shared/i18n';
+import { I18nextProvider, detectLocale } from '@porto/shared/i18n';
 import { ThemeProvider } from '@porto/shared/theme';
 
 import { BookingPage } from './BookingPage';
+import { initBookingI18n } from './i18n';
+import { LinkPage } from './links';
+import { routeFromPath } from './routes';
 import { slugFromPath } from './slug';
 
 const lang = new URLSearchParams(window.location.search).get('lang');
-const i18n = initI18n({ lng: detectLocale(lang), namespaces: ['common', 'errors', 'booking'] });
+const i18n = initBookingI18n(detectLocale(lang));
+const route = routeFromPath(window.location.pathname, slugFromPath);
 const queryClient = new QueryClient();
 const api = createApiClient();
 
@@ -24,7 +28,11 @@ if (root) {
         <ThemeProvider>
           <QueryClientProvider client={queryClient}>
             <ApiProvider client={api}>
-              <BookingPage slug={slugFromPath(window.location.pathname)} />
+              {route.page === 'link' ? (
+                <LinkPage slug={route.slug} purpose={route.purpose} token={route.token} />
+              ) : (
+                <BookingPage slug={route.slug} />
+              )}
             </ApiProvider>
           </QueryClientProvider>
         </ThemeProvider>

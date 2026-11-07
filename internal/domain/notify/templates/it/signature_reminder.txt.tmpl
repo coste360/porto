@@ -1,0 +1,12 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+ti ricordiamo che il documento indicato è ancora da firmare.
+{{with v . "document_title"}}Documento: {{.}}
+{{end}}{{with v . "deadline_on"}}Da firmare entro il: {{.}}
+{{end}}
+{{with v . "link"}}Apri e firma il documento:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

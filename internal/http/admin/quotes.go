@@ -98,18 +98,22 @@ func (h *Handler) UpdateQuote(w http.ResponseWriter, r *http.Request, marinaID a
 	writeQuote(w, q, http.StatusOK)
 }
 
-// MarkQuoteSent implements api.ServerInterface (POST .../quotes/{quoteId}/send).
-func (h *Handler) MarkQuoteSent(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, quoteID api.QuoteId, params api.MarkQuoteSentParams) {
+// SendQuote implements api.ServerInterface (POST .../quotes/{quoteId}/send).
+//
+// M4 contract phase: every call still runs the M3 manual mark (no PDF, no magic link, no email); CONTRACTS replaces
+// the non-manual path with the 13.2 send (m4-plan §3.2). The response already has the M4 shape.
+func (h *Handler) SendQuote(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, quoteID api.QuoteId, params api.SendQuoteParams) {
 	ifMatch, ok := respond.IfMatch(w, r, params.IfMatch)
 	if !ok {
 		return
 	}
-	q, err := h.Contracts.MarkQuoteSent(r.Context(), principal(r), marinaID, quoteID, ifMatch)
+	res, err := h.Contracts.SendQuote(r.Context(), principal(r), marinaID, quoteID, ifMatch, boolOr(params.Manual, false))
 	if err != nil {
 		respond.Error(w, r, err)
 		return
 	}
-	writeQuote(w, q, http.StatusOK)
+	respond.SetETag(w, res.Quote.Row.Version)
+	respond.JSON(w, http.StatusOK, api.QuoteSendResult{Quote: view.Quote(res.Quote), DocumentId: view.String(res.DocumentID), MessageId: view.String(res.MessageID)})
 }
 
 // AcceptQuote implements api.ServerInterface (POST .../quotes/{quoteId}/accept).
@@ -122,17 +126,31 @@ func (h *Handler) AcceptQuote(w http.ResponseWriter, r *http.Request, marinaID a
 	if !respond.DecodeOrFail(w, r, &in, false) {
 		return
 	}
-	ai := contract.AcceptInput{OptionID: in.OptionId, Confirm: ctrManual(in.Confirm)}
+	ai := contract.AcceptInput{OptionID: in.OptionId, Confirm: ctrManual(in.Confirm), Plan: str(enumPtr(in.Plan))}
 	if in.Activate != nil {
 		ai.Activate = *in.Activate
 	}
-	q, c, err := h.Contracts.AcceptQuote(r.Context(), principal(r), marinaID, quoteID, ifMatch, ai)
+	if in.Signers != nil {
+		ai.Signers = ctrSignatureIn(&api.SignatureRequestInput{Signers: in.Signers}).Signers
+	}
+	res, err := h.Contracts.AcceptQuoteM4(r.Context(), principal(r), marinaID, quoteID, ifMatch, ai)
 	if err != nil {
 		respond.Error(w, r, err)
 		return
 	}
-	respond.SetETag(w, q.Row.Version)
-	respond.JSON(w, http.StatusOK, api.QuoteAcceptResult{Quote: view.Quote(q), Contract: view.Contract(c)})
+	out := api.QuoteAcceptResult{
+		Quote: view.Quote(res.Quote), Contract: view.ContractM4(res.Contract), SignatureRequestId: view.String(res.SignatureRequestID),
+		DocumentId: view.String(res.DocumentID),
+	}
+	if len(res.Warnings) > 0 {
+		ws := make([]api.WriteWarning, 0, len(res.Warnings))
+		for _, w := range res.Warnings {
+			ws = append(ws, api.WriteWarning(w))
+		}
+		out.Warnings = &ws
+	}
+	respond.SetETag(w, res.Quote.Row.Version)
+	respond.JSON(w, http.StatusOK, out)
 }
 
 // DeclineQuote implements api.ServerInterface (POST .../quotes/{quoteId}/decline).

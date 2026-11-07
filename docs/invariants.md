@@ -134,21 +134,77 @@ che porterebbe il totale sotto zero è rifiutato (`409 conflict`). Verificata da
 **INV-30 — Un solo punto di cambio di stato.** Ogni cambio di stato di contratti e transiti passa da
 `internal/domain/contract` e scrive audit ed evento nella stessa transazione. Verificata da:
 `TestContract_StateChangeWritesAuditAndOutbox`, `TestContract_TransitionTable` (le tabelle di stato di
-`internal/domain/contract/states.go`). Stato: implemented.
+`internal/domain/contract/states.go`); le righe M4 da `TestContract_M4StateChangesWriteAuditAndOutbox` (resume,
+request_signature, signature_failed, addendum, change_vessel), `TestContract_SuspendTerminateAmounts` (suspend),
+`TestQuote_AcceptRunsAllSteps` (sign), `TestContract_ExpireMarksRenewed` (expire, expire_renewed) e
+`TestContract_TacitRenewal` (tacit_renew). Stato: implemented.
 
-**INV-31 — Le rate sommano il totale.** Per ogni piano rate `Σ rate = totale del contratto` al centesimo.
-Verificata da: `TestInstallmentPlan_SumsToTotal` (property test). Stato: planned.
+**INV-31 — Le rate sommano il totale.** Per ogni piano rate `Σ rate = totale del contratto` al centesimo (sulle
+rate vive, `status <> 'cancelled'`; con rate già emesse o pagate, il ripiano copre `totale − Σ emesse/pagate`); lo
+stesso vale per le rate dei titolari rispetto alla loro riga (oneri, condominio). Verificata da:
+`TestInstallmentPlan_SumsToTotal` (property test), `TestImport_ContractsResidualPlanAndUndo`,
+`TestAddendum_PriceChangeReplans`, `TestConcurrency_ReplanVsSettle` (ripiani in parallelo a saldi e al job di
+emissione: ordine dei lock contratto → rate) e la query C31 di `store.CheckContractInvariants`. Per le rate dei
+titolari: la query C31h (ogni riga oneri emessa e non esclusa = Σ rate vive delle sue fonti; ogni coppia (riparto
+condominiale, cliente) = Σ dei suoi riparti; si saltano le fonti con rate di un titolo annullato), eseguita dai test
+dei titoli (`TestTransfer_CompleteMovesEverything`, `TestRight_HolderSharesWritePaths`), da
+`TestInvariants_C31hHolderInstallments` (la query rileva le derive), da `TestSeed_DemoM4Coherent` e da
+`TestConcurrency_TransferVsHolderSettle` (cessioni reassign/prorata in parallelo a saldi ed emissioni); emissione e
+saldo delle rate dei titolari prendono il lock del titolo (ordine titolo → rate dei titolari,
+`TestRights_HolderIssueAndSettleWaitForRightLock`) e la cessione fallisce con 412 se una rata letta non è più
+programmata. Stato: implemented.
+
+**INV-32 — Rate pagate solo dal saldo.** Una rata (di contratto o di titolare) diventa `paid` solo tramite
+`contract.SettleInstallment` / `rights.SettleHolderInstallment` (driver manuale in M4, abbinamento dei pagamenti in
+M5); il CHECK `installments_paid_check` / `holder_installments_paid_check` richiede la fonte del saldo. Verificata
+da: `TestInstallment_SettleOnlyManualDriver`, `TestConcurrency_InstallmentSettle`, `TestMigrations_M4Constraints`.
+Stato: partial (pagamenti in M5).
+
+**INV-33 — Una sola proposta di rinnovo aperta per contratto.** Vincolo del database: indice univoco parziale
+`renewal_proposals_open_uidx` su `source_contract_id` per gli stati aperti. Verificata da:
+`TestConcurrency_RenewSameContract`, `TestMigrations_M4Constraints`. Stato: implemented.
+
+**INV-34 — Contratto attivo dopo firma ha il documento firmato.** Ogni contratto passato da `awaiting_signature` e
+`active` ha `signed_document_id` che punta a un documento `ready` e `signed` il cui SHA-256 corrisponde al file
+decifrato; i documenti firmati sono immutabili (trigger). Verificata da: `TestConcurrency_SignVsCancelContract`,
+`TestDocs_SignedNeverRerendered`, query Q18 di `store.CheckContractInvariants`. Stato: implemented.
+
+**INV-35 — Rinnovato solo con successore attivo.** Un contratto `renewed` ha un successore (`renewal_proposals.
+new_contract_id` o rinnovo tacito) `active` o in uno stato successivo. Verificata da:
+`TestRenewal_SimpleHoldsBerthAndExpiry`, `TestContract_ExpireMarksRenewed`, `TestContract_TacitRenewal`,
+`TestRenewal_StaleSourceRefused`, `TestConcurrency_RenewVsTacit`, `TestAcceptance_M4_RenewalCampaign300`, query C35
+di `store.CheckContractInvariants`. Stato: implemented.
+
+**INV-36 — Una sola richiesta di firma aperta per soggetto.** Vincolo del database: indice univoco parziale
+`signature_requests_open_uidx`; una seconda apertura è `ErrSignatureOpen`. Verificata da:
+`TestSignature_OpenTwiceIsSignatureOpen`, `TestMigrations_M4Constraints`. Stato: partial (manca un
+`TestConcurrency_RequestSignatureSameSubject`).
 
 ## Diritti d'uso e condominio (spec 14)
 
 **INV-40 — Quote dei titolari complete.** Per ogni diritto attivo la somma delle quote dei titolari è 1000 millesimi.
-Verificata da: `TestRight_HolderSharesSumTo1000`. Stato: planned.
+Controllata nella transazione di ogni scrittura (ogni quota è 1..1000 per CHECK). Verificata da:
+`TestRight_HolderSharesSumTo1000` (property test), `TestRight_HolderSharesWritePaths` (creazione, modifica dei
+titolari, cessione) e la query C40 di `store.CheckContractInvariants`, eseguita al termine dei test di
+`internal/domain/rights` e da `TestSeed_DemoM4Coherent`. Stato: implemented.
 
-**INV-41 — Tabelle millesimali complete.** Una tabella usata in una ripartizione somma a 1000. Verificata da:
-`TestCommonCharges_RejectsIncompleteTable`. Stato: planned.
+**INV-41 — Tabelle millesimali complete.** Una tabella usata in una ripartizione somma a 1000: si attiva solo a
+Σ = 1000 e le righe di una tabella attiva non cambiano (trigger su entrambi i dialetti). Verificata da:
+`TestCommonCharges_RejectsIncompleteTable`, `TestMillesimal_ActiveImmutable`. Stato: implemented.
 
-**INV-42 — Ripartizione esatta.** La somma degli importi ripartiti è uguale al totale della voce (resto maggiore).
-Verificata da: `TestCommonCharges_AllocationSumsExactly` (property test). Stato: planned.
+**INV-42 — Ripartizione esatta.** La somma degli importi ripartiti è uguale al totale della voce (resto maggiore),
+per voce, per posto sui titolari e per l'intera ripartizione; i posti senza diritto attivo ricevono la quota del
+marina (`customer_id` nullo). Verificata da: `TestCommonCharges_AllocationSumsExactly` (property test),
+`TestCommonCharges_BalanceEqualsActualMinusAdvances`, `TestAcceptance_M4_CommonCharges400`. Stato: implemented.
+
+**INV-43 — Ogni diritto attivo occupa il suo posto.** Ogni diritto attivo ha righe `owner` per ogni notte in
+`[max(from_on, prima notte scritta), to_on]` tranne le notti dei mandati di gestione (query Q17 di
+`CheckOccupancyInvariants`). Verificata da: `TestRight_OwnerOccupancy`, `TestAcceptance_M4_CommonCharges400`.
+Stato: implemented.
+
+**INV-44 — Ripartizioni emesse immutabili.** Le righe di `common_charge_allocations` di una ripartizione emessa e
+di `management_fee_lines` di un calcolo oneri emesso non cambiano (trigger su entrambi i dialetti). Verificata
+da: `TestMillesimal_ActiveImmutable`, `TestMigrations_M4Constraints`. Stato: implemented.
 
 ## Addebiti e incassi (spec 16)
 
@@ -170,7 +226,8 @@ Stato: planned.
 ## Report (spec 21)
 
 **INV-60 — Le competenze sommano l'importo.** Per ogni riga ripartita da `accrual.Allocate` la somma delle quote
-giornaliere è uguale all'importo. Verificata da: `TestAccrual_SumsToAmount` (property test). Stato: planned.
+giornaliere è uguale all'importo (resto sull'ultimo giorno). In M4 la usano il pro rata degli oneri e i ricavi dei
+mandati. Verificata da: `TestAccrual_SumsToAmount` (property test). Stato: implemented.
 
 **INV-61 — Report senza scritture.** Il package `report` non scrive e non emette eventi. Verificata da:
 `TestReport_ReadOnly`. Stato: planned.
@@ -179,8 +236,9 @@ giornaliere è uguale all'importo. Verificata da: `TestAccrual_SumsToAmount` (pr
 
 **INV-70 — Nessun dato personale negli eventi SSE e nei log.** Verificata da:
 `TestEvents_DataHasNoPII` (con i campioni degli eventi M1 di mappa e anagrafiche, di `config.pricing_changed` M2 e
-degli eventi M3 di occupazione, presenze, preventivi, contratti e transiti), `TestSSE_PayloadHasNoPII` (con
-`map_id`, `resource_ids`, `nights` di M3), `TestLogs_NoPII`. Stato: partial.
+degli eventi M3 di occupazione, presenze, preventivi, contratti e transiti e degli eventi M4 di firme, rate,
+rinnovi, diritti, mandati, ripartizioni, documenti e comunicazioni), `TestSSE_PayloadHasNoPII` (con `map_id`,
+`resource_ids`, `nights` di M3), `TestSSE_M4Topics`, `TestLogs_NoPII`. Stato: partial.
 
 **INV-71 — Offline senza effetti sulle risorse.** Nessuna operazione accodata offline crea o sposta allocazioni né
 emette documenti numerati. Verificata da: test Vitest della allowlist della coda. Stato: planned.
@@ -195,9 +253,27 @@ con `{marinaId}`, comprese quelle M1 di mappa, clienti, imbarcazioni, documenti 
 le rotte M2 con `{revenueClassId}`, `{itemId}`, `{categoryId}` e `{priceListId}` e le rotte M3 con `{contractId}`,
 `{quoteId}`, `{allocationId}`, `{releaseId}`, `{inquiryId}`, `{presenceId}`, `{undoId}`, `{areaId}` e `{closureId}`),
 `TestStore_ElementReferencesStayInMarina` e `TestRegistryStore_MergeTargetStaysInMarina` (FK composite
-`(…_id, marina_id)` per strutture, colonnine, struttura padre e cliente di destinazione della fusione). Stato: partial.
+`(…_id, marina_id)` per strutture, colonnine, struttura padre e cliente di destinazione della fusione);
+da M4 `TestSignature_SignerUserScopedToMarina` (un firmatario utente deve avere un accesso al marina). Stato: partial.
 
 **INV-74 — Documenti cifrati a riposo e serviti solo con link firmati.** I file dei documenti (e gli sfondi delle
 mappe) sono salvati cifrati con il KeyRing sotto `PORTO_DATA_DIR/files`, legati a marina e id; il download di un
 documento richiede `customers.read` e un link firmato di 5 minuti legato all'utente. Verificata da:
-`TestDocument_FileEncryptedAtRest`, `TestDocument_SignedURLExpires`. Stato: implemented.
+`TestDocument_FileEncryptedAtRest`, `TestDocument_SignedURLExpires`; da M4 anche i documenti generati e firmati,
+le scansioni e le evidenze di firma (`TestDocs_ComposeRenderArchive`). Stato: implemented.
+
+**INV-75 — Link dei clienti solo per il proprio soggetto.** Un token di link (magic link) risolve solo il suo
+marina, scopo, soggetto e cliente; token scaduti o revocati rispondono 404 come quelli sconosciuti; i token sono
+salvati come hash e non compaiono nei log. Verificata da: `TestPublicLinks_CrossMarina`,
+`TestMagicLink_RotateRevokes`. Stato: implemented.
+
+**INV-76 — Codice OTP monouso con tentativi limitati.** Un codice OTP di firma si consuma una sola volta e accetta
+al massimo N tentativi errati (aggiornamenti condizionati `CountOTPAttempt` e `ConsumeOTP`). Verificata da:
+`TestSignature_OTPLockout`, `TestConcurrency_OTPAttempts`. Stato: partial (manca un `TestConcurrency_OTPVerify`
+con 100 verifiche parallele del codice corretto).
+
+**INV-77 — Un solo messaggio per chiave di deduplica.** Ogni `dedupe_key` è accodata una sola volta per marina
+(indice univoco `message_log_dedupe_uidx`); su questo si basa l'idempotenza dei job `comms.send`, delle notifiche
+delle scadenze e degli invii delle campagne di rinnovo. Verificata da: `TestAcceptance_M4_RenewalCampaign300`,
+`TestConcurrency_CampaignLaunchAndSync` (`sent_count = 1`), `TestDeadlines_NotifyOncePerLeadDay`. Stato: partial
+(manca un `TestConcurrency_CommsSendOnce` sul trasporto reale).

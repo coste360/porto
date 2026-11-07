@@ -20,6 +20,12 @@ import (
 	"github.com/coste360/porto/internal/domain/pricing"
 	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/http/problem"
+
+	"github.com/coste360/porto/internal/csvimport"
+	"github.com/coste360/porto/internal/domain/docs"
+	"github.com/coste360/porto/internal/domain/magiclink"
+	"github.com/coste360/porto/internal/domain/rights"
+	"github.com/coste360/porto/internal/domain/signature"
 )
 
 func TestMapError_M1Sentinels(t *testing.T) {
@@ -173,6 +179,63 @@ func TestMapError_M3Details(t *testing.T) {
 		p := problem.New(typ, opts...)
 		if p.Status != c.status || p.Details == nil {
 			t.Fatalf("%T: problem = %+v", c.err, p)
+		}
+	}
+}
+
+func TestMapError_M4Sentinels(t *testing.T) {
+	cases := map[error]problem.Type{
+		contract.ErrRenewalExists:            problem.RenewalExists,
+		contract.ErrProposalClosed:           problem.ProposalClosed,
+		contract.ErrInsuranceRequired:        problem.InsuranceRequired,
+		contract.ErrCustomerEmailMissing:     problem.CustomerEmailMissing,
+		contract.ErrPaperScanRequired:        problem.PaperScanRequired,
+		contract.ErrVesselInOtherFleet:       problem.VesselInOtherFleet,
+		contract.ErrVesselNotInFleet:         problem.VesselNotInFleet,
+		rights.ErrSharesInvalid:              problem.SharesInvalid,
+		rights.ErrTableIncomplete:            problem.TableIncomplete,
+		rights.ErrTableActive:                problem.TableActive,
+		rights.ErrTransferRequirements:       problem.TransferRequirements,
+		rights.ErrMandateOverlap:             problem.MandateOverlap,
+		docs.ErrTemplateInvalid:              problem.TemplateInvalid,
+		docs.ErrTemplateLimits:               problem.TemplateLimits,
+		docs.ErrNotReady:                     problem.NotReady,
+		docs.ErrCodeTaken:                    problem.CodeTaken,
+		signature.ErrOTPInvalid:              problem.OTPInvalid,
+		signature.ErrOTPLocked:               problem.OTPLocked,
+		signature.ErrOTPRateLimited:          problem.OTPRateLimited,
+		signature.ErrSignatureOpen:           problem.SignatureOpen,
+		signature.ErrInvalidWebhookSignature: problem.InvalidSignature,
+		signature.ErrProviderUnknown:         problem.ProviderUnknown,
+		magiclink.ErrInvalid:                 problem.LinkInvalid,
+		csvimport.ErrNotUndoable:             problem.ImportNotUndoable,
+		csvimport.ErrCSVInvalid:              problem.CSVInvalid,
+	}
+	for err, want := range cases {
+		got, _, ok := MapError(fmt.Errorf("wrapped: %w", err))
+		if !ok || got != want {
+			t.Errorf("%v: %q, %v; want %q", err, got, ok, want)
+		}
+	}
+}
+
+func TestMapError_M4Details(t *testing.T) {
+	cases := []struct {
+		err  error
+		want problem.Type
+	}{
+		{&contract.InsuranceError{VesselID: "v1"}, problem.InsuranceRequired},
+		{&contract.SettleError{ID: "i1"}, problem.Conflict},
+		{&docs.TemplateError{Issues: []docs.TemplateIssue{{Line: 3, Col: 5, Code: "unknown_path", Path: "x.y"}}}, problem.TemplateInvalid},
+		{&signature.OTPError{AttemptsLeft: 4}, problem.OTPInvalid},
+		{&rights.SumError{Err: rights.ErrSharesInvalid, SumMillis: 999}, problem.SharesInvalid},
+		{&rights.SumError{Err: rights.ErrTableIncomplete, SumMillis: 999}, problem.TableIncomplete},
+		{&rights.RequirementsError{}, problem.TransferRequirements},
+	}
+	for _, c := range cases {
+		typ, opts, ok := MapError(fmt.Errorf("x: %w", c.err))
+		if !ok || typ != c.want || len(opts) != 1 {
+			t.Errorf("%v: %q %d %v, want %q with details", c.err, typ, len(opts), ok, c.want)
 		}
 	}
 }

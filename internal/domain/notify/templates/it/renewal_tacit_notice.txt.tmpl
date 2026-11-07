@@ -1,0 +1,11 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+come previsto dalla clausola di rinnovo tacito, il tuo contratto è stato rinnovato.
+{{with v . "contract_code"}}Nuovo contratto: {{.}}
+{{end}}{{with v . "starts_on"}}Dal: {{.}}
+{{end}}{{with v . "ends_on"}}Al: {{.}}
+{{end}}{{with v . "new_total"}}Importo: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

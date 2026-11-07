@@ -1,0 +1,13 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+please sign the document below. You sign online with a code sent by email (simple electronic signature).
+{{with v . "document_title"}}Document: {{.}}
+{{end}}{{with v . "contract_code"}}Reference: {{.}}
+{{end}}{{with v . "deadline_on"}}Sign by: {{.}}
+{{end}}
+{{with v . "link"}}Open and sign the document:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

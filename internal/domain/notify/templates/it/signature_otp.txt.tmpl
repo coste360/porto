@@ -1,0 +1,10 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+questo è il codice per firmare il documento. Non comunicarlo a nessuno.
+{{with v . "code"}}Codice: {{.}}
+{{end}}{{with v . "document_title"}}Documento: {{.}}
+{{end}}{{with v . "expires_at"}}Valido fino alle: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

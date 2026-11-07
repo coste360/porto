@@ -88,10 +88,20 @@ func KindForDocumentType(t string) string {
 	return ""
 }
 
-// DefaultLeadDays returns the default lead days of a kind: 60 and 15 for insurance, 30 for the others.
+// DefaultLeadDays returns the default lead days of a kind: 60 and 15 for insurance, 60 and 30 for contract ends,
+// 7 for instalments and renewal deadlines, 3 for expiring signatures, 1 for the office items, 30 for the others.
 func DefaultLeadDays(kind string) []int {
-	if kind == KindInsurance {
+	switch kind {
+	case KindInsurance:
 		return []int{60, 15}
+	case KindContractEnd:
+		return []int{60, 30}
+	case KindInstallmentDue, KindHolderInstallmentDue, KindRenewalDeadline:
+		return []int{7}
+	case KindSignatureExpiring:
+		return []int{3}
+	case KindDocumentFailed, KindWaitlistOffer, KindTacitRenewalBlocked:
+		return []int{1}
 	}
 	return []int{30}
 }
@@ -150,10 +160,11 @@ func SyncDocument(ctx context.Context, tx bun.IDB, scope store.MarinaScope, d *s
 	return row.ID, store.UpdateDeadline(ctx, tx, scope, row.Version, row)
 }
 
-// Policy is the lead days of a kind.
+// Policy is the lead days and the notification channels of a kind (M4: panel, customer_email, office_email).
 type Policy struct {
 	Kind     string
 	LeadDays []int
+	Channels []string
 }
 
 // policies returns the lead days of every M1 kind, stored values first, defaults otherwise.
@@ -163,7 +174,7 @@ func policies(ctx context.Context, db bun.IDB, scope store.MarinaScope) (map[str
 		return nil, err
 	}
 	out := map[string][]int{}
-	for _, k := range Kinds() {
+	for _, k := range AllKinds() {
 		out[k] = DefaultLeadDays(k)
 	}
 	for _, r := range rows {
@@ -295,7 +306,7 @@ func (s *Service) List(ctx context.Context, p *auth.Principal, marinaID string, 
 	default:
 		v.Add("status", "invalid")
 	}
-	if f.Kind != "" && !slices.Contains(Kinds(), f.Kind) {
+	if f.Kind != "" && !slices.Contains(AllKinds(), f.Kind) {
 		v.Add("kind", "invalid")
 	}
 	if f.Urgency != "" && !slices.Contains([]string{UrgencyOverdue, UrgencyDueSoon, UrgencyLater}, f.Urgency) {
@@ -453,13 +464,13 @@ func (s *Service) ListPolicies(ctx context.Context, p *auth.Principal, marinaID 
 	if err != nil {
 		return nil, err
 	}
-	leads, err := policies(ctx, s.d.DB.DB, scope)
+	pol, err := loadPolicies(ctx, s.d.DB.DB, scope)
 	if err != nil {
 		return nil, err
 	}
-	out := make([]Policy, 0, len(leads))
-	for _, k := range Kinds() {
-		out = append(out, Policy{Kind: k, LeadDays: leads[k]})
+	out := make([]Policy, 0, len(pol.leads))
+	for _, k := range AllKinds() {
+		out = append(out, Policy{Kind: k, LeadDays: pol.leads[k], Channels: pol.channels[k]})
 	}
 	return out, nil
 }
@@ -477,7 +488,7 @@ func (s *Service) ReplacePolicies(ctx context.Context, p *auth.Principal, marina
 	seen := map[string]bool{}
 	for i, pol := range in {
 		field := "items[" + strconv.Itoa(i) + "]"
-		if !slices.Contains(Kinds(), pol.Kind) || seen[pol.Kind] {
+		if !slices.Contains(AllKinds(), pol.Kind) || seen[pol.Kind] {
 			v.Add(field+".kind", "invalid")
 			continue
 		}
@@ -490,8 +501,18 @@ func (s *Service) ReplacePolicies(ctx context.Context, p *auth.Principal, marina
 			v.Add(field+".lead_days", "invalid")
 			continue
 		}
+		channels := pol.Channels
+		if len(channels) == 0 {
+			channels = []string{ChannelPanel}
+		}
+		channels = slices.Compact(slices.Sorted(slices.Values(channels)))
+		if !validChannels(channels) {
+			v.Add(field+".channels", "invalid")
+			continue
+		}
 		rows = append(rows, store.DeadlinePolicy{
-			ID: store.NewID(), MarinaID: scope.ID(), Kind: pol.Kind, LeadDays: store.MustJSON(days), CreatedAt: now, UpdatedAt: now,
+			ID: store.NewID(), MarinaID: scope.ID(), Kind: pol.Kind, LeadDays: store.MustJSON(days),
+			Channels: store.MustJSON(channels), CreatedAt: now, UpdatedAt: now,
 		})
 	}
 	if err := v.Err(); err != nil {

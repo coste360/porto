@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>il tuo contratto è attivo. Grazie per aver scelto il nostro porto.</p>
+<table>
+{{with v . "contract_code"}}<tr><td>Contratto</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "starts_on"}}<tr><td>Dal</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "ends_on"}}<tr><td>Al</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

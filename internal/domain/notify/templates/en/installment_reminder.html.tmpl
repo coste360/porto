@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},</p>
+<p>a reminder about the instalment below. If you have already paid, please ignore this message.</p>
+<table>
+{{with v . "contract_code"}}<tr><td>Reference</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "amount"}}<tr><td>Amount</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "due_on"}}<tr><td>Due on</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "iban"}}<tr><td>IBAN</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "bank_holder"}}<tr><td>Account holder</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

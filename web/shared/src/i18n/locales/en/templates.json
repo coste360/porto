@@ -1,0 +1,85 @@
+{
+  "list": {
+    "title": "Print templates",
+    "description": "The marina's document templates by kind and language; built-in templates apply until you publish your own.",
+    "new": "New template",
+    "newHint": "Starts from the built-in template of the chosen kind.",
+    "kind": "Kind",
+    "code": "Code",
+    "name": "Name",
+    "create": "Create",
+    "locales": "Languages",
+    "localeVersion": "{{locale}} v{{version}}",
+    "default": "Default",
+    "archived": "Archived",
+    "empty": "No marina templates: the built-in ones are used."
+  },
+  "detail": {
+    "title": "Print template"
+  },
+  "pending": "This page arrives with M4.",
+  "editor": {
+    "locale": "Language",
+    "versionBadge": "v{{version}} {{status}}",
+    "save": "Save draft",
+    "saved": "Draft saved (version {{version}}).",
+    "publish": "Publish",
+    "published": "Version {{version}} published.",
+    "each": "Repeat for list",
+    "if": "If… else",
+    "pagebreak": "Page break",
+    "signature": "Signature box",
+    "fields": "Fields",
+    "expand": "Open {{path}}",
+    "parts": {
+      "body": "Body",
+      "header": "Header",
+      "footer": "Footer"
+    },
+    "text": "Template {{part}} (Markdown)",
+    "markers": "Lines with errors",
+    "issueAt": "{{part}}, line {{line}}, column {{col}}:",
+    "issue": "Template not valid:",
+    "sample": "Sample data",
+    "demo": "Demo sample",
+    "sampleId": "Record id",
+    "subjects": {
+      "quote": "Quote",
+      "contract": "Contract",
+      "addendum": "Addendum",
+      "renewal_proposal": "Renewal proposal",
+      "right_transfer": "Transfer",
+      "communication": "Communication",
+      "letter": "Letter"
+    },
+    "preview": "PDF preview",
+    "previewTitle": "Template preview",
+    "previewHint": "Press \"PDF preview\" to see the document with the sample data."
+  },
+  "errors": {
+    "invalid": "template error",
+    "unknown_path": "unknown field",
+    "filter_type": "filter not valid for the field type",
+    "each_not_list": "\"repeat\" on a field that is not a list",
+    "syntax": "invalid syntax",
+    "unclosed_block": "unclosed block",
+    "template_invalid": "template not valid",
+    "template_limits": "the document exceeds the size limits"
+  },
+  "docs": {
+    "title": "Documents",
+    "kind": "Document",
+    "locale": "Language",
+    "status": "Status",
+    "renderedAt": "Generated on",
+    "signed": "Signed",
+    "pdfa": "PDF/A",
+    "download": "Download",
+    "retry": "Retry",
+    "empty": "No documents."
+  },
+  "print": {
+    "button": "Print",
+    "failed": "Print failed"
+  }
+}

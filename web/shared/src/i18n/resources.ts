@@ -46,6 +46,26 @@ import itDock from './locales/it/dock.json';
 import itDesk from './locales/it/desk.json';
 import itOpsMap from './locales/it/opsMap.json';
 import itOccupancyEnums from './locales/it/occupancyEnums.json';
+import enContractsM4 from './locales/en/contractsM4.json';
+import enRenewals from './locales/en/renewals.json';
+import enCharter from './locales/en/charter.json';
+import enRights from './locales/en/rights.json';
+import enCommonCharges from './locales/en/commonCharges.json';
+import enTemplates from './locales/en/templates.json';
+import enSignature from './locales/en/signature.json';
+import enCommunications from './locales/en/communications.json';
+import enDocsEnums from './locales/en/docsEnums.json';
+import enCustomerLinks from './locales/en/customerLinks.json';
+import itContractsM4 from './locales/it/contractsM4.json';
+import itRenewals from './locales/it/renewals.json';
+import itCharter from './locales/it/charter.json';
+import itRights from './locales/it/rights.json';
+import itCommonCharges from './locales/it/commonCharges.json';
+import itTemplates from './locales/it/templates.json';
+import itSignature from './locales/it/signature.json';
+import itCommunications from './locales/it/communications.json';
+import itDocsEnums from './locales/it/docsEnums.json';
+import itCustomerLinks from './locales/it/customerLinks.json';
 
 export const SUPPORTED_LOCALES = ['it', 'en'] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -77,6 +97,16 @@ export const NAMESPACES = [
   'opsMap',
   'desk',
   'dock',
+  'contractsM4',
+  'renewals',
+  'charter',
+  'rights',
+  'commonCharges',
+  'templates',
+  'signature',
+  'communications',
+  'docsEnums',
+  'customerLinks',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -106,6 +136,16 @@ export const resources = {
     opsMap: itOpsMap,
     desk: itDesk,
     dock: itDock,
+    contractsM4: itContractsM4,
+    renewals: itRenewals,
+    charter: itCharter,
+    rights: itRights,
+    commonCharges: itCommonCharges,
+    templates: itTemplates,
+    signature: itSignature,
+    communications: itCommunications,
+    docsEnums: itDocsEnums,
+    customerLinks: itCustomerLinks,
   },
   en: {
     common: enCommon,
@@ -132,5 +172,15 @@ export const resources = {
     opsMap: enOpsMap,
     desk: enDesk,
     dock: enDock,
+    contractsM4: enContractsM4,
+    renewals: enRenewals,
+    charter: enCharter,
+    rights: enRights,
+    commonCharges: enCommonCharges,
+    templates: enTemplates,
+    signature: enSignature,
+    communications: enCommunications,
+    docsEnums: enDocsEnums,
+    customerLinks: enCustomerLinks,
   },
 } as const;

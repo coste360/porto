@@ -225,6 +225,9 @@ func CheckOccupancyInvariants(ctx context.Context, db bun.IDB, marinaID string, 
 	for _, id := range ids {
 		add("Q16", "resold allocation not on the released resource", id)
 	}
+	if err := checkRightsOccupancy(ctx, db, marinaID, add); err != nil {
+		return nil, err
+	}
 	planCheckMu.RLock()
 	fn := planCheck
 	planCheckMu.RUnlock()
@@ -372,6 +375,102 @@ func checkPresenceState(ctx context.Context, db bun.IDB, marinaID string, add fu
 		l, ok := latest[vp.VesselID]
 		if !ok || l.ID != vp.LastPresenceID || stateOf[l.Event] != vp.State {
 			add("Q13", "vessel_presence differs from the last presence event", vp.VesselID)
+		}
+	}
+	return nil
+}
+
+// checkRightsOccupancy is Q17 (INV-43, M4): every owner allocation belongs to a right of the same berth that is not
+// cancelled and stays inside the right's period; every active right is covered, from the first night written
+// for it to its to_on, by its active owner allocations or by its mandate periods (mandate nights have no owner
+// rows, m4-plan §15 D16). Interval arithmetic, no per-night scan.
+func checkRightsOccupancy(ctx context.Context, db bun.IDB, marinaID string, add func(string, string, ...string)) error {
+	type link struct {
+		AllocationID string        `bun:"allocation_id"`
+		RightID      string        `bun:"right_id"`
+		Status       string        `bun:"status"`
+		Kind         string        `bun:"kind"`
+		ResourceID   string        `bun:"resource_id"`
+		First        calendar.Date `bun:"first_night"`
+		Last         calendar.Date `bun:"last_night"`
+		BerthID      string        `bun:"berth_id"`
+		RightStatus  string        `bun:"right_status"`
+		FromOn       calendar.Date `bun:"from_on"`
+		ToOn         calendar.Date `bun:"to_on"`
+	}
+	var links []link
+	if err := db.NewRaw(`SELECT l.allocation_id, l.right_id, a.status, a.kind, a.resource_id, a.first_night, a.last_night,
+			r.berth_id, r.status AS right_status, r.from_on, r.to_on
+		FROM berth_right_allocations AS l JOIN allocations AS a ON a.id = l.allocation_id JOIN berth_rights AS r ON r.id = l.right_id
+		WHERE l.marina_id = ?`, marinaID).Scan(ctx, &links); err != nil {
+		return fmt.Errorf("Q17: %w", err)
+	}
+	var orphans []string
+	if err := db.NewRaw(`SELECT a.id FROM allocations AS a LEFT JOIN berth_right_allocations AS l ON l.allocation_id = a.id
+		WHERE a.marina_id = ? AND a.kind = 'owner' AND a.status = 'active' AND l.allocation_id IS NULL`, marinaID).Scan(ctx, &orphans); err != nil {
+		return fmt.Errorf("Q17: %w", err)
+	}
+	for _, id := range orphans {
+		add("Q17", "owner allocation without a right", id)
+	}
+	type span struct{ first, last calendar.Date }
+	firstWritten := map[string]calendar.Date{}
+	cover := map[string][]span{}
+	for _, l := range links {
+		if l.Kind != AllocKindOwner {
+			add("Q17", "right linked to a non-owner allocation", l.AllocationID)
+			continue
+		}
+		if f, ok := firstWritten[l.RightID]; !ok || l.First.Before(f) {
+			firstWritten[l.RightID] = l.First
+		}
+		if l.Status != AllocActive {
+			continue
+		}
+		if l.RightStatus == "cancelled" || l.ResourceID != l.BerthID || l.First.Before(l.FromOn) || l.Last.After(l.ToOn) {
+			add("Q17", "owner allocation outside its right", l.AllocationID, l.RightID)
+		}
+		cover[l.RightID] = append(cover[l.RightID], span{l.First, l.Last})
+	}
+	type mandate struct {
+		RightID string        `bun:"right_id"`
+		FromOn  calendar.Date `bun:"from_on"`
+		ToOn    calendar.Date `bun:"to_on"`
+	}
+	var ms []mandate
+	if err := db.NewRaw(`SELECT right_id, from_on, to_on FROM management_mandates WHERE marina_id = ?`, marinaID).Scan(ctx, &ms); err != nil {
+		return fmt.Errorf("Q17: %w", err)
+	}
+	for _, m := range ms {
+		cover[m.RightID] = append(cover[m.RightID], span{m.FromOn, m.ToOn})
+	}
+	type right struct {
+		ID   string        `bun:"id"`
+		ToOn calendar.Date `bun:"to_on"`
+	}
+	var rights []right
+	if err := db.NewRaw(`SELECT id, to_on FROM berth_rights WHERE marina_id = ? AND status = 'active'`, marinaID).Scan(ctx, &rights); err != nil {
+		return fmt.Errorf("Q17: %w", err)
+	}
+	for _, r := range rights {
+		start, ok := firstWritten[r.ID]
+		if !ok {
+			add("Q17", "active right without owner occupancy", r.ID)
+			continue
+		}
+		spans := cover[r.ID]
+		slices.SortFunc(spans, func(a, b span) int { return a.first.Compare(b.first) })
+		next := start // first night not yet covered
+		for _, sp := range spans {
+			if sp.first.After(next) {
+				break
+			}
+			if !sp.last.Before(next) {
+				next = sp.last.AddDays(1)
+			}
+		}
+		if !next.After(r.ToOn) {
+			add("Q17", "active right not covered from "+next.String(), r.ID)
 		}
 	}
 	return nil

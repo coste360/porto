@@ -72,6 +72,32 @@ const (
 	UndoUnavailable   Type = "undo_unavailable"
 	ReleaseInvalid    Type = "release_invalid"
 	CustomerRequired  Type = "customer_required"
+
+	// M4 (m4-plan §7.4). NotImplemented is answered only by the CONTRACT stubs while the builders work.
+	NotImplemented       Type = "not_implemented"
+	RenewalExists        Type = "renewal_exists"
+	ProposalClosed       Type = "proposal_closed"
+	SignatureOpen        Type = "signature_open"
+	InvalidSignature     Type = "invalid_signature"
+	OTPInvalid           Type = "otp_invalid"
+	OTPLocked            Type = "otp_locked"
+	OTPRateLimited       Type = "otp_rate_limited"
+	LinkInvalid          Type = "link_invalid"
+	TemplateInvalid      Type = "template_invalid"
+	TemplateLimits       Type = "template_limits"
+	PaperScanRequired    Type = "paper_scan_required"
+	InsuranceRequired    Type = "insurance_required"
+	CustomerEmailMissing Type = "customer_email_missing"
+	SharesInvalid        Type = "shares_invalid"
+	TableIncomplete      Type = "table_incomplete"
+	TableActive          Type = "table_active"
+	TransferRequirements Type = "transfer_requirements"
+	MandateOverlap       Type = "mandate_overlap"
+	VesselInOtherFleet   Type = "vessel_in_other_fleet"
+	VesselNotInFleet     Type = "vessel_not_in_fleet"
+	ImportNotUndoable    Type = "import_not_undoable"
+	ProviderUnknown      Type = "provider_unknown"
+	CodeTaken            Type = "code_taken"
 )
 
 type typeInfo struct {
@@ -140,6 +166,30 @@ var registry = map[Type]typeInfo{
 	UndoUnavailable:       {http.StatusConflict, "The move can no longer be undone"},
 	ReleaseInvalid:        {http.StatusConflict, "Invalid release"},
 	CustomerRequired:      {http.StatusUnprocessableEntity, "A customer is required"},
+	NotImplemented:        {http.StatusNotImplemented, "Not implemented yet"},
+	RenewalExists:         {http.StatusConflict, "The contract already has an open renewal proposal"},
+	ProposalClosed:        {http.StatusConflict, "The renewal proposal is closed"},
+	SignatureOpen:         {http.StatusConflict, "A signature request is already open"},
+	InvalidSignature:      {http.StatusUnauthorized, "Invalid webhook signature"},
+	OTPInvalid:            {http.StatusUnprocessableEntity, "Wrong or expired code"},
+	OTPLocked:             {http.StatusConflict, "Too many wrong codes: request a new one"},
+	OTPRateLimited:        {http.StatusTooManyRequests, "Too many codes requested"},
+	LinkInvalid:           {http.StatusNotFound, "The link is not valid"},
+	TemplateInvalid:       {http.StatusUnprocessableEntity, "The template has errors"},
+	TemplateLimits:        {http.StatusUnprocessableEntity, "The template exceeds the output limits"},
+	PaperScanRequired:     {http.StatusUnprocessableEntity, "The scan of the signed paper is required"},
+	InsuranceRequired:     {http.StatusUnprocessableEntity, "The vessel has no valid insurance"},
+	CustomerEmailMissing:  {http.StatusUnprocessableEntity, "The customer has no email address"},
+	SharesInvalid:         {http.StatusUnprocessableEntity, "The holder shares do not sum to 1000"},
+	TableIncomplete:       {http.StatusUnprocessableEntity, "The millesimal table does not sum to 1000"},
+	TableActive:           {http.StatusConflict, "Active millesimal tables cannot change"},
+	TransferRequirements:  {http.StatusUnprocessableEntity, "The transfer requirements are not met"},
+	MandateOverlap:        {http.StatusConflict, "Another mandate covers the same nights"},
+	VesselInOtherFleet:    {http.StatusConflict, "The vessel is in another active fleet"},
+	VesselNotInFleet:      {http.StatusUnprocessableEntity, "The vessel is not in the charter fleet"},
+	ImportNotUndoable:     {http.StatusConflict, "The import can no longer be undone"},
+	ProviderUnknown:       {http.StatusUnprocessableEntity, "Unknown signature provider"},
+	CodeTaken:             {http.StatusConflict, "Code already in use"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

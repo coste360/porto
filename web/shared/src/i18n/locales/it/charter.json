@@ -1,0 +1,63 @@
+{
+  "list": {
+    "title": "Charter",
+    "description": "Flotte delle società di charter, contratti charter e rotazione delle barche.",
+    "contracts": "Contratti charter",
+    "code": "Codice",
+    "fleet": "Flotta",
+    "period": "Periodo",
+    "total": "Totale",
+    "empty": "Nessun contratto charter."
+  },
+  "pending": "Questa pagina arriva con M4.",
+  "fleet": {
+    "title": "Flotte",
+    "new": "Nuova flotta",
+    "edit": "Modifica flotta",
+    "description": "Le barche di una flotta ruotano sui posti del contratto senza cambiare prezzo.",
+    "company": "Società di charter",
+    "name": "Nome della flotta",
+    "addVessel": "Aggiungi barca",
+    "removeVessel": "Togli {{name}}",
+    "empty": "Nessuna flotta."
+  },
+  "wizard": {
+    "new": "Nuovo contratto charter",
+    "description": "Posti del contratto, barca iniziale per ogni posto e modalità di prezzo.",
+    "startsOn": "Inizio",
+    "endsOn": "Fine",
+    "mode": "Prezzo",
+    "changeover": "Giorno di cambio",
+    "flat": "Importo forfettario",
+    "vessel": "Barca",
+    "addPlacement": "Aggiungi posto",
+    "removePlacement": "Togli posto",
+    "create": "Crea contratto",
+    "errors": {
+      "fleet": "Scegli la flotta.",
+      "period": "Il periodo non è valido.",
+      "placements": "Aggiungi almeno un posto.",
+      "vessel": "Ogni posto ha bisogno di una barca della flotta.",
+      "duplicate": "Una barca può stare su un solo posto.",
+      "flat": "Il forfait richiede importo e motivo."
+    }
+  },
+  "weekdays": {
+    "1": "Lunedì",
+    "2": "Martedì",
+    "3": "Mercoledì",
+    "4": "Giovedì",
+    "5": "Venerdì",
+    "6": "Sabato",
+    "7": "Domenica"
+  },
+  "rotation": {
+    "open": "Rotazione",
+    "title": "Rotazione di {{code}}",
+    "description": "Trascina una barca su un posto (o sceglila) per spostarla da una notte: se il posto è occupato da un'altra barca della flotta, le due si scambiano.",
+    "fromNight": "Dalla notte del",
+    "vessels": "Barche della flotta",
+    "changed": "Cambiata",
+    "apply": "Applica la rotazione"
+  }
+}

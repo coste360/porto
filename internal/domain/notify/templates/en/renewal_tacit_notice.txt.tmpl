@@ -1,0 +1,11 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+as provided by the tacit renewal clause, your contract has been renewed.
+{{with v . "contract_code"}}New contract: {{.}}
+{{end}}{{with v . "starts_on"}}From: {{.}}
+{{end}}{{with v . "ends_on"}}To: {{.}}
+{{end}}{{with v . "new_total"}}Amount: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

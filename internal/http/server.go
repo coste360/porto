@@ -23,6 +23,7 @@ import (
 	"github.com/coste360/porto/internal/http/public"
 	"github.com/coste360/porto/internal/http/respond"
 	"github.com/coste360/porto/internal/http/static"
+	"github.com/coste360/porto/internal/http/webhooks"
 )
 
 // MaxBodyBytes is the hard cap of every request body (m1-plan §4.1); each operation has its own, smaller or
@@ -38,6 +39,16 @@ const (
 // totpEnrolmentOperations are what a session that must enrol TOTP may still call.
 var totpEnrolmentOperations = []string{"getMe", "logout", "enrollTotp", "confirmTotp"}
 
+// linkRequestsPerMinute is the rate limit of the customer link pages per IP prefix (m4-plan §6.6).
+const linkRequestsPerMinute = 30
+
+// publicLinkOperations are the operations of /api/public/v1/{slug}/links/{token} (m4-plan §7.3.6).
+var publicLinkOperations = []string{
+	"resolvePublicLink", "getPublicLinkDocument", "acceptPublicQuote", "uploadPublicDocument", "acceptPublicRenewal",
+	"declinePublicRenewal", "requestPublicSignatureOtp", "verifyPublicSignature", "declinePublicSignature",
+	"publicUnsubscribe",
+}
+
 // Deps are the collaborators of the router.
 type Deps struct {
 	Log   *slog.Logger
@@ -46,6 +57,8 @@ type Deps struct {
 	Admin  *admin.Handler
 	Device *device.Handler
 	Public *public.Handler
+	// Webhooks serves the inbound provider callbacks (M4); nil means an empty handler.
+	Webhooks *webhooks.Handler
 
 	Authenticator middleware.Authenticator
 	Idempotency   middleware.IdempotencyStore
@@ -67,13 +80,15 @@ type server struct {
 	adminAPI
 	deviceAPI
 	publicAPI
+	webhooksAPI
 	ready func(ctx context.Context) (int64, error)
 }
 
 type (
-	adminAPI  struct{ *admin.Handler }
-	deviceAPI struct{ *device.Handler }
-	publicAPI struct{ *public.Handler }
+	adminAPI    struct{ *admin.Handler }
+	deviceAPI   struct{ *device.Handler }
+	publicAPI   struct{ *public.Handler }
+	webhooksAPI struct{ *webhooks.Handler }
 )
 
 var _ api.ServerInterface = (*server)(nil)
@@ -137,6 +152,18 @@ func NewRouter(d Deps) (http.Handler, error) {
 
 	mountStatic(r, d.AdminApp, d.BookingApp)
 
+	// Customer magic-link pages (M4, m4-plan §6.6): one limiter per IP prefix shared by every link operation. The
+	// per-token limit is applied by the link services.
+	byIP := map[string]*middleware.Limiter{
+		"pairDevice":      middleware.NewLimiter(d.Clock, pairingPerMinute, time.Minute),
+		"demoPairDevice":  middleware.NewLimiter(d.Clock, pairingPerMinute, time.Minute),
+		"getPublicMarina": middleware.NewLimiter(d.Clock, d.PublicReadsPerMinute, time.Minute),
+	}
+	links := middleware.NewLimiter(d.Clock, linkRequestsPerMinute, time.Minute)
+	for _, op := range publicLinkOperations {
+		byIP[op] = links
+	}
+
 	// Per-operation middleware, outermost first; the generated wrapper applies the list in reverse.
 	perOp := []func(http.Handler) http.Handler{
 		middleware.Route(),
@@ -144,11 +171,7 @@ func NewRouter(d Deps) (http.Handler, error) {
 		middleware.BodyLimitByPolicy(policies),
 		middleware.Enforce(policies, middleware.EnforceOptions{TOTPAllowed: totpEnrolmentOperations}),
 		middleware.RateLimit(policies, middleware.RateLimitOptions{
-			ByIP: map[string]*middleware.Limiter{
-				"pairDevice":      middleware.NewLimiter(d.Clock, pairingPerMinute, time.Minute),
-				"demoPairDevice":  middleware.NewLimiter(d.Clock, pairingPerMinute, time.Minute),
-				"getPublicMarina": middleware.NewLimiter(d.Clock, d.PublicReadsPerMinute, time.Minute),
-			},
+			ByIP:   byIP,
 			APIKey: middleware.NewLimiter(d.Clock, apiKeyPerMinute, time.Minute),
 		}),
 		middleware.RequireJSON(policies),
@@ -156,7 +179,10 @@ func NewRouter(d Deps) (http.Handler, error) {
 	}
 	slices.Reverse(perOp)
 
-	srv := &server{adminAPI{d.Admin}, deviceAPI{d.Device}, publicAPI{d.Public}, d.Ready}
+	if d.Webhooks == nil {
+		d.Webhooks = &webhooks.Handler{}
+	}
+	srv := &server{adminAPI{d.Admin}, deviceAPI{d.Device}, publicAPI{d.Public}, webhooksAPI{d.Webhooks}, d.Ready}
 	api.HandlerWithOptions(srv, api.ChiServerOptions{
 		BaseRouter:  r,
 		Middlewares: toMiddlewares(perOp),

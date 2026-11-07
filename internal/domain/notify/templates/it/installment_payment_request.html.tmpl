@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>ti chiediamo il pagamento della rata indicata con bonifico bancario.</p>
+<table>
+{{with v . "contract_code"}}<tr><td>Causale</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "amount"}}<tr><td>Importo</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "due_on"}}<tr><td>Scadenza</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "iban"}}<tr><td>IBAN</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "bank_holder"}}<tr><td>Intestatario</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "bank"}}<tr><td>Banca</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

@@ -1,0 +1,10 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+this is a notice about a deadline that concerns you.
+{{with v . "deadline_kind"}}Deadline: {{.}}
+{{end}}{{with v . "due_on"}}Date: {{.}}
+{{end}}{{with v . "contract_code"}}Reference: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

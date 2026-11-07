@@ -135,6 +135,16 @@ func (s *Service) CreateContract(ctx context.Context, p *auth.Principal, marinaI
 	if err := checkParties(ctx, s.d.DB.DB, scope, in.VesselID, in.CustomerID, in.BillingCustomerID); err != nil {
 		return nil, err
 	}
+	if in.VesselID != "" {
+		// Insurance policy (11.5, m4-plan §15 D29): block refuses the new contract; warn lets it through.
+		cs, err := s.settingsTx(ctx, s.d.DB.DB, scope)
+		if err != nil {
+			return nil, err
+		}
+		if _, err := checkInsurance(ctx, s.d.DB.DB, scope, cs, in.VesselID, in.StartsOn); err != nil {
+			return nil, err
+		}
+	}
 	price, err := s.price(ctx, p, marinaID, priceRequest{
 		contractType: PricingType(KindMooring, in.Term), arrival: in.StartsOn, departure: ends, first: in.Placements[0],
 		vesselID: in.VesselID, customerID: in.CustomerID, channel: ChannelDesk, services: in.Services,
@@ -182,16 +192,35 @@ func (s *Service) createMooringTx(ctx context.Context, tx bun.IDB, scope store.M
 		n.allocKind = occupancy.KindContract
 	} else {
 		exp := s.now().Add(time.Duration(st.DraftHoldDays) * 24 * time.Hour)
+		if n.expiresAt != nil { // renewal prelazione until the proposal deadline (m4-plan §3.4)
+			exp = *n.expiresAt
+		}
 		n.allocKind, n.expiresAt = occupancy.KindHold, &exp
 	}
 	c, allocs, err := s.createTx(ctx, tx, scope, a, n)
 	if err != nil {
 		return nil, err
 	}
-	if err := s.writeAudit(ctx, tx, scope, a, "contract.create", entityContract, c.ID, map[string]any{
+	var plan []store.Installment
+	if !n.skipPlan {
+		if plan, err = s.planOnCreateTx(ctx, tx, scope, c, n.plan); err != nil {
+			return nil, err
+		}
+	}
+	var first *store.Installment
+	if activate && !n.skipPlan {
+		if first, err = s.issueFirstTx(ctx, tx, scope, a, c); err != nil {
+			return nil, err
+		}
+	}
+	diff := map[string]any{
 		"status": c.Status, "term": c.Term, "from": c.StartsOn, "to": c.EndsOn, "allocation_ids": idsOf(allocs),
-		"total_cents": c.TotalCents, "fit_override": n.fit != nil, "quote_id": c.QuoteID,
-	}); err != nil {
+		"total_cents": c.TotalCents, "fit_override": n.fit != nil, "quote_id": c.QuoteID, "installments": planDiff(c, plan),
+	}
+	if first != nil {
+		diff["issued_installment_id"] = first.ID
+	}
+	if err := s.writeAudit(ctx, tx, scope, a, "contract.create", entityContract, c.ID, diff); err != nil {
 		return nil, err
 	}
 	if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c}); err != nil {
@@ -203,9 +232,21 @@ func (s *Service) createMooringTx(ctx context.Context, tx bun.IDB, scope store.M
 	return c, nil
 }
 
+// ActivateInput is the paper confirmation of an activation ("firmato su carta").
+type ActivateInput struct {
+	PaperScanFileID string // a stored file with the scan; required when the marina sets require_paper_scan
+}
+
 // ActivateContract activates a draft mooring contract ("firmato su carta", contracts.write, If-Match): holds
 // become contract allocations; lost holds are allocated again or the activation fails with 409.
 func (s *Service) ActivateContract(ctx context.Context, p *auth.Principal, marinaID, id string, ifMatch int) (*Detail, error) {
+	return s.ActivateContractWith(ctx, p, marinaID, id, ifMatch, ActivateInput{})
+}
+
+// ActivateContractWith is ActivateContract with the M4 paper confirmation (m4-plan §3.1, §15 D11): a contract
+// awaiting signature has its request cancelled (paper override); when the marina's settings require a paper
+// scan, the scan file must be given. The first instalment is issued.
+func (s *Service) ActivateContractWith(ctx context.Context, p *auth.Principal, marinaID, id string, ifMatch int, in ActivateInput) (*Detail, error) {
 	scope, err := p.Authorize(ctx, s.d.DB.DB, marinaID, auth.PermContractsWrite)
 	if err != nil {
 		return nil, err
@@ -219,38 +260,44 @@ func (s *Service) ActivateContract(ctx context.Context, p *auth.Principal, marin
 		if err != nil {
 			return err
 		}
-		t, err := Next(MooringTransitions, Status(c.Status), ActionActivate)
-		if err != nil {
-			return err
-		}
-		now := s.now()
-		allocs, err := contractAllocs(ctx, tx, scope, c.ID)
-		if err != nil {
-			return err
-		}
-		reallocated, holds, err := s.convertOrReallocate(ctx, tx, scope, a, now, c, allocs, occupancy.KindContract)
-		if err != nil {
-			return err
-		}
-		c.Status = string(t.To)
-		c.ActivatedAt, c.SignedOnPaper, c.HoldLost = now, true, false
-		if err := updateContract(ctx, tx, scope, c.Version, c, now); err != nil {
-			return err
-		}
-		if err := s.writeAudit(ctx, tx, scope, a, "contract.activate", entityContract, c.ID, map[string]any{
-			"from_status": string(StatusDraft), "status": c.Status, "converted": holds, "reallocated": idsOf(reallocated),
-		}); err != nil {
-			return err
-		}
-		if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c}); err != nil {
-			return err
-		}
-		return s.emitAllocated(ctx, tx, scope, reallocated, c.ID)
+		return s.activatePaperTx(ctx, tx, scope, a, c, in)
 	})
 	if err != nil {
 		return nil, err
 	}
 	return s.detail(ctx, s.d.DB.DB, scope, p, id)
+}
+
+// activatePaperTx is the activate transition of a locked contract.
+func (s *Service) activatePaperTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, a actor, c *store.Contract, in ActivateInput) error {
+	t, err := Next(MooringTransitions, Status(c.Status), ActionActivate)
+	if err != nil {
+		return err
+	}
+	cs, err := s.settingsTx(ctx, tx, scope)
+	if err != nil {
+		return err
+	}
+	if in.PaperScanFileID != "" {
+		if _, err := store.GetStoredFile(ctx, tx, scope, in.PaperScanFileID); err != nil {
+			v := &auth.ValidationError{}
+			v.Add("paper_scan_file_id", "invalid")
+			return v
+		}
+	} else if cs.Stored && cs.RequirePaperScan {
+		return ErrPaperScanRequired
+	}
+	cancelled := ""
+	if c.Status == string(StatusAwaitingSignature) && s.signer != nil {
+		if err := s.signer.CancelTx(ctx, tx, scope, SubjectContract, c.ID); err != nil {
+			return err
+		}
+		cancelled = c.SignatureRequestID
+	}
+	c.SignedOnPaper, c.SignedAt = true, s.now()
+	return s.activateTx(ctx, tx, scope, a, c, t, "contract.activate", map[string]any{
+		"paper_scan_file_id": in.PaperScanFileID, "cancelled_signature_request_id": cancelled,
+	}, subject{driver: DriverPaper})
 }
 
 // CancelContract cancels a draft mooring contract and frees its holds (contracts.write, If-Match).
@@ -278,24 +325,7 @@ func (s *Service) CancelContract(ctx context.Context, p *auth.Principal, marinaI
 		if err != nil {
 			return err
 		}
-		allocs, err := contractAllocs(ctx, tx, scope, c.ID)
-		if err != nil {
-			return err
-		}
-		if err := s.cancelAllocs(ctx, tx, scope, allocs, occupancy.StatusCancelled, event.ReleasedCancel); err != nil {
-			return err
-		}
-		now := s.now()
-		c.Status, c.CancelledAt, c.CancelReason = string(t.To), now, reason
-		if err := updateContract(ctx, tx, scope, c.Version, c, now); err != nil {
-			return err
-		}
-		if err := s.writeAudit(ctx, tx, scope, a, "contract.cancel", entityContract, c.ID, map[string]any{
-			"from_status": string(StatusDraft), "status": c.Status, "allocation_ids": idsOf(activeOnly(allocs)),
-		}); err != nil {
-			return err
-		}
-		return s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: event.ChangeCancelled})
+		return s.cancelContractTx(ctx, tx, scope, a, c, t, reason)
 	})
 	if err != nil {
 		return nil, err
@@ -303,9 +333,46 @@ func (s *Service) CancelContract(ctx context.Context, p *auth.Principal, marinaI
 	return s.detail(ctx, s.d.DB.DB, scope, p, id)
 }
 
+// cancelContractTx cancels a draft or awaiting-signature contract: open signature request cancelled, holds
+// cancelled, instalments cancelled, renewal proposal and waiting list told.
+func (s *Service) cancelContractTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, a actor, c *store.Contract, t Transition, reason string) error {
+	allocs, err := contractAllocs(ctx, tx, scope, c.ID)
+	if err != nil {
+		return err
+	}
+	if c.Status == string(StatusAwaitingSignature) && s.signer != nil {
+		if err := s.signer.CancelTx(ctx, tx, scope, SubjectContract, c.ID); err != nil {
+			return err
+		}
+	}
+	if err := s.cancelAllocs(ctx, tx, scope, allocs, occupancy.StatusCancelled, event.ReleasedCancel); err != nil {
+		return err
+	}
+	cancelledPlan, err := s.cancelPlanTx(ctx, tx, scope, c, true)
+	if err != nil {
+		return err
+	}
+	from := c.Status
+	now := s.now()
+	c.Status, c.CancelledAt, c.CancelReason = string(t.To), now, reason
+	if err := updateContract(ctx, tx, scope, c.Version, c, now); err != nil {
+		return err
+	}
+	if err := s.writeAudit(ctx, tx, scope, a, "contract.cancel", entityContract, c.ID, map[string]any{
+		"from_status": from, "status": c.Status, "allocation_ids": idsOf(activeOnly(allocs)), "installment_ids": cancelledPlan,
+	}); err != nil {
+		return err
+	}
+	if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: event.ChangeCancelled}); err != nil {
+		return err
+	}
+	return s.onContractFreedTx(ctx, tx, scope, c)
+}
+
 // TerminateContract ends an active mooring contract on effectiveOn (contracts.write, If-Match): its
 // allocations lose the nights from effectiveOn (those starting later are cancelled) and its active releases
-// after that date are closed. Refunds and penalties are M4.
+// after that date are closed; future scheduled instalments are cancelled and the refund (negative) or penalty
+// (positive) of the cancellation policy is stored (never charged in M4, §15 D10).
 func (s *Service) TerminateContract(ctx context.Context, p *auth.Principal, marinaID, id string, ifMatch int, effectiveOn calendar.Date, reason string) (*Detail, error) {
 	scope, err := p.Authorize(ctx, s.d.DB.DB, marinaID, auth.PermContractsWrite)
 	if err != nil {
@@ -375,17 +442,31 @@ func (s *Service) TerminateContract(ctx context.Context, p *auth.Principal, mari
 		if err != nil {
 			return err
 		}
+		amount, err := s.terminationAmountTx(ctx, tx, scope, c, effectiveOn)
+		if err != nil {
+			return err
+		}
+		cancelledPlan, err := s.cancelPlanTx(ctx, tx, scope, c, false)
+		if err != nil {
+			return err
+		}
+		from := c.Status
 		c.Status, c.TerminatedOn, c.TerminateReason = string(t.To), effectiveOn, reason
+		c.TerminationAmountCents = &amount
 		if err := updateContract(ctx, tx, scope, c.Version, c, now); err != nil {
 			return err
 		}
 		if err := s.writeAudit(ctx, tx, scope, a, "contract.terminate", entityContract, c.ID, map[string]any{
-			"from_status": string(StatusActive), "status": c.Status, "effective_on": effectiveOn,
-			"allocation_ids": touched, "release_ids": closed,
+			"from_status": from, "status": c.Status, "effective_on": effectiveOn,
+			"allocation_ids": touched, "release_ids": closed, "termination_amount_cents": amount,
+			"installment_ids": cancelledPlan,
 		}); err != nil {
 			return err
 		}
-		return s.emitTransition(ctx, tx, scope, t, subject{contract: c})
+		if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c}); err != nil {
+			return err
+		}
+		return s.onContractFreedTx(ctx, tx, scope, c)
 	})
 	if err != nil {
 		return nil, err

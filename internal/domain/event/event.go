@@ -79,6 +79,35 @@ const (
 	ConfigOccupancyChange = "config.occupancy_changed"
 )
 
+// M4 event types (version 1, m4-plan §7.5). Data carry ids, enums, dates, amounts and counts only (INV-70).
+const (
+	ContractSigned         = "contract.signed"
+	ContractRenewed        = "contract.renewed"
+	InstallmentOverdue     = "installment.overdue"
+	InstallmentChanged     = "installment.changed"
+	RenewalProposed        = "renewal.proposed"
+	RenewalAccepted        = "renewal.accepted"
+	RenewalDeclined        = "renewal.declined"
+	RenewalExpired         = "renewal.expired"
+	RenewalCompleted       = "renewal.completed"
+	RenewalCampaignChanged = "renewal_campaign.changed"
+	RightCreated           = "right.created"
+	RightTransferred       = "right.transferred"
+	RightEnded             = "right.ended"
+	MandateCreated         = "mandate.created"
+	MandateEnded           = "mandate.ended"
+	MandateRevenueAccrued  = "mandate.revenue_accrued"
+	ManagementFeeIssued    = "management_fee.issued"
+	CommonChargesIssued    = "common_charges.issued"
+	RightsChanged          = "rights.changed"
+	DocumentGenerated      = "document.generated"
+	SignatureRequested     = "signature.requested"
+	SignatureCompleted     = "signature.completed"
+	SignatureFailed        = "signature.failed"
+	TemplateChanged        = "template.changed"
+	CommunicationChanged   = "communication.changed"
+)
+
 // SSE topics.
 const (
 	TopicMarina = "marina.changed"
@@ -93,8 +122,13 @@ const (
 	TopicOccupancy = "occupancy.changed"
 	// TopicPresence carries arrivals and departures (M3).
 	TopicPresence = "presence.changed"
-	// TopicContract carries quotes, contracts, transits and inquiries (M3).
+	// TopicContract carries quotes, contracts, transits and inquiries (M3), instalments and renewals (M4).
 	TopicContract = "contract.changed"
+	// TopicRights carries rights, transfers, mandates, fees, millesimal tables, budgets, common charge runs, holder
+	// instalments and the concession (M4; additive to spec 27.4, m4-plan §15 D21).
+	TopicRights = "rights.changed"
+	// TopicDocuments carries templates, generated documents, signatures and communications (M4).
+	TopicDocuments = "documents.changed"
 )
 
 // TypeInfo describes an event type. Public types can be subscribed by webhook endpoints; Topic is the SSE event
@@ -151,6 +185,31 @@ var catalogue = []TypeInfo{
 	{TransitChanged, TopicContract, false},
 	{InquiryChanged, TopicContract, false},
 	{ConfigOccupancyChange, TopicOccupancy, false},
+	{ContractSigned, TopicContract, true},
+	{ContractRenewed, TopicContract, true},
+	{InstallmentOverdue, TopicContract, true},
+	{InstallmentChanged, TopicContract, false},
+	{RenewalProposed, TopicContract, true},
+	{RenewalAccepted, TopicContract, true},
+	{RenewalDeclined, TopicContract, true},
+	{RenewalExpired, TopicContract, true},
+	{RenewalCompleted, TopicContract, true},
+	{RenewalCampaignChanged, TopicContract, false},
+	{RightCreated, TopicRights, true},
+	{RightTransferred, TopicRights, true},
+	{RightEnded, TopicRights, true},
+	{MandateCreated, TopicRights, true},
+	{MandateEnded, TopicRights, true},
+	{MandateRevenueAccrued, TopicRights, true},
+	{ManagementFeeIssued, TopicRights, true},
+	{CommonChargesIssued, TopicRights, true},
+	{RightsChanged, TopicRights, false},
+	{DocumentGenerated, TopicDocuments, false},
+	{SignatureRequested, TopicDocuments, false},
+	{SignatureCompleted, TopicDocuments, false},
+	{SignatureFailed, TopicDocuments, false},
+	{TemplateChanged, TopicDocuments, false},
+	{CommunicationChanged, TopicDocuments, false},
 }
 
 // Types returns the catalogue of event types.

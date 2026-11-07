@@ -27,6 +27,7 @@ const (
 	SeriesMooring = "mooring"
 	SeriesTransit = "transit"
 	SeriesQuote   = "quote"
+	SeriesCharter = "charter" // M4
 )
 
 // Confirmation sources: M3 confirms with the manual driver only; the M5/M8 payment webhook calls the same
@@ -55,21 +56,10 @@ const (
 	ReleaseWithConsent = "with_consent"
 )
 
-// Policy is contracts.policy (versioned JSON, m3-plan §4.7). Unknown keys are rejected.
-type Policy struct {
-	Version       int    `json:"version"`
-	RepriceOnMove bool   `json:"reprice_on_move"`
-	ReleasePolicy string `json:"release_policy"` // never, with_consent
-	AllowSegments bool   `json:"allow_segments"`
-}
-
-// PolicyVersion is the current version of Policy.
-const PolicyVersion = 1
-
 // ContractCode is the display code of a contract, transit or quote: ORM-2026-0001, TRN-2026-0001,
 // PRV-2026-0001 (m3-plan §4.5, §13 D20).
 func ContractCode(series string, year int, number int64) string { //nolint:revive // name fixed by m3-plan §4.5
-	prefix := map[string]string{SeriesMooring: "ORM", SeriesTransit: "TRN", SeriesQuote: "PRV"}[series]
+	prefix := map[string]string{SeriesMooring: "ORM", SeriesTransit: "TRN", SeriesQuote: "PRV", SeriesCharter: "CHR"}[series]
 	if prefix == "" {
 		prefix = "CTR"
 	}

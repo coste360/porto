@@ -1,0 +1,137 @@
+{
+  "title": "Area cliente",
+  "quote": "Il tuo preventivo",
+  "renewal": "Il tuo rinnovo",
+  "signature": "Firma del documento",
+  "unsubscribe": "Disiscrizione",
+  "pending": "Pagina in preparazione.",
+  "invalid": "Il link non è valido o è scaduto.",
+  "loading": "Caricamento…",
+  "invalidHint": "Chiedi al marina un nuovo link.",
+  "document": {
+    "loading": "Caricamento del documento…",
+    "download": "Scarica il PDF"
+  },
+  "deposit": {
+    "title": "Istruzioni per l'acconto",
+    "amount": "Importo:",
+    "dueOn": "Da pagare entro il {{date}}",
+    "iban": "IBAN: {{iban}}",
+    "holder": "Intestatario: {{holder}}",
+    "bank": "Banca: {{bank}}",
+    "reference": "Causale: {{reference}}"
+  },
+  "plan": {
+    "title": "Come preferisci pagare",
+    "standard": "Piano a rate",
+    "early": "Pagamento anticipato scontato"
+  },
+  "quoteAccept": {
+    "intro": "Preventivo per {{vessel}}, valido fino al {{date}}.",
+    "pdf": "Preventivo {{code}}",
+    "options": "Scegli l'opzione",
+    "option": "Opzione {{n}}",
+    "deposit": "Acconto",
+    "accept": "Accetto il preventivo",
+    "done": "Preventivo accettato: contratto {{code}}.",
+    "sign": "Firma il contratto",
+    "closed": {
+      "accepted": "Il preventivo è già stato accettato.",
+      "declined": "Il preventivo è stato rifiutato.",
+      "expired": "Il preventivo è scaduto."
+    },
+    "closedOther": "Il preventivo non è più accettabile.",
+    "errors": {
+      "option": "Scegli un'opzione.",
+      "address": "Completa l'indirizzo.",
+      "fiscal_code": "Il codice fiscale non è valido.",
+      "birth_date": "Indica la data di nascita.",
+      "registration": "Indica la matricola della barca.",
+      "insurance": "Indica la scadenza dell'assicurazione.",
+      "uploads": "Carica i documenti richiesti."
+    }
+  },
+  "data": {
+    "customer": "I tuoi dati",
+    "address": {
+      "line1": "Indirizzo",
+      "postal_code": "CAP",
+      "city": "Città",
+      "province": "Provincia",
+      "country": "Paese"
+    },
+    "fiscalCode": "Codice fiscale",
+    "birthDate": "Data di nascita",
+    "vessel": "La tua barca",
+    "registration": "Matricola",
+    "insuranceExpiry": "Scadenza dell'assicurazione"
+  },
+  "upload": {
+    "done": "Documento caricato.",
+    "errors": {
+      "type": "Formato non accettato (PDF, PNG o JPEG).",
+      "size": "Il file è troppo grande (massimo 10 MB)."
+    }
+  },
+  "renewalPage": {
+    "oldPrice": "Prezzo attuale",
+    "newPrice": "Nuovo prezzo",
+    "deadline": "Rispondi entro il {{date}}",
+    "pdf": "Proposta di rinnovo",
+    "accept": "Accetto il rinnovo",
+    "decline": "Non rinnovo",
+    "reason": "Motivo (facoltativo)",
+    "confirmDecline": "Conferma il rifiuto",
+    "status": {
+      "previewed": "Proposta in preparazione.",
+      "proposed": "Proposta in attesa di risposta.",
+      "sent": "Proposta in attesa di risposta.",
+      "accepted": "Rinnovo accettato: manca la firma.",
+      "signed": "Rinnovo firmato: manca l'acconto.",
+      "completed": "Rinnovo completato. Grazie!",
+      "declined": "Hai rifiutato il rinnovo.",
+      "expired": "La proposta è scaduta.",
+      "excluded": "La proposta non è disponibile."
+    }
+  },
+  "signing": {
+    "intro": "Leggi «{{title}}», conferma i tuoi dati e firma con il codice che ricevi per email.",
+    "identity": "Chi firma",
+    "fiscalCode": "Codice fiscale {{code}}",
+    "confirm": "Confermo che sono io e che ho letto il documento",
+    "legal": "Firma elettronica semplice con codice inviato per email. Il marina conserva il documento firmato e le prove della firma.",
+    "requestCode": "Inviami il codice",
+    "code": "Codice di 6 cifre",
+    "codeHint": "Il codice vale 10 minuti.",
+    "invalid": "Codice errato.",
+    "attemptsLeft": "Tentativi rimasti: {{count}}",
+    "sign": "Firma",
+    "resend": "Inviami un nuovo codice",
+    "newCode": "Chiedi un nuovo codice",
+    "locked": "Troppi tentativi con questo codice.",
+    "lockedHint": "Chiedi un nuovo codice per riprovare.",
+    "rateLimited": "Hai chiesto troppi codici.",
+    "retryIn": "Riprova tra {{minutes}} minuti.",
+    "retryLater": "Riprova più tardi.",
+    "signed": "Documento firmato. Grazie!",
+    "signedHint": "Riceverai una copia per email.",
+    "declined": "Hai rifiutato di firmare.",
+    "waiting": "Non è ancora il tuo turno.",
+    "waitingHint": "Riceverai un'email quando sarà il tuo turno di firmare.",
+    "closed": {
+      "expired": "La richiesta di firma è scaduta.",
+      "cancelled": "La richiesta di firma è stata annullata.",
+      "declined": "La richiesta di firma è stata rifiutata."
+    },
+    "closedOther": "La richiesta di firma non è più attiva.",
+    "decline": "Non voglio firmare",
+    "reason": "Motivo (facoltativo)",
+    "confirmDecline": "Conferma il rifiuto"
+  },
+  "unsubscribePage": {
+    "intro": "Non riceverai più comunicazioni promozionali da questo marina. Le comunicazioni di servizio sul tuo contratto continueranno.",
+    "confirm": "Conferma la disiscrizione",
+    "done": "Disiscrizione registrata.",
+    "doneHint": "Puoi cambiare idea chiedendo al marina."
+  }
+}

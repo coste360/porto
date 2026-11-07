@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},</p>
+<p>as provided by the tacit renewal clause, your contract has been renewed.</p>
+<table>
+{{with v . "contract_code"}}<tr><td>New contract</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "starts_on"}}<tr><td>From</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "ends_on"}}<tr><td>To</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "new_total"}}<tr><td>Amount</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

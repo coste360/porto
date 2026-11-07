@@ -1,0 +1,585 @@
+{
+  "fields": {
+    "addendum": {
+      "delta": "Differenza",
+      "description": "Descrizione",
+      "effective_on": "Decorrenza",
+      "installments": "Rate",
+      "kind": "Tipo",
+      "lines": "Righe",
+      "new_total": "Nuovo totale",
+      "new_vessel": "Nuova imbarcazione",
+      "old_total": "Totale precedente",
+      "seq": "Numero"
+    },
+    "adjustment": {
+      "amount": "Importo",
+      "kind": "Tipo",
+      "reason": "Motivo"
+    },
+    "bank": {
+      "bank": "Banca",
+      "bic": "BIC",
+      "holder": "Titolare",
+      "iban": "IBAN"
+    },
+    "billing_customer": "Intestatario della fattura",
+    "common": {
+      "holder": "Titolare",
+      "installments": "Rate",
+      "items": "Voci",
+      "kind": "Tipo",
+      "lines": "Righe",
+      "total": "Totale",
+      "year": "Anno"
+    },
+    "common_item": {
+      "allocated": "Ripartito",
+      "amount": "Importo",
+      "item": "Voce",
+      "marina_share": "Quota del marina",
+      "table": "Tabella"
+    },
+    "common_line": {
+      "berth": "Posto",
+      "berth_share": "Quota del posto",
+      "holder_amount": "Importo del titolare",
+      "item": "Voce",
+      "item_amount": "Importo della voce",
+      "millis": "Millesimi",
+      "table": "Tabella"
+    },
+    "communication": {
+      "contracts": "Contratti",
+      "vessels": "Imbarcazioni"
+    },
+    "contract": {
+      "berths": "Posti",
+      "code": "Codice",
+      "ends_on": "Fine",
+      "installments": "Rate",
+      "issued_on": "Data di emissione",
+      "kind": "Tipo",
+      "lines": "Righe",
+      "notes": "Note",
+      "price": "Prezzo",
+      "signed_on": "Data di firma",
+      "starts_on": "Inizio",
+      "term": "Durata"
+    },
+    "customer": "Cliente",
+    "evidence": {
+      "declared_identity": "Identità dichiarata",
+      "document_sha256": "Impronta del documento",
+      "document_title": "Titolo del documento",
+      "email_hash": "Impronta dell'email",
+      "ip": "Indirizzo IP",
+      "name": "Nome",
+      "opened_at": "Apertura",
+      "otp_sent_at": "Invio del codice",
+      "request_id": "Identificativo della richiesta",
+      "role": "Ruolo",
+      "signed_at": "Firma",
+      "signers": "Firmatari",
+      "user_agent_sha256": "Impronta del browser"
+    },
+    "fee": {
+      "amount": "Importo",
+      "base": "Base",
+      "days": "Giorni",
+      "holder": "Titolare",
+      "holder_amount": "Importo del titolare",
+      "installments": "Rate",
+      "istat": "Adeguamento ISTAT",
+      "share": "Quota",
+      "updated": "Importo aggiornato",
+      "year": "Anno"
+    },
+    "fleet": {
+      "changeover_weekday": "Giorno di cambio",
+      "name": "Nome",
+      "pricing_mode": "Modalità di prezzo",
+      "vessels": "Imbarcazioni"
+    },
+    "groups": {
+      "addendum": "Addendum",
+      "contract": "Contratto",
+      "fleet": "Flotta",
+      "installment": "Rata",
+      "marina": "Marina",
+      "policy": "Condizioni",
+      "quote": "Preventivo",
+      "right": "Diritto d'uso",
+      "vessel": "Imbarcazione"
+    },
+    "holder": {
+      "amount": "Importo",
+      "party": "Soggetto",
+      "share": "Quota"
+    },
+    "holder_chain": {
+      "berth": "Posto",
+      "entries": "Passaggi",
+      "holders": "Titolari",
+      "right": "Diritto d'uso",
+      "status": "Stato"
+    },
+    "installment": {
+      "amount": "Importo",
+      "due_on": "Scadenza",
+      "issue_on": "Emissione",
+      "kind": "Tipo",
+      "open": "Rate aperte",
+      "overdue": "Scaduta",
+      "payment_reference": "Causale di pagamento",
+      "seq": "Numero",
+      "status": "Stato"
+    },
+    "mandate": {
+      "from": "Dal",
+      "holder": "Titolare",
+      "lines": "Righe",
+      "min_guaranteed": "Minimo garantito",
+      "owner_share": "Quota del titolare",
+      "owner_share_bp": "Quota del titolare (%)",
+      "revenue": "Ricavo",
+      "to": "Al",
+      "top_up": "Integrazione al minimo"
+    },
+    "mandate_line": {
+      "contract_code": "Codice contratto",
+      "first_night": "Prima notte",
+      "last_night": "Ultima notte",
+      "nights": "Notti",
+      "owner_share": "Quota del titolare",
+      "revenue": "Ricavo"
+    },
+    "map_print": {
+      "date": "Data",
+      "lens": "Vista",
+      "map_name": "Nome della mappa"
+    },
+    "marina": {
+      "address": "Indirizzo",
+      "bank": "Banca",
+      "concession_expires_on": "Scadenza della concessione",
+      "email": "Email",
+      "fiscal_code": "Codice fiscale",
+      "legal_name": "Denominazione",
+      "name": "Nome",
+      "phone": "Telefono",
+      "vat_number": "Partita IVA",
+      "website": "Sito web"
+    },
+    "party": {
+      "address": "Indirizzo",
+      "code": "Codice",
+      "company_name": "Ragione sociale",
+      "display_name": "Nome",
+      "email": "Email",
+      "first_name": "Nome",
+      "fiscal_code": "Codice fiscale",
+      "kind": "Tipo",
+      "last_name": "Cognome",
+      "phone": "Telefono",
+      "vat_number": "Partita IVA"
+    },
+    "place": {
+      "code": "Codice",
+      "first_night": "Prima notte",
+      "last_night": "Ultima notte",
+      "length": "Lunghezza",
+      "map": "Mappa",
+      "structure": "Struttura",
+      "type": "Tipo",
+      "width": "Larghezza"
+    },
+    "policy": {
+      "cancellation_notice_days": "Preavviso di recesso (giorni)",
+      "deposit": "Acconto",
+      "deposit_bp": "Acconto (%)",
+      "deposit_due_days": "Giorni per l'acconto",
+      "early_payment_discount_bp": "Sconto pagamento anticipato (%)",
+      "installments_count": "Numero di rate",
+      "penalty_bp": "Penale (%)",
+      "refund": "Rimborso",
+      "renewal_notice_days": "Preavviso di rinnovo (giorni)",
+      "sepa": "Addebito SEPA",
+      "tacit_renewal": "Rinnovo tacito"
+    },
+    "price": {
+      "adjustments": "Rettifiche",
+      "deposit": "Acconto",
+      "lines": "Righe",
+      "net": "Imponibile",
+      "total": "Totale",
+      "vat": "IVA"
+    },
+    "price_line": {
+      "amount": "Importo",
+      "description": "Descrizione",
+      "qty": "Quantità",
+      "unit": "Unità",
+      "unit_price": "Prezzo unitario",
+      "vat_rate": "Aliquota IVA"
+    },
+    "quote": {
+      "code": "Codice",
+      "ends_on": "Fine",
+      "issued_on": "Data di emissione",
+      "kind": "Tipo",
+      "link": "Link",
+      "notes": "Note",
+      "options": "Opzioni",
+      "starts_on": "Inizio",
+      "term": "Durata",
+      "valid_until": "Valido fino al"
+    },
+    "quote_option": {
+      "label": "Etichetta",
+      "placements": "Posti",
+      "price": "Prezzo",
+      "seq": "Numero"
+    },
+    "renewal": {
+      "berths": "Posti",
+      "contract": "Contratto",
+      "deadline": "Scadenza",
+      "early_payment_total": "Totale con pagamento anticipato",
+      "installments": "Rate",
+      "link": "Link",
+      "message": "Messaggio",
+      "new_contract": "Nuovo contratto",
+      "new_price": "Nuovo prezzo",
+      "old_price": "Prezzo attuale"
+    },
+    "right": {
+      "berth": "Posto",
+      "from_on": "Dal",
+      "kind": "Tipo",
+      "title_date": "Data del titolo",
+      "title_deed": "Atto",
+      "title_notary": "Notaio",
+      "title_number": "Numero del titolo",
+      "to_on": "Al"
+    },
+    "transfer": {
+      "declared_price": "Prezzo dichiarato",
+      "effective_on": "Decorrenza",
+      "from": "Dal",
+      "takeover_fee": "Diritto di subentro",
+      "to": "Al"
+    },
+    "vessel": {
+      "beam": "Larghezza",
+      "draft": "Pescaggio",
+      "flag": "Bandiera",
+      "hull_type": "Tipo di scafo",
+      "loa": "Lunghezza fuori tutto",
+      "name": "Nome",
+      "registration": "Matricola"
+    }
+  },
+  "templateKind": {
+    "quote": "Preventivo",
+    "contract_annual": "Contratto annuale",
+    "contract_seasonal": "Contratto stagionale",
+    "contract_monthly": "Contratto mensile",
+    "contract_period": "Contratto a periodo",
+    "charter": "Contratto charter",
+    "general_conditions": "Condizioni generali",
+    "harbour_rules": "Regolamento portuale",
+    "letter": "Lettera",
+    "addendum": "Addendum",
+    "renewal_proposal": "Proposta di rinnovo",
+    "payment_request": "Richiesta di pagamento",
+    "reminder": "Sollecito",
+    "installment_notice": "Avviso di rata",
+    "holder_chain": "Catena dei titolari",
+    "mandate_statement": "Rendiconto del mandato",
+    "fee_notice": "Avviso oneri di gestione",
+    "common_charges_holder": "Spese comuni per titolare",
+    "common_charges_items": "Spese comuni per voce",
+    "transfer": "Cessione",
+    "communication": "Comunicazione",
+    "signature_evidence": "Evidenze di firma",
+    "map_print": "Stampa della mappa",
+    "receipt": "Ricevuta",
+    "statement_of_account": "Estratto conto",
+    "yard_work_order": "Ordine di lavoro cantiere",
+    "yard_quote": "Preventivo cantiere",
+    "rental_contract": "Contratto di noleggio",
+    "rental_handover": "Consegna del noleggio"
+  },
+  "fieldType": {
+    "text": "Testo",
+    "notes": "Note",
+    "int": "Numero",
+    "cents": "Importo",
+    "cm": "Lunghezza",
+    "bp": "Percentuale",
+    "millis": "Millesimi",
+    "date": "Data",
+    "datetime": "Data e ora",
+    "bool": "Sì/no",
+    "list": "Elenco",
+    "object": "Gruppo"
+  },
+  "installmentStatus": {
+    "scheduled": "Pianificata",
+    "issued": "Emessa",
+    "partially_paid": "Pagata in parte",
+    "paid": "Pagata",
+    "cancelled": "Annullata",
+    "overdue": "Scaduta"
+  },
+  "installmentKind": {
+    "deposit": "Acconto",
+    "installment": "Rata",
+    "single": "Unica soluzione"
+  },
+  "settlementMethod": {
+    "bank_transfer": "Bonifico",
+    "cash": "Contanti",
+    "card_pos": "Carta (POS)",
+    "cheque": "Assegno",
+    "other": "Altro"
+  },
+  "planChoice": {
+    "standard": "Piano standard",
+    "early_payment": "Pagamento anticipato"
+  },
+  "campaignStatus": {
+    "draft": "Bozza",
+    "sending": "In invio",
+    "open": "Aperta",
+    "closed": "Chiusa",
+    "discarded": "Scartata"
+  },
+  "proposalStatus": {
+    "previewed": "In anteprima",
+    "proposed": "Proposta",
+    "sent": "Inviata",
+    "accepted": "Accettata",
+    "signed": "Firmata",
+    "completed": "Completata",
+    "declined": "Rifiutata",
+    "expired": "Scaduta",
+    "excluded": "Esclusa"
+  },
+  "exclusionReason": {
+    "arrears": "Morosità",
+    "insurance_expired": "Assicurazione scaduta",
+    "already_renewed": "Già rinnovato",
+    "no_price": "Nessun listino",
+    "berth_unavailable": "Posto non disponibile",
+    "manual": "Esclusione manuale"
+  },
+  "addendumKind": {
+    "service_add": "Aggiunta servizio",
+    "service_remove": "Rimozione servizio",
+    "parking": "Parcheggio",
+    "billing_customer": "Cambio intestatario",
+    "price_change": "Variazione di prezzo",
+    "vessel_change": "Cambio imbarcazione"
+  },
+  "addendumStatus": {
+    "draft": "Bozza",
+    "awaiting_signature": "In attesa di firma",
+    "active": "Attivo",
+    "cancelled": "Annullato"
+  },
+  "charterPricingMode": {
+    "per_berth": "Per posto",
+    "per_vessel": "Per imbarcazione",
+    "flat": "A forfait"
+  },
+  "waitlistStatus": {
+    "waiting": "In attesa",
+    "offered": "Proposto",
+    "converted": "Convertito",
+    "withdrawn": "Ritirato"
+  },
+  "rightKind": {
+    "ownership_share": "Quota di proprietà",
+    "long_term_use": "Uso pluriennale",
+    "membership": "Socio"
+  },
+  "rightStatus": {
+    "active": "Attivo",
+    "transferred": "Ceduto",
+    "ended": "Cessato",
+    "cancelled": "Annullato"
+  },
+  "transferStatus": {
+    "draft": "Bozza",
+    "awaiting_signature": "In attesa di firma",
+    "completed": "Completata",
+    "cancelled": "Annullata"
+  },
+  "mandateStatus": {
+    "active": "Attivo",
+    "ended": "Terminato",
+    "cancelled": "Annullato"
+  },
+  "mapRightStatus": {
+    "marina": "Del marina",
+    "holder": "Del titolare",
+    "mandate": "In gestione"
+  },
+  "feeBasis": {
+    "per_category": "Per categoria",
+    "per_m2_berth": "Per m² di posto",
+    "per_length_band": "Per fascia di lunghezza"
+  },
+  "feeRunStatus": {
+    "draft": "Bozza",
+    "simulated": "Simulato",
+    "issued": "Emesso",
+    "discarded": "Scartato"
+  },
+  "millesimalTableStatus": {
+    "draft": "Bozza",
+    "active": "Attiva",
+    "archived": "Archiviata"
+  },
+  "budgetStatus": {
+    "draft": "Bozza",
+    "approved": "Approvato",
+    "closed": "Chiuso"
+  },
+  "commonRunKind": {
+    "advance": "Acconto",
+    "balance": "Conguaglio"
+  },
+  "commonRunStatus": {
+    "draft": "Bozza",
+    "issued": "Emessa",
+    "discarded": "Scartata"
+  },
+  "holderInstallmentSource": {
+    "management_fee": "Oneri di gestione",
+    "common_advance": "Acconto spese comuni",
+    "common_balance": "Conguaglio spese comuni",
+    "transfer_fee": "Diritto di subentro"
+  },
+  "obligationKind": {
+    "fee_instalment": "Rata del canone",
+    "deposit": "Cauzione",
+    "insurance": "Assicurazione",
+    "periodic_report": "Relazione periodica",
+    "other": "Altro"
+  },
+  "templateVersionStatus": {
+    "draft": "Bozza",
+    "published": "Pubblicata",
+    "superseded": "Sostituita"
+  },
+  "documentStatus": {
+    "pending": "In attesa",
+    "rendering": "In generazione",
+    "ready": "Pronto",
+    "failed": "Non riuscito",
+    "superseded": "Sostituito"
+  },
+  "signatureDriver": {
+    "paper": "Firma su carta",
+    "otp": "Firma elettronica semplice (codice)",
+    "provider": "Fornitore esterno"
+  },
+  "signatureStatus": {
+    "pending_document": "Documento in preparazione",
+    "sent": "Inviata",
+    "partially_signed": "Firmata in parte",
+    "signed": "Firmata",
+    "declined": "Rifiutata",
+    "expired": "Scaduta",
+    "cancelled": "Annullata"
+  },
+  "signerStatus": {
+    "waiting": "In attesa",
+    "invited": "Invitato",
+    "signed": "Ha firmato",
+    "declined": "Ha rifiutato"
+  },
+  "signerRole": {
+    "customer": "Cliente",
+    "co_holder": "Cotitolare",
+    "outgoing_holder": "Titolare uscente",
+    "incoming_holder": "Titolare subentrante",
+    "legal_representative": "Legale rappresentante",
+    "marina": "Marina"
+  },
+  "orderMode": {
+    "sequential": "In ordine",
+    "parallel": "In parallelo"
+  },
+  "commCategory": {
+    "service": "Di servizio",
+    "promotional": "Promozionale"
+  },
+  "commStatus": {
+    "draft": "Bozza",
+    "scheduled": "Programmata",
+    "sending": "In invio",
+    "sent": "Inviata",
+    "cancelled": "Annullata"
+  },
+  "recipientStatus": {
+    "pending": "In attesa",
+    "queued": "In coda",
+    "skipped_no_consent": "Escluso: senza consenso",
+    "skipped_no_email": "Escluso: senza email",
+    "failed": "Non riuscito"
+  },
+  "importEntity": {
+    "customers_vessels": "Clienti e imbarcazioni",
+    "contracts": "Contratti",
+    "rights": "Diritti d'uso",
+    "deadlines": "Scadenze"
+  },
+  "importStatus": {
+    "dry_run": "Prova",
+    "applied": "Applicata",
+    "undone": "Annullata",
+    "failed": "Non riuscita"
+  },
+  "deadlineKind": {
+    "contract_end": "Fine contratto",
+    "installment_due": "Scadenza rata",
+    "holder_installment_due": "Scadenza rata titolare",
+    "right_end": "Fine diritto d'uso",
+    "mandate_end": "Fine mandato",
+    "concession_expiry": "Scadenza concessione",
+    "concession_obligation": "Adempimento della concessione",
+    "renewal_deadline": "Termine del rinnovo",
+    "tacit_renewal_blocked": "Rinnovo tacito bloccato",
+    "waitlist_offer": "Proposta dalla lista d'attesa",
+    "document_failed": "Documento non generato",
+    "signature_expiring": "Firma in scadenza"
+  },
+  "deadlineChannel": {
+    "panel": "Pannello",
+    "customer_email": "Email al cliente",
+    "office_email": "Email all'ufficio"
+  },
+  "insurancePolicy": {
+    "warn": "Avvisa",
+    "block": "Blocca"
+  },
+  "requiredField": {
+    "address": "Indirizzo",
+    "fiscal_code": "Codice fiscale",
+    "birth_date": "Data di nascita",
+    "vessel_registration": "Matricola dell'imbarcazione",
+    "insurance_expiry": "Scadenza dell'assicurazione",
+    "insurance_document": "Polizza assicurativa",
+    "identity_document": "Documento d'identità"
+  },
+  "linkPurpose": {
+    "quote": "Preventivo",
+    "renewal": "Rinnovo",
+    "signature": "Firma",
+    "unsubscribe": "Disiscrizione"
+  }
+}

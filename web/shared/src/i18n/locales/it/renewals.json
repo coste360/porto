@@ -1,0 +1,99 @@
+{
+  "list": {
+    "title": "Rinnovi",
+    "description": "Campagne di rinnovo dei contratti in scadenza, con prelazione sul posto.",
+    "new": "Nuova campagna",
+    "status": "Stato",
+    "name": "Nome",
+    "deadline": "Termine",
+    "counts": "Proposte",
+    "empty": "Nessuna campagna."
+  },
+  "campaign": {
+    "title": "Campagna di rinnovo"
+  },
+  "pending": "Questa pagina arriva con M4.",
+  "wizard": {
+    "title": "Nuova campagna di rinnovo",
+    "description": "1 filtro, 2 anteprima, 3 messaggio e termine, 4 avvio. L'anteprima blocca i posti per i titolari.",
+    "steps": "Passaggi della campagna",
+    "step": {
+      "filter": "Filtro",
+      "preview": "Anteprima",
+      "message": "Messaggio e termine",
+      "launch": "Avvio"
+    },
+    "name": "Nome della campagna",
+    "terms": "Durata dei contratti",
+    "groups": "Gruppi di posti",
+    "endsFrom": "In scadenza dal",
+    "endsTo": "In scadenza al",
+    "priceList": "Listino",
+    "priceListAuto": "Listino attivo per il nuovo periodo",
+    "deadline": "Termine per rispondere",
+    "message": "Messaggio ai clienti",
+    "preview": "Calcola anteprima",
+    "next": "Avanti",
+    "back": "Indietro",
+    "launch": "Avvia la campagna",
+    "launched": "Campagna avviata: le proposte partono in pochi minuti.",
+    "discard": "Scarta la bozza",
+    "stale": "Il filtro è cambiato: ricalcola l'anteprima.",
+    "summary": "{{count}} proposte da inviare, {{excluded}} escluse.",
+    "errors": {
+      "name": "Dai un nome alla campagna.",
+      "filter": "Scegli almeno un criterio.",
+      "range": "Il periodo di scadenza è invertito.",
+      "preview": "Calcola l'anteprima.",
+      "empty": "Tutte le proposte sono escluse.",
+      "deadline": "Il termine deve essere dopo oggi.",
+      "launched": "La campagna è già avviata."
+    }
+  },
+  "preview": {
+    "included": "Incluse",
+    "excluded": "Escluse",
+    "oldTotal": "Totale attuale",
+    "newTotal": "Totale nuovo",
+    "contract": "Contratto",
+    "customer": "Cliente",
+    "vessel": "Barca",
+    "oldPrice": "Prezzo attuale",
+    "newPrice": "Nuovo prezzo",
+    "status": "Stato",
+    "empty": "Nessun contratto corrisponde al filtro.",
+    "include": "Includi",
+    "includeTitle": "Includi la proposta esclusa",
+    "includeDescription": "Il motivo viene registrato; il posto viene bloccato ora."
+  },
+  "monitor": {
+    "description": "Andamento della campagna, aggiornato in tempo reale.",
+    "csv": "Esporta CSV",
+    "close": "Chiudi la campagna",
+    "counts": "Proposte per stato"
+  },
+  "proposal": {
+    "title": "Proposta di rinnovo",
+    "status": "Stato",
+    "oldTotal": "Totale attuale",
+    "newTotal": "Totale nuovo",
+    "period": "Nuovo periodo",
+    "deadline": "Termine",
+    "exclusion": "Motivo dell'esclusione",
+    "plan": "Piano",
+    "resend": "Invia di nuovo",
+    "accept": "Accetta",
+    "acceptOnBehalf": "Accetta per il cliente",
+    "decline": "Rifiuta",
+    "declineTitle": "Rifiuta la proposta"
+  },
+  "simple": {
+    "none": "Nessun rinnovo in corso.",
+    "renew": "Rinnova",
+    "title": "Rinnova il contratto",
+    "description": "Crea il contratto successivo in bozza con il posto bloccato fino al termine.",
+    "startsOn": "Inizio del nuovo periodo",
+    "deadline": "Termine per rispondere",
+    "send": "Invia subito la proposta al cliente"
+  }
+}

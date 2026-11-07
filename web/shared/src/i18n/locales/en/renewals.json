@@ -1,0 +1,99 @@
+{
+  "list": {
+    "title": "Renewals",
+    "description": "Renewal campaigns of expiring contracts, with the berth held for the holder.",
+    "new": "New campaign",
+    "status": "Status",
+    "name": "Name",
+    "deadline": "Deadline",
+    "counts": "Proposals",
+    "empty": "No campaigns."
+  },
+  "campaign": {
+    "title": "Renewal campaign"
+  },
+  "pending": "This page arrives with M4.",
+  "wizard": {
+    "title": "New renewal campaign",
+    "description": "1 filter, 2 preview, 3 message and deadline, 4 launch. The preview holds the berths for the holders.",
+    "steps": "Campaign steps",
+    "step": {
+      "filter": "Filter",
+      "preview": "Preview",
+      "message": "Message and deadline",
+      "launch": "Launch"
+    },
+    "name": "Campaign name",
+    "terms": "Contract terms",
+    "groups": "Berth groups",
+    "endsFrom": "Ending from",
+    "endsTo": "Ending to",
+    "priceList": "Price list",
+    "priceListAuto": "Active list for the new period",
+    "deadline": "Reply deadline",
+    "message": "Message to customers",
+    "preview": "Compute preview",
+    "next": "Next",
+    "back": "Back",
+    "launch": "Launch the campaign",
+    "launched": "Campaign launched: proposals go out in a few minutes.",
+    "discard": "Discard the draft",
+    "stale": "The filter changed: compute the preview again.",
+    "summary": "{{count}} proposals to send, {{excluded}} excluded.",
+    "errors": {
+      "name": "Name the campaign.",
+      "filter": "Choose at least one criterion.",
+      "range": "The end period is reversed.",
+      "preview": "Compute the preview.",
+      "empty": "Every proposal is excluded.",
+      "deadline": "The deadline must be after today.",
+      "launched": "The campaign is already launched."
+    }
+  },
+  "preview": {
+    "included": "Included",
+    "excluded": "Excluded",
+    "oldTotal": "Current total",
+    "newTotal": "New total",
+    "contract": "Contract",
+    "customer": "Customer",
+    "vessel": "Vessel",
+    "oldPrice": "Current price",
+    "newPrice": "New price",
+    "status": "Status",
+    "empty": "No contract matches the filter.",
+    "include": "Include",
+    "includeTitle": "Include the excluded proposal",
+    "includeDescription": "The reason is recorded; the berth is held now."
+  },
+  "monitor": {
+    "description": "Campaign progress, updated live.",
+    "csv": "Export CSV",
+    "close": "Close the campaign",
+    "counts": "Proposals by status"
+  },
+  "proposal": {
+    "title": "Renewal proposal",
+    "status": "Status",
+    "oldTotal": "Current total",
+    "newTotal": "New total",
+    "period": "New period",
+    "deadline": "Deadline",
+    "exclusion": "Exclusion reason",
+    "plan": "Plan",
+    "resend": "Send again",
+    "accept": "Accept",
+    "acceptOnBehalf": "Accept for the customer",
+    "decline": "Decline",
+    "declineTitle": "Decline the proposal"
+  },
+  "simple": {
+    "none": "No renewal in progress.",
+    "renew": "Renew",
+    "title": "Renew the contract",
+    "description": "Creates the next contract as a draft with the berth held until the deadline.",
+    "startsOn": "Start of the new period",
+    "deadline": "Reply deadline",
+    "send": "Send the proposal to the customer now"
+  }
+}

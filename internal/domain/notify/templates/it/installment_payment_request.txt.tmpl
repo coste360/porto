@@ -1,0 +1,13 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+ti chiediamo il pagamento della rata indicata con bonifico bancario.
+{{with v . "contract_code"}}Causale: {{.}}
+{{end}}{{with v . "amount"}}Importo: {{.}}
+{{end}}{{with v . "due_on"}}Scadenza: {{.}}
+{{end}}{{with v . "iban"}}IBAN: {{.}}
+{{end}}{{with v . "bank_holder"}}Intestatario: {{.}}
+{{end}}{{with v . "bank"}}Banca: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

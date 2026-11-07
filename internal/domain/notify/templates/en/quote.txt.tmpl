@@ -1,0 +1,15 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+please find the quote you asked for attached.
+{{with v . "quote_code"}}Quote: {{.}}
+{{end}}{{with v . "starts_on"}}From: {{.}}
+{{end}}{{with v . "ends_on"}}To: {{.}}
+{{end}}{{with v . "amount"}}Total: {{.}}
+{{end}}{{with v . "valid_until"}}Valid until: {{.}}
+{{end}}
+{{with v . "link"}}View and accept the quote:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

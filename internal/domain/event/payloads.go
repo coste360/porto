@@ -282,6 +282,163 @@ type OccupancyConfigChangedData struct {
 	Change    string `json:"change"` // settings, closure
 }
 
+// Change values of M4 events (contract.changed, installment.changed, rights.changed, template.changed,
+// communication.changed).
+const (
+	ChangeSignatureRequested = "signature_requested"
+	ChangeSignatureFailed    = "signature_failed"
+	ChangeSuspended          = "suspended"
+	ChangeResumed            = "resumed"
+	ChangeAddendum           = "addendum"
+	ChangeVesselChanged      = "vessel_changed"
+	ChangeRotated            = "rotated"
+	ChangeIssued             = "issued"
+	ChangeSettled            = "settled"
+	ChangeReplanned          = "replanned"
+	ChangePlanned            = "planned"
+	ChangeReminded           = "reminded"
+	ChangePublished          = "published"
+	ChangeVersion            = "version"
+	ChangeScheduled          = "scheduled"
+	ChangeSent               = "sent"
+	ChangeLaunched           = "launched"
+	ChangePreviewed          = "previewed"
+	ChangeClosed             = "closed"
+	ChangeDiscarded          = "discarded"
+)
+
+// ContractSignedData is the data of contract.signed: the contract became active after a signature.
+type ContractSignedData struct {
+	ContractID         string `json:"contract_id"`
+	Kind               string `json:"kind"`
+	Term               string `json:"term,omitempty"`
+	Status             string `json:"status"`
+	SignatureRequestID string `json:"signature_request_id,omitempty"`
+	Driver             string `json:"driver"` // paper, otp, provider
+}
+
+// ContractRenewedData is the data of contract.renewed.
+type ContractRenewedData struct {
+	ContractID          string        `json:"contract_id"`
+	SuccessorContractID string        `json:"successor_contract_id"`
+	Kind                string        `json:"kind"`
+	Term                string        `json:"term,omitempty"`
+	From                calendar.Date `json:"from"`
+	To                  calendar.Date `json:"to"`
+	Tacit               bool          `json:"tacit"`
+}
+
+// InstallmentOverdueData is the data of installment.overdue.
+type InstallmentOverdueData struct {
+	InstallmentID string        `json:"installment_id"`
+	ContractID    string        `json:"contract_id"`
+	Seq           int           `json:"seq"`
+	DueOn         calendar.Date `json:"due_on"`
+	AmountCents   int64         `json:"amount_cents"`
+}
+
+// InstallmentChangedData is the data of installment.changed (internal). InstallmentID is empty for plan-wide
+// changes.
+type InstallmentChangedData struct {
+	InstallmentID string `json:"installment_id,omitempty"`
+	ContractID    string `json:"contract_id"`
+	Change        string `json:"change"` // planned, issued, settled, cancelled, replanned, reminded
+	PlanVersion   int    `json:"plan_version"`
+}
+
+// RenewalData is the data of renewal.proposed, .accepted, .declined, .expired and .completed.
+type RenewalData struct {
+	ProposalID       string `json:"proposal_id"`
+	CampaignID       string `json:"campaign_id,omitempty"`
+	SourceContractID string `json:"source_contract_id"`
+	NewContractID    string `json:"new_contract_id,omitempty"`
+	Status           string `json:"status"`
+}
+
+// RenewalCampaignData is the data of renewal_campaign.changed (internal).
+type RenewalCampaignData struct {
+	CampaignID string         `json:"campaign_id"`
+	Status     string         `json:"status"`
+	Counts     map[string]int `json:"counts"`
+}
+
+// RightData is the data of right.created, right.transferred and right.ended. To is the inclusive last night.
+type RightData struct {
+	RightID    string        `json:"right_id"`
+	BerthID    string        `json:"berth_id"`
+	Kind       string        `json:"kind"`
+	From       calendar.Date `json:"from"`
+	To         calendar.Date `json:"to"`
+	NewRightID string        `json:"new_right_id,omitempty"`
+	TransferID string        `json:"transfer_id,omitempty"`
+}
+
+// MandateData is the data of mandate.created and mandate.ended.
+type MandateData struct {
+	MandateID string        `json:"mandate_id"`
+	RightID   string        `json:"right_id"`
+	BerthID   string        `json:"berth_id"`
+	From      calendar.Date `json:"from"`
+	To        calendar.Date `json:"to"`
+}
+
+// MandateRevenueData is the data of mandate.revenue_accrued.
+type MandateRevenueData struct {
+	MandateID       string        `json:"mandate_id"`
+	Rows            int           `json:"rows"`
+	RevenueCents    int64         `json:"revenue_cents"`
+	OwnerShareCents int64         `json:"owner_share_cents"`
+	Through         calendar.Date `json:"through"`
+}
+
+// RunIssuedData is the data of management_fee.issued and common_charges.issued. Kind is advance or balance for
+// common charges.
+type RunIssuedData struct {
+	RunID      string `json:"run_id"`
+	Year       int    `json:"year"`
+	Kind       string `json:"kind,omitempty"`
+	TotalCents int64  `json:"total_cents"`
+	Holders    int    `json:"holders"`
+}
+
+// RightsChangedData is the data of rights.changed (internal): tables, budgets, runs, holder instalments, concession.
+type RightsChangedData struct {
+	Entity string `json:"entity"` // fee_table, fee_run, millesimal_table, budget, common_run, holder_installment, concession, transfer, right
+	ID     string `json:"entity_id,omitempty"`
+	Change string `json:"change"`
+}
+
+// DocumentGeneratedData is the data of document.generated (internal).
+type DocumentGeneratedData struct {
+	DocumentID  string `json:"document_id"`
+	Kind        string `json:"kind"`
+	SubjectType string `json:"subject_type"`
+	SubjectID   string `json:"subject_id"`
+	Status      string `json:"status"`
+	Signed      bool   `json:"signed"`
+}
+
+// SignatureData is the data of signature.requested, .completed and .failed (internal).
+type SignatureData struct {
+	SignatureRequestID string `json:"signature_request_id"`
+	SubjectType        string `json:"subject_type"`
+	SubjectID          string `json:"subject_id"`
+	Status             string `json:"status"`
+	Driver             string `json:"driver"`
+}
+
+// TemplateChangedData is the data of template.changed (internal). Never the template body (only its hash in audit).
+type TemplateChangedData struct {
+	TemplateID string `json:"template_id"`
+	Change     string `json:"change"` // created, updated, version, published, archived
+}
+
+// CommunicationChangedData is the data of communication.changed (internal).
+type CommunicationChangedData struct {
+	CampaignID string `json:"campaign_id"`
+	Change     string `json:"change"` // created, updated, scheduled, sent, cancelled
+}
+
 const sampleID = "01900000-0000-7000-8000-000000000000"
 
 // Samples returns one example payload per event type.
@@ -353,5 +510,42 @@ func Samples() map[string]any {
 		TransitChanged:        TransitChangedData{ContractID: sampleID, Change: ChangeStay},
 		InquiryChanged:        InquiryChangedData{InquiryID: sampleID, Change: ChangeCreated},
 		ConfigOccupancyChange: OccupancyConfigChangedData{ClosureID: sampleID, Change: ChangeClosure},
+		// M4
+		ContractSigned: ContractSignedData{
+			ContractID: sampleID, Kind: "mooring", Term: "annual", Status: "active", SignatureRequestID: sampleID, Driver: "otp",
+		},
+		ContractRenewed: ContractRenewedData{
+			ContractID: sampleID, SuccessorContractID: sampleID, Kind: "mooring", Term: "annual", From: night,
+			To: night.AddDays(365), Tacit: false,
+		},
+		InstallmentOverdue: InstallmentOverdueData{InstallmentID: sampleID, ContractID: sampleID, Seq: 2, DueOn: night, AmountCents: 120000},
+		InstallmentChanged: InstallmentChangedData{InstallmentID: sampleID, ContractID: sampleID, Change: ChangeSettled, PlanVersion: 1},
+		RenewalProposed:    RenewalData{ProposalID: sampleID, CampaignID: sampleID, SourceContractID: sampleID, NewContractID: sampleID, Status: "proposed"},
+		RenewalAccepted:    RenewalData{ProposalID: sampleID, SourceContractID: sampleID, NewContractID: sampleID, Status: "accepted"},
+		RenewalDeclined:    RenewalData{ProposalID: sampleID, SourceContractID: sampleID, Status: "declined"},
+		RenewalExpired:     RenewalData{ProposalID: sampleID, SourceContractID: sampleID, Status: "expired"},
+		RenewalCompleted:   RenewalData{ProposalID: sampleID, SourceContractID: sampleID, NewContractID: sampleID, Status: "completed"},
+		RenewalCampaignChanged: RenewalCampaignData{
+			CampaignID: sampleID, Status: "open", Counts: map[string]int{"sent": 300, "excluded_arrears": 5},
+		},
+		RightCreated:     RightData{RightID: sampleID, BerthID: sampleID, Kind: "ownership_share", From: night, To: night.AddDays(3650)},
+		RightTransferred: RightData{RightID: sampleID, BerthID: sampleID, Kind: "ownership_share", From: night, To: night.AddDays(30), NewRightID: sampleID, TransferID: sampleID},
+		RightEnded:       RightData{RightID: sampleID, BerthID: sampleID, Kind: "long_term_use", From: night, To: night.AddDays(30)},
+		MandateCreated:   MandateData{MandateID: sampleID, RightID: sampleID, BerthID: sampleID, From: night, To: night.AddDays(61)},
+		MandateEnded:     MandateData{MandateID: sampleID, RightID: sampleID, BerthID: sampleID, From: night, To: night.AddDays(20)},
+		MandateRevenueAccrued: MandateRevenueData{
+			MandateID: sampleID, Rows: 3, RevenueCents: 45000, OwnerShareCents: 27000, Through: night.AddDays(10),
+		},
+		ManagementFeeIssued: RunIssuedData{RunID: sampleID, Year: 2027, TotalCents: 12345600, Holders: 72},
+		CommonChargesIssued: RunIssuedData{RunID: sampleID, Year: 2027, Kind: "advance", TotalCents: 9876543, Holders: 380},
+		RightsChanged:       RightsChangedData{Entity: "millesimal_table", ID: sampleID, Change: ChangeActivated},
+		DocumentGenerated: DocumentGeneratedData{
+			DocumentID: sampleID, Kind: "contract_annual", SubjectType: "contract", SubjectID: sampleID, Status: "ready", Signed: true,
+		},
+		SignatureRequested:   SignatureData{SignatureRequestID: sampleID, SubjectType: "contract", SubjectID: sampleID, Status: "sent", Driver: "otp"},
+		SignatureCompleted:   SignatureData{SignatureRequestID: sampleID, SubjectType: "contract", SubjectID: sampleID, Status: "signed", Driver: "otp"},
+		SignatureFailed:      SignatureData{SignatureRequestID: sampleID, SubjectType: "addendum", SubjectID: sampleID, Status: "expired", Driver: "paper"},
+		TemplateChanged:      TemplateChangedData{TemplateID: sampleID, Change: ChangePublished},
+		CommunicationChanged: CommunicationChangedData{CampaignID: sampleID, Change: ChangeScheduled},
 	}
 }

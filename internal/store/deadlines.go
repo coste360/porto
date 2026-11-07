@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"encoding/base64"
+	"slices"
 	"sort"
 	"strings"
 
@@ -123,7 +124,17 @@ var deadlineColumns = []string{"kind", "customer_id", "vessel_id", "due_on", "st
 
 // UpdateDeadline writes the editable columns when the stored version equals ifMatch and bumps the version.
 func UpdateDeadline(ctx context.Context, db bun.IDB, s MarinaScope, ifMatch int, d *Deadline) error {
-	res, err := db.NewUpdate().Model(d).Column(deadlineColumns...).Set("version = version + 1").
+	return updateDeadline(ctx, db, s, ifMatch, d, deadlineColumns)
+}
+
+// UpdateDeadlineAndNotified is UpdateDeadline also writing notified_at (the engine resets it when the due date
+// of the source changes).
+func UpdateDeadlineAndNotified(ctx context.Context, db bun.IDB, s MarinaScope, ifMatch int, d *Deadline) error {
+	return updateDeadline(ctx, db, s, ifMatch, d, append(slices.Clone(deadlineColumns), "notified_at"))
+}
+
+func updateDeadline(ctx context.Context, db bun.IDB, s MarinaScope, ifMatch int, d *Deadline, cols []string) error {
+	res, err := db.NewUpdate().Model(d).Column(cols...).Set("version = version + 1").
 		Where("marina_id = ?", s.ID()).Where("id = ?", d.ID).Where("version = ?", ifMatch).Exec(ctx)
 	if err != nil {
 		return err

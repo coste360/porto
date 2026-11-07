@@ -236,13 +236,13 @@ func TestDeadline_PoliciesDefaults(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if len(ps) != len(deadline.Kinds()) {
+		if len(ps) != len(deadline.AllKinds()) {
 			t.Fatalf("policies %d", len(ps))
 		}
 		for _, p := range ps {
-			want := []int{30}
-			if p.Kind == deadline.KindInsurance {
-				want = []int{60, 15}
+			want := deadline.DefaultLeadDays(p.Kind)
+			if p.Kind == deadline.KindInsurance && want[0] != 60 {
+				t.Fatal("insurance default")
 			}
 			if len(p.LeadDays) != len(want) || p.LeadDays[0] != want[0] {
 				t.Errorf("%s: %v", p.Kind, p.LeadDays)
@@ -258,7 +258,7 @@ func TestDeadline_PoliciesDefaults(t *testing.T) {
 			}
 		}
 		for name, in := range map[string][]deadline.Policy{
-			"unknown kind": {{Kind: "contract_end", LeadDays: []int{30}}},
+			"unknown kind": {{Kind: "berth_cleaning", LeadDays: []int{30}}},
 			"zero":         {{Kind: deadline.KindInsurance, LeadDays: []int{0}}},
 			"too far":      {{Kind: deadline.KindInsurance, LeadDays: []int{731}}},
 			"empty":        {{Kind: deadline.KindInsurance}},

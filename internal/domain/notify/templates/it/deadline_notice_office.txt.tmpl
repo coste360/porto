@@ -1,0 +1,13 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+una scadenza del porto richiede attenzione. Apri lo scadenzario per i dettagli.
+{{with v . "deadline_kind"}}Scadenza: {{.}}
+{{end}}{{with v . "due_on"}}Data: {{.}}
+{{end}}{{with v . "contract_code"}}Riferimento: {{.}}
+{{end}}
+{{with v . "link"}}Apri lo scadenzario:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

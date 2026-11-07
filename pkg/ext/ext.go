@@ -7,6 +7,7 @@ package ext
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -67,6 +68,96 @@ type BotProtection interface {
 	Verify(ctx context.Context, token, remoteIP string) (ok bool, err error)
 }
 
+// SignatureProvider is an external electronic signature service (spec 15.4). Porto ships none: the InfoCert driver
+// is an extension whose contract and API are still to be agreed (spec 33 D5). Outbound calls must go through the
+// egress client the host passes in the context (see WithProviderCredentials for the marina's credentials).
+type SignatureProvider interface {
+	Code() string
+	// Request starts a signature request for one or more signers on a PDF.
+	Request(ctx context.Context, req SignatureRequest) (*SignatureEnvelope, error)
+	Status(ctx context.Context, envelopeRef string) (*SignatureEnvelope, error)
+	// Download returns the signed PDF and the provider's evidence (audit trail), if any.
+	Download(ctx context.Context, envelopeRef string) (*SignedDocument, error)
+	Cancel(ctx context.Context, envelopeRef string) error
+	// ParseWebhook verifies a provider callback with the marina's webhook secret and decodes it.
+	ParseWebhook(r *http.Request, secret []byte) (*SignatureEvent, error)
+}
+
+// Signer is one signer of a SignatureRequest. Name, Email and Phone are personal data: providers must not log them.
+type Signer struct {
+	Seq    int
+	Role   string // customer, co_holder, outgoing_holder, incoming_holder, legal_representative, marina
+	Name   string
+	Email  string
+	Phone  string
+	Locale string
+}
+
+// SignatureRequest is what Porto asks a provider to sign.
+type SignatureRequest struct {
+	MarinaID       string
+	RequestID      string
+	Document       []byte // the PDF/A to sign
+	DocumentSHA256 string
+	Title          string
+	Signers        []Signer
+	Sequential     bool
+	ExpiresAt      time.Time
+	CallbackURL    string
+}
+
+// Envelope statuses reported by providers.
+const (
+	EnvelopeSent            = "sent"
+	EnvelopePartiallySigned = "partially_signed"
+	EnvelopeSigned          = "signed"
+	EnvelopeDeclined        = "declined"
+	EnvelopeExpired         = "expired"
+	EnvelopeCancelled       = "cancelled"
+)
+
+// SignerStatus is the state of one signer at the provider.
+type SignerStatus struct {
+	Seq      int
+	Status   string // waiting, invited, signed, declined
+	SignedAt time.Time
+}
+
+// SignatureEnvelope is the provider's view of a request.
+type SignatureEnvelope struct {
+	Ref     string
+	Status  string
+	Signers []SignerStatus
+}
+
+// SignedDocument is the signed PDF and the provider's evidence.
+type SignedDocument struct {
+	PDF      []byte
+	Evidence []byte
+}
+
+// SignatureEvent is a decoded provider callback. SignerSeq is 0 when the event concerns the whole envelope.
+type SignatureEvent struct {
+	EnvelopeRef string
+	Status      string
+	SignerSeq   int
+	OccurredAt  time.Time
+}
+
+type providerCredentialsKey struct{}
+
+// WithProviderCredentials returns a context carrying the marina's decrypted provider credentials for one call.
+// The host decrypts them from its settings only in memory; providers read them with ProviderCredentials.
+func WithProviderCredentials(ctx context.Context, creds map[string]string) context.Context {
+	return context.WithValue(ctx, providerCredentialsKey{}, creds)
+}
+
+// ProviderCredentials returns the credentials put in ctx by WithProviderCredentials (nil when absent).
+func ProviderCredentials(ctx context.Context) map[string]string {
+	creds, _ := ctx.Value(providerCredentialsKey{}).(map[string]string)
+	return creds
+}
+
 // Extensions is what an embedding binary passes to the application.
 type Extensions struct {
 	EventSinks     []EventSink
@@ -75,6 +166,8 @@ type Extensions struct {
 	TenantResolver TenantResolver
 	Notifiers      []Notifier
 	BotProtection  BotProtection
+	// SignatureProviders are the registered signature drivers (M4, spec 15.4); none ships with Porto.
+	SignatureProviders []SignatureProvider
 	// HTTPRoutes mounts extra routes on the root router.
 	HTTPRoutes func(r chi.Router)
 }

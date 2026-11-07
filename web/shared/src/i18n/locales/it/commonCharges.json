@@ -1,0 +1,70 @@
+{
+  "title": "Spese comuni",
+  "holderInstallments": {
+    "title": "Rate dei titolari",
+    "description": "Rate di oneri, spese comuni e diritti di subentro dei titolari.",
+    "source": "Origine",
+    "holder": "Titolare",
+    "select": "Seleziona la rata {{seq}} di {{name}}"
+  },
+  "pending": "Questa pagina arriva con M4.",
+  "description": "Tabelle millesimali, preventivi con voci e consuntivi, ripartizioni e rendiconti per titolare.",
+  "tabs": {
+    "tables": "Tabelle millesimali",
+    "budgets": "Preventivi e ripartizioni"
+  },
+  "tables": {
+    "name": "Nome",
+    "code": "Codice",
+    "new": "Nuova tabella",
+    "empty": "Nessuna tabella.",
+    "hint": "Millesimi per posto: la tabella si attiva solo quando la somma è 1000.",
+    "readOnly": "Tabella attiva o archiviata: non si modifica (crea una nuova tabella).",
+    "sum": "Somma {{sum}} ‰ (mancano {{remaining}})",
+    "csv": "Importa CSV (posto; millesimi)",
+    "saved": "Tabella salvata.",
+    "activate": "Attiva",
+    "invalidCells": "Ci sono valori non validi: usa numeri interi."
+  },
+  "csv": {
+    "report": "CSV applicato: {{rejected}} righe scartate, {{unknown}} posti sconosciuti."
+  },
+  "budgets": {
+    "new": "Nuovo preventivo",
+    "empty": "Nessun preventivo.",
+    "items": "Voci di spesa",
+    "item": "Voce",
+    "table": "Tabella",
+    "budget": "Preventivo",
+    "actual": "Consuntivo",
+    "actualOf": "Consuntivo di {{name}}",
+    "total": "Totale",
+    "addItem": "Aggiungi voce",
+    "removeItem": "Togli {{name}}",
+    "approve": "Approva",
+    "close": "Chiudi l'esercizio",
+    "saveActuals": "Salva consuntivi"
+  },
+  "runs": {
+    "title": "Ripartizioni",
+    "hint": "Acconti sul preventivo e conguaglio sul consuntivo; la somma ripartita è sempre uguale alla voce.",
+    "kind": "Tipo",
+    "share": "Quota dell'acconto (%)",
+    "new": "Calcola ripartizione",
+    "holders": "{{count}} titolari",
+    "issue": "Emetti",
+    "discard": "Scarta",
+    "byItem": "Rendiconto per voce",
+    "csv": "CSV",
+    "showAllocations": "Mostra ripartizione",
+    "hideAllocations": "Nascondi ripartizione",
+    "amount": "Importo",
+    "allocated": "Ripartito",
+    "marinaShare": "Quota del marina",
+    "total": "Totale",
+    "berth": "Posto",
+    "holder": "Titolare",
+    "berthShare": "Quota del posto",
+    "marina": "Marina"
+  }
+}

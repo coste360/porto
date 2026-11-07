@@ -25,6 +25,12 @@ import { Input } from '@porto/shared/ui/input';
 import { DatePicker, PageHeader } from '@porto/shared/ui/patterns';
 
 import { useCurrentMarina } from '../../../auth/hooks';
+import {
+  ContractM4Actions,
+  ContractM4Badges,
+  ContractM4Tabs,
+  type ContractTab,
+} from '../../contracts-m4/public';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../../components/PageStates';
 import { useMarinaToday } from '../../registry/lib/today';
 import {
@@ -64,7 +70,15 @@ function ContractDetail({ contract }: { contract: Contract }) {
   const today = useMarinaToday();
   const activate = useActivateContract(marinaId);
   const [dialog, setDialog] = useState<'cancel' | 'terminate' | 'release' | null>(null);
-  const actions = contractActions(contract.status);
+  const [tab, setTab] = useState<ContractTab>('data');
+  const m3 = contractActions(contract.status);
+  // M4 (m4-plan §3.1): paper activation also from awaiting_signature, cancel from awaiting_signature, terminate
+  // from suspended.
+  const actions = {
+    activate: m3.activate || contract.status === 'awaiting_signature',
+    cancel: m3.cancel || contract.status === 'awaiting_signature',
+    terminate: m3.terminate || contract.status === 'suspended',
+  };
   const write = can('contracts.write');
   const releasable = contract.allocations.find(
     (a) => a.status === 'active' && a.kind === 'contract' && a.last_night >= today,
@@ -95,6 +109,7 @@ function ContractDetail({ contract }: { contract: Contract }) {
                 {t('desk:contract.terminate')}
               </Button>
             ) : null}
+            <ContractM4Actions contract={contract} />
             {releasable && can('occupancy.move') ? (
               <Button variant="outline" onClick={() => setDialog('release')}>
                 {t('desk:release.open')}
@@ -118,18 +133,26 @@ function ContractDetail({ contract }: { contract: Contract }) {
             })}
           </span>
         ) : null}
+        <ContractM4Badges contract={contract} />
         {contract.terminated_on ? (
           <span>
             {t('desk:contract.terminatedOn', { date: formatIsoDate(contract.terminated_on) })}
           </span>
         ) : null}
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
-        <LinesCard contract={contract} />
-        <AllocationsCard contract={contract} />
-        <ReleasesCard contract={contract} canRevoke={can('occupancy.move')} />
-        <PresencesCard contract={contract} />
-      </div>
+      <ContractM4Tabs
+        contract={contract}
+        tab={tab}
+        onTab={setTab}
+        data={
+          <div className="grid gap-4 lg:grid-cols-2">
+            <LinesCard contract={contract} />
+            <AllocationsCard contract={contract} />
+            <ReleasesCard contract={contract} canRevoke={can('occupancy.move')} />
+            <PresencesCard contract={contract} />
+          </div>
+        }
+      />
       {dialog === 'cancel' ? (
         <CancelDialog contract={contract} onClose={() => setDialog(null)} />
       ) : null}

@@ -247,6 +247,16 @@ func TestTypes_Catalogue(t *testing.T) {
 			TransitChanged:        {TransitChanged, TopicContract, false},
 			InquiryChanged:        {InquiryChanged, TopicContract, false},
 			ConfigOccupancyChange: {ConfigOccupancyChange, TopicOccupancy, false},
+			// M4 (m4-plan §7.5): internal ones are not public.
+			InstallmentChanged:     {InstallmentChanged, TopicContract, false},
+			RenewalCampaignChanged: {RenewalCampaignChanged, TopicContract, false},
+			RightsChanged:          {RightsChanged, TopicRights, false},
+			DocumentGenerated:      {DocumentGenerated, TopicDocuments, false},
+			SignatureRequested:     {SignatureRequested, TopicDocuments, false},
+			SignatureCompleted:     {SignatureCompleted, TopicDocuments, false},
+			SignatureFailed:        {SignatureFailed, TopicDocuments, false},
+			TemplateChanged:        {TemplateChanged, TopicDocuments, false},
+			CommunicationChanged:   {CommunicationChanged, TopicDocuments, false},
 		}
 		if want, ok := m1[ti.Type]; ok {
 			if ti != want {
@@ -262,8 +272,12 @@ func TestTypes_Catalogue(t *testing.T) {
 			wantTopic = TopicOccupancy
 		case strings.HasPrefix(ti.Type, "presence."):
 			wantTopic = TopicPresence
-		case strings.HasPrefix(ti.Type, "quote.") || strings.HasPrefix(ti.Type, "contract.") || strings.HasPrefix(ti.Type, "transit."):
+		case strings.HasPrefix(ti.Type, "quote.") || strings.HasPrefix(ti.Type, "contract.") || strings.HasPrefix(ti.Type, "transit.") ||
+			strings.HasPrefix(ti.Type, "installment.") || strings.HasPrefix(ti.Type, "renewal."):
 			wantTopic = TopicContract
+		case strings.HasPrefix(ti.Type, "right.") || strings.HasPrefix(ti.Type, "mandate.") ||
+			strings.HasPrefix(ti.Type, "management_fee.") || strings.HasPrefix(ti.Type, "common_charges."):
+			wantTopic = TopicRights
 		}
 		if ti.Topic != wantTopic || !ti.Public {
 			t.Errorf("%s: %+v", ti.Type, ti)

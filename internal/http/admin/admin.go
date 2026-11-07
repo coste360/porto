@@ -8,22 +8,28 @@ import (
 	"time"
 
 	"github.com/coste360/porto/internal/clock"
+	"github.com/coste360/porto/internal/csvimport"
 	"github.com/coste360/porto/internal/domain/apikey"
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/catalog"
+	"github.com/coste360/porto/internal/domain/comms"
 	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/customer"
 	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/device"
+	"github.com/coste360/porto/internal/domain/docs"
 	"github.com/coste360/porto/internal/domain/document"
 	"github.com/coste360/porto/internal/domain/event"
 	"github.com/coste360/porto/internal/domain/harbor"
+	"github.com/coste360/porto/internal/domain/magiclink"
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/meta"
 	"github.com/coste360/porto/internal/domain/occupancy"
 	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
+	"github.com/coste360/porto/internal/domain/rights"
+	"github.com/coste360/porto/internal/domain/signature"
 	"github.com/coste360/porto/internal/domain/team"
 	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/domain/webhook"
@@ -65,6 +71,14 @@ type Handler struct {
 	Occupancy *occupancy.Service
 	Contracts *contract.Service
 	Presence  *presence.Service
+
+	// M4
+	Rights     *rights.Service
+	Docs       *docs.Service
+	Signatures *signature.Service
+	Links      *magiclink.Service
+	Comms      *comms.Service
+	Imports    *csvimport.Registry
 }
 
 func principal(r *http.Request) *auth.Principal {

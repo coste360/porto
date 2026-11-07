@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>ti inviamo il preventivo richiesto. Trovi il documento in allegato.</p>
+<table>
+{{with v . "quote_code"}}<tr><td>Preventivo</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "starts_on"}}<tr><td>Dal</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "ends_on"}}<tr><td>Al</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "amount"}}<tr><td>Totale</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "valid_until"}}<tr><td>Valido fino al</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+{{with v . "link"}}<p><a href="{{.}}">Vedi e accetta il preventivo</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

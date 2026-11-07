@@ -1,0 +1,68 @@
+{
+  "list": {
+    "title": "Signatures",
+    "description": "Signature requests by status, with signers and their steps.",
+    "status": "Status",
+    "empty": "No requests.",
+    "select": "Choose a request to see its signers.",
+    "signed": "{{signed}} of {{total}} signed"
+  },
+  "settings": {
+    "title": "Signature settings",
+    "description": "Credentials of the qualified signature provider. Secrets are never shown.",
+    "provider": "Provider",
+    "providerHint": "No provider ships with Porto: one appears only if your vendor installs it.",
+    "noProviders": "No signature provider available.",
+    "none": "None",
+    "hasCredentials": "Credentials saved",
+    "noCredentials": "No credentials",
+    "hasSecret": "Webhook secret saved",
+    "noSecret": "No webhook secret",
+    "credentials": "New credentials (JSON)",
+    "credentialsHint": "Leave empty to keep them.",
+    "jsonError": "A JSON object with text values is needed.",
+    "secret": "New webhook secret",
+    "webhookUrl": "Webhook URL",
+    "saved": "Signature settings saved."
+  },
+  "pending": "This page arrives with M4.",
+  "subjects": {
+    "contract": "Contract",
+    "addendum": "Addendum",
+    "right_transfer": "Transfer"
+  },
+  "expiresAt": "Expires on {{at}}",
+  "simpleSignature": "Simple electronic signature",
+  "timeline": {
+    "invited": "Invited on {{at}}",
+    "opened": "Opened on {{at}}",
+    "signed": "Signed on {{at}}",
+    "declined": "Declined on {{at}}"
+  },
+  "remind": "Send reminder",
+  "cancel": "Cancel the request",
+  "paper": {
+    "title": "Paper signature",
+    "scan": "Scan of the signed document",
+    "hint": "PDF, PNG or JPEG up to 15 MB; the file is encrypted.",
+    "uploaded": "Scan uploaded.",
+    "scanned": "Scan on file",
+    "confirm": "Confirm \"signed on paper\"",
+    "errors": {
+      "type": "Format not accepted.",
+      "size": "The file is too large."
+    }
+  },
+  "request": {
+    "title": "Request the signature",
+    "description": "The document is generated and the signers receive the signing link.",
+    "driver": "Method",
+    "order": "Order",
+    "default": "As in the settings",
+    "signersHint": "The customer always signs; add co-holders or other signers if needed.",
+    "role": "Role",
+    "addSigner": "Add signer",
+    "removeSigner": "Remove signer",
+    "submit": "Send"
+  }
+}

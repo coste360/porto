@@ -1,0 +1,244 @@
+{
+  "list": {
+    "title": "Rights of use",
+    "description": "Berth rights of use with holders, shares and authorised vessels.",
+    "status": "Status",
+    "berth": "Berth",
+    "kind": "Kind",
+    "holders": "Holders",
+    "period": "Period",
+    "mandate": "Active mandate",
+    "unpaid": "Unpaid fees",
+    "empty": "No rights."
+  },
+  "detail": {
+    "title": "Title",
+    "heading": "Right of use of berth {{code}}",
+    "chainPdf": "Holder chain (PDF)",
+    "chain": "Holder chain",
+    "transfer": "Transfer",
+    "end": "End",
+    "cancel": "Cancel",
+    "endHint": "The right ends on the given date; later nights go back to the marina.",
+    "cancelHint": "Cancels a right entered by mistake; the reason is recorded.",
+    "endOn": "From the date"
+  },
+  "transfers": {
+    "title": "Transfers",
+    "description": "Transfers of rights with requirements, takeover fee and signatures.",
+    "new": "New transfer",
+    "wizardDescription": "Who transfers, who takes over with the shares, the date and how to handle the year's fees.",
+    "right": "Right",
+    "effective": "Effective from",
+    "feesPolicy": "Fees of the year",
+    "feesPolicies": {
+      "reassign": "Go to the new holder",
+      "prorata": "Split pro rata"
+    },
+    "price": "Declared price",
+    "from": "Outgoing holders",
+    "to": "Incoming holders",
+    "fee": "Takeover fee",
+    "requirementsWarning": "The holder has unpaid fees: the transfer may be blocked.",
+    "create": "Create transfer",
+    "empty": "No transfers."
+  },
+  "transfer": {
+    "title": "Transfer",
+    "summary": "Summary",
+    "requirements": "Requirements",
+    "requirementsOk": "No overdue fees of the outgoing holders.",
+    "policy": {
+      "block": "With overdue fees the transfer is blocked.",
+      "warn": "Overdue fees are only reported."
+    },
+    "issues": {
+      "unsettled_fees": "Unpaid management fees",
+      "unsettled_common_charges": "Unpaid common charges"
+    },
+    "completePaper": "Signed on paper",
+    "cancel": "Cancel transfer",
+    "newRight": "New right",
+    "openRight": "Open the new right"
+  },
+  "mandates": {
+    "title": "Management mandates",
+    "description": "Management mandates: the marina sells the holder's nights and computes their share.",
+    "new": "New mandate",
+    "formDescription": "The mandate nights become sellable; the holder gets their share of the revenue.",
+    "period": "Period",
+    "from": "From",
+    "to": "To",
+    "share": "Holder share (%)",
+    "shareValue": "{{pct}} %",
+    "min": "Guaranteed minimum",
+    "revenue": "Revenue",
+    "channelsLabel": "Sales channels",
+    "channels": {
+      "transit": "Transits",
+      "period": "Period contracts"
+    },
+    "settlement": "Settlement",
+    "settlements": {
+      "credit": "Credit on fees",
+      "transfer": "Bank transfer"
+    },
+    "create": "Create mandate",
+    "empty": "No mandates.",
+    "errors": {
+      "right": "Choose the right.",
+      "period": "The period is not valid.",
+      "past": "The mandate starts today or later.",
+      "share": "The share is between 0 and 100 %.",
+      "channels": "Choose at least one channel.",
+      "settlement": "Choose the settlement."
+    }
+  },
+  "mandate": {
+    "title": "Management mandate",
+    "terms": "Terms",
+    "revenues": "Revenue of the period",
+    "contract": "Contract",
+    "nights": "Nights",
+    "ownerShare": "Holder share",
+    "total": "Total",
+    "topUp": "Top-up to the guaranteed minimum",
+    "noRevenue": "No revenue yet.",
+    "csv": "Statement CSV",
+    "pdf": "Statement PDF",
+    "end": "End early",
+    "cancel": "Cancel",
+    "endHint": "Nights still free go back to the holder; nights already sold stay sold.",
+    "cancelHint": "Cancels the mandate; nights already sold stay sold."
+  },
+  "fees": {
+    "title": "Management fees",
+    "description": "Fee tables of the year, simulation, comparison with the previous year and issue of the instalments.",
+    "basis": "Basis",
+    "year": "Year",
+    "newTable": "New table",
+    "defaultName": "Fees {{year}}",
+    "tables": "Tables",
+    "noTables": "No tables for the year.",
+    "rows": "{{count}} rows",
+    "status": {
+      "draft": "Draft",
+      "active": "Active"
+    },
+    "activate": "Activate",
+    "name": "Name",
+    "istat": "ISTAT adjustment (%)",
+    "category": "Category",
+    "fromCm": "From (length)",
+    "toCm": "To (length)",
+    "ratePerM2": "Rate per m²",
+    "amount": "Amount",
+    "removeRow": "Remove row",
+    "addRow": "Add row",
+    "runs": "Runs",
+    "runsHint": "Simulate, check totals, differences and exclusions, then issue the holders' instalments.",
+    "table": "Table",
+    "newRun": "New run",
+    "simulate": "Simulate",
+    "issue": "Issue",
+    "discard": "Discard",
+    "rights": "Rights",
+    "previous": "Previous year",
+    "total": "Total",
+    "diff": "Difference with the previous year",
+    "excluded": "{{count}} rights excluded",
+    "exclusion": {
+      "no_rate": "No rate",
+      "no_category": "No category",
+      "no_holders": "No holders",
+      "outside_year": "Outside the year"
+    },
+    "lines": "{{count}} lines issued"
+  },
+  "concession": {
+    "title": "Concession",
+    "description": "The marina's state concession and its obligations with their deadlines.",
+    "card": "Concession card",
+    "saved": "Concession saved.",
+    "authority": "Granting authority",
+    "deed_kind": "Deed kind",
+    "deed_number": "Deed number",
+    "granted_on": "Granted on",
+    "expires_on": "Expires on",
+    "annual_fee": "Annual fee",
+    "status": "Status",
+    "statuses": {
+      "active": "Active",
+      "expired": "Expired",
+      "revoked": "Revoked"
+    },
+    "prescriptions": "Prescriptions",
+    "obligations": "Obligations",
+    "obligationsHint": "Each obligation becomes a deadline for the office.",
+    "kind": "Kind",
+    "dueOn": "Due",
+    "descriptionLabel": "Description",
+    "amount": "Amount",
+    "recurrence": "Recurrence",
+    "recurrences": {
+      "none": "Once",
+      "yearly": "Yearly"
+    },
+    "yearly": "Yearly",
+    "doneOn": "Done on {{date}}",
+    "markDone": "Mark done",
+    "remove": "Delete obligation",
+    "add": "Add obligation"
+  },
+  "pending": "This page arrives with M4.",
+  "lens": {
+    "title": "Rights of use",
+    "legend": {
+      "marina": "Marina's",
+      "holder": "Holder's",
+      "mandate": "Managed (mandate)",
+      "unpaid": "Unpaid fees",
+      "none": "No right"
+    }
+  },
+  "wizard": {
+    "new": "New right of use",
+    "description": "Pick the berth on the map, the title, the holders with their shares (sum 1000 ‰) and the authorised vessel.",
+    "fromOn": "From",
+    "toOn": "To (last night)",
+    "invalid": "Complete berth, kind, date and holders' shares.",
+    "create": "Create right"
+  },
+  "title": {
+    "deed": "Deed",
+    "number": "Number",
+    "notary": "Notary",
+    "date": "Deed date"
+  },
+  "holders": {
+    "title": "Holders",
+    "customer": "Holder {{n}}",
+    "share": "Share (‰)",
+    "remove": "Remove holder {{n}}",
+    "add": "Add holder",
+    "equal": "Equal shares",
+    "sum": "Sum {{sum}} ‰ ({{remaining}} to go)",
+    "millis": "{{millis}} ‰",
+    "errors": {
+      "none": "At least one holder is needed.",
+      "customer": "Choose the customer of each holder.",
+      "duplicate": "The same customer appears twice.",
+      "share_range": "Each share is a whole number from 1 to 1000.",
+      "sum": "The shares must add up to 1000 ‰."
+    }
+  },
+  "vessels": {
+    "title": "Authorised vessels",
+    "hint": "The primary vessel occupies the berth; the others may moor after switching it.",
+    "primary": "Primary",
+    "fitBlocked": "Does not fit the berth",
+    "makePrimary": "Make primary",
+    "remove": "Remove",
+    "add": "Add vessel"
+  }
+}

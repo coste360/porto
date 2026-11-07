@@ -51,6 +51,25 @@ type SeedResult struct {
 	LandRows    int // land_occupancies rows
 	Releases    int
 	Presences   int
+
+	// M4 counts (0 when that part already existed, m4-plan §10).
+	Installments       int
+	RenewalCampaigns   int
+	RenewalProposals   int
+	Charters           int
+	Addenda            int
+	WaitlistEntries    int
+	Rights             int
+	Mandates           int
+	Transfers          int
+	FeeRuns            int
+	MillesimalTables   int
+	CommonChargeRuns   int
+	HolderInstallments int
+	Templates          int
+	GeneratedDocuments int
+	Communications     int
+	Deadlines          int
 }
 
 // SeedDemo creates a minimal demo: organization "Porto Demo", marina "Marina Demo" (slug demo) and one user per
@@ -140,6 +159,16 @@ func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) er
 	}
 	if err := a.seedOccupancy(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: occupancy: %w", err)
+	}
+	// M4 (m4-plan §10): documents first (templates used by the others), then contracts, then rights.
+	if err := a.seedDocuments(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: documents: %w", err)
+	}
+	if err := a.seedContractsM4(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: contracts m4: %w", err)
+	}
+	if err := a.seedRights(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: rights: %w", err)
 	}
 	return nil
 }

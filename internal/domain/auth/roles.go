@@ -76,6 +76,14 @@ const (
 	// PermContractsRead reads quotes, contracts, transits, inquiries and releases: owner, director, office,
 	// accounting and dock (m3-plan §13 D1). Added in M3.
 	PermContractsRead Permission = "contracts.read"
+	// PermTemplatesConfigure edits print templates (spec 15.1, 26.1 "modelli"): owner and director. Added in M4.
+	PermTemplatesConfigure Permission = "templates.configure"
+	// PermCommunicationsSend creates and sends customer communications (spec 28.2): owner, director and office.
+	// Added in M4.
+	PermCommunicationsSend Permission = "communications.send"
+	// PermProvidersConfigure sets provider credentials (signature providers in M4; spec 26.1 "credenziali dei
+	// provider"): owner only. Added in M4.
+	PermProvidersConfigure Permission = "providers.configure"
 )
 
 // Permissions returns every permission.
@@ -88,7 +96,7 @@ func Permissions() []Permission {
 		PermStorageManage, PermStorageRead, PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage,
 		PermMaintenanceManage, PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard,
 		PermReportsRental, PermMapView, PermHarborConfigure, PermPricingConfigure, PermPricingRead,
-		PermContractsRead,
+		PermContractsRead, PermTemplatesConfigure, PermCommunicationsSend, PermProvidersConfigure,
 	}
 }
 
@@ -106,7 +114,7 @@ var rolePermissions = map[Role][]Permission{
 		PermStorageManage, PermStorageRead, PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage,
 		PermMaintenanceManage, PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard,
 		PermReportsRental, PermMapView, PermHarborConfigure, PermPricingConfigure, PermPricingRead,
-		PermContractsRead,
+		PermContractsRead, PermTemplatesConfigure, PermCommunicationsSend, PermProvidersConfigure,
 	},
 	RoleDirector: {
 		PermMarinaConfigure, PermMarinaRead, PermDevicesManage, PermDevicesPairSelf, PermAuditRead,
@@ -116,13 +124,14 @@ var rolePermissions = map[Role][]Permission{
 		PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage, PermMaintenanceManage,
 		PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard, PermReportsRental,
 		PermMapView, PermHarborConfigure, PermPricingConfigure, PermPricingRead, PermContractsRead,
+		PermTemplatesConfigure, PermCommunicationsSend,
 	},
 	RoleOffice: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersWrite, PermCustomersRead, PermContractsWrite,
 		PermTransitsDesk, PermOccupancyMove, PermPresenceWrite, PermRightsManage, PermChargesManage,
 		PermPaymentsCollect, PermPaymentsCollectCash, PermStorageManage, PermStorageRead, PermYardRead,
 		PermRentalManage, PermMaintenanceManage, PermMaintenanceReport, PermReportsOperational, PermMapView,
-		PermPricingRead, PermContractsRead,
+		PermPricingRead, PermContractsRead, PermCommunicationsSend,
 	},
 	RoleAccounting: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersRead, PermRightsManage, PermChargesManage,

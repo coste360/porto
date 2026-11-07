@@ -1,0 +1,10 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+il tuo contratto è attivo. Grazie per aver scelto il nostro porto.
+{{with v . "contract_code"}}Contratto: {{.}}
+{{end}}{{with v . "starts_on"}}Dal: {{.}}
+{{end}}{{with v . "ends_on"}}Al: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

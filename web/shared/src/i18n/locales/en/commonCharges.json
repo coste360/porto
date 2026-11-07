@@ -1,0 +1,70 @@
+{
+  "title": "Common charges",
+  "holderInstallments": {
+    "title": "Holder instalments",
+    "description": "Holders' instalments of fees, common charges and transfer fees.",
+    "source": "Source",
+    "holder": "Holder",
+    "select": "Select instalment {{seq}} of {{name}}"
+  },
+  "pending": "This page arrives with M4.",
+  "description": "Millesimal tables, budgets with items and actuals, allocations and statements by holder.",
+  "tabs": {
+    "tables": "Millesimal tables",
+    "budgets": "Budgets and allocations"
+  },
+  "tables": {
+    "name": "Name",
+    "code": "Code",
+    "new": "New table",
+    "empty": "No tables.",
+    "hint": "Millesimi by berth: the table can be activated only when the sum is 1000.",
+    "readOnly": "Active or archived table: it cannot change (create a new table).",
+    "sum": "Sum {{sum}} ‰ ({{remaining}} to go)",
+    "csv": "Import CSV (berth; millesimi)",
+    "saved": "Table saved.",
+    "activate": "Activate",
+    "invalidCells": "Some values are not valid: use whole numbers."
+  },
+  "csv": {
+    "report": "CSV applied: {{rejected}} rows rejected, {{unknown}} unknown berths."
+  },
+  "budgets": {
+    "new": "New budget",
+    "empty": "No budgets.",
+    "items": "Expense items",
+    "item": "Item",
+    "table": "Table",
+    "budget": "Budget",
+    "actual": "Actual",
+    "actualOf": "Actual of {{name}}",
+    "total": "Total",
+    "addItem": "Add item",
+    "removeItem": "Remove {{name}}",
+    "approve": "Approve",
+    "close": "Close the year",
+    "saveActuals": "Save actuals"
+  },
+  "runs": {
+    "title": "Allocations",
+    "hint": "Advances on the budget and balance on the actuals; the allocated sum always equals the item.",
+    "kind": "Kind",
+    "share": "Advance share (%)",
+    "new": "Compute allocation",
+    "holders": "{{count}} holders",
+    "issue": "Issue",
+    "discard": "Discard",
+    "byItem": "Statement by item",
+    "csv": "CSV",
+    "showAllocations": "Show allocation",
+    "hideAllocations": "Hide allocation",
+    "amount": "Amount",
+    "allocated": "Allocated",
+    "marinaShare": "Marina share",
+    "total": "Total",
+    "berth": "Berth",
+    "holder": "Holder",
+    "berthShare": "Berth share",
+    "marina": "Marina"
+  }
+}

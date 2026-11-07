@@ -1,0 +1,44 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Annual mooring contract no. ORM-2027-0042
+Between Porto Demo S.r.l., VAT 01234567890, hereinafter "the Marina", and Mario Rossi, tax code
+RSSMRA80A01H501U, Via Roma 10, 00100 Roma (RM), hereinafter "the Customer", it is agreed as
+follows.
+Subject
+The Marina grants the Customer the mooring of the vessel Libeccio (RM 1234 D), length 11.34 m, beam
+3.80 m from 1 January 2027 to 1 January 2028 (end date excluded) on the following berths:
+Berth | Structure | Length | From | To
+B-12 | Pontile B | 12.00 m | 01/01/2027 | 31/12/2027
+Price
+Item | Quantity | Amount
+Ormeggio annuale posto B-12 | 1 anno | €4,500.00
+Acqua ed energia | 1 forfait | €350.00
+Total: €4,850.00 (net €3,975.41, VAT €874.59).
+Instalments
+No. | Issued | Due | Amount
+1 | 07/11/2026 | 21/11/2026 | €1,455.00
+2 | 15/03/2027 | 31/03/2027 | €1,131.66
+3 | 15/06/2027 | 30/06/2027 | €1,131.66
+4 | 15/09/2027 | 30/09/2027 | €1,131.68
+Payments are made by bank transfer to IBAN IT60X0542811101000000123456 held by Porto Demo S.r.l.,
+quoting the contract number.
+Conditions
+• Cancellation notice: 90 days.
+• The contract renews tacitly unless cancelled with 60 days' notice.
+• The Customer declares to have received the harbour rules and the general conditions.
+Notes
+Posto con colonnina dedicata.
+Accesso al pontile con badge.
+Place and date: ______________________, 7 November 2026
+[signature customer]
+The customer
+Name:
+Date and signature:
+Porto Demo S.r.l. · VAT 01234567890 · Page 1 of 2
+=== page 2 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+[signature marina]
+The marina
+Name:
+Date and signature:
+Porto Demo S.r.l. · VAT 01234567890 · Page 2 of 2

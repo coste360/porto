@@ -12,6 +12,7 @@ import (
 	"github.com/coste360/porto/internal/calendar"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/customer"
+	"github.com/coste360/porto/internal/domain/docs"
 	"github.com/coste360/porto/internal/domain/event"
 	"github.com/coste360/porto/internal/domain/occupancy"
 	"github.com/coste360/porto/internal/store"
@@ -338,13 +339,14 @@ func (s *Service) cancelQuoteHolds(ctx context.Context, tx bun.IDB, scope store.
 	return ended, s.cancelAllocs(ctx, tx, scope, ended, status, reason)
 }
 
-// lockQuote loads a quote for a state change, checking ifMatch.
+// lockQuote loads a quote for a state change, checking ifMatch (0 = no check: the customer's magic-link
+// acceptance, whose link is the authority; the handlers always pass the required If-Match).
 func lockQuote(ctx context.Context, tx bun.IDB, scope store.MarinaScope, id string, ifMatch int) (*store.Quote, error) {
 	q, err := store.LockQuote(ctx, tx, scope, id)
 	if err != nil {
 		return nil, notFound(err)
 	}
-	if q.Version != ifMatch {
+	if ifMatch != 0 && q.Version != ifMatch {
 		return nil, ErrVersionMismatch
 	}
 	return q, nil
@@ -355,7 +357,7 @@ func updateQuote(ctx context.Context, tx bun.IDB, scope store.MarinaScope, q *st
 	if err := store.UpdateQuote(ctx, tx, scope, q.Version, q); err != nil {
 		return versionErr(err)
 	}
-	return nil
+	return store.SetQuoteM4(ctx, tx, scope, q)
 }
 
 // UpdateQuote replaces a draft quote and its options (contracts.write, If-Match): the holds of the old options
@@ -510,159 +512,245 @@ type AcceptInput struct {
 	OptionID string
 	Activate bool                // mooring: create the contract active ("firmato su carta") instead of draft
 	Confirm  *ManualConfirmation // transit: confirm with the manual driver
+	// M4 (m4-plan §3.2): the plan choice and the signers of the signature request.
+	Plan    string // standard (default), early_payment
+	Signers []SignerInput
+}
+
+// AcceptResult is the outcome of a quote acceptance (m4-plan §7.3.1).
+type AcceptResult struct {
+	Quote              *QuoteDetail
+	Contract           *Detail
+	SignatureRequestID string
+	DocumentID         string
+	Warnings           []string
 }
 
 // AcceptQuote accepts an option (contracts.write, If-Match): 13.3 steps 1–2 in one transaction. The option's
 // holds become the contract's (or the transit's) allocations, or are allocated now (409 resource_taken creates
 // nothing); the other options' holds are cancelled; the contract or transit carries the option's snapshot.
 func (s *Service) AcceptQuote(ctx context.Context, p *auth.Principal, marinaID, id string, ifMatch int, in AcceptInput) (*QuoteDetail, *Detail, error) {
+	r, err := s.AcceptQuoteM4(ctx, p, marinaID, id, ifMatch, in)
+	if err != nil {
+		return nil, nil, err
+	}
+	return r.Quote, r.Contract, nil
+}
+
+// AcceptQuoteM4 is AcceptQuote with the M4 steps of 13.3 in the same transaction (m4-plan §3.2): step 3 the
+// instalment plan (standard or early payment), step 4 the contract document and, when the marina's signature
+// driver is not paper and activate is not asked, the signature request (contract awaiting_signature). The
+// insurance policy block refuses with 422 insurance_required.
+func (s *Service) AcceptQuoteM4(ctx context.Context, p *auth.Principal, marinaID, id string, ifMatch int, in AcceptInput) (*AcceptResult, error) {
 	scope, err := p.Authorize(ctx, s.d.DB.DB, marinaID, auth.PermContractsWrite)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	if err := s.requireAllocator(); err != nil {
-		return nil, nil, err
-	}
-	st, err := store.ContractOccupancySettings(ctx, s.d.DB.DB, scope, s.now())
-	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	if in.Confirm != nil {
 		ref, ok := cleanText(in.Confirm.Reference, 200)
 		if !ok {
 			v := &auth.ValidationError{}
 			v.Add("confirm.reference", "too_long")
-			return nil, nil, v
+			return nil, v
 		}
 		in.Confirm.Reference = ref
 	}
-	a := actor{p}
-	var contractID string
+	if err := validateSignatureInput(SignatureInput{Signers: in.Signers}); err != nil {
+		return nil, err
+	}
+	warnings, err := s.quoteInsurance(ctx, scope, id)
+	if err != nil {
+		return nil, err
+	}
+	var res *AcceptResult
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		q, err := lockQuote(ctx, tx, scope, id, ifMatch)
 		if err != nil {
 			return err
 		}
-		now := s.now()
-		if q.Status == string(QuoteExpired) || ((q.Status == string(QuoteDraft) || q.Status == string(QuoteSent)) && !now.Before(q.ExpiresAt)) {
-			return ErrQuoteExpired
-		}
-		t, err := Next(QuoteTransitions, Status(q.Status), ActionAccept)
-		if err != nil {
-			return err
-		}
-		if (q.Kind == KindTransit && in.Activate) || (q.Kind == KindMooring && in.Confirm != nil) {
-			v := &auth.ValidationError{}
-			v.Add("activate", "not_allowed")
-			return v
-		}
-		opts, pls, allocs, err := quoteHolds(ctx, tx, scope, q.ID)
-		if err != nil {
-			return err
-		}
-		idx := slices.IndexFunc(opts, func(o store.QuoteOption) bool { return o.ID == in.OptionID })
-		if idx < 0 {
-			v := &auth.ValidationError{}
-			v.Add("option_id", "invalid")
-			return v
-		}
-		opt := opts[idx]
-		others, err := s.cancelQuoteHolds(ctx, tx, scope, pls, allocs, opt.ID, occupancy.StatusCancelled, event.ReleasedCancel)
-		if err != nil {
-			return err
-		}
-		// The chosen option's holds are superseded by the contract's allocations (the same nights, now on the
-		// contract lines; the hold has no line, so it is not a moved_from predecessor); missing holds are allocated
-		// now.
-		var segs []Segment
-		var moved []string // superseded hold per segment ("" = allocated now)
-		for _, pl := range pls {
-			if pl.OptionID != opt.ID {
-				continue
-			}
-			segs = append(segs, Segment{
-				ResourceType: pl.ResourceType, ResourceID: pl.ResourceID, X: pl.XCm, Y: pl.YCm, RotationDd: pl.RotationDd,
-				First: pl.FirstNight, Last: pl.LastNight,
-			})
-			m := ""
-			if al, ok := allocs[pl.AllocationID]; ok && al.Status == store.AllocActive {
-				if err := s.alloc.CancelTx(ctx, tx, scope, al.ID, occupancy.StatusSuperseded); err != nil {
-					return err
-				}
-				m = al.ID
-			}
-			moved = append(moved, m)
-		}
-		snap := DecodeSnapshot(opt.PriceSnapshot)
-		var price *priced
-		var services []ServiceRequest
-		if snap != nil {
-			price = &priced{snapshot: *snap, raw: opt.PriceSnapshot}
-			for _, sv := range snap.Request.Services {
-				services = append(services, ServiceRequest{ItemID: sv.ItemID, QtyMilli: int64(sv.Qty)})
-			}
-		}
-		var fit *occupancy.FitOverride
-		if len(opt.FitOverride) > 0 {
-			fit = &occupancy.FitOverride{}
-			if jsonUnmarshal(opt.FitOverride, fit) != nil {
-				fit = nil
-			}
-		}
-		policy, err := DecodePolicy(q.Policy)
-		if err != nil || policy.Version == 0 {
-			policy = defaultPolicy(st)
-		}
-		// Closures apply to new arrivals only: a held option was already accepted by the engine.
-		arrival := len(moved) == 0 || moved[0] == ""
-		var c *store.Contract
-		if q.Kind == KindTransit {
-			c, err = s.createTransitTx(ctx, tx, scope, a, TransitInput{
-				VesselID: q.VesselID, CustomerID: q.CustomerID, Arrival: q.StartsOn, Departure: q.EndsOn, Placements: segs,
-				Channel: q.Channel, Notes: q.Notes, Services: services, Confirm: in.Confirm,
-			}, price, st, arrival, &fromQuote{quoteID: q.ID, fit: fit, policy: policy})
-		} else {
-			c, err = s.createMooringTx(ctx, tx, scope, a, newContract{
-				kind: KindMooring, term: q.Term, customerID: q.CustomerID, vesselID: q.VesselID, startsOn: q.StartsOn,
-				endsOn: q.EndsOn, channel: q.Channel, quoteID: q.ID, price: price, policy: policy, notes: q.Notes,
-				segments: segs, services: services, arrival: arrival, fit: fit, priceIsBinding: true,
-			}, in.Activate, st)
-		}
-		if err != nil {
-			return err
-		}
-		contractID = c.ID
-		from := q.Status
-		q.Status, q.AcceptedOptionID, q.ContractID, q.DecidedAt = string(t.To), opt.ID, c.ID, now
-		if err := updateQuote(ctx, tx, scope, q, now); err != nil {
-			return err
-		}
-		if err := s.writeAudit(ctx, tx, scope, a, "quote.accept", entityQuote, q.ID, map[string]any{
-			"from_status": from, "status": q.Status, "option_id": opt.ID, "contract_id": c.ID,
-			"superseded_hold_ids": moved, "cancelled_hold_ids": idsOf(others),
-		}); err != nil {
-			return err
-		}
-		if err := s.emitTransition(ctx, tx, scope, t, subject{quote: q}); err != nil {
-			return err
-		}
-		if q.InquiryID != "" {
-			return s.linkInquiryTx(ctx, tx, scope, a, q.InquiryID, "booked", q.ID, c.ID)
-		}
-		return nil
+		res, err = s.acceptTx(ctx, tx, scope, actor{p}, q, in, ViaPanel)
+		return err
 	})
 	if err != nil {
 		if q, qerr := store.GetQuote(ctx, s.d.DB.DB, scope, id); qerr == nil {
 			err = s.withAlternatives(ctx, p, marinaID, q.VesselID, err)
 		}
-		return nil, nil, err
+		return nil, err
 	}
-	qd, err := s.quoteDetail(ctx, s.d.DB.DB, scope, p, id)
+	res.Warnings = warnings
+	if res.Quote, err = s.quoteDetail(ctx, s.d.DB.DB, scope, p, id); err != nil {
+		return nil, err
+	}
+	res.Contract, err = s.detail(ctx, s.d.DB.DB, scope, p, res.Contract.Row.ID)
+	return res, err
+}
+
+// quoteInsurance applies the insurance policy to the vessel of a mooring quote on its start.
+func (s *Service) quoteInsurance(ctx context.Context, scope store.MarinaScope, id string) ([]string, error) {
+	q, err := store.GetQuote(ctx, s.d.DB.DB, scope, id)
 	if err != nil {
-		return nil, nil, err
+		return nil, notFound(err)
 	}
-	cd, err := s.detail(ctx, s.d.DB.DB, scope, p, contractID)
-	return qd, cd, err
+	if q.Kind != KindMooring || q.VesselID == "" {
+		return nil, nil
+	}
+	cs, err := s.settingsTx(ctx, s.d.DB.DB, scope)
+	if err != nil {
+		return nil, err
+	}
+	return checkInsurance(ctx, s.d.DB.DB, scope, cs, q.VesselID, q.StartsOn)
+}
+
+// acceptTx accepts an option of a locked quote: M3 steps 1–2, then the M4 steps 3–4 (shared by the panel and
+// the public magic-link acceptance). The returned Contract holds only the row (the caller reloads the detail).
+func (s *Service) acceptTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, a actor, q *store.Quote, in AcceptInput, via string) (*AcceptResult, error) {
+	st, err := store.ContractOccupancySettings(ctx, tx, scope, s.now())
+	if err != nil {
+		return nil, err
+	}
+	now := s.now()
+	if q.Status == string(QuoteExpired) || ((q.Status == string(QuoteDraft) || q.Status == string(QuoteSent)) && !now.Before(q.ExpiresAt)) {
+		return nil, ErrQuoteExpired
+	}
+	t, err := Next(QuoteTransitions, Status(q.Status), ActionAccept)
+	if err != nil {
+		return nil, err
+	}
+	if (q.Kind == KindTransit && in.Activate) || (q.Kind == KindMooring && in.Confirm != nil) {
+		v := &auth.ValidationError{}
+		v.Add("activate", "not_allowed")
+		return nil, v
+	}
+	if in.Plan != "" && in.Plan != PlanStandard && in.Plan != PlanEarlyPayment {
+		v := &auth.ValidationError{}
+		v.Add("plan", "invalid")
+		return nil, v
+	}
+	opts, pls, allocs, err := quoteHolds(ctx, tx, scope, q.ID)
+	if err != nil {
+		return nil, err
+	}
+	idx := slices.IndexFunc(opts, func(o store.QuoteOption) bool { return o.ID == in.OptionID })
+	if idx < 0 {
+		v := &auth.ValidationError{}
+		v.Add("option_id", "invalid")
+		return nil, v
+	}
+	opt := opts[idx]
+	others, err := s.cancelQuoteHolds(ctx, tx, scope, pls, allocs, opt.ID, occupancy.StatusCancelled, event.ReleasedCancel)
+	if err != nil {
+		return nil, err
+	}
+	// The chosen option's holds are superseded by the contract's allocations (the same nights, now on the
+	// contract lines; the hold has no line, so it is not a moved_from predecessor); missing holds are allocated
+	// now.
+	var segs []Segment
+	var moved []string // superseded hold per segment ("" = allocated now)
+	for _, pl := range pls {
+		if pl.OptionID != opt.ID {
+			continue
+		}
+		segs = append(segs, Segment{
+			ResourceType: pl.ResourceType, ResourceID: pl.ResourceID, X: pl.XCm, Y: pl.YCm, RotationDd: pl.RotationDd,
+			First: pl.FirstNight, Last: pl.LastNight,
+		})
+		m := ""
+		if al, ok := allocs[pl.AllocationID]; ok && al.Status == store.AllocActive {
+			if err := s.alloc.CancelTx(ctx, tx, scope, al.ID, occupancy.StatusSuperseded); err != nil {
+				return nil, err
+			}
+			m = al.ID
+		}
+		moved = append(moved, m)
+	}
+	snap := DecodeSnapshot(opt.PriceSnapshot)
+	var price *priced
+	var services []ServiceRequest
+	if snap != nil {
+		price = &priced{snapshot: *snap, raw: opt.PriceSnapshot}
+		for _, sv := range snap.Request.Services {
+			services = append(services, ServiceRequest{ItemID: sv.ItemID, QtyMilli: int64(sv.Qty)})
+		}
+	}
+	var fit *occupancy.FitOverride
+	if len(opt.FitOverride) > 0 {
+		fit = &occupancy.FitOverride{}
+		if jsonUnmarshal(opt.FitOverride, fit) != nil {
+			fit = nil
+		}
+	}
+	policy, err := DecodePolicy(q.Policy)
+	if err != nil || policy.Version == 0 {
+		policy = defaultPolicy(st)
+	}
+	// Closures apply to new arrivals only: a held option was already accepted by the engine.
+	arrival := len(moved) == 0 || moved[0] == ""
+	var c *store.Contract
+	if q.Kind == KindTransit {
+		c, err = s.createTransitTx(ctx, tx, scope, a, TransitInput{
+			VesselID: q.VesselID, CustomerID: q.CustomerID, Arrival: q.StartsOn, Departure: q.EndsOn, Placements: segs,
+			Channel: q.Channel, Notes: q.Notes, Services: services, Confirm: in.Confirm,
+		}, price, st, arrival, &fromQuote{quoteID: q.ID, fit: fit, policy: policy})
+	} else {
+		c, err = s.createMooringTx(ctx, tx, scope, a, newContract{
+			kind: KindMooring, term: q.Term, customerID: q.CustomerID, vesselID: q.VesselID, startsOn: q.StartsOn,
+			endsOn: q.EndsOn, channel: q.Channel, quoteID: q.ID, price: price, policy: policy, notes: q.Notes,
+			segments: segs, services: services, arrival: arrival, fit: fit, priceIsBinding: true, plan: in.Plan,
+		}, in.Activate, st)
+	}
+	if err != nil {
+		return nil, err
+	}
+	res := &AcceptResult{Contract: &Detail{Row: *c}}
+	from := q.Status
+	q.Status, q.AcceptedOptionID, q.ContractID, q.DecidedAt, q.AcceptedVia = string(t.To), opt.ID, c.ID, now, via
+	if err := updateQuote(ctx, tx, scope, q, now); err != nil {
+		return nil, err
+	}
+	if err := s.writeAudit(ctx, tx, scope, a, "quote.accept", entityQuote, q.ID, map[string]any{
+		"from_status": from, "status": q.Status, "option_id": opt.ID, "contract_id": c.ID,
+		"superseded_hold_ids": moved, "cancelled_hold_ids": idsOf(others), "via": via, "plan": choiceOr(in.Plan),
+	}); err != nil {
+		return nil, err
+	}
+	if err := s.emitTransition(ctx, tx, scope, t, subject{quote: q}); err != nil {
+		return nil, err
+	}
+	if q.InquiryID != "" {
+		if err := s.linkInquiryTx(ctx, tx, scope, a, q.InquiryID, "booked", q.ID, c.ID); err != nil {
+			return nil, err
+		}
+	}
+	if q.Kind != KindMooring {
+		return res, nil
+	}
+	// Step 4: the contract document, and the signature request when the driver is not paper.
+	cs, err := s.settingsTx(ctx, tx, scope)
+	if err != nil {
+		return nil, err
+	}
+	if !in.Activate && cs.SignatureDriver != DriverPaper && s.signer != nil {
+		cc, err := lockContract(ctx, tx, scope, c.ID, KindMooring, 0)
+		if err != nil {
+			return nil, err
+		}
+		reqID, err := s.requestContractSignatureTx(ctx, tx, scope, a, cc, SignatureInput{Signers: in.Signers})
+		if err != nil {
+			return nil, err
+		}
+		res.SignatureRequestID, res.DocumentID = reqID, ""
+		res.Contract.Row = *cc
+		return res, nil
+	}
+	docID, err := s.composeTx(ctx, tx, scope, a, docs.ContractKindOf(c.Kind, c.Term), docs.SubjectContract, c.ID, false)
+	if err != nil {
+		return nil, err
+	}
+	res.DocumentID = docID
+	return res, s.commitDocHook()
 }
 
 // GetQuote returns a quote with its options (contracts.read).

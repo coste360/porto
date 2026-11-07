@@ -1,0 +1,10 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+this is the code to sign the document. Do not share it with anyone.
+{{with v . "code"}}Code: {{.}}
+{{end}}{{with v . "document_title"}}Document: {{.}}
+{{end}}{{with v . "expires_at"}}Valid until: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

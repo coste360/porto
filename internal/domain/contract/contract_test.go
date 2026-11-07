@@ -24,7 +24,8 @@ var (
 	allActions      = []Action{
 		ActionCreate, ActionCreateActive, ActionActivate, ActionCancel, ActionTerminate, ActionExpire,
 		ActionConfirm, ActionNoShow, ActionArrive, ActionDepart, ActionChangeStay, ActionUpdate, ActionSend, ActionAccept,
-		ActionDecline,
+		ActionDecline, ActionRequestSignature, ActionSign, ActionSignatureFailed, ActionSuspend, ActionResume,
+		ActionExpireRenewed, ActionTacitRenew, ActionAddendum, ActionChangeVessel,
 	}
 )
 
@@ -32,10 +33,21 @@ var (
 // lead where the table says, every other pair is ErrInvalidTransition with the state and the action named.
 func TestContract_TransitionTable(t *testing.T) {
 	want := map[string]map[[2]string]Status{
+		// m3-plan §4.1 + m4-plan §3.1.
 		"mooring": {
 			{"", "create"}: StatusDraft, {"", "create_active"}: StatusActive, {"draft", "activate"}: StatusActive,
 			{"draft", "cancel"}: StatusCancelled, {"draft", "update"}: StatusDraft, {"active", "update"}: StatusActive,
 			{"active", "terminate"}: StatusTerminated, {"active", "expire"}: StatusExpired,
+			{"draft", "request_signature"}: StatusAwaitingSignature, {"awaiting_signature", "sign"}: StatusActive,
+			{"awaiting_signature", "activate"}: StatusActive, {"awaiting_signature", "signature_failed"}: StatusDraft,
+			{"awaiting_signature", "cancel"}: StatusCancelled, {"active", "suspend"}: StatusSuspended,
+			{"suspended", "resume"}: StatusActive, {"suspended", "terminate"}: StatusTerminated,
+			{"active", "expire_renewed"}: StatusRenewed, {"active", "tacit_renew"}: StatusRenewed,
+			{"awaiting_signature", "update"}: StatusAwaitingSignature, {"suspended", "update"}: StatusSuspended,
+			{"draft", "addendum"}: StatusDraft, {"awaiting_signature", "addendum"}: StatusAwaitingSignature,
+			{"active", "addendum"}: StatusActive, {"suspended", "addendum"}: StatusSuspended,
+			{"draft", "change_vessel"}: StatusDraft, {"awaiting_signature", "change_vessel"}: StatusAwaitingSignature,
+			{"active", "change_vessel"}: StatusActive, {"suspended", "change_vessel"}: StatusSuspended,
 		},
 		"transit": {
 			{"", "create"}: StatusHeld, {"held", "confirm"}: StatusConfirmed,
@@ -91,12 +103,12 @@ func TestContract_TransitionTable(t *testing.T) {
 			}
 		}
 	}
-	// Statuses reserved for later milestones are never reached in M3.
-	for _, s := range []Status{StatusAwaitingSignature, StatusRenewed, StatusSuspended, StatusPendingPayment, StatusAwaitingApproval} {
+	// Statuses reserved for later milestones are never reached (M5 pending_payment, M8 awaiting_approval).
+	for _, s := range []Status{StatusPendingPayment, StatusAwaitingApproval} {
 		for _, table := range [][]Transition{MooringTransitions, TransitTransitions} {
 			for _, tr := range table {
 				if tr.To == s || tr.From == s {
-					t.Errorf("status %s appears in an M3 transition", s)
+					t.Errorf("status %s appears in a transition", s)
 				}
 			}
 		}
@@ -232,7 +244,7 @@ func TestDecodePolicy_RejectsUnknownKeys(t *testing.T) {
 	}
 	v := &auth.ValidationError{}
 	bad := "sometimes"
-	ver := 2
+	ver := 3
 	mergePolicy(v, Policy{Version: 1}, &PolicyInput{ReleasePolicy: &bad, Version: &ver})
 	if len(v.Fields) != 2 {
 		t.Fatalf("fields %+v", v.Fields)

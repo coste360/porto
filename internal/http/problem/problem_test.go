@@ -173,8 +173,8 @@ func TestWriteError_UnmappedIsInternal(t *testing.T) {
 func TestTypes_Registry(t *testing.T) {
 	slug := regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	all := All()
-	if len(all) != 58 {
-		t.Fatalf("declared %d types, want 58 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4)", len(all))
+	if len(all) != 82 {
+		t.Fatalf("declared %d types, want 82 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4)", len(all))
 	}
 	for _, ty := range all {
 		if !slug.MatchString(string(ty)) {
@@ -194,7 +194,12 @@ func TestTypes_Registry(t *testing.T) {
 		MapInvalid: 422, MapNotEmpty: 409, MapNotGeoreferenced: 409, InvalidFile: 400, FileTooLarge: 413,
 		CSVInvalid: 400, CustomerAnonymized: 409, CustomerMerged: 409, DownloadLinkExpired: 403,
 		NoPrice: 422, PromoNotApplicable: 422, PriceListInvalid: 422, PriceListImmutable: 409, PriceListOverlap: 409,
-		InUse: 409,
+		InUse:          409,
+		NotImplemented: 501, RenewalExists: 409, ProposalClosed: 409, SignatureOpen: 409, InvalidSignature: 401,
+		OTPInvalid: 422, OTPLocked: 409, OTPRateLimited: 429, LinkInvalid: 404, TemplateInvalid: 422,
+		TemplateLimits: 422, PaperScanRequired: 422, InsuranceRequired: 422, CustomerEmailMissing: 422,
+		SharesInvalid: 422, TableIncomplete: 422, TableActive: 409, TransferRequirements: 422, MandateOverlap: 409,
+		VesselInOtherFleet: 409, VesselNotInFleet: 422, ImportNotUndoable: 409, ProviderUnknown: 422, CodeTaken: 409,
 	}
 	for ty, s := range want {
 		if StatusOf(ty) != s {

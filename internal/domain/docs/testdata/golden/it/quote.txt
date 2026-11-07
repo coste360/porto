@@ -1,0 +1,21 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Preventivo n. PRV-2026-0101
+Gentile Mario Rossi, ti proponiamo l'ormeggio dell'unità Libeccio (RM 1234 D), lunghezza 11,34 m,
+larghezza 3,80 m dal 1 gennaio 2027 al 1 gennaio 2028.
+Opzione 1: Pontile B
+Posto | Struttura | Dal | Al
+B-12 | Pontile B | 01/01/2027 | 31/12/2027
+Voce | Importo
+Ormeggio annuale posto B-12 | 4.500,00 €
+Acqua ed energia | 350,00 €
+Totale 4.850,00 €, acconto alla firma 1.455,00 €.
+Opzione 2: Pontile C
+Posto | Struttura | Dal | Al
+C-03 | Pontile C | 01/01/2027 | 31/12/2027
+Voce | Importo
+Ormeggio annuale posto B-12 | 4.500,00 €
+Totale 4.520,00 €.
+Il preventivo è valido fino al 30 novembre 2026.
+Puoi accettarlo online: https://porto-demo.example/b/demo/m/quote/DEMO
+Porto Demo S.r.l. · P. IVA 01234567890 · Pagina 1 di 1

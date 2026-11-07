@@ -1,0 +1,18 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Pagina delle evidenze di firma
+Documento: Contratto di ormeggio annuale ORM-2027-0042
+Impronta SHA-256 del documento firmato:
+9f2b5c0e6a1d4b3f8e7a6c5d4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a
+Richiesta di firma: 01900000-0000-7000-8000-000000000001
+Firma elettronica semplice con codice monouso inviato per email. Il valore legale di questa forma di firma
+va valutato dal porto e dai suoi consulenti.
+Firmatario 1: Mario Rossi (customer)
+• Identità dichiarata: Mario Rossi, RSSMRA80A01H501U
+• Impronta dell'email: 3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b
+• Indirizzo IP: 192.0.2.10
+• Impronta del browser: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+• Apertura del documento: 07/11/2026 10:30 UTC
+• Invio del codice: 07/11/2026 10:32 UTC
+• Firma: 07/11/2026 10:34 UTC
+Porto Demo S.r.l. · P. IVA 01234567890 · Pagina 1 di 1

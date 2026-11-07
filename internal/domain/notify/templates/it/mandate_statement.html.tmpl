@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>ti inviamo il rendiconto del mandato di gestione del tuo posto barca. Trovi il dettaglio in allegato.</p>
+<table>
+{{with v . "period"}}<tr><td>Periodo</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "amount"}}<tr><td>Tua quota</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

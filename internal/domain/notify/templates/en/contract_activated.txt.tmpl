@@ -1,0 +1,10 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+your contract is active. Thank you for choosing our marina.
+{{with v . "contract_code"}}Contract: {{.}}
+{{end}}{{with v . "starts_on"}}From: {{.}}
+{{end}}{{with v . "ends_on"}}To: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

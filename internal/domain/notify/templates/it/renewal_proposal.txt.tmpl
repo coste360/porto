@@ -1,0 +1,17 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+ti proponiamo il rinnovo del tuo contratto. Puoi accettarlo o rifiutarlo online.
+{{with v . "contract_code"}}Contratto attuale: {{.}}
+{{end}}{{with v . "starts_on"}}Nuovo periodo dal: {{.}}
+{{end}}{{with v . "ends_on"}}Al: {{.}}
+{{end}}{{with v . "old_total"}}Importo attuale: {{.}}
+{{end}}{{with v . "new_total"}}Nuovo importo: {{.}}
+{{end}}{{with v . "deadline_on"}}Rispondi entro il: {{.}}
+{{end}}{{with v . "message"}}Messaggio: {{.}}
+{{end}}
+{{with v . "link"}}Vedi la proposta:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

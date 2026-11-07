@@ -1,5 +1,7 @@
 .DS_Store
 /bin/
+# stray `go build ./cmd/porto` output at the root (the Makefile builds into bin/)
+/porto
 /dist/
 /tmp/
 node_modules/

@@ -18,24 +18,30 @@ import (
 
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/config"
+	"github.com/coste360/porto/internal/csvimport"
 	"github.com/coste360/porto/internal/domain/apikey"
 	"github.com/coste360/porto/internal/domain/audit"
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/catalog"
+	"github.com/coste360/porto/internal/domain/comms"
 	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/customer"
 	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/device"
+	"github.com/coste360/porto/internal/domain/docs"
 	"github.com/coste360/porto/internal/domain/document"
 	"github.com/coste360/porto/internal/domain/event"
 	"github.com/coste360/porto/internal/domain/harbor"
+	"github.com/coste360/porto/internal/domain/magiclink"
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/meta"
 	"github.com/coste360/porto/internal/domain/notify"
 	"github.com/coste360/porto/internal/domain/occupancy"
 	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
+	"github.com/coste360/porto/internal/domain/rights"
+	"github.com/coste360/porto/internal/domain/signature"
 	"github.com/coste360/porto/internal/domain/team"
 	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/domain/webhook"
@@ -46,6 +52,7 @@ import (
 	"github.com/coste360/porto/internal/http/middleware"
 	"github.com/coste360/porto/internal/http/public"
 	"github.com/coste360/porto/internal/http/sse"
+	"github.com/coste360/porto/internal/http/webhooks"
 	"github.com/coste360/porto/internal/jobs"
 	"github.com/coste360/porto/internal/store"
 	"github.com/coste360/porto/pkg/ext"
@@ -104,6 +111,14 @@ type App struct {
 	Occupancy *occupancy.Service
 	Contracts *contract.Service
 	Presence  *presence.Service
+
+	// M4
+	Docs       *docs.Service
+	Links      *magiclink.Service
+	Signatures *signature.Service
+	Rights     *rights.Service
+	Comms      *comms.Service
+	Imports    *csvimport.Registry
 
 	ownDB bool
 }
@@ -183,16 +198,48 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
 	})
 	a.Deadlines = deadline.NewService(deadline.Deps{
-		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Notify: a.Notify, Log: log,
 	})
 	a.Documents = document.NewService(document.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
 	})
 	a.Catalog = catalog.NewService(catalog.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log})
 	a.PriceLists = pricelist.NewService(pricelist.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log})
+	// M4 (m4-plan §2): documents and links first, then signature, rights and contracts, then the registrations
+	// (callbacks go through interfaces, so docs and signature never import contract or rights).
+	a.Docs = docs.NewService(docs.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Notify: a.Notify, Log: log,
+	})
+	a.Links = magiclink.NewService(magiclink.Deps{DB: db, Clock: clk, BaseURL: cfg.BaseURL.String(), Log: log})
+	a.Signatures = signature.NewService(signature.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Docs: a.Docs, Links: a.Links,
+		Notify: a.Notify, Providers: x.SignatureProviders, Notifiers: x.Notifiers, Log: log,
+	})
+	a.Rights = rights.NewService(rights.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Occupancy: a.Occupancy, Prices: a.PriceLists,
+		Docs: a.Docs, Signatures: a.Signatures, Notify: a.Notify, Log: log,
+	})
+	a.Comms = comms.NewService(comms.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Docs: a.Docs, Links: a.Links, Notify: a.Notify,
+		Notifiers: x.Notifiers, Log: log,
+	})
 	a.Contracts = contract.NewService(contract.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Occupancy: a.Occupancy, Prices: a.PriceLists,
+		Keys: cfg.Keys, Files: a.Files, Notify: a.Notify, Docs: a.Docs, Signatures: a.Signatures, Links: a.Links,
+		Holders: a.Rights, Documents: a.Documents,
 	})
+	for _, sub := range a.Contracts.SignatureSubjects() {
+		a.Signatures.RegisterSubject(sub)
+	}
+	a.Signatures.RegisterSubject(a.Rights.SignatureSubject())
+	a.Docs.RegisterDataSource(a.Contracts.DataSource())
+	a.Docs.RegisterDataSource(a.Rights.DataSource())
+	a.Docs.RegisterDataSource(a.Comms.DataSource())
+	a.Imports = csvimport.NewRegistry()
+	a.Imports.Register(a.Customers.ImportHandler())
+	a.Imports.Register(a.Contracts.ImportHandler())
+	a.Imports.Register(a.Rights.ImportHandler())
+	a.Imports.Register(a.Deadlines.ImportHandler())
 	a.Occupancy.SetMovePricer(a.Contracts)
 	a.Presence = presence.NewService(presence.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
@@ -219,13 +266,17 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		Admin: &admin.Handler{
 			Clock: clk, Auth: authSvc, Team: a.Team, Marinas: a.Marinas, APIKeys: a.APIKeys, Devices: a.Devices,
 			Webhooks: a.Webhooks, Audit: auditlog.NewService(db, aw), SSE: sse.NewServer(a.Bus, a.Bus, log),
-			Meta: meta.Get(cfg, a.Version), SecureCookies: cfg.SecureCookies(),
+			Meta: meta.Get(cfg, a.Version).WithSignatureProviders(len(x.SignatureProviders)), SecureCookies: cfg.SecureCookies(),
 			Harbor: a.Harbor, Customers: a.Customers, Vessels: a.Vessels, Documents: a.Documents,
 			Deadlines: a.Deadlines, Catalog: a.Catalog, PriceLists: a.PriceLists,
 			Occupancy: a.Occupancy, Contracts: a.Contracts, Presence: a.Presence,
+			Rights: a.Rights, Docs: a.Docs, Signatures: a.Signatures, Links: a.Links, Comms: a.Comms, Imports: a.Imports,
 		},
-		Device:               &httpdevice.Handler{Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String()},
-		Public:               &public.Handler{Marinas: a.Marinas},
+		Device: &httpdevice.Handler{Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String()},
+		Public: &public.Handler{
+			Marinas: a.Marinas, Contracts: a.Contracts, Links: a.Links, Signatures: a.Signatures, Comms: a.Comms, Docs: a.Docs,
+		},
+		Webhooks:             &webhooks.Handler{Signatures: a.Signatures},
 		Authenticator:        authSvc,
 		Idempotency:          middleware.StoreIdempotency{DB: db.DB},
 		Ready:                a.Ready,
@@ -280,10 +331,22 @@ func (a *App) registerJobs() error {
 			_, err := a.Webhooks.PurgeOld(ctx, webhook.Retention)
 			return err
 		}},
-		// M3 (m3-plan §7.6): expired holds and the reconciliation of transits, quotes and contracts.
+		// M3 (m3-plan §7.6): expired holds and the reconciliation of transits, quotes and contracts. M4 extends it
+		// with renewed and tacit renewals (CONTRACTS).
 		{Name: "contracts.expire", Every: time.Minute, RunAtStart: true, Run: func(ctx context.Context) error {
 			return a.Contracts.RunExpiry(ctx)
 		}},
+		// M4 (m4-plan §7.6). Each job is idempotent and implemented by its owner.
+		{Name: "installments.issue", Every: 10 * time.Minute, RunAtStart: true, Run: a.Contracts.RunInstallmentsIssue},
+		{Name: "renewals.sync", Every: time.Minute, RunAtStart: true, Run: a.Contracts.RunRenewalsSync},
+		// Daily; the job itself runs the accrual once per marina day (after 02:00 marina time).
+		{Name: "mandates.accrue", Every: time.Hour, RunAtStart: true, Run: a.Rights.RunAccrual},
+		{Name: "documents.render", Every: 5 * time.Second, RunAtStart: true, Wake: a.Docs.Wake(), Run: a.Docs.RunRenderJob},
+		{Name: "signatures.sync", Every: 5 * time.Minute, RunAtStart: true, Run: a.Signatures.RunSync},
+		{Name: "comms.send", Every: time.Minute, RunAtStart: true, Wake: a.Comms.Wake(), Run: a.Comms.RunSend},
+		{Name: "deadlines.sync", Every: 15 * time.Minute, RunAtStart: true, Run: a.Deadlines.RunSync},
+		{Name: "deadlines.notify", Every: time.Hour, Run: a.Deadlines.RunNotify},
+		{Name: "links.cleanup", Every: 24 * time.Hour, Run: a.Links.Cleanup},
 	}
 	for _, j := range defs {
 		if err := a.Jobs.Register(j); err != nil {

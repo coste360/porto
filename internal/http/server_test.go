@@ -33,7 +33,7 @@ func TestPolicies_CoverEveryRoute(t *testing.T) {
 	}
 	seen := map[string]bool{}
 	err = chi.Walk(testRouter(t).(chi.Routes), func(method, route string, _ http.Handler, _ ...func(http.Handler) http.Handler) error {
-		if !strings.HasPrefix(route, "/api/") && route != "/healthz" && route != "/readyz" {
+		if !strings.HasPrefix(route, "/api/") && !strings.HasPrefix(route, "/webhooks/") && route != "/healthz" && route != "/readyz" {
 			return nil
 		}
 		if _, ok := ps.Lookup(method, route); !ok {

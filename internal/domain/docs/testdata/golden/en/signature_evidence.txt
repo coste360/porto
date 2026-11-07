@@ -1,0 +1,18 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Signature evidence page
+Document: Contratto di ormeggio annuale ORM-2027-0042
+SHA-256 fingerprint of the signed document:
+9f2b5c0e6a1d4b3f8e7a6c5d4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a
+Signature request: 01900000-0000-7000-8000-000000000001
+Simple electronic signature with a one-time code sent by email. The legal value of this kind of signature is
+for the marina and its advisers to assess.
+Signer 1: Mario Rossi (customer)
+• Declared identity: Mario Rossi, RSSMRA80A01H501U
+• Email fingerprint: 3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b
+• IP address: 192.0.2.10
+• Browser fingerprint: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+• Document opened: 07/11/2026 10:30 UTC
+• Code sent: 07/11/2026 10:32 UTC
+• Signed: 07/11/2026 10:34 UTC
+Porto Demo S.r.l. · VAT 01234567890 · Page 1 of 1

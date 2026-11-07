@@ -183,7 +183,9 @@ func SetRowsKind(ctx context.Context, tx bun.IDB, s MarinaScope, a *Allocation) 
 func ReclaimExpiredHolds(ctx context.Context, tx bun.IDB, s MarinaScope, resourceType, resourceID string, first, last calendar.Date, now time.Time) ([]Allocation, error) {
 	f := FamilyOf(resourceType)
 	var ids []string
-	err := tx.NewSelect().TableExpr(f.Table).ColumnExpr("DISTINCT allocation_id").Where("marina_id = ?", s.ID()).
+	// "marina_id || ''" keeps the marina filter out of index selection: without statistics SQLite would pick the
+	// (marina_id, night) index and scan the whole marina over the range instead of the (resource, night) key.
+	err := tx.NewSelect().TableExpr(f.Table).ColumnExpr("DISTINCT allocation_id").Where("marina_id || '' = ?", s.ID()).
 		Where(f.Column+" = ?", resourceID).Where("night >= ?", first).Where("night <= ?", last).
 		Where("kind = ?", AllocKindHold).Where("expires_at < ?", UTC(now)).Scan(ctx, &ids)
 	if err != nil || len(ids) == 0 {

@@ -25,7 +25,24 @@ export type MarinaRoutePath =
   | '/m/$marinaId/contracts'
   | '/m/$marinaId/inquiries'
   | '/m/$marinaId/dock'
-  | '/m/$marinaId/occupancy-settings';
+  | '/m/$marinaId/occupancy-settings'
+  | '/m/$marinaId/installments'
+  | '/m/$marinaId/renewals'
+  | '/m/$marinaId/charters'
+  | '/m/$marinaId/waitlist'
+  | '/m/$marinaId/rights'
+  | '/m/$marinaId/transfers'
+  | '/m/$marinaId/mandates'
+  | '/m/$marinaId/fees'
+  | '/m/$marinaId/common-charges'
+  | '/m/$marinaId/holder-installments'
+  | '/m/$marinaId/concession'
+  | '/m/$marinaId/signatures'
+  | '/m/$marinaId/communications'
+  | '/m/$marinaId/imports'
+  | '/m/$marinaId/templates'
+  | '/m/$marinaId/settings/contracts'
+  | '/m/$marinaId/settings/signature';
 
 export type NavItem = {
   id: string;
@@ -67,6 +84,109 @@ export const NAV_ITEMS: NavItem[] = [
     to: '/m/$marinaId/inquiries',
     labelKey: 'common:nav.inquiries',
     anyOf: ['contracts.read'],
+  },
+  // M4 (m4-plan §8.1)
+  {
+    id: 'installments',
+    to: '/m/$marinaId/installments',
+    labelKey: 'common:nav.installments',
+    anyOf: ['contracts.read'],
+  },
+  {
+    id: 'renewals',
+    to: '/m/$marinaId/renewals',
+    labelKey: 'common:nav.renewals',
+    anyOf: ['contracts.read'],
+  },
+  {
+    id: 'charters',
+    to: '/m/$marinaId/charters',
+    labelKey: 'common:nav.charters',
+    anyOf: ['contracts.read'],
+  },
+  {
+    id: 'waitlist',
+    to: '/m/$marinaId/waitlist',
+    labelKey: 'common:nav.waitlist',
+    anyOf: ['contracts.read'],
+  },
+  {
+    id: 'rights',
+    to: '/m/$marinaId/rights',
+    labelKey: 'common:nav.rights',
+    anyOf: ['rights.manage'],
+  },
+  {
+    id: 'transfers',
+    to: '/m/$marinaId/transfers',
+    labelKey: 'common:nav.transfers',
+    anyOf: ['rights.manage'],
+  },
+  {
+    id: 'mandates',
+    to: '/m/$marinaId/mandates',
+    labelKey: 'common:nav.mandates',
+    anyOf: ['rights.manage'],
+  },
+  {
+    id: 'fees',
+    to: '/m/$marinaId/fees',
+    labelKey: 'common:nav.fees',
+    anyOf: ['rights.manage'],
+  },
+  {
+    id: 'common-charges',
+    to: '/m/$marinaId/common-charges',
+    labelKey: 'common:nav.commonCharges',
+    anyOf: ['rights.manage'],
+  },
+  {
+    id: 'holder-installments',
+    to: '/m/$marinaId/holder-installments',
+    labelKey: 'common:nav.holderInstallments',
+    anyOf: ['rights.manage'],
+  },
+  {
+    id: 'concession',
+    to: '/m/$marinaId/concession',
+    labelKey: 'common:nav.concession',
+    anyOf: ['rights.manage'],
+  },
+  {
+    id: 'signatures',
+    to: '/m/$marinaId/signatures',
+    labelKey: 'common:nav.signatures',
+    anyOf: ['contracts.read'],
+  },
+  {
+    id: 'communications',
+    to: '/m/$marinaId/communications',
+    labelKey: 'common:nav.communications',
+    anyOf: ['communications.send'],
+  },
+  {
+    id: 'imports',
+    to: '/m/$marinaId/imports',
+    labelKey: 'common:nav.imports',
+    anyOf: ['customers.write', 'contracts.write', 'rights.manage'],
+  },
+  {
+    id: 'templates',
+    to: '/m/$marinaId/templates',
+    labelKey: 'common:nav.templates',
+    anyOf: ['templates.configure'],
+  },
+  {
+    id: 'contract-settings',
+    to: '/m/$marinaId/settings/contracts',
+    labelKey: 'common:nav.contractSettings',
+    anyOf: ['contracts.write'],
+  },
+  {
+    id: 'signature-settings',
+    to: '/m/$marinaId/settings/signature',
+    labelKey: 'common:nav.signatureSettings',
+    anyOf: ['providers.configure'],
   },
   { id: 'dock', to: '/m/$marinaId/dock', labelKey: 'common:nav.dock', anyOf: ['presence.write'] },
   { id: 'maps', to: '/m/$marinaId/maps', labelKey: 'common:nav.maps', anyOf: ['map.view'] },

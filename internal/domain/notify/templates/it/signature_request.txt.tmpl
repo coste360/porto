@@ -1,0 +1,13 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+ti chiediamo di firmare il documento indicato. La firma avviene online con un codice ricevuto per email (firma elettronica semplice).
+{{with v . "document_title"}}Documento: {{.}}
+{{end}}{{with v . "contract_code"}}Riferimento: {{.}}
+{{end}}{{with v . "deadline_on"}}Da firmare entro il: {{.}}
+{{end}}
+{{with v . "link"}}Apri e firma il documento:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

@@ -200,6 +200,10 @@ func notFound(err error) error {
 	return err
 }
 
+// SearchText is searchText for writers outside the package (contract, when a customer completes their data
+// through a quote link).
+func SearchText(c *store.Customer) string { return searchText(c) }
+
 // searchText builds the normalised search text of a customer: names, fiscal code, VAT, emails, phone digits.
 func searchText(c *store.Customer) string {
 	parts := []string{Fold(c.FirstName), Fold(c.LastName), Fold(c.CompanyName), Fold(c.FiscalCode), Fold(c.VATNumber), Fold(c.PEC)}

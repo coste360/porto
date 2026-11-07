@@ -58,7 +58,20 @@ func (h *Handler) ListDeadlinePolicies(w http.ResponseWriter, r *http.Request, m
 		respond.Error(w, r, err)
 		return
 	}
-	respond.JSON(w, http.StatusOK, view.DeadlinePolicies(ps))
+	respond.JSON(w, http.StatusOK, deadlinePolicies(ps))
+}
+
+// deadlinePolicies converts the policies with their M4 channels.
+func deadlinePolicies(ps []deadline.Policy) api.DeadlinePolicyList {
+	out := view.DeadlinePolicies(ps)
+	for i := range out.Items {
+		chs := make([]api.DeadlineChannel, 0, len(ps[i].Channels))
+		for _, c := range ps[i].Channels {
+			chs = append(chs, api.DeadlineChannel(c))
+		}
+		out.Items[i].Channels = &chs
+	}
+	return out
 }
 
 // ReplaceDeadlinePolicies implements api.ServerInterface (PUT /api/admin/v1/marinas/{marinaId}/deadline-policies).
@@ -69,12 +82,28 @@ func (h *Handler) ReplaceDeadlinePolicies(w http.ResponseWriter, r *http.Request
 	}
 	items := make([]deadline.Policy, 0, len(in.Items))
 	for _, it := range in.Items {
-		items = append(items, deadline.Policy{Kind: string(it.Kind), LeadDays: it.LeadDays})
+		pol := deadline.Policy{Kind: string(it.Kind), LeadDays: it.LeadDays}
+		if it.Channels != nil {
+			for _, c := range *it.Channels {
+				pol.Channels = append(pol.Channels, string(c))
+			}
+		}
+		items = append(items, pol)
 	}
 	ps, err := h.Deadlines.ReplacePolicies(r.Context(), principal(r), marinaID, items)
 	if err != nil {
 		respond.Error(w, r, err)
 		return
 	}
-	respond.JSON(w, http.StatusOK, view.DeadlinePolicies(ps))
+	respond.JSON(w, http.StatusOK, deadlinePolicies(ps))
+}
+
+// SyncDeadlines implements api.ServerInterface (POST /api/admin/v1/marinas/{marinaId}/deadlines/sync).
+func (h *Handler) SyncDeadlines(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, _ api.SyncDeadlinesParams) {
+	res, err := h.Deadlines.Sync(r.Context(), principal(r), marinaID)
+	if err != nil {
+		respond.Error(w, r, err)
+		return
+	}
+	respond.JSON(w, http.StatusOK, api.DeadlineSyncResult{Created: res.Created, Updated: res.Updated, Closed: res.Closed})
 }

@@ -1,0 +1,85 @@
+{
+  "list": {
+    "title": "Modelli di stampa",
+    "description": "Modelli dei documenti del marina per tipo e lingua; i modelli predefiniti valgono finché non ne pubblichi uno tuo.",
+    "new": "Nuovo modello",
+    "newHint": "Parte dal modello predefinito del tipo scelto.",
+    "kind": "Tipo",
+    "code": "Codice",
+    "name": "Nome",
+    "create": "Crea",
+    "locales": "Lingue",
+    "localeVersion": "{{locale}} v{{version}}",
+    "default": "Predefinito",
+    "archived": "Archiviato",
+    "empty": "Nessun modello del marina: si usano quelli predefiniti."
+  },
+  "detail": {
+    "title": "Modello di stampa"
+  },
+  "pending": "Questa pagina arriva con M4.",
+  "editor": {
+    "locale": "Lingua",
+    "versionBadge": "v{{version}} {{status}}",
+    "save": "Salva bozza",
+    "saved": "Bozza salvata (versione {{version}}).",
+    "publish": "Pubblica",
+    "published": "Versione {{version}} pubblicata.",
+    "each": "Ripeti per elenco",
+    "if": "Se… altrimenti",
+    "pagebreak": "Interruzione di pagina",
+    "signature": "Spazio firma",
+    "fields": "Campi",
+    "expand": "Apri {{path}}",
+    "parts": {
+      "body": "Testo",
+      "header": "Intestazione",
+      "footer": "Piè di pagina"
+    },
+    "text": "{{part}} del modello (Markdown)",
+    "markers": "Righe con errori",
+    "issueAt": "{{part}}, riga {{line}}, colonna {{col}}:",
+    "issue": "Modello non valido:",
+    "sample": "Dati di esempio",
+    "demo": "Esempio dimostrativo",
+    "sampleId": "Id del documento",
+    "subjects": {
+      "quote": "Preventivo",
+      "contract": "Contratto",
+      "addendum": "Addendum",
+      "renewal_proposal": "Proposta di rinnovo",
+      "right_transfer": "Cessione",
+      "communication": "Comunicazione",
+      "letter": "Lettera"
+    },
+    "preview": "Anteprima PDF",
+    "previewTitle": "Anteprima del modello",
+    "previewHint": "Premi «Anteprima PDF» per vedere il documento con i dati di esempio."
+  },
+  "errors": {
+    "invalid": "errore nel modello",
+    "unknown_path": "campo sconosciuto",
+    "filter_type": "filtro non adatto al tipo del campo",
+    "each_not_list": "«ripeti» su un campo che non è un elenco",
+    "syntax": "sintassi non valida",
+    "unclosed_block": "blocco non chiuso",
+    "template_invalid": "modello non valido",
+    "template_limits": "il documento supera i limiti di dimensione"
+  },
+  "docs": {
+    "title": "Documenti",
+    "kind": "Documento",
+    "locale": "Lingua",
+    "status": "Stato",
+    "renderedAt": "Generato il",
+    "signed": "Firmato",
+    "pdfa": "PDF/A",
+    "download": "Scarica",
+    "retry": "Riprova",
+    "empty": "Nessun documento."
+  },
+  "print": {
+    "button": "Stampa",
+    "failed": "Stampa non riuscita"
+  }
+}

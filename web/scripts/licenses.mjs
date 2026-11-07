@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // Licence check of the production dependencies of every workspace (`npm run licenses`).
 // license-checker does not follow dependencies hoisted by npm workspaces, so this reads
-// the installed tree with `npm query .prod` instead.
+// the installed tree with `npm query .prod` instead. An optional directory argument checks another npm project
+// (`make licenses` passes scripts/brand, the dev-only brand build).
 import { execFileSync } from 'node:child_process';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -57,7 +58,8 @@ export function check(packages) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const out = execFileSync('npm', ['query', '.prod'], { cwd: ROOT, encoding: 'utf8' });
+  const cwd = process.argv[2] ? resolve(process.argv[2]) : ROOT;
+  const out = execFileSync('npm', ['query', '.prod'], { cwd, encoding: 'utf8' });
   const packages = JSON.parse(out);
   const failures = check(packages);
   if (failures.length > 0) {

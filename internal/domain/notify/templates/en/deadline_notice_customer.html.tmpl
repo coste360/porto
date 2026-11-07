@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},</p>
+<p>this is a notice about a deadline that concerns you.</p>
+<table>
+{{with v . "deadline_kind"}}<tr><td>Deadline</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "due_on"}}<tr><td>Date</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "contract_code"}}<tr><td>Reference</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

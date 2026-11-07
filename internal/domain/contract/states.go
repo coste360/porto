@@ -6,8 +6,8 @@ import "github.com/coste360/porto/internal/domain/event"
 // 00005_contracts ties each status to its kind); quotes have their own column.
 type Status string
 
-// Mooring contract statuses (m3-plan §4.1). awaiting_signature, renewed and suspended exist for M4/M5; no M3
-// transition reaches them.
+// Mooring and charter contract statuses (m3-plan §4.1; M4 reaches awaiting_signature, renewed and suspended,
+// m4-plan §3.1).
 const (
 	StatusDraft             Status = "draft"
 	StatusAwaitingSignature Status = "awaiting_signature"
@@ -63,6 +63,18 @@ const (
 	ActionSend         Action = "send"
 	ActionAccept       Action = "accept"
 	ActionDecline      Action = "decline"
+
+	// M4 (m4-plan §3.1).
+	ActionRequestSignature Action = "request_signature"
+	ActionSign             Action = "sign" // only from signature.Subject.OnSignedTx
+	ActionSignatureFailed  Action = "signature_failed"
+	ActionSuspend          Action = "suspend"
+	ActionResume           Action = "resume"
+	// ActionExpireRenewed is the expiry job on a contract whose renewal successor is active: active → renewed.
+	ActionExpireRenewed Action = "expire_renewed"
+	ActionTacitRenew    Action = "tacit_renew"
+	ActionAddendum      Action = "addendum"
+	ActionChangeVessel  Action = "change_vessel"
 )
 
 // Transition is one row of a state table: Events are the outbox types written by the transition, in order.
@@ -73,17 +85,207 @@ type Transition struct {
 	Events []string
 }
 
-// MooringTransitions is the table of m3-plan §4.1. Anything else is ErrInvalidTransition.
+// MooringTransitions is the table of m3-plan §4.1 with the M4 rows of m4-plan §3.1. Anything else is
+// ErrInvalidTransition. StatusRenewed is reached only from the expiry job (expire_renewed, tacit_renew);
+// contract.signed is emitted only by sign and by activate (paper).
 var MooringTransitions = []Transition{
 	{StatusNone, ActionCreate, StatusDraft, []string{event.ContractCreated}},
 	{StatusNone, ActionCreateActive, StatusActive, []string{event.ContractCreated, event.ContractActivated}},
-	{StatusDraft, ActionActivate, StatusActive, []string{event.ContractActivated}},
+	{StatusDraft, ActionRequestSignature, StatusAwaitingSignature, []string{event.ContractChanged}},
+	{StatusDraft, ActionActivate, StatusActive, []string{event.ContractSigned, event.ContractActivated}},
 	{StatusDraft, ActionCancel, StatusCancelled, []string{event.ContractChanged}},
-	{StatusDraft, ActionUpdate, StatusDraft, []string{event.ContractChanged}},
-	{StatusActive, ActionUpdate, StatusActive, []string{event.ContractChanged}},
+	{StatusAwaitingSignature, ActionSign, StatusActive, []string{event.ContractSigned, event.ContractActivated}},
+	{StatusAwaitingSignature, ActionActivate, StatusActive, []string{event.ContractSigned, event.ContractActivated}},
+	{StatusAwaitingSignature, ActionSignatureFailed, StatusDraft, []string{event.ContractChanged}},
+	{StatusAwaitingSignature, ActionCancel, StatusCancelled, []string{event.ContractChanged}},
+	{StatusActive, ActionSuspend, StatusSuspended, []string{event.ContractChanged}},
+	{StatusSuspended, ActionResume, StatusActive, []string{event.ContractChanged}},
+	{StatusSuspended, ActionTerminate, StatusTerminated, []string{event.ContractTerminated}},
 	{StatusActive, ActionTerminate, StatusTerminated, []string{event.ContractTerminated}},
 	{StatusActive, ActionExpire, StatusExpired, []string{event.ContractChanged}},
+	{StatusActive, ActionExpireRenewed, StatusRenewed, []string{event.ContractRenewed}},
+	{StatusActive, ActionTacitRenew, StatusRenewed, []string{event.ContractRenewed}},
+	{StatusDraft, ActionUpdate, StatusDraft, []string{event.ContractChanged}},
+	{StatusAwaitingSignature, ActionUpdate, StatusAwaitingSignature, []string{event.ContractChanged}},
+	{StatusActive, ActionUpdate, StatusActive, []string{event.ContractChanged}},
+	{StatusSuspended, ActionUpdate, StatusSuspended, []string{event.ContractChanged}},
+	{StatusDraft, ActionAddendum, StatusDraft, []string{event.ContractChanged}},
+	{StatusAwaitingSignature, ActionAddendum, StatusAwaitingSignature, []string{event.ContractChanged}},
+	{StatusActive, ActionAddendum, StatusActive, []string{event.ContractChanged}},
+	{StatusSuspended, ActionAddendum, StatusSuspended, []string{event.ContractChanged}},
+	{StatusDraft, ActionChangeVessel, StatusDraft, []string{event.ContractChanged}},
+	{StatusAwaitingSignature, ActionChangeVessel, StatusAwaitingSignature, []string{event.ContractChanged}},
+	{StatusActive, ActionChangeVessel, StatusActive, []string{event.ContractChanged}},
+	{StatusSuspended, ActionChangeVessel, StatusSuspended, []string{event.ContractChanged}},
 }
+
+// CharterTransitions is the table of charter contracts (m4-plan §3.1): identical to the mooring table (charters
+// are never created from quotes, so the quote acceptance path never uses it).
+var CharterTransitions = MooringTransitions
+
+// RenewalProposalStatus is a status of renewal_proposals (m4-plan §3.4).
+type RenewalProposalStatus string
+
+// Renewal proposal statuses. The open ones are under renewal_proposals_open_uidx (INV-33).
+const (
+	ProposalPreviewed RenewalProposalStatus = "previewed"
+	ProposalProposed  RenewalProposalStatus = "proposed"
+	ProposalSent      RenewalProposalStatus = "sent"
+	ProposalAccepted  RenewalProposalStatus = "accepted"
+	ProposalSigned    RenewalProposalStatus = "signed"
+	ProposalCompleted RenewalProposalStatus = "completed"
+	ProposalDeclined  RenewalProposalStatus = "declined"
+	ProposalExpired   RenewalProposalStatus = "expired"
+	ProposalExcluded  RenewalProposalStatus = "excluded"
+)
+
+// Proposal actions (m4-plan §3.4).
+const (
+	ProposalActionPreview  Action = "preview"
+	ProposalActionPropose  Action = "propose" // simple renewal, or include of an excluded proposal after launch
+	ProposalActionExclude  Action = "exclude"
+	ProposalActionLaunch   Action = "launch"
+	ProposalActionSend     Action = "send"
+	ProposalActionAccept   Action = "accept"
+	ProposalActionSign     Action = "sign"     // successor signed or activated, deposit > 0
+	ProposalActionComplete Action = "complete" // deposit settled, or successor signed with no deposit
+	ProposalActionDecline  Action = "decline"
+	ProposalActionExpire   Action = "expire"
+	ProposalActionInclude  Action = "include"
+)
+
+// ProposalTransition is one row of the proposal table.
+type ProposalTransition struct {
+	From   RenewalProposalStatus
+	Action Action
+	To     RenewalProposalStatus
+	Events []string
+}
+
+// ProposalTransitions is the table of m4-plan §3.4. "" is the creation (preview or simple renewal). Including an
+// excluded proposal leads to previewed in a draft campaign and to proposed afterwards (two rows, the service picks
+// by campaign state). Anything else is ErrInvalidTransition.
+var ProposalTransitions = []ProposalTransition{
+	{"", ProposalActionPreview, ProposalPreviewed, []string{event.RenewalCampaignChanged}},
+	{"", ProposalActionPropose, ProposalProposed, []string{event.RenewalProposed}},
+	{"", ProposalActionExclude, ProposalExcluded, nil},
+	{ProposalPreviewed, ProposalActionLaunch, ProposalProposed, []string{event.RenewalProposed}},
+	{ProposalProposed, ProposalActionSend, ProposalSent, nil},
+	{ProposalSent, ProposalActionSend, ProposalSent, nil}, // resend rotates the link
+	{ProposalSent, ProposalActionAccept, ProposalAccepted, []string{event.RenewalAccepted}},
+	{ProposalAccepted, ProposalActionSign, ProposalSigned, nil},
+	{ProposalAccepted, ProposalActionComplete, ProposalCompleted, []string{event.RenewalCompleted}},
+	{ProposalSigned, ProposalActionComplete, ProposalCompleted, []string{event.RenewalCompleted}},
+	{ProposalProposed, ProposalActionDecline, ProposalDeclined, []string{event.RenewalDeclined}},
+	{ProposalSent, ProposalActionDecline, ProposalDeclined, []string{event.RenewalDeclined}},
+	{ProposalPreviewed, ProposalActionExpire, ProposalExpired, []string{event.RenewalExpired}},
+	{ProposalProposed, ProposalActionExpire, ProposalExpired, []string{event.RenewalExpired}},
+	{ProposalSent, ProposalActionExpire, ProposalExpired, []string{event.RenewalExpired}},
+	{ProposalAccepted, ProposalActionExpire, ProposalExpired, []string{event.RenewalExpired}},
+	{ProposalExcluded, ProposalActionInclude, ProposalPreviewed, nil},
+	{ProposalExcluded, ProposalActionPropose, ProposalProposed, []string{event.RenewalProposed}},
+}
+
+// NextProposal returns the transition of the proposal table for (from, action), or a *TransitionError.
+func NextProposal(from RenewalProposalStatus, action Action) (ProposalTransition, error) {
+	for _, t := range ProposalTransitions {
+		if t.From == from && t.Action == action {
+			return t, nil
+		}
+	}
+	return ProposalTransition{}, &TransitionError{From: string(from), Action: action}
+}
+
+// CampaignStatus is a status of renewal_campaigns (m4-plan §3.4).
+type CampaignStatus string
+
+// Campaign statuses.
+const (
+	CampaignDraft     CampaignStatus = "draft"
+	CampaignSending   CampaignStatus = "sending"
+	CampaignOpen      CampaignStatus = "open"
+	CampaignClosed    CampaignStatus = "closed"
+	CampaignDiscarded CampaignStatus = "discarded"
+)
+
+// Campaign actions.
+const (
+	CampaignActionCreate  Action = "create"
+	CampaignActionUpdate  Action = "update"
+	CampaignActionPreview Action = "preview"
+	CampaignActionLaunch  Action = "launch"
+	CampaignActionOpen    Action = "open" // sync job: every proposal sent, excluded or failed
+	CampaignActionClose   Action = "close"
+	CampaignActionDiscard Action = "discard"
+)
+
+// CampaignTransition is one row of the campaign table.
+type CampaignTransition struct {
+	From   CampaignStatus
+	Action Action
+	To     CampaignStatus
+}
+
+// CampaignTransitions is the table of m4-plan §3.4. Every row writes renewal_campaign.changed.
+var CampaignTransitions = []CampaignTransition{
+	{"", CampaignActionCreate, CampaignDraft},
+	{CampaignDraft, CampaignActionUpdate, CampaignDraft},
+	{CampaignDraft, CampaignActionPreview, CampaignDraft},
+	{CampaignDraft, CampaignActionLaunch, CampaignSending},
+	{CampaignSending, CampaignActionOpen, CampaignOpen},
+	{CampaignSending, CampaignActionClose, CampaignClosed},
+	{CampaignOpen, CampaignActionClose, CampaignClosed},
+	{CampaignDraft, CampaignActionDiscard, CampaignDiscarded},
+}
+
+// NextCampaign returns the transition of the campaign table for (from, action), or a *TransitionError.
+func NextCampaign(from CampaignStatus, action Action) (CampaignTransition, error) {
+	for _, t := range CampaignTransitions {
+		if t.From == from && t.Action == action {
+			return t, nil
+		}
+	}
+	return CampaignTransition{}, &TransitionError{From: string(from), Action: action}
+}
+
+// AddendumStatus is a status of contract_addenda (m4-plan §3.5).
+type AddendumStatus string
+
+// Addendum statuses.
+const (
+	AddendumDraft             AddendumStatus = "draft"
+	AddendumAwaitingSignature AddendumStatus = "awaiting_signature"
+	AddendumActive            AddendumStatus = "active"
+	AddendumCancelled         AddendumStatus = "cancelled"
+)
+
+// AddendumTransitions: draft → awaiting_signature → active | cancelled (and draft → active on paper).
+var AddendumTransitions = []struct {
+	From   AddendumStatus
+	Action Action
+	To     AddendumStatus
+}{
+	{"", ActionCreate, AddendumDraft},
+	{AddendumDraft, ActionRequestSignature, AddendumAwaitingSignature},
+	{AddendumDraft, ActionActivate, AddendumActive},
+	{AddendumAwaitingSignature, ActionSign, AddendumActive},
+	{AddendumAwaitingSignature, ActionActivate, AddendumActive},
+	{AddendumAwaitingSignature, ActionSignatureFailed, AddendumDraft},
+	{AddendumDraft, ActionCancel, AddendumCancelled},
+	{AddendumAwaitingSignature, ActionCancel, AddendumCancelled},
+}
+
+// InstallmentStatus is a status of installments and holder_installments (m4-plan §3.3).
+type InstallmentStatus string
+
+// Instalment statuses. Paid is set only by the settlement entry points (INV-32); partially_paid is M5.
+const (
+	InstallmentScheduled     InstallmentStatus = "scheduled"
+	InstallmentIssued        InstallmentStatus = "issued"
+	InstallmentPartiallyPaid InstallmentStatus = "partially_paid"
+	InstallmentPaid          InstallmentStatus = "paid"
+	InstallmentCancelled     InstallmentStatus = "cancelled"
+)
 
 // TransitTransitions is the table of m3-plan §4.2. Anything else is ErrInvalidTransition.
 var TransitTransitions = []Transition{

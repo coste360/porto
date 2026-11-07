@@ -173,3 +173,27 @@ func TestServe_CapsConcurrentStreams(t *testing.T) {
 		t.Fatalf("err = %v", err)
 	}
 }
+
+// TestSSE_M4Topics: the M4 events reach the two new topics (rights.changed, documents.changed) and the contract
+// topic, with their ids as entity ids (m4-plan §7.5).
+func TestSSE_M4Topics(t *testing.T) {
+	cases := map[string]string{
+		event.RightTransferred:   event.TopicRights,
+		event.RightsChanged:      event.TopicRights,
+		event.SignatureCompleted: event.TopicDocuments,
+		event.DocumentGenerated:  event.TopicDocuments,
+		event.InstallmentChanged: event.TopicContract,
+		event.RenewalAccepted:    event.TopicContract,
+	}
+	samples := event.Samples()
+	for typ, topic := range cases {
+		data, err := json.Marshal(samples[typ])
+		if err != nil {
+			t.Fatal(err)
+		}
+		m := MessageOf(ext.Event{Type: typ, MarinaID: "m1", Data: data})
+		if m.Topic != topic || len(m.EntityIDs) == 0 {
+			t.Errorf("%s: %+v, want topic %s with entity ids", typ, m, topic)
+		}
+	}
+}

@@ -70,11 +70,59 @@ func BackupTables() []string {
 		"presences",
 		"vessel_presence",
 		"closures",
+		// M4 contracts, rights and documents (00007_contracts_m4, 00008_rights, 00009_documents).
+		// contracts.signed_document_id, contracts.signature_request_id, addenda/transfers document ids and
+		// renewal_proposals.link_id are plain columns; renewal_proposals.new_contract_id and
+		// generated_documents.signed_from_id are deferred FKs. millesimal_tables, management_fee_runs and
+		// common_charge_runs are restored as drafts and get their status at the end (internal/backup, lateColumns),
+		// because the triggers freeze the entries, lines and allocations of active tables and issued runs.
+		"contract_settings",
+		"charter_fleets",
+		"charter_fleet_vessels",
+		"charter_contracts",
+		"installments",
+		"renewal_campaigns",
+		"renewal_proposals",
+		"contract_addenda",
+		"waitlist_entries",
+		"concessions",
+		"concession_obligations",
+		"berth_rights",
+		"berth_right_holders",
+		"berth_right_vessels",
+		"berth_right_allocations",
+		"right_transfers",
+		"management_mandates",
+		"mandate_revenues",
+		"management_fee_tables",
+		"management_fee_table_rows",
+		"management_fee_runs",
+		"management_fee_lines",
+		"millesimal_tables",
+		"millesimal_entries",
+		"common_charge_budgets",
+		"common_charge_items",
+		"common_charge_runs",
+		"common_charge_allocations",
+		"holder_installments",
+		"templates",
+		"template_versions",
+		"generated_documents",
+		"signature_requests",
+		"signature_signers",
+		"access_links",
+		"comm_campaigns",
+		"comm_recipients",
+		"customer_messages",
+		"signature_settings",
+		"import_runs",
+		"import_run_items",
 	}
 }
 
 // BackupExcludedTables are never backed up: short-lived state that is useless (or unsafe) on another instance.
 func BackupExcludedTables() []string {
 	// move_undo_log (M3): undo entries live 24 h and refer to the moment of the move; restoring them is useless.
-	return []string{"sessions", "idempotency_keys", "goose_db_version", "move_undo_log"}
+	// signature_otps (M4): 10-minute codes, useless after a restore (signers request a new one).
+	return []string{"sessions", "idempotency_keys", "goose_db_version", "move_undo_log", "signature_otps"}
 }

@@ -1,0 +1,13 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+please pay the instalment below by bank transfer.
+{{with v . "contract_code"}}Reference: {{.}}
+{{end}}{{with v . "amount"}}Amount: {{.}}
+{{end}}{{with v . "due_on"}}Due on: {{.}}
+{{end}}{{with v . "iban"}}IBAN: {{.}}
+{{end}}{{with v . "bank_holder"}}Account holder: {{.}}
+{{end}}{{with v . "bank"}}Bank: {{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

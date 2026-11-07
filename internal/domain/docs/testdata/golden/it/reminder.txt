@@ -1,0 +1,12 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Promemoria di pagamento
+Spett.le Mario Rossi
+Ti ricordiamo il pagamento della rata seguente.
+Rata | Scadenza | Importo
+1 | 21/11/2026 | 1.455,00 €
+Contratto ORM-2027-0042.
+Bonifico su IBAN IT60X0542811101000000123456 intestato a Porto Demo S.r.l., causale
+ORM-2027-0042.
+La rata risulta scaduta.
+Porto Demo S.r.l. · P. IVA 01234567890 · Pagina 1 di 1

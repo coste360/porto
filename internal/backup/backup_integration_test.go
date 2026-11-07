@@ -70,6 +70,7 @@ func seeded(t *testing.T, db *store.DB) {
 	}
 	seedPricingRows(t, db, res.MarinaID, me.ID)
 	seedOccupancyRows(t, db, res.MarinaID, me.ID)
+	seedM4Rows(t, db, res.MarinaID, me.ID)
 }
 
 // seedOccupancyRows adds one row of every M3 table (m3-plan §5.3): an inquiry, a quote with an option and a
@@ -82,7 +83,10 @@ func seedOccupancyRows(t *testing.T, db *store.DB, marinaID, userID string) {
 	ctx := context.Background()
 	now := store.UTC(time.Now())
 	var berth store.Berth
-	if err := db.NewSelect().Model(&berth).Where("marina_id = ?", marinaID).OrderExpr("id").Limit(1).Scan(ctx); err != nil {
+	// The demo seed occupies resources in the fixture's year (M4 renewals): pick ones free on its night.
+	if err := db.NewSelect().Model(&berth).Where("marina_id = ?", marinaID).
+		Where("NOT EXISTS (SELECT 1 FROM berth_occupancies o WHERE o.berth_id = berth.id AND o.night = '2027-07-01')").
+		OrderExpr("id").Limit(1).Scan(ctx); err != nil {
 		t.Fatalf("berth: %v", err)
 	}
 	var area store.DynamicArea
@@ -90,7 +94,9 @@ func seedOccupancyRows(t *testing.T, db *store.DB, marinaID, userID string) {
 		t.Fatalf("area: %v", err)
 	}
 	var land store.LandResource
-	if err := db.NewSelect().Model(&land).Where("marina_id = ?", marinaID).OrderExpr("id").Limit(1).Scan(ctx); err != nil {
+	if err := db.NewSelect().Model(&land).Where("marina_id = ?", marinaID).
+		Where("NOT EXISTS (SELECT 1 FROM land_occupancies o WHERE o.resource_id = land_resource.id AND o.night = '2027-07-01')").
+		OrderExpr("id").Limit(1).Scan(ctx); err != nil {
 		t.Fatalf("land resource: %v", err)
 	}
 	var vessel store.Vessel
@@ -307,7 +313,9 @@ func roundTrip(t *testing.T, src, dst *store.DB) {
 	}
 	if m1.Rows("users") < 9 || m1.Rows("audit_log") == 0 || m1.Rows("webhook_endpoints") != 1 ||
 		m1.Rows("price_lists") < 2 || m1.Rows("price_rules") < 2 || m1.Rows("price_list_items") < 4 ||
-		m1.Rows("allocations") < 3 || m1.Rows("cell_occupancies") < 2 || m1.Rows("vessel_presence") < 1 {
+		m1.Rows("allocations") < 3 || m1.Rows("cell_occupancies") < 2 || m1.Rows("vessel_presence") < 1 ||
+		m1.Rows("installments") < 2 || m1.Rows("common_charge_allocations") < 1 || m1.Rows("millesimal_entries") < 1 ||
+		m1.Rows("management_fee_lines") < 1 || m1.Rows("generated_documents") < 2 || m1.Rows("signature_signers") < 1 {
 		t.Fatalf("unexpected counts: %+v", m1.Tables)
 	}
 	if len(m1.Files) != 1 || m1.Files[0].Path != "files/marina-1/file-1.bin" {

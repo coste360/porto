@@ -36,8 +36,20 @@ func Get(cfg *config.Config, version string) Meta {
 			// M3
 			"occupancy.engine", "occupancy.search", "occupancy.layout", "contracts.mooring_base", "transits.desk",
 			"quotes.option", "presences",
+			// M4 (m4-plan §7.6); signature.providers is added by WithSignatureProviders.
+			"contracts.full", "installments", "renewals.campaigns", "charter", "rights", "common_charges",
+			"templates.pdf", "signature.paper", "signature.otp", "communications", "deadlines.engine", "imports.csv",
 		},
 		DemoPairing:          cfg != nil && cfg.DemoPairingEnabled(),
 		PricingEngineVersion: pricing.EngineVersion,
 	}
+}
+
+// WithSignatureProviders adds the signature.providers capability when at least one ext.SignatureProvider is
+// registered (none ships with Porto: InfoCert is an interface only, spec 33 D5).
+func (m Meta) WithSignatureProviders(registered int) Meta {
+	if registered > 0 {
+		m.Capabilities = append(append([]string(nil), m.Capabilities...), "signature.providers")
+	}
+	return m
 }

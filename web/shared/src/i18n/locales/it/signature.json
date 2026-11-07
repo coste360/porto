@@ -1,0 +1,68 @@
+{
+  "list": {
+    "title": "Firme",
+    "description": "Richieste di firma per stato, con i firmatari e i loro passaggi.",
+    "status": "Stato",
+    "empty": "Nessuna richiesta.",
+    "select": "Scegli una richiesta per vederne i firmatari.",
+    "signed": "{{signed}} di {{total}} firmati"
+  },
+  "settings": {
+    "title": "Impostazioni firma",
+    "description": "Credenziali del provider di firma qualificata. I segreti non vengono mai mostrati.",
+    "provider": "Provider",
+    "providerHint": "Nessun provider è incluso: compare solo se installato dal tuo fornitore.",
+    "noProviders": "Nessun provider di firma disponibile.",
+    "none": "Nessuno",
+    "hasCredentials": "Credenziali salvate",
+    "noCredentials": "Nessuna credenziale",
+    "hasSecret": "Segreto del webhook salvato",
+    "noSecret": "Nessun segreto del webhook",
+    "credentials": "Nuove credenziali (JSON)",
+    "credentialsHint": "Lascia vuoto per non cambiarle.",
+    "jsonError": "Serve un oggetto JSON con valori di testo.",
+    "secret": "Nuovo segreto del webhook",
+    "webhookUrl": "Indirizzo del webhook",
+    "saved": "Impostazioni di firma salvate."
+  },
+  "pending": "Questa pagina arriva con M4.",
+  "subjects": {
+    "contract": "Contratto",
+    "addendum": "Addendum",
+    "right_transfer": "Cessione"
+  },
+  "expiresAt": "Scade il {{at}}",
+  "simpleSignature": "Firma elettronica semplice",
+  "timeline": {
+    "invited": "Invitato il {{at}}",
+    "opened": "Aperto il {{at}}",
+    "signed": "Firmato il {{at}}",
+    "declined": "Rifiutato il {{at}}"
+  },
+  "remind": "Invia promemoria",
+  "cancel": "Annulla la richiesta",
+  "paper": {
+    "title": "Firma su carta",
+    "scan": "Scansione del documento firmato",
+    "hint": "PDF, PNG o JPEG fino a 15 MB; il file è cifrato.",
+    "uploaded": "Scansione caricata.",
+    "scanned": "Scansione presente",
+    "confirm": "Conferma «firmato su carta»",
+    "errors": {
+      "type": "Formato non accettato.",
+      "size": "Il file è troppo grande."
+    }
+  },
+  "request": {
+    "title": "Richiedi la firma",
+    "description": "Il documento viene generato e i firmatari ricevono il link per firmare.",
+    "driver": "Modalità",
+    "order": "Ordine",
+    "default": "Come nelle impostazioni",
+    "signersHint": "Il cliente firma sempre; aggiungi cointestatari o altri firmatari se servono.",
+    "role": "Ruolo",
+    "addSigner": "Aggiungi firmatario",
+    "removeSigner": "Togli firmatario",
+    "submit": "Invia"
+  }
+}

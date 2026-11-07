@@ -194,7 +194,7 @@ con le stesse regole: servizio con controllo dei permessi, scope di marina, tran
 | M1 | `harbor` (mappe, strutture, posti, aree dinamiche, risorse a terra, generatori), `layout` (puro), `customer`, `vessel` | [07](spec/07-mappa-modello-geometrico.md), [08](spec/08-mappa-editor.md), [11](spec/11-clienti-e-imbarcazioni.md) |
 | M2 | `catalog`, `pricing` (puro), `pricelist` | [12](spec/12-listini-articoli-prezzi.md) |
 | M3 | `occupancy`, `fit` (puro), `presence`, `contract` (transiti di base) | [09](spec/09-mappa-vista-operativa.md), [10](spec/10-motore-di-occupazione.md) |
-| M4 | `contract` completo, `rights`, `docs` (modelli, PDF, firma), `docai` | [13](spec/13-contrattualistica.md), [14](spec/14-cessioni-oneri-condominio.md), [15](spec/15-modelli-di-stampa-e-firma.md), [22](spec/22-intelligenza-artificiale.md) |
+| M4 | `contract` completo, `schedule`, `rights`, `allot`, `accrual`, `docs` (+ `tmpl`, `markdown`, `layout`, `pdf`), `signature`, `magiclink`, `comms`, `csvimport`, motore scadenze in `deadline` (niente AI, ADR 0008) | [13](spec/13-contrattualistica.md), [14](spec/14-cessioni-oneri-condominio.md), [15](spec/15-modelli-di-stampa-e-firma.md) |
 | successive | `charge`, `payment`, `cash`, `fiscal`, `accrual` (puro), `storage`, `optimizer` (puro), `yard`, `formula` (puro), `rental`, `maintenance`, `sensor`, `profile`, `online`, `checkout`, `report` | [16](spec/16-addebiti-e-incassi.md)–[25](spec/25-scheda-pubblica.md) |
 
 Le regole che nessuna sequenza di operazioni può violare sono in [`invariants.md`](invariants.md).

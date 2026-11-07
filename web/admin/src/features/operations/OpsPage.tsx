@@ -16,6 +16,7 @@ import {
   useDayView,
   useDeleteBlock,
   useMap,
+  useMapRights,
   useMaps,
   useOccupancySettingsForOps,
   useUndoMove,
@@ -29,6 +30,7 @@ import {
   DragGhost,
   HarborMap,
   applyLens,
+  applyRightsLens,
   daySubjects,
   fitToView,
   focusBox,
@@ -71,10 +73,12 @@ import {
   UnexpectedArrivalDialog,
   type DeskPrefill,
 } from '../desk/public';
+import { PrintMapButton } from '../documents/public';
 import { DateSelector } from './components/DateSelector';
 import { ElementList, type ListGroup } from './components/ElementList';
 import { LegendFilter } from './components/LegendFilter';
 import { LensTabs } from './components/LensTabs';
+import { RightsLegend } from './components/RightsLegend';
 import { MoveDialog, type MoveTarget } from './components/MoveDialog';
 import { OpsFiltersPanel } from './components/OpsFiltersPanel';
 import { QuickCard } from './components/QuickCard';
@@ -154,6 +158,10 @@ export function OpsPage() {
   const [undoState, setUndoState] = useState(() => lastUndo(marinaId));
   const pickResolver = useRef<((t: PlacementInputData | null) => void) | null>(null);
   const [picking, setPicking] = useState(false);
+  // M4 Diritti d'uso lens (m4-plan §8.1): composed with the day view from getMapRights, shown instead of the lens.
+  const [rightsOn, setRightsOn] = useState(false);
+  const [rightsHidden, setRightsHidden] = useState<ReadonlySet<string>>(new Set());
+  const mapRights = useMapRights(marinaId, mapId ?? '', date, rightsOn);
 
   const setSearch = useCallback(
     (patch: Partial<typeof search>) =>
@@ -193,6 +201,12 @@ export function OpsPage() {
     () => (dv ? applyLens(dv, lens, ctx, filters, meta, hidden, subjects) : null),
     [dv, lens, ctx, filters, meta, hidden, subjects],
   );
+  const rightsResult = useMemo(
+    () => (rightsOn && dv ? applyRightsLens(subjects, mapRights.data, rightsHidden) : null),
+    [rightsOn, dv, subjects, mapRights.data, rightsHidden],
+  );
+  const shownStyles = rightsResult?.styles ?? lensResult?.styles;
+  const shownDimmed = rightsResult?.dimmed ?? lensResult?.dimmed;
   const vessels = useMemo<VesselItem[]>(() => (doc && dv ? opsVessels(doc, dv) : []), [doc, dv]);
   const tileLabels = useMemo(() => {
     const m = new Map<string, string>();
@@ -608,14 +622,26 @@ export function OpsPage() {
               {showList ? t('opsMap:actions.showMap') : t('opsMap:actions.showList')}
             </Button>
           </div>
-          <LensTabs
-            lens={lens}
-            onChange={(l) => {
-              rememberLens(userId, l);
-              setHidden(new Set());
-              setSearch({ lens: l });
-            }}
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <LensTabs
+              lens={lens}
+              onChange={(l) => {
+                rememberLens(userId, l);
+                setHidden(new Set());
+                setRightsOn(false);
+                setSearch({ lens: l });
+              }}
+            />
+            <Button
+              variant={rightsOn ? 'default' : 'outline'}
+              size="sm"
+              aria-pressed={rightsOn}
+              data-testid="ops-rights-lens"
+              onClick={() => setRightsOn((v) => !v)}
+            >
+              {t('rights:lens.title')}
+            </Button>
+          </div>
           <div className="grid gap-3 lg:grid-cols-12">
             <aside className="flex flex-col gap-4 lg:col-span-3">
               <Card>
@@ -623,7 +649,13 @@ export function OpsPage() {
                   <CardTitle>{t('opsMap:legend.title')}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {lensResult ? (
+                  {rightsResult ? (
+                    <RightsLegend
+                      counts={rightsResult.counts}
+                      hidden={rightsHidden}
+                      onHiddenChange={setRightsHidden}
+                    />
+                  ) : lensResult ? (
                     <LegendFilter
                       lens={lens}
                       counts={lensResult.counts}
@@ -686,6 +718,9 @@ export function OpsPage() {
                     >
                       <ZoomOutIcon />
                     </Button>
+                    {mapId ? (
+                      <PrintMapButton mapId={mapId} date={date} {...(rightsOn ? {} : { lens })} />
+                    ) : null}
                     {picking ? (
                       <Badge variant="secondary" data-testid="ops-picking">
                         {t('opsMap:picking')}
@@ -714,8 +749,8 @@ export function OpsPage() {
                       interactive
                       labelFor={labelFor}
                       vesselLabel={vesselLabel}
-                      lensStyles={lensResult?.styles}
-                      dimmed={lensResult?.dimmed}
+                      lensStyles={shownStyles}
+                      dimmed={shownDimmed}
                       vessels={vessels}
                       highlight={highlight}
                       mode={mode}

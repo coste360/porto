@@ -1,0 +1,106 @@
+{
+  "list": {
+    "title": "Comunicazioni",
+    "description": "Comunicazioni ai clienti per gruppo, contratto, presenza o selezione sulla mappa.",
+    "new": "Nuova comunicazione",
+    "status": "Stato",
+    "name": "Nome",
+    "category": "Categoria",
+    "sentAt": "Inviata il",
+    "empty": "Nessuna comunicazione."
+  },
+  "detail": {
+    "title": "Comunicazione"
+  },
+  "pending": "Questa pagina arriva con M4.",
+  "wizard": {
+    "title": "Nuova comunicazione",
+    "description": "Destinatari, contenuto, allegati, anteprima e invio.",
+    "steps": "Passaggi della comunicazione",
+    "step": {
+      "audience": "Destinatari",
+      "content": "Contenuto",
+      "attachments": "Allegati",
+      "preview": "Anteprima",
+      "send": "Invio"
+    },
+    "template": "Modello",
+    "freeText": "Testo libero",
+    "subject": "Oggetto",
+    "body": "Testo (Markdown, con i campi del cliente)",
+    "bodyHint": "Usa i campi del cliente tra doppie graffe, come nei modelli di stampa.",
+    "promotionalHint": "Le comunicazioni promozionali vanno solo a chi ha dato il consenso e contengono il link per disiscriversi.",
+    "attachments": "Documenti allegati (id separati da virgola)",
+    "attachmentsHint": "Gli allegati sono letti al momento dell'invio; totale fino a 10 MB.",
+    "sampleCustomer": "Anteprima per il cliente",
+    "refresh": "Aggiorna anteprima",
+    "sendNow": "Invia ora",
+    "sent": "Comunicazione in invio.",
+    "scheduleOn": "Programma per il",
+    "schedule": "Programma",
+    "scheduled": "Comunicazione programmata."
+  },
+  "preview": {
+    "count": "Destinatari",
+    "deliverable": "Riceveranno l'email",
+    "noConsent": "Senza consenso",
+    "noEmail": "Senza email"
+  },
+  "audience": {
+    "mode": "Modalità di scelta",
+    "modes": {
+      "filter": "Per criteri",
+      "customers": "Clienti scelti",
+      "map": "Sulla mappa"
+    },
+    "kinds": "Contratti",
+    "kind": {
+      "mooring": "Ormeggio",
+      "transit": "Transito",
+      "charter": "Charter"
+    },
+    "holders": "Titolari di diritti d'uso",
+    "terms": "Durata",
+    "groups": "Gruppi di posti",
+    "presentFrom": "Presenti dal",
+    "presentTo": "Presenti al",
+    "deadlines": "Con scadenze entro (giorni)",
+    "customer": "Cliente",
+    "add": "Aggiungi",
+    "remove": "Togli {{name}}",
+    "removeShort": "×",
+    "map": "Mappa",
+    "mapCanvas": "Mappa per la selezione dei posti",
+    "selected": "{{count}} posti selezionati",
+    "selectAll": "Tutti",
+    "clear": "Nessuno"
+  },
+  "errors": {
+    "audience": {
+      "empty": "Scegli almeno un criterio.",
+      "range": "Il periodo di presenza è invertito.",
+      "days": "I giorni sono un numero da 1 a 365.",
+      "customers": "Aggiungi almeno un cliente.",
+      "selection": "Seleziona almeno un posto sulla mappa."
+    },
+    "content": {
+      "name": "Dai un nome alla comunicazione.",
+      "content": "Scegli un modello o scrivi oggetto e testo."
+    }
+  },
+  "monitor": {
+    "cancel": "Annulla l'invio programmato",
+    "scheduledAt": "Programmata per il {{at}}",
+    "sentAt": "Inviata il {{at}}",
+    "customer": "Cliente",
+    "status": "Stato",
+    "delivery": "Consegna",
+    "deliveries": {
+      "queued": "In coda",
+      "sending": "In invio",
+      "sent": "Inviata",
+      "failed": "Non riuscita",
+      "cancelled": "Annullata"
+    }
+  }
+}

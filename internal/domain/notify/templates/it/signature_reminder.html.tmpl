@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>ti ricordiamo che il documento indicato è ancora da firmare.</p>
+<table>
+{{with v . "document_title"}}<tr><td>Documento</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "deadline_on"}}<tr><td>Da firmare entro il</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+{{with v . "link"}}<p><a href="{{.}}">Apri e firma il documento</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

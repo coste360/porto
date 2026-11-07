@@ -83,8 +83,8 @@ describe('DeadlinesPage', () => {
     await waitFor(() => expect(calls.some((c) => c.method === 'PUT')).toBe(true));
     expect(calls.find((c) => c.method === 'PUT')!.body).toEqual({
       items: [
-        { kind: 'insurance', lead_days: [90, 15] },
-        { kind: 'identity_document', lead_days: [30] },
+        { kind: 'insurance', lead_days: [90, 15], channels: ['panel'] },
+        { kind: 'identity_document', lead_days: [30], channels: ['panel'] },
       ],
     });
   });

@@ -39,3 +39,7 @@ export * from './hooks/pricing';
 export * from './hooks/pricingTools';
 export * from './hooks/opsmap';
 export * from './hooks/desk';
+export * from './hooks/contractsM4';
+export * from './hooks/rights';
+export * from './hooks/documents';
+export * from './hooks/publicLinks';

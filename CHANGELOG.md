@@ -8,6 +8,62 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+Brand (ADR 0007, decision D13):
+
+- `scripts/brand/build-brand.mjs` (`make brand`, standalone Node project with opentype.js) outlines the "porto"
+  wordmark of the editable kit sources with Titillium Web 700 (OFL-1.1) into `assets/brand/porto/outlined/`
+  (horizontal and stacked, every colour variant of the kit); the horizontal logos in `web/shared/src/brand/` now
+  use these files instead of the Inter Bold outlines, and the brand copy test checks them against `outlined/`.
+
+M4 — Contrattualistica completa (spec 32.3), contract phase:
+
+- Migrations `00007_contracts_m4.sql` (contract settings, instalments, renewal campaigns and proposals with the
+  one-open-proposal partial unique (INV-33), addenda, charter fleets and contracts, waiting list; M4 columns of
+  contracts, quotes and deadline policies), `00008_rights.sql` (concession and obligations, berth rights with
+  holders, vessels and owner allocations, transfers, mandates and revenues, management fee tables and runs,
+  millesimal tables, budgets, common charge runs and allocations, holder instalments; immutability triggers of
+  active tables and issued runs (INV-41, INV-44)) and `00009_documents.sql` (templates and versions, generated
+  documents, signature requests, signers and OTP codes, access links, communications and recipients, customer
+  message registry, signature settings, import runs) for SQLite and PostgreSQL; new tables in backups
+  (`signature_otps` excluded; frozen parents restored as drafts and flipped at the end).
+- OpenAPI operations of contract settings, quote sending, signature requests, suspension, renewals and campaigns,
+  instalments and the scadenzario, charter, addenda, waiting list, rights, transfers, mandates, management fees,
+  millesimal tables, budgets and common charge runs, holder instalments, concession, templates and preview,
+  generated documents, map print, signatures and provider settings, the signature provider webhook,
+  communications, customer messages, deadline sync, CSV imports and the public customer-link pages; new problem
+  types; permissions `templates.configure`, `communications.send`, `providers.configure`; M4 events and the SSE
+  topics `rights.changed` and `documents.changed`; meta capabilities; jobs `installments.issue`, `renewals.sync`,
+  `mandates.accrue`, `documents.render`, `signatures.sync`, `comms.send`, `deadlines.sync`, `deadlines.notify`,
+  `links.cleanup`.
+- `ext.SignatureProvider` with its types and `Extensions.SignatureProviders` (no implementation ships: InfoCert
+  stays an interface, spec 33 D5); skeletons of `schedule`, `allot`, `accrual` (pure), `docs` with the frozen
+  merge views, `docs/tmpl`, `docs/markdown`, `docs/layout`, `docs/pdf`, `signature`, `magiclink`, `comms`,
+  `rights`, the generic `csvimport`; M4 state tables of contracts, proposals, campaigns and addenda.
+- Dependencies `github.com/go-pdf/fpdf` (MIT) and `golang.org/x/image` (BSD-3) for the pure-Go PDF renderer.
+
+M4 — Contrattualistica completa (spec 32.3), builders and integration:
+
+- Instalment plans (deposit, fixed dates, intervals, early-payment alternative; Σ = total, INV-31), the scadenzario
+  with CSV, bulk issue, reminders and manual settlement (INV-32); signature request, suspension, paper activation
+  with scan, termination amounts; quote sending by email with PDF and magic link, public acceptance that saves the
+  customer's missing address, fiscal code and vessel registration; simple renewals and mass renewal campaigns
+  (preview with exclusions per reason, launch, `renewals.sync`, public accept/decline, OTP signature); addenda,
+  change of vessel, charter fleets and rotation, waiting list, contracts CSV import.
+- Berth rights with holders and owner occupancy (Q17, INV-43), transfers signed by OTP in sequence, mandates with
+  accrued revenue, management fee runs, millesimal tables, budgets, advance and balance runs with exact allocation
+  (INV-40..42, INV-44), holder instalments, concession; synchronous statement and holder-chain PDFs
+  (`docs.Service.RenderView`).
+- Closed template language, Markdown subset, A4 layout and PDF/A-2b renderer in pure Go; generated documents with
+  download links (`GET generated-documents/{id}/file`); OTP, paper and provider signatures; magic links;
+  communications with consent and one-click unsubscribe; the deadline engine with lead-day emails; CSV imports.
+- Admin UI for contracts M4, rights and common charges, templates, signatures, communications and imports; the
+  customer link pages in the booking app; the rights toggle and print on the operations map.
+- Demo seed: contract settings and plans, a renewal campaign for next year with panel decisions, addenda, waiting
+  list, rights, mandates, fees, common charges, templates and communications.
+- Acceptance tests `TestAcceptance_M4_RenewalCampaign300`, `TestAcceptance_M4_QuoteToContract`,
+  `TestAcceptance_M4_CommonCharges400`, `TestAcceptance_M4_RightsLifecycle`,
+  `TestAcceptance_M4_DocumentsDeadlinesComms` on SQLite and PostgreSQL.
+
 M3 — Occupazione, transiti e mappa operativa (spec 32.3):
 
 - Migrations `00005_contracts.sql` (occupancy settings, number sequences, inquiries, quotes and options, contracts
@@ -131,3 +187,34 @@ M0 — Fondamenta (spec 32.3):
   licences, Docker build with Trivy and smoke test, end-to-end tests, naming check.
 - Development container and Claude Code support (`.claude/` rules, agents, skills, hooks).
 - Documentation: `docs/architecture.md`, `CONTRIBUTING.md`, invariants INV-72 and INV-73.
+
+### Fixed
+
+M4 review, fix round 1:
+
+- A blocked tacit renewal (arrears, expired insurance, no price, berth unavailable) now writes an open
+  `tacit_renewal_blocked` deadline on the source contract (due today, reason as note, outbox `deadline.changed`) in
+  the transaction of its audit row (`contract.tacit_renew_blocked`), idempotent through `deadlines_source_uidx`.
+- INV-31 under PostgreSQL: settlements and the `installments.issue` job lock the contract before the instalment
+  (lock order contract → instalments, contracts locked in id order in bulk settlements and issue batches);
+  `store.CancelInstallments` and the replan fail with 412 when a row changed between read and cancel.
+- Renewals lock and re-check the source inside the proposal transaction (active, same version); the tacit renewal
+  re-checks open proposals and signed successors under the source lock; a campaign preview skips a source that
+  changed meanwhile.
+- A signer user must hold a grant on the marina (`store.MarinaMemberUser`, INV-73); any other user is 404.
+- The deadline engine resets `notified_at` through a marina-scoped store update instead of raw SQL.
+- `store.CheckContractInvariants` checks C40 (INV-40, holder shares of active rights sum to 1000).
+- `make licenses` also checks the `scripts/brand` npm project; `/porto` (a stray root build) is git-ignored.
+- New tests: `TestContract_TacitRenewal`, `TestContract_ExpireMarksRenewed`, `TestRenewal_StaleSourceRefused`,
+  `TestContract_M4StateChangesWriteAuditAndOutbox`, `TestQuote_SendRotatesLink`, `TestInstallment_IssueJobIdempotent`,
+  `TestRenewal_CampaignPreviewIdempotent`, `TestRenewal_SyncJobIdempotent`, `TestContract_ChangeVesselProRata`,
+  `TestImport_UndoGuard`, `TestRight_HolderSharesWritePaths`, `TestSignature_SignerUserScopedToMarina`,
+  `TestDeadlines_DueChangeResetsNotified`, `TestSeed_DemoM4Coherent` and the concurrency tests
+  `TestConcurrency_{ReplanVsSettle,RenewVsTerminate,RenewVsTacit,ContractTwoOperators,CampaignLaunchAndSync,AddendumVsTerminate,QuotePublicAcceptVsPanelAccept}`.
+
+### Known gaps
+
+- Demo seed: the 2 tacit-renewal contracts and the charter fleet of 8 vessels on pier E (m4-plan §10) are not
+  seeded yet.
+- Public quote and renewal acceptance do not return `signature_link` (m4-plan §15 D33, open for a product
+  decision).

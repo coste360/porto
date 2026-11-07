@@ -1,0 +1,137 @@
+{
+  "title": "Customer area",
+  "quote": "Your quote",
+  "renewal": "Your renewal",
+  "signature": "Document signature",
+  "unsubscribe": "Unsubscribe",
+  "pending": "Page being prepared.",
+  "invalid": "The link is not valid or has expired.",
+  "loading": "Loading…",
+  "invalidHint": "Ask the marina for a new link.",
+  "document": {
+    "loading": "Loading the document…",
+    "download": "Download the PDF"
+  },
+  "deposit": {
+    "title": "Deposit instructions",
+    "amount": "Amount:",
+    "dueOn": "To pay by {{date}}",
+    "iban": "IBAN: {{iban}}",
+    "holder": "Account holder: {{holder}}",
+    "bank": "Bank: {{bank}}",
+    "reference": "Reference: {{reference}}"
+  },
+  "plan": {
+    "title": "How you prefer to pay",
+    "standard": "Instalment plan",
+    "early": "Discounted early payment"
+  },
+  "quoteAccept": {
+    "intro": "Quote for {{vessel}}, valid until {{date}}.",
+    "pdf": "Quote {{code}}",
+    "options": "Choose the option",
+    "option": "Option {{n}}",
+    "deposit": "Deposit",
+    "accept": "I accept the quote",
+    "done": "Quote accepted: contract {{code}}.",
+    "sign": "Sign the contract",
+    "closed": {
+      "accepted": "The quote has already been accepted.",
+      "declined": "The quote was declined.",
+      "expired": "The quote has expired."
+    },
+    "closedOther": "The quote can no longer be accepted.",
+    "errors": {
+      "option": "Choose an option.",
+      "address": "Complete the address.",
+      "fiscal_code": "The fiscal code is not valid.",
+      "birth_date": "Enter the birth date.",
+      "registration": "Enter the vessel registration.",
+      "insurance": "Enter the insurance expiry.",
+      "uploads": "Upload the required documents."
+    }
+  },
+  "data": {
+    "customer": "Your details",
+    "address": {
+      "line1": "Address",
+      "postal_code": "Postal code",
+      "city": "City",
+      "province": "Province",
+      "country": "Country"
+    },
+    "fiscalCode": "Fiscal code",
+    "birthDate": "Birth date",
+    "vessel": "Your vessel",
+    "registration": "Registration",
+    "insuranceExpiry": "Insurance expiry"
+  },
+  "upload": {
+    "done": "Document uploaded.",
+    "errors": {
+      "type": "Format not accepted (PDF, PNG or JPEG).",
+      "size": "The file is too large (10 MB at most)."
+    }
+  },
+  "renewalPage": {
+    "oldPrice": "Current price",
+    "newPrice": "New price",
+    "deadline": "Reply by {{date}}",
+    "pdf": "Renewal proposal",
+    "accept": "I accept the renewal",
+    "decline": "I do not renew",
+    "reason": "Reason (optional)",
+    "confirmDecline": "Confirm the refusal",
+    "status": {
+      "previewed": "Proposal being prepared.",
+      "proposed": "Proposal awaiting reply.",
+      "sent": "Proposal awaiting reply.",
+      "accepted": "Renewal accepted: the signature is missing.",
+      "signed": "Renewal signed: the deposit is missing.",
+      "completed": "Renewal completed. Thank you!",
+      "declined": "You declined the renewal.",
+      "expired": "The proposal has expired.",
+      "excluded": "The proposal is not available."
+    }
+  },
+  "signing": {
+    "intro": "Read \"{{title}}\", confirm your details and sign with the code you receive by email.",
+    "identity": "Who signs",
+    "fiscalCode": "Fiscal code {{code}}",
+    "confirm": "I confirm it is me and that I have read the document",
+    "legal": "Simple electronic signature with a code sent by email. The marina keeps the signed document and the signature evidence.",
+    "requestCode": "Send me the code",
+    "code": "6-digit code",
+    "codeHint": "The code is valid for 10 minutes.",
+    "invalid": "Wrong code.",
+    "attemptsLeft": "Attempts left: {{count}}",
+    "sign": "Sign",
+    "resend": "Send me a new code",
+    "newCode": "Ask for a new code",
+    "locked": "Too many attempts with this code.",
+    "lockedHint": "Ask for a new code to try again.",
+    "rateLimited": "You asked for too many codes.",
+    "retryIn": "Try again in {{minutes}} minutes.",
+    "retryLater": "Try again later.",
+    "signed": "Document signed. Thank you!",
+    "signedHint": "You will receive a copy by email.",
+    "declined": "You declined to sign.",
+    "waiting": "It is not your turn yet.",
+    "waitingHint": "You will receive an email when it is your turn to sign.",
+    "closed": {
+      "expired": "The signature request has expired.",
+      "cancelled": "The signature request was cancelled.",
+      "declined": "The signature request was declined."
+    },
+    "closedOther": "The signature request is no longer active.",
+    "decline": "I do not want to sign",
+    "reason": "Reason (optional)",
+    "confirmDecline": "Confirm the refusal"
+  },
+  "unsubscribePage": {
+    "intro": "You will no longer receive promotional messages from this marina. Service messages about your contract will continue.",
+    "confirm": "Confirm unsubscribe",
+    "done": "Unsubscribe recorded.",
+    "doneHint": "You can change your mind by asking the marina."
+  }
+}

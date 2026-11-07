@@ -51,6 +51,9 @@ type newContract struct {
 	fit               *occupancy.FitOverride // applies to every resource line
 	movedFrom         []string               // per segment: the hold this allocation replaces ("" none)
 	priceIsBinding    bool                   // the price comes from an accepted quote option: no list re-check
+	plan              string                 // M4: standard (default) or early_payment
+	manualTotal       *int64                 // M4 imports: the total without a price snapshot
+	skipPlan          bool                   // M4 imports: the residual plan is written by the caller
 }
 
 // createTx inserts a contract or transit, its lines and its allocations (one per segment, one per extra land
@@ -84,6 +87,9 @@ func (s *Service) createTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 	}
 	if n.price != nil {
 		c.PriceSnapshot = n.price.raw
+	}
+	if n.manualTotal != nil {
+		c.TotalCents = *n.manualTotal
 	}
 	if c.Channel == "" {
 		c.Channel = ChannelDesk
@@ -245,6 +251,10 @@ type subject struct {
 	quote    *store.Quote
 	change   string             // internal *.changed events
 	expired  []store.Allocation // occupancy.hold_expired
+	// M4 (m4-plan §7.5): contract.signed and contract.renewed.
+	driver    string // paper (default), otp, provider
+	successor string // contract.renewed: the successor contract
+	tacit     bool
 }
 
 // emitTransition writes the events of a transition row, in order (m3-plan §4, §7.5).
@@ -261,6 +271,19 @@ func (s *Service) emitTransition(ctx context.Context, tx bun.IDB, scope store.Ma
 				d.ConfirmationSource = c.ConfirmationSource
 			}
 			data = d
+		case event.ContractSigned:
+			driver := sub.driver
+			if driver == "" {
+				driver = "paper"
+			}
+			data = event.ContractSignedData{
+				ContractID: c.ID, Kind: c.Kind, Term: c.Term, Status: string(t.To), SignatureRequestID: c.SignatureRequestID, Driver: driver,
+			}
+		case event.ContractRenewed:
+			data = event.ContractRenewedData{
+				ContractID: c.ID, SuccessorContractID: sub.successor, Kind: c.Kind, Term: c.Term, From: c.StartsOn,
+				To: c.EndsOn.AddDays(-1), Tacit: sub.tacit,
+			}
 		case event.ContractChanged:
 			data = event.ContractChangedData{ContractID: c.ID, Change: sub.change}
 		case event.TransitChanged:
@@ -307,7 +330,7 @@ func updateContract(ctx context.Context, tx bun.IDB, scope store.MarinaScope, ex
 	if err := store.UpdateContract(ctx, tx, scope, expected, c); err != nil {
 		return versionErr(err)
 	}
-	return nil
+	return store.SetContractM4(ctx, tx, scope, c)
 }
 
 // lockContract loads a contract of the given kind ("" any) for a state change, checking ifMatch (0 = skip).

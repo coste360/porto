@@ -18,6 +18,7 @@ const expiryBatch = 500
 // ExpiryResult counts what one run of the job changed.
 type ExpiryResult struct {
 	Holds, Transits, Quotes, DraftsLost, Contracts int
+	Renewed, Tacit                                 int // M4: sources with an active successor, tacit renewals
 }
 
 // RunExpiry is the contracts.expire job (every minute, m3-plan §7.6): expired holds through
@@ -51,6 +52,8 @@ func (s *Service) RunExpiryCount(ctx context.Context) (ExpiryResult, error) {
 		total.Quotes += r.Quotes
 		total.DraftsLost += r.DraftsLost
 		total.Contracts += r.Contracts
+		total.Renewed += r.Renewed
+		total.Tacit += r.Tacit
 	}
 	return total, errors.Join(errs...)
 }
@@ -62,8 +65,12 @@ func (s *Service) ExpireMarina(ctx context.Context, marinaID string) (ExpiryResu
 	if err != nil {
 		return r, err
 	}
+	tacit, err := s.tacitRenewalsMarina(ctx, scope)
+	if err != nil {
+		return r, err
+	}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
-		r = ExpiryResult{}
+		r = ExpiryResult{Tacit: tacit}
 		now := s.now()
 		expired, err := s.alloc.ExpireHoldsTx(ctx, tx, scope, now)
 		if err != nil {
@@ -79,7 +86,7 @@ func (s *Service) ExpireMarina(ctx context.Context, marinaID string) (ExpiryResu
 		if r.DraftsLost, err = s.flagLostDraftsTx(ctx, tx, scope); err != nil {
 			return err
 		}
-		r.Contracts, err = s.expireContractsTx(ctx, tx, scope)
+		r.Contracts, r.Renewed, err = s.expireContractsTx(ctx, tx, scope)
 		return err
 	})
 	return r, err
@@ -229,29 +236,49 @@ func (s *Service) flagLostDraftsTx(ctx context.Context, tx bun.IDB, scope store.
 	return len(rows), nil
 }
 
-func (s *Service) expireContractsTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope) (int, error) {
+func (s *Service) expireContractsTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope) (int, int, error) {
 	rows, err := store.ActiveContractsEnded(ctx, tx, scope, s.today(ctx, tx, scope), expiryBatch)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
+	renewed := 0
 	for i := range rows {
 		c := &rows[i]
-		t, err := Next(MooringTransitions, Status(c.Status), ActionExpire)
+		// M4 (m4-plan §3.1, INV-35): renewed only when a successor of a signed or completed proposal is active.
+		succ, err := store.SignedSuccessorOf(ctx, tx, scope, c.ID)
 		if err != nil {
-			return 0, err
+			return 0, 0, err
+		}
+		action := ActionExpire
+		if succ != nil {
+			action = ActionExpireRenewed
+		}
+		t, err := Next(MooringTransitions, Status(c.Status), action)
+		if err != nil {
+			return 0, 0, err
 		}
 		c.Status = string(t.To)
+		diff := map[string]any{"from_status": string(StatusActive), "status": c.Status, "ends_on": c.EndsOn}
+		sub := subject{contract: c, change: event.ChangeExpired}
+		if succ != nil {
+			c.RenewedAt = s.now()
+			diff["successor_contract_id"] = succ.ID
+			sub.successor = succ.ID
+			renewed++
+		}
 		if err := updateContract(ctx, tx, scope, c.Version, c, s.now()); err != nil {
-			return 0, err
+			return 0, 0, err
 		}
-		if err := s.writeAudit(ctx, tx, scope, system, "contract.expire", entityContract, c.ID, map[string]any{
-			"from_status": string(StatusActive), "status": c.Status, "ends_on": c.EndsOn,
-		}); err != nil {
-			return 0, err
+		auditAction := "contract.expire"
+		if succ != nil {
+			auditAction = "contract.renew"
 		}
-		if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: event.ChangeExpired}); err != nil {
-			return 0, err
+		if err := s.writeAudit(ctx, tx, scope, system, auditAction, entityContract, c.ID, diff); err != nil {
+			return 0, 0, err
+		}
+		if err := s.emitTransition(ctx, tx, scope, t, sub); err != nil {
+			return 0, 0, err
 		}
 	}
-	return len(rows), nil
+	return len(rows), renewed, nil
 }

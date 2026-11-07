@@ -50,6 +50,10 @@ var (
 		// M3 (00005_contracts, 00006_occupancy)
 		"occupancy_settings.reprice_on_move", "quote_options.hold", "contracts.hold_lost", "contracts.signed_on_paper",
 		"contracts.pay_at_departure",
+		// M4 (00007_contracts_m4, 00008_rights, 00009_documents)
+		"contracts.charter", "contract_settings.marina_countersign", "contract_settings.require_paper_scan",
+		"charter_fleet_vessels.active", "berth_right_vessels.is_primary", "management_fee_lines.excluded",
+		"templates.is_default", "generated_documents.pdfa", "generated_documents.signed",
 	}
 	sqliteJSONColumns = []string{
 		"organizations.billing_address", "marinas.locales", "marinas.contacts", "marinas.address", "marinas.geo",
@@ -70,6 +74,15 @@ var (
 		// M3 (00005_contracts, 00006_occupancy)
 		"quotes.policy", "quote_options.price_snapshot", "quote_options.fit_override", "contracts.price_snapshot",
 		"contracts.policy", "allocations.fit_override", "move_undo_log.payload",
+		// M4 (00007_contracts_m4, 00008_rights, 00009_documents)
+		"deadline_policies.channels", "contract_settings.default_policy", "contract_settings.required_fields",
+		"renewal_campaigns.filter", "renewal_campaigns.counts", "contract_addenda.payload", "charter_contracts.out_nights",
+		"waitlist_entries.group_ids", "concessions.surfaces", "berth_rights.title", "berth_right_vessels.fit",
+		"berth_right_vessels.fit_override", "right_transfers.to_holders", "right_transfers.requirement_issues",
+		"management_mandates.channels", "management_fee_runs.plan", "management_fee_runs.totals",
+		"management_fee_lines.holders", "common_charge_runs.totals", "common_charge_runs.plan", "template_versions.page",
+		"comm_campaigns.audience", "comm_campaigns.channels", "comm_campaigns.attachments", "comm_campaigns.counts",
+		"import_runs.mapping", "import_runs.report",
 	}
 )
 
@@ -174,6 +187,11 @@ var dumpOrder = map[string]string{
 	"cell_occupancies":   "area_id, cell, night",
 	"land_occupancies":   "resource_id, night",
 	"vessel_presence":    "vessel_id",
+	// M4
+	"contract_settings":       "marina_id",
+	"charter_contracts":       "contract_id",
+	"berth_right_allocations": "allocation_id",
+	"signature_settings":      "marina_id",
 }
 
 // DumpTable calls fn with every row of table (ordered by id, or by its primary key when it has no id), converted
