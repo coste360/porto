@@ -1,0 +1,280 @@
+{
+  "price_list": {
+    "id": "pl-svc",
+    "code": "SVC-2027",
+    "valid_from": "2027-01-01",
+    "valid_to": "2027-12-31",
+    "contract_types": [
+      "transit"
+    ],
+    "settings": {
+      "dimension_source": "vessel",
+      "length_rounding": {
+        "step_cm": 10,
+        "mode": "up"
+      },
+      "min_beam_ratio": {
+        "num": 1,
+        "den": 3
+      },
+      "split": {
+        "*": "pro_rata_daily"
+      },
+      "rounding": {
+        "*": "none"
+      },
+      "primary_items": {
+        "transit": "trn"
+      }
+    },
+    "periods": [
+      {
+        "code": "LOW",
+        "kind": "season",
+        "ranges": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-06-30"
+          },
+          {
+            "from": "2027-09-01",
+            "to": "2027-12-31"
+          }
+        ]
+      },
+      {
+        "code": "HIGH",
+        "kind": "season",
+        "ranges": [
+          {
+            "from": "2027-07-01",
+            "to": "2027-08-31"
+          }
+        ]
+      }
+    ],
+    "bands": []
+  },
+  "items": [
+    {
+      "id": "trn",
+      "code": "TRN-NTT",
+      "item_type": "berth_fee",
+      "unit": "night",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true,
+      "revenue_class": "ormeggi",
+      "external_code": "T01"
+    },
+    {
+      "id": "wif",
+      "code": "SRV-WIFI",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true
+    },
+    {
+      "id": "ele",
+      "code": "SRV-ELE",
+      "item_type": "utility",
+      "unit": "kwh",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": false,
+      "active": true
+    },
+    {
+      "id": "cra",
+      "code": "SRV-GRU",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": false,
+      "active": true,
+      "revenue_class": "servizi",
+      "external_code": "S07"
+    },
+    {
+      "id": "cln",
+      "code": "SRV-PUL",
+      "item_type": "service",
+      "unit": "night",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true
+    },
+    {
+      "id": "bar",
+      "code": "PRD-BAR",
+      "item_type": "product",
+      "unit": "piece",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": false,
+      "active": true
+    },
+    {
+      "id": "tow",
+      "code": "SRV-TRAINO",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": false,
+      "active": true
+    }
+  ],
+  "rules": [
+    {
+      "id": "r-trn",
+      "seq": 1,
+      "stage": "base",
+      "name": "r-trn",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 4000,
+      "includes": [
+        {
+          "item_id": "wif",
+          "qty_milli": 1000
+        },
+        {
+          "item_id": "ele",
+          "qty_milli": 5000
+        }
+      ]
+    },
+    {
+      "id": "r-trn-high",
+      "seq": 2,
+      "stage": "base",
+      "name": "r-trn-high",
+      "active": true,
+      "priority": 1,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {
+        "periods": [
+          "HIGH"
+        ]
+      },
+      "amount_cents": 6000
+    },
+    {
+      "id": "r-wif",
+      "seq": 3,
+      "stage": "base",
+      "name": "r-wif",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "wif",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 500
+    },
+    {
+      "id": "r-ele",
+      "seq": 4,
+      "stage": "base",
+      "name": "r-ele",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "ele",
+      "basis": "metered",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "unit_cents": 35
+    },
+    {
+      "id": "r-cra",
+      "seq": 5,
+      "stage": "base",
+      "name": "r-cra",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "cra",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 15000
+    },
+    {
+      "id": "r-cln",
+      "seq": 6,
+      "stage": "base",
+      "name": "r-cln",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "cln",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 1000
+    },
+    {
+      "id": "r-tow",
+      "seq": 7,
+      "stage": "base",
+      "name": "r-tow",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "tow",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {
+        "channels": [
+          "online"
+        ]
+      },
+      "amount_cents": 2000
+    },
+    {
+      "id": "m-svc",
+      "seq": 8,
+      "stage": "modifier",
+      "name": "m-svc",
+      "active": true,
+      "priority": 0,
+      "stackable": true,
+      "conditions": {},
+      "effect": {
+        "percent_bp": 1000
+      },
+      "scope": {
+        "periods": [
+          "HIGH"
+        ]
+      },
+      "target_item_types": [
+        "service"
+      ]
+    }
+  ]
+}

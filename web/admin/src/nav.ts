@@ -12,7 +12,12 @@ export type MarinaRoutePath =
   | '/m/$marinaId/customers'
   | '/m/$marinaId/vessels'
   | '/m/$marinaId/deadlines'
-  | '/m/$marinaId/harbor-settings';
+  | '/m/$marinaId/harbor-settings'
+  | '/m/$marinaId/price-lists'
+  | '/m/$marinaId/items'
+  | '/m/$marinaId/pricing/classifications'
+  | '/m/$marinaId/pricing/simulator'
+  | '/m/$marinaId/pricing/settings';
 
 export type NavItem = {
   id: string;
@@ -44,10 +49,35 @@ export const NAV_ITEMS: NavItem[] = [
     anyOf: ['customers.read'],
   },
   {
+    id: 'price-lists',
+    to: '/m/$marinaId/price-lists',
+    labelKey: 'common:nav.priceLists',
+    anyOf: ['pricing.read'],
+  },
+  { id: 'items', to: '/m/$marinaId/items', labelKey: 'common:nav.items', anyOf: ['pricing.read'] },
+  {
+    id: 'pricing-classifications',
+    to: '/m/$marinaId/pricing/classifications',
+    labelKey: 'common:nav.pricingClassifications',
+    anyOf: ['pricing.read'],
+  },
+  {
+    id: 'pricing-simulator',
+    to: '/m/$marinaId/pricing/simulator',
+    labelKey: 'common:nav.pricingSimulator',
+    anyOf: ['pricing.read'],
+  },
+  {
     id: 'harbor-settings',
     to: '/m/$marinaId/harbor-settings',
     labelKey: 'common:nav.harborSettings',
     anyOf: ['harbor.configure'],
+  },
+  {
+    id: 'pricing-settings',
+    to: '/m/$marinaId/pricing/settings',
+    labelKey: 'common:nav.pricingSettings',
+    anyOf: ['pricing.configure'],
   },
   {
     id: 'settings',

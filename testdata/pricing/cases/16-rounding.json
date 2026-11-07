@@ -1,0 +1,459 @@
+{
+  "cases": [
+    {
+      "name": "rounding_none",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 12350,
+        "rounding_total_cents": 0
+      },
+      "why": "default none: total 12350 unchanged"
+    },
+    {
+      "name": "rounding_euro_tie_up_to_even",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "transit": "euro"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 12400,
+        "rounding_total_cents": 50,
+        "lines": [
+          {
+            "gross_cents": 12400,
+            "rounding_share_cents": 50
+          }
+        ],
+        "trace_codes": [
+          "rounding.total"
+        ]
+      },
+      "why": "euro: 12350 / 100 = 123.5 -> tie -> 124 (even) -> 12400, delta +50"
+    },
+    {
+      "name": "rounding_euro_exact",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "transit": "euro"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-12",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 24700,
+        "rounding_total_cents": 0,
+        "trace_codes": [
+          "rounding.total"
+        ]
+      },
+      "why": "2 x 12350 = 24700 is a multiple of 100: delta 0"
+    },
+    {
+      "name": "rounding_euro_tie_down_to_even",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "transit": "euro"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-n2",
+          "seq": 9,
+          "stage": "base",
+          "name": "r-n2",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 12250
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 12200,
+        "rounding_total_cents": -50,
+        "trace_codes": [
+          "rounding.total"
+        ]
+      },
+      "why": "12250 / 100 = 122.5 -> 122 (even) -> 12200, delta -50"
+    },
+    {
+      "name": "rounding_euro_down",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "transit": "euro"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-n2",
+          "seq": 9,
+          "stage": "base",
+          "name": "r-n2",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 12349
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 12300,
+        "rounding_total_cents": -49,
+        "trace_codes": [
+          "rounding.total"
+        ]
+      },
+      "why": "123.49 -> 123 -> 12300, delta -49"
+    },
+    {
+      "name": "rounding_five_euro_tie_down",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "transit": "five_euro"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-n2",
+          "seq": 9,
+          "stage": "base",
+          "name": "r-n2",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 1250
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 1000,
+        "rounding_total_cents": -250,
+        "trace_codes": [
+          "rounding.total"
+        ]
+      },
+      "why": "1250 / 500 = 2.5 -> 2 (even) -> 1000"
+    },
+    {
+      "name": "rounding_five_euro_tie_up",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "transit": "five_euro"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-n2",
+          "seq": 9,
+          "stage": "base",
+          "name": "r-n2",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 1750
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 2000,
+        "rounding_total_cents": 250,
+        "trace_codes": [
+          "rounding.total"
+        ]
+      },
+      "why": "1750 / 500 = 3.5 -> 4 (even) -> 2000"
+    },
+    {
+      "name": "rounding_five_euro_up",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "transit": "five_euro"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 12500,
+        "rounding_total_cents": 150,
+        "trace_codes": [
+          "rounding.total"
+        ]
+      },
+      "why": "12350 / 500 = 24.7 -> 25 -> 12500, delta +150"
+    },
+    {
+      "name": "rounding_euro_allocated_across_rates",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "transit": "euro"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cra"
+          },
+          {
+            "item_id": "wat",
+            "qty_milli": 3000
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 31500,
+        "rounding_total_cents": 25,
+        "lines": [
+          {
+            "rounding_share_cents": 10,
+            "gross_cents": 12360,
+            "net_cents": 10131,
+            "vat_cents": 2229
+          },
+          {
+            "rounding_share_cents": 14,
+            "gross_cents": 18314,
+            "net_cents": 15011,
+            "vat_cents": 3303
+          },
+          {
+            "rounding_share_cents": 1,
+            "gross_cents": 826,
+            "net_cents": 751,
+            "vat_cents": 75
+          }
+        ],
+        "trace_codes": [
+          "rounding.total"
+        ]
+      },
+      "why": "berth 12350 (incl.) + crane 15000 -> 18300 + water 3 x 250 = 750 -> 825: T0 = 31475 -> 31500, delta 25; Allocate(25, [12350, 18300, 825]): 9.809 -> 9, 14.535 -> 14, 0.655 -> 0, 2 cents left to the largest remainders (berth 0.809, water 0.655) -> 10 / 14 / 1; VATSplit(12360, 2200) = 10131 + 2229, VATSplit(18314, 2200) = 15011 + 3303, VATSplit(826, 1000) = 751 + 75"
+    },
+    {
+      "name": "rounding_five_euro_negative_allocation",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "transit": "five_euro"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cra"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 30500,
+        "rounding_total_cents": -150,
+        "lines": [
+          {
+            "rounding_share_cents": -60,
+            "gross_cents": 12290
+          },
+          {
+            "rounding_share_cents": -90,
+            "gross_cents": 18210
+          }
+        ],
+        "trace_codes": [
+          "rounding.total"
+        ]
+      },
+      "why": "12350 + 18300 = 30650 / 500 = 61.3 -> 61 -> 30500, delta -150; Allocate(150, [12350, 18300]): 60.44 -> 60, 89.56 -> 89, the cent left to crane (0.56) -> -60 / -90"
+    },
+    {
+      "name": "rounding_star_fallback",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "*": "euro"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 12400,
+        "rounding_total_cents": 50,
+        "trace_codes": [
+          "rounding.total"
+        ]
+      },
+      "why": "rounding {'*': euro} applies to transit: 12400"
+    },
+    {
+      "name": "rounding_other_contract_type_only",
+      "spec": "12.4 total rounding, plan D22",
+      "catalog": "rounding",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "rounding": {
+              "annual": "euro"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 12350,
+        "rounding_total_cents": 0
+      },
+      "why": "rounding {annual: euro}: transit falls back to '*' = none"
+    }
+  ]
+}

@@ -46,6 +46,11 @@ const (
 	DeadlineChanged    = "deadline.changed"
 )
 
+// M2 event types (version 1, m2-plan §4.7). config.pricing_changed is public (spec 27.3).
+const (
+	ConfigPricingChanged = "config.pricing_changed"
+)
+
 // SSE topics.
 const (
 	TopicMarina = "marina.changed"
@@ -54,6 +59,8 @@ const (
 	TopicMap = "map.changed"
 	// TopicRegistry carries customer, vessel, document and deadline changes (M1).
 	TopicRegistry = "registry.changed"
+	// TopicPricing carries pricing settings, revenue class, item, berth category and price list changes (M2).
+	TopicPricing = "pricing.changed"
 )
 
 // TypeInfo describes an event type. Public types can be subscribed by webhook endpoints; Topic is the SSE event
@@ -85,6 +92,7 @@ var catalogue = []TypeInfo{
 	{VesselChanged, TopicRegistry, false},
 	{DocumentChanged, TopicRegistry, false},
 	{DeadlineChanged, TopicRegistry, false},
+	{ConfigPricingChanged, TopicPricing, true},
 }
 
 // Types returns the catalogue of event types.

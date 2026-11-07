@@ -1,0 +1,1325 @@
+{
+  "cases": [
+    {
+      "name": "modifier_none_monohull",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 10000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 10000,
+                "modifiers": []
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 0
+          }
+        ]
+      },
+      "why": "monohull, LOW, lead 18 days: no modifier matches; 10000 per night x 1 = 10000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_multihull_catamaran",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "catamaran"
+        }
+      },
+      "expect": {
+        "total_cents": 12500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 12500,
+                "modifiers": [
+                  {
+                    "rule_id": "m-multi",
+                    "delta_cents": 2500
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 2500
+          }
+        ]
+      },
+      "why": "catamaran: m-multi half_even(10000 x 2500 / 10000) = +2500; 12500 per night x 1 = 12500 (VAT incl.)"
+    },
+    {
+      "name": "modifier_multihull_trimaran_two_nights",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-12",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "trimaran"
+        }
+      },
+      "expect": {
+        "total_cents": 25000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 12500,
+                "modifiers": [
+                  {
+                    "rule_id": "m-multi",
+                    "delta_cents": 2500
+                  }
+                ]
+              },
+              {
+                "amount_cents": 12500
+              }
+            ],
+            "base_cents": 20000,
+            "modifier_total_cents": 5000
+          }
+        ]
+      },
+      "why": "trimaran: +2500 on every block; 12500 per night x 2 = 25000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_overhang_150",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {
+          "length_cm": 1100
+        },
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1250,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 11000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 11000,
+                "modifiers": [
+                  {
+                    "rule_id": "m-overhang",
+                    "delta_cents": 1000
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 1000
+          }
+        ]
+      },
+      "why": "LOA 1250 - berth 1100 = 150 >= 100: +10% = 1000; 11000 per night x 1 = 11000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_overhang_exactly_min",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {
+          "length_cm": 1100
+        },
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 11000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 11000,
+                "modifiers": [
+                  {
+                    "rule_id": "m-overhang",
+                    "delta_cents": 1000
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 1000
+          }
+        ]
+      },
+      "why": "1200 - 1100 = 100 >= 100: applies; 11000 per night x 1 = 11000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_overhang_below_min",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {
+          "length_cm": 1100
+        },
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1199,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 10000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 10000,
+                "modifiers": []
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 0
+          }
+        ]
+      },
+      "why": "1199 - 1100 = 99 < 100: no; 10000 per night x 1 = 10000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_overhang_without_berth_length",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1500,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 10000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 10000,
+                "modifiers": []
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 0
+          }
+        ]
+      },
+      "why": "no resource length: overhang is false; 10000 per night x 1 = 10000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_high_season",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2027-06-25",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 12000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 12000,
+                "modifiers": [
+                  {
+                    "rule_id": "m-high",
+                    "delta_cents": 2000
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 2000
+          }
+        ]
+      },
+      "why": "HIGH night: +20% = 2000; 12000 per night x 1 = 12000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_stackable_sum_not_compounded",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2027-06-25",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "catamaran"
+        }
+      },
+      "expect": {
+        "total_cents": 14500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 14500,
+                "modifiers": [
+                  {
+                    "rule_id": "m-high",
+                    "delta_cents": 2000
+                  },
+                  {
+                    "rule_id": "m-multi",
+                    "delta_cents": 2500
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 4500
+          }
+        ]
+      },
+      "why": "catamaran in HIGH: +2000 and +2500 both on the base (additive) = 14500 (compounding would give 15000); applied in winner order: m-high (specificity 1) before m-multi (0); 14500 per night x 1 = 14500 (VAT incl.)"
+    },
+    {
+      "name": "modifier_long_stay_seven_nights",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-17",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 63000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 9000,
+                "modifiers": [
+                  {
+                    "rule_id": "m-long",
+                    "delta_cents": -1000
+                  }
+                ]
+              },
+              {
+                "amount_cents": 9000
+              },
+              {
+                "amount_cents": 9000
+              },
+              {
+                "amount_cents": 9000
+              },
+              {
+                "amount_cents": 9000
+              },
+              {
+                "amount_cents": 9000
+              },
+              {
+                "amount_cents": 9000
+              }
+            ],
+            "base_cents": 70000,
+            "modifier_total_cents": -7000
+          }
+        ]
+      },
+      "why": "7 nights >= min 7: -10% = -1000 per block; 9000 per night x 7 = 63000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_long_stay_six_nights_no",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-16",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 60000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 10000,
+                "modifiers": []
+              },
+              {
+                "amount_cents": 10000
+              },
+              {
+                "amount_cents": 10000
+              },
+              {
+                "amount_cents": 10000
+              },
+              {
+                "amount_cents": 10000
+              },
+              {
+                "amount_cents": 10000
+              }
+            ],
+            "base_cents": 60000,
+            "modifier_total_cents": 0
+          }
+        ]
+      },
+      "why": "6 nights < 7: no long stay; 10000 per night x 6 = 60000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_last_minute_lead_3",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-03-07",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 8500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 8500,
+                "modifiers": [
+                  {
+                    "rule_id": "m-lastmin",
+                    "delta_cents": -1500
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": -1500
+          }
+        ]
+      },
+      "why": "quoted 2027-03-07, lead 3 <= 3: -15%; 8500 per night x 1 = 8500 (VAT incl.)"
+    },
+    {
+      "name": "modifier_last_minute_lead_4_no",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-03-06",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 10000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 10000,
+                "modifiers": []
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 0
+          }
+        ]
+      },
+      "why": "lead 4 > 3: no; 10000 per night x 1 = 10000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_early_booking_lead_60",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-01-09",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 9500,
+                "modifiers": [
+                  {
+                    "rule_id": "m-early",
+                    "delta_cents": -500
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": -500
+          }
+        ]
+      },
+      "why": "quoted 2027-01-09, lead 22 + 28 + 10 = 60 >= 60: -5%; 9500 per night x 1 = 9500 (VAT incl.)"
+    },
+    {
+      "name": "modifier_early_booking_lead_59_no",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-01-10",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 10000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 10000,
+                "modifiers": []
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 0
+          }
+        ]
+      },
+      "why": "lead 59 < 60: no; 10000 per night x 1 = 10000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_non_stackable_most_favourable",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-17",
+        "resource": {},
+        "quoted_on": "2027-03-08",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 59500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 8500,
+                "modifiers": [
+                  {
+                    "rule_id": "m-lastmin",
+                    "delta_cents": -1500
+                  }
+                ]
+              },
+              {
+                "amount_cents": 8500
+              },
+              {
+                "amount_cents": 8500
+              },
+              {
+                "amount_cents": 8500
+              },
+              {
+                "amount_cents": 8500
+              },
+              {
+                "amount_cents": 8500
+              },
+              {
+                "amount_cents": 8500
+              }
+            ],
+            "base_cents": 70000,
+            "modifier_total_cents": -10500
+          }
+        ],
+        "trace_codes": [
+          "modifier.applied",
+          "modifier.discarded"
+        ]
+      },
+      "why": "7 nights and lead 2: m-long -1000 and m-lastmin -1500 are non-stackable; the lowest delta (-1500) applies, m-long is discarded; 8500 per night x 7 = 59500 (VAT incl.)"
+    },
+    {
+      "name": "modifier_non_stackable_long_beats_early",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-17",
+        "resource": {},
+        "quoted_on": "2026-12-10",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 63000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 9000,
+                "modifiers": [
+                  {
+                    "rule_id": "m-long",
+                    "delta_cents": -1000
+                  }
+                ]
+              },
+              {
+                "amount_cents": 9000
+              },
+              {
+                "amount_cents": 9000
+              },
+              {
+                "amount_cents": 9000
+              },
+              {
+                "amount_cents": 9000
+              },
+              {
+                "amount_cents": 9000
+              },
+              {
+                "amount_cents": 9000
+              }
+            ],
+            "base_cents": 70000,
+            "modifier_total_cents": -7000
+          }
+        ]
+      },
+      "why": "7 nights, lead 90 (quoted 2026-12-10): m-long -1000 vs m-early -500 -> -1000; 9000 per night x 7 = 63000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_channel_online",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        },
+        "channel": "online"
+      },
+      "expect": {
+        "total_cents": 9700,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 9700,
+                "modifiers": [
+                  {
+                    "rule_id": "m-online",
+                    "delta_cents": -300
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": -300
+          }
+        ]
+      },
+      "why": "online: stackable -3% = -300; 9700 per night x 1 = 9700 (VAT incl.)"
+    },
+    {
+      "name": "modifier_all_together",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-17",
+        "resource": {},
+        "quoted_on": "2027-06-25",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "catamaran"
+        },
+        "channel": "online"
+      },
+      "expect": {
+        "total_cents": 92400,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 13200,
+                "modifiers": [
+                  {
+                    "rule_id": "m-online",
+                    "delta_cents": -300
+                  },
+                  {
+                    "rule_id": "m-high",
+                    "delta_cents": 2000
+                  },
+                  {
+                    "rule_id": "m-multi",
+                    "delta_cents": 2500
+                  },
+                  {
+                    "rule_id": "m-long",
+                    "delta_cents": -1000
+                  }
+                ]
+              },
+              {
+                "amount_cents": 13200
+              },
+              {
+                "amount_cents": 13200
+              },
+              {
+                "amount_cents": 13200
+              },
+              {
+                "amount_cents": 13200
+              },
+              {
+                "amount_cents": 13200
+              },
+              {
+                "amount_cents": 13200
+              }
+            ],
+            "base_cents": 70000,
+            "modifier_total_cents": 22400
+          }
+        ]
+      },
+      "why": "catamaran, HIGH, online, 7 nights, lead 15: stackables in winner order m-online (specificity 1, seq 8), m-high (1, seq 4), m-multi (0) = -300 +2000 +2500, then the non-stackable m-long -1000: +3200; 13200 per night x 7 = 92400 (VAT incl.)"
+    },
+    {
+      "name": "modifier_fixed_amount_per_block",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "add_rules": [
+        {
+          "id": "m-fixed",
+          "seq": 20,
+          "stage": "modifier",
+          "name": "m-fixed",
+          "active": true,
+          "priority": 0,
+          "stackable": true,
+          "conditions": {},
+          "effect": {
+            "amount_cents": 1500
+          },
+          "scope": {
+            "categories": [
+              "PREMIUM"
+            ]
+          }
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-12",
+        "resource": {
+          "category": "PREMIUM"
+        },
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 23000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 11500,
+                "modifiers": [
+                  {
+                    "rule_id": "m-fixed",
+                    "delta_cents": 1500
+                  }
+                ]
+              },
+              {
+                "amount_cents": 11500
+              }
+            ],
+            "base_cents": 20000,
+            "modifier_total_cents": 3000
+          }
+        ]
+      },
+      "why": "category PREMIUM: fixed +1500 per block; 11500 per night x 2 = 23000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_clamp_at_zero",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "add_rules": [
+        {
+          "id": "m-minus",
+          "seq": 21,
+          "stage": "modifier",
+          "name": "m-minus",
+          "active": true,
+          "priority": 0,
+          "stackable": true,
+          "conditions": {},
+          "effect": {
+            "percent_bp": -15000
+          },
+          "scope": {
+            "customer_categories": [
+              "yard"
+            ]
+          }
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        },
+        "customer_category": "yard"
+      },
+      "expect": {
+        "total_cents": 0,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 0,
+                "modifiers": [
+                  {
+                    "rule_id": "m-minus",
+                    "delta_cents": -15000
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": -10000
+          }
+        ]
+      },
+      "why": "yard customer: -150% = -15000; 10000 - 15000 < 0 -> amount 0; 0 per night x 1 = 0 (VAT incl.)"
+    },
+    {
+      "name": "modifier_clamp_with_stackable_plus",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "add_rules": [
+        {
+          "id": "m-minus",
+          "seq": 21,
+          "stage": "modifier",
+          "name": "m-minus",
+          "active": true,
+          "priority": 0,
+          "stackable": true,
+          "conditions": {},
+          "effect": {
+            "percent_bp": -15000
+          },
+          "scope": {
+            "customer_categories": [
+              "yard"
+            ]
+          }
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "catamaran"
+        },
+        "customer_category": "yard"
+      },
+      "expect": {
+        "total_cents": 0,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 0,
+                "modifiers": [
+                  {
+                    "rule_id": "m-minus",
+                    "delta_cents": -15000
+                  },
+                  {
+                    "rule_id": "m-multi",
+                    "delta_cents": 2500
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": -10000
+          }
+        ]
+      },
+      "why": "10000 - 15000 + 2500 = -2500 -> 0 (m-minus specificity 1 listed first); 0 per night x 1 = 0 (VAT incl.)"
+    },
+    {
+      "name": "modifier_non_stackable_tie_priority",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "add_rules": [
+        {
+          "id": "m-lastmin2",
+          "seq": 22,
+          "stage": "modifier",
+          "name": "m-lastmin2",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "conditions": {
+            "lead_max_days": 3
+          },
+          "effect": {
+            "percent_bp": -1500
+          },
+          "scope": {}
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-03-08",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 8500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 8500,
+                "modifiers": [
+                  {
+                    "rule_id": "m-lastmin2",
+                    "delta_cents": -1500
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": -1500
+          }
+        ]
+      },
+      "why": "m-lastmin and m-lastmin2 both -1500: tie -> higher priority (5) m-lastmin2; 8500 per night x 1 = 8500 (VAT incl.)"
+    },
+    {
+      "name": "modifier_other_item_type_ignored",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "add_rules": [
+        {
+          "id": "m-svc",
+          "seq": 23,
+          "stage": "modifier",
+          "name": "m-svc",
+          "active": true,
+          "priority": 0,
+          "stackable": true,
+          "conditions": {},
+          "effect": {
+            "percent_bp": 5000
+          },
+          "scope": {},
+          "target_item_types": [
+            "service"
+          ]
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 10000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 10000,
+                "modifiers": []
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 0
+          }
+        ]
+      },
+      "why": "m-svc targets services only; the berth fee is unchanged; 10000 per night x 1 = 10000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_target_item_id",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "add_rules": [
+        {
+          "id": "m-item",
+          "seq": 24,
+          "stage": "modifier",
+          "name": "m-item",
+          "active": true,
+          "priority": 0,
+          "stackable": true,
+          "conditions": {},
+          "effect": {
+            "percent_bp": 1000
+          },
+          "scope": {},
+          "target_item_ids": [
+            "trn"
+          ]
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 11000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 11000,
+                "modifiers": [
+                  {
+                    "rule_id": "m-item",
+                    "delta_cents": 1000
+                  }
+                ]
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 1000
+          }
+        ]
+      },
+      "why": "m-item targets item trn explicitly: +10%; 11000 per night x 1 = 11000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_inactive_ignored",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "add_rules": [
+        {
+          "id": "m-off",
+          "seq": 25,
+          "stage": "modifier",
+          "name": "m-off",
+          "active": false,
+          "priority": 0,
+          "stackable": true,
+          "conditions": {},
+          "effect": {
+            "percent_bp": 9000
+          },
+          "scope": {}
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 10000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 10000,
+                "modifiers": []
+              }
+            ],
+            "base_cents": 10000,
+            "modifier_total_cents": 0
+          }
+        ]
+      },
+      "why": "m-off is inactive; 10000 per night x 1 = 10000 (VAT incl.)"
+    },
+    {
+      "name": "modifier_percent_rounding",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "add_rules": [
+        {
+          "id": "r-3333",
+          "seq": 30,
+          "stage": "base",
+          "name": "r-3333",
+          "active": true,
+          "priority": 10,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 3333
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "catamaran"
+        }
+      },
+      "expect": {
+        "total_cents": 4166,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 4166,
+                "modifiers": [
+                  {
+                    "rule_id": "m-multi",
+                    "delta_cents": 833
+                  }
+                ]
+              }
+            ],
+            "base_cents": 3333,
+            "modifier_total_cents": 833
+          }
+        ]
+      },
+      "why": "base 3333 (r-3333 priority 10): half_even(3333 x 2500 / 10000 = 833.25) = 833; 4166 per night x 1 = 4166 (VAT incl.)"
+    },
+    {
+      "name": "modifier_percent_rounding_tie_even",
+      "spec": "12.4 modifiers, plan D8",
+      "catalog": "modifiers",
+      "add_rules": [
+        {
+          "id": "r-3330",
+          "seq": 31,
+          "stage": "base",
+          "name": "r-3330",
+          "active": true,
+          "priority": 10,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 3330
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2027-02-20",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "catamaran"
+        }
+      },
+      "expect": {
+        "total_cents": 4162,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "amount_cents": 4162,
+                "modifiers": [
+                  {
+                    "rule_id": "m-multi",
+                    "delta_cents": 832
+                  }
+                ]
+              }
+            ],
+            "base_cents": 3330,
+            "modifier_total_cents": 832
+          }
+        ]
+      },
+      "why": "base 3330: 3330 x 0.25 = 832.5 -> half-even 832; 4162 per night x 1 = 4162 (VAT incl.)"
+    }
+  ]
+}

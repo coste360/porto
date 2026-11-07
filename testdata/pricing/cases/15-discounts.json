@@ -1,0 +1,533 @@
+{
+  "cases": [
+    {
+      "name": "discount_none",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 10000,
+        "discount_total_cents": 0
+      },
+      "why": "no customer category, no promo, desk, 1 night (VAT incl.)"
+    },
+    {
+      "name": "discount_customer_non_stackable_largest",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "member"
+      },
+      "expect": {
+        "total_cents": 8500,
+        "discount_total_cents": 1500,
+        "lines": [
+          {
+            "discounts": [
+              {
+                "rule_id": "d-member-fix",
+                "delta_cents": -1500
+              }
+            ],
+            "amount_cents": 8500
+          }
+        ],
+        "trace_codes": [
+          "discount.discarded",
+          "discount.applied"
+        ]
+      },
+      "why": "member, E = 10000: d-member 10% = 1000 vs d-member-fix 1500 -> the larger reduction 1500 applies (VAT incl.)"
+    },
+    {
+      "name": "discount_customer_percent_wins_on_longer_stay",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-13",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "member"
+      },
+      "expect": {
+        "total_cents": 27000,
+        "discount_total_cents": 3000
+      },
+      "why": "member, E = 30000: 10% = 3000 > 1500 (VAT incl.)"
+    },
+    {
+      "name": "discount_customer_stackable",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-12",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "resident"
+      },
+      "expect": {
+        "total_cents": 19000,
+        "discount_total_cents": 1000
+      },
+      "why": "resident: stackable 5% of 20000 = 1000 (VAT incl.)"
+    },
+    {
+      "name": "discount_promo_percent",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-12",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "promo_code": "SUMMER"
+      },
+      "expect": {
+        "total_cents": 16000,
+        "discount_total_cents": 4000
+      },
+      "why": "SUMMER 20% of 20000 = 4000 (VAT incl.)"
+    },
+    {
+      "name": "discount_promo_code_case_insensitive",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-12",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "promo_code": "summer"
+      },
+      "expect": {
+        "total_cents": 16000,
+        "discount_total_cents": 4000
+      },
+      "why": "'summer' is upper-cased to SUMMER (VAT incl.)"
+    },
+    {
+      "name": "discount_promo_unknown_code",
+      "spec": "12.4 discounts, plan D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "promo_code": "WINTER"
+      },
+      "expect": {
+        "error": "promo_not_applicable"
+      },
+      "why": "no promo rule has code WINTER -> promo_not_applicable"
+    },
+    {
+      "name": "discount_order_customer_then_promo",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-13",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "member",
+        "promo_code": "SUMMER"
+      },
+      "expect": {
+        "total_cents": 21600,
+        "discount_total_cents": 8400
+      },
+      "why": "member: 10% of 30000 = 3000 -> 27000; then SUMMER 20% of 27000 = 5400 -> 21600 (VAT incl.)"
+    },
+    {
+      "name": "discount_order_promo_then_automatic",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-17",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "promo_code": "SUMMER"
+      },
+      "expect": {
+        "total_cents": 53200,
+        "discount_total_cents": 16800
+      },
+      "why": "7 nights E 70000: SUMMER 14000 -> 56000; automatic long stay 5% of 56000 = 2800 -> 53200 (VAT incl.)"
+    },
+    {
+      "name": "discount_three_groups",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-17",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "member",
+        "promo_code": "SUMMER"
+      },
+      "expect": {
+        "total_cents": 47880,
+        "discount_total_cents": 22120
+      },
+      "why": "member 7000 -> 63000; SUMMER 12600 -> 50400; automatic 2520 -> 47880 (VAT incl.)"
+    },
+    {
+      "name": "discount_promo_fixed_amount",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "promo_code": "FIXED50"
+      },
+      "expect": {
+        "total_cents": 5000,
+        "discount_total_cents": 5000
+      },
+      "why": "FIXED50: min(5000, E 10000) = 5000 (VAT incl.)"
+    },
+    {
+      "name": "discount_fixed_capped_at_eligible",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "add_rules": [
+        {
+          "id": "d-yard",
+          "seq": 20,
+          "stage": "discount",
+          "name": "d-yard",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "conditions": {},
+          "effect": {
+            "amount_cents": 50000
+          },
+          "scope": {
+            "customer_categories": [
+              "yard"
+            ]
+          },
+          "discount_kind": "customer"
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "yard"
+      },
+      "expect": {
+        "total_cents": 0,
+        "discount_total_cents": 10000
+      },
+      "why": "d-yard fixed 50000 on E 10000 -> min = 10000; amount 0 (VAT incl.)"
+    },
+    {
+      "name": "discount_allocated_across_lines",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "charter",
+        "services": [
+          {
+            "item_id": "cra"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 18000,
+        "discount_total_cents": 2000,
+        "lines": [
+          {
+            "amount_cents": 9000,
+            "discounts": [
+              {
+                "rule_id": "d-charter",
+                "delta_cents": -1000
+              }
+            ]
+          },
+          {
+            "amount_cents": 9000,
+            "discounts": [
+              {
+                "rule_id": "d-charter",
+                "delta_cents": -1000
+              }
+            ]
+          }
+        ]
+      },
+      "why": "charter 10% on berth 10000 + crane 10000 = 2000, allocated 1000 / 1000 (VAT incl.)"
+    },
+    {
+      "name": "discount_allocation_largest_remainder",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "charter",
+        "services": [
+          {
+            "item_id": "ele",
+            "qty_milli": 1000
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 9031,
+        "discount_total_cents": 1004,
+        "lines": [
+          {
+            "amount_cents": 9000,
+            "discounts": [
+              {
+                "rule_id": "d-charter",
+                "delta_cents": -1000
+              }
+            ]
+          },
+          {
+            "amount_cents": 31,
+            "discounts": [
+              {
+                "rule_id": "d-charter",
+                "delta_cents": -4
+              }
+            ]
+          }
+        ]
+      },
+      "why": "charter on berth 10000 + 1 kWh 35: E 10035, half_even(1003.5) = 1004; shares 1004 x 10000 / 10035 = 1000.498 -> 1000, 1004 x 35 / 10035 = 3.502 -> 3; the leftover cent goes to the larger remainder (0.502, electricity) -> 1000 / 4 (VAT incl.)"
+    },
+    {
+      "name": "discount_promo_without_eligible_lines",
+      "spec": "12.4 discounts",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "promo_code": "SVC10"
+      },
+      "expect": {
+        "error": "promo_not_applicable"
+      },
+      "why": "SVC10 targets services; no service line -> eligible 0 -> promo_not_applicable"
+    },
+    {
+      "name": "discount_promo_on_service_only",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "promo_code": "SVC10",
+        "services": [
+          {
+            "item_id": "cra"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 19000,
+        "discount_total_cents": 1000,
+        "lines": [
+          {
+            "amount_cents": 10000,
+            "discounts": []
+          },
+          {
+            "amount_cents": 9000
+          }
+        ]
+      },
+      "why": "SVC10 10% of the crane 10000 = 1000; berth unchanged (VAT incl.)"
+    },
+    {
+      "name": "discount_stackable_plus_non_stackable",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "add_rules": [
+        {
+          "id": "d-resident-fix",
+          "seq": 21,
+          "stage": "discount",
+          "name": "d-resident-fix",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "conditions": {},
+          "effect": {
+            "amount_cents": 800
+          },
+          "scope": {
+            "customer_categories": [
+              "resident"
+            ]
+          },
+          "discount_kind": "customer"
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-12",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "resident"
+      },
+      "expect": {
+        "total_cents": 18200,
+        "discount_total_cents": 1800
+      },
+      "why": "resident: stackable 5% (1000) + non-stackable fixed 800, both on the start amount 20000 (VAT incl.)"
+    },
+    {
+      "name": "discount_group_capped_at_eligible",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "add_rules": [
+        {
+          "id": "d-yard2",
+          "seq": 22,
+          "stage": "discount",
+          "name": "d-yard2",
+          "active": true,
+          "priority": 0,
+          "stackable": true,
+          "conditions": {},
+          "effect": {
+            "percent_bp": 6000
+          },
+          "scope": {
+            "customer_categories": [
+              "yard"
+            ]
+          },
+          "discount_kind": "customer"
+        },
+        {
+          "id": "d-yard3",
+          "seq": 23,
+          "stage": "discount",
+          "name": "d-yard3",
+          "active": true,
+          "priority": 0,
+          "stackable": true,
+          "conditions": {},
+          "effect": {
+            "percent_bp": 6000
+          },
+          "scope": {
+            "customer_categories": [
+              "yard"
+            ]
+          },
+          "discount_kind": "customer"
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "yard"
+      },
+      "expect": {
+        "total_cents": 0,
+        "discount_total_cents": 10000,
+        "trace_codes": [
+          "discount.applied",
+          "discount.capped"
+        ]
+      },
+      "why": "yard: two stackable 60% = 6000 + 6000 > E 10000 -> the second is capped at 4000; amount 0 (VAT incl.)"
+    },
+    {
+      "name": "discount_automatic_condition_not_met",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-16",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 60000,
+        "discount_total_cents": 0
+      },
+      "why": "6 nights < 7: no automatic long-stay discount (VAT incl.)"
+    },
+    {
+      "name": "discount_automatic_online_two_lines",
+      "spec": "12.4 discounts, plan D11/D12",
+      "catalog": "discounts",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "channel": "online",
+        "services": [
+          {
+            "item_id": "cra"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 19400,
+        "discount_total_cents": 600
+      },
+      "why": "online: 3% of 20000 = 600 split 300 / 300 (VAT incl.)"
+    }
+  ]
+}

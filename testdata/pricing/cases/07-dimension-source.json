@@ -1,0 +1,365 @@
+{
+  "cases": [
+    {
+      "name": "dimension_vessel_ignores_berth",
+      "spec": "12.3 dimension_source",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "vessel"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {
+          "length_cm": 1200,
+          "width_cm": 400
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1100,
+          "beam_cm": 380,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 8250,
+        "net_cents": 6762,
+        "vat_cents": 1488
+      },
+      "why": "source vessel: vessel 1100; L 1100 -> 1100; 750 x 1100 / 100 = 8250. VATSplit(8250, 2200): net = half_even(8250 x 10000 / 12200) = 6762, VAT = 1488"
+    },
+    {
+      "name": "dimension_berth_ignores_vessel",
+      "spec": "12.3 dimension_source",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "berth"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {
+          "length_cm": 1200,
+          "width_cm": 400
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1100,
+          "beam_cm": 380,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9000,
+        "net_cents": 7377,
+        "vat_cents": 1623
+      },
+      "why": "source berth: berth 1200; L 1200 -> 1200; 750 x 1200 / 100 = 9000. VATSplit(9000, 2200): net = half_even(9000 x 10000 / 12200) = 7377, VAT = 1623"
+    },
+    {
+      "name": "dimension_max_berth_longer",
+      "spec": "12.3 dimension_source",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "max"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {
+          "length_cm": 1200,
+          "width_cm": 400
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1100,
+          "beam_cm": 380,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9000,
+        "net_cents": 7377,
+        "vat_cents": 1623
+      },
+      "why": "source max: max(1100, 1200) = 1200; L 1200 -> 1200; 750 x 1200 / 100 = 9000. VATSplit(9000, 2200): net = half_even(9000 x 10000 / 12200) = 7377, VAT = 1623"
+    },
+    {
+      "name": "dimension_max_vessel_longer",
+      "spec": "12.3 dimension_source",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "max"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {
+          "length_cm": 1200,
+          "width_cm": 400
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1300,
+          "beam_cm": 420,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9750,
+        "net_cents": 7992,
+        "vat_cents": 1758
+      },
+      "why": "source max: max(1300, 1200) = 1300; L 1300 -> 1300; 750 x 1300 / 100 = 9750. VATSplit(9750, 2200): net = half_even(9750 x 10000 / 12200) = 7992, VAT = 1758"
+    },
+    {
+      "name": "dimension_max_without_resource",
+      "spec": "12.3 dimension_source",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "max"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1300,
+          "beam_cm": 420,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9750,
+        "net_cents": 7992,
+        "vat_cents": 1758
+      },
+      "why": "source max: no resource -> vessel 1300; L 1300 -> 1300; 750 x 1300 / 100 = 9750. VATSplit(9750, 2200): net = half_even(9750 x 10000 / 12200) = 7992, VAT = 1758"
+    },
+    {
+      "name": "dimension_max_without_vessel",
+      "spec": "12.3 dimension_source",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "max"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {
+          "length_cm": 1150,
+          "width_cm": 400
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 8625,
+        "net_cents": 7070,
+        "vat_cents": 1555
+      },
+      "why": "source max: no vessel -> berth 1150; L 1150 -> 1150; 750 x 1150 / 100 = 8625. VATSplit(8625, 2200): net = half_even(8625 x 10000 / 12200) = 7070, VAT = 1555"
+    },
+    {
+      "name": "dimension_berth_rounded",
+      "spec": "12.3 dimension_source",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "berth"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {
+          "length_cm": 1001,
+          "width_cm": 400
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 7575,
+        "net_cents": 6209,
+        "vat_cents": 1366
+      },
+      "why": "source berth: berth 1001; L 1001 -> 1010; 750 x 1010 / 100 = 7575. VATSplit(7575, 2200): net = half_even(7575 x 10000 / 12200) = 6209, VAT = 1366"
+    },
+    {
+      "name": "dimension_berth_band",
+      "spec": "12.3 dimension_source",
+      "catalog": "bands-basic",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "berth"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {
+          "length_cm": 801,
+          "width_cm": 300
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 700,
+          "beam_cm": 250,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 5000,
+        "net_cents": 4098,
+        "vat_cents": 902
+      },
+      "why": "source berth: berth 801; L 801 -> band L10 = 5000. VATSplit(5000, 2200): net = half_even(5000 x 10000 / 12200) = 4098, VAT = 902"
+    },
+    {
+      "name": "dimension_max_band",
+      "spec": "12.3 dimension_source",
+      "catalog": "bands-basic",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "max"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {
+          "length_cm": 1000,
+          "width_cm": 350
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1201,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9000,
+        "net_cents": 7377,
+        "vat_cents": 1623
+      },
+      "why": "source max: max(1201, 1000) = 1201; L 1201 -> band L15 = 9000. VATSplit(9000, 2200): net = half_even(9000 x 10000 / 12200) = 7377, VAT = 1623"
+    },
+    {
+      "name": "dimension_berth_missing",
+      "spec": "12.3 dimension_source",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "berth"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1100,
+          "beam_cm": 380,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "error": "invalid_input:dimensions_required"
+      },
+      "why": "source berth, no berth length -> dimensions_required"
+    },
+    {
+      "name": "dimension_vessel_missing",
+      "spec": "12.3 dimension_source",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "vessel"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {
+          "length_cm": 1200,
+          "width_cm": 400
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "invalid_input:dimensions_required"
+      },
+      "why": "source vessel, no vessel -> dimensions_required"
+    },
+    {
+      "name": "dimension_max_missing_both",
+      "spec": "12.3 dimension_source",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "max"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "invalid_input:dimensions_required"
+      },
+      "why": "source max, neither vessel nor berth -> dimensions_required"
+    }
+  ]
+}

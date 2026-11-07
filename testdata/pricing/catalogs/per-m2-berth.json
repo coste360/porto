@@ -1,0 +1,63 @@
+{
+  "price_list": {
+    "id": "pl-m2b",
+    "code": "M2B-2027",
+    "valid_from": "2027-01-01",
+    "valid_to": "2027-12-31",
+    "contract_types": [
+      "annual"
+    ],
+    "settings": {
+      "dimension_source": "vessel",
+      "length_rounding": {
+        "step_cm": 10,
+        "mode": "up"
+      },
+      "min_beam_ratio": {
+        "num": 1,
+        "den": 3
+      },
+      "split": {
+        "*": "pro_rata_daily"
+      },
+      "rounding": {
+        "*": "none"
+      },
+      "primary_items": {
+        "annual": "ann"
+      }
+    },
+    "periods": [],
+    "bands": []
+  },
+  "items": [
+    {
+      "id": "ann",
+      "code": "ORM-ANN",
+      "item_type": "berth_fee",
+      "unit": "year",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": false,
+      "active": true,
+      "revenue_class": "ormeggi"
+    }
+  ],
+  "rules": [
+    {
+      "id": "r-m2b",
+      "seq": 1,
+      "stage": "base",
+      "name": "r-m2b",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "ann",
+      "basis": "per_m2_berth",
+      "unit": "year",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "unit_cents": 5000
+    }
+  ]
+}

@@ -13,6 +13,8 @@ describe('nav', () => {
       'map.view',
       'customers.read',
       'harbor.configure',
+      'pricing.read',
+      'pricing.configure',
     ]).map((i) => i.id);
     expect(ids).toEqual(NAV_ITEMS.map((i) => i.id));
   });
@@ -33,6 +35,21 @@ describe('nav', () => {
       'deadlines',
     ]);
     expect(visibleNavItems(['harbor.configure']).map((i) => i.id)).toEqual(['harbor-settings']);
+  });
+
+  it('shows the M2 pricing pages by permission', () => {
+    expect(visibleNavItems(['pricing.read']).map((i) => i.id)).toEqual([
+      'price-lists',
+      'items',
+      'pricing-classifications',
+      'pricing-simulator',
+    ]);
+    expect(visibleNavItems(['pricing.configure']).map((i) => i.id)).toEqual(['pricing-settings']);
+  });
+
+  it('keeps contracts and charges upcoming', () => {
+    expect(UPCOMING_MODULES).toContain('common:nav.modules.contracts');
+    expect(UPCOMING_MODULES).toContain('common:nav.modules.charges');
   });
 
   it('lists the future modules without the M1 ones', () => {

@@ -237,7 +237,33 @@ var (
 	ErrConflict = errors.New("store: conflict")
 	// ErrVersionMismatch means an optimistic concurrency check (If-Match) failed.
 	ErrVersionMismatch = errors.New("store: version mismatch")
+	// ErrImmutable means a database trigger refused to change a published (active or archived) price list or one
+	// of its periods, bands or rules (INV-22, triggers of 00004_pricing).
+	ErrImmutable = errors.New("store: immutable")
 )
+
+// PriceListImmutableMessage is the message raised by the immutability triggers of 00004_pricing.
+const PriceListImmutableMessage = "price_list_immutable"
+
+// IsImmutableViolation reports whether err comes from a price list immutability trigger: PostgreSQL
+// raise_exception (P0001) or SQLite RAISE(ABORT) (SQLITE_CONSTRAINT_TRIGGER), with the trigger's message.
+func IsImmutableViolation(err error) bool {
+	if pe, ok := errors.AsType[pgdriver.Error](err); ok {
+		return pe.Field('C') == "P0001" && strings.Contains(pe.Field('M'), PriceListImmutableMessage)
+	}
+	if se, ok := errors.AsType[*sqlite.Error](err); ok {
+		return se.Code() == 1811 && strings.Contains(se.Error(), PriceListImmutableMessage) // SQLITE_CONSTRAINT_TRIGGER
+	}
+	return false
+}
+
+// MapImmutable wraps a trigger error as ErrImmutable (keeping the cause) and returns other errors unchanged.
+func MapImmutable(err error) error {
+	if err != nil && IsImmutableViolation(err) {
+		return fmt.Errorf("%w: %w", ErrImmutable, err)
+	}
+	return err
+}
 
 // IsUniqueViolation reports whether err comes from a unique (or primary key) constraint.
 func IsUniqueViolation(err error) bool {

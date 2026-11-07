@@ -98,6 +98,31 @@ type DeadlineChangedData struct {
 	Change     string `json:"change"` // updated
 }
 
+// Change values of config.pricing_changed (M2). ChangeCreated, ChangeDeleted, ChangeArchived and
+// ChangeSettings above are reused.
+const (
+	ChangeRevenueClass = "revenue_class"
+	ChangeItem         = "item"
+	ChangeCategory     = "category"
+	ChangeSaved        = "saved"
+	ChangeActivated    = "activated"
+	ChangeRenewed      = "renewed"
+)
+
+// PricingChangedData is the data of config.pricing_changed. Only the id of the changed entity is set; Change is
+// one of settings, revenue_class, item, category (marina-wide catalogue changes) or created, saved, activated,
+// archived, deleted, renewed (price lists). TruncatedIDs lists the predecessors whose valid_to an activation
+// shortened. Never promo codes or names.
+type PricingChangedData struct {
+	PriceListID    string   `json:"price_list_id,omitempty"`
+	ItemID         string   `json:"item_id,omitempty"`
+	CategoryID     string   `json:"category_id,omitempty"`
+	RevenueClassID string   `json:"revenue_class_id,omitempty"`
+	Version        int      `json:"version,omitempty"`
+	Change         string   `json:"change"`
+	TruncatedIDs   []string `json:"truncated_ids,omitempty"`
+}
+
 const sampleID = "01900000-0000-7000-8000-000000000000"
 
 // Samples returns one example payload per event type.
@@ -123,5 +148,8 @@ func Samples() map[string]any {
 		VesselChanged:       VesselChangedData{VesselID: sampleID, Change: ChangeMeasured},
 		DocumentChanged:     DocumentChangedData{DocumentID: sampleID, OwnerType: "customer", Change: ChangeFile},
 		DeadlineChanged:     DeadlineChangedData{DeadlineID: sampleID, Change: ChangeUpdated},
+		ConfigPricingChanged: PricingChangedData{
+			PriceListID: sampleID, Version: 3, Change: ChangeActivated, TruncatedIDs: []string{sampleID},
+		},
 	}
 }

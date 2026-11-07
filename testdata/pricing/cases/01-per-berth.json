@@ -1,0 +1,343 @@
+{
+  "cases": [
+    {
+      "name": "per_berth_transit_category_a_one_night",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-10",
+        "departure": "2027-05-11",
+        "resource": {
+          "category": "A"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 5000,
+        "net_cents": 4098,
+        "vat_cents": 902
+      },
+      "why": "category A: Amounts[A] = 5000 per night x 1 = 5000 (VAT included). VATSplit(5000, 2200): net = half_even(5000 x 10000 / 12200) = 4098, VAT = 902"
+    },
+    {
+      "name": "per_berth_transit_category_b_three_nights",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-10",
+        "departure": "2027-05-13",
+        "resource": {
+          "category": "B"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 24000,
+        "net_cents": 19672,
+        "vat_cents": 4328
+      },
+      "why": "category B: Amounts[B] = 8000 per night x 3 = 24000 (VAT included). VATSplit(24000, 2200): net = half_even(24000 x 10000 / 12200) = 19672, VAT = 4328"
+    },
+    {
+      "name": "per_berth_transit_category_c_two_nights",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-10",
+        "departure": "2027-05-12",
+        "resource": {
+          "category": "C"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 24000,
+        "net_cents": 19672,
+        "vat_cents": 4328
+      },
+      "why": "category C: Amounts[C] = 12000 per night x 2 = 24000 (VAT included). VATSplit(24000, 2200): net = half_even(24000 x 10000 / 12200) = 19672, VAT = 4328"
+    },
+    {
+      "name": "per_berth_transit_category_a_week",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-10",
+        "departure": "2027-05-17",
+        "resource": {
+          "category": "A"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 35000,
+        "net_cents": 28689,
+        "vat_cents": 6311
+      },
+      "why": "category A: Amounts[A] = 5000 per night x 7 = 35000 (VAT included). VATSplit(35000, 2200): net = half_even(35000 x 10000 / 12200) = 28689, VAT = 6311"
+    },
+    {
+      "name": "per_berth_transit_blocks_per_night",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-10",
+        "departure": "2027-05-12",
+        "resource": {
+          "category": "B"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 16000,
+        "net_cents": 13115,
+        "vat_cents": 2885,
+        "lines": [
+          {
+            "item_code": "TRN-NTT",
+            "amount_cents": 16000,
+            "blocks": [
+              {
+                "from": "2027-05-10",
+                "to": "2027-05-11",
+                "base_cents": 8000,
+                "rule_id": "r-pb-n"
+              },
+              {
+                "from": "2027-05-11",
+                "to": "2027-05-12",
+                "base_cents": 8000,
+                "rule_id": "r-pb-n"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "two night blocks of Amounts[B] = 8000 each; line 16000. VATSplit(16000, 2200): net = half_even(16000 x 10000 / 12200) = 13115, VAT = 2885"
+    },
+    {
+      "name": "per_berth_transit_no_category_no_default",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-10",
+        "departure": "2027-05-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "no_price:no_amount"
+      },
+      "why": "no resource category and r-pb-n has no amount_cents: the only candidate cannot price -> no_amount"
+    },
+    {
+      "name": "per_berth_transit_unknown_category",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-10",
+        "departure": "2027-05-11",
+        "resource": {
+          "category": "Z"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "no_price:no_amount"
+      },
+      "why": "category Z not in Amounts and no default amount -> no_amount"
+    },
+    {
+      "name": "per_berth_annual_category_a",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "category": "A"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 366000,
+        "net_cents": 300000,
+        "vat_cents": 66000,
+        "lines": [
+          {
+            "item_code": "ORM-ANN",
+            "blocks": [
+              {
+                "unit": "year",
+                "nights": 365,
+                "base_cents": 300000
+              }
+            ]
+          }
+        ]
+      },
+      "why": "exact year 2027-01-01 -> 2028-01-01 (365 nights), Amounts[A] = 300000. VAT excluded: 300000 + half_even(300000 x 2200 / 10000) = 366000 (net 300000, VAT 66000)"
+    },
+    {
+      "name": "per_berth_annual_category_b",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "category": "B"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 549000,
+        "net_cents": 450000,
+        "vat_cents": 99000,
+        "lines": [
+          {
+            "item_code": "ORM-ANN",
+            "blocks": [
+              {
+                "unit": "year",
+                "nights": 365,
+                "base_cents": 450000
+              }
+            ]
+          }
+        ]
+      },
+      "why": "exact year 2027-01-01 -> 2028-01-01 (365 nights), Amounts[B] = 450000. VAT excluded: 450000 + half_even(450000 x 2200 / 10000) = 549000 (net 450000, VAT 99000)"
+    },
+    {
+      "name": "per_berth_annual_unknown_category_default",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "category": "Z"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 244000,
+        "net_cents": 200000,
+        "vat_cents": 44000,
+        "lines": [
+          {
+            "item_code": "ORM-ANN",
+            "blocks": [
+              {
+                "unit": "year",
+                "nights": 365,
+                "base_cents": 200000
+              }
+            ]
+          }
+        ]
+      },
+      "why": "exact year 2027-01-01 -> 2028-01-01 (365 nights), Z not in Amounts -> amount_cents 200000. VAT excluded: 200000 + half_even(200000 x 2200 / 10000) = 244000 (net 200000, VAT 44000)"
+    },
+    {
+      "name": "per_berth_annual_no_category_default",
+      "spec": "12.3 per_berth",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 244000,
+        "net_cents": 200000,
+        "vat_cents": 44000,
+        "lines": [
+          {
+            "item_code": "ORM-ANN",
+            "blocks": [
+              {
+                "unit": "year",
+                "nights": 365,
+                "base_cents": 200000
+              }
+            ]
+          }
+        ]
+      },
+      "why": "exact year 2027-01-01 -> 2028-01-01 (365 nights), no category -> amount_cents 200000. VAT excluded: 200000 + half_even(200000 x 2200 / 10000) = 244000 (net 200000, VAT 44000)"
+    },
+    {
+      "name": "per_berth_annual_exceeds_validity_warning",
+      "spec": "12.2 validity, plan D4",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-06-01",
+        "departure": "2028-06-01",
+        "resource": {
+          "category": "A"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 366000,
+        "net_cents": 300000,
+        "vat_cents": 66000,
+        "warnings": [
+          "stay_exceeds_validity"
+        ]
+      },
+      "why": "arrival 2027-06-01 in validity, exact year; last night 2028-05-31 > valid_to 2027-12-31 -> same list, warning stay_exceeds_validity. Amounts[A] 300000. VAT excluded: 300000 + half_even(300000 x 2200 / 10000) = 366000 (net 300000, VAT 66000)"
+    },
+    {
+      "name": "per_berth_arrival_outside_validity",
+      "spec": "12.2 validity",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2028-01-05",
+        "departure": "2028-01-06",
+        "resource": {
+          "category": "A"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "no_price:outside_validity"
+      },
+      "why": "arrival 2028-01-05 after valid_to 2027-12-31 -> outside_validity"
+    },
+    {
+      "name": "per_berth_contract_type_not_served",
+      "spec": "12.2 contract types",
+      "catalog": "per-berth",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-05-01",
+        "departure": "2027-06-01",
+        "resource": {
+          "category": "A"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "invalid_input:contract_type_not_served"
+      },
+      "why": "the list serves transit and annual only"
+    }
+  ]
+}

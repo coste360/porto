@@ -43,6 +43,10 @@ var (
 		// M1 (00002_harbor, 00003_registry)
 		"berths.overhang_allowed", "berths.water", "berths.wifi", "berths.online_sellable", "berths.active",
 		"dynamic_areas.active", "land_resources.active", "consents.granted",
+		// M2 (00004_pricing)
+		"pricing_settings.default_price_includes_vat", "items.price_includes_vat", "items.active",
+		"items.online_visible", "price_rules.stackable", "price_rules.active",
+		"price_list_items.price_includes_vat", "price_list_items.active",
 	}
 	sqliteJSONColumns = []string{
 		"organizations.billing_address", "marinas.locales", "marinas.contacts", "marinas.address", "marinas.geo",
@@ -56,6 +60,10 @@ var (
 		"map_decorations.geometry", "map_decorations.label", "berth_groups.name", "customers.billing_address",
 		"customers.emails", "customers.phones", "customers.tags", "customers.payment_terms", "vessels.engines",
 		"deadlines.notified_at", "deadline_policies.lead_days",
+		// M2 (00004_pricing)
+		"revenue_classes.name", "items.name", "items.description", "berth_categories.name",
+		"berth_categories.applies_to", "price_lists.name", "price_lists.contract_types", "price_lists.settings",
+		"rate_periods.name", "rate_periods.ranges", "price_rules.body",
 	}
 )
 

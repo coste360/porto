@@ -50,6 +50,20 @@ describe('ProblemError', () => {
     expect((await ProblemError.fromResponse(response)).type).toBe('forbidden');
   });
 
+  it('keeps price list issues and details (M2)', () => {
+    const p = ProblemError.from(409, {
+      type: 'price_list_invalid',
+      price_list_issues: [
+        { code: 'period_overlap', severity: 'error', ref: { kind: 'period', id: 'ALTA' } },
+        { code: 42 },
+      ],
+      details: { reason: 'no_rule', night: '2026-07-01' },
+    });
+    expect(p.priceListIssues.map((i) => i.code)).toEqual(['period_overlap']);
+    expect(p.details).toEqual({ reason: 'no_rule', night: '2026-07-01' });
+    expect(ProblemError.from(404, { type: 'not_found' }).details).toEqual({});
+  });
+
   it('normalises anything thrown', () => {
     expect(toProblem(new Error('x')).type).toBe('internal_error');
   });

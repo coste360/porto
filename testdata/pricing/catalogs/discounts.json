@@ -1,0 +1,286 @@
+{
+  "price_list": {
+    "id": "pl-disc",
+    "code": "DSC-2027",
+    "valid_from": "2027-01-01",
+    "valid_to": "2027-12-31",
+    "contract_types": [
+      "transit"
+    ],
+    "settings": {
+      "dimension_source": "vessel",
+      "length_rounding": {
+        "step_cm": 10,
+        "mode": "up"
+      },
+      "min_beam_ratio": {
+        "num": 1,
+        "den": 3
+      },
+      "split": {
+        "*": "pro_rata_daily"
+      },
+      "rounding": {
+        "*": "none"
+      },
+      "primary_items": {
+        "transit": "trn"
+      }
+    },
+    "periods": [],
+    "bands": []
+  },
+  "items": [
+    {
+      "id": "trn",
+      "code": "TRN-NTT",
+      "item_type": "berth_fee",
+      "unit": "night",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true,
+      "revenue_class": "ormeggi",
+      "external_code": "T01"
+    },
+    {
+      "id": "cra",
+      "code": "SRV-GRU",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true
+    },
+    {
+      "id": "ele",
+      "code": "SRV-ELE",
+      "item_type": "utility",
+      "unit": "kwh",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true
+    }
+  ],
+  "rules": [
+    {
+      "id": "r-n",
+      "seq": 1,
+      "stage": "base",
+      "name": "r-n",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-cra",
+      "seq": 2,
+      "stage": "base",
+      "name": "r-cra",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "cra",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-ele",
+      "seq": 3,
+      "stage": "base",
+      "name": "r-ele",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "ele",
+      "basis": "metered",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "unit_cents": 35
+    },
+    {
+      "id": "d-member",
+      "seq": 4,
+      "stage": "discount",
+      "name": "d-member",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "conditions": {},
+      "effect": {
+        "percent_bp": 1000
+      },
+      "scope": {
+        "customer_categories": [
+          "member"
+        ]
+      },
+      "discount_kind": "customer"
+    },
+    {
+      "id": "d-member-fix",
+      "seq": 5,
+      "stage": "discount",
+      "name": "d-member-fix",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "conditions": {},
+      "effect": {
+        "amount_cents": 1500
+      },
+      "scope": {
+        "customer_categories": [
+          "member"
+        ]
+      },
+      "discount_kind": "customer"
+    },
+    {
+      "id": "d-resident",
+      "seq": 6,
+      "stage": "discount",
+      "name": "d-resident",
+      "active": true,
+      "priority": 0,
+      "stackable": true,
+      "conditions": {},
+      "effect": {
+        "percent_bp": 500
+      },
+      "scope": {
+        "customer_categories": [
+          "resident"
+        ]
+      },
+      "discount_kind": "customer"
+    },
+    {
+      "id": "d-charter",
+      "seq": 7,
+      "stage": "discount",
+      "name": "d-charter",
+      "active": true,
+      "priority": 0,
+      "stackable": true,
+      "conditions": {},
+      "effect": {
+        "percent_bp": 1000
+      },
+      "scope": {
+        "customer_categories": [
+          "charter"
+        ]
+      },
+      "target_item_types": [
+        "berth_fee",
+        "service",
+        "utility"
+      ],
+      "discount_kind": "customer"
+    },
+    {
+      "id": "d-promo",
+      "seq": 8,
+      "stage": "discount",
+      "name": "d-promo",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "conditions": {},
+      "effect": {
+        "percent_bp": 2000
+      },
+      "scope": {},
+      "discount_kind": "promo",
+      "promo_code": "SUMMER"
+    },
+    {
+      "id": "d-promo-fix",
+      "seq": 9,
+      "stage": "discount",
+      "name": "d-promo-fix",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "conditions": {},
+      "effect": {
+        "amount_cents": 5000
+      },
+      "scope": {},
+      "discount_kind": "promo",
+      "promo_code": "FIXED50"
+    },
+    {
+      "id": "d-promo-svc",
+      "seq": 10,
+      "stage": "discount",
+      "name": "d-promo-svc",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "conditions": {},
+      "effect": {
+        "percent_bp": 1000
+      },
+      "scope": {},
+      "target_item_types": [
+        "service"
+      ],
+      "discount_kind": "promo",
+      "promo_code": "SVC10"
+    },
+    {
+      "id": "d-auto-long",
+      "seq": 11,
+      "stage": "discount",
+      "name": "d-auto-long",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "conditions": {
+        "min_nights": 7
+      },
+      "effect": {
+        "percent_bp": 500
+      },
+      "scope": {},
+      "discount_kind": "automatic"
+    },
+    {
+      "id": "d-auto-online",
+      "seq": 12,
+      "stage": "discount",
+      "name": "d-auto-online",
+      "active": true,
+      "priority": 0,
+      "stackable": true,
+      "conditions": {},
+      "effect": {
+        "percent_bp": 300
+      },
+      "scope": {
+        "channels": [
+          "online"
+        ]
+      },
+      "target_item_types": [
+        "berth_fee",
+        "service"
+      ],
+      "discount_kind": "automatic"
+    }
+  ]
+}

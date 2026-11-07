@@ -34,6 +34,11 @@ type SeedResult struct {
 	Customers int
 	Vessels   int
 	Documents int
+
+	// M2 counts (0 when the pricing part already existed, m2-plan §6).
+	Items      int
+	PriceLists int
+	PriceRules int
 }
 
 // SeedDemo creates a minimal demo: organization "Porto Demo", marina "Marina Demo" (slug demo) and one user per
@@ -107,14 +112,18 @@ func demoOwner(userID, orgID string) *auth.Principal {
 	}
 }
 
-// seedM1 seeds the harbour (seed_harbor.go, when the marina has no maps) and the registry (seed_registry.go,
-// when it has no customers). Each part decides its own idempotency.
+// seedM1 seeds the harbour (seed_harbor.go, when the marina has no maps), the registry (seed_registry.go, when
+// it has no customers) and, from M2, the pricing catalogue and price lists (seed_pricing.go, when the marina has
+// no price lists). Each part decides its own idempotency.
 func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) error {
 	if err := a.seedHarbor(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: harbour: %w", err)
 	}
 	if err := a.seedRegistry(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: registry: %w", err)
+	}
+	if err := a.seedPricing(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: pricing: %w", err)
 	}
 	return nil
 }

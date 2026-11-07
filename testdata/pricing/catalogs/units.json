@@ -1,0 +1,149 @@
+{
+  "price_list": {
+    "id": "pl-units",
+    "code": "UN-2027",
+    "valid_from": "2027-01-01",
+    "valid_to": "2028-12-31",
+    "contract_types": [
+      "annual",
+      "seasonal",
+      "monthly",
+      "transit"
+    ],
+    "settings": {
+      "dimension_source": "vessel",
+      "length_rounding": {
+        "step_cm": 10,
+        "mode": "up"
+      },
+      "min_beam_ratio": {
+        "num": 1,
+        "den": 3
+      },
+      "split": {
+        "*": "pro_rata_daily"
+      },
+      "rounding": {
+        "*": "none"
+      },
+      "primary_items": {
+        "annual": "ann",
+        "seasonal": "sea",
+        "monthly": "men",
+        "transit": "trn"
+      },
+      "season_window": {
+        "from": "2027-05-01",
+        "to": "2027-09-30"
+      }
+    },
+    "periods": [],
+    "bands": []
+  },
+  "items": [
+    {
+      "id": "ann",
+      "code": "ORM-ANN",
+      "item_type": "berth_fee",
+      "unit": "year",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true
+    },
+    {
+      "id": "sea",
+      "code": "ORM-STG",
+      "item_type": "berth_fee",
+      "unit": "season",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true
+    },
+    {
+      "id": "men",
+      "code": "ORM-MEN",
+      "item_type": "berth_fee",
+      "unit": "month",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true
+    },
+    {
+      "id": "trn",
+      "code": "TRN-NTT",
+      "item_type": "berth_fee",
+      "unit": "night",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true,
+      "revenue_class": "ormeggi",
+      "external_code": "T01"
+    }
+  ],
+  "rules": [
+    {
+      "id": "r-y",
+      "seq": 1,
+      "stage": "base",
+      "name": "r-y",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "ann",
+      "basis": "flat",
+      "unit": "year",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 360000
+    },
+    {
+      "id": "r-s",
+      "seq": 2,
+      "stage": "base",
+      "name": "r-s",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "sea",
+      "basis": "flat",
+      "unit": "season",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 200000
+    },
+    {
+      "id": "r-m",
+      "seq": 3,
+      "stage": "base",
+      "name": "r-m",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "men",
+      "basis": "flat",
+      "unit": "month",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 60000
+    },
+    {
+      "id": "r-n",
+      "seq": 4,
+      "stage": "base",
+      "name": "r-n",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 4000
+    }
+  ]
+}

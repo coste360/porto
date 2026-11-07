@@ -6,7 +6,8 @@ info:
   description: |
     Single spec-first contract of Porto's REST API (spec 27). M0 covers the platform foundations; M1 adds the
     harbour map (maps, elements, generators, berth groups, harbour settings) and the registry (customers,
-    vessels, documents, deadlines).
+    vessels, documents, deadlines). M2 adds items, classifications, price lists and the pricing tools
+    (simulator, matrix, coverage, renewal).
 
     - `/api/admin/v1` — admin panel API (session cookie, API key or device token).
     - `/api/device/v1` — paired devices (device token, spec 29).
@@ -20,6 +21,8 @@ info:
     - versioned resources return `ETag: "<version>"` and `PATCH` requires `If-Match`;
     - calendar dates are `YYYY-MM-DD`, instants RFC 3339 UTC, ids UUID strings; JSON names are snake_case;
     - lengths are integer centimetres (`*_cm`), angles `rotation_dd` in tenths of a degree, masses kg;
+    - money is integer cents (`*_cents`), percentages integer basis points (`*_bp`, 1 % = 100), fractional
+      quantities integer thousandths (`*_milli`); no `number` type is used anywhere;
     - `x-porto-max-body-bytes` on an operation sets its request body limit (default 1 MiB, hard cap 16 MiB);
       upload operations take a raw binary body with the declared content types.
   contact:
@@ -66,6 +69,10 @@ tags:
     description: Customer and vessel documents with encrypted files
   - name: deadlines
     description: Deadlines from document expiries and their policies
+  - name: pricing
+    description: Pricing settings, revenue classes, items, berth categories and the price simulator
+  - name: price-lists
+    description: Price lists (periods, bands, rules), activation, renewal, matrix and coverage
 
 paths:
   /healthz:
@@ -2387,6 +2394,748 @@ paths:
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
 
+  # ---------------------------------------------------------------------------------------------------------------
+  # M2 pricing (spec 12; m2-plan §4). Reads need pricing.read, writes pricing.configure.
+  # ---------------------------------------------------------------------------------------------------------------
+  /api/admin/v1/marinas/{marinaId}/pricing-settings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [pricing]
+      operationId: getPricingSettings
+      summary: >-
+        Pricing settings: default VAT rate and VAT inclusion of new items (pricing.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PricingSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+    put:
+      tags: [pricing]
+      operationId: updatePricingSettings
+      summary: >-
+        Replace the pricing settings (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PricingSettingsUpdate" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PricingSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/revenue-classes:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [pricing]
+      operationId: listRevenueClasses
+      summary: >-
+        Revenue classes (two levels); the spec defaults are created on first use (pricing.read)
+      security: *readSecurity
+      parameters:
+        - { name: include_archived, in: query, required: false, schema: { type: boolean } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RevenueClassList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+    post:
+      tags: [pricing]
+      operationId: createRevenueClass
+      summary: >-
+        Create a revenue class or subclass (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RevenueClassCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RevenueClass" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/revenue-classes/{revenueClassId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RevenueClassId"
+    patch:
+      tags: [pricing]
+      operationId: updateRevenueClass
+      summary: >-
+        Update a revenue class; archived true archives it; published lists keep the code of their item snapshot
+        (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RevenueClassPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RevenueClass" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+    delete:
+      tags: [pricing]
+      operationId: deleteRevenueClass
+      summary: >-
+        Delete a revenue class used by no item and no subclass (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204": { description: Deleted }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/items:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [pricing]
+      operationId: listItems
+      summary: >-
+        Items and services by sort order and code (pricing.read)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - { name: type, in: query, required: false, schema: { $ref: "#/components/schemas/ItemType" } }
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+        - { name: q, in: query, required: false, description: Code or name substring, schema: { type: string, maxLength: 64 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ItemPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+    post:
+      tags: [pricing]
+      operationId: createItem
+      summary: >-
+        Create an item; VAT defaults come from the pricing settings (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ItemCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Item" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/items/{itemId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ItemId"
+    get:
+      tags: [pricing]
+      operationId: getItem
+      summary: >-
+        An item with its usage (pricing.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Item" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+    patch:
+      tags: [pricing]
+      operationId: updateItem
+      summary: >-
+        Update an item; every field stays editable: drafts price with the live item, published (active or
+        archived) lists with the snapshot taken at activation (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ItemPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Item" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+    delete:
+      tags: [pricing]
+      operationId: deleteItem
+      summary: >-
+        Delete an item no price list references; otherwise 409 in_use (deactivate it instead) (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204": { description: Deleted }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/berth-categories:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [pricing]
+      operationId: listBerthCategories
+      summary: >-
+        Berth categories with usage counts and the price_class codes in use without a category (pricing.read)
+      security: *readSecurity
+      parameters:
+        - { name: include_archived, in: query, required: false, schema: { type: boolean } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BerthCategoryList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+    post:
+      tags: [pricing]
+      operationId: createBerthCategory
+      summary: >-
+        Create a berth category (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BerthCategoryCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BerthCategory" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/customer-categories:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [pricing]
+      operationId: listCustomerCategoryCounts
+      summary: >-
+        Customer categories (fixed enum, spec 11.1) with the number of non-archived customers in each, for the
+        classifications page; counts only, no customer data (pricing.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CustomerCategoryCountList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/berth-categories/sync:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [pricing]
+      operationId: syncBerthCategories
+      summary: >-
+        Create the missing categories from the harbour price-class rule and the codes in use (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BerthCategorySyncResult" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/berth-categories/{categoryId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CategoryId"
+    patch:
+      tags: [pricing]
+      operationId: updateBerthCategory
+      summary: >-
+        Update a berth category; the code is immutable (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BerthCategoryPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BerthCategory" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+    delete:
+      tags: [pricing]
+      operationId: deleteBerthCategory
+      summary: >-
+        Delete a category no element and no rule uses; otherwise 409 in_use (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204": { description: Deleted }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/price-lists:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [price-lists]
+      operationId: listPriceLists
+      summary: >-
+        Price lists, newest validity first (pricing.read)
+      security: *readSecurity
+      parameters:
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/PriceListStatus" } }
+        - { name: contract_type, in: query, required: false, schema: { $ref: "#/components/schemas/ContractType" } }
+        - { name: "on", in: query, required: false, description: Lists valid on this date, schema: { type: string, format: date, x-go-type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceListSummaryList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+    post:
+      tags: [price-lists]
+      operationId: createPriceList
+      summary: >-
+        Create an empty draft price list with default settings (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PriceListCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceListDocument" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PriceListId"
+    get:
+      tags: [price-lists]
+      operationId: getPriceList
+      summary: >-
+        The full price list document with its validation issues (pricing.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceListDocument" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+    put:
+      tags: [price-lists]
+      operationId: savePriceList
+      summary: >-
+        Replace the draft document (settings, periods, bands, rules) in one transaction; new rows carry a key, saved ones their id. Saved even with validation errors (pricing.configure)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 4194304
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PriceListSave" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceListSaveResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+    delete:
+      tags: [price-lists]
+      operationId: deletePriceList
+      summary: >-
+        Delete a draft price list; published lists are immutable (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204": { description: Deleted }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/validate:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PriceListId"
+    post:
+      tags: [price-lists]
+      operationId: validatePriceList
+      summary: >-
+        Dry-run validation of a document, or of the saved one when the body is empty; nothing is written (pricing.read)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 4194304
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PriceListSave" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceListValidation" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+
+  /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/activate:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PriceListId"
+    post:
+      tags: [price-lists]
+      operationId: activatePriceList
+      summary: >-
+        Activate a valid draft from effective_from (default valid_from); predecessors serving the same contract types are truncated, other overlaps are 409 price_list_overlap (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PriceListActivate" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceListActivateResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/PricingUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/archive:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PriceListId"
+    post:
+      tags: [price-lists]
+      operationId: archivePriceList
+      summary: >-
+        Archive an active list (drafts are deleted instead) (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceListDocument" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/renewal:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PriceListId"
+    post:
+      tags: [price-lists]
+      operationId: renewPriceList
+      summary: >-
+        New draft list from this one (spec 12.6): date shift, ISTAT, adjustments, rounding. dry_run returns the preview with the matrix diff; otherwise the draft is created (pricing.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RenewalRequest" }
+      responses:
+        "200":
+          description: Dry run preview
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RenewalPreview" }
+        "201":
+          description: Draft created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceListDocument" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/PricingUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/matrix:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PriceListId"
+    get:
+      tags: [price-lists]
+      operationId: getPriceMatrix
+      summary: >-
+        Price matrix computed by the engine through probes; every cell equals a simulation of its probe (INV-23) (pricing.read)
+      security: *readSecurity
+      parameters:
+        - { name: contract_type, in: query, required: false, description: Default the first contract type served, schema: { $ref: "#/components/schemas/ContractType" } }
+        - { name: item_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: rows, in: query, required: false, schema: { type: string, enum: [bands, categories] } }
+        - { name: channel, in: query, required: false, schema: { $ref: "#/components/schemas/Channel" } }
+        - { name: customer_category, in: query, required: false, schema: { $ref: "#/components/schemas/CustomerCategory" } }
+        - { name: quoted_on, in: query, required: false, description: Default today in the marina timezone, schema: { type: string, format: date, x-go-type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceMatrix" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/coverage:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PriceListId"
+    get:
+      tags: [price-lists]
+      operationId: getPriceCoverage
+      summary: >-
+        Combinations without a price and elements without a valid category (pricing.read)
+      security: *readSecurity
+      parameters:
+        - { name: quoted_on, in: query, required: false, description: Default today in the marina timezone, schema: { type: string, format: date, x-go-type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceCoverage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/pricing/simulate:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [pricing]
+      operationId: simulatePrice
+      summary: >-
+        Price a stay with the full breakdown and trace; without price_list_id the list active on the arrival night (pricing.read)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PricingSimulateRequest" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PriceBreakdown" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/PricingUnprocessable" }
+
 components:
   securitySchemes:
     cookieAuth:
@@ -2490,6 +3239,26 @@ components:
       in: path
       required: true
       schema: { type: string }
+    ItemId:
+      name: itemId
+      in: path
+      required: true
+      schema: { type: string }
+    RevenueClassId:
+      name: revenueClassId
+      in: path
+      required: true
+      schema: { type: string }
+    CategoryId:
+      name: categoryId
+      in: path
+      required: true
+      schema: { type: string }
+    PriceListId:
+      name: priceListId
+      in: path
+      required: true
+      schema: { type: string }
     CSRFToken:
       name: X-CSRF-Token
       in: header
@@ -2561,6 +3330,14 @@ components:
       content:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
+    PricingUnprocessable:
+      description: >-
+        No price for the input (no_price, with details), promo code not applicable (promo_not_applicable), the
+        list breaks a blocking validation rule (price_list_invalid, with price_list_issues), or an idempotency key
+        was reused
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
     ServiceUnavailable:
       description: Not ready
       content:
@@ -2613,6 +3390,12 @@ components:
         - customer_anonymized
         - customer_merged
         - download_link_expired
+        - no_price
+        - promo_not_applicable
+        - price_list_invalid
+        - price_list_immutable
+        - price_list_overlap
+        - in_use
 
     FieldError:
       type: object
@@ -2640,6 +3423,17 @@ components:
           description: Map validation issues (map_invalid)
           type: array
           items: { $ref: "#/components/schemas/MapIssue" }
+        price_list_issues:
+          description: Price list validation issues (price_list_invalid)
+          type: array
+          items: { $ref: "#/components/schemas/PriceListIssue" }
+        details:
+          description: >-
+            Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason};
+            price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}. Ids, codes
+            and integers only.
+          type: object
+          additionalProperties: true
 
     HealthStatus:
       type: object
@@ -2656,7 +3450,7 @@ components:
 
     Meta:
       type: object
-      required: [version, api_version, edition, capabilities, demo_pairing]
+      required: [version, api_version, edition, capabilities, demo_pairing, pricing_engine_version]
       properties:
         version: { type: string }
         api_version: { type: string }
@@ -2665,6 +3459,9 @@ components:
           type: array
           items: { type: string }
         demo_pairing: { type: boolean }
+        pricing_engine_version:
+          description: Version of the pricing engine (quotes store it with their price snapshot, INV-20)
+          type: integer
 
     Role:
       type: string
@@ -2707,6 +3504,8 @@ components:
         - reports.rental
         - map.view
         - harbor.configure
+        - pricing.configure
+        - pricing.read
 
     Locale:
       type: string
@@ -5085,3 +5884,1009 @@ components:
           type: array
           maxItems: 50
           items: { $ref: "#/components/schemas/DeadlinePolicy" }
+
+    # ---- M2 pricing (spec 12; m2-plan §2.2, §4). Money integer cents, percentages basis points, lengths cm,
+    # quantities milli. The JSON shapes mirror internal/domain/pricing. ----
+
+    IsoDate:
+      description: Calendar date YYYY-MM-DD in the marina timezone
+      type: string
+      format: date
+      x-go-type: string
+
+    Cents:
+      description: Amount in integer cents of the marina currency
+      type: integer
+      format: int64
+
+    BasisPoints:
+      description: Percentage in integer basis points (1 % = 100)
+      type: integer
+      format: int64
+
+    QtyMilli:
+      description: Quantity in thousandths (1.5 = 1500)
+      type: integer
+      format: int64
+
+    ContractType:
+      type: string
+      enum: [annual, seasonal, monthly, transit, storage, charter]
+
+    Channel:
+      type: string
+      enum: [desk, online, api, external]
+
+    ItemType:
+      type: string
+      enum: [berth_fee, service, utility, product, labour, material, fee, deposit]
+
+    ItemUnit:
+      type: string
+      enum: [night, month, season, year, m, m2, kwh, m3, hour, piece, lump]
+
+    VatNature:
+      description: FatturaPA nature of a 0 % VAT line (m2-plan §12 D9)
+      type: string
+      enum: [N1, N2.1, N2.2, N3.1, N3.2, N3.3, N3.4, N3.5, N3.6, N4, N5, N6.1, N6.2, N6.3, N6.4, N6.5, N6.6, N6.7, N6.8, N6.9, N7]
+
+    PricingStage:
+      type: string
+      enum: [base, modifier, discount]
+
+    PricingBasis:
+      type: string
+      enum: [per_berth, length_band, per_meter, per_m2, per_m2_berth, flat, metered]
+
+    TimeUnit:
+      type: string
+      enum: [night, week, month, season, year, stay]
+
+    SplitRule:
+      type: string
+      enum: [pro_rata_daily, whole_months, best_combination]
+
+    DimensionSource:
+      type: string
+      enum: [vessel, berth, max]
+
+    TotalRounding:
+      type: string
+      enum: [none, euro, five_euro]
+
+    AmountRounding:
+      type: string
+      enum: [none, ten_cents, euro]
+
+    DiscountKind:
+      type: string
+      enum: [customer, promo, automatic]
+
+    PeriodKind:
+      type: string
+      enum: [season, event]
+
+    PeriodColor:
+      type: string
+      enum: [chart-1, chart-2, chart-3, chart-4, chart-5]
+
+    PriceListStatus:
+      type: string
+      enum: [draft, active, archived]
+
+    CategoryTarget:
+      type: string
+      enum: [berth, dynamic_area, land_resource]
+
+    PricingSettings:
+      type: object
+      required: [default_vat_rate_bp, default_price_includes_vat, version]
+      properties:
+        default_vat_rate_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        default_price_includes_vat: { type: boolean }
+        version: { type: integer }
+
+    PricingSettingsUpdate:
+      type: object
+      required: [default_vat_rate_bp, default_price_includes_vat]
+      properties:
+        default_vat_rate_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        default_price_includes_vat: { type: boolean }
+
+    RevenueClass:
+      type: object
+      required: [id, code, name, sort_order, archived, item_count, version]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        parent_id: { type: [string, "null"] }
+        sort_order: { type: integer }
+        archived: { type: boolean }
+        item_count: { type: integer }
+        version: { type: integer }
+
+    RevenueClassList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/RevenueClass" }
+
+    RevenueClassCreate:
+      type: object
+      required: [code, name]
+      properties:
+        code: { type: string, minLength: 1, maxLength: 32, pattern: "^[a-z0-9][a-z0-9_]{0,31}$" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        parent_id: { type: string, maxLength: 36 }
+        sort_order: { type: integer }
+
+    RevenueClassPatch:
+      description: Absent fields are unchanged; parent_id null makes it a top-level class; archived archives or restores it.
+      type: object
+      properties:
+        code: { type: string, minLength: 1, maxLength: 32, pattern: "^[a-z0-9][a-z0-9_]{0,31}$" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        parent_id: { type: [string, "null"], maxLength: 36 }
+        sort_order: { type: integer }
+        archived: { type: boolean }
+
+    ItemCode:
+      type: string
+      minLength: 1
+      maxLength: 32
+      pattern: "^[A-Z0-9][A-Z0-9._-]{0,31}$"
+
+    ItemUsage:
+      type: object
+      required: [price_lists]
+      properties:
+        price_lists: { type: integer }
+
+    Item:
+      type: object
+      required: [id, code, name, description, item_type, unit, vat_rate_bp, price_includes_vat, revenue_class_id, external_code, active, online_visible, sort_order, version, updated_at]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        description: { $ref: "#/components/schemas/I18nTextOptional" }
+        item_type: { $ref: "#/components/schemas/ItemType" }
+        unit: { $ref: "#/components/schemas/ItemUnit" }
+        vat_rate_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        vat_nature: { oneOf: [{ $ref: "#/components/schemas/VatNature" }, { type: "null" }] }
+        price_includes_vat: { type: boolean }
+        revenue_class_id: { type: string }
+        external_code: { type: string }
+        active: { type: boolean }
+        online_visible: { type: boolean }
+        sort_order: { type: integer }
+        usage: { $ref: "#/components/schemas/ItemUsage" }
+        version: { type: integer }
+        updated_at: { type: string, format: date-time }
+
+    I18nTextOptional:
+      description: Optional translated text (both languages may be empty)
+      type: object
+      properties:
+        it: { type: string, maxLength: 2000 }
+        en: { type: string, maxLength: 2000 }
+
+    ItemPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Item" }
+        next_cursor: { type: [string, "null"] }
+
+    ItemCreate:
+      description: vat_rate_bp and price_includes_vat default from the pricing settings; vat_nature is required exactly when the rate is 0.
+      type: object
+      required: [code, name, item_type, unit, revenue_class_id]
+      properties:
+        code: { $ref: "#/components/schemas/ItemCode" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        description: { $ref: "#/components/schemas/I18nTextOptional" }
+        item_type: { $ref: "#/components/schemas/ItemType" }
+        unit: { $ref: "#/components/schemas/ItemUnit" }
+        vat_rate_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        vat_nature: { $ref: "#/components/schemas/VatNature" }
+        price_includes_vat: { type: boolean }
+        revenue_class_id: { type: string, maxLength: 36 }
+        external_code: { type: string, maxLength: 64 }
+        active: { type: boolean }
+        online_visible: { type: boolean }
+        sort_order: { type: integer }
+
+    ItemPatch:
+      description: Absent fields are unchanged; vat_nature null clears it (with a non-zero rate).
+      type: object
+      properties:
+        code: { $ref: "#/components/schemas/ItemCode" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        description: { $ref: "#/components/schemas/I18nTextOptional" }
+        item_type: { $ref: "#/components/schemas/ItemType" }
+        unit: { $ref: "#/components/schemas/ItemUnit" }
+        vat_rate_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        vat_nature: { oneOf: [{ $ref: "#/components/schemas/VatNature" }, { type: "null" }] }
+        price_includes_vat: { type: boolean }
+        revenue_class_id: { type: string, maxLength: 36 }
+        external_code: { type: string, maxLength: 64 }
+        active: { type: boolean }
+        online_visible: { type: boolean }
+        sort_order: { type: integer }
+
+    BerthCategoryUsage:
+      type: object
+      required: [berths, dynamic_areas, land_resources, rules]
+      properties:
+        berths: { type: integer }
+        dynamic_areas: { type: integer }
+        land_resources: { type: integer }
+        rules: { type: integer }
+
+    BerthCategory:
+      type: object
+      required: [id, code, name, applies_to, sort_order, archived, usage, version]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        applies_to:
+          type: array
+          items: { $ref: "#/components/schemas/CategoryTarget" }
+        sort_order: { type: integer }
+        archived: { type: boolean }
+        usage: { $ref: "#/components/schemas/BerthCategoryUsage" }
+        version: { type: integer }
+
+    CodeCount:
+      type: object
+      required: [code, count]
+      properties:
+        code: { type: string }
+        count: { type: integer }
+
+    CustomerCategoryCountList:
+      type: object
+      required: [items, uncategorised]
+      properties:
+        items:
+          description: every category of the enum in enum order, with count 0 when unused
+          type: array
+          items: { $ref: "#/components/schemas/CodeCount" }
+        uncategorised:
+          description: non-archived customers without a category
+          type: integer
+
+    BerthCategoryList:
+      type: object
+      required: [items, unknown_in_use]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/BerthCategory" }
+        unknown_in_use:
+          description: price_class codes used by elements without a matching category
+          type: array
+          items: { $ref: "#/components/schemas/CodeCount" }
+
+    BerthCategoryCreate:
+      type: object
+      required: [code, name, applies_to]
+      properties:
+        code: { type: string, minLength: 1, maxLength: 32 }
+        name: { $ref: "#/components/schemas/I18nText" }
+        applies_to:
+          type: array
+          minItems: 1
+          maxItems: 3
+          items: { $ref: "#/components/schemas/CategoryTarget" }
+        sort_order: { type: integer }
+
+    BerthCategoryPatch:
+      description: Absent fields are unchanged; the code cannot change; archived archives or restores it.
+      type: object
+      properties:
+        name: { $ref: "#/components/schemas/I18nText" }
+        applies_to:
+          type: array
+          minItems: 1
+          maxItems: 3
+          items: { $ref: "#/components/schemas/CategoryTarget" }
+        sort_order: { type: integer }
+        archived: { type: boolean }
+
+    BerthCategorySyncResult:
+      type: object
+      required: [created]
+      properties:
+        created:
+          type: array
+          items: { $ref: "#/components/schemas/BerthCategory" }
+
+    DateRange:
+      description: Inclusive range of nights
+      type: object
+      required: [from, to]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+
+    DocKey:
+      description: Client key of a new row of a price list document, unique in the request
+      type: string
+      minLength: 1
+      maxLength: 64
+      pattern: "^[A-Za-z0-9_:-]+$"
+
+    RatePeriod:
+      description: A season or an event of a price list. Saved rows carry id; new rows in a save carry key.
+      type: object
+      required: [code, name, kind, ranges]
+      properties:
+        id: { type: string }
+        key: { $ref: "#/components/schemas/DocKey" }
+        code: { type: string, minLength: 1, maxLength: 32 }
+        name: { $ref: "#/components/schemas/I18nText" }
+        kind: { $ref: "#/components/schemas/PeriodKind" }
+        color: { $ref: "#/components/schemas/PeriodColor" }
+        ranges:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items: { $ref: "#/components/schemas/DateRange" }
+
+    Band:
+      description: Length band inclusive up to max_cm (absent = open, last band only); order is the array order.
+      type: object
+      required: [code]
+      properties:
+        id: { type: string }
+        key: { $ref: "#/components/schemas/DocKey" }
+        code: { type: string, minLength: 1, maxLength: 32 }
+        max_cm: { type: integer, format: int64, minimum: 1, maximum: 20000 }
+        category: { type: string, maxLength: 32 }
+
+    LengthRounding:
+      type: object
+      required: [step_cm, mode]
+      properties:
+        step_cm: { type: integer, format: int64, enum: [1, 10, 50, 100] }
+        mode: { type: string, enum: [up, half_even] }
+
+    Ratio:
+      type: object
+      required: [num, den]
+      properties:
+        num: { type: integer, format: int64, minimum: 0, maximum: 100 }
+        den: { type: integer, format: int64, minimum: 1, maximum: 100 }
+
+    DepositPolicy:
+      description: Percent of the total or a fixed amount capped at the total (at most one)
+      type: object
+      properties:
+        percent_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        amount_cents: { type: integer, format: int64, minimum: 0, maximum: 100000000 }
+
+    PriceListSettings:
+      description: Engine settings (m2-plan §2.3). Map keys are contract types or "*" for the others.
+      type: object
+      required: [dimension_source, length_rounding]
+      properties:
+        dimension_source: { $ref: "#/components/schemas/DimensionSource" }
+        length_rounding: { $ref: "#/components/schemas/LengthRounding" }
+        min_beam_ratio: { oneOf: [{ $ref: "#/components/schemas/Ratio" }, { type: "null" }] }
+        split:
+          type: object
+          additionalProperties: { $ref: "#/components/schemas/SplitRule" }
+        rounding:
+          type: object
+          additionalProperties: { $ref: "#/components/schemas/TotalRounding" }
+        deposits:
+          type: object
+          additionalProperties: { $ref: "#/components/schemas/DepositPolicy" }
+        season_window: { oneOf: [{ $ref: "#/components/schemas/DateRange" }, { type: "null" }] }
+        primary_items:
+          description: Item id of the berth fee per contract type
+          type: object
+          additionalProperties: { type: string }
+        publish_matrix:
+          description: Stored for the public transit matrix (M8); unused in M2
+          type: boolean
+
+    PricingScope:
+      description: Empty or absent list = any value
+      type: object
+      properties:
+        contract_types:
+          type: array
+          items: { $ref: "#/components/schemas/ContractType" }
+        categories:
+          type: array
+          items: { type: string, maxLength: 32 }
+        group_ids:
+          type: array
+          items: { type: string, maxLength: 36 }
+        channels:
+          type: array
+          items: { $ref: "#/components/schemas/Channel" }
+        customer_categories:
+          type: array
+          items: { $ref: "#/components/schemas/CustomerCategory" }
+        periods:
+          description: Rate period codes
+          type: array
+          items: { type: string, maxLength: 32 }
+
+    PricingConditions:
+      type: object
+      properties:
+        hull_types:
+          type: array
+          items: { $ref: "#/components/schemas/HullType" }
+        overhang_min_cm: { type: integer, format: int64, minimum: 0, maximum: 20000 }
+        min_nights: { type: integer, minimum: 1, maximum: 3660 }
+        max_nights: { type: integer, minimum: 1, maximum: 3660 }
+        lead_min_days: { type: integer, minimum: 0, maximum: 3660 }
+        lead_max_days: { type: integer, minimum: 0, maximum: 3660 }
+
+    PricingEffect:
+      description: Exactly one of the two
+      type: object
+      properties:
+        percent_bp: { type: integer, format: int64, minimum: -100000, maximum: 100000 }
+        amount_cents: { type: integer, format: int64, minimum: -100000000, maximum: 100000000 }
+
+    Inclusion:
+      type: object
+      required: [item_id, qty_milli]
+      properties:
+        item_id: { type: string, maxLength: 36 }
+        qty_milli: { type: integer, format: int64, minimum: 1, maximum: 1000000000 }
+
+    PriceRule:
+      description: >-
+        A base rule, modifier or discount (field set by stage, m2-plan §2.2): base rules use item_id, basis, unit,
+        amount_cents/unit_cents/amounts and includes; modifiers and discounts use target_item_ids/types,
+        conditions and effect; discounts also discount_kind and promo_code. seq is assigned by the server.
+      type: object
+      required: [stage, name]
+      properties:
+        id: { type: string }
+        key: { $ref: "#/components/schemas/DocKey" }
+        seq: { type: integer, format: int64, readOnly: true }
+        stage: { $ref: "#/components/schemas/PricingStage" }
+        name: { type: string, minLength: 1, maxLength: 120 }
+        active: { type: boolean }
+        priority: { type: integer, format: int64, minimum: -1000, maximum: 1000 }
+        stackable: { type: boolean }
+        item_id: { type: string, maxLength: 36 }
+        basis: { $ref: "#/components/schemas/PricingBasis" }
+        unit: { $ref: "#/components/schemas/TimeUnit" }
+        amount_cents: { type: integer, format: int64, minimum: 0, maximum: 100000000 }
+        unit_cents: { type: integer, format: int64, minimum: 0, maximum: 100000000 }
+        amounts:
+          description: length_band band code → cents; per_berth category → cents
+          type: object
+          additionalProperties: { type: integer, format: int64, minimum: 0, maximum: 100000000 }
+        includes:
+          type: array
+          maxItems: 20
+          items: { $ref: "#/components/schemas/Inclusion" }
+        target_item_ids:
+          type: array
+          items: { type: string, maxLength: 36 }
+        target_item_types:
+          type: array
+          items: { $ref: "#/components/schemas/ItemType" }
+        conditions: { $ref: "#/components/schemas/PricingConditions" }
+        effect: { $ref: "#/components/schemas/PricingEffect" }
+        discount_kind: { $ref: "#/components/schemas/DiscountKind" }
+        promo_code: { type: string, maxLength: 32 }
+        scope: { $ref: "#/components/schemas/PricingScope" }
+
+    PriceListIssueRef:
+      type: object
+      required: [kind]
+      properties:
+        kind: { type: string, enum: [list, settings, period, band, rule, item] }
+        id:
+          description: Id of the row, or the client key of an unsaved one
+          type: string
+        field: { type: string }
+
+    PriceListIssue:
+      type: object
+      required: [code, severity, ref]
+      properties:
+        code:
+          description: pricing.Validate issue code (m2-plan §4.8), e.g. period_overlap
+          type: string
+        severity: { $ref: "#/components/schemas/MapIssueSeverity" }
+        ref: { $ref: "#/components/schemas/PriceListIssueRef" }
+        params:
+          description: Codes and integers as strings; never personal data
+          type: object
+          additionalProperties: { type: string }
+
+    PriceListSummary:
+      type: object
+      required: [id, code, name, status, valid_from, valid_to, contract_types, rule_count, version]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        status: { $ref: "#/components/schemas/PriceListStatus" }
+        valid_from: { $ref: "#/components/schemas/IsoDate" }
+        valid_to: { $ref: "#/components/schemas/IsoDate" }
+        contract_types:
+          type: array
+          items: { $ref: "#/components/schemas/ContractType" }
+        rule_count: { type: integer }
+        version: { type: integer }
+        source_price_list_id: { type: [string, "null"] }
+
+    PriceListSummaryList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/PriceListSummary" }
+
+    PriceListCreate:
+      type: object
+      required: [code, name, valid_from, valid_to, contract_types]
+      properties:
+        code: { type: string, minLength: 1, maxLength: 32 }
+        name: { $ref: "#/components/schemas/I18nText" }
+        valid_from: { $ref: "#/components/schemas/IsoDate" }
+        valid_to: { $ref: "#/components/schemas/IsoDate" }
+        contract_types:
+          type: array
+          minItems: 1
+          maxItems: 6
+          items: { $ref: "#/components/schemas/ContractType" }
+
+    PriceListSave:
+      description: The whole editable document of a draft; periods, bands and rules are replaced by the diff.
+      type: object
+      required: [code, name, valid_from, valid_to, contract_types, settings, periods, bands, rules]
+      properties:
+        code: { type: string, minLength: 1, maxLength: 32 }
+        name: { $ref: "#/components/schemas/I18nText" }
+        valid_from: { $ref: "#/components/schemas/IsoDate" }
+        valid_to: { $ref: "#/components/schemas/IsoDate" }
+        contract_types:
+          type: array
+          maxItems: 6
+          items: { $ref: "#/components/schemas/ContractType" }
+        settings: { $ref: "#/components/schemas/PriceListSettings" }
+        periods:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/RatePeriod" }
+        bands:
+          type: array
+          maxItems: 60
+          items: { $ref: "#/components/schemas/Band" }
+        rules:
+          type: array
+          maxItems: 2000
+          items: { $ref: "#/components/schemas/PriceRule" }
+
+    PriceListDocument:
+      allOf:
+        - $ref: "#/components/schemas/PriceListSave"
+        - type: object
+          required: [id, status, version, issues, updated_at]
+          properties:
+            id: { type: string }
+            status: { $ref: "#/components/schemas/PriceListStatus" }
+            source_price_list_id: { type: [string, "null"] }
+            content_sha256: { type: [string, "null"] }
+            activated_at: { type: [string, "null"], format: date-time }
+            archived_at: { type: [string, "null"], format: date-time }
+            version: { type: integer }
+            issues:
+              type: array
+              items: { $ref: "#/components/schemas/PriceListIssue" }
+            updated_at: { type: string, format: date-time }
+
+    PriceListSaveResult:
+      type: object
+      required: [document, id_map, issues]
+      properties:
+        document: { $ref: "#/components/schemas/PriceListDocument" }
+        id_map:
+          description: Row key of the request → new id
+          type: object
+          additionalProperties: { type: string }
+        issues:
+          type: array
+          items: { $ref: "#/components/schemas/PriceListIssue" }
+
+    PriceListValidation:
+      type: object
+      required: [issues]
+      properties:
+        issues:
+          type: array
+          items: { $ref: "#/components/schemas/PriceListIssue" }
+
+    PriceListActivate:
+      type: object
+      properties:
+        effective_from: { $ref: "#/components/schemas/IsoDate" }
+
+    PriceListRef:
+      type: object
+      required: [id, code, valid_from, valid_to]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        valid_from: { $ref: "#/components/schemas/IsoDate" }
+        valid_to: { $ref: "#/components/schemas/IsoDate" }
+
+    PriceListActivateResult:
+      type: object
+      required: [document, truncated]
+      properties:
+        document: { $ref: "#/components/schemas/PriceListDocument" }
+        truncated:
+          description: Predecessors whose valid_to was shortened (valid_to is the new value)
+          type: array
+          items: { $ref: "#/components/schemas/PriceListRef" }
+
+    RenewalAdjustment:
+      type: object
+      required: [scope]
+      properties:
+        scope: { type: string, enum: [all, item, category] }
+        item_id: { type: string, maxLength: 36 }
+        category: { type: string, maxLength: 32 }
+        percent_bp: { type: integer, format: int64, minimum: -10000, maximum: 100000 }
+        amount_cents: { type: integer, format: int64, minimum: -100000000, maximum: 100000000 }
+
+    RenewalMatrixOptions:
+      type: object
+      properties:
+        contract_types:
+          type: array
+          items: { $ref: "#/components/schemas/ContractType" }
+        channel: { $ref: "#/components/schemas/Channel" }
+        customer_category: { $ref: "#/components/schemas/CustomerCategory" }
+
+    RenewalRequest:
+      type: object
+      required: [dry_run, code, name, shift_years, amount_rounding]
+      properties:
+        dry_run: { type: boolean }
+        code: { type: string, minLength: 1, maxLength: 32 }
+        name: { $ref: "#/components/schemas/I18nText" }
+        shift_years: { type: integer, minimum: 0, maximum: 5 }
+        istat_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        adjustments:
+          type: array
+          maxItems: 200
+          items: { $ref: "#/components/schemas/RenewalAdjustment" }
+        amount_rounding: { $ref: "#/components/schemas/AmountRounding" }
+        valid_from: { $ref: "#/components/schemas/IsoDate" }
+        valid_to: { $ref: "#/components/schemas/IsoDate" }
+        matrix: { $ref: "#/components/schemas/RenewalMatrixOptions" }
+
+    RenewalDiffCell:
+      type: object
+      required: [row, col]
+      properties:
+        row: { type: integer }
+        col: { type: integer }
+        old_cents: { type: integer, format: int64 }
+        new_cents: { type: integer, format: int64 }
+        delta_cents: { type: integer, format: int64 }
+        delta_bp: { type: integer, format: int64 }
+
+    RenewalDiff:
+      type: object
+      required: [contract_type, before, after, cells]
+      properties:
+        contract_type: { $ref: "#/components/schemas/ContractType" }
+        before: { $ref: "#/components/schemas/PriceMatrix" }
+        after: { $ref: "#/components/schemas/PriceMatrix" }
+        cells:
+          type: array
+          items: { $ref: "#/components/schemas/RenewalDiffCell" }
+
+    RenewalPreview:
+      type: object
+      required: [document, diffs, summary]
+      properties:
+        document: { $ref: "#/components/schemas/PriceListSave" }
+        diffs:
+          type: array
+          items: { $ref: "#/components/schemas/RenewalDiff" }
+        summary:
+          type: object
+          required: [rules, amounts_changed]
+          properties:
+            rules: { type: integer }
+            amounts_changed: { type: integer }
+
+    SimulateVessel:
+      type: object
+      required: [loa_cm, beam_cm]
+      properties:
+        loa_cm: { type: integer, format: int64, minimum: 1, maximum: 20000 }
+        beam_cm: { type: integer, format: int64, minimum: 1, maximum: 20000 }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+
+    SimulateResource:
+      type: object
+      required: [type, id]
+      properties:
+        type: { $ref: "#/components/schemas/CategoryTarget" }
+        id: { type: string, maxLength: 36 }
+
+    SimulateService:
+      type: object
+      required: [item_id]
+      properties:
+        item_id: { type: string, maxLength: 36 }
+        qty_milli: { type: integer, format: int64, minimum: 0, maximum: 1000000000 }
+
+    PricingSimulateRequest:
+      description: >-
+        Stay to price. Nights are [arrival, departure). vessel_id or vessel, resource or category with berth
+        dimensions, customer_id or customer_category; explicit fields override the resolved ones. Matrix probes
+        use this shape with explicit dimensions, price_list_id and quoted_on.
+      type: object
+      required: [contract_type, arrival, departure]
+      properties:
+        price_list_id: { type: string, maxLength: 36 }
+        contract_type: { $ref: "#/components/schemas/ContractType" }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        item_id: { type: string, maxLength: 36 }
+        vessel_id: { type: string, maxLength: 36 }
+        vessel: { $ref: "#/components/schemas/SimulateVessel" }
+        resource: { $ref: "#/components/schemas/SimulateResource" }
+        category: { type: string, maxLength: 32 }
+        berth_length_cm: { type: integer, format: int64, minimum: 1, maximum: 20000 }
+        berth_width_cm: { type: integer, format: int64, minimum: 1, maximum: 20000 }
+        group_ids:
+          type: array
+          maxItems: 50
+          items: { type: string, maxLength: 36 }
+        customer_id: { type: string, maxLength: 36 }
+        customer_category: { $ref: "#/components/schemas/CustomerCategory" }
+        channel: { $ref: "#/components/schemas/Channel" }
+        promo_code: { type: string, maxLength: 32 }
+        quoted_on: { $ref: "#/components/schemas/IsoDate" }
+        services:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/SimulateService" }
+        deposit: { $ref: "#/components/schemas/DepositPolicy" }
+
+    PriceApplied:
+      type: object
+      required: [rule_id, delta_cents]
+      properties:
+        rule_id: { type: string }
+        delta_cents: { type: integer, format: int64 }
+
+    PriceBlock:
+      type: object
+      required: [from, to, unit, nights, rule_id, base_cents, modifiers, amount_cents]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to:
+          description: Exclusive; may be after the departure (best_combination overshoot)
+          allOf: [{ $ref: "#/components/schemas/IsoDate" }]
+        unit: { $ref: "#/components/schemas/TimeUnit" }
+        nights: { type: integer }
+        period: { type: string }
+        rule_id: { type: string }
+        base_cents: { type: integer, format: int64 }
+        modifiers:
+          type: array
+          items: { $ref: "#/components/schemas/PriceApplied" }
+        amount_cents: { type: integer, format: int64 }
+
+    PriceLine:
+      type: object
+      required: [seq, kind, item_id, item_code, item_type, qty_milli, blocks, base_cents, modifier_total_cents, discounts, amount_cents, rounding_share_cents, gross_cents, net_cents, vat_cents, vat_rate_bp, price_includes_vat, service_from, service_to]
+      properties:
+        seq: { type: integer }
+        kind: { type: string, enum: [berth, service, included] }
+        item_id: { type: string }
+        item_code: { type: string }
+        item_type: { $ref: "#/components/schemas/ItemType" }
+        revenue_class: { type: string }
+        external_code: { type: string }
+        qty_milli: { type: integer, format: int64 }
+        blocks:
+          type: array
+          items: { $ref: "#/components/schemas/PriceBlock" }
+        base_cents: { type: integer, format: int64 }
+        modifier_total_cents: { type: integer, format: int64 }
+        discounts:
+          type: array
+          items: { $ref: "#/components/schemas/PriceApplied" }
+        amount_cents: { type: integer, format: int64 }
+        rounding_share_cents: { type: integer, format: int64 }
+        gross_cents: { type: integer, format: int64 }
+        net_cents: { type: integer, format: int64 }
+        vat_cents: { type: integer, format: int64 }
+        vat_rate_bp: { type: integer, format: int64 }
+        vat_nature: { type: string }
+        price_includes_vat: { type: boolean }
+        service_from: { $ref: "#/components/schemas/IsoDate" }
+        service_to:
+          description: Last night (inclusive)
+          allOf: [{ $ref: "#/components/schemas/IsoDate" }]
+
+    VatBucket:
+      type: object
+      required: [vat_rate_bp, net_cents, vat_cents, gross_cents]
+      properties:
+        vat_rate_bp: { type: integer, format: int64 }
+        vat_nature: { type: string }
+        net_cents: { type: integer, format: int64 }
+        vat_cents: { type: integer, format: int64 }
+        gross_cents: { type: integer, format: int64 }
+
+    PriceTraceStep:
+      type: object
+      required: [code, line, block]
+      properties:
+        code:
+          description: Trace code (pricing/trace.go), shown as pricingEnums:trace.<code>
+          type: string
+        line: { type: integer }
+        block: { type: integer }
+        rule_id: { type: string }
+        params:
+          type: object
+          additionalProperties: { type: string }
+
+    PriceResolved:
+      description: What the simulator used after resolving ids; never names or contact data.
+      type: object
+      required: [price_list_id, price_list_code, item_id, channel, quoted_on, dimension_origin]
+      properties:
+        price_list_id: { type: string }
+        price_list_code: { type: string }
+        item_id: { type: string }
+        loa_cm: { type: integer, format: int64 }
+        beam_cm: { type: integer, format: int64 }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+        category: { type: string }
+        berth_length_cm: { type: integer, format: int64 }
+        berth_width_cm: { type: integer, format: int64 }
+        group_ids:
+          type: array
+          items: { type: string }
+        customer_category: { $ref: "#/components/schemas/CustomerCategory" }
+        channel: { $ref: "#/components/schemas/Channel" }
+        quoted_on: { $ref: "#/components/schemas/IsoDate" }
+        dimension_origin: { type: string, enum: [declared, measured, input, none] }
+
+    PriceBreakdown:
+      type: object
+      required: [engine_version, price_list_id, catalog_hash, contract_type, nights, lines, subtotal_cents, discount_total_cents, rounding_total_cents, total_cents, net_cents, vat_cents, vat_summary, deposit_cents, trace, warnings]
+      properties:
+        engine_version: { type: integer }
+        price_list_id: { type: string }
+        catalog_hash: { type: string }
+        contract_type: { $ref: "#/components/schemas/ContractType" }
+        nights: { type: integer }
+        lines:
+          type: array
+          items: { $ref: "#/components/schemas/PriceLine" }
+        subtotal_cents: { type: integer, format: int64 }
+        discount_total_cents: { type: integer, format: int64 }
+        rounding_total_cents: { type: integer, format: int64 }
+        total_cents: { type: integer, format: int64 }
+        net_cents: { type: integer, format: int64 }
+        vat_cents: { type: integer, format: int64 }
+        vat_summary:
+          type: array
+          items: { $ref: "#/components/schemas/VatBucket" }
+        deposit_cents: { type: integer, format: int64 }
+        trace:
+          type: array
+          items: { $ref: "#/components/schemas/PriceTraceStep" }
+        warnings:
+          type: array
+          items: { type: string }
+        resolved: { $ref: "#/components/schemas/PriceResolved" }
+
+    PriceMatrixRow:
+      type: object
+      required: [key, kind, probe_loa_cm, probe_beam_cm]
+      properties:
+        key: { type: string }
+        kind: { type: string, enum: [band, category] }
+        probe_loa_cm: { type: integer, format: int64 }
+        probe_beam_cm: { type: integer, format: int64 }
+
+    PriceMatrixColumn:
+      type: object
+      required: [key, arrival, departure]
+      properties:
+        key:
+          description: Rate period code, or year / season
+          type: string
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+
+    PriceMatrixCell:
+      type: object
+      required: [row, col, probe]
+      properties:
+        row: { type: integer }
+        col: { type: integer }
+        total_cents: { type: integer, format: int64 }
+        net_cents: { type: integer, format: int64 }
+        base_cents: { type: integer, format: int64 }
+        unit: { $ref: "#/components/schemas/TimeUnit" }
+        error:
+          description: Error code when the probe has no price, e.g. no_price:no_rule
+          type: string
+        probe: { $ref: "#/components/schemas/PricingSimulateRequest" }
+
+    PriceMatrix:
+      type: object
+      required: [price_list_id, contract_type, item_id, quoted_on, rows, columns, cells]
+      properties:
+        price_list_id: { type: string }
+        contract_type: { $ref: "#/components/schemas/ContractType" }
+        item_id: { type: string }
+        quoted_on: { $ref: "#/components/schemas/IsoDate" }
+        rows:
+          type: array
+          items: { $ref: "#/components/schemas/PriceMatrixRow" }
+        columns:
+          type: array
+          items: { $ref: "#/components/schemas/PriceMatrixColumn" }
+        cells:
+          type: array
+          items: { $ref: "#/components/schemas/PriceMatrixCell" }
+
+    PriceCoverageGap:
+      type: object
+      required: [contract_type, item_id, reason]
+      properties:
+        contract_type: { $ref: "#/components/schemas/ContractType" }
+        category: { type: string }
+        band: { type: string }
+        period: { type: string }
+        item_id: { type: string }
+        reason:
+          description: NoPriceError reason (no_rule, no_band, no_amount, outside_validity, no_primary_item, unit_missing)
+          type: string
+
+    PriceCoverage:
+      type: object
+      required: [gaps, elements_without_category, unknown_categories, checked]
+      properties:
+        gaps:
+          type: array
+          items: { $ref: "#/components/schemas/PriceCoverageGap" }
+        elements_without_category:
+          type: object
+          required: [berths, dynamic_areas, land_resources]
+          properties:
+            berths: { type: integer }
+            dynamic_areas: { type: integer }
+            land_resources: { type: integer }
+        unknown_categories:
+          type: array
+          items: { $ref: "#/components/schemas/CodeCount" }
+        checked: { type: integer }

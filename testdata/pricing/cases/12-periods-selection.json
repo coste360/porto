@@ -1,0 +1,948 @@
+{
+  "cases": [
+    {
+      "name": "season_low",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 3000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "period": "LOW",
+                "rule_id": "r-low"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "LOW night -> r-low 3000 (r-any has specificity 0) (VAT incl.)"
+    },
+    {
+      "name": "season_mid",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-15",
+        "departure": "2027-06-16",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 4500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "period": "MID",
+                "rule_id": "r-mid"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "MID -> 4500 (VAT incl.)"
+    },
+    {
+      "name": "season_high",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 7000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "period": "HIGH",
+                "rule_id": "r-high"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "HIGH -> 7000 (VAT incl.)"
+    },
+    {
+      "name": "event_overrides_season",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-09-16",
+        "departure": "2027-09-17",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 9000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "period": "SHOW",
+                "rule_id": "r-show"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "SHOW event inside MID: the event wins -> 9000 (VAT incl.)"
+    },
+    {
+      "name": "event_without_rule_falls_back_to_any",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-21",
+        "departure": "2027-07-22",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 2000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "period": "REGATTA",
+                "rule_id": "r-any"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "REGATTA overrides HIGH; no rule scoped to REGATTA, HIGH rules do not match; r-any (no scope) 2000 (VAT incl.)"
+    },
+    {
+      "name": "stay_crossing_low_to_mid",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-30",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 10500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "period": "LOW"
+              },
+              {
+                "period": "LOW"
+              },
+              {
+                "period": "MID",
+                "base_cents": 4500
+              }
+            ]
+          }
+        ]
+      },
+      "why": "May 30, 31 LOW 3000 each + June 1 MID 4500 = 10500 (VAT incl.)"
+    },
+    {
+      "name": "stay_crossing_into_event",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-19",
+        "departure": "2027-07-21",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 9000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "period": "HIGH"
+              },
+              {
+                "period": "REGATTA",
+                "base_cents": 2000
+              }
+            ]
+          }
+        ]
+      },
+      "why": "HIGH 7000 + REGATTA (r-any) 2000 (VAT incl.)"
+    },
+    {
+      "name": "specificity_category_beats_period_only",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {
+          "category": "A"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 8000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-cat-a"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "r-cat-a specificity 2 > r-high 1 -> 8000 (VAT incl.)"
+    },
+    {
+      "name": "specificity_other_category",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {
+          "category": "B"
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 7000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-high"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "category B: r-cat-a does not match -> r-high 7000 (VAT incl.)"
+    },
+    {
+      "name": "priority_beats_specificity",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {
+          "category": "A"
+        },
+        "quoted_on": "2026-12-01",
+        "channel": "online"
+      },
+      "expect": {
+        "total_cents": 6500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-online-high"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "online + A: r-online-high priority 5 beats r-cat-a (priority 0, specificity 2) (VAT incl.)"
+    },
+    {
+      "name": "channel_scope_online",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "channel": "online"
+      },
+      "expect": {
+        "total_cents": 6500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-online-high"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "online in HIGH -> 6500 (VAT incl.)"
+    },
+    {
+      "name": "recency_higher_seq_wins",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "add_rules": [
+        {
+          "id": "r-high-new",
+          "seq": 10,
+          "stage": "base",
+          "name": "r-high-new",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {
+            "periods": [
+              "HIGH"
+            ]
+          },
+          "amount_cents": 7200
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 7200,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-high-new"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "r-high-new seq 10 vs r-high seq 3, same priority and specificity -> 7200 (VAT incl.)"
+    },
+    {
+      "name": "lowest_id_breaks_full_tie",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "add_rules": [
+        {
+          "id": "r-aaa",
+          "seq": 3,
+          "stage": "base",
+          "name": "r-aaa",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {
+            "periods": [
+              "HIGH"
+            ]
+          },
+          "amount_cents": 7300
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 7300,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-aaa"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "r-aaa and r-high: same priority, specificity, seq 3 -> lower id r-aaa (VAT incl.)"
+    },
+    {
+      "name": "priority_one_unscoped_beats_scoped",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "add_rules": [
+        {
+          "id": "r-prio",
+          "seq": 11,
+          "stage": "base",
+          "name": "r-prio",
+          "active": true,
+          "priority": 1,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 2500
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 2500,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-prio"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "r-prio priority 1 without scope beats every priority-0 rule (VAT incl.)"
+    },
+    {
+      "name": "inactive_rule_ignored",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "add_rules": [
+        {
+          "id": "r-top",
+          "seq": 12,
+          "stage": "base",
+          "name": "r-top",
+          "active": false,
+          "priority": 100,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {
+            "periods": [
+              "HIGH"
+            ]
+          },
+          "amount_cents": 1
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 7000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-high"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "r-top (priority 100) is inactive -> r-high 7000 (VAT incl.)"
+    },
+    {
+      "name": "group_scope_matches",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "add_rules": [
+        {
+          "id": "r-grp",
+          "seq": 13,
+          "stage": "base",
+          "name": "r-grp",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {
+            "periods": [
+              "HIGH"
+            ],
+            "group_ids": [
+              "g-pontile-a"
+            ]
+          },
+          "amount_cents": 6800
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {
+          "group_ids": [
+            "g-pontile-b",
+            "g-pontile-a"
+          ]
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 6800,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-grp"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "berth in group g-pontile-a: r-grp specificity 2 -> 6800 (VAT incl.)"
+    },
+    {
+      "name": "group_scope_not_matching",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "add_rules": [
+        {
+          "id": "r-grp",
+          "seq": 13,
+          "stage": "base",
+          "name": "r-grp",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {
+            "periods": [
+              "HIGH"
+            ],
+            "group_ids": [
+              "g-pontile-a"
+            ]
+          },
+          "amount_cents": 6800
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 7000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-high"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "no group: r-grp does not match -> 7000 (VAT incl.)"
+    },
+    {
+      "name": "customer_category_scope_base_rule",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "add_rules": [
+        {
+          "id": "r-member",
+          "seq": 14,
+          "stage": "base",
+          "name": "r-member",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {
+            "periods": [
+              "HIGH"
+            ],
+            "customer_categories": [
+              "member"
+            ]
+          },
+          "amount_cents": 5000
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "customer_category": "member"
+      },
+      "expect": {
+        "total_cents": 5000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-member"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "member: r-member specificity 2 -> 5000 (VAT incl.)"
+    },
+    {
+      "name": "contract_type_scope_counts_for_specificity",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "add_rules": [
+        {
+          "id": "r-ct",
+          "seq": 15,
+          "stage": "base",
+          "name": "r-ct",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {
+            "periods": [
+              "HIGH"
+            ],
+            "contract_types": [
+              "transit"
+            ]
+          },
+          "amount_cents": 7700
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-05",
+        "departure": "2027-07-06",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 7700,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-ct"
+              }
+            ]
+          }
+        ]
+      },
+      "why": "r-ct scope transit + HIGH: specificity 2 -> 7700 (VAT incl.)"
+    },
+    {
+      "name": "stay_past_valid_to_night_without_period",
+      "spec": "12.2 periods, 12.4 rule selection",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-12-30",
+        "departure": "2028-01-02",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 8000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "period": "LOW"
+              },
+              {
+                "period": "LOW"
+              },
+              {
+                "rule_id": "r-any",
+                "base_cents": 2000
+              }
+            ]
+          }
+        ],
+        "warnings": [
+          "stay_exceeds_validity"
+        ]
+      },
+      "why": "Dec 30, 31 LOW 3000 each; 2028-01-01 has no period -> r-any 2000; same list prices the whole stay with warning (VAT incl.)"
+    },
+    {
+      "name": "arrival_before_validity",
+      "spec": "12.2 validity",
+      "catalog": "periods",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2026-12-31",
+        "departure": "2027-01-02",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "no_price:outside_validity"
+      },
+      "why": "arrival 2026-12-31 before valid_from 2027-01-01"
+    },
+    {
+      "name": "no_period_and_no_unscoped_rule",
+      "spec": "12.4 ErrNoPrice",
+      "catalog": "periods",
+      "patch": {
+        "price_list": {
+          "periods": [
+            {
+              "code": "MID",
+              "kind": "season",
+              "ranges": [
+                {
+                  "from": "2027-06-01",
+                  "to": "2027-06-30"
+                },
+                {
+                  "from": "2027-09-01",
+                  "to": "2027-09-30"
+                }
+              ]
+            },
+            {
+              "code": "HIGH",
+              "kind": "season",
+              "ranges": [
+                {
+                  "from": "2027-07-01",
+                  "to": "2027-08-31"
+                }
+              ]
+            },
+            {
+              "code": "SHOW",
+              "kind": "event",
+              "ranges": [
+                {
+                  "from": "2027-09-15",
+                  "to": "2027-09-20"
+                }
+              ]
+            },
+            {
+              "code": "REGATTA",
+              "kind": "event",
+              "ranges": [
+                {
+                  "from": "2027-07-20",
+                  "to": "2027-07-22"
+                }
+              ]
+            }
+          ]
+        },
+        "rules": [
+          {
+            "id": "r-mid",
+            "seq": 2,
+            "stage": "base",
+            "name": "r-mid",
+            "active": true,
+            "priority": 0,
+            "stackable": false,
+            "item_id": "trn",
+            "basis": "flat",
+            "unit": "night",
+            "conditions": {},
+            "effect": {},
+            "scope": {
+              "periods": [
+                "MID"
+              ]
+            },
+            "amount_cents": 4500
+          },
+          {
+            "id": "r-high",
+            "seq": 3,
+            "stage": "base",
+            "name": "r-high",
+            "active": true,
+            "priority": 0,
+            "stackable": false,
+            "item_id": "trn",
+            "basis": "flat",
+            "unit": "night",
+            "conditions": {},
+            "effect": {},
+            "scope": {
+              "periods": [
+                "HIGH"
+              ]
+            },
+            "amount_cents": 7000
+          },
+          {
+            "id": "r-show",
+            "seq": 4,
+            "stage": "base",
+            "name": "r-show",
+            "active": true,
+            "priority": 0,
+            "stackable": false,
+            "item_id": "trn",
+            "basis": "flat",
+            "unit": "night",
+            "conditions": {},
+            "effect": {},
+            "scope": {
+              "periods": [
+                "SHOW"
+              ]
+            },
+            "amount_cents": 9000
+          }
+        ]
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "no_price:no_rule"
+      },
+      "why": "LOW removed: 2027-03-10 has no period; night rules exist but every one is scoped to a period -> no_rule"
+    },
+    {
+      "name": "rule_for_unit_scoped_elsewhere",
+      "spec": "12.4 ErrNoPrice",
+      "catalog": "periods",
+      "patch": {
+        "rules": [
+          {
+            "id": "r-high",
+            "seq": 3,
+            "stage": "base",
+            "name": "r-high",
+            "active": true,
+            "priority": 0,
+            "stackable": false,
+            "item_id": "trn",
+            "basis": "flat",
+            "unit": "night",
+            "conditions": {},
+            "effect": {},
+            "scope": {
+              "periods": [
+                "HIGH"
+              ]
+            },
+            "amount_cents": 7000
+          }
+        ]
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "no_price:no_rule"
+      },
+      "why": "only r-high exists; a LOW night matches no rule -> no_rule"
+    },
+    {
+      "name": "no_rule_for_the_unit",
+      "spec": "12.4 ErrNoPrice",
+      "catalog": "periods",
+      "patch": {
+        "rules": [
+          {
+            "id": "r-week",
+            "seq": 1,
+            "stage": "base",
+            "name": "r-week",
+            "active": true,
+            "priority": 0,
+            "stackable": false,
+            "item_id": "trn",
+            "basis": "flat",
+            "unit": "week",
+            "conditions": {},
+            "effect": {},
+            "scope": {},
+            "amount_cents": 20000
+          }
+        ]
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "no_price:unit_missing"
+      },
+      "why": "only a week rule exists; transit is priced per night and the list has no night rule at all -> unit_missing"
+    }
+  ]
+}

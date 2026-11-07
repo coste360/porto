@@ -33,6 +33,9 @@ describe('subscribeMarinaStream', () => {
     source?.dispatchEvent(new Event('marina.changed'));
     expect(spy).toHaveBeenCalledWith({ queryKey: queryKeys.marina('m1') });
 
+    source?.dispatchEvent(new Event('pricing.changed'));
+    expect(spy).toHaveBeenCalledWith({ queryKey: queryKeys.pricing('m1') });
+
     stop();
     expect(source?.closed).toBe(true);
   });

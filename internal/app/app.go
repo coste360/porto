@@ -22,6 +22,7 @@ import (
 	"github.com/coste360/porto/internal/domain/audit"
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
+	"github.com/coste360/porto/internal/domain/catalog"
 	"github.com/coste360/porto/internal/domain/customer"
 	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/device"
@@ -31,6 +32,7 @@ import (
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/meta"
 	"github.com/coste360/porto/internal/domain/notify"
+	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/team"
 	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/domain/webhook"
@@ -90,6 +92,10 @@ type App struct {
 	Vessels   *vessel.Service
 	Documents *document.Service
 	Deadlines *deadline.Service
+
+	// M2
+	Catalog    *catalog.Service
+	PriceLists *pricelist.Service
 
 	ownDB bool
 }
@@ -171,6 +177,8 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	a.Documents = document.NewService(document.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
 	})
+	a.Catalog = catalog.NewService(catalog.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log})
+	a.PriceLists = pricelist.NewService(pricelist.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log})
 	policy := event.EgressPolicy{AllowPrivate: cfg.WebhooksAllowPrivate, AllowHTTP: cfg.WebhooksAllowPrivate}
 	a.Webhooks = webhook.NewService(db, clk, cfg.Keys, aw, a.Outbox, policy, log)
 	a.Deliverer = webhook.NewDeliverer(db, clk, cfg.Keys, event.NewEgress(policy, webhook.DeliveryTimeout), aw, a.Version, log)
@@ -194,7 +202,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			Webhooks: a.Webhooks, Audit: auditlog.NewService(db, aw), SSE: sse.NewServer(a.Bus, a.Bus, log),
 			Meta: meta.Get(cfg, a.Version), SecureCookies: cfg.SecureCookies(),
 			Harbor: a.Harbor, Customers: a.Customers, Vessels: a.Vessels, Documents: a.Documents,
-			Deadlines: a.Deadlines,
+			Deadlines: a.Deadlines, Catalog: a.Catalog, PriceLists: a.PriceLists,
 		},
 		Device:               &httpdevice.Handler{Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String()},
 		Public:               &public.Handler{Marinas: a.Marinas},

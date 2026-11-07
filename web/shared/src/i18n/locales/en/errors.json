@@ -41,5 +41,11 @@
   "csv_invalid": "The CSV file is not valid.",
   "customer_anonymized": "The customer has been anonymised and cannot be changed.",
   "customer_merged": "The customer was merged into another one and cannot be changed.",
-  "download_link_expired": "The download link has expired or is not valid. Request a new one."
+  "download_link_expired": "The download link has expired or is not valid. Request a new one.",
+  "no_price": "No price for this request: check the price list, period and category.",
+  "promo_not_applicable": "The promo code does not apply to this request.",
+  "price_list_invalid": "The price list has blocking errors: fix them before activating it.",
+  "price_list_immutable": "The price list is already published and cannot change: create a copy or a renewal.",
+  "price_list_overlap": "Another active price list covers the same days for the same contract type.",
+  "in_use": "This is still in use and cannot be deleted: deactivate it instead."
 }

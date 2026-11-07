@@ -51,6 +51,21 @@ const filesPrefix = "files/"
 var deferredColumns = map[string][]string{
 	"harbor_structures": {"parent_id"},
 	"customers":         {"merged_into_id"},
+	"revenue_classes":   {"parent_id"},
+	"price_lists":       {"source_price_list_id"},
+}
+
+// lateColumns are inserted with a placeholder value and set to their real value after every table is loaded.
+// price_lists.status: the immutability triggers (INV-22) refuse periods, bands and rules of a list that is not a
+// draft, so lists are restored as drafts and get their status once every table (rules, item snapshot) is in.
+var lateColumns = map[string]map[string]any{
+	"price_lists": {"status": "draft"},
+}
+
+// lateUpdate is a column value set after the whole archive is loaded.
+type lateUpdate struct {
+	table, id, col string
+	value          any
 }
 
 // File describes one blob of the file store in the archive.
@@ -314,9 +329,15 @@ func Restore(ctx context.Context, db *store.DB, in io.Reader, force bool, filesD
 		}
 	}
 	err = db.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
+		var late []lateUpdate
 		for _, t := range m.Tables {
-			if err := loadTable(ctx, tx, db.Kind, t, filepath.Join(tmp, t.Name+".jsonl")); err != nil {
+			if err := loadTable(ctx, tx, db.Kind, t, filepath.Join(tmp, t.Name+".jsonl"), &late); err != nil {
 				return fmt.Errorf("backup: restore %s: %w", t.Name, err)
+			}
+		}
+		for _, u := range late {
+			if err := store.SetColumnByID(ctx, tx, u.table, u.col, u.id, u.value); err != nil {
+				return fmt.Errorf("backup: restore %s.%s: %w", u.table, u.col, err)
 			}
 		}
 		return nil
@@ -456,7 +477,7 @@ func extractFile(r io.Reader, dst, wantSum string) error {
 	return nil
 }
 
-func loadTable(ctx context.Context, tx bun.IDB, d store.Dialect, t Table, src string) error {
+func loadTable(ctx context.Context, tx bun.IDB, d store.Dialect, t Table, src string, late *[]lateUpdate) error {
 	cols, err := store.TableColumns(ctx, tx, d, t.Name)
 	if err != nil {
 		return err
@@ -516,6 +537,13 @@ func loadTable(ctx context.Context, tx bun.IDB, d store.Dialect, t Table, src st
 				id, _ := obj["id"].(string)
 				updates = append(updates, later{id: id, col: c.Name, value: a})
 				a = nil
+			}
+			if placeholder, ok := lateColumns[t.Name][c.Name]; ok && a != nil {
+				id, _ := obj["id"].(string)
+				if a != placeholder {
+					*late = append(*late, lateUpdate{table: t.Name, id: id, col: c.Name, value: a})
+				}
+				a = placeholder
 			}
 			args[i] = a
 		}

@@ -6,6 +6,7 @@ import (
 
 	"github.com/coste360/porto/internal/domain/apikey"
 	"github.com/coste360/porto/internal/domain/auth"
+	"github.com/coste360/porto/internal/domain/catalog"
 	"github.com/coste360/porto/internal/domain/customer"
 	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/device"
@@ -14,6 +15,8 @@ import (
 	"github.com/coste360/porto/internal/domain/harbor"
 	"github.com/coste360/porto/internal/domain/layout"
 	"github.com/coste360/porto/internal/domain/marina"
+	"github.com/coste360/porto/internal/domain/pricelist"
+	"github.com/coste360/porto/internal/domain/pricing"
 	"github.com/coste360/porto/internal/domain/team"
 	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/domain/webhook"
@@ -70,6 +73,18 @@ var sentinels = []struct {
 	{document.ErrLinkExpired, problem.DownloadLinkExpired},
 	{document.ErrVersionMismatch, problem.VersionConflict},
 	{deadline.ErrVersionMismatch, problem.VersionConflict},
+	// M2 (m2-plan §4.6)
+	{pricing.ErrNoPrice, problem.NoPrice},
+	{pricing.ErrPromoNotApplicable, problem.PromoNotApplicable},
+	{pricing.ErrInvalidInput, problem.ValidationFailed},
+	{pricing.ErrOverflow, problem.ValidationFailed},
+	{catalog.ErrInUse, problem.InUse},
+	{catalog.ErrVersionMismatch, problem.VersionConflict},
+	{pricelist.ErrImmutable, problem.PriceListImmutable},
+	{pricelist.ErrOverlap, problem.PriceListOverlap},
+	{pricelist.ErrInvalid, problem.PriceListInvalid},
+	{pricelist.ErrVersionMismatch, problem.VersionConflict},
+	{domainerr.ErrImmutable, problem.PriceListImmutable},
 	{domainerr.ErrInvalidCursor, problem.BadRequest},
 	{domainerr.ErrNotFound, problem.NotFound},
 	{domainerr.ErrVersionMismatch, problem.VersionConflict},
@@ -87,6 +102,9 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 	var mi *harbor.MapInvalidError
 	if errors.As(err, &mi) {
 		return problem.MapInvalid, []problem.Option{problem.WithIssues(MapIssues(mi.Report))}, true
+	}
+	if t, opts, ok := mapPricing(err); ok {
+		return t, opts, true
 	}
 	var v *auth.ValidationError
 	if errors.As(err, &v) {
@@ -136,4 +154,35 @@ func MapIssues(r layout.Report) []MapIssue {
 		}
 	}
 	return out
+}
+
+// mapPricing maps the typed errors of M2 that carry details or issues (m2-plan §4.6).
+func mapPricing(err error) (problem.Type, []problem.Option, bool) {
+	if errors.Is(err, pricelist.ErrNoActiveList) {
+		return problem.NoPrice, []problem.Option{problem.WithDetails(map[string]string{"reason": pricelist.ReasonNoActiveList})}, true
+	}
+	if np, ok := errors.AsType[*pricing.NoPriceError](err); ok {
+		return problem.NoPrice, []problem.Option{problem.WithDetails(np)}, true
+	}
+	if ie, ok := errors.AsType[*pricing.InputError](err); ok {
+		return problem.ValidationFailed, []problem.Option{problem.Fields(problem.FieldError{Field: ie.Field, Code: ie.Code})}, true
+	}
+	if oe, ok := errors.AsType[*pricelist.OverlapError](err); ok {
+		conflicts := oe.Conflicts
+		if conflicts == nil {
+			conflicts = []pricelist.Conflict{}
+		}
+		return problem.PriceListOverlap, []problem.Option{problem.WithDetails(map[string]any{"conflicts": conflicts})}, true
+	}
+	if ve, ok := errors.AsType[*pricelist.InvalidError](err); ok {
+		issues := ve.Issues
+		if issues == nil {
+			issues = []pricing.Issue{}
+		}
+		return problem.PriceListInvalid, []problem.Option{problem.WithPriceListIssues(issues)}, true
+	}
+	if ue, ok := errors.AsType[*catalog.InUseError](err); ok {
+		return problem.InUse, []problem.Option{problem.WithDetails(map[string]int{"references": ue.References})}, true
+	}
+	return "", nil, false
 }

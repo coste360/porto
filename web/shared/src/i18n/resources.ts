@@ -12,6 +12,9 @@ import enImports from './locales/en/imports.json';
 import enKit from './locales/en/kit.json';
 import enMaps from './locales/en/maps.json';
 import enMarina from './locales/en/marina.json';
+import enPricing from './locales/en/pricing.json';
+import enPricingEnums from './locales/en/pricingEnums.json';
+import enPricingTools from './locales/en/pricingTools.json';
 import enTeam from './locales/en/team.json';
 import enVessels from './locales/en/vessels.json';
 import enWebhooks from './locales/en/webhooks.json';
@@ -29,6 +32,9 @@ import itImports from './locales/it/imports.json';
 import itKit from './locales/it/kit.json';
 import itMaps from './locales/it/maps.json';
 import itMarina from './locales/it/marina.json';
+import itPricing from './locales/it/pricing.json';
+import itPricingEnums from './locales/it/pricingEnums.json';
+import itPricingTools from './locales/it/pricingTools.json';
 import itTeam from './locales/it/team.json';
 import itVessels from './locales/it/vessels.json';
 import itWebhooks from './locales/it/webhooks.json';
@@ -56,6 +62,9 @@ export const NAMESPACES = [
   'documents',
   'deadlines',
   'imports',
+  'pricingEnums',
+  'pricing',
+  'pricingTools',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -78,6 +87,9 @@ export const resources = {
     documents: itDocuments,
     deadlines: itDeadlines,
     imports: itImports,
+    pricingEnums: itPricingEnums,
+    pricing: itPricing,
+    pricingTools: itPricingTools,
   },
   en: {
     common: enCommon,
@@ -97,5 +109,8 @@ export const resources = {
     documents: enDocuments,
     deadlines: enDeadlines,
     imports: enImports,
+    pricingEnums: enPricingEnums,
+    pricing: enPricing,
+    pricingTools: enPricingTools,
   },
 } as const;

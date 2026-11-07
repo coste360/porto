@@ -1,0 +1,429 @@
+{
+  "cases": [
+    {
+      "name": "included_services_zero_lines",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 4000,
+        "lines": [
+          {
+            "kind": "berth",
+            "seq": 1,
+            "amount_cents": 4000
+          },
+          {
+            "kind": "included",
+            "item_code": "SRV-WIFI",
+            "qty_milli": 1000,
+            "amount_cents": 0,
+            "gross_cents": 0,
+            "seq": 2
+          },
+          {
+            "kind": "included",
+            "item_code": "SRV-ELE",
+            "qty_milli": 5000,
+            "amount_cents": 0,
+            "gross_cents": 0,
+            "seq": 3
+          }
+        ]
+      },
+      "why": "r-trn includes Wi-Fi (1) and 5 kWh: two included lines at 0 after the berth line; total 4000 (VAT incl.)"
+    },
+    {
+      "name": "included_from_first_block_rule",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-30",
+        "departure": "2027-07-02",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 10000,
+        "lines": [
+          {
+            "kind": "berth",
+            "amount_cents": 10000,
+            "blocks": [
+              {
+                "rule_id": "r-trn"
+              },
+              {
+                "rule_id": "r-trn-high"
+              }
+            ]
+          },
+          {
+            "kind": "included",
+            "item_code": "SRV-WIFI",
+            "qty_milli": 1000,
+            "amount_cents": 0,
+            "gross_cents": 0
+          },
+          {
+            "kind": "included",
+            "item_code": "SRV-ELE",
+            "qty_milli": 5000,
+            "amount_cents": 0,
+            "gross_cents": 0
+          }
+        ]
+      },
+      "why": "first night LOW priced by r-trn (with inclusions), second HIGH by r-trn-high 6000: 4000 + 6000; inclusions of the first block's rule"
+    },
+    {
+      "name": "no_inclusions_when_first_block_rule_has_none",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-01",
+        "departure": "2027-07-03",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 12000,
+        "lines": [
+          {
+            "kind": "berth",
+            "amount_cents": 12000
+          }
+        ]
+      },
+      "why": "both nights HIGH: r-trn-high 2 x 6000, it has no inclusions"
+    },
+    {
+      "name": "added_flat_stay_vat_included",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-12",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "wif"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 8500,
+        "lines": [
+          {
+            "kind": "berth"
+          },
+          {
+            "kind": "included",
+            "item_code": "SRV-WIFI",
+            "qty_milli": 1000,
+            "amount_cents": 0,
+            "gross_cents": 0
+          },
+          {
+            "kind": "included",
+            "item_code": "SRV-ELE",
+            "qty_milli": 5000,
+            "amount_cents": 0,
+            "gross_cents": 0
+          },
+          {
+            "kind": "service",
+            "seq": 4,
+            "item_code": "SRV-WIFI",
+            "amount_cents": 500
+          }
+        ]
+      },
+      "why": "berth 2 x 4000 + Wi-Fi requested once (stay) 500 VAT incl. = 8500"
+    },
+    {
+      "name": "added_flat_stay_vat_excluded",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cra"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 22300
+      },
+      "why": "4000 + crane 15000 + 22% (3300) = 22300"
+    },
+    {
+      "name": "added_night_service",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-13",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cln"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 15000
+      },
+      "why": "3 x 4000 + cleaning 1000 x 3 nights = 15000"
+    },
+    {
+      "name": "added_metered_service",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "ele",
+            "qty_milli": 20000
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 4854
+      },
+      "why": "20 kWh x 35 = 700; + half_even(700 x 0.22 = 154) = 854; 4000 + 854"
+    },
+    {
+      "name": "service_modifier_high_season",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cra"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 26130,
+        "lines": [
+          {
+            "kind": "berth",
+            "amount_cents": 6000
+          },
+          {
+            "kind": "service",
+            "item_code": "SRV-GRU",
+            "base_cents": 15000,
+            "modifier_total_cents": 1500,
+            "amount_cents": 16500,
+            "gross_cents": 20130,
+            "revenue_class": "servizi",
+            "external_code": "S07",
+            "blocks": [
+              {
+                "unit": "stay",
+                "period": "HIGH",
+                "modifiers": [
+                  {
+                    "rule_id": "m-svc",
+                    "delta_cents": 1500
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "why": "HIGH: berth 6000; crane 15000 + m-svc 10% (1500) = 16500 + 22% (3630) = 20130; total 26130"
+    },
+    {
+      "name": "service_modifier_not_for_utilities",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "ele",
+            "qty_milli": 20000
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 6854
+      },
+      "why": "m-svc targets services; electricity is a utility: 700 -> 854"
+    },
+    {
+      "name": "service_unknown_item",
+      "spec": "12.4 services",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "nope"
+          }
+        ]
+      },
+      "expect": {
+        "error": "invalid_input:unknown_item"
+      },
+      "why": "item nope is not in the catalog"
+    },
+    {
+      "name": "service_without_any_rule",
+      "spec": "12.4 services",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "bar"
+          }
+        ]
+      },
+      "expect": {
+        "error": "no_price:unit_missing"
+      },
+      "why": "PRD-BAR has no stay or night rule at all -> unit_missing"
+    },
+    {
+      "name": "service_rule_scope_not_matching",
+      "spec": "12.4 services",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "tow"
+          }
+        ]
+      },
+      "expect": {
+        "error": "no_price:no_rule"
+      },
+      "why": "r-tow is scoped to online; desk quote -> no_rule"
+    },
+    {
+      "name": "service_lines_in_request_order",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cra"
+          },
+          {
+            "item_id": "wif"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 22800,
+        "lines": [
+          {
+            "seq": 1
+          },
+          {
+            "seq": 2
+          },
+          {
+            "seq": 3
+          },
+          {
+            "seq": 4,
+            "item_code": "SRV-GRU"
+          },
+          {
+            "seq": 5,
+            "item_code": "SRV-WIFI"
+          }
+        ]
+      },
+      "why": "berth, inclusions, then services in request order: crane, Wi-Fi; 4000 + 18300 + 500"
+    },
+    {
+      "name": "service_period_dates",
+      "spec": "12.4 services, plan D26",
+      "catalog": "services",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-03-10",
+        "departure": "2027-03-13",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "wif"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 12500,
+        "lines": [
+          {
+            "service_from": "2027-03-10",
+            "service_to": "2027-03-12"
+          },
+          {},
+          {},
+          {
+            "service_from": "2027-03-10",
+            "service_to": "2027-03-12"
+          }
+        ]
+      },
+      "why": "service_to is the last night (inclusive): 2027-03-12; 3 x 4000 + 500"
+    }
+  ]
+}

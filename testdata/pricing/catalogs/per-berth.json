@@ -1,0 +1,101 @@
+{
+  "price_list": {
+    "id": "pl-pb",
+    "code": "PB-2027",
+    "valid_from": "2027-01-01",
+    "valid_to": "2027-12-31",
+    "contract_types": [
+      "transit",
+      "annual"
+    ],
+    "settings": {
+      "dimension_source": "vessel",
+      "length_rounding": {
+        "step_cm": 10,
+        "mode": "up"
+      },
+      "min_beam_ratio": {
+        "num": 1,
+        "den": 3
+      },
+      "split": {
+        "*": "pro_rata_daily"
+      },
+      "rounding": {
+        "*": "none"
+      },
+      "primary_items": {
+        "transit": "trn",
+        "annual": "orm"
+      }
+    },
+    "periods": [],
+    "bands": []
+  },
+  "items": [
+    {
+      "id": "trn",
+      "code": "TRN-NTT",
+      "item_type": "berth_fee",
+      "unit": "night",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true,
+      "revenue_class": "ormeggi",
+      "external_code": "T01"
+    },
+    {
+      "id": "orm",
+      "code": "ORM-ANN",
+      "item_type": "berth_fee",
+      "unit": "year",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": false,
+      "active": true,
+      "revenue_class": "ormeggi",
+      "external_code": "A01"
+    }
+  ],
+  "rules": [
+    {
+      "id": "r-pb-n",
+      "seq": 1,
+      "stage": "base",
+      "name": "r-pb-n",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "per_berth",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amounts": {
+        "A": 5000,
+        "B": 8000,
+        "C": 12000
+      }
+    },
+    {
+      "id": "r-pb-y",
+      "seq": 2,
+      "stage": "base",
+      "name": "r-pb-y",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "orm",
+      "basis": "per_berth",
+      "unit": "year",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 200000,
+      "amounts": {
+        "A": 300000,
+        "B": 450000
+      }
+    }
+  ]
+}

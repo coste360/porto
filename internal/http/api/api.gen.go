@@ -14,6 +14,27 @@ import (
 	"github.com/oapi-codegen/runtime"
 )
 
+// Defines values for AmountRounding.
+const (
+	AmountRoundingEuro     AmountRounding = "euro"
+	AmountRoundingNone     AmountRounding = "none"
+	AmountRoundingTenCents AmountRounding = "ten_cents"
+)
+
+// Valid indicates whether the value is a known member of the AmountRounding enum.
+func (e AmountRounding) Valid() bool {
+	switch e {
+	case AmountRoundingEuro:
+		return true
+	case AmountRoundingNone:
+		return true
+	case AmountRoundingTenCents:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AreaKind.
 const (
 	Linear  AreaKind = "linear"
@@ -236,6 +257,51 @@ func (e BuoyFieldGeneratorType) Valid() bool {
 	}
 }
 
+// Defines values for CategoryTarget.
+const (
+	CategoryTargetBerth        CategoryTarget = "berth"
+	CategoryTargetDynamicArea  CategoryTarget = "dynamic_area"
+	CategoryTargetLandResource CategoryTarget = "land_resource"
+)
+
+// Valid indicates whether the value is a known member of the CategoryTarget enum.
+func (e CategoryTarget) Valid() bool {
+	switch e {
+	case CategoryTargetBerth:
+		return true
+	case CategoryTargetDynamicArea:
+		return true
+	case CategoryTargetLandResource:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for Channel.
+const (
+	ChannelApi      Channel = "api"
+	ChannelDesk     Channel = "desk"
+	ChannelExternal Channel = "external"
+	ChannelOnline   Channel = "online"
+)
+
+// Valid indicates whether the value is a known member of the Channel enum.
+func (e Channel) Valid() bool {
+	switch e {
+	case ChannelApi:
+		return true
+	case ChannelDesk:
+		return true
+	case ChannelExternal:
+		return true
+	case ChannelOnline:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ConsentKind.
 const (
 	Marketing  ConsentKind = "marketing"
@@ -259,22 +325,52 @@ func (e ConsentKind) Valid() bool {
 
 // Defines values for ConsentSource.
 const (
-	Api    ConsentSource = "api"
-	Desk   ConsentSource = "desk"
-	Import ConsentSource = "import"
-	Online ConsentSource = "online"
+	ConsentSourceApi    ConsentSource = "api"
+	ConsentSourceDesk   ConsentSource = "desk"
+	ConsentSourceImport ConsentSource = "import"
+	ConsentSourceOnline ConsentSource = "online"
 )
 
 // Valid indicates whether the value is a known member of the ConsentSource enum.
 func (e ConsentSource) Valid() bool {
 	switch e {
-	case Api:
+	case ConsentSourceApi:
 		return true
-	case Desk:
+	case ConsentSourceDesk:
 		return true
-	case Import:
+	case ConsentSourceImport:
 		return true
-	case Online:
+	case ConsentSourceOnline:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ContractType.
+const (
+	ContractTypeAnnual   ContractType = "annual"
+	ContractTypeCharter  ContractType = "charter"
+	ContractTypeMonthly  ContractType = "monthly"
+	ContractTypeSeasonal ContractType = "seasonal"
+	ContractTypeStorage  ContractType = "storage"
+	ContractTypeTransit  ContractType = "transit"
+)
+
+// Valid indicates whether the value is a known member of the ContractType enum.
+func (e ContractType) Valid() bool {
+	switch e {
+	case ContractTypeAnnual:
+		return true
+	case ContractTypeCharter:
+		return true
+	case ContractTypeMonthly:
+		return true
+	case ContractTypeSeasonal:
+		return true
+	case ContractTypeStorage:
+		return true
+	case ContractTypeTransit:
 		return true
 	default:
 		return false
@@ -524,18 +620,60 @@ func (e DevicePlatform) Valid() bool {
 	}
 }
 
+// Defines values for DimensionSource.
+const (
+	DimensionSourceBerth  DimensionSource = "berth"
+	DimensionSourceMax    DimensionSource = "max"
+	DimensionSourceVessel DimensionSource = "vessel"
+)
+
+// Valid indicates whether the value is a known member of the DimensionSource enum.
+func (e DimensionSource) Valid() bool {
+	switch e {
+	case DimensionSourceBerth:
+		return true
+	case DimensionSourceMax:
+		return true
+	case DimensionSourceVessel:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for DimensionsSource.
 const (
-	Declared DimensionsSource = "declared"
-	Measured DimensionsSource = "measured"
+	DimensionsSourceDeclared DimensionsSource = "declared"
+	DimensionsSourceMeasured DimensionsSource = "measured"
 )
 
 // Valid indicates whether the value is a known member of the DimensionsSource enum.
 func (e DimensionsSource) Valid() bool {
 	switch e {
-	case Declared:
+	case DimensionsSourceDeclared:
 		return true
-	case Measured:
+	case DimensionsSourceMeasured:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DiscountKind.
+const (
+	DiscountKindAutomatic DiscountKind = "automatic"
+	DiscountKindCustomer  DiscountKind = "customer"
+	DiscountKindPromo     DiscountKind = "promo"
+)
+
+// Valid indicates whether the value is a known member of the DiscountKind enum.
+func (e DiscountKind) Valid() bool {
+	switch e {
+	case DiscountKindAutomatic:
+		return true
+	case DiscountKindCustomer:
+		return true
+	case DiscountKindPromo:
 		return true
 	default:
 		return false
@@ -785,6 +923,87 @@ func (e HullType) Valid() bool {
 	}
 }
 
+// Defines values for ItemType.
+const (
+	ItemTypeBerthFee ItemType = "berth_fee"
+	ItemTypeDeposit  ItemType = "deposit"
+	ItemTypeFee      ItemType = "fee"
+	ItemTypeLabour   ItemType = "labour"
+	ItemTypeMaterial ItemType = "material"
+	ItemTypeProduct  ItemType = "product"
+	ItemTypeService  ItemType = "service"
+	ItemTypeUtility  ItemType = "utility"
+)
+
+// Valid indicates whether the value is a known member of the ItemType enum.
+func (e ItemType) Valid() bool {
+	switch e {
+	case ItemTypeBerthFee:
+		return true
+	case ItemTypeDeposit:
+		return true
+	case ItemTypeFee:
+		return true
+	case ItemTypeLabour:
+		return true
+	case ItemTypeMaterial:
+		return true
+	case ItemTypeProduct:
+		return true
+	case ItemTypeService:
+		return true
+	case ItemTypeUtility:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ItemUnit.
+const (
+	ItemUnitHour   ItemUnit = "hour"
+	ItemUnitKwh    ItemUnit = "kwh"
+	ItemUnitLump   ItemUnit = "lump"
+	ItemUnitM      ItemUnit = "m"
+	ItemUnitM2     ItemUnit = "m2"
+	ItemUnitM3     ItemUnit = "m3"
+	ItemUnitMonth  ItemUnit = "month"
+	ItemUnitNight  ItemUnit = "night"
+	ItemUnitPiece  ItemUnit = "piece"
+	ItemUnitSeason ItemUnit = "season"
+	ItemUnitYear   ItemUnit = "year"
+)
+
+// Valid indicates whether the value is a known member of the ItemUnit enum.
+func (e ItemUnit) Valid() bool {
+	switch e {
+	case ItemUnitHour:
+		return true
+	case ItemUnitKwh:
+		return true
+	case ItemUnitLump:
+		return true
+	case ItemUnitM:
+		return true
+	case ItemUnitM2:
+		return true
+	case ItemUnitM3:
+		return true
+	case ItemUnitMonth:
+		return true
+	case ItemUnitNight:
+		return true
+	case ItemUnitPiece:
+		return true
+	case ItemUnitSeason:
+		return true
+	case ItemUnitYear:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for LandGridGeneratorType.
 const (
 	LandGridGeneratorTypeLandGrid LandGridGeneratorType = "land_grid"
@@ -827,6 +1046,48 @@ func (e LandKind) Valid() bool {
 	case LandKindStoreroom:
 		return true
 	case LandKindTrailerSpot:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LengthRoundingMode.
+const (
+	HalfEven LengthRoundingMode = "half_even"
+	Up       LengthRoundingMode = "up"
+)
+
+// Valid indicates whether the value is a known member of the LengthRoundingMode enum.
+func (e LengthRoundingMode) Valid() bool {
+	switch e {
+	case HalfEven:
+		return true
+	case Up:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LengthRoundingStepCm.
+const (
+	LengthRoundingStepCmN1   LengthRoundingStepCm = 1
+	LengthRoundingStepCmN10  LengthRoundingStepCm = 10
+	LengthRoundingStepCmN100 LengthRoundingStepCm = 100
+	LengthRoundingStepCmN50  LengthRoundingStepCm = 50
+)
+
+// Valid indicates whether the value is a known member of the LengthRoundingStepCm enum.
+func (e LengthRoundingStepCm) Valid() bool {
+	switch e {
+	case LengthRoundingStepCmN1:
+		return true
+	case LengthRoundingStepCmN10:
+		return true
+	case LengthRoundingStepCmN100:
+		return true
+	case LengthRoundingStepCmN50:
 		return true
 	default:
 		return false
@@ -1157,6 +1418,51 @@ func (e PedestalSocketAmps) Valid() bool {
 	}
 }
 
+// Defines values for PeriodColor.
+const (
+	Chart1 PeriodColor = "chart-1"
+	Chart2 PeriodColor = "chart-2"
+	Chart3 PeriodColor = "chart-3"
+	Chart4 PeriodColor = "chart-4"
+	Chart5 PeriodColor = "chart-5"
+)
+
+// Valid indicates whether the value is a known member of the PeriodColor enum.
+func (e PeriodColor) Valid() bool {
+	switch e {
+	case Chart1:
+		return true
+	case Chart2:
+		return true
+	case Chart3:
+		return true
+	case Chart4:
+		return true
+	case Chart5:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PeriodKind.
+const (
+	PeriodKindEvent  PeriodKind = "event"
+	PeriodKindSeason PeriodKind = "season"
+)
+
+// Valid indicates whether the value is a known member of the PeriodKind enum.
+func (e PeriodKind) Valid() bool {
+	switch e {
+	case PeriodKindEvent:
+		return true
+	case PeriodKindSeason:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for Permission.
 const (
 	AuditRead            Permission = "audit.read"
@@ -1179,6 +1485,8 @@ const (
 	PaymentsCollect      Permission = "payments.collect"
 	PaymentsCollectCash  Permission = "payments.collect_cash"
 	PresenceWrite        Permission = "presence.write"
+	PricingConfigure     Permission = "pricing.configure"
+	PricingRead          Permission = "pricing.read"
 	RefundsIssue         Permission = "refunds.issue"
 	RentalManage         Permission = "rental.manage"
 	ReportsAll           Permission = "reports.all"
@@ -1237,6 +1545,10 @@ func (e Permission) Valid() bool {
 	case PaymentsCollectCash:
 		return true
 	case PresenceWrite:
+		return true
+	case PricingConfigure:
+		return true
+	case PricingRead:
 		return true
 	case RefundsIssue:
 		return true
@@ -1337,6 +1649,174 @@ func (e PriceClassRuleBasis) Valid() bool {
 	}
 }
 
+// Defines values for PriceLineKind.
+const (
+	PriceLineKindBerth    PriceLineKind = "berth"
+	PriceLineKindIncluded PriceLineKind = "included"
+	PriceLineKindService  PriceLineKind = "service"
+)
+
+// Valid indicates whether the value is a known member of the PriceLineKind enum.
+func (e PriceLineKind) Valid() bool {
+	switch e {
+	case PriceLineKindBerth:
+		return true
+	case PriceLineKindIncluded:
+		return true
+	case PriceLineKindService:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PriceListIssueRefKind.
+const (
+	PriceListIssueRefKindBand     PriceListIssueRefKind = "band"
+	PriceListIssueRefKindItem     PriceListIssueRefKind = "item"
+	PriceListIssueRefKindList     PriceListIssueRefKind = "list"
+	PriceListIssueRefKindPeriod   PriceListIssueRefKind = "period"
+	PriceListIssueRefKindRule     PriceListIssueRefKind = "rule"
+	PriceListIssueRefKindSettings PriceListIssueRefKind = "settings"
+)
+
+// Valid indicates whether the value is a known member of the PriceListIssueRefKind enum.
+func (e PriceListIssueRefKind) Valid() bool {
+	switch e {
+	case PriceListIssueRefKindBand:
+		return true
+	case PriceListIssueRefKindItem:
+		return true
+	case PriceListIssueRefKindList:
+		return true
+	case PriceListIssueRefKindPeriod:
+		return true
+	case PriceListIssueRefKindRule:
+		return true
+	case PriceListIssueRefKindSettings:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PriceListStatus.
+const (
+	Active   PriceListStatus = "active"
+	Archived PriceListStatus = "archived"
+	Draft    PriceListStatus = "draft"
+)
+
+// Valid indicates whether the value is a known member of the PriceListStatus enum.
+func (e PriceListStatus) Valid() bool {
+	switch e {
+	case Active:
+		return true
+	case Archived:
+		return true
+	case Draft:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PriceMatrixRowKind.
+const (
+	PriceMatrixRowKindBand     PriceMatrixRowKind = "band"
+	PriceMatrixRowKindCategory PriceMatrixRowKind = "category"
+)
+
+// Valid indicates whether the value is a known member of the PriceMatrixRowKind enum.
+func (e PriceMatrixRowKind) Valid() bool {
+	switch e {
+	case PriceMatrixRowKindBand:
+		return true
+	case PriceMatrixRowKindCategory:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PriceResolvedDimensionOrigin.
+const (
+	PriceResolvedDimensionOriginDeclared PriceResolvedDimensionOrigin = "declared"
+	PriceResolvedDimensionOriginInput    PriceResolvedDimensionOrigin = "input"
+	PriceResolvedDimensionOriginMeasured PriceResolvedDimensionOrigin = "measured"
+	PriceResolvedDimensionOriginNone     PriceResolvedDimensionOrigin = "none"
+)
+
+// Valid indicates whether the value is a known member of the PriceResolvedDimensionOrigin enum.
+func (e PriceResolvedDimensionOrigin) Valid() bool {
+	switch e {
+	case PriceResolvedDimensionOriginDeclared:
+		return true
+	case PriceResolvedDimensionOriginInput:
+		return true
+	case PriceResolvedDimensionOriginMeasured:
+		return true
+	case PriceResolvedDimensionOriginNone:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PricingBasis.
+const (
+	Flat       PricingBasis = "flat"
+	LengthBand PricingBasis = "length_band"
+	Metered    PricingBasis = "metered"
+	PerBerth   PricingBasis = "per_berth"
+	PerM2      PricingBasis = "per_m2"
+	PerM2Berth PricingBasis = "per_m2_berth"
+	PerMeter   PricingBasis = "per_meter"
+)
+
+// Valid indicates whether the value is a known member of the PricingBasis enum.
+func (e PricingBasis) Valid() bool {
+	switch e {
+	case Flat:
+		return true
+	case LengthBand:
+		return true
+	case Metered:
+		return true
+	case PerBerth:
+		return true
+	case PerM2:
+		return true
+	case PerM2Berth:
+		return true
+	case PerMeter:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PricingStage.
+const (
+	Base     PricingStage = "base"
+	Discount PricingStage = "discount"
+	Modifier PricingStage = "modifier"
+)
+
+// Valid indicates whether the value is a known member of the PricingStage enum.
+func (e PricingStage) Valid() bool {
+	switch e {
+	case Base:
+		return true
+	case Discount:
+		return true
+	case Modifier:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ProblemType.
 const (
 	ProblemTypeAlreadyMember         ProblemType = "already_member"
@@ -1352,6 +1832,7 @@ const (
 	ProblemTypeForbidden             ProblemType = "forbidden"
 	ProblemTypeIdempotencyInProgress ProblemType = "idempotency_in_progress"
 	ProblemTypeIdempotencyKeyReused  ProblemType = "idempotency_key_reused"
+	ProblemTypeInUse                 ProblemType = "in_use"
 	ProblemTypeInternalError         ProblemType = "internal_error"
 	ProblemTypeInvalidCredentials    ProblemType = "invalid_credentials"
 	ProblemTypeInvalidFile           ProblemType = "invalid_file"
@@ -1364,10 +1845,15 @@ const (
 	ProblemTypeMapNotEmpty           ProblemType = "map_not_empty"
 	ProblemTypeMapNotGeoreferenced   ProblemType = "map_not_georeferenced"
 	ProblemTypeMethodNotAllowed      ProblemType = "method_not_allowed"
+	ProblemTypeNoPrice               ProblemType = "no_price"
 	ProblemTypeNotFound              ProblemType = "not_found"
 	ProblemTypeNotReady              ProblemType = "not_ready"
 	ProblemTypePairingCodeInvalid    ProblemType = "pairing_code_invalid"
 	ProblemTypePreconditionRequired  ProblemType = "precondition_required"
+	ProblemTypePriceListImmutable    ProblemType = "price_list_immutable"
+	ProblemTypePriceListInvalid      ProblemType = "price_list_invalid"
+	ProblemTypePriceListOverlap      ProblemType = "price_list_overlap"
+	ProblemTypePromoNotApplicable    ProblemType = "promo_not_applicable"
 	ProblemTypeRateLimited           ProblemType = "rate_limited"
 	ProblemTypeSlugTaken             ProblemType = "slug_taken"
 	ProblemTypeTotpAlreadyEnabled    ProblemType = "totp_already_enabled"
@@ -1412,6 +1898,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeIdempotencyKeyReused:
 		return true
+	case ProblemTypeInUse:
+		return true
 	case ProblemTypeInternalError:
 		return true
 	case ProblemTypeInvalidCredentials:
@@ -1436,6 +1924,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeMethodNotAllowed:
 		return true
+	case ProblemTypeNoPrice:
+		return true
 	case ProblemTypeNotFound:
 		return true
 	case ProblemTypeNotReady:
@@ -1443,6 +1933,14 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypePairingCodeInvalid:
 		return true
 	case ProblemTypePreconditionRequired:
+		return true
+	case ProblemTypePriceListImmutable:
+		return true
+	case ProblemTypePriceListInvalid:
+		return true
+	case ProblemTypePriceListOverlap:
+		return true
+	case ProblemTypePromoNotApplicable:
 		return true
 	case ProblemTypeRateLimited:
 		return true
@@ -1523,6 +2021,27 @@ func (e ReadyStatusStatus) Valid() bool {
 	}
 }
 
+// Defines values for RenewalAdjustmentScope.
+const (
+	RenewalAdjustmentScopeAll      RenewalAdjustmentScope = "all"
+	RenewalAdjustmentScopeCategory RenewalAdjustmentScope = "category"
+	RenewalAdjustmentScopeItem     RenewalAdjustmentScope = "item"
+)
+
+// Valid indicates whether the value is a known member of the RenewalAdjustmentScope enum.
+func (e RenewalAdjustmentScope) Valid() bool {
+	switch e {
+	case RenewalAdjustmentScopeAll:
+		return true
+	case RenewalAdjustmentScopeCategory:
+		return true
+	case RenewalAdjustmentScopeItem:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for Role.
 const (
 	RoleAccounting Role = "accounting"
@@ -1580,6 +2099,27 @@ func (e Side) Valid() bool {
 	case SideNone:
 		return true
 	case SideRight:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SplitRule.
+const (
+	BestCombination SplitRule = "best_combination"
+	ProRataDaily    SplitRule = "pro_rata_daily"
+	WholeMonths     SplitRule = "whole_months"
+)
+
+// Valid indicates whether the value is a known member of the SplitRule enum.
+func (e SplitRule) Valid() bool {
+	switch e {
+	case BestCombination:
+		return true
+	case ProRataDaily:
+		return true
+	case WholeMonths:
 		return true
 	default:
 		return false
@@ -1655,6 +2195,57 @@ func (e SurfaceAreaGeneratorType) Valid() bool {
 	}
 }
 
+// Defines values for TimeUnit.
+const (
+	TimeUnitMonth  TimeUnit = "month"
+	TimeUnitNight  TimeUnit = "night"
+	TimeUnitSeason TimeUnit = "season"
+	TimeUnitStay   TimeUnit = "stay"
+	TimeUnitWeek   TimeUnit = "week"
+	TimeUnitYear   TimeUnit = "year"
+)
+
+// Valid indicates whether the value is a known member of the TimeUnit enum.
+func (e TimeUnit) Valid() bool {
+	switch e {
+	case TimeUnitMonth:
+		return true
+	case TimeUnitNight:
+		return true
+	case TimeUnitSeason:
+		return true
+	case TimeUnitStay:
+		return true
+	case TimeUnitWeek:
+		return true
+	case TimeUnitYear:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TotalRounding.
+const (
+	TotalRoundingEuro     TotalRounding = "euro"
+	TotalRoundingFiveEuro TotalRounding = "five_euro"
+	TotalRoundingNone     TotalRounding = "none"
+)
+
+// Valid indicates whether the value is a known member of the TotalRounding enum.
+func (e TotalRounding) Valid() bool {
+	switch e {
+	case TotalRoundingEuro:
+		return true
+	case TotalRoundingFiveEuro:
+		return true
+	case TotalRoundingNone:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for UnitClass.
 const (
 	Imbarcazione UnitClass = "imbarcazione"
@@ -1688,6 +2279,81 @@ func (e UtilityKind) Valid() bool {
 	case UtilityKindPower:
 		return true
 	case UtilityKindWater:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for VatNature.
+const (
+	VatNatureN1  VatNature = "N1"
+	VatNatureN21 VatNature = "N2.1"
+	VatNatureN22 VatNature = "N2.2"
+	VatNatureN31 VatNature = "N3.1"
+	VatNatureN32 VatNature = "N3.2"
+	VatNatureN33 VatNature = "N3.3"
+	VatNatureN34 VatNature = "N3.4"
+	VatNatureN35 VatNature = "N3.5"
+	VatNatureN36 VatNature = "N3.6"
+	VatNatureN4  VatNature = "N4"
+	VatNatureN5  VatNature = "N5"
+	VatNatureN61 VatNature = "N6.1"
+	VatNatureN62 VatNature = "N6.2"
+	VatNatureN63 VatNature = "N6.3"
+	VatNatureN64 VatNature = "N6.4"
+	VatNatureN65 VatNature = "N6.5"
+	VatNatureN66 VatNature = "N6.6"
+	VatNatureN67 VatNature = "N6.7"
+	VatNatureN68 VatNature = "N6.8"
+	VatNatureN69 VatNature = "N6.9"
+	VatNatureN7  VatNature = "N7"
+)
+
+// Valid indicates whether the value is a known member of the VatNature enum.
+func (e VatNature) Valid() bool {
+	switch e {
+	case VatNatureN1:
+		return true
+	case VatNatureN21:
+		return true
+	case VatNatureN22:
+		return true
+	case VatNatureN31:
+		return true
+	case VatNatureN32:
+		return true
+	case VatNatureN33:
+		return true
+	case VatNatureN34:
+		return true
+	case VatNatureN35:
+		return true
+	case VatNatureN36:
+		return true
+	case VatNatureN4:
+		return true
+	case VatNatureN5:
+		return true
+	case VatNatureN61:
+		return true
+	case VatNatureN62:
+		return true
+	case VatNatureN63:
+		return true
+	case VatNatureN64:
+		return true
+	case VatNatureN65:
+		return true
+	case VatNatureN66:
+		return true
+	case VatNatureN67:
+		return true
+	case VatNatureN68:
+		return true
+	case VatNatureN69:
+		return true
+	case VatNatureN7:
 		return true
 	default:
 		return false
@@ -1784,6 +2450,24 @@ func (e ExportMapParamsFormat) Valid() bool {
 	}
 }
 
+// Defines values for GetPriceMatrixParamsRows.
+const (
+	Bands      GetPriceMatrixParamsRows = "bands"
+	Categories GetPriceMatrixParamsRows = "categories"
+)
+
+// Valid indicates whether the value is a known member of the GetPriceMatrixParamsRows enum.
+func (e GetPriceMatrixParamsRows) Valid() bool {
+	switch e {
+	case Bands:
+		return true
+	case Categories:
+		return true
+	default:
+		return false
+	}
+}
+
 // Address defines model for Address.
 type Address struct {
 	City *string `json:"city,omitempty"`
@@ -1795,6 +2479,9 @@ type Address struct {
 	PostalCode *string `json:"postal_code,omitempty"`
 	Province   *string `json:"province,omitempty"`
 }
+
+// AmountRounding defines model for AmountRounding.
+type AmountRounding string
 
 // ApiKey defines model for ApiKey.
 type ApiKey struct {
@@ -1861,6 +2548,20 @@ type AuditEntryPage struct {
 	NextCursor *string      `json:"next_cursor"`
 }
 
+// Band Length band inclusive up to max_cm (absent = open, last band only); order is the array order.
+type Band struct {
+	Category *string `json:"category,omitempty"`
+	Code     string  `json:"code"`
+	Id       *string `json:"id,omitempty"`
+
+	// Key Client key of a new row of a price list document, unique in the request
+	Key   *DocKey `json:"key,omitempty"`
+	MaxCm *int64  `json:"max_cm,omitempty"`
+}
+
+// BasisPoints Percentage in integer basis points (1 % = 100)
+type BasisPoints = int64
+
 // Berth defines model for Berth.
 type Berth struct {
 	Active     bool     `json:"active"`
@@ -1922,6 +2623,55 @@ type Berth struct {
 
 // BerthPowerA defines model for Berth.PowerA.
 type BerthPowerA int
+
+// BerthCategory defines model for BerthCategory.
+type BerthCategory struct {
+	AppliesTo []CategoryTarget   `json:"applies_to"`
+	Archived  bool               `json:"archived"`
+	Code      string             `json:"code"`
+	Id        string             `json:"id"`
+	Name      I18nText           `json:"name"`
+	SortOrder int                `json:"sort_order"`
+	Usage     BerthCategoryUsage `json:"usage"`
+	Version   int                `json:"version"`
+}
+
+// BerthCategoryCreate defines model for BerthCategoryCreate.
+type BerthCategoryCreate struct {
+	AppliesTo []CategoryTarget `json:"applies_to"`
+	Code      string           `json:"code"`
+	Name      I18nText         `json:"name"`
+	SortOrder *int             `json:"sort_order,omitempty"`
+}
+
+// BerthCategoryList defines model for BerthCategoryList.
+type BerthCategoryList struct {
+	Items []BerthCategory `json:"items"`
+
+	// UnknownInUse price_class codes used by elements without a matching category
+	UnknownInUse []CodeCount `json:"unknown_in_use"`
+}
+
+// BerthCategoryPatch Absent fields are unchanged; the code cannot change; archived archives or restores it.
+type BerthCategoryPatch struct {
+	AppliesTo *[]CategoryTarget `json:"applies_to,omitempty"`
+	Archived  *bool             `json:"archived,omitempty"`
+	Name      *I18nText         `json:"name,omitempty"`
+	SortOrder *int              `json:"sort_order,omitempty"`
+}
+
+// BerthCategorySyncResult defines model for BerthCategorySyncResult.
+type BerthCategorySyncResult struct {
+	Created []BerthCategory `json:"created"`
+}
+
+// BerthCategoryUsage defines model for BerthCategoryUsage.
+type BerthCategoryUsage struct {
+	Berths        int `json:"berths"`
+	DynamicAreas  int `json:"dynamic_areas"`
+	LandResources int `json:"land_resources"`
+	Rules         int `json:"rules"`
+}
 
 // BerthGroup defines model for BerthGroup.
 type BerthGroup struct {
@@ -2100,17 +2850,32 @@ type BuoyFieldGeneratorLayout string
 // BuoyFieldGeneratorType defines model for BuoyFieldGenerator.Type.
 type BuoyFieldGeneratorType string
 
+// CategoryTarget defines model for CategoryTarget.
+type CategoryTarget string
+
+// Cents Amount in integer cents of the marina currency
+type Cents = int64
+
 // ChangePasswordRequest defines model for ChangePasswordRequest.
 type ChangePasswordRequest struct {
 	CurrentPassword string `json:"current_password"`
 	NewPassword     string `json:"new_password"`
 }
 
+// Channel defines model for Channel.
+type Channel string
+
 // Cm Length in integer centimetres
 type Cm = int64
 
 // Code defines model for Code.
 type Code = string
+
+// CodeCount defines model for CodeCount.
+type CodeCount struct {
+	Code  string `json:"code"`
+	Count int    `json:"count"`
+}
 
 // ConcessionGeojsonRequest defines model for ConcessionGeojsonRequest.
 type ConcessionGeojsonRequest struct {
@@ -2162,6 +2927,9 @@ type ContactEntry struct {
 	Label string `json:"label"`
 	Value string `json:"value"`
 }
+
+// ContractType defines model for ContractType.
+type ContractType string
 
 // ControlPoint defines model for ControlPoint.
 type ControlPoint struct {
@@ -2215,6 +2983,15 @@ type CustomerAnonymizeRequestConfirm bool
 
 // CustomerCategory defines model for CustomerCategory.
 type CustomerCategory string
+
+// CustomerCategoryCountList defines model for CustomerCategoryCountList.
+type CustomerCategoryCountList struct {
+	// Items every category of the enum in enum order, with count 0 when unused
+	Items []CodeCount `json:"items"`
+
+	// Uncategorised non-archived customers without a category
+	Uncategorised int `json:"uncategorised"`
+}
 
 // CustomerCreated defines model for CustomerCreated.
 type CustomerCreated struct {
@@ -2336,6 +3113,15 @@ type CustomerVesselLink struct {
 	Vessel      VesselSummary     `json:"vessel"`
 }
 
+// DateRange Inclusive range of nights
+type DateRange struct {
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From IsoDate `json:"from"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To IsoDate `json:"to"`
+}
+
 // Deadline defines model for Deadline.
 type Deadline struct {
 	Customer     *CustomerRef  `json:"customer"`
@@ -2427,6 +3213,12 @@ type DemoPairRequest struct {
 	Platform   DevicePlatform `json:"platform"`
 }
 
+// DepositPolicy Percent of the total or a fixed amount capped at the total (at most one)
+type DepositPolicy struct {
+	AmountCents *int64 `json:"amount_cents,omitempty"`
+	PercentBp   *int64 `json:"percent_bp,omitempty"`
+}
+
 // DepthSpan Depth along the structure axis, from from_cm to to_cm
 type DepthSpan struct {
 	// DepthCm Strictly positive length in integer centimetres
@@ -2472,8 +3264,17 @@ type DeviceSelf struct {
 	User        UserRef      `json:"user"`
 }
 
+// DimensionSource defines model for DimensionSource.
+type DimensionSource string
+
 // DimensionsSource defines model for DimensionsSource.
 type DimensionsSource string
+
+// DiscountKind defines model for DiscountKind.
+type DiscountKind string
+
+// DocKey Client key of a new row of a price list document, unique in the request
+type DocKey = string
 
 // Document defines model for Document.
 type Document struct {
@@ -2705,6 +3506,104 @@ type I18nText struct {
 	It string  `json:"it"`
 }
 
+// I18nTextOptional Optional translated text (both languages may be empty)
+type I18nTextOptional struct {
+	En *string `json:"en,omitempty"`
+	It *string `json:"it,omitempty"`
+}
+
+// Inclusion defines model for Inclusion.
+type Inclusion struct {
+	ItemId   string `json:"item_id"`
+	QtyMilli int64  `json:"qty_milli"`
+}
+
+// IsoDate Calendar date YYYY-MM-DD in the marina timezone
+type IsoDate = string
+
+// Item defines model for Item.
+type Item struct {
+	Active bool   `json:"active"`
+	Code   string `json:"code"`
+
+	// Description Optional translated text (both languages may be empty)
+	Description      I18nTextOptional `json:"description"`
+	ExternalCode     string           `json:"external_code"`
+	Id               string           `json:"id"`
+	ItemType         ItemType         `json:"item_type"`
+	Name             I18nText         `json:"name"`
+	OnlineVisible    bool             `json:"online_visible"`
+	PriceIncludesVat bool             `json:"price_includes_vat"`
+	RevenueClassId   string           `json:"revenue_class_id"`
+	SortOrder        int              `json:"sort_order"`
+	Unit             ItemUnit         `json:"unit"`
+	UpdatedAt        time.Time        `json:"updated_at"`
+	Usage            *ItemUsage       `json:"usage,omitempty"`
+	VatNature        *VatNature       `json:"vat_nature,omitempty"`
+	VatRateBp        int64            `json:"vat_rate_bp"`
+	Version          int              `json:"version"`
+}
+
+// ItemCode defines model for ItemCode.
+type ItemCode = string
+
+// ItemCreate vat_rate_bp and price_includes_vat default from the pricing settings; vat_nature is required exactly when the rate is 0.
+type ItemCreate struct {
+	Active *bool    `json:"active,omitempty"`
+	Code   ItemCode `json:"code"`
+
+	// Description Optional translated text (both languages may be empty)
+	Description      *I18nTextOptional `json:"description,omitempty"`
+	ExternalCode     *string           `json:"external_code,omitempty"`
+	ItemType         ItemType          `json:"item_type"`
+	Name             I18nText          `json:"name"`
+	OnlineVisible    *bool             `json:"online_visible,omitempty"`
+	PriceIncludesVat *bool             `json:"price_includes_vat,omitempty"`
+	RevenueClassId   string            `json:"revenue_class_id"`
+	SortOrder        *int              `json:"sort_order,omitempty"`
+	Unit             ItemUnit          `json:"unit"`
+
+	// VatNature FatturaPA nature of a 0 % VAT line (m2-plan §12 D9)
+	VatNature *VatNature `json:"vat_nature,omitempty"`
+	VatRateBp *int64     `json:"vat_rate_bp,omitempty"`
+}
+
+// ItemPage defines model for ItemPage.
+type ItemPage struct {
+	Items      []Item  `json:"items"`
+	NextCursor *string `json:"next_cursor"`
+}
+
+// ItemPatch Absent fields are unchanged; vat_nature null clears it (with a non-zero rate).
+type ItemPatch struct {
+	Active *bool     `json:"active,omitempty"`
+	Code   *ItemCode `json:"code,omitempty"`
+
+	// Description Optional translated text (both languages may be empty)
+	Description      *I18nTextOptional `json:"description,omitempty"`
+	ExternalCode     *string           `json:"external_code,omitempty"`
+	ItemType         *ItemType         `json:"item_type,omitempty"`
+	Name             *I18nText         `json:"name,omitempty"`
+	OnlineVisible    *bool             `json:"online_visible,omitempty"`
+	PriceIncludesVat *bool             `json:"price_includes_vat,omitempty"`
+	RevenueClassId   *string           `json:"revenue_class_id,omitempty"`
+	SortOrder        *int              `json:"sort_order,omitempty"`
+	Unit             *ItemUnit         `json:"unit,omitempty"`
+	VatNature        *VatNature        `json:"vat_nature,omitempty"`
+	VatRateBp        *int64            `json:"vat_rate_bp,omitempty"`
+}
+
+// ItemType defines model for ItemType.
+type ItemType string
+
+// ItemUnit defines model for ItemUnit.
+type ItemUnit string
+
+// ItemUsage defines model for ItemUsage.
+type ItemUsage struct {
+	PriceLists int `json:"price_lists"`
+}
+
 // LandGridGenerator defines model for LandGridGenerator.
 type LandGridGenerator struct {
 	// AisleCm Length in integer centimetres
@@ -2760,6 +3659,18 @@ type LandResource struct {
 	// WidthCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
 	WidthCm RectSideCm `json:"width_cm"`
 }
+
+// LengthRounding defines model for LengthRounding.
+type LengthRounding struct {
+	Mode   LengthRoundingMode   `json:"mode"`
+	StepCm LengthRoundingStepCm `json:"step_cm"`
+}
+
+// LengthRoundingMode defines model for LengthRounding.Mode.
+type LengthRoundingMode string
+
+// LengthRoundingStepCm defines model for LengthRounding.StepCm.
+type LengthRoundingStepCm int64
 
 // LinearAreaGenerator defines model for LinearAreaGenerator.
 type LinearAreaGenerator struct {
@@ -3185,7 +4096,10 @@ type Meta struct {
 	Capabilities []string    `json:"capabilities"`
 	DemoPairing  bool        `json:"demo_pairing"`
 	Edition      MetaEdition `json:"edition"`
-	Version      string      `json:"version"`
+
+	// PricingEngineVersion Version of the pricing engine (quotes store it with their price snapshot, INV-20)
+	PricingEngineVersion int    `json:"pricing_engine_version"`
+	Version              string `json:"version"`
 }
 
 // MetaEdition defines model for Meta.Edition.
@@ -3321,6 +4235,12 @@ type PedestalSocket struct {
 // PedestalSocketAmps defines model for PedestalSocket.Amps.
 type PedestalSocketAmps int
 
+// PeriodColor defines model for PeriodColor.
+type PeriodColor string
+
+// PeriodKind defines model for PeriodKind.
+type PeriodKind string
+
 // Permission defines model for Permission.
 type Permission string
 
@@ -3398,12 +4318,58 @@ type PositiveCm = int64
 // PowerPhase defines model for PowerPhase.
 type PowerPhase string
 
+// PriceApplied defines model for PriceApplied.
+type PriceApplied struct {
+	DeltaCents int64  `json:"delta_cents"`
+	RuleId     string `json:"rule_id"`
+}
+
 // PriceBand defines model for PriceBand.
 type PriceBand struct {
 	Class string `json:"class"`
 
 	// MaxCm Strictly positive length in integer centimetres
 	MaxCm PositiveCm `json:"max_cm"`
+}
+
+// PriceBlock defines model for PriceBlock.
+type PriceBlock struct {
+	AmountCents int64 `json:"amount_cents"`
+	BaseCents   int64 `json:"base_cents"`
+
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From      IsoDate        `json:"from"`
+	Modifiers []PriceApplied `json:"modifiers"`
+	Nights    int            `json:"nights"`
+	Period    *string        `json:"period,omitempty"`
+	RuleId    string         `json:"rule_id"`
+
+	// To Exclusive; may be after the departure (best_combination overshoot)
+	To   IsoDate  `json:"to"`
+	Unit TimeUnit `json:"unit"`
+}
+
+// PriceBreakdown defines model for PriceBreakdown.
+type PriceBreakdown struct {
+	CatalogHash        string       `json:"catalog_hash"`
+	ContractType       ContractType `json:"contract_type"`
+	DepositCents       int64        `json:"deposit_cents"`
+	DiscountTotalCents int64        `json:"discount_total_cents"`
+	EngineVersion      int          `json:"engine_version"`
+	Lines              []PriceLine  `json:"lines"`
+	NetCents           int64        `json:"net_cents"`
+	Nights             int          `json:"nights"`
+	PriceListId        string       `json:"price_list_id"`
+
+	// Resolved What the simulator used after resolving ids; never names or contact data.
+	Resolved           *PriceResolved   `json:"resolved,omitempty"`
+	RoundingTotalCents int64            `json:"rounding_total_cents"`
+	SubtotalCents      int64            `json:"subtotal_cents"`
+	TotalCents         int64            `json:"total_cents"`
+	Trace              []PriceTraceStep `json:"trace"`
+	VatCents           int64            `json:"vat_cents"`
+	VatSummary         []VatBucket      `json:"vat_summary"`
+	Warnings           []string         `json:"warnings"`
 }
 
 // PriceClassRule Width bands → price class, sorted by max_cm; fallback above the last band
@@ -3416,19 +4382,445 @@ type PriceClassRule struct {
 // PriceClassRuleBasis defines model for PriceClassRule.Basis.
 type PriceClassRuleBasis string
 
+// PriceCoverage defines model for PriceCoverage.
+type PriceCoverage struct {
+	Checked                 int `json:"checked"`
+	ElementsWithoutCategory struct {
+		Berths        int `json:"berths"`
+		DynamicAreas  int `json:"dynamic_areas"`
+		LandResources int `json:"land_resources"`
+	} `json:"elements_without_category"`
+	Gaps              []PriceCoverageGap `json:"gaps"`
+	UnknownCategories []CodeCount        `json:"unknown_categories"`
+}
+
+// PriceCoverageGap defines model for PriceCoverageGap.
+type PriceCoverageGap struct {
+	Band         *string      `json:"band,omitempty"`
+	Category     *string      `json:"category,omitempty"`
+	ContractType ContractType `json:"contract_type"`
+	ItemId       string       `json:"item_id"`
+	Period       *string      `json:"period,omitempty"`
+
+	// Reason NoPriceError reason (no_rule, no_band, no_amount, outside_validity, no_primary_item, unit_missing)
+	Reason string `json:"reason"`
+}
+
+// PriceLine defines model for PriceLine.
+type PriceLine struct {
+	AmountCents        int64          `json:"amount_cents"`
+	BaseCents          int64          `json:"base_cents"`
+	Blocks             []PriceBlock   `json:"blocks"`
+	Discounts          []PriceApplied `json:"discounts"`
+	ExternalCode       *string        `json:"external_code,omitempty"`
+	GrossCents         int64          `json:"gross_cents"`
+	ItemCode           string         `json:"item_code"`
+	ItemId             string         `json:"item_id"`
+	ItemType           ItemType       `json:"item_type"`
+	Kind               PriceLineKind  `json:"kind"`
+	ModifierTotalCents int64          `json:"modifier_total_cents"`
+	NetCents           int64          `json:"net_cents"`
+	PriceIncludesVat   bool           `json:"price_includes_vat"`
+	QtyMilli           int64          `json:"qty_milli"`
+	RevenueClass       *string        `json:"revenue_class,omitempty"`
+	RoundingShareCents int64          `json:"rounding_share_cents"`
+	Seq                int            `json:"seq"`
+
+	// ServiceFrom Calendar date YYYY-MM-DD in the marina timezone
+	ServiceFrom IsoDate `json:"service_from"`
+
+	// ServiceTo Last night (inclusive)
+	ServiceTo IsoDate `json:"service_to"`
+	VatCents  int64   `json:"vat_cents"`
+	VatNature *string `json:"vat_nature,omitempty"`
+	VatRateBp int64   `json:"vat_rate_bp"`
+}
+
+// PriceLineKind defines model for PriceLine.Kind.
+type PriceLineKind string
+
+// PriceListActivate defines model for PriceListActivate.
+type PriceListActivate struct {
+	// EffectiveFrom Calendar date YYYY-MM-DD in the marina timezone
+	EffectiveFrom *IsoDate `json:"effective_from,omitempty"`
+}
+
+// PriceListActivateResult defines model for PriceListActivateResult.
+type PriceListActivateResult struct {
+	Document PriceListDocument `json:"document"`
+
+	// Truncated Predecessors whose valid_to was shortened (valid_to is the new value)
+	Truncated []PriceListRef `json:"truncated"`
+}
+
+// PriceListCreate defines model for PriceListCreate.
+type PriceListCreate struct {
+	Code          string         `json:"code"`
+	ContractTypes []ContractType `json:"contract_types"`
+	Name          I18nText       `json:"name"`
+
+	// ValidFrom Calendar date YYYY-MM-DD in the marina timezone
+	ValidFrom IsoDate `json:"valid_from"`
+
+	// ValidTo Calendar date YYYY-MM-DD in the marina timezone
+	ValidTo IsoDate `json:"valid_to"`
+}
+
+// PriceListDocument defines model for PriceListDocument.
+type PriceListDocument struct {
+	ActivatedAt   *time.Time       `json:"activated_at,omitempty"`
+	ArchivedAt    *time.Time       `json:"archived_at,omitempty"`
+	Bands         []Band           `json:"bands"`
+	Code          string           `json:"code"`
+	ContentSha256 *string          `json:"content_sha256,omitempty"`
+	ContractTypes []ContractType   `json:"contract_types"`
+	Id            string           `json:"id"`
+	Issues        []PriceListIssue `json:"issues"`
+	Name          I18nText         `json:"name"`
+	Periods       []RatePeriod     `json:"periods"`
+	Rules         []PriceRule      `json:"rules"`
+
+	// Settings Engine settings (m2-plan §2.3). Map keys are contract types or "*" for the others.
+	Settings          PriceListSettings `json:"settings"`
+	SourcePriceListId *string           `json:"source_price_list_id,omitempty"`
+	Status            PriceListStatus   `json:"status"`
+	UpdatedAt         time.Time         `json:"updated_at"`
+
+	// ValidFrom Calendar date YYYY-MM-DD in the marina timezone
+	ValidFrom IsoDate `json:"valid_from"`
+
+	// ValidTo Calendar date YYYY-MM-DD in the marina timezone
+	ValidTo IsoDate `json:"valid_to"`
+	Version int     `json:"version"`
+}
+
+// PriceListIssue defines model for PriceListIssue.
+type PriceListIssue struct {
+	// Code pricing.Validate issue code (m2-plan §4.8), e.g. period_overlap
+	Code string `json:"code"`
+
+	// Params Codes and integers as strings; never personal data
+	Params   *map[string]string `json:"params,omitempty"`
+	Ref      PriceListIssueRef  `json:"ref"`
+	Severity MapIssueSeverity   `json:"severity"`
+}
+
+// PriceListIssueRef defines model for PriceListIssueRef.
+type PriceListIssueRef struct {
+	Field *string `json:"field,omitempty"`
+
+	// Id Id of the row, or the client key of an unsaved one
+	Id   *string               `json:"id,omitempty"`
+	Kind PriceListIssueRefKind `json:"kind"`
+}
+
+// PriceListIssueRefKind defines model for PriceListIssueRef.Kind.
+type PriceListIssueRefKind string
+
+// PriceListRef defines model for PriceListRef.
+type PriceListRef struct {
+	Code string `json:"code"`
+	Id   string `json:"id"`
+
+	// ValidFrom Calendar date YYYY-MM-DD in the marina timezone
+	ValidFrom IsoDate `json:"valid_from"`
+
+	// ValidTo Calendar date YYYY-MM-DD in the marina timezone
+	ValidTo IsoDate `json:"valid_to"`
+}
+
+// PriceListSave The whole editable document of a draft; periods, bands and rules are replaced by the diff.
+type PriceListSave struct {
+	Bands         []Band         `json:"bands"`
+	Code          string         `json:"code"`
+	ContractTypes []ContractType `json:"contract_types"`
+	Name          I18nText       `json:"name"`
+	Periods       []RatePeriod   `json:"periods"`
+	Rules         []PriceRule    `json:"rules"`
+
+	// Settings Engine settings (m2-plan §2.3). Map keys are contract types or "*" for the others.
+	Settings PriceListSettings `json:"settings"`
+
+	// ValidFrom Calendar date YYYY-MM-DD in the marina timezone
+	ValidFrom IsoDate `json:"valid_from"`
+
+	// ValidTo Calendar date YYYY-MM-DD in the marina timezone
+	ValidTo IsoDate `json:"valid_to"`
+}
+
+// PriceListSaveResult defines model for PriceListSaveResult.
+type PriceListSaveResult struct {
+	Document PriceListDocument `json:"document"`
+
+	// IdMap Row key of the request → new id
+	IdMap  map[string]string `json:"id_map"`
+	Issues []PriceListIssue  `json:"issues"`
+}
+
+// PriceListSettings Engine settings (m2-plan §2.3). Map keys are contract types or "*" for the others.
+type PriceListSettings struct {
+	Deposits        *map[string]DepositPolicy `json:"deposits,omitempty"`
+	DimensionSource DimensionSource           `json:"dimension_source"`
+	LengthRounding  LengthRounding            `json:"length_rounding"`
+	MinBeamRatio    *Ratio                    `json:"min_beam_ratio,omitempty"`
+
+	// PrimaryItems Item id of the berth fee per contract type
+	PrimaryItems *map[string]string `json:"primary_items,omitempty"`
+
+	// PublishMatrix Stored for the public transit matrix (M8); unused in M2
+	PublishMatrix *bool                     `json:"publish_matrix,omitempty"`
+	Rounding      *map[string]TotalRounding `json:"rounding,omitempty"`
+	SeasonWindow  *DateRange                `json:"season_window,omitempty"`
+	Split         *map[string]SplitRule     `json:"split,omitempty"`
+}
+
+// PriceListStatus defines model for PriceListStatus.
+type PriceListStatus string
+
+// PriceListSummary defines model for PriceListSummary.
+type PriceListSummary struct {
+	Code              string          `json:"code"`
+	ContractTypes     []ContractType  `json:"contract_types"`
+	Id                string          `json:"id"`
+	Name              I18nText        `json:"name"`
+	RuleCount         int             `json:"rule_count"`
+	SourcePriceListId *string         `json:"source_price_list_id,omitempty"`
+	Status            PriceListStatus `json:"status"`
+
+	// ValidFrom Calendar date YYYY-MM-DD in the marina timezone
+	ValidFrom IsoDate `json:"valid_from"`
+
+	// ValidTo Calendar date YYYY-MM-DD in the marina timezone
+	ValidTo IsoDate `json:"valid_to"`
+	Version int     `json:"version"`
+}
+
+// PriceListSummaryList defines model for PriceListSummaryList.
+type PriceListSummaryList struct {
+	Items []PriceListSummary `json:"items"`
+}
+
+// PriceListValidation defines model for PriceListValidation.
+type PriceListValidation struct {
+	Issues []PriceListIssue `json:"issues"`
+}
+
+// PriceMatrix defines model for PriceMatrix.
+type PriceMatrix struct {
+	Cells        []PriceMatrixCell   `json:"cells"`
+	Columns      []PriceMatrixColumn `json:"columns"`
+	ContractType ContractType        `json:"contract_type"`
+	ItemId       string              `json:"item_id"`
+	PriceListId  string              `json:"price_list_id"`
+
+	// QuotedOn Calendar date YYYY-MM-DD in the marina timezone
+	QuotedOn IsoDate          `json:"quoted_on"`
+	Rows     []PriceMatrixRow `json:"rows"`
+}
+
+// PriceMatrixCell defines model for PriceMatrixCell.
+type PriceMatrixCell struct {
+	BaseCents *int64 `json:"base_cents,omitempty"`
+	Col       int    `json:"col"`
+
+	// Error Error code when the probe has no price, e.g. no_price:no_rule
+	Error    *string `json:"error,omitempty"`
+	NetCents *int64  `json:"net_cents,omitempty"`
+
+	// Probe Stay to price. Nights are [arrival, departure). vessel_id or vessel, resource or category with berth dimensions, customer_id or customer_category; explicit fields override the resolved ones. Matrix probes use this shape with explicit dimensions, price_list_id and quoted_on.
+	Probe      PricingSimulateRequest `json:"probe"`
+	Row        int                    `json:"row"`
+	TotalCents *int64                 `json:"total_cents,omitempty"`
+	Unit       *TimeUnit              `json:"unit,omitempty"`
+}
+
+// PriceMatrixColumn defines model for PriceMatrixColumn.
+type PriceMatrixColumn struct {
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival IsoDate `json:"arrival"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure IsoDate `json:"departure"`
+
+	// Key Rate period code, or year / season
+	Key string `json:"key"`
+}
+
+// PriceMatrixRow defines model for PriceMatrixRow.
+type PriceMatrixRow struct {
+	Key         string             `json:"key"`
+	Kind        PriceMatrixRowKind `json:"kind"`
+	ProbeBeamCm int64              `json:"probe_beam_cm"`
+	ProbeLoaCm  int64              `json:"probe_loa_cm"`
+}
+
+// PriceMatrixRowKind defines model for PriceMatrixRow.Kind.
+type PriceMatrixRowKind string
+
+// PriceResolved What the simulator used after resolving ids; never names or contact data.
+type PriceResolved struct {
+	BeamCm           *int64                       `json:"beam_cm,omitempty"`
+	BerthLengthCm    *int64                       `json:"berth_length_cm,omitempty"`
+	BerthWidthCm     *int64                       `json:"berth_width_cm,omitempty"`
+	Category         *string                      `json:"category,omitempty"`
+	Channel          Channel                      `json:"channel"`
+	CustomerCategory *CustomerCategory            `json:"customer_category,omitempty"`
+	DimensionOrigin  PriceResolvedDimensionOrigin `json:"dimension_origin"`
+	GroupIds         *[]string                    `json:"group_ids,omitempty"`
+	HullType         *HullType                    `json:"hull_type,omitempty"`
+	ItemId           string                       `json:"item_id"`
+	LoaCm            *int64                       `json:"loa_cm,omitempty"`
+	PriceListCode    string                       `json:"price_list_code"`
+	PriceListId      string                       `json:"price_list_id"`
+
+	// QuotedOn Calendar date YYYY-MM-DD in the marina timezone
+	QuotedOn IsoDate `json:"quoted_on"`
+}
+
+// PriceResolvedDimensionOrigin defines model for PriceResolved.DimensionOrigin.
+type PriceResolvedDimensionOrigin string
+
+// PriceRule A base rule, modifier or discount (field set by stage, m2-plan §2.2): base rules use item_id, basis, unit, amount_cents/unit_cents/amounts and includes; modifiers and discounts use target_item_ids/types, conditions and effect; discounts also discount_kind and promo_code. seq is assigned by the server.
+type PriceRule struct {
+	Active      *bool  `json:"active,omitempty"`
+	AmountCents *int64 `json:"amount_cents,omitempty"`
+
+	// Amounts length_band band code → cents; per_berth category → cents
+	Amounts      *map[string]int64  `json:"amounts,omitempty"`
+	Basis        *PricingBasis      `json:"basis,omitempty"`
+	Conditions   *PricingConditions `json:"conditions,omitempty"`
+	DiscountKind *DiscountKind      `json:"discount_kind,omitempty"`
+
+	// Effect Exactly one of the two
+	Effect   *PricingEffect `json:"effect,omitempty"`
+	Id       *string        `json:"id,omitempty"`
+	Includes *[]Inclusion   `json:"includes,omitempty"`
+	ItemId   *string        `json:"item_id,omitempty"`
+
+	// Key Client key of a new row of a price list document, unique in the request
+	Key       *DocKey `json:"key,omitempty"`
+	Name      string  `json:"name"`
+	Priority  *int64  `json:"priority,omitempty"`
+	PromoCode *string `json:"promo_code,omitempty"`
+
+	// Scope Empty or absent list = any value
+	Scope           *PricingScope `json:"scope,omitempty"`
+	Seq             *int64        `json:"seq,omitempty"`
+	Stackable       *bool         `json:"stackable,omitempty"`
+	Stage           PricingStage  `json:"stage"`
+	TargetItemIds   *[]string     `json:"target_item_ids,omitempty"`
+	TargetItemTypes *[]ItemType   `json:"target_item_types,omitempty"`
+	Unit            *TimeUnit     `json:"unit,omitempty"`
+	UnitCents       *int64        `json:"unit_cents,omitempty"`
+}
+
+// PriceTraceStep defines model for PriceTraceStep.
+type PriceTraceStep struct {
+	Block int `json:"block"`
+
+	// Code Trace code (pricing/trace.go), shown as pricingEnums:trace.<code>
+	Code   string             `json:"code"`
+	Line   int                `json:"line"`
+	Params *map[string]string `json:"params,omitempty"`
+	RuleId *string            `json:"rule_id,omitempty"`
+}
+
+// PricingBasis defines model for PricingBasis.
+type PricingBasis string
+
+// PricingConditions defines model for PricingConditions.
+type PricingConditions struct {
+	HullTypes     *[]HullType `json:"hull_types,omitempty"`
+	LeadMaxDays   *int        `json:"lead_max_days,omitempty"`
+	LeadMinDays   *int        `json:"lead_min_days,omitempty"`
+	MaxNights     *int        `json:"max_nights,omitempty"`
+	MinNights     *int        `json:"min_nights,omitempty"`
+	OverhangMinCm *int64      `json:"overhang_min_cm,omitempty"`
+}
+
+// PricingEffect Exactly one of the two
+type PricingEffect struct {
+	AmountCents *int64 `json:"amount_cents,omitempty"`
+	PercentBp   *int64 `json:"percent_bp,omitempty"`
+}
+
+// PricingScope Empty or absent list = any value
+type PricingScope struct {
+	Categories         *[]string           `json:"categories,omitempty"`
+	Channels           *[]Channel          `json:"channels,omitempty"`
+	ContractTypes      *[]ContractType     `json:"contract_types,omitempty"`
+	CustomerCategories *[]CustomerCategory `json:"customer_categories,omitempty"`
+	GroupIds           *[]string           `json:"group_ids,omitempty"`
+
+	// Periods Rate period codes
+	Periods *[]string `json:"periods,omitempty"`
+}
+
+// PricingSettings defines model for PricingSettings.
+type PricingSettings struct {
+	DefaultPriceIncludesVat bool  `json:"default_price_includes_vat"`
+	DefaultVatRateBp        int64 `json:"default_vat_rate_bp"`
+	Version                 int   `json:"version"`
+}
+
+// PricingSettingsUpdate defines model for PricingSettingsUpdate.
+type PricingSettingsUpdate struct {
+	DefaultPriceIncludesVat bool  `json:"default_price_includes_vat"`
+	DefaultVatRateBp        int64 `json:"default_vat_rate_bp"`
+}
+
+// PricingSimulateRequest Stay to price. Nights are [arrival, departure). vessel_id or vessel, resource or category with berth dimensions, customer_id or customer_category; explicit fields override the resolved ones. Matrix probes use this shape with explicit dimensions, price_list_id and quoted_on.
+type PricingSimulateRequest struct {
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival          IsoDate           `json:"arrival"`
+	BerthLengthCm    *int64            `json:"berth_length_cm,omitempty"`
+	BerthWidthCm     *int64            `json:"berth_width_cm,omitempty"`
+	Category         *string           `json:"category,omitempty"`
+	Channel          *Channel          `json:"channel,omitempty"`
+	ContractType     ContractType      `json:"contract_type"`
+	CustomerCategory *CustomerCategory `json:"customer_category,omitempty"`
+	CustomerId       *string           `json:"customer_id,omitempty"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure IsoDate `json:"departure"`
+
+	// Deposit Percent of the total or a fixed amount capped at the total (at most one)
+	Deposit     *DepositPolicy `json:"deposit,omitempty"`
+	GroupIds    *[]string      `json:"group_ids,omitempty"`
+	ItemId      *string        `json:"item_id,omitempty"`
+	PriceListId *string        `json:"price_list_id,omitempty"`
+	PromoCode   *string        `json:"promo_code,omitempty"`
+
+	// QuotedOn Calendar date YYYY-MM-DD in the marina timezone
+	QuotedOn *IsoDate           `json:"quoted_on,omitempty"`
+	Resource *SimulateResource  `json:"resource,omitempty"`
+	Services *[]SimulateService `json:"services,omitempty"`
+	Vessel   *SimulateVessel    `json:"vessel,omitempty"`
+	VesselId *string            `json:"vessel_id,omitempty"`
+}
+
+// PricingStage defines model for PricingStage.
+type PricingStage string
+
 // Problem defines model for Problem.
 type Problem struct {
-	Detail   *string       `json:"detail,omitempty"`
-	Errors   *[]FieldError `json:"errors,omitempty"`
-	Instance *string       `json:"instance,omitempty"`
+	Detail *string `json:"detail,omitempty"`
+
+	// Details Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}. Ids, codes and integers only.
+	Details  *map[string]interface{} `json:"details,omitempty"`
+	Errors   *[]FieldError           `json:"errors,omitempty"`
+	Instance *string                 `json:"instance,omitempty"`
 
 	// Issues Map validation issues (map_invalid)
-	Issues            *[]MapIssue `json:"issues,omitempty"`
-	RequestId         *string     `json:"request_id,omitempty"`
-	RetryAfterSeconds *int        `json:"retry_after_seconds,omitempty"`
-	Status            int         `json:"status"`
-	Title             string      `json:"title"`
-	Type              ProblemType `json:"type"`
+	Issues *[]MapIssue `json:"issues,omitempty"`
+
+	// PriceListIssues Price list validation issues (price_list_invalid)
+	PriceListIssues   *[]PriceListIssue `json:"price_list_issues,omitempty"`
+	RequestId         *string           `json:"request_id,omitempty"`
+	RetryAfterSeconds *int              `json:"retry_after_seconds,omitempty"`
+	Status            int               `json:"status"`
+	Title             string            `json:"title"`
+	Type              ProblemType       `json:"type"`
 }
 
 // ProblemType defines model for ProblemType.
@@ -3442,6 +4834,9 @@ type PublicMarina struct {
 	Name           string   `json:"name"`
 	Slug           string   `json:"slug"`
 }
+
+// QtyMilli Quantity in thousandths (1.5 = 1500)
+type QtyMilli = int64
 
 // QuayBerthsGenerator defines model for QuayBerthsGenerator.
 type QuayBerthsGenerator struct {
@@ -3476,6 +4871,25 @@ type QuayBerthsGeneratorSide string
 // QuayBerthsGeneratorType defines model for QuayBerthsGenerator.Type.
 type QuayBerthsGeneratorType string
 
+// RatePeriod A season or an event of a price list. Saved rows carry id; new rows in a save carry key.
+type RatePeriod struct {
+	Code  string       `json:"code"`
+	Color *PeriodColor `json:"color,omitempty"`
+	Id    *string      `json:"id,omitempty"`
+
+	// Key Client key of a new row of a price list document, unique in the request
+	Key    *DocKey     `json:"key,omitempty"`
+	Kind   PeriodKind  `json:"kind"`
+	Name   I18nText    `json:"name"`
+	Ranges []DateRange `json:"ranges"`
+}
+
+// Ratio defines model for Ratio.
+type Ratio struct {
+	Den int64 `json:"den"`
+	Num int64 `json:"num"`
+}
+
 // ReadyStatus defines model for ReadyStatus.
 type ReadyStatus struct {
 	SchemaVersion int64             `json:"schema_version"`
@@ -3507,6 +4921,107 @@ type Rect struct {
 // RectSideCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
 type RectSideCm = int64
 
+// RenewalAdjustment defines model for RenewalAdjustment.
+type RenewalAdjustment struct {
+	AmountCents *int64                 `json:"amount_cents,omitempty"`
+	Category    *string                `json:"category,omitempty"`
+	ItemId      *string                `json:"item_id,omitempty"`
+	PercentBp   *int64                 `json:"percent_bp,omitempty"`
+	Scope       RenewalAdjustmentScope `json:"scope"`
+}
+
+// RenewalAdjustmentScope defines model for RenewalAdjustment.Scope.
+type RenewalAdjustmentScope string
+
+// RenewalDiff defines model for RenewalDiff.
+type RenewalDiff struct {
+	After        PriceMatrix       `json:"after"`
+	Before       PriceMatrix       `json:"before"`
+	Cells        []RenewalDiffCell `json:"cells"`
+	ContractType ContractType      `json:"contract_type"`
+}
+
+// RenewalDiffCell defines model for RenewalDiffCell.
+type RenewalDiffCell struct {
+	Col        int    `json:"col"`
+	DeltaBp    *int64 `json:"delta_bp,omitempty"`
+	DeltaCents *int64 `json:"delta_cents,omitempty"`
+	NewCents   *int64 `json:"new_cents,omitempty"`
+	OldCents   *int64 `json:"old_cents,omitempty"`
+	Row        int    `json:"row"`
+}
+
+// RenewalMatrixOptions defines model for RenewalMatrixOptions.
+type RenewalMatrixOptions struct {
+	Channel          *Channel          `json:"channel,omitempty"`
+	ContractTypes    *[]ContractType   `json:"contract_types,omitempty"`
+	CustomerCategory *CustomerCategory `json:"customer_category,omitempty"`
+}
+
+// RenewalPreview defines model for RenewalPreview.
+type RenewalPreview struct {
+	Diffs []RenewalDiff `json:"diffs"`
+
+	// Document The whole editable document of a draft; periods, bands and rules are replaced by the diff.
+	Document PriceListSave `json:"document"`
+	Summary  struct {
+		AmountsChanged int `json:"amounts_changed"`
+		Rules          int `json:"rules"`
+	} `json:"summary"`
+}
+
+// RenewalRequest defines model for RenewalRequest.
+type RenewalRequest struct {
+	Adjustments    *[]RenewalAdjustment  `json:"adjustments,omitempty"`
+	AmountRounding AmountRounding        `json:"amount_rounding"`
+	Code           string                `json:"code"`
+	DryRun         bool                  `json:"dry_run"`
+	IstatBp        *int64                `json:"istat_bp,omitempty"`
+	Matrix         *RenewalMatrixOptions `json:"matrix,omitempty"`
+	Name           I18nText              `json:"name"`
+	ShiftYears     int                   `json:"shift_years"`
+
+	// ValidFrom Calendar date YYYY-MM-DD in the marina timezone
+	ValidFrom *IsoDate `json:"valid_from,omitempty"`
+
+	// ValidTo Calendar date YYYY-MM-DD in the marina timezone
+	ValidTo *IsoDate `json:"valid_to,omitempty"`
+}
+
+// RevenueClass defines model for RevenueClass.
+type RevenueClass struct {
+	Archived  bool     `json:"archived"`
+	Code      string   `json:"code"`
+	Id        string   `json:"id"`
+	ItemCount int      `json:"item_count"`
+	Name      I18nText `json:"name"`
+	ParentId  *string  `json:"parent_id,omitempty"`
+	SortOrder int      `json:"sort_order"`
+	Version   int      `json:"version"`
+}
+
+// RevenueClassCreate defines model for RevenueClassCreate.
+type RevenueClassCreate struct {
+	Code      string   `json:"code"`
+	Name      I18nText `json:"name"`
+	ParentId  *string  `json:"parent_id,omitempty"`
+	SortOrder *int     `json:"sort_order,omitempty"`
+}
+
+// RevenueClassList defines model for RevenueClassList.
+type RevenueClassList struct {
+	Items []RevenueClass `json:"items"`
+}
+
+// RevenueClassPatch Absent fields are unchanged; parent_id null makes it a top-level class; archived archives or restores it.
+type RevenueClassPatch struct {
+	Archived  *bool     `json:"archived,omitempty"`
+	Code      *string   `json:"code,omitempty"`
+	Name      *I18nText `json:"name,omitempty"`
+	ParentId  *string   `json:"parent_id,omitempty"`
+	SortOrder *int      `json:"sort_order,omitempty"`
+}
+
 // Role defines model for Role.
 type Role string
 
@@ -3515,6 +5030,28 @@ type RotationDd = int64
 
 // Side defines model for Side.
 type Side string
+
+// SimulateResource defines model for SimulateResource.
+type SimulateResource struct {
+	Id   string         `json:"id"`
+	Type CategoryTarget `json:"type"`
+}
+
+// SimulateService defines model for SimulateService.
+type SimulateService struct {
+	ItemId   string `json:"item_id"`
+	QtyMilli *int64 `json:"qty_milli,omitempty"`
+}
+
+// SimulateVessel defines model for SimulateVessel.
+type SimulateVessel struct {
+	BeamCm   int64     `json:"beam_cm"`
+	HullType *HullType `json:"hull_type,omitempty"`
+	LoaCm    int64     `json:"loa_cm"`
+}
+
+// SplitRule defines model for SplitRule.
+type SplitRule string
 
 // Structure defines model for Structure.
 type Structure struct {
@@ -3593,6 +5130,12 @@ type SurfaceLane struct {
 	WidthCm PositiveCm `json:"width_cm"`
 }
 
+// TimeUnit defines model for TimeUnit.
+type TimeUnit string
+
+// TotalRounding defines model for TotalRounding.
+type TotalRounding string
+
 // TotpCode defines model for TotpCode.
 type TotpCode struct {
 	Code string `json:"code"`
@@ -3622,6 +5165,18 @@ type UserRef struct {
 
 // UtilityKind defines model for UtilityKind.
 type UtilityKind string
+
+// VatBucket defines model for VatBucket.
+type VatBucket struct {
+	GrossCents int64   `json:"gross_cents"`
+	NetCents   int64   `json:"net_cents"`
+	VatCents   int64   `json:"vat_cents"`
+	VatNature  *string `json:"vat_nature,omitempty"`
+	VatRateBp  int64   `json:"vat_rate_bp"`
+}
+
+// VatNature FatturaPA nature of a 0 % VAT line (m2-plan §12 D9)
+type VatNature string
 
 // Vessel defines model for Vessel.
 type Vessel struct {
@@ -3919,6 +5474,9 @@ type WebhookTestResult struct {
 // CSRFToken defines model for CSRFToken.
 type CSRFToken = string
 
+// CategoryId defines model for CategoryId.
+type CategoryId = string
+
 // Cursor defines model for Cursor.
 type Cursor = string
 
@@ -3946,6 +5504,9 @@ type IdempotencyKey = string
 // IfMatch defines model for IfMatch.
 type IfMatch = string
 
+// ItemId defines model for ItemId.
+type ItemId = string
+
 // Limit defines model for Limit.
 type Limit = int
 
@@ -3957,6 +5518,12 @@ type MarinaId = string
 
 // OrganizationId defines model for OrganizationId.
 type OrganizationId = string
+
+// PriceListId defines model for PriceListId.
+type PriceListId = string
+
+// RevenueClassId defines model for RevenueClassId.
+type RevenueClassId = string
 
 // UserId defines model for UserId.
 type UserId = string
@@ -3987,6 +5554,9 @@ type PreconditionFailed = Problem
 
 // PreconditionRequired defines model for PreconditionRequired.
 type PreconditionRequired = Problem
+
+// PricingUnprocessable defines model for PricingUnprocessable.
+type PricingUnprocessable = Problem
 
 // ServiceUnavailable defines model for ServiceUnavailable.
 type ServiceUnavailable = Problem
@@ -4028,6 +5598,35 @@ type ListAuditLogParams struct {
 
 	// To Exclusive upper bound
 	To *time.Time `form:"to,omitempty" json:"to,omitempty"`
+}
+
+// ListBerthCategoriesParams defines parameters for ListBerthCategories.
+type ListBerthCategoriesParams struct {
+	IncludeArchived *bool `form:"include_archived,omitempty" json:"include_archived,omitempty"`
+}
+
+// CreateBerthCategoryParams defines parameters for CreateBerthCategory.
+type CreateBerthCategoryParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// SyncBerthCategoriesParams defines parameters for SyncBerthCategories.
+type SyncBerthCategoriesParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DeleteBerthCategoryParams defines parameters for DeleteBerthCategory.
+type DeleteBerthCategoryParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdateBerthCategoryParams defines parameters for UpdateBerthCategory.
+type UpdateBerthCategoryParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
 // CreateBerthGroupParams defines parameters for CreateBerthGroup.
@@ -4168,6 +5767,35 @@ type UpdateHarborSettingsParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// ListItemsParams defines parameters for ListItems.
+type ListItemsParams struct {
+	Cursor *Cursor   `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit    `form:"limit,omitempty" json:"limit,omitempty"`
+	Type   *ItemType `form:"type,omitempty" json:"type,omitempty"`
+	Active *bool     `form:"active,omitempty" json:"active,omitempty"`
+
+	// Q Code or name substring
+	Q *string `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// CreateItemParams defines parameters for CreateItem.
+type CreateItemParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DeleteItemParams defines parameters for DeleteItem.
+type DeleteItemParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdateItemParams defines parameters for UpdateItem.
+type UpdateItemParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
 // CreateMapParams defines parameters for CreateMap.
 type CreateMapParams struct {
 	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
@@ -4210,6 +5838,102 @@ type ExportMapParamsFormat string
 type AddMemberParams struct {
 	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ListPriceListsParams defines parameters for ListPriceLists.
+type ListPriceListsParams struct {
+	Status       *PriceListStatus `form:"status,omitempty" json:"status,omitempty"`
+	ContractType *ContractType    `form:"contract_type,omitempty" json:"contract_type,omitempty"`
+
+	// On Lists valid on this date
+	On *string `form:"on,omitempty" json:"on,omitempty"`
+}
+
+// CreatePriceListParams defines parameters for CreatePriceList.
+type CreatePriceListParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DeletePriceListParams defines parameters for DeletePriceList.
+type DeletePriceListParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// SavePriceListParams defines parameters for SavePriceList.
+type SavePriceListParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ActivatePriceListParams defines parameters for ActivatePriceList.
+type ActivatePriceListParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ArchivePriceListParams defines parameters for ArchivePriceList.
+type ArchivePriceListParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// GetPriceCoverageParams defines parameters for GetPriceCoverage.
+type GetPriceCoverageParams struct {
+	// QuotedOn Default today in the marina timezone
+	QuotedOn *string `form:"quoted_on,omitempty" json:"quoted_on,omitempty"`
+}
+
+// GetPriceMatrixParams defines parameters for GetPriceMatrix.
+type GetPriceMatrixParams struct {
+	// ContractType Default the first contract type served
+	ContractType     *ContractType             `form:"contract_type,omitempty" json:"contract_type,omitempty"`
+	ItemId           *string                   `form:"item_id,omitempty" json:"item_id,omitempty"`
+	Rows             *GetPriceMatrixParamsRows `form:"rows,omitempty" json:"rows,omitempty"`
+	Channel          *Channel                  `form:"channel,omitempty" json:"channel,omitempty"`
+	CustomerCategory *CustomerCategory         `form:"customer_category,omitempty" json:"customer_category,omitempty"`
+
+	// QuotedOn Default today in the marina timezone
+	QuotedOn *string `form:"quoted_on,omitempty" json:"quoted_on,omitempty"`
+}
+
+// GetPriceMatrixParamsRows defines parameters for GetPriceMatrix.
+type GetPriceMatrixParamsRows string
+
+// RenewPriceListParams defines parameters for RenewPriceList.
+type RenewPriceListParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdatePricingSettingsParams defines parameters for UpdatePricingSettings.
+type UpdatePricingSettingsParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListRevenueClassesParams defines parameters for ListRevenueClasses.
+type ListRevenueClassesParams struct {
+	IncludeArchived *bool `form:"include_archived,omitempty" json:"include_archived,omitempty"`
+}
+
+// CreateRevenueClassParams defines parameters for CreateRevenueClass.
+type CreateRevenueClassParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DeleteRevenueClassParams defines parameters for DeleteRevenueClass.
+type DeleteRevenueClassParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdateRevenueClassParams defines parameters for UpdateRevenueClass.
+type UpdateRevenueClassParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
 // ListVesselsParams defines parameters for ListVessels.
@@ -4331,6 +6055,12 @@ type UpdateMarinaJSONRequestBody = MarinaPatch
 // CreateApiKeyJSONRequestBody defines body for CreateApiKey for application/json ContentType.
 type CreateApiKeyJSONRequestBody = ApiKeyCreate
 
+// CreateBerthCategoryJSONRequestBody defines body for CreateBerthCategory for application/json ContentType.
+type CreateBerthCategoryJSONRequestBody = BerthCategoryCreate
+
+// UpdateBerthCategoryJSONRequestBody defines body for UpdateBerthCategory for application/json ContentType.
+type UpdateBerthCategoryJSONRequestBody = BerthCategoryPatch
+
 // CreateBerthGroupJSONRequestBody defines body for CreateBerthGroup for application/json ContentType.
 type CreateBerthGroupJSONRequestBody = BerthGroupCreate
 
@@ -4370,6 +6100,12 @@ type UpdateDocumentJSONRequestBody = DocumentPatch
 // UpdateHarborSettingsJSONRequestBody defines body for UpdateHarborSettings for application/json ContentType.
 type UpdateHarborSettingsJSONRequestBody = HarborSettingsPatch
 
+// CreateItemJSONRequestBody defines body for CreateItem for application/json ContentType.
+type CreateItemJSONRequestBody = ItemCreate
+
+// UpdateItemJSONRequestBody defines body for UpdateItem for application/json ContentType.
+type UpdateItemJSONRequestBody = ItemPatch
+
 // CreateMapJSONRequestBody defines body for CreateMap for application/json ContentType.
 type CreateMapJSONRequestBody = MapCreate
 
@@ -4399,6 +6135,33 @@ type AddMemberJSONRequestBody = MemberCreate
 
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
+
+// CreatePriceListJSONRequestBody defines body for CreatePriceList for application/json ContentType.
+type CreatePriceListJSONRequestBody = PriceListCreate
+
+// SavePriceListJSONRequestBody defines body for SavePriceList for application/json ContentType.
+type SavePriceListJSONRequestBody = PriceListSave
+
+// ActivatePriceListJSONRequestBody defines body for ActivatePriceList for application/json ContentType.
+type ActivatePriceListJSONRequestBody = PriceListActivate
+
+// RenewPriceListJSONRequestBody defines body for RenewPriceList for application/json ContentType.
+type RenewPriceListJSONRequestBody = RenewalRequest
+
+// ValidatePriceListJSONRequestBody defines body for ValidatePriceList for application/json ContentType.
+type ValidatePriceListJSONRequestBody = PriceListSave
+
+// UpdatePricingSettingsJSONRequestBody defines body for UpdatePricingSettings for application/json ContentType.
+type UpdatePricingSettingsJSONRequestBody = PricingSettingsUpdate
+
+// SimulatePriceJSONRequestBody defines body for SimulatePrice for application/json ContentType.
+type SimulatePriceJSONRequestBody = PricingSimulateRequest
+
+// CreateRevenueClassJSONRequestBody defines body for CreateRevenueClass for application/json ContentType.
+type CreateRevenueClassJSONRequestBody = RevenueClassCreate
+
+// UpdateRevenueClassJSONRequestBody defines body for UpdateRevenueClass for application/json ContentType.
+type UpdateRevenueClassJSONRequestBody = RevenueClassPatch
 
 // CreateVesselJSONRequestBody defines body for CreateVessel for application/json ContentType.
 type CreateVesselJSONRequestBody = VesselInput
@@ -4737,6 +6500,21 @@ type ServerInterface interface {
 	// ListAuditLog Audit log of the marina, newest first (audit.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/audit-log)
 	ListAuditLog(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListAuditLogParams)
+	// ListBerthCategories Berth categories with usage counts and the price_class codes in use without a category (pricing.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/berth-categories)
+	ListBerthCategories(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListBerthCategoriesParams)
+	// CreateBerthCategory Create a berth category (pricing.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/berth-categories)
+	CreateBerthCategory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateBerthCategoryParams)
+	// SyncBerthCategories Create the missing categories from the harbour price-class rule and the codes in use (pricing.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/berth-categories/sync)
+	SyncBerthCategories(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params SyncBerthCategoriesParams)
+	// DeleteBerthCategory Delete a category no element and no rule uses; otherwise 409 in_use (pricing.configure)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/berth-categories/{categoryId})
+	DeleteBerthCategory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, categoryId CategoryId, params DeleteBerthCategoryParams)
+	// UpdateBerthCategory Update a berth category; the code is immutable (pricing.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/berth-categories/{categoryId})
+	UpdateBerthCategory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, categoryId CategoryId, params UpdateBerthCategoryParams)
 	// ListBerthGroups Berth groups with member counts (map.view)
 	// (GET /api/admin/v1/marinas/{marinaId}/berth-groups)
 	ListBerthGroups(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -4752,6 +6530,9 @@ type ServerInterface interface {
 	// ListBerths Berths of the marina, by map and code (map.view)
 	// (GET /api/admin/v1/marinas/{marinaId}/berths)
 	ListBerths(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListBerthsParams)
+	// ListCustomerCategoryCounts Customer categories (fixed enum, spec 11.1) with the number of non-archived customers in each, for the classifications page; counts only, no customer data (pricing.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/customer-categories)
+	ListCustomerCategoryCounts(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
 	// ListCustomers Search customers by name, fiscal code, VAT, phone, email or vessel name/registration (customers.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/customers)
 	ListCustomers(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListCustomersParams)
@@ -4842,6 +6623,21 @@ type ServerInterface interface {
 	// UpdateHarborSettings Update harbour settings (harbor.configure)
 	// (PATCH /api/admin/v1/marinas/{marinaId}/harbor-settings)
 	UpdateHarborSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateHarborSettingsParams)
+	// ListItems Items and services by sort order and code (pricing.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/items)
+	ListItems(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListItemsParams)
+	// CreateItem Create an item; VAT defaults come from the pricing settings (pricing.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/items)
+	CreateItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateItemParams)
+	// DeleteItem Delete an item no price list references; otherwise 409 in_use (deactivate it instead) (pricing.configure)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/items/{itemId})
+	DeleteItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, itemId ItemId, params DeleteItemParams)
+	// GetItem An item with its usage (pricing.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/items/{itemId})
+	GetItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, itemId ItemId)
+	// UpdateItem Update an item; every field stays editable: drafts price with the live item, published (active or archived) lists with the snapshot taken at activation (pricing.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/items/{itemId})
+	UpdateItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, itemId ItemId, params UpdateItemParams)
 	// ListMaps Maps of the marina, by sort order (map.view)
 	// (GET /api/admin/v1/marinas/{marinaId}/maps)
 	ListMaps(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -4899,6 +6695,60 @@ type ServerInterface interface {
 	// SendMemberPasswordReset Email a password reset link to a member (users.manage)
 	// (POST /api/admin/v1/marinas/{marinaId}/members/{userId}/password-reset)
 	SendMemberPasswordReset(w http.ResponseWriter, r *http.Request, marinaId MarinaId, userId UserId)
+	// ListPriceLists Price lists, newest validity first (pricing.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/price-lists)
+	ListPriceLists(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListPriceListsParams)
+	// CreatePriceList Create an empty draft price list with default settings (pricing.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/price-lists)
+	CreatePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreatePriceListParams)
+	// DeletePriceList Delete a draft price list; published lists are immutable (pricing.configure)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId})
+	DeletePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params DeletePriceListParams)
+	// GetPriceList The full price list document with its validation issues (pricing.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId})
+	GetPriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId)
+	// SavePriceList Replace the draft document (settings, periods, bands, rules) in one transaction; new rows carry a key, saved ones their id. Saved even with validation errors (pricing.configure)
+	// (PUT /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId})
+	SavePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params SavePriceListParams)
+	// ActivatePriceList Activate a valid draft from effective_from (default valid_from); predecessors serving the same contract types are truncated, other overlaps are 409 price_list_overlap (pricing.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/activate)
+	ActivatePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params ActivatePriceListParams)
+	// ArchivePriceList Archive an active list (drafts are deleted instead) (pricing.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/archive)
+	ArchivePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params ArchivePriceListParams)
+	// GetPriceCoverage Combinations without a price and elements without a valid category (pricing.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/coverage)
+	GetPriceCoverage(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params GetPriceCoverageParams)
+	// GetPriceMatrix Price matrix computed by the engine through probes; every cell equals a simulation of its probe (INV-23) (pricing.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/matrix)
+	GetPriceMatrix(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params GetPriceMatrixParams)
+	// RenewPriceList New draft list from this one (spec 12.6): date shift, ISTAT, adjustments, rounding. dry_run returns the preview with the matrix diff; otherwise the draft is created (pricing.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/renewal)
+	RenewPriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params RenewPriceListParams)
+	// ValidatePriceList Dry-run validation of a document, or of the saved one when the body is empty; nothing is written (pricing.read)
+	// (POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/validate)
+	ValidatePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId)
+	// GetPricingSettings Pricing settings: default VAT rate and VAT inclusion of new items (pricing.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/pricing-settings)
+	GetPricingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// UpdatePricingSettings Replace the pricing settings (pricing.configure)
+	// (PUT /api/admin/v1/marinas/{marinaId}/pricing-settings)
+	UpdatePricingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdatePricingSettingsParams)
+	// SimulatePrice Price a stay with the full breakdown and trace; without price_list_id the list active on the arrival night (pricing.read)
+	// (POST /api/admin/v1/marinas/{marinaId}/pricing/simulate)
+	SimulatePrice(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// ListRevenueClasses Revenue classes (two levels); the spec defaults are created on first use (pricing.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/revenue-classes)
+	ListRevenueClasses(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRevenueClassesParams)
+	// CreateRevenueClass Create a revenue class or subclass (pricing.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/revenue-classes)
+	CreateRevenueClass(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRevenueClassParams)
+	// DeleteRevenueClass Delete a revenue class used by no item and no subclass (pricing.configure)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/revenue-classes/{revenueClassId})
+	DeleteRevenueClass(w http.ResponseWriter, r *http.Request, marinaId MarinaId, revenueClassId RevenueClassId, params DeleteRevenueClassParams)
+	// UpdateRevenueClass Update a revenue class; archived true archives it; published lists keep the code of their item snapshot (pricing.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/revenue-classes/{revenueClassId})
+	UpdateRevenueClass(w http.ResponseWriter, r *http.Request, marinaId MarinaId, revenueClassId RevenueClassId, params UpdateRevenueClassParams)
 	// ListVessels Search vessels by name or registration (customers.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/vessels)
 	ListVessels(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListVesselsParams)
@@ -5118,6 +6968,36 @@ func (_ Unimplemented) ListAuditLog(w http.ResponseWriter, r *http.Request, mari
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ListBerthCategories Berth categories with usage counts and the price_class codes in use without a category (pricing.read)
+// (GET /api/admin/v1/marinas/{marinaId}/berth-categories)
+func (_ Unimplemented) ListBerthCategories(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListBerthCategoriesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateBerthCategory Create a berth category (pricing.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/berth-categories)
+func (_ Unimplemented) CreateBerthCategory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateBerthCategoryParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SyncBerthCategories Create the missing categories from the harbour price-class rule and the codes in use (pricing.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/berth-categories/sync)
+func (_ Unimplemented) SyncBerthCategories(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params SyncBerthCategoriesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteBerthCategory Delete a category no element and no rule uses; otherwise 409 in_use (pricing.configure)
+// (DELETE /api/admin/v1/marinas/{marinaId}/berth-categories/{categoryId})
+func (_ Unimplemented) DeleteBerthCategory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, categoryId CategoryId, params DeleteBerthCategoryParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateBerthCategory Update a berth category; the code is immutable (pricing.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/berth-categories/{categoryId})
+func (_ Unimplemented) UpdateBerthCategory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, categoryId CategoryId, params UpdateBerthCategoryParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListBerthGroups Berth groups with member counts (map.view)
 // (GET /api/admin/v1/marinas/{marinaId}/berth-groups)
 func (_ Unimplemented) ListBerthGroups(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
@@ -5145,6 +7025,12 @@ func (_ Unimplemented) UpdateBerthGroup(w http.ResponseWriter, r *http.Request, 
 // ListBerths Berths of the marina, by map and code (map.view)
 // (GET /api/admin/v1/marinas/{marinaId}/berths)
 func (_ Unimplemented) ListBerths(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListBerthsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListCustomerCategoryCounts Customer categories (fixed enum, spec 11.1) with the number of non-archived customers in each, for the classifications page; counts only, no customer data (pricing.read)
+// (GET /api/admin/v1/marinas/{marinaId}/customer-categories)
+func (_ Unimplemented) ListCustomerCategoryCounts(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -5328,6 +7214,36 @@ func (_ Unimplemented) UpdateHarborSettings(w http.ResponseWriter, r *http.Reque
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ListItems Items and services by sort order and code (pricing.read)
+// (GET /api/admin/v1/marinas/{marinaId}/items)
+func (_ Unimplemented) ListItems(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListItemsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateItem Create an item; VAT defaults come from the pricing settings (pricing.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/items)
+func (_ Unimplemented) CreateItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateItemParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteItem Delete an item no price list references; otherwise 409 in_use (deactivate it instead) (pricing.configure)
+// (DELETE /api/admin/v1/marinas/{marinaId}/items/{itemId})
+func (_ Unimplemented) DeleteItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, itemId ItemId, params DeleteItemParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetItem An item with its usage (pricing.read)
+// (GET /api/admin/v1/marinas/{marinaId}/items/{itemId})
+func (_ Unimplemented) GetItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, itemId ItemId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateItem Update an item; every field stays editable: drafts price with the live item, published (active or archived) lists with the snapshot taken at activation (pricing.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/items/{itemId})
+func (_ Unimplemented) UpdateItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, itemId ItemId, params UpdateItemParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListMaps Maps of the marina, by sort order (map.view)
 // (GET /api/admin/v1/marinas/{marinaId}/maps)
 func (_ Unimplemented) ListMaps(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
@@ -5439,6 +7355,114 @@ func (_ Unimplemented) UpdateMember(w http.ResponseWriter, r *http.Request, mari
 // SendMemberPasswordReset Email a password reset link to a member (users.manage)
 // (POST /api/admin/v1/marinas/{marinaId}/members/{userId}/password-reset)
 func (_ Unimplemented) SendMemberPasswordReset(w http.ResponseWriter, r *http.Request, marinaId MarinaId, userId UserId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListPriceLists Price lists, newest validity first (pricing.read)
+// (GET /api/admin/v1/marinas/{marinaId}/price-lists)
+func (_ Unimplemented) ListPriceLists(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListPriceListsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreatePriceList Create an empty draft price list with default settings (pricing.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/price-lists)
+func (_ Unimplemented) CreatePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreatePriceListParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeletePriceList Delete a draft price list; published lists are immutable (pricing.configure)
+// (DELETE /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId})
+func (_ Unimplemented) DeletePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params DeletePriceListParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPriceList The full price list document with its validation issues (pricing.read)
+// (GET /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId})
+func (_ Unimplemented) GetPriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SavePriceList Replace the draft document (settings, periods, bands, rules) in one transaction; new rows carry a key, saved ones their id. Saved even with validation errors (pricing.configure)
+// (PUT /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId})
+func (_ Unimplemented) SavePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params SavePriceListParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ActivatePriceList Activate a valid draft from effective_from (default valid_from); predecessors serving the same contract types are truncated, other overlaps are 409 price_list_overlap (pricing.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/activate)
+func (_ Unimplemented) ActivatePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params ActivatePriceListParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ArchivePriceList Archive an active list (drafts are deleted instead) (pricing.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/archive)
+func (_ Unimplemented) ArchivePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params ArchivePriceListParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPriceCoverage Combinations without a price and elements without a valid category (pricing.read)
+// (GET /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/coverage)
+func (_ Unimplemented) GetPriceCoverage(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params GetPriceCoverageParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPriceMatrix Price matrix computed by the engine through probes; every cell equals a simulation of its probe (INV-23) (pricing.read)
+// (GET /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/matrix)
+func (_ Unimplemented) GetPriceMatrix(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params GetPriceMatrixParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RenewPriceList New draft list from this one (spec 12.6): date shift, ISTAT, adjustments, rounding. dry_run returns the preview with the matrix diff; otherwise the draft is created (pricing.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/renewal)
+func (_ Unimplemented) RenewPriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId, params RenewPriceListParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ValidatePriceList Dry-run validation of a document, or of the saved one when the body is empty; nothing is written (pricing.read)
+// (POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/validate)
+func (_ Unimplemented) ValidatePriceList(w http.ResponseWriter, r *http.Request, marinaId MarinaId, priceListId PriceListId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPricingSettings Pricing settings: default VAT rate and VAT inclusion of new items (pricing.read)
+// (GET /api/admin/v1/marinas/{marinaId}/pricing-settings)
+func (_ Unimplemented) GetPricingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdatePricingSettings Replace the pricing settings (pricing.configure)
+// (PUT /api/admin/v1/marinas/{marinaId}/pricing-settings)
+func (_ Unimplemented) UpdatePricingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdatePricingSettingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SimulatePrice Price a stay with the full breakdown and trace; without price_list_id the list active on the arrival night (pricing.read)
+// (POST /api/admin/v1/marinas/{marinaId}/pricing/simulate)
+func (_ Unimplemented) SimulatePrice(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListRevenueClasses Revenue classes (two levels); the spec defaults are created on first use (pricing.read)
+// (GET /api/admin/v1/marinas/{marinaId}/revenue-classes)
+func (_ Unimplemented) ListRevenueClasses(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRevenueClassesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateRevenueClass Create a revenue class or subclass (pricing.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/revenue-classes)
+func (_ Unimplemented) CreateRevenueClass(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRevenueClassParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteRevenueClass Delete a revenue class used by no item and no subclass (pricing.configure)
+// (DELETE /api/admin/v1/marinas/{marinaId}/revenue-classes/{revenueClassId})
+func (_ Unimplemented) DeleteRevenueClass(w http.ResponseWriter, r *http.Request, marinaId MarinaId, revenueClassId RevenueClassId, params DeleteRevenueClassParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateRevenueClass Update a revenue class; archived true archives it; published lists keep the code of their item snapshot (pricing.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/revenue-classes/{revenueClassId})
+func (_ Unimplemented) UpdateRevenueClass(w http.ResponseWriter, r *http.Request, marinaId MarinaId, revenueClassId RevenueClassId, params UpdateRevenueClassParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -6150,6 +8174,266 @@ func (siw *ServerInterfaceWrapper) ListAuditLog(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
+// ListBerthCategories operation middleware
+func (siw *ServerInterfaceWrapper) ListBerthCategories(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListBerthCategoriesParams
+
+	// ------------- Optional query parameter "include_archived" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "include_archived", r.URL.Query(), &params.IncludeArchived, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "include_archived"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "include_archived", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListBerthCategories(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateBerthCategory operation middleware
+func (siw *ServerInterfaceWrapper) CreateBerthCategory(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateBerthCategoryParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateBerthCategory(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SyncBerthCategories operation middleware
+func (siw *ServerInterfaceWrapper) SyncBerthCategories(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SyncBerthCategoriesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SyncBerthCategories(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteBerthCategory operation middleware
+func (siw *ServerInterfaceWrapper) DeleteBerthCategory(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "categoryId" -------------
+	var categoryId CategoryId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "categoryId", chi.URLParam(r, "categoryId"), &categoryId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "categoryId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteBerthCategoryParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteBerthCategory(w, r, marinaId, categoryId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateBerthCategory operation middleware
+func (siw *ServerInterfaceWrapper) UpdateBerthCategory(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "categoryId" -------------
+	var categoryId CategoryId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "categoryId", chi.URLParam(r, "categoryId"), &categoryId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "categoryId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateBerthCategoryParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateBerthCategory(w, r, marinaId, categoryId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListBerthGroups operation middleware
 func (siw *ServerInterfaceWrapper) ListBerthGroups(w http.ResponseWriter, r *http.Request) {
 
@@ -6429,6 +8713,32 @@ func (siw *ServerInterfaceWrapper) ListBerths(w http.ResponseWriter, r *http.Req
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListBerths(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCustomerCategoryCounts operation middleware
+func (siw *ServerInterfaceWrapper) ListCustomerCategoryCounts(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCustomerCategoryCounts(w, r, marinaId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -7964,6 +10274,303 @@ func (siw *ServerInterfaceWrapper) UpdateHarborSettings(w http.ResponseWriter, r
 	handler.ServeHTTP(w, r)
 }
 
+// ListItems operation middleware
+func (siw *ServerInterfaceWrapper) ListItems(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListItemsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "type", r.URL.Query(), &params.Type, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "active" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "active", r.URL.Query(), &params.Active, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "active"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "active", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "q"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "q", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListItems(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateItem operation middleware
+func (siw *ServerInterfaceWrapper) CreateItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateItemParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateItem(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteItem operation middleware
+func (siw *ServerInterfaceWrapper) DeleteItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "itemId" -------------
+	var itemId ItemId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "itemId", chi.URLParam(r, "itemId"), &itemId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "itemId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteItemParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteItem(w, r, marinaId, itemId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetItem operation middleware
+func (siw *ServerInterfaceWrapper) GetItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "itemId" -------------
+	var itemId ItemId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "itemId", chi.URLParam(r, "itemId"), &itemId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "itemId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetItem(w, r, marinaId, itemId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateItem operation middleware
+func (siw *ServerInterfaceWrapper) UpdateItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "itemId" -------------
+	var itemId ItemId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "itemId", chi.URLParam(r, "itemId"), &itemId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "itemId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateItemParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateItem(w, r, marinaId, itemId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListMaps operation middleware
 func (siw *ServerInterfaceWrapper) ListMaps(w http.ResponseWriter, r *http.Request) {
 
@@ -8735,6 +11342,968 @@ func (siw *ServerInterfaceWrapper) SendMemberPasswordReset(w http.ResponseWriter
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SendMemberPasswordReset(w, r, marinaId, userId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListPriceLists operation middleware
+func (siw *ServerInterfaceWrapper) ListPriceLists(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListPriceListsParams
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "contract_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "contract_type", r.URL.Query(), &params.ContractType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "contract_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contract_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "on" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "on", r.URL.Query(), &params.On, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "on"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "on", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPriceLists(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreatePriceList operation middleware
+func (siw *ServerInterfaceWrapper) CreatePriceList(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreatePriceListParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreatePriceList(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeletePriceList operation middleware
+func (siw *ServerInterfaceWrapper) DeletePriceList(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "priceListId" -------------
+	var priceListId PriceListId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "priceListId", chi.URLParam(r, "priceListId"), &priceListId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "priceListId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeletePriceListParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeletePriceList(w, r, marinaId, priceListId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPriceList operation middleware
+func (siw *ServerInterfaceWrapper) GetPriceList(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "priceListId" -------------
+	var priceListId PriceListId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "priceListId", chi.URLParam(r, "priceListId"), &priceListId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "priceListId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPriceList(w, r, marinaId, priceListId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SavePriceList operation middleware
+func (siw *ServerInterfaceWrapper) SavePriceList(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "priceListId" -------------
+	var priceListId PriceListId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "priceListId", chi.URLParam(r, "priceListId"), &priceListId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "priceListId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SavePriceListParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SavePriceList(w, r, marinaId, priceListId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ActivatePriceList operation middleware
+func (siw *ServerInterfaceWrapper) ActivatePriceList(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "priceListId" -------------
+	var priceListId PriceListId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "priceListId", chi.URLParam(r, "priceListId"), &priceListId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "priceListId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ActivatePriceListParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ActivatePriceList(w, r, marinaId, priceListId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ArchivePriceList operation middleware
+func (siw *ServerInterfaceWrapper) ArchivePriceList(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "priceListId" -------------
+	var priceListId PriceListId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "priceListId", chi.URLParam(r, "priceListId"), &priceListId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "priceListId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ArchivePriceListParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ArchivePriceList(w, r, marinaId, priceListId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPriceCoverage operation middleware
+func (siw *ServerInterfaceWrapper) GetPriceCoverage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "priceListId" -------------
+	var priceListId PriceListId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "priceListId", chi.URLParam(r, "priceListId"), &priceListId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "priceListId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPriceCoverageParams
+
+	// ------------- Optional query parameter "quoted_on" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "quoted_on", r.URL.Query(), &params.QuotedOn, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "quoted_on"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "quoted_on", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPriceCoverage(w, r, marinaId, priceListId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPriceMatrix operation middleware
+func (siw *ServerInterfaceWrapper) GetPriceMatrix(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "priceListId" -------------
+	var priceListId PriceListId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "priceListId", chi.URLParam(r, "priceListId"), &priceListId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "priceListId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPriceMatrixParams
+
+	// ------------- Optional query parameter "contract_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "contract_type", r.URL.Query(), &params.ContractType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "contract_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contract_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "item_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "item_id", r.URL.Query(), &params.ItemId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "item_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "item_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "rows" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "rows", r.URL.Query(), &params.Rows, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "rows"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rows", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "channel" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "channel", r.URL.Query(), &params.Channel, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "channel"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_category", r.URL.Query(), &params.CustomerCategory, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_category", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "quoted_on" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "quoted_on", r.URL.Query(), &params.QuotedOn, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "quoted_on"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "quoted_on", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPriceMatrix(w, r, marinaId, priceListId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RenewPriceList operation middleware
+func (siw *ServerInterfaceWrapper) RenewPriceList(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "priceListId" -------------
+	var priceListId PriceListId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "priceListId", chi.URLParam(r, "priceListId"), &priceListId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "priceListId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RenewPriceListParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RenewPriceList(w, r, marinaId, priceListId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ValidatePriceList operation middleware
+func (siw *ServerInterfaceWrapper) ValidatePriceList(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "priceListId" -------------
+	var priceListId PriceListId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "priceListId", chi.URLParam(r, "priceListId"), &priceListId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "priceListId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ValidatePriceList(w, r, marinaId, priceListId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPricingSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetPricingSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPricingSettings(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdatePricingSettings operation middleware
+func (siw *ServerInterfaceWrapper) UpdatePricingSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdatePricingSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdatePricingSettings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SimulatePrice operation middleware
+func (siw *ServerInterfaceWrapper) SimulatePrice(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SimulatePrice(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListRevenueClasses operation middleware
+func (siw *ServerInterfaceWrapper) ListRevenueClasses(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListRevenueClassesParams
+
+	// ------------- Optional query parameter "include_archived" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "include_archived", r.URL.Query(), &params.IncludeArchived, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "include_archived"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "include_archived", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListRevenueClasses(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateRevenueClass operation middleware
+func (siw *ServerInterfaceWrapper) CreateRevenueClass(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateRevenueClassParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateRevenueClass(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteRevenueClass operation middleware
+func (siw *ServerInterfaceWrapper) DeleteRevenueClass(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "revenueClassId" -------------
+	var revenueClassId RevenueClassId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "revenueClassId", chi.URLParam(r, "revenueClassId"), &revenueClassId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "revenueClassId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteRevenueClassParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteRevenueClass(w, r, marinaId, revenueClassId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateRevenueClass operation middleware
+func (siw *ServerInterfaceWrapper) UpdateRevenueClass(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "revenueClassId" -------------
+	var revenueClassId RevenueClassId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "revenueClassId", chi.URLParam(r, "revenueClassId"), &revenueClassId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "revenueClassId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateRevenueClassParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateRevenueClass(w, r, marinaId, revenueClassId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -10489,6 +14058,93 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/deadline-policies", wrapper.ReplaceDeadlinePolicies)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/pricing-settings", wrapper.GetPricingSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/pricing-settings", wrapper.UpdatePricingSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/revenue-classes", wrapper.ListRevenueClasses)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/revenue-classes", wrapper.CreateRevenueClass)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/revenue-classes/{revenueClassId}", wrapper.DeleteRevenueClass)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/revenue-classes/{revenueClassId}", wrapper.UpdateRevenueClass)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/items", wrapper.ListItems)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/items", wrapper.CreateItem)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/items/{itemId}", wrapper.DeleteItem)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/items/{itemId}", wrapper.GetItem)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/items/{itemId}", wrapper.UpdateItem)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/berth-categories", wrapper.ListBerthCategories)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/berth-categories", wrapper.CreateBerthCategory)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customer-categories", wrapper.ListCustomerCategoryCounts)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/berth-categories/sync", wrapper.SyncBerthCategories)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/berth-categories/{categoryId}", wrapper.DeleteBerthCategory)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/berth-categories/{categoryId}", wrapper.UpdateBerthCategory)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists", wrapper.ListPriceLists)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists", wrapper.CreatePriceList)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}", wrapper.DeletePriceList)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}", wrapper.GetPriceList)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}", wrapper.SavePriceList)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/validate", wrapper.ValidatePriceList)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/activate", wrapper.ActivatePriceList)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/archive", wrapper.ArchivePriceList)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/renewal", wrapper.RenewPriceList)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/matrix", wrapper.GetPriceMatrix)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/coverage", wrapper.GetPriceCoverage)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/pricing/simulate", wrapper.SimulatePrice)
 	})
 
 	return r

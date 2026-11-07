@@ -67,6 +67,12 @@ const (
 	// PermHarborConfigure is the harbour map configuration (maps, elements, groups, harbour settings; spec 8 and
 	// 26.1 "configurazione ... mappa"), owner and director only. Added in M1.
 	PermHarborConfigure Permission = "harbor.configure"
+	// PermPricingConfigure is the configuration of items, classifications and price lists (spec 12 and 26.1
+	// "configurazione ... listini"), owner and director only. Added in M2.
+	PermPricingConfigure Permission = "pricing.configure"
+	// PermPricingRead reads items, price lists, the matrix, the coverage check and runs the simulator: every role
+	// except yard (m2-plan §12 D1). Added in M2.
+	PermPricingRead Permission = "pricing.read"
 )
 
 // Permissions returns every permission.
@@ -78,7 +84,7 @@ func Permissions() []Permission {
 		PermChargesManage, PermChargesExport, PermPaymentsCollect, PermPaymentsCollectCash, PermRefundsIssue,
 		PermStorageManage, PermStorageRead, PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage,
 		PermMaintenanceManage, PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard,
-		PermReportsRental, PermMapView, PermHarborConfigure,
+		PermReportsRental, PermMapView, PermHarborConfigure, PermPricingConfigure, PermPricingRead,
 	}
 }
 
@@ -95,7 +101,7 @@ var rolePermissions = map[Role][]Permission{
 		PermChargesManage, PermChargesExport, PermPaymentsCollect, PermPaymentsCollectCash, PermRefundsIssue,
 		PermStorageManage, PermStorageRead, PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage,
 		PermMaintenanceManage, PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard,
-		PermReportsRental, PermMapView, PermHarborConfigure,
+		PermReportsRental, PermMapView, PermHarborConfigure, PermPricingConfigure, PermPricingRead,
 	},
 	RoleDirector: {
 		PermMarinaConfigure, PermMarinaRead, PermDevicesManage, PermDevicesPairSelf, PermAuditRead,
@@ -104,39 +110,40 @@ var rolePermissions = map[Role][]Permission{
 		PermPaymentsCollect, PermPaymentsCollectCash, PermRefundsIssue, PermStorageManage, PermStorageRead,
 		PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage, PermMaintenanceManage,
 		PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard, PermReportsRental,
-		PermMapView, PermHarborConfigure,
+		PermMapView, PermHarborConfigure, PermPricingConfigure, PermPricingRead,
 	},
 	RoleOffice: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersWrite, PermCustomersRead, PermContractsWrite,
 		PermTransitsDesk, PermOccupancyMove, PermPresenceWrite, PermRightsManage, PermChargesManage,
 		PermPaymentsCollect, PermPaymentsCollectCash, PermStorageManage, PermStorageRead, PermYardRead,
 		PermRentalManage, PermMaintenanceManage, PermMaintenanceReport, PermReportsOperational, PermMapView,
+		PermPricingRead,
 	},
 	RoleAccounting: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersRead, PermRightsManage, PermChargesManage,
 		PermChargesExport, PermPaymentsCollect, PermPaymentsCollectCash, PermRefundsIssue, PermYardRead,
-		PermReportsAll, PermReportsOperational, PermReportsYard, PermReportsRental, PermMapView,
+		PermReportsAll, PermReportsOperational, PermReportsYard, PermReportsRental, PermMapView, PermPricingRead,
 	},
 	RoleDock: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersRead, PermTransitsDesk, PermOccupancyMove,
 		PermPresenceWrite, PermPaymentsCollectCash, PermStorageRead, PermMaintenanceManage, PermMaintenanceReport,
-		PermMapView,
+		PermMapView, PermPricingRead,
 	},
 	RoleYardMgr: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersRead, PermStorageManage, PermStorageRead,
 		PermYardManage, PermYardRead, PermYardTimesheets, PermMaintenanceManage, PermMaintenanceReport,
-		PermReportsYard, PermMapView,
+		PermReportsYard, PermMapView, PermPricingRead,
 	},
 	RoleYard: {
 		PermMarinaRead, PermDevicesPairSelf, PermYardTimesheets, PermMaintenanceReport, PermMapView,
 	},
 	RoleRental: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersRead, PermPaymentsCollect, PermPaymentsCollectCash,
-		PermRentalManage, PermMaintenanceReport, PermReportsRental, PermMapView,
+		PermRentalManage, PermMaintenanceReport, PermReportsRental, PermMapView, PermPricingRead,
 	},
 	RoleViewer: {
 		PermMarinaRead, PermDevicesPairSelf, PermReportsAll, PermReportsOperational, PermReportsYard,
-		PermReportsRental, PermMapView,
+		PermReportsRental, PermMapView, PermPricingRead,
 	},
 }
 

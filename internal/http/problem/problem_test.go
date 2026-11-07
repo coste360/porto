@@ -173,8 +173,8 @@ func TestWriteError_UnmappedIsInternal(t *testing.T) {
 func TestTypes_Registry(t *testing.T) {
 	slug := regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	all := All()
-	if len(all) != 42 {
-		t.Fatalf("declared %d types, want 42 (m0-plan §4.4 + m1-plan §4.5)", len(all))
+	if len(all) != 48 {
+		t.Fatalf("declared %d types, want 48 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6)", len(all))
 	}
 	for _, ty := range all {
 		if !slug.MatchString(string(ty)) {
@@ -193,6 +193,8 @@ func TestTypes_Registry(t *testing.T) {
 		IdempotencyKeyReused: 422, PreconditionRequired: 428, RateLimited: 429, InternalError: 500, NotReady: 503,
 		MapInvalid: 422, MapNotEmpty: 409, MapNotGeoreferenced: 409, InvalidFile: 400, FileTooLarge: 413,
 		CSVInvalid: 400, CustomerAnonymized: 409, CustomerMerged: 409, DownloadLinkExpired: 403,
+		NoPrice: 422, PromoNotApplicable: 422, PriceListInvalid: 422, PriceListImmutable: 409, PriceListOverlap: 409,
+		InUse: 409,
 	}
 	for ty, s := range want {
 		if StatusOf(ty) != s {
@@ -226,5 +228,30 @@ func TestWrite_Issues(t *testing.T) {
 	Write(rec, request(http.MethodPut), NotFound)
 	if _, ok := decode(t, rec)["issues"]; ok {
 		t.Fatal("issues should be omitted")
+	}
+}
+
+func TestWrite_DetailsAndPriceListIssues(t *testing.T) {
+	rec := httptest.NewRecorder()
+	Write(rec, request(http.MethodPost), PriceListInvalid,
+		WithPriceListIssues([]map[string]any{{"code": "period_overlap", "severity": "error", "ref": map[string]string{"kind": "period"}}}),
+		WithDetails(map[string]any{"references": 2}))
+	body := decode(t, rec)
+	if rec.Code != http.StatusUnprocessableEntity || body["type"] != "price_list_invalid" {
+		t.Fatalf("status %d, body %v", rec.Code, body)
+	}
+	if issues, _ := body["price_list_issues"].([]any); len(issues) != 1 {
+		t.Fatalf("price_list_issues = %v", body["price_list_issues"])
+	}
+	if d, _ := body["details"].(map[string]any); d["references"] != float64(2) {
+		t.Fatalf("details = %v", body["details"])
+	}
+	rec = httptest.NewRecorder()
+	Write(rec, request(http.MethodGet), NotFound)
+	b := decode(t, rec)
+	for _, k := range []string{"details", "price_list_issues"} {
+		if _, ok := b[k]; ok {
+			t.Fatalf("%s should be omitted", k)
+		}
 	}
 }

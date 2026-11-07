@@ -1,0 +1,746 @@
+{
+  "cases": [
+    {
+      "name": "length_band_loa_800_band_l08",
+      "spec": "12.3 length_band, plan D17",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 800,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 4000,
+        "net_cents": 3279,
+        "vat_cents": 721,
+        "trace_codes": [
+          "band.selected",
+          "rule.selected",
+          "block.priced"
+        ]
+      },
+      "why": "raw LOA 800 cm: first band with max_cm >= 800 (inclusive) is L08; Amounts[L08] = 4000, 1 night. VATSplit(4000, 2200): net = half_even(4000 x 10000 / 12200) = 3279, VAT = 721"
+    },
+    {
+      "name": "length_band_loa_801_band_l10",
+      "spec": "12.3 length_band, plan D17",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 801,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 5000,
+        "net_cents": 4098,
+        "vat_cents": 902,
+        "trace_codes": [
+          "band.selected",
+          "rule.selected",
+          "block.priced"
+        ]
+      },
+      "why": "raw LOA 801 cm: first band with max_cm >= 801 (inclusive) is L10; Amounts[L10] = 5000, 1 night. VATSplit(5000, 2200): net = half_even(5000 x 10000 / 12200) = 4098, VAT = 902"
+    },
+    {
+      "name": "length_band_loa_1000_band_l10",
+      "spec": "12.3 length_band, plan D17",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1000,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 5000,
+        "net_cents": 4098,
+        "vat_cents": 902,
+        "trace_codes": [
+          "band.selected",
+          "rule.selected",
+          "block.priced"
+        ]
+      },
+      "why": "raw LOA 1000 cm: first band with max_cm >= 1000 (inclusive) is L10; Amounts[L10] = 5000, 1 night. VATSplit(5000, 2200): net = half_even(5000 x 10000 / 12200) = 4098, VAT = 902"
+    },
+    {
+      "name": "length_band_loa_1001_band_l12",
+      "spec": "12.3 length_band, plan D17",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1001,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 6500,
+        "net_cents": 5328,
+        "vat_cents": 1172,
+        "trace_codes": [
+          "band.selected",
+          "rule.selected",
+          "block.priced"
+        ]
+      },
+      "why": "raw LOA 1001 cm: first band with max_cm >= 1001 (inclusive) is L12; Amounts[L12] = 6500, 1 night. VATSplit(6500, 2200): net = half_even(6500 x 10000 / 12200) = 5328, VAT = 1172"
+    },
+    {
+      "name": "length_band_loa_1200_band_l12",
+      "spec": "12.3 length_band, plan D17",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 6500,
+        "net_cents": 5328,
+        "vat_cents": 1172,
+        "trace_codes": [
+          "band.selected",
+          "rule.selected",
+          "block.priced"
+        ]
+      },
+      "why": "raw LOA 1200 cm: first band with max_cm >= 1200 (inclusive) is L12; Amounts[L12] = 6500, 1 night. VATSplit(6500, 2200): net = half_even(6500 x 10000 / 12200) = 5328, VAT = 1172"
+    },
+    {
+      "name": "length_band_loa_1201_band_l15",
+      "spec": "12.3 length_band, plan D17",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1201,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9000,
+        "net_cents": 7377,
+        "vat_cents": 1623,
+        "trace_codes": [
+          "band.selected",
+          "rule.selected",
+          "block.priced"
+        ]
+      },
+      "why": "raw LOA 1201 cm: first band with max_cm >= 1201 (inclusive) is L15; Amounts[L15] = 9000, 1 night. VATSplit(9000, 2200): net = half_even(9000 x 10000 / 12200) = 7377, VAT = 1623"
+    },
+    {
+      "name": "length_band_loa_1500_band_l15",
+      "spec": "12.3 length_band, plan D17",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1500,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9000,
+        "net_cents": 7377,
+        "vat_cents": 1623,
+        "trace_codes": [
+          "band.selected",
+          "rule.selected",
+          "block.priced"
+        ]
+      },
+      "why": "raw LOA 1500 cm: first band with max_cm >= 1500 (inclusive) is L15; Amounts[L15] = 9000, 1 night. VATSplit(9000, 2200): net = half_even(9000 x 10000 / 12200) = 7377, VAT = 1623"
+    },
+    {
+      "name": "length_band_loa_1501_band_lxx",
+      "spec": "12.3 length_band, plan D17",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1501,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 15000,
+        "net_cents": 12295,
+        "vat_cents": 2705,
+        "trace_codes": [
+          "band.selected",
+          "rule.selected",
+          "block.priced"
+        ]
+      },
+      "why": "raw LOA 1501 cm: first band with max_cm >= 1501 (inclusive) is LXX; Amounts[LXX] = 15000, 1 night. VATSplit(15000, 2200): net = half_even(15000 x 10000 / 12200) = 12295, VAT = 2705"
+    },
+    {
+      "name": "length_band_loa_3000_band_lxx",
+      "spec": "12.3 length_band, plan D17",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 3000,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 15000,
+        "net_cents": 12295,
+        "vat_cents": 2705,
+        "trace_codes": [
+          "band.selected",
+          "rule.selected",
+          "block.priced"
+        ]
+      },
+      "why": "raw LOA 3000 cm: first band with max_cm >= 3000 (inclusive) is LXX; Amounts[LXX] = 15000, 1 night. VATSplit(15000, 2200): net = half_even(15000 x 10000 / 12200) = 12295, VAT = 2705"
+    },
+    {
+      "name": "length_band_loa_1_band_l08",
+      "spec": "12.3 length_band, plan D17",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 4000,
+        "net_cents": 3279,
+        "vat_cents": 721,
+        "trace_codes": [
+          "band.selected",
+          "rule.selected",
+          "block.priced"
+        ]
+      },
+      "why": "raw LOA 1 cm: first band with max_cm >= 1 (inclusive) is L08; Amounts[L08] = 4000, 1 night. VATSplit(4000, 2200): net = half_even(4000 x 10000 / 12200) = 3279, VAT = 721"
+    },
+    {
+      "name": "length_band_loa_1234_two_nights_unrounded",
+      "spec": "12.3 length_band",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-03",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1234,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 18000,
+        "net_cents": 14754,
+        "vat_cents": 3246
+      },
+      "why": "band selection uses the raw length (never rounded): 1234 <= 1500 -> L15 9000 x 2 nights = 18000. VATSplit(18000, 2200): net = half_even(18000 x 10000 / 12200) = 14754, VAT = 3246"
+    },
+    {
+      "name": "length_band_no_vessel_dimensions_required",
+      "spec": "12.3 length_band",
+      "catalog": "bands-basic",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "invalid_input:dimensions_required"
+      },
+      "why": "no vessel and r-lb has no default amount -> dimensions_required"
+    },
+    {
+      "name": "length_band_beyond_last_closed_band",
+      "spec": "12.3 length_band",
+      "catalog": "bands-basic",
+      "patch": {
+        "price_list": {
+          "bands": [
+            {
+              "code": "L08",
+              "max_cm": 800
+            },
+            {
+              "code": "L10",
+              "max_cm": 1000
+            }
+          ]
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "error": "no_price:no_band"
+      },
+      "why": "bands L08 <= 800, L10 <= 1000, none open; 1200 has no band and no default -> no_band"
+    },
+    {
+      "name": "length_band_no_band_uses_default_amount",
+      "spec": "12.3 length_band",
+      "catalog": "bands-basic",
+      "patch": {
+        "price_list": {
+          "bands": [
+            {
+              "code": "L08",
+              "max_cm": 800
+            },
+            {
+              "code": "L10",
+              "max_cm": 1000
+            }
+          ]
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-lb-def",
+          "seq": 2,
+          "stage": "base",
+          "name": "r-lb-def",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "length_band",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 7000,
+          "amounts": {
+            "L08": 4100
+          }
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 7000,
+        "net_cents": 5738,
+        "vat_cents": 1262
+      },
+      "why": "r-lb-def (seq 2) is first by recency; 1200 has no band -> its amount_cents 7000. VATSplit(7000, 2200): net = half_even(7000 x 10000 / 12200) = 5738, VAT = 1262"
+    },
+    {
+      "name": "length_band_more_recent_rule_wins_band_amount",
+      "spec": "12.3 length_band, 12.4 recency",
+      "catalog": "bands-basic",
+      "patch": {
+        "price_list": {
+          "bands": [
+            {
+              "code": "L08",
+              "max_cm": 800
+            },
+            {
+              "code": "L10",
+              "max_cm": 1000
+            }
+          ]
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-lb-def",
+          "seq": 2,
+          "stage": "base",
+          "name": "r-lb-def",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "length_band",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 7000,
+          "amounts": {
+            "L08": 4100
+          }
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 700,
+          "beam_cm": 250,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 4100,
+        "net_cents": 3361,
+        "vat_cents": 739
+      },
+      "why": "same priority and specificity; r-lb-def seq 2 beats r-lb seq 1; 700 -> L08, Amounts[L08] = 4100. VATSplit(4100, 2200): net = half_even(4100 x 10000 / 12200) = 3361, VAT = 739"
+    },
+    {
+      "name": "length_band_missing_band_amount_falls_back_to_next_rule",
+      "spec": "12.4 rule matching",
+      "catalog": "bands-basic",
+      "add_rules": [
+        {
+          "id": "r-lb-p5",
+          "seq": 3,
+          "stage": "base",
+          "name": "r-lb-p5",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "length_band",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amounts": {
+            "L08": 3000
+          }
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 900,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 5000,
+        "net_cents": 4098,
+        "vat_cents": 902,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "rule_id": "r-lb",
+                "base_cents": 5000
+              }
+            ]
+          }
+        ]
+      },
+      "why": "r-lb-p5 (priority 5) has no amount for L10 and no default, so it cannot price; next rule r-lb gives L10 = 5000. VATSplit(5000, 2200): net = half_even(5000 x 10000 / 12200) = 4098, VAT = 902"
+    },
+    {
+      "name": "length_band_missing_band_amount_no_other_rule",
+      "spec": "12.4 rule matching",
+      "catalog": "bands-basic",
+      "patch": {
+        "rules": [
+          {
+            "id": "r-lb-p5",
+            "seq": 3,
+            "stage": "base",
+            "name": "r-lb-p5",
+            "active": true,
+            "priority": 5,
+            "stackable": false,
+            "item_id": "trn",
+            "basis": "length_band",
+            "unit": "night",
+            "conditions": {},
+            "effect": {},
+            "scope": {},
+            "amounts": {
+              "L08": 3000
+            }
+          }
+        ]
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 900,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "error": "no_price:no_amount"
+      },
+      "why": "only r-lb-p5 exists; L10 not in its amounts, no default -> no_amount"
+    },
+    {
+      "name": "length_band_dimension_source_berth",
+      "spec": "12.3 dimension_source",
+      "catalog": "bands-basic",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "berth"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {
+          "length_cm": 1150,
+          "width_cm": 400
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1300,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 6500,
+        "net_cents": 5328,
+        "vat_cents": 1172
+      },
+      "why": "berth length 1150 (vessel ignored) -> band L12 = 6500. VATSplit(6500, 2200): net = half_even(6500 x 10000 / 12200) = 5328, VAT = 1172"
+    },
+    {
+      "name": "length_band_dimension_source_max",
+      "spec": "12.3 dimension_source",
+      "catalog": "bands-basic",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "max"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {
+          "length_cm": 1150,
+          "width_cm": 400
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1300,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9000,
+        "net_cents": 7377,
+        "vat_cents": 1623
+      },
+      "why": "max(1300, 1150) = 1300 -> band L15 = 9000. VATSplit(9000, 2200): net = half_even(9000 x 10000 / 12200) = 7377, VAT = 1623"
+    },
+    {
+      "name": "length_band_dimension_source_max_no_resource",
+      "spec": "12.3 dimension_source",
+      "catalog": "bands-basic",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "max"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 990,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 5000,
+        "net_cents": 4098,
+        "vat_cents": 902
+      },
+      "why": "no resource -> vessel 990 -> band L10 = 5000. VATSplit(5000, 2200): net = half_even(5000 x 10000 / 12200) = 4098, VAT = 902"
+    },
+    {
+      "name": "length_band_dimension_source_berth_without_berth",
+      "spec": "12.3 dimension_source",
+      "catalog": "bands-basic",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "dimension_source": "berth"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1300,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "error": "invalid_input:dimensions_required"
+      },
+      "why": "source berth, no resource length -> dimensions_required (the vessel is not used)"
+    },
+    {
+      "name": "length_band_single_open_band",
+      "spec": "12.3 length_band",
+      "catalog": "bands-basic",
+      "patch": {
+        "price_list": {
+          "bands": [
+            {
+              "code": "ALL"
+            }
+          ]
+        },
+        "rules": [
+          {
+            "id": "r-all",
+            "seq": 1,
+            "stage": "base",
+            "name": "r-all",
+            "active": true,
+            "priority": 0,
+            "stackable": false,
+            "item_id": "trn",
+            "basis": "length_band",
+            "unit": "night",
+            "conditions": {},
+            "effect": {},
+            "scope": {},
+            "amounts": {
+              "ALL": 3333
+            }
+          }
+        ]
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 2500,
+          "beam_cm": 700,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 3333,
+        "net_cents": 2732,
+        "vat_cents": 601
+      },
+      "why": "single open band ALL catches every length; Amounts[ALL] = 3333. VATSplit(3333, 2200): net = half_even(3333 x 10000 / 12200) = 2732, VAT = 601"
+    }
+  ]
+}

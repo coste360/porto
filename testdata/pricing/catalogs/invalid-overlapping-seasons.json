@@ -1,0 +1,253 @@
+{
+  "price_list": {
+    "id": "pl-invalid",
+    "code": "INV-2027",
+    "valid_from": "2027-01-01",
+    "valid_to": "2027-12-31",
+    "contract_types": [
+      "transit"
+    ],
+    "settings": {
+      "dimension_source": "vessel",
+      "length_rounding": {
+        "step_cm": 10,
+        "mode": "up"
+      },
+      "min_beam_ratio": {
+        "num": 1,
+        "den": 3
+      },
+      "split": {
+        "*": "pro_rata_daily"
+      },
+      "rounding": {
+        "*": "none"
+      },
+      "primary_items": {
+        "transit": "trn"
+      }
+    },
+    "periods": [
+      {
+        "code": "LOW",
+        "kind": "season",
+        "ranges": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-05-31"
+          },
+          {
+            "from": "2027-10-01",
+            "to": "2027-12-31"
+          }
+        ]
+      },
+      {
+        "code": "MID",
+        "kind": "season",
+        "ranges": [
+          {
+            "from": "2027-06-01",
+            "to": "2027-06-30"
+          },
+          {
+            "from": "2027-09-01",
+            "to": "2027-09-30"
+          },
+          {
+            "from": "2027-05-15",
+            "to": "2027-06-10"
+          }
+        ]
+      },
+      {
+        "code": "HIGH",
+        "kind": "season",
+        "ranges": [
+          {
+            "from": "2027-07-01",
+            "to": "2027-08-31"
+          }
+        ]
+      },
+      {
+        "code": "SHOW",
+        "kind": "event",
+        "ranges": [
+          {
+            "from": "2027-09-15",
+            "to": "2027-09-20"
+          }
+        ]
+      },
+      {
+        "code": "REGATTA",
+        "kind": "event",
+        "ranges": [
+          {
+            "from": "2027-07-20",
+            "to": "2027-07-22"
+          }
+        ]
+      }
+    ],
+    "bands": []
+  },
+  "items": [
+    {
+      "id": "trn",
+      "code": "TRN-NTT",
+      "item_type": "berth_fee",
+      "unit": "night",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true,
+      "revenue_class": "ormeggi",
+      "external_code": "T01"
+    }
+  ],
+  "rules": [
+    {
+      "id": "r-low",
+      "seq": 1,
+      "stage": "base",
+      "name": "r-low",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {
+        "periods": [
+          "LOW"
+        ]
+      },
+      "amount_cents": 3000
+    },
+    {
+      "id": "r-mid",
+      "seq": 2,
+      "stage": "base",
+      "name": "r-mid",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {
+        "periods": [
+          "MID"
+        ]
+      },
+      "amount_cents": 4500
+    },
+    {
+      "id": "r-high",
+      "seq": 3,
+      "stage": "base",
+      "name": "r-high",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {
+        "periods": [
+          "HIGH"
+        ]
+      },
+      "amount_cents": 7000
+    },
+    {
+      "id": "r-show",
+      "seq": 4,
+      "stage": "base",
+      "name": "r-show",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {
+        "periods": [
+          "SHOW"
+        ]
+      },
+      "amount_cents": 9000
+    },
+    {
+      "id": "r-any",
+      "seq": 5,
+      "stage": "base",
+      "name": "r-any",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 2000
+    },
+    {
+      "id": "r-cat-a",
+      "seq": 6,
+      "stage": "base",
+      "name": "r-cat-a",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {
+        "periods": [
+          "HIGH"
+        ],
+        "categories": [
+          "A"
+        ]
+      },
+      "amount_cents": 8000
+    },
+    {
+      "id": "r-online-high",
+      "seq": 7,
+      "stage": "base",
+      "name": "r-online-high",
+      "active": true,
+      "priority": 5,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {
+        "periods": [
+          "HIGH"
+        ],
+        "channels": [
+          "online"
+        ]
+      },
+      "amount_cents": 6500
+    }
+  ]
+}

@@ -15,8 +15,10 @@ import (
 	"path/filepath"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/coste360/porto/internal/app"
+	"github.com/coste360/porto/internal/calendar"
 	"github.com/coste360/porto/internal/config"
 	"github.com/coste360/porto/internal/domain/apikey"
 	"github.com/coste360/porto/internal/domain/auth"
@@ -64,6 +66,79 @@ func seeded(t *testing.T, db *store.DB) {
 	if _, err := a.Dispatcher.DispatchPending(ctx, 500); err != nil {
 		t.Fatal(err)
 	}
+	seedPricingRows(t, db, res.MarinaID, me.ID)
+}
+
+// seedPricingRows adds an active and an archived price list (with periods, bands, rules and item snapshot), a subclass of a
+// revenue class and a renewal lineage, so the restore order, the deferred keys and the late status pass are
+// exercised (m2-plan §3.2).
+func seedPricingRows(t *testing.T, db *store.DB, marinaID, userID string) {
+	t.Helper()
+	ctx := context.Background()
+	now := store.UTC(time.Now())
+	// The child gets the lower id (UUIDv7 order), so the dump lists it before its parent: restore defers parent_id.
+	childID := store.NewID()
+	parent := &store.RevenueClass{ID: store.NewID(), MarinaID: marinaID, Code: "bk_mooring", Name: store.JSON(`{"it":"Ormeggi"}`), Version: 1, CreatedAt: now, UpdatedAt: now}
+	child := &store.RevenueClass{ID: childID, MarinaID: marinaID, Code: "bk_mooring_seasonal", Name: store.JSON(`{"it":"Stagionali"}`), ParentID: parent.ID, Version: 1, CreatedAt: now, UpdatedAt: now}
+	item := &store.Item{
+		ID: store.NewID(), MarinaID: marinaID, Code: "BK-TRN", Name: store.JSON(`{"it":"Transiti notte"}`), Description: store.JSON(`{}`),
+		ItemType: "berth_fee", Unit: "night", VATRateBP: 2200, PriceIncludesVAT: true, RevenueClassID: child.ID, Active: true,
+		Version: 1, CreatedAt: now, UpdatedAt: now,
+	}
+	dep := &store.Item{
+		ID: store.NewID(), MarinaID: marinaID, Code: "BK-DEP", Name: store.JSON(`{"it":"Cauzione"}`), Description: store.JSON(`{}`),
+		ItemType: "deposit", Unit: "lump", VATNature: "N1", RevenueClassID: parent.ID, Active: true, Version: 1, CreatedAt: now, UpdatedAt: now,
+	}
+	cat := &store.BerthCategory{ID: store.NewID(), MarinaID: marinaID, Code: "BK12", Name: store.JSON(`{"it":"12 m"}`), AppliesTo: store.Strings{"berth"}, Version: 1, CreatedAt: now, UpdatedAt: now}
+	// The pricing settings row comes from the demo seed (SeedDemo); inserting another one would violate its unique key.
+	rows := []any{parent, child, item, dep, cat}
+	var lists []*store.PriceList
+	for i, code := range []string{"BK-2026", "BK-2027"} {
+		pl := &store.PriceList{
+			ID: store.NewID(), MarinaID: marinaID, Code: code, Name: store.JSON(`{"it":"Listino"}`), Status: store.PriceListDraft,
+			ValidFrom: calendar.New(2026+i, 1, 1), ValidTo: calendar.New(2026+i, 12, 31), ContractTypes: store.Strings{"transit"},
+			Settings: store.JSON(`{"dimension_source":"vessel"}`), NextRuleSeq: 2, Version: 1, CreatedAt: now, UpdatedAt: now,
+		}
+		if i == 1 {
+			pl.SourcePriceListID = lists[0].ID
+		}
+		lists = append(lists, pl)
+		rows = append(rows, pl,
+			&store.RatePeriod{
+				ID: store.NewID(), MarinaID: marinaID, PriceListID: pl.ID, Code: "ALTA", Name: store.JSON(`{"it":"Alta"}`), Kind: "season",
+				Color: "chart-2", Ranges: store.JSON(`[{"from":"2026-06-16","to":"2026-08-31"}]`), CreatedAt: now, UpdatedAt: now,
+			},
+			&store.PriceListBand{ID: store.NewID(), MarinaID: marinaID, PriceListID: pl.ID, Code: "BK12", MaxCm: 1200, CategoryCode: "BK12", SortOrder: 1, CreatedAt: now, UpdatedAt: now},
+			&store.PriceRule{
+				ID: store.NewID(), MarinaID: marinaID, PriceListID: pl.ID, Seq: 1, Stage: "base", Name: "Night", ItemID: item.ID, Active: true,
+				Body: store.JSON(`{"basis":"per_meter","unit":"night","unit_cents":750}`), CreatedAt: now, UpdatedAt: now,
+			},
+			// The item snapshot of the list (INV-26), frozen once the list is published.
+			&store.PriceListItem{
+				ID: store.NewID(), MarinaID: marinaID, PriceListID: pl.ID, ItemID: item.ID, Code: item.Code, ItemType: item.ItemType,
+				Unit: item.Unit, VATRateBP: 2200, PriceIncludesVAT: true, RevenueClass: child.Code, ExternalCode: "T01", Active: true, CreatedAt: now,
+			},
+			&store.PriceListItem{
+				ID: store.NewID(), MarinaID: marinaID, PriceListID: pl.ID, ItemID: dep.ID, Code: dep.Code, ItemType: dep.ItemType,
+				Unit: dep.Unit, VATNature: "N1", RevenueClass: parent.Code, CreatedAt: now,
+			},
+		)
+	}
+	for _, row := range rows {
+		if _, err := db.NewInsert().Model(row).Exec(ctx); err != nil {
+			t.Fatalf("insert %T: %v", row, err)
+		}
+	}
+	for i, status := range []string{store.PriceListArchived, store.PriceListActive} {
+		q := db.NewUpdate().Table("price_lists").Set("status = ?", status).Set("content_sha256 = ?", "sha-"+status).
+			Set("activated_at = ?", now).Set("activated_by_user_id = ?", userID).Where("id = ?", lists[i].ID)
+		if status == store.PriceListArchived {
+			q = q.Set("archived_at = ?", now)
+		}
+		if _, err := q.Exec(ctx); err != nil {
+			t.Fatalf("publish %s: %v", status, err)
+		}
+	}
 }
 
 // tables returns every table of a backup as decoded rows (JSON values compared semantically).
@@ -110,7 +185,8 @@ func roundTrip(t *testing.T, src, dst *store.DB) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if m1.Rows("users") < 9 || m1.Rows("audit_log") == 0 || m1.Rows("webhook_endpoints") != 1 {
+	if m1.Rows("users") < 9 || m1.Rows("audit_log") == 0 || m1.Rows("webhook_endpoints") != 1 ||
+		m1.Rows("price_lists") < 2 || m1.Rows("price_rules") < 2 || m1.Rows("price_list_items") < 4 {
 		t.Fatalf("unexpected counts: %+v", m1.Tables)
 	}
 	if len(m1.Files) != 1 || m1.Files[0].Path != "files/marina-1/file-1.bin" {

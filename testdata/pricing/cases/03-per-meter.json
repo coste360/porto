@@ -1,0 +1,749 @@
+{
+  "cases": [
+    {
+      "name": "per_meter_1234_step10_up_two_nights",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-12",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1234,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 18600,
+        "net_cents": 15246,
+        "vat_cents": 3354
+      },
+      "why": "L 1234 -> 1240 (step 10, up); half_even(750 x 1240 / 100) = 9300 per night x 2 = 18600. VATSplit(18600, 2200): net = half_even(18600 x 10000 / 12200) = 15246, VAT = 3354"
+    },
+    {
+      "name": "per_meter_1240_step10_up_exact",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1240,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9300,
+        "net_cents": 7623,
+        "vat_cents": 1677
+      },
+      "why": "L 1240 -> 1240 (step 10, up); half_even(750 x 1240 / 100) = 9300 per night x 1 = 9300. VATSplit(9300, 2200): net = half_even(9300 x 10000 / 12200) = 7623, VAT = 1677"
+    },
+    {
+      "name": "per_meter_1241_step10_up",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1241,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9375,
+        "net_cents": 7684,
+        "vat_cents": 1691
+      },
+      "why": "L 1241 -> 1250 (step 10, up); half_even(750 x 1250 / 100) = 9375 per night x 1 = 9375. VATSplit(9375, 2200): net = half_even(9375 x 10000 / 12200) = 7684, VAT = 1691"
+    },
+    {
+      "name": "per_meter_1234_step10_half_even_down",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "half_even"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1234,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9225,
+        "net_cents": 7561,
+        "vat_cents": 1664
+      },
+      "why": "L 1234 -> 1230 (step 10, half_even); half_even(750 x 1230 / 100) = 9225 per night x 1 = 9225. VATSplit(9225, 2200): net = half_even(9225 x 10000 / 12200) = 7561, VAT = 1664"
+    },
+    {
+      "name": "per_meter_1235_step10_half_even_tie_to_even_up",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "half_even"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1235,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9300,
+        "net_cents": 7623,
+        "vat_cents": 1677
+      },
+      "why": "L 1235 -> 1240 (step 10, half_even); half_even(750 x 1240 / 100) = 9300 per night x 1 = 9300. VATSplit(9300, 2200): net = half_even(9300 x 10000 / 12200) = 7623, VAT = 1677"
+    },
+    {
+      "name": "per_meter_1225_step10_half_even_tie_to_even_down",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "half_even"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1225,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9150,
+        "net_cents": 7500,
+        "vat_cents": 1650
+      },
+      "why": "L 1225 -> 1220 (step 10, half_even); half_even(750 x 1220 / 100) = 9150 per night x 1 = 9150. VATSplit(9150, 2200): net = half_even(9150 x 10000 / 12200) = 7500, VAT = 1650"
+    },
+    {
+      "name": "per_meter_1245_step10_half_even_tie_to_124",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "half_even"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1245,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9300,
+        "net_cents": 7623,
+        "vat_cents": 1677
+      },
+      "why": "L 1245 -> 1240 (step 10, half_even); half_even(750 x 1240 / 100) = 9300 per night x 1 = 9300. VATSplit(9300, 2200): net = half_even(9300 x 10000 / 12200) = 7623, VAT = 1677"
+    },
+    {
+      "name": "per_meter_1234_step1",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 1,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1234,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9255,
+        "net_cents": 7586,
+        "vat_cents": 1669
+      },
+      "why": "L 1234 -> 1234 (step 1, up); half_even(750 x 1234 / 100) = 9255 per night x 1 = 9255. VATSplit(9255, 2200): net = half_even(9255 x 10000 / 12200) = 7586, VAT = 1669"
+    },
+    {
+      "name": "per_meter_1233_step1_cents_tie",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 1,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1233,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9248,
+        "net_cents": 7580,
+        "vat_cents": 1668
+      },
+      "why": "L 1233 -> 1233 (step 1, up); half_even(750 x 1233 / 100) = 9248 per night x 1 = 9248. VATSplit(9248, 2200): net = half_even(9248 x 10000 / 12200) = 7580, VAT = 1668"
+    },
+    {
+      "name": "per_meter_1234_step50_up",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 50,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1234,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9375,
+        "net_cents": 7684,
+        "vat_cents": 1691
+      },
+      "why": "L 1234 -> 1250 (step 50, up); half_even(750 x 1250 / 100) = 9375 per night x 1 = 9375. VATSplit(9375, 2200): net = half_even(9375 x 10000 / 12200) = 7684, VAT = 1691"
+    },
+    {
+      "name": "per_meter_1250_step50_up_exact",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 50,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1250,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9375,
+        "net_cents": 7684,
+        "vat_cents": 1691
+      },
+      "why": "L 1250 -> 1250 (step 50, up); half_even(750 x 1250 / 100) = 9375 per night x 1 = 9375. VATSplit(9375, 2200): net = half_even(9375 x 10000 / 12200) = 7684, VAT = 1691"
+    },
+    {
+      "name": "per_meter_1225_step50_half_even_tie_down",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 50,
+              "mode": "half_even"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1225,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9000,
+        "net_cents": 7377,
+        "vat_cents": 1623
+      },
+      "why": "L 1225 -> 1200 (step 50, half_even); half_even(750 x 1200 / 100) = 9000 per night x 1 = 9000. VATSplit(9000, 2200): net = half_even(9000 x 10000 / 12200) = 7377, VAT = 1623"
+    },
+    {
+      "name": "per_meter_1275_step50_half_even_tie_up",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 50,
+              "mode": "half_even"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1275,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9750,
+        "net_cents": 7992,
+        "vat_cents": 1758
+      },
+      "why": "L 1275 -> 1300 (step 50, half_even); half_even(750 x 1300 / 100) = 9750 per night x 1 = 9750. VATSplit(9750, 2200): net = half_even(9750 x 10000 / 12200) = 7992, VAT = 1758"
+    },
+    {
+      "name": "per_meter_1201_step100_up",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 100,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1201,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9750,
+        "net_cents": 7992,
+        "vat_cents": 1758
+      },
+      "why": "L 1201 -> 1300 (step 100, up); half_even(750 x 1300 / 100) = 9750 per night x 1 = 9750. VATSplit(9750, 2200): net = half_even(9750 x 10000 / 12200) = 7992, VAT = 1758"
+    },
+    {
+      "name": "per_meter_1250_step100_half_even_tie_down",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 100,
+              "mode": "half_even"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1250,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9000,
+        "net_cents": 7377,
+        "vat_cents": 1623
+      },
+      "why": "L 1250 -> 1200 (step 100, half_even); half_even(750 x 1200 / 100) = 9000 per night x 1 = 9000. VATSplit(9000, 2200): net = half_even(9000 x 10000 / 12200) = 7377, VAT = 1623"
+    },
+    {
+      "name": "per_meter_1350_step100_half_even_tie_up",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 100,
+              "mode": "half_even"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1350,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 10500,
+        "net_cents": 8607,
+        "vat_cents": 1893
+      },
+      "why": "L 1350 -> 1400 (step 100, half_even); half_even(750 x 1400 / 100) = 10500 per night x 1 = 10500. VATSplit(10500, 2200): net = half_even(10500 x 10000 / 12200) = 8607, VAT = 1893"
+    },
+    {
+      "name": "per_meter_1349_step100_half_even",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 100,
+              "mode": "half_even"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1349,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 9750,
+        "net_cents": 7992,
+        "vat_cents": 1758
+      },
+      "why": "L 1349 -> 1300 (step 100, half_even); half_even(750 x 1300 / 100) = 9750 per night x 1 = 9750. VATSplit(9750, 2200): net = half_even(9750 x 10000 / 12200) = 7992, VAT = 1758"
+    },
+    {
+      "name": "per_meter_333_cents_1001_step1",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 1,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-pm-u",
+          "seq": 2,
+          "stage": "base",
+          "name": "r-pm-u",
+          "active": true,
+          "priority": 10,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "per_meter",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "unit_cents": 333
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1001,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 3333,
+        "net_cents": 2732,
+        "vat_cents": 601
+      },
+      "why": "L 1001 -> 1001 (step 1, up); half_even(333 x 1001 / 100) = 3333 per night x 1 = 3333. VATSplit(3333, 2200): net = half_even(3333 x 10000 / 12200) = 2732, VAT = 601"
+    },
+    {
+      "name": "per_meter_333_cents_1050_step1_tie_even",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 1,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-pm-u",
+          "seq": 2,
+          "stage": "base",
+          "name": "r-pm-u",
+          "active": true,
+          "priority": 10,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "per_meter",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "unit_cents": 333
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1050,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 3496,
+        "net_cents": 2866,
+        "vat_cents": 630
+      },
+      "why": "L 1050 -> 1050 (step 1, up); half_even(333 x 1050 / 100) = 3496 per night x 1 = 3496. VATSplit(3496, 2200): net = half_even(3496 x 10000 / 12200) = 2866, VAT = 630"
+    },
+    {
+      "name": "per_meter_999_three_nights",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-13",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 999,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 22500,
+        "net_cents": 18443,
+        "vat_cents": 4057
+      },
+      "why": "L 999 -> 1000 (step 10, up); half_even(750 x 1000 / 100) = 7500 per night x 3 = 22500. VATSplit(22500, 2200): net = half_even(22500 x 10000 / 12200) = 18443, VAT = 4057"
+    },
+    {
+      "name": "per_meter_long_vessel_4567",
+      "spec": "12.3 per_meter, plan D18",
+      "catalog": "per-meter",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-12",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 4567,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 68550,
+        "net_cents": 56189,
+        "vat_cents": 12361
+      },
+      "why": "L 4567 -> 4570 (step 10, up); half_even(750 x 4570 / 100) = 34275 per night x 2 = 68550. VATSplit(68550, 2200): net = half_even(68550 x 10000 / 12200) = 56189, VAT = 12361"
+    },
+    {
+      "name": "per_meter_no_vessel",
+      "spec": "12.3 per_meter",
+      "catalog": "per-meter",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "invalid_input:dimensions_required"
+      },
+      "why": "per_meter needs the vessel length (source vessel) -> dimensions_required"
+    }
+  ]
+}

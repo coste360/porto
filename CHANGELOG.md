@@ -8,6 +8,39 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M2 — Listini e prezzi (spec 32.3):
+
+- Migration `00004_pricing.sql` (pricing settings, revenue classes, items, berth categories, price lists, rate
+  periods, length bands, price rules) for SQLite and PostgreSQL, with triggers that freeze published price lists
+  (INV-22); new tables in backups (lists restored as drafts, status set in a final pass).
+- Pure pricing engine `internal/domain/pricing`: rule selection, the seven bases, dimension source and length
+  rounding, minimum beam ratio, split rules (exact, pro rata, whole months, best combination), modifiers,
+  included and added services, discounts, VAT split, total rounding, deposits, a reproducible snapshot with
+  `engine_version` (INV-20) and a trace; validation, matrix, coverage, renewal and diff on the same quote path
+  (INV-23). 287 hand-derived price cases in `testdata/pricing/`, rapid properties, fuzz and benchmarks.
+- Services `catalog` (pricing settings, revenue classes, items, berth categories with sync and usage counts) and
+  `pricelist` (document save, validation, activation with truncation of predecessors or 409 overlap (INV-24),
+  archive, renewal with a dry-run matrix diff, quote entry point for later milestones), with permission checks
+  (`pricing.configure` owner/director, `pricing.read`), audit rows and `config.pricing_changed` events.
+- OpenAPI operations for all of the above plus the price simulator, the price matrix and the coverage check;
+  problem types `no_price`, `promo_not_applicable`, `price_list_invalid`, `price_list_immutable`,
+  `price_list_overlap`, `in_use` with `details` and `price_list_issues`; meta capabilities and
+  `pricing_engine_version`.
+- Admin UI: items, classifications (berth categories, revenue classes, customer categories, hull types), pricing
+  settings, price lists with timeline, the price list editor (general, periods, bands, rules, validation),
+  activation, renewal wizard, simulator with breakdown and trace, matrix (with print page) and coverage.
+- Demo seed: 11 items, an active list for the current year and its renewed draft.
+- Published list catalogue is stable (INV-26): activation copies the engine fields of every item the list
+  references (code, type, unit, VAT rate or nature, VAT inclusion, revenue class code, external code, active) into
+  `price_list_items`, frozen with the list (INV-22). Active and archived lists price with that snapshot, drafts
+  with the live items, so items and revenue classes stay editable while `content_sha256` keeps matching the list.
+- Transit stays with the `best_combination` split rule go through the dynamic programming even when their nights
+  are an exact multiple of the night unit (7 nights can be one week block; m2-plan D31).
+- `GET /marinas/{marinaId}/customer-categories` (pricing.read): counts per customer category on the
+  classifications page.
+- Quantity inputs parse with the locale's separators, as the exact inverse of their formatting ("1.500" in Italian
+  is 1500).
+
 M1 — Mappa del porto e anagrafiche (spec 32.3), contract:
 
 - Migrations `00002_harbor.sql` (stored files, harbour settings, maps, structures, pedestals, berths, dynamic

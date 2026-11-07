@@ -525,7 +525,7 @@ func TestAcceptance_CrossMarinaIsolation(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if checked < 80 { // M0 + M1 routes (m1-plan §8.2)
+		if checked < 100 { // M0 + M1 + M2 routes (m1-plan §8.2, m2-plan §8.2)
 			t.Fatalf("only %d routes checked", checked)
 		}
 		if r := bc.do(t, "GET", A+"/stream?marina_id="+a.MarinaID, nil); r.status != 404 {

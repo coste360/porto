@@ -1,0 +1,509 @@
+{
+  "cases": [
+    {
+      "name": "whole_months_ten_nights_one_month",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-03-01",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 60000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-03-01",
+                "to": "2027-04-01",
+                "nights": 10,
+                "base_cents": 60000
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.whole_months"
+        ]
+      },
+      "why": "10 nights -> 1 calendar month block (overshoot to 2027-04-01) 60000; total 60000 (VAT incl.)"
+    },
+    {
+      "name": "whole_months_month_and_half",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-03-01",
+        "departure": "2027-04-16",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 120000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "nights": 31,
+                "base_cents": 60000
+              },
+              {
+                "from": "2027-04-01",
+                "to": "2027-05-01",
+                "nights": 15,
+                "base_cents": 60000
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.whole_months"
+        ]
+      },
+      "why": "ceil: 2 month blocks x 60000; total 120000 (VAT incl.)"
+    },
+    {
+      "name": "whole_months_from_jan31",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-01-31",
+        "departure": "2027-03-15",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 120000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-01-31",
+                "to": "2027-02-28",
+                "nights": 28
+              },
+              {
+                "from": "2027-02-28",
+                "to": "2027-03-31",
+                "nights": 15
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.whole_months"
+        ]
+      },
+      "why": "blocks from the arrival: Jan 31 -> Feb 28 -> Mar 31; 2 x 60000; total 120000 (VAT incl.)"
+    },
+    {
+      "name": "whole_months_exact_still_exact",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-03-01",
+        "departure": "2027-05-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 120000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "nights": 31
+              },
+              {
+                "nights": 30
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.exact"
+        ]
+      },
+      "why": "exact 2 months: step 1 applies (split.exact), same 2 x 60000; total 120000 (VAT incl.)"
+    },
+    {
+      "name": "whole_months_one_night",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-06-30",
+        "departure": "2027-07-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 60000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-06-30",
+                "to": "2027-07-30",
+                "nights": 1
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.whole_months"
+        ]
+      },
+      "why": "one night still costs one calendar month; total 60000 (VAT incl.)"
+    },
+    {
+      "name": "whole_months_across_new_year",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-12-15",
+        "departure": "2028-01-10",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 60000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-12-15",
+                "to": "2028-01-15",
+                "nights": 26
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.whole_months"
+        ]
+      },
+      "why": "26 nights -> 1 month block Dec 15 -> Jan 15; total 60000 (VAT incl.)"
+    },
+    {
+      "name": "whole_months_annual_without_month_rule",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2027-03-15",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "no_price:unit_missing"
+      },
+      "why": "annual, not an exact year -> whole_months needs a month rule for ORM-ANN; there is none at all -> unit_missing"
+    },
+    {
+      "name": "whole_months_annual_with_month_rule",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-y-m",
+          "seq": 10,
+          "stage": "base",
+          "name": "r-y-m",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "ann",
+          "basis": "flat",
+          "unit": "month",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 35000
+        }
+      ],
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2027-03-15",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 105000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "nights": 31
+              },
+              {
+                "nights": 28
+              },
+              {
+                "nights": 14
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.whole_months"
+        ]
+      },
+      "why": "month rule r-y-m 35000 for ORM-ANN; Jan, Feb, Mar (14 nights) = 3 x 35000; total 105000 (VAT incl.)"
+    },
+    {
+      "name": "whole_months_annual_exact_year_wins",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-y-m",
+          "seq": 10,
+          "stage": "base",
+          "name": "r-y-m",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "ann",
+          "basis": "flat",
+          "unit": "month",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 35000
+        }
+      ],
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 360000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "year",
+                "nights": 365
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.exact"
+        ]
+      },
+      "why": "an exact year is still priced by the year rule (step 1); total 360000 (VAT incl.)"
+    },
+    {
+      "name": "whole_months_seasonal_partial",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-s-m",
+          "seq": 11,
+          "stage": "base",
+          "name": "r-s-m",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "sea",
+          "basis": "flat",
+          "unit": "month",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 45000
+        }
+      ],
+      "input": {
+        "contract_type": "seasonal",
+        "arrival": "2027-05-01",
+        "departure": "2027-07-10",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 135000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "nights": 31
+              },
+              {
+                "nights": 30
+              },
+              {
+                "nights": 9
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.whole_months"
+        ]
+      },
+      "why": "not the window -> months: May, June, July (9 nights) x 45000; total 135000 (VAT incl.)"
+    },
+    {
+      "name": "whole_months_seasonal_exact_window",
+      "spec": "12.3 whole_months",
+      "catalog": "units",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "whole_months"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-s-m",
+          "seq": 11,
+          "stage": "base",
+          "name": "r-s-m",
+          "active": true,
+          "priority": 0,
+          "stackable": false,
+          "item_id": "sea",
+          "basis": "flat",
+          "unit": "month",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 45000
+        }
+      ],
+      "input": {
+        "contract_type": "seasonal",
+        "arrival": "2027-05-01",
+        "departure": "2027-10-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 200000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "season",
+                "nights": 153
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.exact"
+        ]
+      },
+      "why": "the stay is the window: one season block; total 200000 (VAT incl.)"
+    }
+  ]
+}

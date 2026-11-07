@@ -80,7 +80,12 @@
     "customers": "Customers",
     "vessels": "Vessels",
     "deadlines": "Deadlines",
-    "harborSettings": "Map settings"
+    "harborSettings": "Map settings",
+    "priceLists": "Price lists",
+    "items": "Items and services",
+    "pricingClassifications": "Classifications",
+    "pricingSimulator": "Price simulator",
+    "pricingSettings": "Pricing settings"
   },
   "user": {
     "menu": "User menu",

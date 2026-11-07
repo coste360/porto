@@ -1,0 +1,248 @@
+{
+  "cases": [
+    {
+      "name": "deposit_percent_of_total",
+      "spec": "13.7 deposit, plan D21",
+      "catalog": "deposit",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 610000,
+        "deposit_cents": 183000,
+        "trace_codes": [
+          "deposit.computed"
+        ]
+      },
+      "why": "500000 + 22% = 610000; 30% = half_even(610000 x 3000 / 10000) = 183000"
+    },
+    {
+      "name": "deposit_fixed_capped_at_total",
+      "spec": "13.7 deposit, plan D21",
+      "catalog": "deposit",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 10000,
+        "deposit_cents": 10000,
+        "trace_codes": [
+          "deposit.computed"
+        ]
+      },
+      "why": "fixed 20000 > total 10000 -> 10000"
+    },
+    {
+      "name": "deposit_fixed_below_total",
+      "spec": "13.7 deposit, plan D21",
+      "catalog": "deposit",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-13",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 30000,
+        "deposit_cents": 20000,
+        "trace_codes": [
+          "deposit.computed"
+        ]
+      },
+      "why": "3 nights 30000; fixed 20000"
+    },
+    {
+      "name": "deposit_override_percent",
+      "spec": "13.7 deposit, plan D21",
+      "catalog": "deposit",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "deposit": {
+          "percent_bp": 5000
+        }
+      },
+      "expect": {
+        "total_cents": 610000,
+        "deposit_cents": 305000,
+        "trace_codes": [
+          "deposit.computed"
+        ]
+      },
+      "why": "input deposit 50% overrides the list policy: 305000"
+    },
+    {
+      "name": "deposit_override_amount",
+      "spec": "13.7 deposit, plan D21",
+      "catalog": "deposit",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "deposit": {
+          "amount_cents": 1000
+        }
+      },
+      "expect": {
+        "total_cents": 10000,
+        "deposit_cents": 1000,
+        "trace_codes": [
+          "deposit.computed"
+        ]
+      },
+      "why": "input deposit fixed 1000"
+    },
+    {
+      "name": "deposit_none_without_policy",
+      "spec": "13.7 deposit, plan D21",
+      "catalog": "deposit",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "deposits": null
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-12",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 20000,
+        "deposit_cents": 0
+      },
+      "why": "no deposits in the settings: 0"
+    },
+    {
+      "name": "deposit_percent_rounding",
+      "spec": "13.7 deposit, plan D21",
+      "catalog": "deposit",
+      "add_rules": [
+        {
+          "id": "r-y2",
+          "seq": 9,
+          "stage": "base",
+          "name": "r-y2",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "item_id": "orm",
+          "basis": "flat",
+          "unit": "year",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 123457
+        }
+      ],
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 150618,
+        "deposit_cents": 45185,
+        "trace_codes": [
+          "deposit.computed"
+        ]
+      },
+      "why": "123457 + half_even(27160.54) = 150618; 30% = half_even(150618 x 0.3 = 45185.4) = 45185"
+    },
+    {
+      "name": "deposit_star_fallback",
+      "spec": "13.7 deposit, plan D21",
+      "catalog": "deposit",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "deposits": {
+              "annual": null,
+              "transit": null,
+              "*": {
+                "percent_bp": 1000
+              }
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 10000,
+        "deposit_cents": 1000,
+        "trace_codes": [
+          "deposit.computed"
+        ]
+      },
+      "why": "only '*' 10%: transit 1000"
+    },
+    {
+      "name": "deposit_full_override",
+      "spec": "13.7 deposit, plan D21",
+      "catalog": "deposit",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "deposit": {
+          "percent_bp": 10000
+        }
+      },
+      "expect": {
+        "total_cents": 610000,
+        "deposit_cents": 610000,
+        "trace_codes": [
+          "deposit.computed"
+        ]
+      },
+      "why": "override 100% = total"
+    },
+    {
+      "name": "deposit_zero_percent_override",
+      "spec": "13.7 deposit, plan D21",
+      "catalog": "deposit",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "deposit": {
+          "percent_bp": 0
+        }
+      },
+      "expect": {
+        "total_cents": 610000,
+        "deposit_cents": 0
+      },
+      "why": "override 0%: 0"
+    }
+  ]
+}

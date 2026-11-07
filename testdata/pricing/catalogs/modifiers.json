@@ -1,0 +1,208 @@
+{
+  "price_list": {
+    "id": "pl-mod",
+    "code": "MOD-2027",
+    "valid_from": "2027-01-01",
+    "valid_to": "2027-12-31",
+    "contract_types": [
+      "transit"
+    ],
+    "settings": {
+      "dimension_source": "vessel",
+      "length_rounding": {
+        "step_cm": 10,
+        "mode": "up"
+      },
+      "min_beam_ratio": {
+        "num": 1,
+        "den": 3
+      },
+      "split": {
+        "*": "pro_rata_daily"
+      },
+      "rounding": {
+        "*": "none"
+      },
+      "primary_items": {
+        "transit": "trn"
+      }
+    },
+    "periods": [
+      {
+        "code": "LOW",
+        "kind": "season",
+        "ranges": [
+          {
+            "from": "2027-01-01",
+            "to": "2027-06-30"
+          },
+          {
+            "from": "2027-09-01",
+            "to": "2027-12-31"
+          }
+        ]
+      },
+      {
+        "code": "HIGH",
+        "kind": "season",
+        "ranges": [
+          {
+            "from": "2027-07-01",
+            "to": "2027-08-31"
+          }
+        ]
+      }
+    ],
+    "bands": []
+  },
+  "items": [
+    {
+      "id": "trn",
+      "code": "TRN-NTT",
+      "item_type": "berth_fee",
+      "unit": "night",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true,
+      "revenue_class": "ormeggi",
+      "external_code": "T01"
+    }
+  ],
+  "rules": [
+    {
+      "id": "r-n",
+      "seq": 1,
+      "stage": "base",
+      "name": "r-n",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "m-multi",
+      "seq": 2,
+      "stage": "modifier",
+      "name": "m-multi",
+      "active": true,
+      "priority": 0,
+      "stackable": true,
+      "conditions": {
+        "hull_types": [
+          "catamaran",
+          "trimaran"
+        ]
+      },
+      "effect": {
+        "percent_bp": 2500
+      },
+      "scope": {}
+    },
+    {
+      "id": "m-overhang",
+      "seq": 3,
+      "stage": "modifier",
+      "name": "m-overhang",
+      "active": true,
+      "priority": 0,
+      "stackable": true,
+      "conditions": {
+        "overhang_min_cm": 100
+      },
+      "effect": {
+        "percent_bp": 1000
+      },
+      "scope": {}
+    },
+    {
+      "id": "m-high",
+      "seq": 4,
+      "stage": "modifier",
+      "name": "m-high",
+      "active": true,
+      "priority": 0,
+      "stackable": true,
+      "conditions": {},
+      "effect": {
+        "percent_bp": 2000
+      },
+      "scope": {
+        "periods": [
+          "HIGH"
+        ]
+      }
+    },
+    {
+      "id": "m-long",
+      "seq": 5,
+      "stage": "modifier",
+      "name": "m-long",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "conditions": {
+        "min_nights": 7
+      },
+      "effect": {
+        "percent_bp": -1000
+      },
+      "scope": {}
+    },
+    {
+      "id": "m-lastmin",
+      "seq": 6,
+      "stage": "modifier",
+      "name": "m-lastmin",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "conditions": {
+        "lead_max_days": 3
+      },
+      "effect": {
+        "percent_bp": -1500
+      },
+      "scope": {}
+    },
+    {
+      "id": "m-early",
+      "seq": 7,
+      "stage": "modifier",
+      "name": "m-early",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "conditions": {
+        "lead_min_days": 60
+      },
+      "effect": {
+        "percent_bp": -500
+      },
+      "scope": {}
+    },
+    {
+      "id": "m-online",
+      "seq": 8,
+      "stage": "modifier",
+      "name": "m-online",
+      "active": true,
+      "priority": 0,
+      "stackable": true,
+      "conditions": {},
+      "effect": {
+        "percent_bp": -300
+      },
+      "scope": {
+        "channels": [
+          "online"
+        ]
+      }
+    }
+  ]
+}

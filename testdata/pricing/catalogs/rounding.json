@@ -1,0 +1,114 @@
+{
+  "price_list": {
+    "id": "pl-rnd",
+    "code": "RND-2027",
+    "valid_from": "2027-01-01",
+    "valid_to": "2027-12-31",
+    "contract_types": [
+      "transit"
+    ],
+    "settings": {
+      "dimension_source": "vessel",
+      "length_rounding": {
+        "step_cm": 10,
+        "mode": "up"
+      },
+      "min_beam_ratio": {
+        "num": 1,
+        "den": 3
+      },
+      "split": {
+        "*": "pro_rata_daily"
+      },
+      "rounding": {
+        "*": "none"
+      },
+      "primary_items": {
+        "transit": "trn"
+      }
+    },
+    "periods": [],
+    "bands": []
+  },
+  "items": [
+    {
+      "id": "trn",
+      "code": "TRN-NTT",
+      "item_type": "berth_fee",
+      "unit": "night",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true,
+      "revenue_class": "ormeggi",
+      "external_code": "T01"
+    },
+    {
+      "id": "cra",
+      "code": "SRV-GRU",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": false,
+      "active": true
+    },
+    {
+      "id": "wat",
+      "code": "SRV-ACQ",
+      "item_type": "utility",
+      "unit": "m3",
+      "vat_rate_bp": 1000,
+      "price_includes_vat": false,
+      "active": true
+    }
+  ],
+  "rules": [
+    {
+      "id": "r-n",
+      "seq": 1,
+      "stage": "base",
+      "name": "r-n",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 12350
+    },
+    {
+      "id": "r-cra",
+      "seq": 2,
+      "stage": "base",
+      "name": "r-cra",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "cra",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 15000
+    },
+    {
+      "id": "r-wat",
+      "seq": 3,
+      "stage": "base",
+      "name": "r-wat",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "wat",
+      "basis": "metered",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "unit_cents": 250
+    }
+  ]
+}

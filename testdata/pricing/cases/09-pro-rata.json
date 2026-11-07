@@ -1,0 +1,400 @@
+{
+  "cases": [
+    {
+      "name": "pro_rata_half_year_365",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2027-07-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 178521,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-01-01",
+                "nights": 181,
+                "base_cents": 178521
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "no full year; 2027 has 365 nights; remainder 181 nights from 2027-01-01: half_even(360000 x 181 / 365) = 178521; total 0 + 178521 = 178521 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_half_year_leap_366",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2028-01-01",
+        "departure": "2028-07-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 179016,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2028-01-01",
+                "nights": 182,
+                "base_cents": 179016
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "year from 2028-01-01 has 366 nights (Feb 29); remainder 182 nights from 2028-01-01: half_even(360000 x 182 / 366) = 179016; total 0 + 179016 = 179016 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_year_plus_two_months",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-03-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 419016,
+        "lines": [
+          {
+            "blocks": [
+              {},
+              {
+                "from": "2028-01-01",
+                "nights": 60,
+                "base_cents": 59016
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "1 full year 360000, then 2028-01-01 -> 2028-03-01 = 31 + 29 nights of a 366-night year; remainder 60 nights from 2028-01-01: half_even(360000 x 60 / 366) = 59016; total 360000 + 59016 = 419016 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_one_night_of_year",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-03-01",
+        "departure": "2027-03-02",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 984,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-03-01",
+                "nights": 1,
+                "base_cents": 984
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "one night; the year from 2027-03-01 to 2028-03-01 contains 2028-02-29, so it has 366 nights; remainder 1 nights from 2027-03-01: half_even(360000 x 1 / 366) = 984; total 0 + 984 = 984 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_ten_nights_of_march",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-03-01",
+        "departure": "2027-03-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 19355,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-03-01",
+                "nights": 10,
+                "base_cents": 19355
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "month from 2027-03-01 has 31 nights; remainder 10 nights from 2027-03-01: half_even(60000 x 10 / 31) = 19355; total 0 + 19355 = 19355 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_half_february",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-02-01",
+        "departure": "2027-02-15",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 30000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-02-01",
+                "nights": 14,
+                "base_cents": 30000
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "February 2027 has 28 nights; remainder 14 nights from 2027-02-01: half_even(60000 x 14 / 28) = 30000; total 0 + 30000 = 30000 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_month_plus_fifteen",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-03-01",
+        "departure": "2027-04-16",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 90000,
+        "lines": [
+          {
+            "blocks": [
+              {},
+              {
+                "from": "2027-04-01",
+                "nights": 15,
+                "base_cents": 30000
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "1 full month (March) then 15 nights of the April month (30); remainder 15 nights from 2027-04-01: half_even(60000 x 15 / 30) = 30000; total 60000 + 30000 = 90000 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_from_jan31_month_counted_from_arrival",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-01-31",
+        "departure": "2027-03-15",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 89032,
+        "lines": [
+          {
+            "blocks": [
+              {},
+              {
+                "from": "2027-02-28",
+                "nights": 15,
+                "base_cents": 29032
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "full month Jan 31 -> Feb 28; the next unit runs Feb 28 -> AddMonths(Jan 31, 2) = Mar 31 (31 nights); remainder 15 nights from 2027-02-28: half_even(60000 x 15 / 31) = 29032; total 60000 + 29032 = 89032 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_across_new_year",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-12-15",
+        "departure": "2028-01-10",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 50323,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-12-15",
+                "nights": 26,
+                "base_cents": 50323
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "month 2027-12-15 -> 2028-01-15 has 31 nights; remainder 26 nights from 2027-12-15: half_even(60000 x 26 / 31) = 50323; total 0 + 50323 = 50323 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_season_shorter_than_window",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "seasonal",
+        "arrival": "2027-05-01",
+        "departure": "2027-08-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 120261,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-05-01",
+                "nights": 92,
+                "base_cents": 120261
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "the season unit is the window (153 nights); May-July = 31 + 30 + 31 = 92; remainder 92 nights from 2027-05-01: half_even(200000 x 92 / 153) = 120261; total 0 + 120261 = 120261 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_season_late_start",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "seasonal",
+        "arrival": "2027-06-01",
+        "departure": "2027-10-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 159477,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-06-01",
+                "nights": 122,
+                "base_cents": 159477
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "the stay does not start on the window's first night, so there is no full season: 30 + 31 + 31 + 30 = 122 nights; remainder 122 nights from 2027-06-01: half_even(200000 x 122 / 153) = 159477; total 0 + 159477 = 159477 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_season_plus_ten_nights",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "seasonal",
+        "arrival": "2027-05-01",
+        "departure": "2027-10-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 213072,
+        "lines": [
+          {
+            "blocks": [
+              {},
+              {
+                "from": "2027-10-01",
+                "nights": 10,
+                "base_cents": 13072
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "the window is a full season (200000), then 10 nights pro rata of 153; remainder 10 nights from 2027-10-01: half_even(200000 x 10 / 153) = 13072; total 200000 + 13072 = 213072 (VAT incl.)"
+    },
+    {
+      "name": "pro_rata_two_years_and_a_month",
+      "spec": "12.3 pro_rata_daily, plan D5",
+      "catalog": "units",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2029-02-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 750575,
+        "lines": [
+          {
+            "blocks": [
+              {},
+              {},
+              {
+                "from": "2029-01-01",
+                "nights": 31,
+                "base_cents": 30575
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.pro_rata"
+        ]
+      },
+      "why": "2 full years (2027, 2028) = 720000, then January 2029 = 31 nights of a 365-night year; remainder 31 nights from 2029-01-01: half_even(360000 x 31 / 365) = 30575; total 720000 + 30575 = 750575 (VAT incl.)"
+    }
+  ]
+}

@@ -1,0 +1,312 @@
+{
+  "cases": [
+    {
+      "name": "per_m2_berth_exact_dims",
+      "spec": "12.3 per_m2_berth",
+      "catalog": "per-m2-berth",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "length_cm": 1200,
+          "width_cm": 400
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 292800,
+        "net_cents": 240000,
+        "vat_cents": 52800
+      },
+      "why": "berth 1200 x 400 -> 1200 x 400 (10 up); vessel ignored; half_even(5000 x 1200 x 400 / 10000) = 240000. VAT excluded: 240000 + half_even(240000 x 2200 / 10000) = 292800 (net 240000, VAT 52800)"
+    },
+    {
+      "name": "per_m2_berth_rounded_up",
+      "spec": "12.3 per_m2_berth",
+      "catalog": "per-m2-berth",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "length_cm": 1234,
+          "width_cm": 415
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 317688,
+        "net_cents": 260400,
+        "vat_cents": 57288
+      },
+      "why": "berth 1234 x 415 -> 1240 x 420 (10 up); vessel ignored; half_even(5000 x 1240 x 420 / 10000) = 260400. VAT excluded: 260400 + half_even(260400 x 2200 / 10000) = 317688 (net 260400, VAT 57288)"
+    },
+    {
+      "name": "per_m2_berth_vessel_ignored",
+      "spec": "12.3 per_m2_berth",
+      "catalog": "per-m2-berth",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "length_cm": 1000,
+          "width_cm": 350
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1500,
+          "beam_cm": 500,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 213500,
+        "net_cents": 175000,
+        "vat_cents": 38500
+      },
+      "why": "berth 1000 x 350 -> 1000 x 350 (10 up); vessel ignored; half_even(5000 x 1000 x 350 / 10000) = 175000. VAT excluded: 175000 + half_even(175000 x 2200 / 10000) = 213500 (net 175000, VAT 38500)"
+    },
+    {
+      "name": "per_m2_berth_half_even",
+      "spec": "12.3 per_m2_berth",
+      "catalog": "per-m2-berth",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "half_even"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "length_cm": 1235,
+          "width_cm": 405
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 302560,
+        "net_cents": 248000,
+        "vat_cents": 54560
+      },
+      "why": "berth 1235 x 405 -> 1240 x 400 (10 half_even); vessel ignored; half_even(5000 x 1240 x 400 / 10000) = 248000. VAT excluded: 248000 + half_even(248000 x 2200 / 10000) = 302560 (net 248000, VAT 54560)"
+    },
+    {
+      "name": "per_m2_berth_unit_3333",
+      "spec": "12.3 per_m2_berth",
+      "catalog": "per-m2-berth",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-m2b-u",
+          "seq": 2,
+          "stage": "base",
+          "name": "r-m2b-u",
+          "active": true,
+          "priority": 10,
+          "stackable": false,
+          "item_id": "ann",
+          "basis": "per_m2_berth",
+          "unit": "year",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "unit_cents": 3333
+        }
+      ],
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "length_cm": 1000,
+          "width_cm": 300
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 121988,
+        "net_cents": 99990,
+        "vat_cents": 21998
+      },
+      "why": "berth 1000 x 300 -> 1000 x 300 (10 up); vessel ignored; half_even(3333 x 1000 x 300 / 10000) = 99990. VAT excluded: 99990 + half_even(99990 x 2200 / 10000) = 121988 (net 99990, VAT 21998)"
+    },
+    {
+      "name": "per_m2_berth_unit_3333_rounding",
+      "spec": "12.3 per_m2_berth",
+      "catalog": "per-m2-berth",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-m2b-u",
+          "seq": 2,
+          "stage": "base",
+          "name": "r-m2b-u",
+          "active": true,
+          "priority": 10,
+          "stackable": false,
+          "item_id": "ann",
+          "basis": "per_m2_berth",
+          "unit": "year",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "unit_cents": 3333
+        }
+      ],
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "length_cm": 1010,
+          "width_cm": 330
+        },
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 135529,
+        "net_cents": 111089,
+        "vat_cents": 24440
+      },
+      "why": "berth 1010 x 330 -> 1010 x 330 (10 up); vessel ignored; half_even(3333 x 1010 x 330 / 10000) = 111089. VAT excluded: 111089 + half_even(111089 x 2200 / 10000) = 135529 (net 111089, VAT 24440)"
+    },
+    {
+      "name": "per_m2_berth_source_max_still_berth",
+      "spec": "12.3 per_m2_berth",
+      "catalog": "per-m2-berth",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "dimension_source": "max"
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "length_cm": 1000,
+          "width_cm": 300
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 2000,
+          "beam_cm": 600,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 183000,
+        "net_cents": 150000,
+        "vat_cents": 33000
+      },
+      "why": "berth 1000 x 300 -> 1000 x 300 (10 up); vessel ignored; half_even(5000 x 1000 x 300 / 10000) = 150000. VAT excluded: 150000 + half_even(150000 x 2200 / 10000) = 183000 (net 150000, VAT 33000)"
+    },
+    {
+      "name": "per_m2_berth_missing_width",
+      "spec": "12.3 per_m2_berth",
+      "catalog": "per-m2-berth",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {
+          "length_cm": 1200
+        },
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "error": "invalid_input:dimensions_required"
+      },
+      "why": "per_m2_berth needs berth length and width; width missing -> dimensions_required"
+    },
+    {
+      "name": "per_m2_berth_missing_berth",
+      "spec": "12.3 per_m2_berth",
+      "catalog": "per-m2-berth",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "error": "invalid_input:dimensions_required"
+      },
+      "why": "no berth dimensions at all -> dimensions_required"
+    }
+  ]
+}

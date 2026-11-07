@@ -1,0 +1,568 @@
+{
+  "cases": [
+    {
+      "name": "per_m2_min_beam_applies_1234x410",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1234,
+          "beam_cm": 410,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 635376,
+        "net_cents": 520800,
+        "vat_cents": 114576
+      },
+      "why": "L 1234 -> 1240 (10 up); min beam half_even(1240 x 1 / 3) = 413; B' = max(410, 413) = 413 -> rounded 420; half_even(10000 x 1240 x 420 / 10000) = 520800. VAT excluded: 520800 + half_even(520800 x 2200 / 10000) = 635376 (net 520800, VAT 114576)"
+    },
+    {
+      "name": "per_m2_beam_above_minimum",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 450,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 658800,
+        "net_cents": 540000,
+        "vat_cents": 118800
+      },
+      "why": "L 1200 -> 1200 (10 up); min beam half_even(1200 x 1 / 3) = 400; B' = max(450, 400) = 450 -> rounded 450; half_even(10000 x 1200 x 450 / 10000) = 540000. VAT excluded: 540000 + half_even(540000 x 2200 / 10000) = 658800 (net 540000, VAT 118800)"
+    },
+    {
+      "name": "per_m2_beam_below_minimum",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 380,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 585600,
+        "net_cents": 480000,
+        "vat_cents": 105600
+      },
+      "why": "L 1200 -> 1200 (10 up); min beam half_even(1200 x 1 / 3) = 400; B' = max(380, 400) = 400 -> rounded 400; half_even(10000 x 1200 x 400 / 10000) = 480000. VAT excluded: 480000 + half_even(480000 x 2200 / 10000) = 585600 (net 480000, VAT 105600)"
+    },
+    {
+      "name": "per_m2_ratio_off_beam_kept",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": null
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1200,
+          "beam_cm": 380,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 556320,
+        "net_cents": 456000,
+        "vat_cents": 100320
+      },
+      "why": "L 1200 -> 1200 (10 up); B 380 -> rounded 380; half_even(10000 x 1200 x 380 / 10000) = 456000. VAT excluded: 456000 + half_even(456000 x 2200 / 10000) = 556320 (net 456000, VAT 100320)"
+    },
+    {
+      "name": "per_m2_ratio_off_beam_rounded",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": null
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1234,
+          "beam_cm": 333,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 514352,
+        "net_cents": 421600,
+        "vat_cents": 92752
+      },
+      "why": "L 1234 -> 1240 (10 up); B 333 -> rounded 340; half_even(10000 x 1240 x 340 / 10000) = 421600. VAT excluded: 421600 + half_even(421600 x 2200 / 10000) = 514352 (net 421600, VAT 92752)"
+    },
+    {
+      "name": "per_m2_ratio_two_fifths",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 2,
+              "den": 5
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1000,
+          "beam_cm": 300,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 488000,
+        "net_cents": 400000,
+        "vat_cents": 88000
+      },
+      "why": "L 1000 -> 1000 (10 up); min beam half_even(1000 x 2 / 5) = 400; B' = max(300, 400) = 400 -> rounded 400; half_even(10000 x 1000 x 400 / 10000) = 400000. VAT excluded: 400000 + half_even(400000 x 2200 / 10000) = 488000 (net 400000, VAT 88000)"
+    },
+    {
+      "name": "per_m2_zero_beam_uses_minimum",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1000,
+          "beam_cm": 0,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 414800,
+        "net_cents": 340000,
+        "vat_cents": 74800
+      },
+      "why": "L 1000 -> 1000 (10 up); min beam half_even(1000 x 1 / 3) = 333; B' = max(0, 333) = 333 -> rounded 340; half_even(10000 x 1000 x 340 / 10000) = 340000. VAT excluded: 340000 + half_even(340000 x 2200 / 10000) = 414800 (net 340000, VAT 74800)"
+    },
+    {
+      "name": "per_m2_minimum_rounded_up",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1001,
+          "beam_cm": 100,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 418948,
+        "net_cents": 343400,
+        "vat_cents": 75548
+      },
+      "why": "L 1001 -> 1010 (10 up); min beam half_even(1010 x 1 / 3) = 337; B' = max(100, 337) = 337 -> rounded 340; half_even(10000 x 1010 x 340 / 10000) = 343400. VAT excluded: 343400 + half_even(343400 x 2200 / 10000) = 418948 (net 343400, VAT 75548)"
+    },
+    {
+      "name": "per_m2_large_boat_40m",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 4000,
+          "beam_cm": 900,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 6539200,
+        "net_cents": 5360000,
+        "vat_cents": 1179200
+      },
+      "why": "L 4000 -> 4000 (10 up); min beam half_even(4000 x 1 / 3) = 1333; B' = max(900, 1333) = 1333 -> rounded 1340; half_even(10000 x 4000 x 1340 / 10000) = 5360000. VAT excluded: 5360000 + half_even(5360000 x 2200 / 10000) = 6539200 (net 5360000, VAT 1179200)"
+    },
+    {
+      "name": "per_m2_large_boat_60m",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 6000,
+          "beam_cm": 1200,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 14640000,
+        "net_cents": 12000000,
+        "vat_cents": 2640000
+      },
+      "why": "L 6000 -> 6000 (10 up); min beam half_even(6000 x 1 / 3) = 2000; B' = max(1200, 2000) = 2000 -> rounded 2000; half_even(10000 x 6000 x 2000 / 10000) = 12000000. VAT excluded: 12000000 + half_even(12000000 x 2200 / 10000) = 14640000 (net 12000000, VAT 2640000)"
+    },
+    {
+      "name": "per_m2_half_even_rounding",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "half_even"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1235,
+          "beam_cm": 410,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 620248,
+        "net_cents": 508400,
+        "vat_cents": 111848
+      },
+      "why": "L 1235 -> 1240 (10 half_even); min beam half_even(1240 x 1 / 3) = 413; B' = max(410, 413) = 413 -> rounded 410; half_even(10000 x 1240 x 410 / 10000) = 508400. VAT excluded: 508400 + half_even(508400 x 2200 / 10000) = 620248 (net 508400, VAT 111848)"
+    },
+    {
+      "name": "per_m2_step100_up",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 100,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1201,
+          "beam_cm": 401,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 793000,
+        "net_cents": 650000,
+        "vat_cents": 143000
+      },
+      "why": "L 1201 -> 1300 (100 up); min beam half_even(1300 x 1 / 3) = 433; B' = max(401, 433) = 433 -> rounded 500; half_even(10000 x 1300 x 500 / 10000) = 650000. VAT excluded: 650000 + half_even(650000 x 2200 / 10000) = 793000 (net 650000, VAT 143000)"
+    },
+    {
+      "name": "per_m2_unit_2550_exact",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-m2-u",
+          "seq": 2,
+          "stage": "base",
+          "name": "r-m2-u",
+          "active": true,
+          "priority": 10,
+          "stackable": false,
+          "item_id": "ann",
+          "basis": "per_m2",
+          "unit": "year",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "unit_cents": 2550
+        }
+      ],
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1000,
+          "beam_cm": 400,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 124440,
+        "net_cents": 102000,
+        "vat_cents": 22440
+      },
+      "why": "L 1000 -> 1000 (10 up); min beam half_even(1000 x 1 / 3) = 333; B' = max(400, 333) = 400 -> rounded 400; half_even(2550 x 1000 x 400 / 10000) = 102000. VAT excluded: 102000 + half_even(102000 x 2200 / 10000) = 124440 (net 102000, VAT 22440)"
+    },
+    {
+      "name": "per_m2_unit_2550_vat_rounding",
+      "spec": "12.3 per_m2, plan D18",
+      "catalog": "per-m2",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "length_rounding": {
+              "step_cm": 10,
+              "mode": "up"
+            },
+            "min_beam_ratio": {
+              "num": 1,
+              "den": 3
+            }
+          }
+        }
+      },
+      "add_rules": [
+        {
+          "id": "r-m2-u",
+          "seq": 2,
+          "stage": "base",
+          "name": "r-m2-u",
+          "active": true,
+          "priority": 10,
+          "stackable": false,
+          "item_id": "ann",
+          "basis": "per_m2",
+          "unit": "year",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "unit_cents": 2550
+        }
+      ],
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "vessel": {
+          "loa_cm": 1005,
+          "beam_cm": 333,
+          "hull_type": "monohull_sail"
+        }
+      },
+      "expect": {
+        "total_cents": 106832,
+        "net_cents": 87567,
+        "vat_cents": 19265
+      },
+      "why": "L 1005 -> 1010 (10 up); min beam half_even(1010 x 1 / 3) = 337; B' = max(333, 337) = 337 -> rounded 340; half_even(2550 x 1010 x 340 / 10000) = 87567. VAT excluded: 87567 + half_even(87567 x 2200 / 10000) = 106832 (net 87567, VAT 19265)"
+    },
+    {
+      "name": "per_m2_no_vessel",
+      "spec": "12.3 per_m2",
+      "catalog": "per-m2",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "invalid_input:dimensions_required"
+      },
+      "why": "per_m2 needs the vessel (source vessel) -> dimensions_required"
+    }
+  ]
+}

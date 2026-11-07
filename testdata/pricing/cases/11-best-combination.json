@@ -1,0 +1,828 @@
+{
+  "cases": [
+    {
+      "name": "best_three_nights",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-04",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 12000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "LOW: 3 x 4000 = 12000 < week 21000 (VAT incl.)"
+    },
+    {
+      "name": "best_five_nights",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-06",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 20000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "5 x 4000 = 20000 < week 21000 (VAT incl.)"
+    },
+    {
+      "name": "best_six_nights_week_overshoot_cheaper",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-07",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 21000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week",
+                "from": "2027-06-01",
+                "to": "2027-06-08",
+                "nights": 6,
+                "base_cents": 21000
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "6 nights 24000 > one week 21000 that overshoots by one night (VAT incl.)"
+    },
+    {
+      "name": "best_exact_week",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-08",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 21000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week",
+                "nights": 7
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "week 21000 < 7 x 4000 = 28000 (VAT incl.)"
+    },
+    {
+      "name": "best_week_then_night_tie_break",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-09",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 25000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week",
+                "from": "2027-06-01",
+                "to": "2027-06-08"
+              },
+              {
+                "unit": "night",
+                "from": "2027-06-08"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "week + night = night + week = 25000 with 2 blocks; tie -> the path whose first differing block is longer: week first (VAT incl.)"
+    },
+    {
+      "name": "best_week_plus_five_nights",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-13",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 41000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "week + 5 nights = 21000 + 20000 = 41000 < 2 weeks 42000 (VAT incl.)"
+    },
+    {
+      "name": "best_two_weeks_overshoot",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-14",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 42000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week",
+                "nights": 7
+              },
+              {
+                "unit": "week",
+                "nights": 6
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "week + 6 nights = 45000 > 2 weeks 42000 (second overshoots by one) (VAT incl.)"
+    },
+    {
+      "name": "best_month_overshoot_cheaper_than_weeks",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-21",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 60000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "month",
+                "from": "2027-06-01",
+                "to": "2027-07-01",
+                "nights": 20
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "3 weeks 63000, 2 weeks + 6 nights 66000; one month (June, overshoot) 60000 (VAT incl.)"
+    },
+    {
+      "name": "best_exact_june",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-07-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 60000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "month",
+                "nights": 30
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "June = 30 nights: month 60000 < 4 weeks + 2 nights 92000 (VAT incl.)"
+    },
+    {
+      "name": "best_periods_crossing_month_priced_at_first_night",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-07-06",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 80000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "month",
+                "from": "2027-06-06",
+                "to": "2027-07-06",
+                "nights": 30,
+                "period": "LOW",
+                "base_cents": 60000
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "a block is priced by the period of its first night: 5 LOW nights 20000 + LOW month from 2027-06-06 to 2027-07-06 (60000) = 80000; June month + 5 HIGH nights = 60000 + 30000 = 90000; week + month from 06-08 = 81000; 4 nights + month from 06-05 + 1 HIGH night = 82000 (VAT incl.)"
+    },
+    {
+      "name": "best_high_three_nights",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-13",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 18000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "night",
+                "period": "HIGH",
+                "base_cents": 6000
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "HIGH nights 6000 (priority 10) x 3 = 18000 < week 35000 (VAT incl.)"
+    },
+    {
+      "name": "best_high_six_nights_week",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-16",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 35000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week",
+                "period": "HIGH",
+                "rule_id": "r-w-high"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "6 x 6000 = 36000 > HIGH week 35000 (VAT incl.)"
+    },
+    {
+      "name": "best_week_starting_low_crossing_high",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-28",
+        "departure": "2027-07-05",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 21000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week",
+                "period": "LOW",
+                "rule_id": "r-w"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "week from 2027-06-28 (LOW) 21000 vs 3 LOW nights 12000 + 4 HIGH nights 24000 = 36000 (VAT incl.)"
+    },
+    {
+      "name": "best_equal_cost_fewer_blocks",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "add_rules": [
+        {
+          "id": "r-w-tie",
+          "seq": 9,
+          "stage": "base",
+          "name": "r-w-tie",
+          "active": true,
+          "priority": 20,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "week",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 28000
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-08",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 28000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week",
+                "rule_id": "r-w-tie"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "r-w-tie (priority 20) week 28000 = 7 nights x 4000: same cost, the week has fewer blocks (VAT incl.)"
+    },
+    {
+      "name": "best_only_night_rules",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "patch": {
+        "rules": [
+          {
+            "id": "r-n",
+            "seq": 1,
+            "stage": "base",
+            "name": "r-n",
+            "active": true,
+            "priority": 0,
+            "stackable": false,
+            "item_id": "trn",
+            "basis": "flat",
+            "unit": "night",
+            "conditions": {},
+            "effect": {},
+            "scope": {},
+            "amount_cents": 4000
+          }
+        ]
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 40000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "only r-n: 10 x 4000 (VAT incl.)"
+    },
+    {
+      "name": "best_only_week_rule_overshoot",
+      "spec": "12.3 best_combination, plan D6",
+      "catalog": "best",
+      "patch": {
+        "rules": [
+          {
+            "id": "r-w",
+            "seq": 2,
+            "stage": "base",
+            "name": "r-w",
+            "active": true,
+            "priority": 0,
+            "stackable": false,
+            "item_id": "trn",
+            "basis": "flat",
+            "unit": "week",
+            "conditions": {},
+            "effect": {},
+            "scope": {},
+            "amount_cents": 21000
+          }
+        ]
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-04",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 21000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week",
+                "nights": 3
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "only r-w: one week covers 3 nights (VAT incl.)"
+    },
+    {
+      "name": "best_no_rules_no_path",
+      "spec": "12.3 best_combination",
+      "catalog": "best",
+      "patch": {
+        "rules": []
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-04",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "error": "no_price:no_rule"
+      },
+      "why": "no base rule at all: no unit reaches the departure -> no path -> no_rule"
+    },
+    {
+      "name": "transit_split_rule_seven_nights_one_week_block",
+      "spec": "12.3 best_combination, plan §2.4 step 5.1 and D5 (transit goes through the split rule)",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-17",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 35000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week",
+                "from": "2027-07-10",
+                "to": "2027-07-17",
+                "nights": 7,
+                "period": "HIGH",
+                "rule_id": "r-w-high"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "transit, reference unit night, split best_combination: the 7 nights are not an exact night match, they go through the DP. HIGH week r-w-high 35000 < 7 x r-n-high 6000 = 42000 < month r-m 60000; one week block, total 35000 (VAT incl., rounding none)"
+    },
+    {
+      "name": "transit_split_rule_eight_nights_week_plus_night",
+      "spec": "12.3 best_combination, plan §2.4 step 5.1 and D5 (transit goes through the split rule)",
+      "catalog": "best",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-07-10",
+        "departure": "2027-07-18",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 41000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "week",
+                "from": "2027-07-10",
+                "to": "2027-07-17",
+                "period": "HIGH",
+                "rule_id": "r-w-high"
+              },
+              {
+                "unit": "night",
+                "from": "2027-07-17",
+                "to": "2027-07-18",
+                "period": "HIGH",
+                "rule_id": "r-n-high"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.best"
+        ]
+      },
+      "why": "HIGH: week 35000 + night 6000 = 41000 (2 blocks) < 8 x 6000 = 48000 < month 60000 < 2 weeks 70000; night+week also costs 41000 with 2 blocks, tie -> first differing block longer: week first (VAT incl.)"
+    },
+    {
+      "name": "transit_pro_rata_seven_nights_exact_nights",
+      "spec": "plan §2.4 step 5.1 and D5 (exact night match without best_combination)",
+      "catalog": "best",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "pro_rata_daily"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-08",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 28000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.exact"
+        ]
+      },
+      "why": "same list with split pro_rata_daily: a transit always matches its reference unit night exactly (k = N = 7), the week rule is never considered: 7 x r-n 4000 = 28000 (LOW, VAT incl.), versus 21000 with best_combination (best_exact_week)"
+    },
+    {
+      "name": "transit_pro_rata_eight_nights_exact_nights",
+      "spec": "plan §2.4 step 5.1 and D5 (exact night match without best_combination)",
+      "catalog": "best",
+      "patch": {
+        "price_list": {
+          "settings": {
+            "split": {
+              "*": "pro_rata_daily"
+            }
+          }
+        }
+      },
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-06-01",
+        "departure": "2027-06-09",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 32000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              },
+              {
+                "unit": "night"
+              }
+            ]
+          }
+        ],
+        "trace_codes": [
+          "split.exact"
+        ]
+      },
+      "why": "pro_rata_daily: 8 exact night blocks, 8 x 4000 = 32000 (LOW, VAT incl.), versus week + night 25000 with best_combination"
+    }
+  ]
+}

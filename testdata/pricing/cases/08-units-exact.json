@@ -1,0 +1,375 @@
+{
+  "cases": [
+    {
+      "name": "exact_year_calendar",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-01-01",
+        "departure": "2028-01-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 360000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "year",
+                "from": "2027-01-01",
+                "to": "2028-01-01",
+                "nights": 365,
+                "base_cents": 360000
+              }
+            ],
+            "amount_cents": 360000
+          }
+        ],
+        "warnings": []
+      },
+      "why": "Departure = AddYears(Arrival, 1): one year block 360000; VAT included so total = amount = 360000"
+    },
+    {
+      "name": "exact_two_years_exceeding_validity",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-03-15",
+        "departure": "2029-03-15",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 720000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "year",
+                "from": "2027-03-15",
+                "to": "2028-03-15",
+                "nights": 366,
+                "base_cents": 360000
+              },
+              {
+                "unit": "year",
+                "from": "2028-03-15",
+                "to": "2029-03-15",
+                "nights": 365,
+                "base_cents": 360000
+              }
+            ],
+            "amount_cents": 720000
+          }
+        ],
+        "warnings": [
+          "stay_exceeds_validity"
+        ]
+      },
+      "why": "2 x AddYears; first year contains 2028-02-29 (366 nights); last night 2029-03-14 > valid_to 2028-12-31 -> warning; 2 x 360000; VAT included so total = amount = 720000"
+    },
+    {
+      "name": "exact_year_from_leap_day",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2028-02-29",
+        "departure": "2029-02-28",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 360000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "year",
+                "nights": 365,
+                "base_cents": 360000
+              }
+            ],
+            "amount_cents": 360000
+          }
+        ],
+        "warnings": [
+          "stay_exceeds_validity"
+        ]
+      },
+      "why": "AddYears(2028-02-29, 1) = 2029-02-28 (Feb 29 -> Feb 28): exact year; VAT included so total = amount = 360000"
+    },
+    {
+      "name": "exact_year_across_leap_february",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "annual",
+        "arrival": "2027-07-01",
+        "departure": "2028-07-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 360000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "year",
+                "nights": 366,
+                "base_cents": 360000
+              }
+            ],
+            "amount_cents": 360000
+          }
+        ],
+        "warnings": []
+      },
+      "why": "2027-07-01 -> 2028-07-01 covers 2028-02-29: 366 nights, one year block; VAT included so total = amount = 360000"
+    },
+    {
+      "name": "exact_season_window",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "seasonal",
+        "arrival": "2027-05-01",
+        "departure": "2027-10-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 200000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "season",
+                "from": "2027-05-01",
+                "to": "2027-10-01",
+                "nights": 153,
+                "base_cents": 200000
+              }
+            ],
+            "amount_cents": 200000
+          }
+        ],
+        "warnings": []
+      },
+      "why": "stay = season window 2027-05-01..2027-09-30 (31+30+31+31+30 = 153 nights): one season block; VAT included so total = amount = 200000"
+    },
+    {
+      "name": "exact_month_jan31_clamped_to_feb28",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-01-31",
+        "departure": "2027-02-28",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 60000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "month",
+                "from": "2027-01-31",
+                "to": "2027-02-28",
+                "nights": 28,
+                "base_cents": 60000
+              }
+            ],
+            "amount_cents": 60000
+          }
+        ],
+        "warnings": []
+      },
+      "why": "AddMonths(2027-01-31, 1) = 2027-02-28 (clamped): exact month; VAT included so total = amount = 60000"
+    },
+    {
+      "name": "exact_month_jan31_leap_feb29",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2028-01-31",
+        "departure": "2028-02-29",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 60000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "month",
+                "nights": 29,
+                "base_cents": 60000
+              }
+            ],
+            "amount_cents": 60000
+          }
+        ],
+        "warnings": []
+      },
+      "why": "AddMonths(2028-01-31, 1) = 2028-02-29 (leap year): exact month; VAT included so total = amount = 60000"
+    },
+    {
+      "name": "exact_two_months_from_jan31",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-01-31",
+        "departure": "2027-03-31",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 120000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "month",
+                "from": "2027-01-31",
+                "to": "2027-02-28",
+                "nights": 28,
+                "base_cents": 60000
+              },
+              {
+                "unit": "month",
+                "from": "2027-02-28",
+                "to": "2027-03-31",
+                "nights": 31,
+                "base_cents": 60000
+              }
+            ],
+            "amount_cents": 120000
+          }
+        ],
+        "warnings": []
+      },
+      "why": "months counted from the arrival: AddMonths(Jan 31, 1) = Feb 28, AddMonths(Jan 31, 2) = Mar 31; 2 blocks x 60000; VAT included so total = amount = 120000"
+    },
+    {
+      "name": "exact_three_months",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-03-01",
+        "departure": "2027-06-01",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 180000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "nights": 31
+              },
+              {
+                "nights": 30
+              },
+              {
+                "nights": 31
+              }
+            ],
+            "amount_cents": 180000
+          }
+        ],
+        "warnings": []
+      },
+      "why": "Mar, Apr, May: 3 x 60000; VAT included so total = amount = 180000"
+    },
+    {
+      "name": "exact_months_dec31_to_feb29",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "monthly",
+        "arrival": "2027-12-31",
+        "departure": "2028-02-29",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 120000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "from": "2027-12-31",
+                "to": "2028-01-31",
+                "nights": 31
+              },
+              {
+                "from": "2028-01-31",
+                "to": "2028-02-29",
+                "nights": 29
+              }
+            ],
+            "amount_cents": 120000
+          }
+        ],
+        "warnings": []
+      },
+      "why": "AddMonths(2027-12-31, 2) = 2028-02-29: 2 exact months x 60000; VAT included so total = amount = 120000"
+    },
+    {
+      "name": "exact_nights_transit",
+      "spec": "12.3 units, plan D5/D6",
+      "catalog": "units",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-08-01",
+        "departure": "2027-08-06",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 20000,
+        "lines": [
+          {
+            "blocks": [
+              {
+                "unit": "night",
+                "nights": 1
+              },
+              {
+                "unit": "night",
+                "nights": 1
+              },
+              {
+                "unit": "night",
+                "nights": 1
+              },
+              {
+                "unit": "night",
+                "nights": 1
+              },
+              {
+                "unit": "night",
+                "nights": 1
+              }
+            ],
+            "amount_cents": 20000
+          }
+        ],
+        "warnings": []
+      },
+      "why": "transit reference unit night: 5 blocks x 4000; VAT included so total = amount = 20000"
+    }
+  ]
+}

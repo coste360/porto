@@ -52,10 +52,35 @@ driver manuale. Verificata da: `TestCheckout_BrowserReturnDoesNotConfirm`. Stato
 ## Prezzi (spec 12)
 
 **INV-20 — Snapshot riproducibile.** Ricalcolare un `price_snapshot` con la stessa `engine_version` e gli stessi
-input restituisce lo stesso totale. Verificata da: `TestQuote_SnapshotReproducible` (property test). Stato: planned.
+input restituisce lo stesso totale. Verificata da: `TestQuote_SnapshotReproducible` (property test,
+`pricing.Recompute(pricing.NewSnapshot(...))` uguale dopo il giro JSON). Stato: implemented.
 
 **INV-21 — Il motore prezzi è puro.** `internal/domain/pricing` non importa `store`, `clock`, `time.Now`. Verificata
-da: regola di `depguard` in `.golangci.yml`. Stato: planned.
+da: regole `pure-engines` e `pure-engines-no-rand` (anche `math/rand` e `math/rand/v2`) di `depguard` in
+`.golangci.yml` e `internal/domain/pricing/purity_test.go`. Stato: implemented.
+
+**INV-22 — Listini pubblicati immutabili.** Un listino `active` o `archived` non cambia regole, periodi, fasce né
+impostazioni; cambia solo stato verso `archived` e `valid_to` per troncamento. Verificata da:
+`TestPriceList_PublishedIsImmutable` e `TestMigrations_PriceListImmutable` (trigger su entrambi i dialetti).
+Stato: implemented.
+
+**INV-26 — Catalogo dei listini pubblicati stabile.** Per ogni listino `active` o `archived`
+`content_sha256 = CatalogHash(LoadCatalog(listino))` per sempre: all'attivazione i campi degli articoli letti dal
+motore (codice, tipo, unità, IVA o natura, prezzo IVA inclusa, codice della classe di ricavo, codice esterno,
+attivo) sono copiati in `price_list_items`, immutabile come il listino (INV-22), e i listini pubblicati prezzano
+con quella copia. Articoli e classi di ricavo restano modificabili: le modifiche valgono per le bozze (e quindi per
+copie e rinnovi), mai per i listini pubblicati. Verificata da: `TestPriceList_PublishedCatalogStable`,
+`TestMigrations_PriceListImmutable`. Stato: implemented.
+
+**INV-23 — Matrice = simulatore.** Ogni cella della matrice è il risultato del motore sul suo input di prova,
+identico a una simulazione dello stesso input. Verificata da: `TestMatrix_EqualsQuote`,
+`TestPricing_MatrixEqualsSimulate`, e2e `pricing-acceptance`. Stato: implemented.
+
+**INV-24 — Un solo listino attivo per notte e tipo di contratto.** Verificata da:
+`TestConcurrency_PriceListActivation`, `TestPriceList_ActivateOverlapRejected`. Stato: implemented.
+
+**INV-25 — Lo scorporo IVA somma il totale.** Per ogni breakdown `Σ imponibile + Σ IVA = totale`, per riga e per
+aliquota. Verificata da: `TestRapid_VATSumsExactly`. Stato: implemented.
 
 ## Contratti (spec 13)
 
@@ -105,7 +130,7 @@ giornaliere è uguale all'importo. Verificata da: `TestAccrual_SumsToAmount` (pr
 ## Altri
 
 **INV-70 — Nessun dato personale negli eventi SSE e nei log.** Verificata da: `TestSSE_PayloadHasNoPII`,
-`TestEvents_DataHasNoPII` (con i campioni degli eventi M1 di mappa e anagrafiche), `TestLogs_NoPII`. Stato: partial.
+`TestEvents_DataHasNoPII` (con i campioni degli eventi M1 di mappa e anagrafiche e di `config.pricing_changed` M2), `TestLogs_NoPII`. Stato: partial.
 
 **INV-71 — Offline senza effetti sulle risorse.** Nessuna operazione accodata offline crea o sposta allocazioni né
 emette documenti numerati. Verificata da: test Vitest della allowlist della coda. Stato: planned.
@@ -115,8 +140,9 @@ PostgreSQL (trigger del database). Verificata da: `TestAuditLog_InsertOnly`. Sta
 
 **INV-73 — Query operative limitate al marina.** Ogni query operativa usa il `marina_id` dello scope autorizzato;
 una risorsa di un altro marina risponde 404. Verificata da: `TestAcceptance_CrossMarinaIsolation` (tutte le rotte
-con `{marinaId}`, comprese quelle M1 di mappa, clienti, imbarcazioni, documenti e scadenze),
-`TestAcceptance_CrossMarinaResourceIds` (il proprio `{marinaId}` con id di risorse di un altro marina),
+con `{marinaId}`, comprese quelle M1 di mappa, clienti, imbarcazioni, documenti e scadenze e quelle M2 di articoli, classificazioni e listini),
+`TestAcceptance_CrossMarinaResourceIds` (il proprio `{marinaId}` con id di risorse di un altro marina, comprese
+le rotte M2 con `{revenueClassId}`, `{itemId}`, `{categoryId}` e `{priceListId}`),
 `TestStore_ElementReferencesStayInMarina` e `TestRegistryStore_MergeTargetStaysInMarina` (FK composite
 `(…_id, marina_id)` per strutture, colonnine, struttura padre e cliente di destinazione della fusione). Stato: partial.
 

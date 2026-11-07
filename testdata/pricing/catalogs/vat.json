@@ -1,0 +1,292 @@
+{
+  "price_list": {
+    "id": "pl-vat",
+    "code": "VAT-2027",
+    "valid_from": "2027-01-01",
+    "valid_to": "2027-12-31",
+    "contract_types": [
+      "transit"
+    ],
+    "settings": {
+      "dimension_source": "vessel",
+      "length_rounding": {
+        "step_cm": 10,
+        "mode": "up"
+      },
+      "min_beam_ratio": {
+        "num": 1,
+        "den": 3
+      },
+      "split": {
+        "*": "pro_rata_daily"
+      },
+      "rounding": {
+        "*": "none"
+      },
+      "primary_items": {
+        "transit": "trn"
+      }
+    },
+    "periods": [],
+    "bands": []
+  },
+  "items": [
+    {
+      "id": "trn",
+      "code": "TRN-NTT",
+      "item_type": "berth_fee",
+      "unit": "night",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": true,
+      "active": true,
+      "revenue_class": "ormeggi",
+      "external_code": "T01"
+    },
+    {
+      "id": "v22",
+      "code": "S-22",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 2200,
+      "price_includes_vat": false,
+      "active": true
+    },
+    {
+      "id": "v10",
+      "code": "S-10",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 1000,
+      "price_includes_vat": false,
+      "active": true
+    },
+    {
+      "id": "v5",
+      "code": "S-05",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 500,
+      "price_includes_vat": false,
+      "active": true
+    },
+    {
+      "id": "v4",
+      "code": "S-04",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 400,
+      "price_includes_vat": false,
+      "active": true
+    },
+    {
+      "id": "n1",
+      "code": "S-N1",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 0,
+      "price_includes_vat": false,
+      "active": true,
+      "vat_nature": "N1"
+    },
+    {
+      "id": "n4",
+      "code": "S-N4",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 0,
+      "price_includes_vat": false,
+      "active": true,
+      "vat_nature": "N4"
+    },
+    {
+      "id": "n22",
+      "code": "S-N22",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 0,
+      "price_includes_vat": false,
+      "active": true,
+      "vat_nature": "N2.2"
+    },
+    {
+      "id": "i10",
+      "code": "S-I10",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 1000,
+      "price_includes_vat": true,
+      "active": true
+    },
+    {
+      "id": "i4",
+      "code": "S-I04",
+      "item_type": "service",
+      "unit": "lump",
+      "vat_rate_bp": 400,
+      "price_includes_vat": true,
+      "active": true
+    }
+  ],
+  "rules": [
+    {
+      "id": "r-n",
+      "seq": 1,
+      "stage": "base",
+      "name": "r-n",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "trn",
+      "basis": "flat",
+      "unit": "night",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-v22",
+      "seq": 2,
+      "stage": "base",
+      "name": "r-v22",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "v22",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-v10",
+      "seq": 3,
+      "stage": "base",
+      "name": "r-v10",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "v10",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-v5",
+      "seq": 4,
+      "stage": "base",
+      "name": "r-v5",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "v5",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-v4",
+      "seq": 5,
+      "stage": "base",
+      "name": "r-v4",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "v4",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-n1",
+      "seq": 6,
+      "stage": "base",
+      "name": "r-n1",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "n1",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-n4",
+      "seq": 7,
+      "stage": "base",
+      "name": "r-n4",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "n4",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-n22",
+      "seq": 8,
+      "stage": "base",
+      "name": "r-n22",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "n22",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-i10",
+      "seq": 9,
+      "stage": "base",
+      "name": "r-i10",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "i10",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    },
+    {
+      "id": "r-i4",
+      "seq": 10,
+      "stage": "base",
+      "name": "r-i4",
+      "active": true,
+      "priority": 0,
+      "stackable": false,
+      "item_id": "i4",
+      "basis": "flat",
+      "unit": "stay",
+      "conditions": {},
+      "effect": {},
+      "scope": {},
+      "amount_cents": 10000
+    }
+  ]
+}

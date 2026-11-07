@@ -1,0 +1,250 @@
+{
+  "contractTypes": {
+    "annual": "Annual",
+    "seasonal": "Seasonal",
+    "monthly": "Monthly",
+    "transit": "Transit",
+    "storage": "Dry storage",
+    "charter": "Charter"
+  },
+  "itemTypes": {
+    "berth_fee": "Berth fee",
+    "service": "Service",
+    "utility": "Utility",
+    "product": "Product",
+    "labour": "Labour",
+    "material": "Material",
+    "fee": "Fee",
+    "deposit": "Security deposit"
+  },
+  "itemUnits": {
+    "night": "Night",
+    "month": "Month",
+    "season": "Season",
+    "year": "Year",
+    "m": "Metre",
+    "m2": "Square metre",
+    "kwh": "kWh",
+    "m3": "Cubic metre",
+    "hour": "Hour",
+    "piece": "Piece",
+    "lump": "Lump sum"
+  },
+  "bases": {
+    "per_berth": "Per berth (category)",
+    "length_band": "By length band",
+    "per_meter": "Per metre",
+    "per_m2": "Per square metre (vessel)",
+    "per_m2_berth": "Per square metre (berth)",
+    "flat": "Flat amount",
+    "metered": "Metered"
+  },
+  "timeUnits": {
+    "night": "Night",
+    "week": "Week",
+    "month": "Month",
+    "season": "Season",
+    "year": "Year",
+    "stay": "One-off"
+  },
+  "splitRules": {
+    "pro_rata_daily": "Daily pro rata",
+    "whole_months": "Whole months",
+    "best_combination": "Best combination"
+  },
+  "dimensionSources": {
+    "vessel": "Vessel",
+    "berth": "Berth",
+    "max": "The larger of the two"
+  },
+  "lengthRoundingModes": {
+    "up": "Round up",
+    "half_even": "Round to nearest"
+  },
+  "totalRoundings": {
+    "none": "No rounding",
+    "euro": "To the euro",
+    "five_euro": "To 5 euros"
+  },
+  "amountRoundings": {
+    "none": "No rounding",
+    "ten_cents": "To 10 cents",
+    "euro": "To the euro"
+  },
+  "channels": {
+    "desk": "Desk",
+    "online": "Online",
+    "api": "API",
+    "external": "External channel"
+  },
+  "stages": {
+    "base": "Base price",
+    "modifier": "Surcharge or reduction",
+    "discount": "Discount"
+  },
+  "discountKinds": {
+    "customer": "Agreement or customer category",
+    "promo": "Promo code",
+    "automatic": "Automatic"
+  },
+  "periodKinds": {
+    "season": "Season",
+    "event": "Event"
+  },
+  "priceListStatuses": {
+    "draft": "Draft",
+    "active": "Active",
+    "archived": "Archived"
+  },
+  "categoryTargets": {
+    "berth": "Berths",
+    "dynamic_area": "Dynamic areas",
+    "land_resource": "Land resources"
+  },
+  "adjustmentScopes": {
+    "all": "Whole price list",
+    "item": "Item",
+    "category": "Category"
+  },
+  "lineKinds": {
+    "berth": "Mooring",
+    "service": "Service",
+    "included": "Included"
+  },
+  "customerCategories": {
+    "member": "Member",
+    "resident": "Resident",
+    "affiliated": "Affiliated",
+    "charter": "Charter",
+    "yard": "Boatyard"
+  },
+  "hullTypes": {
+    "monohull_motor": "Motor monohull",
+    "monohull_sail": "Sailing monohull",
+    "catamaran": "Catamaran (multihull)",
+    "trimaran": "Trimaran (multihull)",
+    "rib": "RIB",
+    "gozzo": "Gozzo",
+    "other": "Other"
+  },
+  "vatNatures": {
+    "N1": "N1 - Excluded (art. 15)",
+    "N2.1": "N2.1 - Out of scope (arts. 7 to 7-septies)",
+    "N2.2": "N2.2 - Out of scope, other cases",
+    "N3.1": "N3.1 - Zero-rated, exports",
+    "N3.2": "N3.2 - Zero-rated, intra-EU supplies",
+    "N3.3": "N3.3 - Zero-rated, supplies to San Marino",
+    "N3.4": "N3.4 - Zero-rated, operations treated as exports",
+    "N3.5": "N3.5 - Zero-rated, declarations of intent",
+    "N3.6": "N3.6 - Zero-rated, other operations",
+    "N4": "N4 - Exempt",
+    "N5": "N5 - Margin scheme",
+    "N6.1": "N6.1 - Reverse charge, scrap",
+    "N6.2": "N6.2 - Reverse charge, gold and silver",
+    "N6.3": "N6.3 - Reverse charge, construction subcontracting",
+    "N6.4": "N6.4 - Reverse charge, buildings",
+    "N6.5": "N6.5 - Reverse charge, mobile phones",
+    "N6.6": "N6.6 - Reverse charge, electronic products",
+    "N6.7": "N6.7 - Reverse charge, construction sector",
+    "N6.8": "N6.8 - Reverse charge, energy sector",
+    "N6.9": "N6.9 - Reverse charge, other cases",
+    "N7": "N7 - VAT paid in another EU country"
+  },
+  "noPriceReasons": {
+    "no_rule": "No applicable price rule",
+    "no_band": "No band for this length",
+    "no_amount": "No amount for this band or category",
+    "outside_validity": "Date outside the validity of the price list",
+    "no_primary_item": "No primary item for this contract type",
+    "unit_missing": "No price for the required time unit",
+    "no_active_list": "No active price list for this date and contract type"
+  },
+  "issues": {
+    "period_overlap": "Two seasons or two events overlap",
+    "range_invalid": "Invalid date range",
+    "period_code_unknown": "Unknown period",
+    "band_order": "Bands must have increasing lengths",
+    "band_open_not_last": "Only the last band can be open",
+    "band_code_unknown": "Unknown band",
+    "rule_item_unknown": "Unknown item",
+    "rule_item_inactive": "Inactive item",
+    "rule_basis_invalid": "Pricing basis does not match the fields",
+    "rule_unit_invalid": "Invalid time unit",
+    "rule_effect_invalid": "Invalid effect: give a percentage or an amount",
+    "promo_without_code": "Promo discount without a code",
+    "customer_discount_without_category": "Customer discount without a category",
+    "seasonal_without_window": "Seasonal contracts without a season window",
+    "primary_item_missing": "A contract type has no primary item",
+    "contract_type_unknown": "Contract type not served by the price list",
+    "amount_out_of_range": "Amount out of range",
+    "period_outside_validity": "Period outside the validity of the price list",
+    "validity_not_covered_by_periods": "Some nights have no period",
+    "category_unknown": "Category not registered",
+    "split_unit_missing": "No rule for the unit required by the split rule",
+    "no_base_rule_for_contract_type": "No base price for a contract type",
+    "duplicate_rule": "Duplicate rule"
+  },
+  "issueSeverities": {
+    "error": "Error",
+    "warning": "Warning"
+  },
+  "warnings": {
+    "stay_exceeds_validity": "The stay goes beyond the validity of the price list: the extra nights use the same price list"
+  },
+  "trace": {
+    "list": {
+      "selected": "Price list applied"
+    },
+    "item": {
+      "resolved": "Item applied"
+    },
+    "dimensions": {
+      "resolved": "Dimensions used",
+      "rounded": "Length rounded",
+      "min_beam": "Minimum beam applied"
+    },
+    "period": {
+      "selected": "Period of the night"
+    },
+    "band": {
+      "selected": "Length band"
+    },
+    "rule": {
+      "selected": "Winning rule"
+    },
+    "split": {
+      "exact": "Whole units",
+      "pro_rata": "Pro rata of the remaining days",
+      "whole_months": "Whole months",
+      "best": "Best combination"
+    },
+    "block": {
+      "priced": "Block priced"
+    },
+    "modifier": {
+      "applied": "Surcharge or reduction applied",
+      "discarded": "Non-stackable surcharge or reduction discarded"
+    },
+    "service": {
+      "included": "Included service",
+      "added": "Added service"
+    },
+    "discount": {
+      "applied": "Discount applied",
+      "capped": "Discount capped at the amount",
+      "discarded": "Non-stackable discount discarded"
+    },
+    "vat": {
+      "line": "Line VAT"
+    },
+    "rounding": {
+      "total": "Total rounding"
+    },
+    "deposit": {
+      "computed": "Deposit computed"
+    },
+    "warning": {
+      "stay_exceeds_validity": "Stay beyond the validity of the price list"
+    }
+  }
+}

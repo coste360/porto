@@ -1,7 +1,10 @@
 // Package meta describes the running instance: version, edition and capabilities (GET /api/admin/v1/meta).
 package meta
 
-import "github.com/coste360/porto/internal/config"
+import (
+	"github.com/coste360/porto/internal/config"
+	"github.com/coste360/porto/internal/domain/pricing"
+)
 
 // APIVersion is the version of the admin API surface.
 const APIVersion = "v1"
@@ -14,6 +17,8 @@ type Meta struct {
 	Version, APIVersion, Edition string
 	Capabilities                 []string
 	DemoPairing                  bool
+	// PricingEngineVersion is pricing.EngineVersion (M2): quotes store it with their snapshot (INV-20).
+	PricingEngineVersion int
 }
 
 // Get returns the metadata of an instance configured by cfg and built as version.
@@ -26,7 +31,10 @@ func Get(cfg *config.Config, version string) Meta {
 			"auth.totp", "auth.password_reset", "devices.pairing", "webhooks", "sse",
 			// M1
 			"harbor.editor", "harbor.georef", "harbor.berth_import", "registry.customers", "registry.documents",
+			// M2
+			"pricing.engine", "pricing.simulator", "pricing.matrix", "pricing.coverage", "pricing.renewal",
 		},
-		DemoPairing: cfg != nil && cfg.DemoPairingEnabled(),
+		DemoPairing:          cfg != nil && cfg.DemoPairingEnabled(),
+		PricingEngineVersion: pricing.EngineVersion,
 	}
 }

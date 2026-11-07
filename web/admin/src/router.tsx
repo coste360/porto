@@ -32,6 +32,8 @@ import { WebhooksPage } from './pages/WebhooksPage';
 import { safeRedirect } from './lib/hash';
 import { berthImportRoutes } from './features/berth-import/routes';
 import { mapRoutes } from './features/maps/routes';
+import { pricingRoutes } from './features/pricing/routes';
+import { pricingToolRoutes } from './features/pricing-tools/routes';
 import { registryRoutes } from './features/registry/routes';
 
 export type RouterContext = { queryClient: QueryClient; api: ApiClient };
@@ -180,6 +182,8 @@ export const routeTree = rootRoute.addChildren([
       ...mapRoutes(marinaRoute),
       ...registryRoutes(marinaRoute),
       ...berthImportRoutes(marinaRoute),
+      ...pricingRoutes(marinaRoute),
+      ...pricingToolRoutes(marinaRoute),
     ]),
   ]),
 ]);

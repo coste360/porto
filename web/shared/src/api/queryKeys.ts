@@ -45,6 +45,34 @@ export const queryKeys = {
     ['marina', marinaId, 'registry', 'deadlines', filters] as const,
   deadlinePolicies: (marinaId: string) =>
     ['marina', marinaId, 'registry', 'deadline-policies'] as const,
+
+  // M2 pricing: everything under ['marina', id, 'pricing'] (invalidated by pricing.changed).
+  pricing: (marinaId: string) => ['marina', marinaId, 'pricing'] as const,
+  pricingSettings: (marinaId: string) => ['marina', marinaId, 'pricing', 'settings'] as const,
+  revenueClasses: (marinaId: string, filters: Record<string, string | undefined> = {}) =>
+    ['marina', marinaId, 'pricing', 'revenue-classes', filters] as const,
+  items: (marinaId: string, filters: Record<string, string | undefined> = {}) =>
+    ['marina', marinaId, 'pricing', 'items', filters] as const,
+  item: (marinaId: string, itemId: string) =>
+    ['marina', marinaId, 'pricing', 'item', itemId] as const,
+  customerCategoryCounts: (marinaId: string) =>
+    ['marina', marinaId, 'pricing', 'customer-categories'] as const,
+  berthCategories: (marinaId: string, filters: Record<string, string | undefined> = {}) =>
+    ['marina', marinaId, 'pricing', 'berth-categories', filters] as const,
+  priceLists: (marinaId: string, filters: Record<string, string | undefined> = {}) =>
+    ['marina', marinaId, 'pricing', 'price-lists', filters] as const,
+  priceList: (marinaId: string, priceListId: string) =>
+    ['marina', marinaId, 'pricing', 'price-list', priceListId] as const,
+  priceMatrix: (
+    marinaId: string,
+    priceListId: string,
+    params: Record<string, string | undefined> = {},
+  ) => ['marina', marinaId, 'pricing', 'price-list', priceListId, 'matrix', params] as const,
+  priceCoverage: (
+    marinaId: string,
+    priceListId: string,
+    params: Record<string, string | undefined> = {},
+  ) => ['marina', marinaId, 'pricing', 'price-list', priceListId, 'coverage', params] as const,
 };
 
 export type QueryKey = readonly unknown[];
@@ -61,6 +89,9 @@ export function keysForTopic(topic: string, marinaId: string): QueryKey[] {
       return [queryKeys.maps(marinaId)];
     case 'registry.changed':
       return [queryKeys.registry(marinaId)];
+    case 'pricing.changed':
+      // settings, revenue classes, items, categories, lists, matrices and coverage live under pricing.
+      return [queryKeys.pricing(marinaId)];
     default:
       return [];
   }

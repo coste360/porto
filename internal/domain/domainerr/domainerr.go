@@ -10,4 +10,6 @@ var (
 	ErrConflict        = store.ErrConflict
 	ErrVersionMismatch = store.ErrVersionMismatch
 	ErrInvalidCursor   = store.ErrInvalidCursor
+	// ErrImmutable is a price list immutability trigger error (INV-22, M2).
+	ErrImmutable = store.ErrImmutable
 )

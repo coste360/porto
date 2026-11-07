@@ -19,7 +19,8 @@ import (
 
 // TestAcceptance_CrossMarinaResourceIds (INV-73) complements TestAcceptance_CrossMarinaIsolation: marina B calls
 // every route under its own {marinaId}, with the ids of real resources of marina A (map, berth group,
-// background file, customer, vessel, document, deadline). Each call is 404 not_found: the marina in the path is
+// background file, customer, vessel, document, deadline; M2 revenue class, item, berth category, price list).
+// Each call is 404 not_found: the marina in the path is
 // authorised, but no query finds a row of another marina.
 func TestAcceptance_CrossMarinaResourceIds(t *testing.T) {
 	testdb.Run(t, func(t *testing.T, db *store.DB) {
@@ -63,10 +64,39 @@ func TestAcceptance_CrossMarinaResourceIds(t *testing.T) {
 		if len(items) == 0 {
 			t.Fatal("no deadline for the document")
 		}
+		// M2 pricing resources of marina A.
+		rc := ac.expect(t, 201, "POST", MA+"/revenue-classes", map[string]any{"code": "iso_a", "name": map[string]string{"it": "Classe A"}})
+		it := ac.expect(t, 201, "POST", MA+"/items", map[string]any{
+			"code": "ISO-A", "name": map[string]string{"it": "Articolo A"}, "item_type": "berth_fee", "unit": "night",
+			"revenue_class_id": str(rc, "id"),
+		})
+		bcat := ac.expect(t, 201, "POST", MA+"/berth-categories", map[string]any{
+			"code": "ISO-A", "name": map[string]string{"it": "Categoria A"}, "applies_to": []string{"berth"},
+		})
+		pl := ac.expect(t, 201, "POST", MA+"/price-lists", map[string]any{
+			"code": "ISO-A", "name": map[string]string{"it": "Listino A"}, "valid_from": "2027-01-01", "valid_to": "2027-12-31",
+			"contract_types": []string{"transit"},
+		})
+		// Well-formed bodies for the routes that validate the body before loading the resource, so the 404 is
+		// what is checked. The draft document of marina A is a valid PriceListSave.
+		draft := ac.expect(t, 200, "GET", MA+"/price-lists/"+str(pl, "id"), nil)
+		save := map[string]any{}
+		for _, k := range []string{"code", "name", "valid_from", "valid_to", "contract_types", "settings", "periods", "bands", "rules"} {
+			save[k] = draft[k]
+		}
+		bodies := map[string]any{
+			"PUT /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}":           save,
+			"POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/validate": save,
+			"POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/renewal": map[string]any{
+				"dry_run": true, "code": "ISO-B", "name": map[string]string{"it": "Rinnovo"}, "shift_years": 1, "amount_rounding": "none",
+			},
+		}
 		ids := map[string]string{
 			"{mapId}": str(m, "id"), "{fileId}": str(up.json(t), "file_id"), "{groupId}": str(g, "id"),
 			"{customerId}": str(c, "id"), "{vesselId}": str(v, "id"), "{documentId}": str(d, "id"),
-			"{deadlineId}": str(items[0].(map[string]any), "id"),
+			"{deadlineId}":     str(items[0].(map[string]any), "id"),
+			"{revenueClassId}": str(rc, "id"), "{itemId}": str(it, "id"), "{categoryId}": str(bcat, "id"),
+			"{priceListId}": str(pl, "id"),
 		}
 
 		bc := h.cookieClient()
@@ -94,6 +124,9 @@ func TestAcceptance_CrossMarinaResourceIds(t *testing.T) {
 			var body any
 			if method != "GET" && method != "DELETE" {
 				body = map[string]any{}
+				if v, ok := bodies[method+" "+route]; ok {
+					body = v
+				}
 			}
 			r := bc.do(t, method, path, body, "If-Match", `"1"`)
 			if r.status != http.StatusNotFound || r.problemType() != "not_found" {

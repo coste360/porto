@@ -7,5 +7,7 @@ export { ProblemAlert, type ProblemAlertProps } from './ProblemAlert';
 export { DataTable, type DataTableProps } from './DataTable';
 export { FormField, type FormFieldProps } from './FormField';
 export { LengthInput, type LengthInputProps } from './LengthInput';
+export { MoneyInput, type MoneyInputProps } from './MoneyInput';
+export { PercentInput, type PercentInputProps } from './PercentInput';
 export { DatePicker, fromIsoDate, toIsoDate, type DatePickerProps } from './DatePicker';
 export { ElementCombobox, type ComboboxOption, type ElementComboboxProps } from './ElementCombobox';

@@ -74,6 +74,7 @@ linters:
       ignore-rules:
         - porto
         - marina
+        - transito
     errorlint:
       errorf: true
       asserts: true
@@ -229,6 +230,23 @@ linters:
               desc: pure engines are deterministic
             - pkg: os
               desc: pure engines do no I/O
+        # The engines without a seed take no randomness at all, not even math/rand (INV-21); the optimizer is
+        # left out because it takes an explicit seed.
+        pure-engines-no-rand:
+          list-mode: lax
+          files:
+            - "**/internal/domain/layout/**"
+            - "**/internal/domain/fit/**"
+            - "**/internal/domain/pricing/**"
+            - "**/internal/domain/accrual/**"
+            - "**/internal/domain/formula/**"
+            # Seeded generator of the layout parity vectors (test data, not the engine).
+            - "!**/internal/domain/layout/internal/vectors/**"
+          deny:
+            - pkg: math/rand
+              desc: pure engines are deterministic; only the optimizer takes an explicit seed (INV-21)
+            - pkg: math/rand/v2
+              desc: pure engines are deterministic; only the optimizer takes an explicit seed (INV-21)
   exclusions:
     generated: lax
     presets:

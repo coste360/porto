@@ -52,6 +52,14 @@ const (
 	CustomerAnonymized  Type = "customer_anonymized"
 	CustomerMerged      Type = "customer_merged"
 	DownloadLinkExpired Type = "download_link_expired"
+
+	// M2 (m2-plan §4.6).
+	NoPrice            Type = "no_price"
+	PromoNotApplicable Type = "promo_not_applicable"
+	PriceListInvalid   Type = "price_list_invalid"
+	PriceListImmutable Type = "price_list_immutable"
+	PriceListOverlap   Type = "price_list_overlap"
+	InUse              Type = "in_use"
 )
 
 type typeInfo struct {
@@ -104,6 +112,12 @@ var registry = map[Type]typeInfo{
 	CustomerAnonymized:    {http.StatusConflict, "The customer is anonymised"},
 	CustomerMerged:        {http.StatusConflict, "The customer was merged into another"},
 	DownloadLinkExpired:   {http.StatusForbidden, "Download link expired or invalid"},
+	NoPrice:               {http.StatusUnprocessableEntity, "No price for the request"},
+	PromoNotApplicable:    {http.StatusUnprocessableEntity, "Promo code not applicable"},
+	PriceListInvalid:      {http.StatusUnprocessableEntity, "The price list breaks a validation rule"},
+	PriceListImmutable:    {http.StatusConflict, "Published price lists cannot change"},
+	PriceListOverlap:      {http.StatusConflict, "Another active price list covers the same nights"},
+	InUse:                 {http.StatusConflict, "Still in use"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

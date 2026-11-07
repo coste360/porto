@@ -239,6 +239,8 @@ func TestTypes_Catalogue(t *testing.T) {
 			VesselChanged:      {VesselChanged, TopicRegistry, false},
 			DocumentChanged:    {DocumentChanged, TopicRegistry, false},
 			DeadlineChanged:    {DeadlineChanged, TopicRegistry, false},
+			// M2 (m2-plan §4.7): public (spec 27.3).
+			ConfigPricingChanged: {ConfigPricingChanged, TopicPricing, true},
 		}
 		if want, ok := m1[ti.Type]; ok {
 			if ti != want {

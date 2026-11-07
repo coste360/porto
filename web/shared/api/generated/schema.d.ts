@@ -1522,12 +1522,375 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/marinas/{marinaId}/pricing-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Pricing settings: default VAT rate and VAT inclusion of new items (pricing.read) */
+        get: operations["getPricingSettings"];
+        /** Replace the pricing settings (pricing.configure) */
+        put: operations["updatePricingSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/revenue-classes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Revenue classes (two levels); the spec defaults are created on first use (pricing.read) */
+        get: operations["listRevenueClasses"];
+        put?: never;
+        /** Create a revenue class or subclass (pricing.configure) */
+        post: operations["createRevenueClass"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/revenue-classes/{revenueClassId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                revenueClassId: components["parameters"]["RevenueClassId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a revenue class used by no item and no subclass (pricing.configure) */
+        delete: operations["deleteRevenueClass"];
+        options?: never;
+        head?: never;
+        /** Update a revenue class; archived true archives it; published lists keep the code of their item snapshot (pricing.configure) */
+        patch: operations["updateRevenueClass"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Items and services by sort order and code (pricing.read) */
+        get: operations["listItems"];
+        put?: never;
+        /** Create an item; VAT defaults come from the pricing settings (pricing.configure) */
+        post: operations["createItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/items/{itemId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                itemId: components["parameters"]["ItemId"];
+            };
+            cookie?: never;
+        };
+        /** An item with its usage (pricing.read) */
+        get: operations["getItem"];
+        put?: never;
+        post?: never;
+        /** Delete an item no price list references; otherwise 409 in_use (deactivate it instead) (pricing.configure) */
+        delete: operations["deleteItem"];
+        options?: never;
+        head?: never;
+        /** Update an item; every field stays editable: drafts price with the live item, published (active or archived) lists with the snapshot taken at activation (pricing.configure) */
+        patch: operations["updateItem"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/berth-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Berth categories with usage counts and the price_class codes in use without a category (pricing.read) */
+        get: operations["listBerthCategories"];
+        put?: never;
+        /** Create a berth category (pricing.configure) */
+        post: operations["createBerthCategory"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customer-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Customer categories (fixed enum, spec 11.1) with the number of non-archived customers in each, for the classifications page; counts only, no customer data (pricing.read) */
+        get: operations["listCustomerCategoryCounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/berth-categories/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create the missing categories from the harbour price-class rule and the codes in use (pricing.configure) */
+        post: operations["syncBerthCategories"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/berth-categories/{categoryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                categoryId: components["parameters"]["CategoryId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a category no element and no rule uses; otherwise 409 in_use (pricing.configure) */
+        delete: operations["deleteBerthCategory"];
+        options?: never;
+        head?: never;
+        /** Update a berth category; the code is immutable (pricing.configure) */
+        patch: operations["updateBerthCategory"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/price-lists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Price lists, newest validity first (pricing.read) */
+        get: operations["listPriceLists"];
+        put?: never;
+        /** Create an empty draft price list with default settings (pricing.configure) */
+        post: operations["createPriceList"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        /** The full price list document with its validation issues (pricing.read) */
+        get: operations["getPriceList"];
+        /** Replace the draft document (settings, periods, bands, rules) in one transaction; new rows carry a key, saved ones their id. Saved even with validation errors (pricing.configure) */
+        put: operations["savePriceList"];
+        post?: never;
+        /** Delete a draft price list; published lists are immutable (pricing.configure) */
+        delete: operations["deletePriceList"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Dry-run validation of a document, or of the saved one when the body is empty; nothing is written (pricing.read) */
+        post: operations["validatePriceList"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Activate a valid draft from effective_from (default valid_from); predecessors serving the same contract types are truncated, other overlaps are 409 price_list_overlap (pricing.configure) */
+        post: operations["activatePriceList"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive an active list (drafts are deleted instead) (pricing.configure) */
+        post: operations["archivePriceList"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/renewal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** New draft list from this one (spec 12.6): date shift, ISTAT, adjustments, rounding. dry_run returns the preview with the matrix diff; otherwise the draft is created (pricing.configure) */
+        post: operations["renewPriceList"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/matrix": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        /** Price matrix computed by the engine through probes; every cell equals a simulation of its probe (INV-23) (pricing.read) */
+        get: operations["getPriceMatrix"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/coverage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        /** Combinations without a price and elements without a valid category (pricing.read) */
+        get: operations["getPriceCoverage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/pricing/simulate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Price a stay with the full breakdown and trace; without price_list_id the list active on the arrival night (pricing.read) */
+        post: operations["simulatePrice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use";
         FieldError: {
             field: string;
             code: string;
@@ -1544,6 +1907,12 @@ export interface components {
             retry_after_seconds?: number;
             /** @description Map validation issues (map_invalid) */
             issues?: components["schemas"]["MapIssue"][];
+            /** @description Price list validation issues (price_list_invalid) */
+            price_list_issues?: components["schemas"]["PriceListIssue"][];
+            /** @description Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}. Ids, codes and integers only. */
+            details?: {
+                [key: string]: unknown;
+            };
         };
         HealthStatus: {
             /** @enum {string} */
@@ -1562,11 +1931,13 @@ export interface components {
             edition: "server";
             capabilities: string[];
             demo_pairing: boolean;
+            /** @description Version of the pricing engine (quotes store it with their price snapshot, INV-20) */
+            pricing_engine_version: number;
         };
         /** @enum {string} */
         Role: "owner" | "director" | "office" | "accounting" | "dock" | "yard_mgr" | "yard" | "rental" | "viewer";
         /** @enum {string} */
-        Permission: "organization.manage" | "marina.configure" | "marina.read" | "users.manage" | "devices.manage" | "devices.pair_self" | "audit.read" | "customers.write" | "customers.read" | "contracts.write" | "transits.desk" | "occupancy.move" | "presence.write" | "occupancy.override_fit" | "rights.manage" | "charges.manage" | "charges.export" | "payments.collect" | "payments.collect_cash" | "refunds.issue" | "storage.manage" | "storage.read" | "yard.manage" | "yard.read" | "yard.timesheets" | "rental.manage" | "maintenance.manage" | "maintenance.report" | "reports.all" | "reports.operational" | "reports.yard" | "reports.rental" | "map.view" | "harbor.configure";
+        Permission: "organization.manage" | "marina.configure" | "marina.read" | "users.manage" | "devices.manage" | "devices.pair_self" | "audit.read" | "customers.write" | "customers.read" | "contracts.write" | "transits.desk" | "occupancy.move" | "presence.write" | "occupancy.override_fit" | "rights.manage" | "charges.manage" | "charges.export" | "payments.collect" | "payments.collect_cash" | "refunds.issue" | "storage.manage" | "storage.read" | "yard.manage" | "yard.read" | "yard.timesheets" | "rental.manage" | "maintenance.manage" | "maintenance.report" | "reports.all" | "reports.operational" | "reports.yard" | "reports.rental" | "map.view" | "harbor.configure" | "pricing.configure" | "pricing.read";
         /** @enum {string} */
         Locale: "it" | "en";
         LoginRequest: {
@@ -3123,6 +3494,713 @@ export interface components {
         DeadlinePolicyList: {
             items: components["schemas"]["DeadlinePolicy"][];
         };
+        /**
+         * Format: date
+         * @description Calendar date YYYY-MM-DD in the marina timezone
+         */
+        IsoDate: string;
+        /**
+         * Format: int64
+         * @description Amount in integer cents of the marina currency
+         */
+        Cents: number;
+        /**
+         * Format: int64
+         * @description Percentage in integer basis points (1 % = 100)
+         */
+        BasisPoints: number;
+        /**
+         * Format: int64
+         * @description Quantity in thousandths (1.5 = 1500)
+         */
+        QtyMilli: number;
+        /** @enum {string} */
+        ContractType: "annual" | "seasonal" | "monthly" | "transit" | "storage" | "charter";
+        /** @enum {string} */
+        Channel: "desk" | "online" | "api" | "external";
+        /** @enum {string} */
+        ItemType: "berth_fee" | "service" | "utility" | "product" | "labour" | "material" | "fee" | "deposit";
+        /** @enum {string} */
+        ItemUnit: "night" | "month" | "season" | "year" | "m" | "m2" | "kwh" | "m3" | "hour" | "piece" | "lump";
+        /**
+         * @description FatturaPA nature of a 0 % VAT line (m2-plan §12 D9)
+         * @enum {string}
+         */
+        VatNature: "N1" | "N2.1" | "N2.2" | "N3.1" | "N3.2" | "N3.3" | "N3.4" | "N3.5" | "N3.6" | "N4" | "N5" | "N6.1" | "N6.2" | "N6.3" | "N6.4" | "N6.5" | "N6.6" | "N6.7" | "N6.8" | "N6.9" | "N7";
+        /** @enum {string} */
+        PricingStage: "base" | "modifier" | "discount";
+        /** @enum {string} */
+        PricingBasis: "per_berth" | "length_band" | "per_meter" | "per_m2" | "per_m2_berth" | "flat" | "metered";
+        /** @enum {string} */
+        TimeUnit: "night" | "week" | "month" | "season" | "year" | "stay";
+        /** @enum {string} */
+        SplitRule: "pro_rata_daily" | "whole_months" | "best_combination";
+        /** @enum {string} */
+        DimensionSource: "vessel" | "berth" | "max";
+        /** @enum {string} */
+        TotalRounding: "none" | "euro" | "five_euro";
+        /** @enum {string} */
+        AmountRounding: "none" | "ten_cents" | "euro";
+        /** @enum {string} */
+        DiscountKind: "customer" | "promo" | "automatic";
+        /** @enum {string} */
+        PeriodKind: "season" | "event";
+        /** @enum {string} */
+        PeriodColor: "chart-1" | "chart-2" | "chart-3" | "chart-4" | "chart-5";
+        /** @enum {string} */
+        PriceListStatus: "draft" | "active" | "archived";
+        /** @enum {string} */
+        CategoryTarget: "berth" | "dynamic_area" | "land_resource";
+        PricingSettings: {
+            /** Format: int64 */
+            default_vat_rate_bp: number;
+            default_price_includes_vat: boolean;
+            version: number;
+        };
+        PricingSettingsUpdate: {
+            /** Format: int64 */
+            default_vat_rate_bp: number;
+            default_price_includes_vat: boolean;
+        };
+        RevenueClass: {
+            id: string;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            parent_id?: string | null;
+            sort_order: number;
+            archived: boolean;
+            item_count: number;
+            version: number;
+        };
+        RevenueClassList: {
+            items: components["schemas"]["RevenueClass"][];
+        };
+        RevenueClassCreate: {
+            code: string;
+            name: components["schemas"]["I18nText"];
+            parent_id?: string;
+            sort_order?: number;
+        };
+        /** @description Absent fields are unchanged; parent_id null makes it a top-level class; archived archives or restores it. */
+        RevenueClassPatch: {
+            code?: string;
+            name?: components["schemas"]["I18nText"];
+            parent_id?: string | null;
+            sort_order?: number;
+            archived?: boolean;
+        };
+        ItemCode: string;
+        ItemUsage: {
+            price_lists: number;
+        };
+        Item: {
+            id: string;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            description: components["schemas"]["I18nTextOptional"];
+            item_type: components["schemas"]["ItemType"];
+            unit: components["schemas"]["ItemUnit"];
+            /** Format: int64 */
+            vat_rate_bp: number;
+            vat_nature?: components["schemas"]["VatNature"] | null;
+            price_includes_vat: boolean;
+            revenue_class_id: string;
+            external_code: string;
+            active: boolean;
+            online_visible: boolean;
+            sort_order: number;
+            usage?: components["schemas"]["ItemUsage"];
+            version: number;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        /** @description Optional translated text (both languages may be empty) */
+        I18nTextOptional: {
+            it?: string;
+            en?: string;
+        };
+        ItemPage: {
+            items: components["schemas"]["Item"][];
+            next_cursor: string | null;
+        };
+        /** @description vat_rate_bp and price_includes_vat default from the pricing settings; vat_nature is required exactly when the rate is 0. */
+        ItemCreate: {
+            code: components["schemas"]["ItemCode"];
+            name: components["schemas"]["I18nText"];
+            description?: components["schemas"]["I18nTextOptional"];
+            item_type: components["schemas"]["ItemType"];
+            unit: components["schemas"]["ItemUnit"];
+            /** Format: int64 */
+            vat_rate_bp?: number;
+            vat_nature?: components["schemas"]["VatNature"];
+            price_includes_vat?: boolean;
+            revenue_class_id: string;
+            external_code?: string;
+            active?: boolean;
+            online_visible?: boolean;
+            sort_order?: number;
+        };
+        /** @description Absent fields are unchanged; vat_nature null clears it (with a non-zero rate). */
+        ItemPatch: {
+            code?: components["schemas"]["ItemCode"];
+            name?: components["schemas"]["I18nText"];
+            description?: components["schemas"]["I18nTextOptional"];
+            item_type?: components["schemas"]["ItemType"];
+            unit?: components["schemas"]["ItemUnit"];
+            /** Format: int64 */
+            vat_rate_bp?: number;
+            vat_nature?: components["schemas"]["VatNature"] | null;
+            price_includes_vat?: boolean;
+            revenue_class_id?: string;
+            external_code?: string;
+            active?: boolean;
+            online_visible?: boolean;
+            sort_order?: number;
+        };
+        BerthCategoryUsage: {
+            berths: number;
+            dynamic_areas: number;
+            land_resources: number;
+            rules: number;
+        };
+        BerthCategory: {
+            id: string;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            applies_to: components["schemas"]["CategoryTarget"][];
+            sort_order: number;
+            archived: boolean;
+            usage: components["schemas"]["BerthCategoryUsage"];
+            version: number;
+        };
+        CodeCount: {
+            code: string;
+            count: number;
+        };
+        CustomerCategoryCountList: {
+            /** @description every category of the enum in enum order, with count 0 when unused */
+            items: components["schemas"]["CodeCount"][];
+            /** @description non-archived customers without a category */
+            uncategorised: number;
+        };
+        BerthCategoryList: {
+            items: components["schemas"]["BerthCategory"][];
+            /** @description price_class codes used by elements without a matching category */
+            unknown_in_use: components["schemas"]["CodeCount"][];
+        };
+        BerthCategoryCreate: {
+            code: string;
+            name: components["schemas"]["I18nText"];
+            applies_to: components["schemas"]["CategoryTarget"][];
+            sort_order?: number;
+        };
+        /** @description Absent fields are unchanged; the code cannot change; archived archives or restores it. */
+        BerthCategoryPatch: {
+            name?: components["schemas"]["I18nText"];
+            applies_to?: components["schemas"]["CategoryTarget"][];
+            sort_order?: number;
+            archived?: boolean;
+        };
+        BerthCategorySyncResult: {
+            created: components["schemas"]["BerthCategory"][];
+        };
+        /** @description Inclusive range of nights */
+        DateRange: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+        };
+        /** @description Client key of a new row of a price list document, unique in the request */
+        DocKey: string;
+        /** @description A season or an event of a price list. Saved rows carry id; new rows in a save carry key. */
+        RatePeriod: {
+            id?: string;
+            key?: components["schemas"]["DocKey"];
+            code: string;
+            name: components["schemas"]["I18nText"];
+            kind: components["schemas"]["PeriodKind"];
+            color?: components["schemas"]["PeriodColor"];
+            ranges: components["schemas"]["DateRange"][];
+        };
+        /** @description Length band inclusive up to max_cm (absent = open, last band only); order is the array order. */
+        Band: {
+            id?: string;
+            key?: components["schemas"]["DocKey"];
+            code: string;
+            /** Format: int64 */
+            max_cm?: number;
+            category?: string;
+        };
+        LengthRounding: {
+            /**
+             * Format: int64
+             * @enum {integer}
+             */
+            step_cm: 1 | 10 | 50 | 100;
+            /** @enum {string} */
+            mode: "up" | "half_even";
+        };
+        Ratio: {
+            /** Format: int64 */
+            num: number;
+            /** Format: int64 */
+            den: number;
+        };
+        /** @description Percent of the total or a fixed amount capped at the total (at most one) */
+        DepositPolicy: {
+            /** Format: int64 */
+            percent_bp?: number;
+            /** Format: int64 */
+            amount_cents?: number;
+        };
+        /** @description Engine settings (m2-plan §2.3). Map keys are contract types or "*" for the others. */
+        PriceListSettings: {
+            dimension_source: components["schemas"]["DimensionSource"];
+            length_rounding: components["schemas"]["LengthRounding"];
+            min_beam_ratio?: components["schemas"]["Ratio"] | null;
+            split?: {
+                [key: string]: components["schemas"]["SplitRule"];
+            };
+            rounding?: {
+                [key: string]: components["schemas"]["TotalRounding"];
+            };
+            deposits?: {
+                [key: string]: components["schemas"]["DepositPolicy"];
+            };
+            season_window?: components["schemas"]["DateRange"] | null;
+            /** @description Item id of the berth fee per contract type */
+            primary_items?: {
+                [key: string]: string;
+            };
+            /** @description Stored for the public transit matrix (M8); unused in M2 */
+            publish_matrix?: boolean;
+        };
+        /** @description Empty or absent list = any value */
+        PricingScope: {
+            contract_types?: components["schemas"]["ContractType"][];
+            categories?: string[];
+            group_ids?: string[];
+            channels?: components["schemas"]["Channel"][];
+            customer_categories?: components["schemas"]["CustomerCategory"][];
+            /** @description Rate period codes */
+            periods?: string[];
+        };
+        PricingConditions: {
+            hull_types?: components["schemas"]["HullType"][];
+            /** Format: int64 */
+            overhang_min_cm?: number;
+            min_nights?: number;
+            max_nights?: number;
+            lead_min_days?: number;
+            lead_max_days?: number;
+        };
+        /** @description Exactly one of the two */
+        PricingEffect: {
+            /** Format: int64 */
+            percent_bp?: number;
+            /** Format: int64 */
+            amount_cents?: number;
+        };
+        Inclusion: {
+            item_id: string;
+            /** Format: int64 */
+            qty_milli: number;
+        };
+        /** @description A base rule, modifier or discount (field set by stage, m2-plan §2.2): base rules use item_id, basis, unit, amount_cents/unit_cents/amounts and includes; modifiers and discounts use target_item_ids/types, conditions and effect; discounts also discount_kind and promo_code. seq is assigned by the server. */
+        PriceRule: {
+            id?: string;
+            key?: components["schemas"]["DocKey"];
+            /** Format: int64 */
+            readonly seq?: number;
+            stage: components["schemas"]["PricingStage"];
+            name: string;
+            active?: boolean;
+            /** Format: int64 */
+            priority?: number;
+            stackable?: boolean;
+            item_id?: string;
+            basis?: components["schemas"]["PricingBasis"];
+            unit?: components["schemas"]["TimeUnit"];
+            /** Format: int64 */
+            amount_cents?: number;
+            /** Format: int64 */
+            unit_cents?: number;
+            /** @description length_band band code → cents; per_berth category → cents */
+            amounts?: {
+                [key: string]: number;
+            };
+            includes?: components["schemas"]["Inclusion"][];
+            target_item_ids?: string[];
+            target_item_types?: components["schemas"]["ItemType"][];
+            conditions?: components["schemas"]["PricingConditions"];
+            effect?: components["schemas"]["PricingEffect"];
+            discount_kind?: components["schemas"]["DiscountKind"];
+            promo_code?: string;
+            scope?: components["schemas"]["PricingScope"];
+        };
+        PriceListIssueRef: {
+            /** @enum {string} */
+            kind: "list" | "settings" | "period" | "band" | "rule" | "item";
+            /** @description Id of the row, or the client key of an unsaved one */
+            id?: string;
+            field?: string;
+        };
+        PriceListIssue: {
+            /** @description pricing.Validate issue code (m2-plan §4.8), e.g. period_overlap */
+            code: string;
+            severity: components["schemas"]["MapIssueSeverity"];
+            ref: components["schemas"]["PriceListIssueRef"];
+            /** @description Codes and integers as strings; never personal data */
+            params?: {
+                [key: string]: string;
+            };
+        };
+        PriceListSummary: {
+            id: string;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            status: components["schemas"]["PriceListStatus"];
+            valid_from: components["schemas"]["IsoDate"];
+            valid_to: components["schemas"]["IsoDate"];
+            contract_types: components["schemas"]["ContractType"][];
+            rule_count: number;
+            version: number;
+            source_price_list_id?: string | null;
+        };
+        PriceListSummaryList: {
+            items: components["schemas"]["PriceListSummary"][];
+        };
+        PriceListCreate: {
+            code: string;
+            name: components["schemas"]["I18nText"];
+            valid_from: components["schemas"]["IsoDate"];
+            valid_to: components["schemas"]["IsoDate"];
+            contract_types: components["schemas"]["ContractType"][];
+        };
+        /** @description The whole editable document of a draft; periods, bands and rules are replaced by the diff. */
+        PriceListSave: {
+            code: string;
+            name: components["schemas"]["I18nText"];
+            valid_from: components["schemas"]["IsoDate"];
+            valid_to: components["schemas"]["IsoDate"];
+            contract_types: components["schemas"]["ContractType"][];
+            settings: components["schemas"]["PriceListSettings"];
+            periods: components["schemas"]["RatePeriod"][];
+            bands: components["schemas"]["Band"][];
+            rules: components["schemas"]["PriceRule"][];
+        };
+        PriceListDocument: components["schemas"]["PriceListSave"] & {
+            id: string;
+            status: components["schemas"]["PriceListStatus"];
+            source_price_list_id?: string | null;
+            content_sha256?: string | null;
+            /** Format: date-time */
+            activated_at?: string | null;
+            /** Format: date-time */
+            archived_at?: string | null;
+            version: number;
+            issues: components["schemas"]["PriceListIssue"][];
+            /** Format: date-time */
+            updated_at: string;
+        };
+        PriceListSaveResult: {
+            document: components["schemas"]["PriceListDocument"];
+            /** @description Row key of the request → new id */
+            id_map: {
+                [key: string]: string;
+            };
+            issues: components["schemas"]["PriceListIssue"][];
+        };
+        PriceListValidation: {
+            issues: components["schemas"]["PriceListIssue"][];
+        };
+        PriceListActivate: {
+            effective_from?: components["schemas"]["IsoDate"];
+        };
+        PriceListRef: {
+            id: string;
+            code: string;
+            valid_from: components["schemas"]["IsoDate"];
+            valid_to: components["schemas"]["IsoDate"];
+        };
+        PriceListActivateResult: {
+            document: components["schemas"]["PriceListDocument"];
+            /** @description Predecessors whose valid_to was shortened (valid_to is the new value) */
+            truncated: components["schemas"]["PriceListRef"][];
+        };
+        RenewalAdjustment: {
+            /** @enum {string} */
+            scope: "all" | "item" | "category";
+            item_id?: string;
+            category?: string;
+            /** Format: int64 */
+            percent_bp?: number;
+            /** Format: int64 */
+            amount_cents?: number;
+        };
+        RenewalMatrixOptions: {
+            contract_types?: components["schemas"]["ContractType"][];
+            channel?: components["schemas"]["Channel"];
+            customer_category?: components["schemas"]["CustomerCategory"];
+        };
+        RenewalRequest: {
+            dry_run: boolean;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            shift_years: number;
+            /** Format: int64 */
+            istat_bp?: number;
+            adjustments?: components["schemas"]["RenewalAdjustment"][];
+            amount_rounding: components["schemas"]["AmountRounding"];
+            valid_from?: components["schemas"]["IsoDate"];
+            valid_to?: components["schemas"]["IsoDate"];
+            matrix?: components["schemas"]["RenewalMatrixOptions"];
+        };
+        RenewalDiffCell: {
+            row: number;
+            col: number;
+            /** Format: int64 */
+            old_cents?: number;
+            /** Format: int64 */
+            new_cents?: number;
+            /** Format: int64 */
+            delta_cents?: number;
+            /** Format: int64 */
+            delta_bp?: number;
+        };
+        RenewalDiff: {
+            contract_type: components["schemas"]["ContractType"];
+            before: components["schemas"]["PriceMatrix"];
+            after: components["schemas"]["PriceMatrix"];
+            cells: components["schemas"]["RenewalDiffCell"][];
+        };
+        RenewalPreview: {
+            document: components["schemas"]["PriceListSave"];
+            diffs: components["schemas"]["RenewalDiff"][];
+            summary: {
+                rules: number;
+                amounts_changed: number;
+            };
+        };
+        SimulateVessel: {
+            /** Format: int64 */
+            loa_cm: number;
+            /** Format: int64 */
+            beam_cm: number;
+            hull_type?: components["schemas"]["HullType"];
+        };
+        SimulateResource: {
+            type: components["schemas"]["CategoryTarget"];
+            id: string;
+        };
+        SimulateService: {
+            item_id: string;
+            /** Format: int64 */
+            qty_milli?: number;
+        };
+        /** @description Stay to price. Nights are [arrival, departure). vessel_id or vessel, resource or category with berth dimensions, customer_id or customer_category; explicit fields override the resolved ones. Matrix probes use this shape with explicit dimensions, price_list_id and quoted_on. */
+        PricingSimulateRequest: {
+            price_list_id?: string;
+            contract_type: components["schemas"]["ContractType"];
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            item_id?: string;
+            vessel_id?: string;
+            vessel?: components["schemas"]["SimulateVessel"];
+            resource?: components["schemas"]["SimulateResource"];
+            category?: string;
+            /** Format: int64 */
+            berth_length_cm?: number;
+            /** Format: int64 */
+            berth_width_cm?: number;
+            group_ids?: string[];
+            customer_id?: string;
+            customer_category?: components["schemas"]["CustomerCategory"];
+            channel?: components["schemas"]["Channel"];
+            promo_code?: string;
+            quoted_on?: components["schemas"]["IsoDate"];
+            services?: components["schemas"]["SimulateService"][];
+            deposit?: components["schemas"]["DepositPolicy"];
+        };
+        PriceApplied: {
+            rule_id: string;
+            /** Format: int64 */
+            delta_cents: number;
+        };
+        PriceBlock: {
+            from: components["schemas"]["IsoDate"];
+            /** @description Exclusive; may be after the departure (best_combination overshoot) */
+            to: components["schemas"]["IsoDate"];
+            unit: components["schemas"]["TimeUnit"];
+            nights: number;
+            period?: string;
+            rule_id: string;
+            /** Format: int64 */
+            base_cents: number;
+            modifiers: components["schemas"]["PriceApplied"][];
+            /** Format: int64 */
+            amount_cents: number;
+        };
+        PriceLine: {
+            seq: number;
+            /** @enum {string} */
+            kind: "berth" | "service" | "included";
+            item_id: string;
+            item_code: string;
+            item_type: components["schemas"]["ItemType"];
+            revenue_class?: string;
+            external_code?: string;
+            /** Format: int64 */
+            qty_milli: number;
+            blocks: components["schemas"]["PriceBlock"][];
+            /** Format: int64 */
+            base_cents: number;
+            /** Format: int64 */
+            modifier_total_cents: number;
+            discounts: components["schemas"]["PriceApplied"][];
+            /** Format: int64 */
+            amount_cents: number;
+            /** Format: int64 */
+            rounding_share_cents: number;
+            /** Format: int64 */
+            gross_cents: number;
+            /** Format: int64 */
+            net_cents: number;
+            /** Format: int64 */
+            vat_cents: number;
+            /** Format: int64 */
+            vat_rate_bp: number;
+            vat_nature?: string;
+            price_includes_vat: boolean;
+            service_from: components["schemas"]["IsoDate"];
+            /** @description Last night (inclusive) */
+            service_to: components["schemas"]["IsoDate"];
+        };
+        VatBucket: {
+            /** Format: int64 */
+            vat_rate_bp: number;
+            vat_nature?: string;
+            /** Format: int64 */
+            net_cents: number;
+            /** Format: int64 */
+            vat_cents: number;
+            /** Format: int64 */
+            gross_cents: number;
+        };
+        PriceTraceStep: {
+            /** @description Trace code (pricing/trace.go), shown as pricingEnums:trace.<code> */
+            code: string;
+            line: number;
+            block: number;
+            rule_id?: string;
+            params?: {
+                [key: string]: string;
+            };
+        };
+        /** @description What the simulator used after resolving ids; never names or contact data. */
+        PriceResolved: {
+            price_list_id: string;
+            price_list_code: string;
+            item_id: string;
+            /** Format: int64 */
+            loa_cm?: number;
+            /** Format: int64 */
+            beam_cm?: number;
+            hull_type?: components["schemas"]["HullType"];
+            category?: string;
+            /** Format: int64 */
+            berth_length_cm?: number;
+            /** Format: int64 */
+            berth_width_cm?: number;
+            group_ids?: string[];
+            customer_category?: components["schemas"]["CustomerCategory"];
+            channel: components["schemas"]["Channel"];
+            quoted_on: components["schemas"]["IsoDate"];
+            /** @enum {string} */
+            dimension_origin: "declared" | "measured" | "input" | "none";
+        };
+        PriceBreakdown: {
+            engine_version: number;
+            price_list_id: string;
+            catalog_hash: string;
+            contract_type: components["schemas"]["ContractType"];
+            nights: number;
+            lines: components["schemas"]["PriceLine"][];
+            /** Format: int64 */
+            subtotal_cents: number;
+            /** Format: int64 */
+            discount_total_cents: number;
+            /** Format: int64 */
+            rounding_total_cents: number;
+            /** Format: int64 */
+            total_cents: number;
+            /** Format: int64 */
+            net_cents: number;
+            /** Format: int64 */
+            vat_cents: number;
+            vat_summary: components["schemas"]["VatBucket"][];
+            /** Format: int64 */
+            deposit_cents: number;
+            trace: components["schemas"]["PriceTraceStep"][];
+            warnings: string[];
+            resolved?: components["schemas"]["PriceResolved"];
+        };
+        PriceMatrixRow: {
+            key: string;
+            /** @enum {string} */
+            kind: "band" | "category";
+            /** Format: int64 */
+            probe_loa_cm: number;
+            /** Format: int64 */
+            probe_beam_cm: number;
+        };
+        PriceMatrixColumn: {
+            /** @description Rate period code, or year / season */
+            key: string;
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+        };
+        PriceMatrixCell: {
+            row: number;
+            col: number;
+            /** Format: int64 */
+            total_cents?: number;
+            /** Format: int64 */
+            net_cents?: number;
+            /** Format: int64 */
+            base_cents?: number;
+            unit?: components["schemas"]["TimeUnit"];
+            /** @description Error code when the probe has no price, e.g. no_price:no_rule */
+            error?: string;
+            probe: components["schemas"]["PricingSimulateRequest"];
+        };
+        PriceMatrix: {
+            price_list_id: string;
+            contract_type: components["schemas"]["ContractType"];
+            item_id: string;
+            quoted_on: components["schemas"]["IsoDate"];
+            rows: components["schemas"]["PriceMatrixRow"][];
+            columns: components["schemas"]["PriceMatrixColumn"][];
+            cells: components["schemas"]["PriceMatrixCell"][];
+        };
+        PriceCoverageGap: {
+            contract_type: components["schemas"]["ContractType"];
+            category?: string;
+            band?: string;
+            period?: string;
+            item_id: string;
+            /** @description NoPriceError reason (no_rule, no_band, no_amount, outside_validity, no_primary_item, unit_missing) */
+            reason: string;
+        };
+        PriceCoverage: {
+            gaps: components["schemas"]["PriceCoverageGap"][];
+            elements_without_category: {
+                berths: number;
+                dynamic_areas: number;
+                land_resources: number;
+            };
+            unknown_categories: components["schemas"]["CodeCount"][];
+            checked: number;
+        };
     };
     responses: {
         /** @description Malformed request or validation failure */
@@ -3234,6 +4312,15 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description No price for the input (no_price, with details), promo code not applicable (promo_not_applicable), the list breaks a blocking validation rule (price_list_invalid, with price_list_issues), or an idempotency key was reused */
+        PricingUnprocessable: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
         /** @description Not ready */
         ServiceUnavailable: {
             headers: {
@@ -3262,6 +4349,10 @@ export interface components {
         VesselId: string;
         DocumentId: string;
         DeadlineId: string;
+        ItemId: string;
+        RevenueClassId: string;
+        CategoryId: string;
+        PriceListId: string;
         /** @description Value of the porto_csrf cookie; required on cookie-authenticated unsafe requests. */
         CSRFToken: string;
     };
@@ -6373,6 +7464,959 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+        };
+    };
+    getPricingSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PricingSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updatePricingSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PricingSettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PricingSettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listRevenueClasses: {
+        parameters: {
+            query?: {
+                include_archived?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RevenueClassList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createRevenueClass: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevenueClassCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RevenueClass"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    deleteRevenueClass: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                revenueClassId: components["parameters"]["RevenueClassId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateRevenueClass: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                revenueClassId: components["parameters"]["RevenueClassId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevenueClassPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RevenueClass"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listItems: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+                type?: components["schemas"]["ItemType"];
+                active?: boolean;
+                /** @description Code or name substring */
+                q?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createItem: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ItemCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Item"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    getItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                itemId: components["parameters"]["ItemId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Item"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    deleteItem: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                itemId: components["parameters"]["ItemId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateItem: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                itemId: components["parameters"]["ItemId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ItemPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Item"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listBerthCategories: {
+        parameters: {
+            query?: {
+                include_archived?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BerthCategoryList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createBerthCategory: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BerthCategoryCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BerthCategory"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    listCustomerCategoryCounts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerCategoryCountList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    syncBerthCategories: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BerthCategorySyncResult"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    deleteBerthCategory: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                categoryId: components["parameters"]["CategoryId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateBerthCategory: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                categoryId: components["parameters"]["CategoryId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BerthCategoryPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BerthCategory"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listPriceLists: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["PriceListStatus"];
+                contract_type?: components["schemas"]["ContractType"];
+                /** @description Lists valid on this date */
+                on?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceListSummaryList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createPriceList: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PriceListCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceListDocument"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    getPriceList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceListDocument"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    savePriceList: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PriceListSave"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceListSaveResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            413: components["responses"]["PayloadTooLarge"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    deletePriceList: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    validatePriceList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PriceListSave"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceListValidation"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            413: components["responses"]["PayloadTooLarge"];
+        };
+    };
+    activatePriceList: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PriceListActivate"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceListActivateResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["PricingUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    archivePriceList: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceListDocument"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    renewPriceList: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RenewalRequest"];
+            };
+        };
+        responses: {
+            /** @description Dry run preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RenewalPreview"];
+                };
+            };
+            /** @description Draft created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceListDocument"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["PricingUnprocessable"];
+        };
+    };
+    getPriceMatrix: {
+        parameters: {
+            query?: {
+                /** @description Default the first contract type served */
+                contract_type?: components["schemas"]["ContractType"];
+                item_id?: string;
+                rows?: "bands" | "categories";
+                channel?: components["schemas"]["Channel"];
+                customer_category?: components["schemas"]["CustomerCategory"];
+                /** @description Default today in the marina timezone */
+                quoted_on?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceMatrix"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getPriceCoverage: {
+        parameters: {
+            query?: {
+                /** @description Default today in the marina timezone */
+                quoted_on?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                priceListId: components["parameters"]["PriceListId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceCoverage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    simulatePrice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PricingSimulateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceBreakdown"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["PricingUnprocessable"];
         };
     };
 }

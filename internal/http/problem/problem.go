@@ -36,6 +36,11 @@ type Problem struct {
 	RetryAfterSeconds int          `json:"retry_after_seconds,omitempty"`
 	// Issues carries the map validation issues of map_invalid (M1).
 	Issues any `json:"issues,omitempty"`
+	// PriceListIssues carries the price list validation issues of price_list_invalid (M2).
+	PriceListIssues any `json:"price_list_issues,omitempty"`
+	// Details carries machine-readable details (no_price, price_list_overlap, in_use; M2). Ids, codes and
+	// integers only, never personal data.
+	Details any `json:"details,omitempty"`
 }
 
 // Option customizes a Problem.
@@ -60,6 +65,13 @@ func Status(code int) Option { return func(p *Problem) { p.Status = code } }
 
 // WithIssues sets the issues member (map_invalid). v must marshal to a JSON array of MapIssue.
 func WithIssues(v any) Option { return func(p *Problem) { p.Issues = v } }
+
+// WithPriceListIssues sets the price_list_issues member (price_list_invalid). v must marshal to a JSON array of
+// PriceListIssue.
+func WithPriceListIssues(v any) Option { return func(p *Problem) { p.PriceListIssues = v } }
+
+// WithDetails sets the details member. v must marshal to a JSON object without personal data.
+func WithDetails(v any) Option { return func(p *Problem) { p.Details = v } }
 
 // Instance sets the instance member.
 func Instance(s string) Option { return func(p *Problem) { p.Instance = s } }

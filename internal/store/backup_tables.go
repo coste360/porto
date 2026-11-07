@@ -39,6 +39,18 @@ func BackupTables() []string {
 		"documents",
 		"deadlines",
 		"deadline_policies",
+		// M2 pricing (00004_pricing). price_lists are restored as drafts and get their real status after every
+		// table is in (internal/backup, lateColumns), because the triggers freeze the children of published
+		// lists: periods, bands, rules and the item snapshot.
+		"pricing_settings",
+		"revenue_classes",
+		"items",
+		"berth_categories",
+		"price_lists",
+		"rate_periods",
+		"price_list_bands",
+		"price_rules",
+		"price_list_items",
 	}
 }
 

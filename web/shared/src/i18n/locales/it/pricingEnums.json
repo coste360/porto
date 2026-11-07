@@ -1,0 +1,250 @@
+{
+  "contractTypes": {
+    "annual": "Annuale",
+    "seasonal": "Stagionale",
+    "monthly": "Mensile",
+    "transit": "Transito",
+    "storage": "Rimessaggio",
+    "charter": "Charter"
+  },
+  "itemTypes": {
+    "berth_fee": "Canone di ormeggio",
+    "service": "Servizio",
+    "utility": "Utenza",
+    "product": "Prodotto",
+    "labour": "Manodopera",
+    "material": "Materiale",
+    "fee": "Diritto o spesa",
+    "deposit": "Cauzione"
+  },
+  "itemUnits": {
+    "night": "Notte",
+    "month": "Mese",
+    "season": "Stagione",
+    "year": "Anno",
+    "m": "Metro",
+    "m2": "Metro quadro",
+    "kwh": "kWh",
+    "m3": "Metro cubo",
+    "hour": "Ora",
+    "piece": "Pezzo",
+    "lump": "A corpo"
+  },
+  "bases": {
+    "per_berth": "Per posto (categoria)",
+    "length_band": "Per fascia di lunghezza",
+    "per_meter": "Al metro lineare",
+    "per_m2": "Al metro quadro (barca)",
+    "per_m2_berth": "Al metro quadro (posto)",
+    "flat": "Importo fisso",
+    "metered": "A consumo"
+  },
+  "timeUnits": {
+    "night": "Notte",
+    "week": "Settimana",
+    "month": "Mese",
+    "season": "Stagione",
+    "year": "Anno",
+    "stay": "Una tantum"
+  },
+  "splitRules": {
+    "pro_rata_daily": "Pro rata giornaliero",
+    "whole_months": "Mesi interi",
+    "best_combination": "Combinazione più conveniente"
+  },
+  "dimensionSources": {
+    "vessel": "Imbarcazione",
+    "berth": "Posto",
+    "max": "Il maggiore dei due"
+  },
+  "lengthRoundingModes": {
+    "up": "Per eccesso",
+    "half_even": "Al più vicino"
+  },
+  "totalRoundings": {
+    "none": "Nessun arrotondamento",
+    "euro": "All'euro",
+    "five_euro": "Ai 5 euro"
+  },
+  "amountRoundings": {
+    "none": "Nessun arrotondamento",
+    "ten_cents": "Ai 10 centesimi",
+    "euro": "All'euro"
+  },
+  "channels": {
+    "desk": "Sportello",
+    "online": "Online",
+    "api": "API",
+    "external": "Canale esterno"
+  },
+  "stages": {
+    "base": "Prezzo base",
+    "modifier": "Maggiorazione o riduzione",
+    "discount": "Sconto"
+  },
+  "discountKinds": {
+    "customer": "Convenzione o categoria cliente",
+    "promo": "Codice promozionale",
+    "automatic": "Automatico"
+  },
+  "periodKinds": {
+    "season": "Stagione",
+    "event": "Evento"
+  },
+  "priceListStatuses": {
+    "draft": "Bozza",
+    "active": "Attivo",
+    "archived": "Archiviato"
+  },
+  "categoryTargets": {
+    "berth": "Posti barca",
+    "dynamic_area": "Aree dinamiche",
+    "land_resource": "Risorse a terra"
+  },
+  "adjustmentScopes": {
+    "all": "Tutto il listino",
+    "item": "Articolo",
+    "category": "Categoria"
+  },
+  "lineKinds": {
+    "berth": "Ormeggio",
+    "service": "Servizio",
+    "included": "Incluso"
+  },
+  "customerCategories": {
+    "member": "Socio",
+    "resident": "Residente",
+    "affiliated": "Convenzionato",
+    "charter": "Charter",
+    "yard": "Cantiere"
+  },
+  "hullTypes": {
+    "monohull_motor": "Monoscafo a motore",
+    "monohull_sail": "Monoscafo a vela",
+    "catamaran": "Catamarano (multiscafo)",
+    "trimaran": "Trimarano (multiscafo)",
+    "rib": "Gommone",
+    "gozzo": "Gozzo",
+    "other": "Altro"
+  },
+  "vatNatures": {
+    "N1": "N1 - Escluse ex art. 15",
+    "N2.1": "N2.1 - Non soggette (artt. da 7 a 7-septies)",
+    "N2.2": "N2.2 - Non soggette, altri casi",
+    "N3.1": "N3.1 - Non imponibili, esportazioni",
+    "N3.2": "N3.2 - Non imponibili, cessioni intracomunitarie",
+    "N3.3": "N3.3 - Non imponibili, cessioni verso San Marino",
+    "N3.4": "N3.4 - Non imponibili, operazioni assimilate alle esportazioni",
+    "N3.5": "N3.5 - Non imponibili, dichiarazioni d'intento",
+    "N3.6": "N3.6 - Non imponibili, altre operazioni",
+    "N4": "N4 - Esenti",
+    "N5": "N5 - Regime del margine",
+    "N6.1": "N6.1 - Inversione contabile, rottami",
+    "N6.2": "N6.2 - Inversione contabile, oro e argento",
+    "N6.3": "N6.3 - Inversione contabile, subappalto edile",
+    "N6.4": "N6.4 - Inversione contabile, fabbricati",
+    "N6.5": "N6.5 - Inversione contabile, telefoni cellulari",
+    "N6.6": "N6.6 - Inversione contabile, prodotti elettronici",
+    "N6.7": "N6.7 - Inversione contabile, settore edile",
+    "N6.8": "N6.8 - Inversione contabile, settore energetico",
+    "N6.9": "N6.9 - Inversione contabile, altri casi",
+    "N7": "N7 - IVA assolta in altro stato UE"
+  },
+  "noPriceReasons": {
+    "no_rule": "Nessuna regola di prezzo applicabile",
+    "no_band": "Nessuna fascia per questa lunghezza",
+    "no_amount": "Nessun importo per questa fascia o categoria",
+    "outside_validity": "Data fuori dalla validità del listino",
+    "no_primary_item": "Nessun articolo principale per questo tipo di contratto",
+    "unit_missing": "Manca il prezzo per l'unità di tempo richiesta",
+    "no_active_list": "Nessun listino attivo per questa data e tipo di contratto"
+  },
+  "issues": {
+    "period_overlap": "Due stagioni o due eventi si sovrappongono",
+    "range_invalid": "Intervallo di date non valido",
+    "period_code_unknown": "Periodo inesistente",
+    "band_order": "Le fasce devono avere lunghezze crescenti",
+    "band_open_not_last": "Solo l'ultima fascia può essere aperta",
+    "band_code_unknown": "Fascia inesistente",
+    "rule_item_unknown": "Articolo inesistente",
+    "rule_item_inactive": "Articolo disattivato",
+    "rule_basis_invalid": "Base di calcolo non coerente con i campi",
+    "rule_unit_invalid": "Unità di tempo non valida",
+    "rule_effect_invalid": "Effetto non valido: indica una percentuale o un importo",
+    "promo_without_code": "Sconto promozionale senza codice",
+    "customer_discount_without_category": "Sconto cliente senza categoria",
+    "seasonal_without_window": "Contratti stagionali senza finestra di stagione",
+    "primary_item_missing": "Manca l'articolo principale di un tipo di contratto",
+    "contract_type_unknown": "Tipo di contratto non servito dal listino",
+    "amount_out_of_range": "Importo fuori dai limiti",
+    "period_outside_validity": "Periodo fuori dalla validità del listino",
+    "validity_not_covered_by_periods": "Alcune notti non hanno un periodo",
+    "category_unknown": "Categoria non registrata",
+    "split_unit_missing": "Manca la regola per l'unità richiesta dalla suddivisione",
+    "no_base_rule_for_contract_type": "Nessun prezzo base per un tipo di contratto",
+    "duplicate_rule": "Regola duplicata"
+  },
+  "issueSeverities": {
+    "error": "Errore",
+    "warning": "Avviso"
+  },
+  "warnings": {
+    "stay_exceeds_validity": "Il soggiorno supera la validità del listino: le notti successive usano lo stesso listino"
+  },
+  "trace": {
+    "list": {
+      "selected": "Listino applicato"
+    },
+    "item": {
+      "resolved": "Articolo applicato"
+    },
+    "dimensions": {
+      "resolved": "Dimensioni usate",
+      "rounded": "Lunghezza arrotondata",
+      "min_beam": "Larghezza minima applicata"
+    },
+    "period": {
+      "selected": "Periodo della notte"
+    },
+    "band": {
+      "selected": "Fascia di lunghezza"
+    },
+    "rule": {
+      "selected": "Regola vincente"
+    },
+    "split": {
+      "exact": "Unità intere",
+      "pro_rata": "Pro rata dei giorni residui",
+      "whole_months": "Mesi interi",
+      "best": "Combinazione più conveniente"
+    },
+    "block": {
+      "priced": "Blocco calcolato"
+    },
+    "modifier": {
+      "applied": "Maggiorazione o riduzione applicata",
+      "discarded": "Maggiorazione o riduzione non cumulabile scartata"
+    },
+    "service": {
+      "included": "Servizio incluso",
+      "added": "Servizio aggiunto"
+    },
+    "discount": {
+      "applied": "Sconto applicato",
+      "capped": "Sconto limitato all'importo",
+      "discarded": "Sconto non cumulabile scartato"
+    },
+    "vat": {
+      "line": "IVA della riga"
+    },
+    "rounding": {
+      "total": "Arrotondamento del totale"
+    },
+    "deposit": {
+      "computed": "Acconto calcolato"
+    },
+    "warning": {
+      "stay_exceeds_validity": "Soggiorno oltre la validità del listino"
+    }
+  }
+}

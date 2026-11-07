@@ -11,6 +11,7 @@ import (
 	"github.com/coste360/porto/internal/domain/apikey"
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
+	"github.com/coste360/porto/internal/domain/catalog"
 	"github.com/coste360/porto/internal/domain/customer"
 	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/device"
@@ -19,6 +20,7 @@ import (
 	"github.com/coste360/porto/internal/domain/harbor"
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/meta"
+	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/team"
 	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/domain/webhook"
@@ -51,6 +53,10 @@ type Handler struct {
 	Vessels   *vessel.Service
 	Documents *document.Service
 	Deadlines *deadline.Service
+
+	// M2
+	Catalog    *catalog.Service
+	PriceLists *pricelist.Service
 }
 
 func principal(r *http.Request) *auth.Principal {
@@ -73,7 +79,7 @@ func (h *Handler) GetMeta(w http.ResponseWriter, _ *http.Request) {
 	}
 	respond.JSON(w, http.StatusOK, api.Meta{
 		Version: h.Meta.Version, ApiVersion: h.Meta.APIVersion, Edition: api.MetaEdition(h.Meta.Edition),
-		Capabilities: caps, DemoPairing: h.Meta.DemoPairing,
+		Capabilities: caps, DemoPairing: h.Meta.DemoPairing, PricingEngineVersion: h.Meta.PricingEngineVersion,
 	})
 }
 

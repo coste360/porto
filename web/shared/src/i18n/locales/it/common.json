@@ -80,7 +80,12 @@
     "customers": "Clienti",
     "vessels": "Imbarcazioni",
     "deadlines": "Scadenze",
-    "harborSettings": "Impostazioni della mappa"
+    "harborSettings": "Impostazioni della mappa",
+    "priceLists": "Listini",
+    "items": "Articoli e servizi",
+    "pricingClassifications": "Classificazioni",
+    "pricingSimulator": "Simulatore prezzi",
+    "pricingSettings": "Impostazioni prezzi"
   },
   "user": {
     "menu": "Menu utente",

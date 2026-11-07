@@ -1,6 +1,6 @@
 /** RFC 9457 problem+json errors as returned by the Porto API (plan §4.4). */
 
-import type { MapIssue } from './schema';
+import type { MapIssue, PriceListIssue } from './schema';
 
 export type ProblemFieldError = { field: string; code: string; message?: string };
 
@@ -49,6 +49,13 @@ export const PROBLEM_TYPES = [
   'customer_anonymized',
   'customer_merged',
   'download_link_expired',
+  // M2
+  'no_price',
+  'promo_not_applicable',
+  'price_list_invalid',
+  'price_list_immutable',
+  'price_list_overlap',
+  'in_use',
 ] as const;
 
 export type ProblemType = (typeof PROBLEM_TYPES)[number];
@@ -90,6 +97,10 @@ export class ProblemError extends Error {
   readonly retryAfterSeconds: number | undefined;
   /** Map validation issues of a map_invalid problem (M1). */
   readonly issues: MapIssue[];
+  /** Price list validation issues of a price_list_invalid problem (M2). */
+  readonly priceListIssues: PriceListIssue[];
+  /** Machine-readable details (M2: no_price reason, price_list_overlap conflicts, in_use references). */
+  readonly details: Record<string, unknown>;
 
   constructor(init: {
     type: string;
@@ -99,6 +110,8 @@ export class ProblemError extends Error {
     errors?: ProblemFieldError[];
     retryAfterSeconds?: number | undefined;
     issues?: MapIssue[];
+    priceListIssues?: PriceListIssue[];
+    details?: Record<string, unknown>;
   }) {
     super(init.title ?? init.type);
     this.name = 'ProblemError';
@@ -109,6 +122,8 @@ export class ProblemError extends Error {
     this.errors = init.errors ?? [];
     this.retryAfterSeconds = init.retryAfterSeconds;
     this.issues = init.issues ?? [];
+    this.priceListIssues = init.priceListIssues ?? [];
+    this.details = init.details ?? {};
   }
 
   /** i18n key for this problem, always present in the `errors` namespace. */
@@ -145,6 +160,13 @@ export class ProblemError extends Error {
                 isRecord(i) && typeof i.code === 'string' && Array.isArray(i.refs),
             )
           : [],
+        priceListIssues: Array.isArray(body.price_list_issues)
+          ? body.price_list_issues.filter(
+              (i): i is PriceListIssue =>
+                isRecord(i) && typeof i.code === 'string' && typeof i.severity === 'string',
+            )
+          : [],
+        details: isRecord(body.details) ? body.details : {},
       });
     }
     return new ProblemError({

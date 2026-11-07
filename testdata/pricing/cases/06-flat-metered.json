@@ -1,0 +1,421 @@
+{
+  "cases": [
+    {
+      "name": "flat_transit_one_night",
+      "spec": "12.3 flat",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-02",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 3000,
+        "net_cents": 2459,
+        "vat_cents": 541
+      },
+      "why": "flat 3000 per night x 1. VATSplit(3000, 2200): net = half_even(3000 x 10000 / 12200) = 2459, VAT = 541"
+    },
+    {
+      "name": "flat_transit_three_nights",
+      "spec": "12.3 flat",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-04",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 9000,
+        "net_cents": 7377,
+        "vat_cents": 1623
+      },
+      "why": "flat 3000 x 3 nights = 9000. VATSplit(9000, 2200): net = half_even(9000 x 10000 / 12200) = 7377, VAT = 1623"
+    },
+    {
+      "name": "metered_electricity_half_kwh_tie",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-04",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "ele",
+            "qty_milli": 12500
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 9534,
+        "lines": [
+          {
+            "kind": "berth",
+            "amount_cents": 9000
+          },
+          {
+            "kind": "service",
+            "item_code": "SRV-ELE",
+            "qty_milli": 12500,
+            "amount_cents": 438,
+            "gross_cents": 534,
+            "net_cents": 438
+          }
+        ]
+      },
+      "why": "berth 9000 (3 nights, VAT incl.); ele 12.500 kWh x 35 = 437.5 -> half_even 438; excl 22%: 438 + half_even(438 x 0.22 = 96.36) = 534; total 9000 + 534 = 9534"
+    },
+    {
+      "name": "metered_electricity_milli_quantity",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "ele",
+            "qty_milli": 333
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 3015,
+        "lines": [
+          {
+            "kind": "berth",
+            "amount_cents": 3000
+          },
+          {
+            "amount_cents": 12,
+            "gross_cents": 15
+          }
+        ]
+      },
+      "why": "berth 3000 (1 nights, VAT incl.); 0.333 x 35 = 11.655 -> 12; + half_even(12 x 0.22 = 2.64) = 15; total 3000 + 15 = 3015"
+    },
+    {
+      "name": "metered_water_10_percent_vat",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "wat",
+            "qty_milli": 2750
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 3757,
+        "lines": [
+          {
+            "kind": "berth",
+            "amount_cents": 3000
+          },
+          {
+            "amount_cents": 688,
+            "vat_rate_bp": 1000,
+            "gross_cents": 757
+          }
+        ]
+      },
+      "why": "berth 3000 (1 nights, VAT incl.); 2.750 m3 x 250 = 687.5 -> half_even 688; VAT 10%: half_even(688 x 0.10 = 68.8) = 69, gross 757; total 3000 + 757 = 3757"
+    },
+    {
+      "name": "flat_stay_service_crane",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-04",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cra",
+            "qty_milli": 1000
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 27300,
+        "lines": [
+          {
+            "kind": "berth",
+            "amount_cents": 9000
+          },
+          {
+            "item_code": "SRV-GRU",
+            "amount_cents": 15000,
+            "gross_cents": 18300,
+            "blocks": [
+              {
+                "unit": "stay",
+                "nights": 3,
+                "base_cents": 15000
+              }
+            ]
+          }
+        ]
+      },
+      "why": "berth 9000 (3 nights, VAT incl.); cra flat stay 15000 once + 22% = 18300; total 9000 + 18300 = 27300"
+    },
+    {
+      "name": "flat_stay_service_quantity_two",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cra",
+            "qty_milli": 2000
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 39600
+      },
+      "why": "berth 3000 (1 nights, VAT incl.); 2.000 x 15000 = 30000 + 22% (6600) = 36600; total 3000 + 36600 = 39600"
+    },
+    {
+      "name": "flat_stay_service_quantity_zero_means_one",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cra"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 21300,
+        "lines": [
+          {
+            "kind": "berth",
+            "amount_cents": 3000
+          },
+          {
+            "qty_milli": 1000,
+            "amount_cents": 15000
+          }
+        ]
+      },
+      "why": "berth 3000 (1 nights, VAT incl.); qty 0 -> 1: 15000 + 3300 = 18300; total 3000 + 18300 = 21300"
+    },
+    {
+      "name": "flat_night_service_times_nights",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-04",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cln",
+            "qty_milli": 1000
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 12000,
+        "lines": [
+          {
+            "kind": "berth",
+            "amount_cents": 9000
+          },
+          {
+            "amount_cents": 3000,
+            "gross_cents": 3000,
+            "blocks": [
+              {
+                "unit": "night",
+                "nights": 3,
+                "base_cents": 3000
+              }
+            ]
+          }
+        ]
+      },
+      "why": "berth 9000 (3 nights, VAT incl.); cln 1000 per night x 3 = 3000 (VAT incl.); total 9000 + 3000 = 12000"
+    },
+    {
+      "name": "flat_night_service_fractional_qty",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-03",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "cln",
+            "qty_milli": 1500
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 9000
+      },
+      "why": "berth 6000 (2 nights, VAT incl.); 1.500 x 1000 = 1500 per night x 2 = 3000; total 6000 + 3000 = 9000"
+    },
+    {
+      "name": "metered_electricity_thousand_kwh",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "ele",
+            "qty_milli": 1000000
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 45700
+      },
+      "why": "berth 3000 (1 nights, VAT incl.); 1000 kWh x 35 = 35000 + 7700 = 42700; total 3000 + 42700 = 45700"
+    },
+    {
+      "name": "flat_channel_online_rule_priority",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "channel": "online"
+      },
+      "expect": {
+        "total_cents": 2500
+      },
+      "why": "berth 2500 (1 nights, VAT incl.); online channel: r-trn-online priority 10 = 2500; total 2500 +  = 2500"
+    },
+    {
+      "name": "flat_channel_desk_ignores_online_rule",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-02",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 3000
+      },
+      "why": "berth 3000 (1 nights, VAT incl.); desk channel (default): r-trn-online scope online does not match; r-trn 3000; total 3000 +  = 3000"
+    },
+    {
+      "name": "services_mixed_three_lines",
+      "spec": "12.3 metered/flat services, plan D26",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "ele",
+            "qty_milli": 10000
+          },
+          {
+            "item_id": "wat",
+            "qty_milli": 1000
+          },
+          {
+            "item_id": "cra"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 22002,
+        "lines": [
+          {
+            "kind": "berth",
+            "amount_cents": 3000
+          },
+          {
+            "seq": 2,
+            "item_code": "SRV-ELE",
+            "gross_cents": 427
+          },
+          {
+            "seq": 3,
+            "item_code": "SRV-ACQ",
+            "gross_cents": 275
+          },
+          {
+            "seq": 4,
+            "item_code": "SRV-GRU",
+            "gross_cents": 18300
+          }
+        ]
+      },
+      "why": "berth 3000 (1 nights, VAT incl.); ele 10 x 35 = 350 -> 427; wat 1 x 250 = 250 -> 275; cra 15000 -> 18300; total 3000 + 427 + 275 + 18300 = 22002"
+    },
+    {
+      "name": "service_inactive_item_rejected",
+      "spec": "12.1 active",
+      "catalog": "flat-metered",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-05-01",
+        "departure": "2027-05-02",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "old"
+          }
+        ]
+      },
+      "expect": {
+        "error": "invalid_input:unknown_item"
+      },
+      "why": "SRV-OLD is inactive -> unknown_item"
+    }
+  ]
+}

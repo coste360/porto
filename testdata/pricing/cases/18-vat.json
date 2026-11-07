@@ -1,0 +1,619 @@
+{
+  "cases": [
+    {
+      "name": "vat_included_22",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 10000,
+        "net_cents": 8197,
+        "vat_cents": 1803,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 8197,
+            "vat_cents": 1803,
+            "gross_cents": 10000
+          }
+        ],
+        "lines": [
+          {
+            "vat_rate_bp": 2200,
+            "price_includes_vat": true,
+            "net_cents": 8197,
+            "vat_cents": 1803
+          }
+        ]
+      },
+      "why": "berth 10000 VAT incl.: net half_even(10000 x 10000 / 12200 = 8196.72) = 8197, VAT 1803"
+    },
+    {
+      "name": "vat_excluded_22_same_bucket",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "v22"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 22200,
+        "net_cents": 18197,
+        "vat_cents": 4003,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 18197,
+            "vat_cents": 4003,
+            "gross_cents": 22200
+          }
+        ]
+      },
+      "why": "S-22 10000 excl. -> 12200; same 22% bucket: net 8197 + 10000, VAT 1803 + 2200"
+    },
+    {
+      "name": "vat_excluded_10",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "v10"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 21000,
+        "net_cents": 18197,
+        "vat_cents": 2803,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 8197,
+            "vat_cents": 1803,
+            "gross_cents": 10000
+          },
+          {
+            "vat_rate_bp": 1000,
+            "net_cents": 10000,
+            "vat_cents": 1000,
+            "gross_cents": 11000
+          }
+        ]
+      },
+      "why": "S-10 10000 + 10% = 11000; buckets by rate desc: 22%, 10%"
+    },
+    {
+      "name": "vat_excluded_5",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "v5"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 20500,
+        "net_cents": 18197,
+        "vat_cents": 2303,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 8197,
+            "vat_cents": 1803,
+            "gross_cents": 10000
+          },
+          {
+            "vat_rate_bp": 500,
+            "net_cents": 10000,
+            "vat_cents": 500,
+            "gross_cents": 10500
+          }
+        ]
+      },
+      "why": "S-05 10000 + 5% = 10500"
+    },
+    {
+      "name": "vat_excluded_4",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "v4"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 20400,
+        "net_cents": 18197,
+        "vat_cents": 2203,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 8197,
+            "vat_cents": 1803,
+            "gross_cents": 10000
+          },
+          {
+            "vat_rate_bp": 400,
+            "net_cents": 10000,
+            "vat_cents": 400,
+            "gross_cents": 10400
+          }
+        ]
+      },
+      "why": "S-04 10000 + 4% = 10400"
+    },
+    {
+      "name": "vat_nature_n1",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "n1"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 20000,
+        "net_cents": 18197,
+        "vat_cents": 1803,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 8197,
+            "vat_cents": 1803,
+            "gross_cents": 10000
+          },
+          {
+            "vat_rate_bp": 0,
+            "net_cents": 10000,
+            "vat_cents": 0,
+            "gross_cents": 10000,
+            "vat_nature": "N1"
+          }
+        ],
+        "lines": [
+          {},
+          {
+            "vat_rate_bp": 0,
+            "vat_nature": "N1",
+            "gross_cents": 10000,
+            "vat_cents": 0
+          }
+        ]
+      },
+      "why": "S-N1 rate 0 nature N1: gross 10000, VAT 0, own bucket (0, N1)"
+    },
+    {
+      "name": "vat_natures_sorted",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "n4"
+          },
+          {
+            "item_id": "n22"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 30000,
+        "net_cents": 28197,
+        "vat_cents": 1803,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 8197,
+            "vat_cents": 1803,
+            "gross_cents": 10000
+          },
+          {
+            "vat_rate_bp": 0,
+            "net_cents": 10000,
+            "vat_cents": 0,
+            "gross_cents": 10000,
+            "vat_nature": "N2.2"
+          },
+          {
+            "vat_rate_bp": 0,
+            "net_cents": 10000,
+            "vat_cents": 0,
+            "gross_cents": 10000,
+            "vat_nature": "N4"
+          }
+        ]
+      },
+      "why": "two rate-0 buckets sorted by nature: N2.2 before N4"
+    },
+    {
+      "name": "vat_included_10",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "i10"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 20000,
+        "net_cents": 17288,
+        "vat_cents": 2712,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 8197,
+            "vat_cents": 1803,
+            "gross_cents": 10000
+          },
+          {
+            "vat_rate_bp": 1000,
+            "net_cents": 9091,
+            "vat_cents": 909,
+            "gross_cents": 10000
+          }
+        ]
+      },
+      "why": "S-I10 10000 incl. 10%: net half_even(10000 x 10000 / 11000 = 9090.91) = 9091, VAT 909"
+    },
+    {
+      "name": "vat_included_4",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "i4"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 20000,
+        "net_cents": 17812,
+        "vat_cents": 2188,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 8197,
+            "vat_cents": 1803,
+            "gross_cents": 10000
+          },
+          {
+            "vat_rate_bp": 400,
+            "net_cents": 9615,
+            "vat_cents": 385,
+            "gross_cents": 10000
+          }
+        ]
+      },
+      "why": "S-I04 10000 incl. 4%: net half_even(9615.38) = 9615, VAT 385"
+    },
+    {
+      "name": "vat_mixed_rates_and_nature",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "v22"
+          },
+          {
+            "item_id": "v10"
+          },
+          {
+            "item_id": "v5"
+          },
+          {
+            "item_id": "v4"
+          },
+          {
+            "item_id": "n1"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 64100,
+        "net_cents": 58197,
+        "vat_cents": 5903,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 18197,
+            "vat_cents": 4003,
+            "gross_cents": 22200
+          },
+          {
+            "vat_rate_bp": 1000,
+            "net_cents": 10000,
+            "vat_cents": 1000,
+            "gross_cents": 11000
+          },
+          {
+            "vat_rate_bp": 500,
+            "net_cents": 10000,
+            "vat_cents": 500,
+            "gross_cents": 10500
+          },
+          {
+            "vat_rate_bp": 400,
+            "net_cents": 10000,
+            "vat_cents": 400,
+            "gross_cents": 10400
+          },
+          {
+            "vat_rate_bp": 0,
+            "net_cents": 10000,
+            "vat_cents": 0,
+            "gross_cents": 10000,
+            "vat_nature": "N1"
+          }
+        ]
+      },
+      "why": "five buckets by rate desc then nature; total = sum of buckets = 22200 + 11000 + 10500 + 10400 + 10000"
+    },
+    {
+      "name": "vat_excluded_rounding_net_equals_amount",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "add_rules": [
+        {
+          "id": "r-v22b",
+          "seq": 20,
+          "stage": "base",
+          "name": "r-v22b",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "item_id": "v22",
+          "basis": "flat",
+          "unit": "stay",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 12345
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "v22"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 25061,
+        "net_cents": 20542,
+        "vat_cents": 4519,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 20542,
+            "vat_cents": 4519,
+            "gross_cents": 25061
+          }
+        ],
+        "lines": [
+          {},
+          {
+            "net_cents": 12345,
+            "gross_cents": 15061
+          }
+        ]
+      },
+      "why": "S-22 12345: VAT half_even(12345 x 0.22 = 2715.9) = 2716, gross 15061; VATSplit gives net 12345 back exactly"
+    },
+    {
+      "name": "vat_excluded_tie_to_even_down",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "add_rules": [
+        {
+          "id": "r-v10b",
+          "seq": 21,
+          "stage": "base",
+          "name": "r-v10b",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "item_id": "v10",
+          "basis": "flat",
+          "unit": "stay",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 25
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "v10"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 10027,
+        "net_cents": 8222,
+        "vat_cents": 1805,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 8197,
+            "vat_cents": 1803,
+            "gross_cents": 10000
+          },
+          {
+            "vat_rate_bp": 1000,
+            "net_cents": 25,
+            "vat_cents": 2,
+            "gross_cents": 27
+          }
+        ]
+      },
+      "why": "S-10 25: 25 x 0.10 = 2.5 -> 2 (even): gross 27"
+    },
+    {
+      "name": "vat_excluded_tie_to_even_up",
+      "spec": "16.1 VAT, 12.1 fiscal data, plan D9/D10",
+      "catalog": "vat",
+      "add_rules": [
+        {
+          "id": "r-v10c",
+          "seq": 22,
+          "stage": "base",
+          "name": "r-v10c",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "item_id": "v10",
+          "basis": "flat",
+          "unit": "stay",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 35
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01",
+        "services": [
+          {
+            "item_id": "v10"
+          }
+        ]
+      },
+      "expect": {
+        "total_cents": 10039,
+        "net_cents": 8232,
+        "vat_cents": 1807,
+        "vat_summary": [
+          {
+            "vat_rate_bp": 2200,
+            "net_cents": 8197,
+            "vat_cents": 1803,
+            "gross_cents": 10000
+          },
+          {
+            "vat_rate_bp": 1000,
+            "net_cents": 35,
+            "vat_cents": 4,
+            "gross_cents": 39
+          }
+        ]
+      },
+      "why": "S-10 35: 3.5 -> 4 (even): gross 39"
+    },
+    {
+      "name": "vat_included_one_cent",
+      "spec": "16.1 VAT",
+      "catalog": "vat",
+      "add_rules": [
+        {
+          "id": "r-n1c",
+          "seq": 23,
+          "stage": "base",
+          "name": "r-n1c",
+          "active": true,
+          "priority": 5,
+          "stackable": false,
+          "item_id": "trn",
+          "basis": "flat",
+          "unit": "night",
+          "conditions": {},
+          "effect": {},
+          "scope": {},
+          "amount_cents": 1
+        }
+      ],
+      "input": {
+        "contract_type": "transit",
+        "arrival": "2027-04-10",
+        "departure": "2027-04-11",
+        "resource": {},
+        "quoted_on": "2026-12-01"
+      },
+      "expect": {
+        "total_cents": 1,
+        "net_cents": 1,
+        "vat_cents": 0
+      },
+      "why": "1 cent incl. 22%: net half_even(10000 / 12200 = 0.82) = 1, VAT 0"
+    }
+  ]
+}

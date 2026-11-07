@@ -7,6 +7,7 @@ export const SSE_TOPICS = [
   'team.changed',
   'map.changed',
   'registry.changed',
+  'pricing.changed',
 ] as const;
 
 export type EventSourceFactory = (url: string) => EventSource;
