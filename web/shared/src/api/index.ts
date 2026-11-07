@@ -45,3 +45,4 @@ export * from './hooks/documents';
 export * from './hooks/publicLinks';
 export * from './hooks/billing';
 export * from './hooks/payPublic';
+export * from './hooks/desktop';

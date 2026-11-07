@@ -9,24 +9,52 @@ import (
 // APIVersion is the version of the admin API surface.
 const APIVersion = "v1"
 
-// Edition is "server" for this binary (the desktop edition arrives later, spec 31).
-const Edition = "server"
+// Editions (spec 31): the server binary (cmd/porto) and the desktop edition (cmd/porto-desktop, M6a).
+const (
+	EditionServer  = "server"
+	EditionDesktop = "desktop"
+)
+
+// Desktop capabilities (m6a-plan §3.4): desktop.local always on the desktop edition, desktop.lan while the
+// local-network listener runs (added per request through Meta.Dynamic).
+const (
+	CapDesktopLocal = "desktop.local"
+	CapDesktopLAN   = "desktop.lan"
+)
 
 // Meta is the public description of the instance.
 type Meta struct {
 	Version, APIVersion, Edition string
 	Capabilities                 []string
 	DemoPairing                  bool
+	// LocalMode is true when the online features (public page, online payments, remote signature) are unavailable
+	// because the instance is not reachable from the internet (desktop edition).
+	LocalMode bool
 	// PricingEngineVersion is pricing.EngineVersion (M2): quotes store it with their snapshot (INV-20).
 	PricingEngineVersion int
+	// Dynamic, when set, returns capabilities that change while the instance runs (desktop.lan).
+	Dynamic func() []string
 }
 
-// Get returns the metadata of an instance configured by cfg and built as version.
-func Get(cfg *config.Config, version string) Meta {
-	return Meta{
+// AllCapabilities returns the static capabilities plus the dynamic ones of this moment.
+func (m Meta) AllCapabilities() []string {
+	out := append([]string{}, m.Capabilities...)
+	if m.Dynamic != nil {
+		out = append(out, m.Dynamic()...)
+	}
+	return out
+}
+
+// Get returns the metadata of an instance configured by cfg, built as version, of the given edition
+// (EditionServer or EditionDesktop; anything else is EditionServer).
+func Get(cfg *config.Config, version, edition string) Meta {
+	if edition != EditionDesktop {
+		edition = EditionServer
+	}
+	m := Meta{
 		Version:    version,
 		APIVersion: APIVersion,
-		Edition:    Edition,
+		Edition:    edition,
 		Capabilities: []string{
 			"auth.totp", "auth.password_reset", "devices.pairing", "webhooks", "sse",
 			// M1
@@ -47,6 +75,11 @@ func Get(cfg *config.Config, version string) Meta {
 		DemoPairing:          cfg != nil && cfg.DemoPairingEnabled(),
 		PricingEngineVersion: pricing.EngineVersion,
 	}
+	if edition == EditionDesktop {
+		m.LocalMode = true
+		m.Capabilities = append(m.Capabilities, CapDesktopLocal)
+	}
+	return m
 }
 
 // WithSignatureProviders adds the signature.providers capability when at least one ext.SignatureProvider is

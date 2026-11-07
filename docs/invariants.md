@@ -299,14 +299,18 @@ degli eventi M3 di occupazione, presenze, preventivi, contratti e transiti e deg
 rinnovi, diritti, mandati, ripartizioni, documenti e comunicazioni e degli eventi M5 di addebiti, esportazioni,
 pagamenti, rimborsi, cassa, documenti commerciali, richieste di pagamento, solleciti e impostazioni: solo id, enum,
 date, importi e conteggi), `TestSSE_PayloadHasNoPII` (con `map_id`, `resource_ids`, `nights` di M3),
-`TestSSE_M4Topics`, `TestSSE_M5Topics`, `TestLogs_NoPII` (anche webhook di pagamento ed esportazioni, M5).
-Stato: partial.
+`TestSSE_M4Topics`, `TestSSE_M5Topics`, `TestLogs_NoPII` (anche webhook di pagamento ed esportazioni, M5);
+da M6a `TestAcceptance_M6aLanPairing` e `TestAcceptance_M6aPairTOTPRotatesSession` (codice di abbinamento, token
+della sessione del dispositivo e token di primo avvio assenti dai log) e `TestLauncher_StartStop` (log del
+launcher senza token, email o password). Stato: partial.
 
 **INV-71 — Offline senza effetti sulle risorse.** Nessuna operazione accodata offline crea o sposta allocazioni né
 emette documenti numerati. Verificata da: test Vitest della allowlist della coda. Stato: planned.
 
 **INV-72 — Audit log solo in inserimento.** Le righe di `audit_log` non si modificano né si cancellano, su SQLite e
-PostgreSQL (trigger del database). Verificata da: `TestAuditLog_InsertOnly`. Stato: partial.
+PostgreSQL (trigger del database). Un ripristino desktop registra `desktop.restore` anche nel database ripristinato,
+non solo in quello che viene messo da parte. Verificata da: `TestAuditLog_InsertOnly`,
+`TestDesktopRestore_OlderSchemaAndAudit` (`internal/http/desktop`). Stato: partial.
 
 **INV-73 — Query operative limitate al marina.** Ogni query operativa usa il `marina_id` dello scope autorizzato;
 una risorsa di un altro marina risponde 404. Verificata da: `TestAcceptance_CrossMarinaIsolation` (tutte le rotte
@@ -316,7 +320,8 @@ le rotte M2 con `{revenueClassId}`, `{itemId}`, `{categoryId}` e `{priceListId}`
 `{quoteId}`, `{allocationId}`, `{releaseId}`, `{inquiryId}`, `{presenceId}`, `{undoId}`, `{areaId}` e `{closureId}`),
 `TestStore_ElementReferencesStayInMarina` e `TestRegistryStore_MergeTargetStaysInMarina` (FK composite
 `(…_id, marina_id)` per strutture, colonnine, struttura padre e cliente di destinazione della fusione);
-da M4 `TestSignature_SignerUserScopedToMarina` (un firmatario utente deve avere un accesso al marina). Stato: partial.
+da M4 `TestSignature_SignerUserScopedToMarina` (un firmatario utente deve avere un accesso al marina); da M6a
+`TestDeviceSession_NarrowedToDeviceMarina` e `TestDeviceSession_OtherMarinaIs404` (vedi INV-81). Stato: partial.
 
 **INV-74 — Documenti cifrati a riposo e serviti solo con link firmati.** I file dei documenti (e gli sfondi delle
 mappe) sono salvati cifrati con il KeyRing sotto `PORTO_DATA_DIR/files`, legati a marina e id; il download di un
@@ -339,3 +344,38 @@ con 100 verifiche parallele del codice corretto).
 delle scadenze e degli invii delle campagne di rinnovo. Verificata da: `TestAcceptance_M4_RenewalCampaign300`,
 `TestConcurrency_CampaignLaunchAndSync` (`sent_count = 1`), `TestDeadlines_NotifyOncePerLeadDay`. Stato: partial
 (manca un `TestConcurrency_CommsSendOnce` sul trasporto reale).
+
+**INV-78 — Un codice di abbinamento crea al massimo un dispositivo.** Un codice di abbinamento si consuma una sola
+volta con un UPDATE condizionato (`store.ConsumePairingCode`), qualunque sia la via di scambio: token di
+dispositivo (`/api/device/v1/pair`) o sessione del browser (`/api/device/v1/pair-session`, M6a). Verificata da:
+`TestConcurrency_PairingCodeSingleUse`, `TestConcurrency_PairSessionSingleUse`,
+`TestConcurrency_PairingMixedEndpoints` (`internal/domain/device`). Stato: implemented.
+
+**INV-79 — Il listener della rete locale esiste solo se attivato e accetta solo peer privati.** L'edizione desktop
+ascolta su interfacce diverse dal loopback solo mentre il titolare tiene attiva la rete locale; le connessioni da
+indirizzi non privati (fuori da RFC 1918, ULA, link-local) sono chiuse prima di leggere un byte. Verificata da:
+`TestLANServer_OnlyWhenEnabled`, `TestPrivateListener_RejectsPublicPeers` (test unitari in `internal/lan`, senza
+database). Stato: implemented.
+
+**INV-80 — L'API desktop risponde solo in locale.** `/api/desktop/v1` risponde solo sul listener di loopback
+dell'edizione desktop, da un peer di loopback e con un `Host` atteso; altrove (edizione server, rete locale) è 404.
+Verificata da: `TestDesktopAPI_LoopbackOnly` (`internal/http`), `TestHostCheck_RejectsRebinding`
+(`internal/http/middleware`). Stato: implemented.
+
+**INV-81 — La sessione di un dispositivo vale solo per il suo marina e muore con il dispositivo.** Un browser
+abbinato con il QR riceve una sessione legata al dispositivo: anche per un ruolo di organizzazione agisce solo sul
+marina del dispositivo (`auth.NarrowGrants`; un altro marina risponde 404), è rifiutata appena il dispositivo è
+revocato e la revoca la cancella nella stessa transazione. Per un utente con TOTP la sessione resta in attesa per
+10 minuti al massimo e la conferma del secondo fattore la sostituisce con una nuova (il token in attesa smette di
+valere). Verificata da: `TestDeviceSession_NarrowedToDeviceMarina`, `TestDeviceSession_RevokedDeviceRejected`,
+`TestDeviceSession_TOTPUserMustVerify`, `TestDeviceSession_PendingTOTPExpiresQuickly`,
+`TestConcurrency_DeviceSessionVerifyOnce` (`internal/domain/auth`), `TestDeviceSession_RevokeKillsSession`,
+`TestDeviceSession_OtherMarinaIs404` (`internal/domain/device`), `TestAcceptance_M6aPairTOTPRotatesSession`.
+Stato: implemented.
+
+**INV-82 — Il token di primo avvio crea al massimo un titolare.** Il token di primo avvio dell'edizione desktop è
+monouso, vive solo in memoria come hash e vale solo finché non esiste alcun utente: dopo il primo titolare (anche
+creato da CLI o bootstrap) sia il primo avvio sia il ripristino dal primo avvio rispondono 409 `first_run_done`;
+un ripristino fallito non consuma il token. Verificata da: `TestFirstRunToken_SingleUse` (`internal/desktop`),
+`TestConcurrency_FirstRunSingleOwner`, `TestDesktopFirstRunRestore_TokenAndOwner`,
+`TestDesktopFirstRunRestore_SingleUse` (`internal/http/desktop`). Stato: implemented.

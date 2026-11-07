@@ -23,5 +23,26 @@
   "empty": "Nessun dispositivo abbinato.",
   "revokeTitle": "Revocare questo dispositivo?",
   "revokeDescription": "Il dispositivo verrà disconnesso subito.",
-  "revoked": "Dispositivo revocato."
+  "revoked": "Dispositivo revocato.",
+  "access": "Accesso",
+  "accessKinds": {
+    "token": "App",
+    "browser": "Browser"
+  },
+  "state": "Stato",
+  "created": "Creato",
+  "unreachableTitle": "Attiva la rete locale",
+  "unreachable": "I telefoni non possono raggiungere questo computer finché la rete locale è spenta.",
+  "openDesktopSettings": "Apri le impostazioni dell'app desktop",
+  "fingerprint": "Impronta del certificato",
+  "newCode": "Nuovo codice",
+  "scanPhone": "Inquadra il QR con la fotocamera del telefono collegato al Wi-Fi del porto.",
+  "platforms": {
+    "ios": "iPhone/iPad",
+    "android": "Android",
+    "windows": "Windows",
+    "macos": "macOS",
+    "linux": "Linux",
+    "other": "Altro"
+  }
 }

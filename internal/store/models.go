@@ -124,8 +124,10 @@ type Session struct {
 	LastSeenAt    time.Time `bun:"last_seen_at"`
 	IP            string    `bun:"ip"`
 	UserAgent     string    `bun:"user_agent"`
-	CreatedAt     time.Time `bun:"created_at"`
-	UpdatedAt     time.Time `bun:"updated_at"`
+	// DeviceID binds a device session (browser paired by QR, M6a) to its device; "" for ordinary logins.
+	DeviceID  string    `bun:"device_id,nullzero"`
+	CreatedAt time.Time `bun:"created_at"`
+	UpdatedAt time.Time `bun:"updated_at"`
 }
 
 // Password reset token purposes.
@@ -170,21 +172,29 @@ type APIKey struct {
 type Device struct {
 	bun.BaseModel `bun:"table:devices"`
 
-	ID            string    `bun:"id,pk"`
-	MarinaID      string    `bun:"marina_id"`
-	UserID        string    `bun:"user_id"`
-	Name          string    `bun:"name"`
-	Platform      string    `bun:"platform"`
-	Kind          string    `bun:"kind"`
-	AppVersion    string    `bun:"app_version,nullzero"`
-	TokenPrefix   string    `bun:"token_prefix"`
-	TokenHash     string    `bun:"token_hash"`
-	PairingCodeID string    `bun:"pairing_code_id,nullzero"`
-	LastUsedAt    time.Time `bun:"last_used_at,nullzero"`
-	RevokedAt     time.Time `bun:"revoked_at,nullzero"`
-	CreatedAt     time.Time `bun:"created_at"`
-	UpdatedAt     time.Time `bun:"updated_at"`
+	ID            string `bun:"id,pk"`
+	MarinaID      string `bun:"marina_id"`
+	UserID        string `bun:"user_id"`
+	Name          string `bun:"name"`
+	Platform      string `bun:"platform"`
+	Kind          string `bun:"kind"`
+	AppVersion    string `bun:"app_version,nullzero"`
+	TokenPrefix   string `bun:"token_prefix"`
+	TokenHash     string `bun:"token_hash"`
+	PairingCodeID string `bun:"pairing_code_id,nullzero"`
+	// Access is DeviceAccessToken (po_dev_ token) or DeviceAccessBrowser (device session cookie, M6a).
+	Access     string    `bun:"access"`
+	LastUsedAt time.Time `bun:"last_used_at,nullzero"`
+	RevokedAt  time.Time `bun:"revoked_at,nullzero"`
+	CreatedAt  time.Time `bun:"created_at"`
+	UpdatedAt  time.Time `bun:"updated_at"`
 }
+
+// Device access kinds (devices.access, M6a).
+const (
+	DeviceAccessToken   = "token"
+	DeviceAccessBrowser = "browser"
+)
 
 // PairingCode is a row of pairing_codes.
 type PairingCode struct {

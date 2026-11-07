@@ -78,3 +78,16 @@ func TestRapid_TruncateUserAgent(t *testing.T) {
 		}
 	})
 }
+
+func TestListener_TagAndDefault(t *testing.T) {
+	if got := ListenerFrom(context.Background()); got != ListenerServer {
+		t.Fatalf("untagged = %q", got)
+	}
+	ctx := WithListener(context.Background(), ListenerLoopback)
+	if !IsLoopbackListener(ctx) || ListenerFrom(WithListener(ctx, ListenerLAN)) != ListenerLAN {
+		t.Fatal("tagging lost")
+	}
+	if got := ListenerFrom(WithListener(context.Background(), "bogus")); got != ListenerServer {
+		t.Fatalf("invalid kind = %q", got)
+	}
+}

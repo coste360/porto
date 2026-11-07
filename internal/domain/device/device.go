@@ -1,6 +1,7 @@
 // Package device pairs mobile and desktop devices with a marina. An administrator (or the user, for themselves)
-// creates a short-lived pairing code shown as text and QR; the device exchanges it once for a device token
-// ("po_dev_<prefix>_<secret>") that acts as the user on that marina only.
+// creates a short-lived pairing code shown as text and QR; the device exchanges it once either for a device token
+// ("po_dev_<prefix>_<secret>", native clients) or, from a browser that opened the QR (M6a), for a device session
+// cookie. Both act as the user on that marina only.
 package device
 
 import (
@@ -17,6 +18,7 @@ import (
 
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/crypto"
+	"github.com/coste360/porto/internal/desktopport"
 	"github.com/coste360/porto/internal/domain/audit"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/event"
@@ -49,6 +51,7 @@ type Device struct {
 	Name        string
 	Platform    string
 	Kind        string
+	Access      string // store.DeviceAccessToken | store.DeviceAccessBrowser (M6a)
 	AppVersion  string
 	UserID      string
 	UserName    string
@@ -71,6 +74,11 @@ type PairingCode struct {
 	QRPayload string
 	QRSVG     string
 	ExpiresAt time.Time
+	// M6a (m6a-plan §3.2): PairURL is <origin>/admin/pair#c=<code>[&fp=<fp>] (what phones open), Fingerprint the
+	// local-network certificate fingerprint ("" outside it), Reachable false when phones cannot reach PairURL.
+	PairURL     string
+	Fingerprint string
+	Reachable   bool
 }
 
 // PairInput is what a device sends to pair.
@@ -92,6 +100,9 @@ type Options struct {
 	// Demo pairing (PORTO_DEMO_PAIRING_USER / _MARINA): both set enables DemoPair.
 	DemoUserEmail  string
 	DemoMarinaSlug string
+	// PairTarget tells where pairing QRs point (M6a). nil = {BaseURL, "", true} (server edition); the desktop app
+	// derives it from the local-network status.
+	PairTarget func() desktopport.PairTarget
 }
 
 // Service manages devices.
@@ -114,7 +125,7 @@ func (s *Service) now() time.Time { return store.UTC(s.clock.Now()) }
 
 func toDevice(d *store.Device, userName string) Device {
 	return Device{
-		ID: d.ID, MarinaID: d.MarinaID, Name: d.Name, Platform: d.Platform, Kind: d.Kind, AppVersion: d.AppVersion,
+		ID: d.ID, MarinaID: d.MarinaID, Name: d.Name, Platform: d.Platform, Kind: d.Kind, Access: d.Access, AppVersion: d.AppVersion,
 		UserID: d.UserID, UserName: userName, TokenPrefix: d.TokenPrefix, LastUsedAt: d.LastUsedAt,
 		RevokedAt: d.RevokedAt, CreatedAt: d.CreatedAt,
 	}
@@ -205,15 +216,46 @@ func (s *Service) CreatePairingCode(ctx context.Context, p *auth.Principal, mari
 		}); err != nil {
 			return err
 		}
-		payload := "porto://pair?v=1&url=" + url.QueryEscape(s.opts.BaseURL) + "&code=" + code
-		svg, err := qrsvg.Render(payload)
+		target := s.pairTarget()
+		// Native clients read the porto:// payload from the API; phones open PairURL with the camera, so the QR
+		// encodes PairURL. The code is in the fragment: browsers never send it in a request line.
+		origin := s.opts.BaseURL
+		if target.Reachable && target.Origin != "" {
+			origin = strings.TrimRight(target.Origin, "/")
+		}
+		payload := "porto://pair?v=1&url=" + url.QueryEscape(origin) + "&code=" + code
+		if target.Fingerprint != "" {
+			payload += "&fp=" + target.Fingerprint
+		}
+		pairURL := PairURL(target, code)
+		svg, err := qrsvg.Render(pairURL)
 		if err != nil {
 			return err
 		}
-		out = &PairingCode{Code: code, QRPayload: payload, QRSVG: svg, ExpiresAt: row.ExpiresAt}
+		out = &PairingCode{
+			Code: code, QRPayload: payload, QRSVG: svg, ExpiresAt: row.ExpiresAt,
+			PairURL: pairURL, Fingerprint: target.Fingerprint, Reachable: target.Reachable,
+		}
 		return nil
 	})
 	return out, err
+}
+
+// PairURL is the page phones open to pair: <origin>/admin/pair#c=<code>[&fp=<fingerprint>].
+func PairURL(t desktopport.PairTarget, code string) string {
+	u := strings.TrimRight(t.Origin, "/") + "/admin/pair#c=" + url.QueryEscape(code)
+	if t.Fingerprint != "" {
+		u += "&fp=" + url.QueryEscape(t.Fingerprint)
+	}
+	return u
+}
+
+// pairTarget is Options.PairTarget or, by default (server edition), the base URL, reachable, no fingerprint.
+func (s *Service) pairTarget() desktopport.PairTarget {
+	if s.opts.PairTarget != nil {
+		return s.opts.PairTarget()
+	}
+	return desktopport.PairTarget{Origin: s.opts.BaseURL, Reachable: true}
 }
 
 func hasGrant(ctx context.Context, tx bun.IDB, scope store.MarinaScope, userID string) bool {
@@ -296,7 +338,7 @@ func (s *Service) Pair(ctx context.Context, in PairInput) (*PairResult, error) {
 		if err != nil || !hasGrant(ctx, tx, scope, pc.UserID) {
 			return ErrPairingCodeInvalid
 		}
-		res, err := s.createDevice(ctx, tx, scope, pc.UserID, pc.ID, in, now)
+		res, err := s.createDevice(ctx, tx, scope, pc.UserID, pc.ID, store.DeviceAccessToken, in, now)
 		if err != nil {
 			return err
 		}
@@ -337,13 +379,16 @@ func (s *Service) DemoPair(ctx context.Context, in PairInput) (*PairResult, erro
 		if err != nil || !hasGrant(ctx, tx, scope, u.ID) {
 			return auth.ErrNotFound
 		}
-		out, err = s.createDevice(ctx, tx, scope, u.ID, "", in, s.now())
+		out, err = s.createDevice(ctx, tx, scope, u.ID, "", store.DeviceAccessToken, in, s.now())
 		return err
 	})
 	return out, err
 }
 
-func (s *Service) createDevice(ctx context.Context, tx bun.IDB, scope store.MarinaScope, userID, pairingID string, in PairInput, now time.Time) (*PairResult, error) {
+// createDevice inserts a device and writes its audit row and device.paired event. access is
+// store.DeviceAccessToken (the token is returned once) or store.DeviceAccessBrowser (a random token whose hash
+// satisfies the schema; the caller discards it and opens a device session).
+func (s *Service) createDevice(ctx context.Context, tx bun.IDB, scope store.MarinaScope, userID, pairingID, access string, in PairInput, now time.Time) (*PairResult, error) {
 	raw, err := crypto.RandomBase32(8)
 	if err != nil {
 		return nil, err
@@ -357,7 +402,7 @@ func (s *Service) createDevice(ctx context.Context, tx bun.IDB, scope store.Mari
 	d := &store.Device{
 		ID: store.NewID(), MarinaID: scope.ID(), UserID: userID, Name: in.Name, Platform: in.Platform, Kind: in.Kind,
 		AppVersion: strings.TrimSpace(in.AppVersion), TokenPrefix: prefix, TokenHash: crypto.SHA256Hex(token),
-		PairingCodeID: pairingID, CreatedAt: now, UpdatedAt: now,
+		PairingCodeID: pairingID, Access: access, CreatedAt: now, UpdatedAt: now,
 	}
 	if err := store.InsertDevice(ctx, tx, d); err != nil {
 		return nil, err
@@ -365,7 +410,7 @@ func (s *Service) createDevice(ctx context.Context, tx bun.IDB, scope store.Mari
 	actor := audit.Actor{Type: audit.ActorDevice, ID: d.ID}
 	if err := s.audit.Write(ctx, tx, audit.Entry{
 		OrganizationID: scope.OrgID(), MarinaID: scope.ID(), Actor: actor, Action: "device.pair",
-		EntityType: "device", EntityID: d.ID, Diff: map[string]any{"user_id": userID, "platform": d.Platform, "kind": d.Kind, "demo": pairingID == ""},
+		EntityType: "device", EntityID: d.ID, Diff: map[string]any{"user_id": userID, "platform": d.Platform, "kind": d.Kind, "access": access, "demo": pairingID == ""},
 	}); err != nil {
 		return nil, err
 	}
@@ -434,6 +479,10 @@ func (s *Service) revoke(ctx context.Context, scope store.MarinaScope, actor aud
 			return nil
 		}
 		if err := store.RevokeDevice(ctx, tx, scope, deviceID, s.now()); err != nil {
+			return err
+		}
+		// A browser device is logged out at its next request: its sessions disappear with the revocation.
+		if _, err := store.DeleteSessionsOfDevice(ctx, tx, deviceID); err != nil {
 			return err
 		}
 		if err := s.audit.Write(ctx, tx, audit.Entry{

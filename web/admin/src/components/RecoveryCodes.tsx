@@ -4,19 +4,15 @@ import { useT } from '@porto/shared/i18n';
 import { Alert, AlertDescription, AlertTitle } from '@porto/shared/ui/alert';
 import { Button } from '@porto/shared/ui/button';
 
+import { downloadFile } from '../features/desktop/files';
+
 /** Recovery codes, shown once, with copy and download. */
 export function RecoveryCodes({ codes, onDone }: { codes: string[]; onDone: () => void }) {
   const { t } = useT();
   const text = codes.join('\n');
 
-  const download = () => {
-    const url = URL.createObjectURL(new Blob([`${text}\n`], { type: 'text/plain' }));
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = t('auth:totpSetup.recoveryFile');
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const download = () =>
+    downloadFile(t('auth:totpSetup.recoveryFile'), new Blob([`${text}\n`], { type: 'text/plain' }));
 
   return (
     <div className="flex flex-col gap-4">

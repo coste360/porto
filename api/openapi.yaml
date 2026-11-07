@@ -11,11 +11,15 @@ info:
     renewals, charter, rights and common charges, print templates and PDF, signatures, communications, the deadline
     engine, CSV imports and the customer magic-link pages. M5 adds charges from every origin, payments, refunds and
     credits, cash and corrispettivi, payment requests and reminders, optional online payments (Stripe with SEPA),
-    the "da fatturare" export with invoice reconciliation, statements and the customer dashboard.
+    the "da fatturare" export with invoice reconciliation, statements and the customer dashboard. M6a adds the
+    desktop edition API (`/api/desktop/v1`, loopback only), browser pairing by QR with device sessions and the
+    local-mode metadata.
 
     - `/api/admin/v1` — admin panel API (session cookie, API key or device token).
     - `/api/device/v1` — paired devices (device token, spec 29).
     - `/api/public/v1` — public marina pages (no authentication).
+    - `/api/desktop/v1` — desktop edition launcher (M6a): answers only on the loopback listener of
+      `porto-desktop`, 404 everywhere else.
 
     Conventions:
     - errors are `application/problem+json` (RFC 9457) with a stable `type` slug;
@@ -28,7 +32,9 @@ info:
     - money is integer cents (`*_cents`), percentages integer basis points (`*_bp`, 1 % = 100), fractional
       quantities integer thousandths (`*_milli`); no `number` type is used anywhere;
     - `x-porto-max-body-bytes` on an operation sets its request body limit (default 1 MiB, hard cap 16 MiB);
-      upload operations take a raw binary body with the declared content types.
+      upload operations take a raw binary body with the declared content types;
+    - `x-porto-max-stream-bytes` replaces it on the few operations that stream a large raw body to disk (desktop
+      restore, at most 4 GiB): the 16 MiB hard cap does not apply to them.
   contact:
     name: Coste360 SRL
 servers:
@@ -135,6 +141,8 @@ tags:
     description: Public payment page of a payment request (M5)
   - name: webhooks-payments
     description: Payment provider callbacks (M5)
+  - name: desktop
+    description: Desktop edition launcher, loopback only (first run, local network, backups, secret key) (M6a)
 
 paths:
   /healthz:
@@ -1139,6 +1147,368 @@ paths:
       responses:
         "204": { description: Unpaired }
         "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /api/device/v1/pair-session:
+    post:
+      tags: [device]
+      operationId: pairDeviceSession
+      summary: Exchange a pairing code for a browser device session (QR on the local network, M6a)
+      description: |
+        Same single-use consumption as `pairDevice`. Creates a device with `access: browser` bound to a device
+        session (idle 30 days, absolute 180 days) and sets the `porto_session` and `porto_csrf` cookies; no token is
+        returned. Rate limited like `pairDevice` (10 per minute per peer). No `Idempotency-Key`: the code is single
+        use and the response carries a credential that must never be replayed.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PairSessionRequest" }
+      responses:
+        "201":
+          description: Paired; session cookies set
+          headers:
+            Set-Cookie:
+              description: porto_session and porto_csrf cookies
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PairSessionResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/device/v1/pair-session/totp:
+    post:
+      tags: [device]
+      operationId: verifyDeviceSessionTotp
+      summary: Verify the second factor of a browser device session (QR pairing of a user with TOTP, M6a)
+      description: |
+        A user with a confirmed second factor who pairs a phone with `pairDeviceSession` gets a session that is
+        unusable (`totp_required: true` in the result) until a TOTP code (accepted once) or a recovery code is
+        entered on the phone. Uses the `porto_session` cookie set by `pairDeviceSession`; 401 `unauthorized` when
+        it is not a live device session. The pending session lives 10 minutes only; on success it is replaced by a
+        new device session (rotated `porto_session` and `porto_csrf` cookies, the pending token stops working).
+        Throttled like a login (5 failures per user in 15 minutes) and rate limited per peer like
+        `pairDeviceSession`.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DeviceSessionTotpRequest" }
+      responses:
+        "204":
+          description: Second factor verified; the device session is replaced by a usable one
+          headers:
+            Set-Cookie:
+              description: rotated porto_session and porto_csrf cookies
+              schema: { type: string }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/desktop/v1/status:
+    get:
+      tags: [desktop]
+      operationId: getDesktopStatus
+      summary: Desktop edition status for the app window (loopback only, no authentication)
+      description: |
+        Every `/api/desktop/v1` operation answers only on the desktop loopback listener, from a loopback peer, with
+        an allowed `Host`; elsewhere (server edition, local network) it is 404 `not_found` (INV-80).
+      security: []
+      responses:
+        "200":
+          description: Status
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DesktopStatus" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/desktop/v1/first-run:
+    post:
+      tags: [desktop]
+      operationId: desktopFirstRun
+      summary: Create the first owner and organization from the app window (single-use first-run token)
+      description: Sets the `porto_session` and `porto_csrf` cookies. The marina is created afterwards by the panel.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DesktopFirstRunRequest" }
+      responses:
+        "201":
+          description: Owner created; session cookies set
+          headers:
+            Set-Cookie:
+              description: porto_session and porto_csrf cookies
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DesktopFirstRunResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/desktop/v1/first-run/restore:
+    post:
+      tags: [desktop]
+      operationId: desktopFirstRunRestore
+      summary: Restore a backup instead of creating the owner on the first run (first-run token in a header)
+      description: |
+        Raw `.tar.gz` body streamed to disk (limit 4 GiB, `x-porto-max-stream-bytes`). Refused (409
+        first_run_done) once an owner exists. The first-run token is consumed only when the restore is prepared:
+        a corrupt archive (422) leaves it usable. 202: the server restarts on the restored database; everybody
+        logs in again.
+      security: []
+      x-porto-max-stream-bytes: 4294967296
+      parameters:
+        - $ref: "#/components/parameters/FirstRunToken"
+      requestBody:
+        required: true
+        content:
+          application/gzip:
+            schema: { type: string, format: binary }
+      responses:
+        "202": { description: Restore scheduled; the server restarts }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/desktop/v1/settings:
+    get:
+      tags: [desktop]
+      operationId: getDesktopSettings
+      summary: Desktop settings (owner, loopback)
+      security: &desktopReadSecurity
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DesktopSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [desktop]
+      operationId: updateDesktopSettings
+      summary: Change desktop settings (owner, loopback); the local network is switched with PUT /lan
+      security: &desktopWriteSecurity
+        - cookieAuth: []
+          csrfToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DesktopSettingsPatch" }
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DesktopSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/desktop/v1/lan:
+    get:
+      tags: [desktop]
+      operationId: getDesktopLan
+      summary: Local-network listener status (owner, loopback)
+      security: *desktopReadSecurity
+      responses:
+        "200":
+          description: Status
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LanStatus" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [desktop]
+      operationId: setDesktopLan
+      summary: Switch the local network on or off (owner, loopback); the listener exists only while on
+      security: *desktopWriteSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LanUpdate" }
+      responses:
+        "200":
+          description: Status
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LanStatus" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/desktop/v1/lan/certificate:
+    post:
+      tags: [desktop]
+      operationId: rotateLanCertificate
+      summary: Re-issue the local-network certificate (all=true also regenerates the local CA) (owner, loopback)
+      security: *desktopWriteSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LanCertificateRotate" }
+      responses:
+        "200":
+          description: Status
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LanStatus" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/desktop/v1/backups:
+    get:
+      tags: [desktop]
+      operationId: listDesktopBackups
+      summary: Backups in the backup folder and the scheduler status (owner, loopback)
+      security: *desktopReadSecurity
+      responses:
+        "200":
+          description: Backups, newest first
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DesktopBackupList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [desktop]
+      operationId: createDesktopBackup
+      summary: Take a manual backup now (owner, loopback)
+      security: *desktopWriteSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "201":
+          description: Backup written
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DesktopBackupFile" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/desktop/v1/backups/{backupId}/restore:
+    parameters:
+      - name: backupId
+        in: path
+        required: true
+        description: File name of the backup (porto-YYYYMMDD-HHMMSS-<kind>.tar.gz)
+        schema: { type: string, maxLength: 128 }
+    post:
+      tags: [desktop]
+      operationId: restoreDesktopBackup
+      summary: Restore a listed backup after a pre-restore safety backup; the server restarts (owner, loopback)
+      security: *desktopWriteSecurity
+      responses:
+        "202": { description: Restore scheduled; the server restarts }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/desktop/v1/restore-upload:
+    post:
+      tags: [desktop]
+      operationId: uploadDesktopRestore
+      summary: Restore an uploaded backup archive (owner, loopback); the server restarts
+      description: Raw `.tar.gz` body streamed to disk (limit 4 GiB, `x-porto-max-stream-bytes`).
+      security: *desktopWriteSecurity
+      x-porto-max-stream-bytes: 4294967296
+      requestBody:
+        required: true
+        content:
+          application/gzip:
+            schema: { type: string, format: binary }
+      responses:
+        "202": { description: Restore scheduled; the server restarts }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/desktop/v1/secret-key/reveal:
+    post:
+      tags: [desktop]
+      operationId: revealDesktopSecretKey
+      summary: Show the secret key once, after re-entering the password (owner, loopback; 5 per 15 minutes)
+      security: *desktopWriteSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DesktopSecretRevealRequest" }
+      responses:
+        "200":
+          description: The secret key (never logged, never stored by the panel)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DesktopSecretKey" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/desktop/v1/open:
+    post:
+      tags: [desktop]
+      operationId: openDesktopFolder
+      summary: Open a fixed folder (data, backups, logs) with the operating system (owner, loopback)
+      security: *desktopWriteSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DesktopOpenRequest" }
+      responses:
+        "204": { description: Opened }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/desktop/v1/activate:
+    post:
+      tags: [desktop]
+      operationId: activateDesktop
+      summary: Bring the running app window to the front (second launch on the same data folder)
+      description: Authenticated by the instance token of the running process (header `Porto-Instance-Token`).
+      security:
+        - instanceToken: []
+      responses:
+        "204": { description: Activated }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
 
   /api/public/v1/{slug}:
     parameters:
@@ -11178,6 +11548,13 @@ components:
       type: http
       scheme: bearer
       bearerFormat: po_dev_<prefix>_<secret>
+    instanceToken:
+      type: apiKey
+      in: header
+      name: Porto-Instance-Token
+      description: >-
+        Token of the running desktop process (M6a), read by a second launch from the data folder; checked by the
+        handler, not by the session middleware.
 
   headers:
     ETag:
@@ -11435,6 +11812,12 @@ components:
       in: query
       required: false
       schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+    FirstRunToken:
+      name: Porto-First-Run-Token
+      in: header
+      required: true
+      description: Single-use first-run token of the desktop window (never in the URL)
+      schema: { type: string, maxLength: 128 }
     IdempotencyKey:
       name: Idempotency-Key
       in: header
@@ -11774,6 +12157,13 @@ components:
         - provider_refund_unsupported
         - provider_error
         - billing_item_missing
+        - first_run_token_invalid
+        - first_run_done
+        - lan_port_unavailable
+        - lan_no_address
+        - backup_in_progress
+        - restore_failed
+        - restore_backup_newer
 
     FieldError:
       type: object
@@ -11830,15 +12220,20 @@ components:
 
     Meta:
       type: object
-      required: [version, api_version, edition, capabilities, demo_pairing, pricing_engine_version]
+      required: [version, api_version, edition, capabilities, demo_pairing, local_mode, pricing_engine_version]
       properties:
         version: { type: string }
         api_version: { type: string }
-        edition: { type: string, enum: [server] }
+        edition: { type: string, enum: [server, desktop] }
         capabilities:
           type: array
           items: { type: string }
         demo_pairing: { type: boolean }
+        local_mode:
+          type: boolean
+          description: >-
+            Online features (public page, online payments and payment links, remote signature) are unavailable
+            because the instance is not reachable from the internet (desktop edition)
         pricing_engine_version:
           description: Version of the pricing engine (quotes store it with their price snapshot, INV-20)
           type: integer
@@ -12273,12 +12668,21 @@ components:
 
     PairingCode:
       type: object
-      required: [code, expires_at, qr_payload, qr_svg]
+      required: [code, expires_at, qr_payload, qr_svg, pair_url, fingerprint, reachable]
       properties:
         code: { type: string, description: XXXX-XXXX }
         expires_at: { type: string, format: date-time }
-        qr_payload: { type: string }
-        qr_svg: { type: string }
+        qr_payload: { type: string, description: "porto://pair?v=1&url=…&code=…[&fp=…] for native clients" }
+        qr_svg: { type: string, description: QR of pair_url (phones open it with the camera) }
+        pair_url:
+          type: string
+          description: "<origin>/admin/pair#c=<code>[&fp=<fingerprint>]; the code is in the fragment"
+        fingerprint:
+          type: [string, "null"]
+          description: Local-network certificate fingerprint (base64url SHA-256), null outside the local network
+        reachable:
+          type: boolean
+          description: False when phones cannot reach pair_url (desktop edition with the local network off)
 
     UserRef:
       type: object
@@ -12289,12 +12693,13 @@ components:
 
     Device:
       type: object
-      required: [id, name, platform, kind, app_version, user, token_prefix, last_used_at, revoked_at, created_at]
+      required: [id, name, platform, kind, access, app_version, user, token_prefix, last_used_at, revoked_at, created_at]
       properties:
         id: { type: string }
         name: { type: string }
         platform: { $ref: "#/components/schemas/DevicePlatform" }
         kind: { $ref: "#/components/schemas/DeviceKind" }
+        access: { $ref: "#/components/schemas/DeviceAccess" }
         app_version: { type: string }
         user: { $ref: "#/components/schemas/UserRef" }
         token_prefix: { type: string }
@@ -12523,6 +12928,202 @@ components:
         permissions:
           type: array
           items: { $ref: "#/components/schemas/Permission" }
+
+    # ---- M6a desktop edition (m6a-plan §3.4) ----
+
+    DeviceAccess:
+      type: string
+      description: token = po_dev_ device token (native clients); browser = device session cookie (QR pairing)
+      enum: [token, browser]
+
+    PairSessionRequest:
+      type: object
+      required: [code, name, platform, kind]
+      properties:
+        code: { type: string, maxLength: 16 }
+        name: { type: string, maxLength: 100 }
+        platform: { $ref: "#/components/schemas/DevicePlatform" }
+        kind: { $ref: "#/components/schemas/DeviceKind" }
+
+    PairSessionResult:
+      type: object
+      required: [device, marina, user, permissions, totp_required]
+      properties:
+        device: { $ref: "#/components/schemas/Device" }
+        marina: { $ref: "#/components/schemas/MarinaRef" }
+        user: { $ref: "#/components/schemas/UserRef" }
+        permissions:
+          type: array
+          items: { $ref: "#/components/schemas/Permission" }
+        totp_required:
+          type: boolean
+          description: The user has a second factor; call verifyDeviceSessionTotp before using the session.
+
+    DeviceSessionTotpRequest:
+      type: object
+      description: Exactly one of totp_code and recovery_code.
+      properties:
+        totp_code: { type: string, maxLength: 16 }
+        recovery_code: { type: string, maxLength: 32 }
+
+    DesktopMode:
+      type: string
+      description: local in M6a (remote is reserved for M6b)
+      enum: [local]
+
+    DesktopUpdate:
+      type: object
+      required: [version, url]
+      properties:
+        version: { type: string }
+        url: { type: string }
+
+    DesktopStatus:
+      type: object
+      required: [version, mode, first_run_pending, update, secret_store]
+      properties:
+        version: { type: string }
+        mode: { $ref: "#/components/schemas/DesktopMode" }
+        first_run_pending: { type: boolean }
+        update:
+          description: A newer version (notify only, never installed); null when none, dismissed or the check is off
+          oneOf:
+            - $ref: "#/components/schemas/DesktopUpdate"
+            - type: "null"
+        secret_store:
+          type: string
+          enum: [keyring, file]
+
+    DesktopFirstRunRequest:
+      type: object
+      required: [token, organization, name, email, password, update_check]
+      properties:
+        token: { type: string, maxLength: 128 }
+        organization: { type: string, maxLength: 200 }
+        name: { type: string, maxLength: 200 }
+        email: { type: string, maxLength: 254 }
+        password: { type: string, maxLength: 256 }
+        update_check: { type: boolean }
+
+    DesktopFirstRunResult:
+      type: object
+      required: [user_id]
+      properties:
+        user_id: { type: string }
+
+    DesktopSettings:
+      type: object
+      required: [mode, port, lan_enabled, lan_port, lan_address, backup_dir, backup_keep_daily, backup_keep_exit,
+        update_check, dismissed_update, data_dir, logs_dir]
+      properties:
+        mode: { $ref: "#/components/schemas/DesktopMode" }
+        port: { type: integer, description: Loopback port of the app window }
+        lan_enabled: { type: boolean }
+        lan_port: { type: integer, minimum: 1024, maximum: 65535 }
+        lan_address: { type: string, description: Empty = automatic }
+        backup_dir: { type: string, description: Empty = the backups folder inside the data folder }
+        backup_keep_daily: { type: integer, minimum: 1, maximum: 365 }
+        backup_keep_exit: { type: integer, minimum: 1, maximum: 50 }
+        update_check: { type: boolean }
+        dismissed_update: { type: string, description: Version whose update banner was dismissed }
+        data_dir: { type: string, readOnly: true }
+        logs_dir: { type: string, readOnly: true }
+
+    DesktopSettingsPatch:
+      type: object
+      properties:
+        backup_dir: { type: string, maxLength: 1024 }
+        backup_keep_daily: { type: integer, minimum: 1, maximum: 365 }
+        backup_keep_exit: { type: integer, minimum: 1, maximum: 50 }
+        update_check: { type: boolean }
+        dismissed_update: { type: string, maxLength: 64 }
+
+    LanStatus:
+      type: object
+      required: [enabled, listening, url, address, addresses, port, fingerprint, ca_fingerprint, cert_expires_at,
+        error]
+      properties:
+        enabled: { type: boolean }
+        listening: { type: boolean }
+        url: { type: string, description: "https://<address>:<port> while listening, else empty" }
+        address: { type: string }
+        addresses:
+          type: array
+          items: { type: string }
+        port: { type: integer }
+        fingerprint: { type: string, description: SHA-256 of the leaf certificate (hex), empty before the first enable }
+        ca_fingerprint: { type: string, description: SHA-256 of the local CA certificate (hex) }
+        cert_expires_at: { type: [string, "null"], format: date-time }
+        error:
+          type: [string, "null"]
+          description: Problem slug of the last failed enable (lan_port_unavailable, lan_no_address)
+
+    LanUpdate:
+      type: object
+      required: [enabled]
+      properties:
+        enabled: { type: boolean }
+        port: { type: integer, minimum: 1024, maximum: 65535 }
+        address: { type: string, maxLength: 64, description: Empty = automatic }
+
+    LanCertificateRotate:
+      type: object
+      required: [all]
+      properties:
+        all: { type: boolean, description: Also regenerate the local CA }
+
+    DesktopBackupKind:
+      type: string
+      enum: [daily, exit, manual, pre-restore]
+
+    DesktopBackupFile:
+      type: object
+      required: [id, kind, size_bytes, created_at, sha256]
+      properties:
+        id: { type: string, description: File name }
+        kind: { $ref: "#/components/schemas/DesktopBackupKind" }
+        size_bytes: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        sha256: { type: string }
+
+    DesktopBackupStatus:
+      type: object
+      required: [dir, fallback, last_daily_at, last_error, next_due_at]
+      properties:
+        dir: { type: string }
+        fallback: { type: boolean, description: The configured folder is unavailable; backups go to the data folder }
+        last_daily_at: { type: [string, "null"], format: date-time }
+        last_error: { type: [string, "null"] }
+        next_due_at: { type: [string, "null"], format: date-time }
+
+    DesktopBackupList:
+      type: object
+      required: [items, status]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/DesktopBackupFile" }
+        status: { $ref: "#/components/schemas/DesktopBackupStatus" }
+
+    DesktopSecretRevealRequest:
+      type: object
+      required: [password]
+      properties:
+        password: { type: string, maxLength: 256 }
+
+    DesktopSecretKey:
+      type: object
+      required: [secret_key]
+      properties:
+        secret_key: { type: string }
+
+    DesktopOpenRequest:
+      type: object
+      required: [target]
+      properties:
+        target:
+          type: string
+          enum: [data_dir, backup_dir, logs]
 
     PublicMarina:
       type: object

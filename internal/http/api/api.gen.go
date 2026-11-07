@@ -1856,18 +1856,114 @@ func (e DecorationKind) Valid() bool {
 	}
 }
 
+// Defines values for DesktopBackupKind.
+const (
+	DesktopBackupKindDaily      DesktopBackupKind = "daily"
+	DesktopBackupKindExit       DesktopBackupKind = "exit"
+	DesktopBackupKindManual     DesktopBackupKind = "manual"
+	DesktopBackupKindPreRestore DesktopBackupKind = "pre-restore"
+)
+
+// Valid indicates whether the value is a known member of the DesktopBackupKind enum.
+func (e DesktopBackupKind) Valid() bool {
+	switch e {
+	case DesktopBackupKindDaily:
+		return true
+	case DesktopBackupKindExit:
+		return true
+	case DesktopBackupKindManual:
+		return true
+	case DesktopBackupKindPreRestore:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DesktopMode.
+const (
+	Local DesktopMode = "local"
+)
+
+// Valid indicates whether the value is a known member of the DesktopMode enum.
+func (e DesktopMode) Valid() bool {
+	switch e {
+	case Local:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DesktopOpenRequestTarget.
+const (
+	BackupDir DesktopOpenRequestTarget = "backup_dir"
+	DataDir   DesktopOpenRequestTarget = "data_dir"
+	Logs      DesktopOpenRequestTarget = "logs"
+)
+
+// Valid indicates whether the value is a known member of the DesktopOpenRequestTarget enum.
+func (e DesktopOpenRequestTarget) Valid() bool {
+	switch e {
+	case BackupDir:
+		return true
+	case DataDir:
+		return true
+	case Logs:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DesktopStatusSecretStore.
+const (
+	DesktopStatusSecretStoreFile    DesktopStatusSecretStore = "file"
+	DesktopStatusSecretStoreKeyring DesktopStatusSecretStore = "keyring"
+)
+
+// Valid indicates whether the value is a known member of the DesktopStatusSecretStore enum.
+func (e DesktopStatusSecretStore) Valid() bool {
+	switch e {
+	case DesktopStatusSecretStoreFile:
+		return true
+	case DesktopStatusSecretStoreKeyring:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DeviceAccess.
+const (
+	DeviceAccessBrowser DeviceAccess = "browser"
+	DeviceAccessToken   DeviceAccess = "token"
+)
+
+// Valid indicates whether the value is a known member of the DeviceAccess enum.
+func (e DeviceAccess) Valid() bool {
+	switch e {
+	case DeviceAccessBrowser:
+		return true
+	case DeviceAccessToken:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for DeviceKind.
 const (
-	Desktop DeviceKind = "desktop"
-	Mobile  DeviceKind = "mobile"
+	DeviceKindDesktop DeviceKind = "desktop"
+	DeviceKindMobile  DeviceKind = "mobile"
 )
 
 // Valid indicates whether the value is a known member of the DeviceKind enum.
 func (e DeviceKind) Valid() bool {
 	switch e {
-	case Desktop:
+	case DeviceKindDesktop:
 		return true
-	case Mobile:
+	case DeviceKindMobile:
 		return true
 	default:
 		return false
@@ -3424,13 +3520,16 @@ func (e MemberScope) Valid() bool {
 
 // Defines values for MetaEdition.
 const (
-	Server MetaEdition = "server"
+	MetaEditionDesktop MetaEdition = "desktop"
+	MetaEditionServer  MetaEdition = "server"
 )
 
 // Valid indicates whether the value is a known member of the MetaEdition enum.
 func (e MetaEdition) Valid() bool {
 	switch e {
-	case Server:
+	case MetaEditionDesktop:
+		return true
+	case MetaEditionServer:
 		return true
 	default:
 		return false
@@ -4506,6 +4605,7 @@ func (e PricingStage) Valid() bool {
 const (
 	ProblemTypeAlreadyMember             ProblemType = "already_member"
 	ProblemTypeAlreadyReversed           ProblemType = "already_reversed"
+	ProblemTypeBackupInProgress          ProblemType = "backup_in_progress"
 	ProblemTypeBadRequest                ProblemType = "bad_request"
 	ProblemTypeBillingItemMissing        ProblemType = "billing_item_missing"
 	ProblemTypeCashInsufficient          ProblemType = "cash_insufficient"
@@ -4531,6 +4631,8 @@ const (
 	ProblemTypeExportEmpty               ProblemType = "export_empty"
 	ProblemTypeExportTooLarge            ProblemType = "export_too_large"
 	ProblemTypeFileTooLarge              ProblemType = "file_too_large"
+	ProblemTypeFirstRunDone              ProblemType = "first_run_done"
+	ProblemTypeFirstRunTokenInvalid      ProblemType = "first_run_token_invalid"
 	ProblemTypeFitBlocked                ProblemType = "fit_blocked"
 	ProblemTypeForbidden                 ProblemType = "forbidden"
 	ProblemTypeHoldExpired               ProblemType = "hold_expired"
@@ -4548,6 +4650,8 @@ const (
 	ProblemTypeInvalidTotp               ProblemType = "invalid_totp"
 	ProblemTypeInvalidTransition         ProblemType = "invalid_transition"
 	ProblemTypeInvalidWebhookUrl         ProblemType = "invalid_webhook_url"
+	ProblemTypeLanNoAddress              ProblemType = "lan_no_address"
+	ProblemTypeLanPortUnavailable        ProblemType = "lan_port_unavailable"
 	ProblemTypeLastOwner                 ProblemType = "last_owner"
 	ProblemTypeLinkInvalid               ProblemType = "link_invalid"
 	ProblemTypeMandateOverlap            ProblemType = "mandate_overlap"
@@ -4588,6 +4692,8 @@ const (
 	ProblemTypeReleaseNotResold          ProblemType = "release_not_resold"
 	ProblemTypeRenewalExists             ProblemType = "renewal_exists"
 	ProblemTypeResourceTaken             ProblemType = "resource_taken"
+	ProblemTypeRestoreBackupNewer        ProblemType = "restore_backup_newer"
+	ProblemTypeRestoreFailed             ProblemType = "restore_failed"
 	ProblemTypeSharesInvalid             ProblemType = "shares_invalid"
 	ProblemTypeSignatureOpen             ProblemType = "signature_open"
 	ProblemTypeSlugTaken                 ProblemType = "slug_taken"
@@ -4619,6 +4725,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeAlreadyMember:
 		return true
 	case ProblemTypeAlreadyReversed:
+		return true
+	case ProblemTypeBackupInProgress:
 		return true
 	case ProblemTypeBadRequest:
 		return true
@@ -4670,6 +4778,10 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeFileTooLarge:
 		return true
+	case ProblemTypeFirstRunDone:
+		return true
+	case ProblemTypeFirstRunTokenInvalid:
+		return true
 	case ProblemTypeFitBlocked:
 		return true
 	case ProblemTypeForbidden:
@@ -4703,6 +4815,10 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeInvalidTransition:
 		return true
 	case ProblemTypeInvalidWebhookUrl:
+		return true
+	case ProblemTypeLanNoAddress:
+		return true
+	case ProblemTypeLanPortUnavailable:
 		return true
 	case ProblemTypeLastOwner:
 		return true
@@ -4783,6 +4899,10 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeRenewalExists:
 		return true
 	case ProblemTypeResourceTaken:
+		return true
+	case ProblemTypeRestoreBackupNewer:
+		return true
+	case ProblemTypeRestoreFailed:
 		return true
 	case ProblemTypeSharesInvalid:
 		return true
@@ -9857,8 +9977,133 @@ type DepthSpan struct {
 	ToCm Cm `json:"to_cm"`
 }
 
+// DesktopBackupFile defines model for DesktopBackupFile.
+type DesktopBackupFile struct {
+	CreatedAt time.Time `json:"created_at"`
+
+	// Id File name
+	Id        string            `json:"id"`
+	Kind      DesktopBackupKind `json:"kind"`
+	Sha256    string            `json:"sha256"`
+	SizeBytes int64             `json:"size_bytes"`
+}
+
+// DesktopBackupKind defines model for DesktopBackupKind.
+type DesktopBackupKind string
+
+// DesktopBackupList defines model for DesktopBackupList.
+type DesktopBackupList struct {
+	Items  []DesktopBackupFile `json:"items"`
+	Status DesktopBackupStatus `json:"status"`
+}
+
+// DesktopBackupStatus defines model for DesktopBackupStatus.
+type DesktopBackupStatus struct {
+	Dir string `json:"dir"`
+
+	// Fallback The configured folder is unavailable; backups go to the data folder
+	Fallback    bool       `json:"fallback"`
+	LastDailyAt *time.Time `json:"last_daily_at"`
+	LastError   *string    `json:"last_error"`
+	NextDueAt   *time.Time `json:"next_due_at"`
+}
+
+// DesktopFirstRunRequest defines model for DesktopFirstRunRequest.
+type DesktopFirstRunRequest struct {
+	Email        string `json:"email"`
+	Name         string `json:"name"`
+	Organization string `json:"organization"`
+	Password     string `json:"password"`
+	Token        string `json:"token"`
+	UpdateCheck  bool   `json:"update_check"`
+}
+
+// DesktopFirstRunResult defines model for DesktopFirstRunResult.
+type DesktopFirstRunResult struct {
+	UserId string `json:"user_id"`
+}
+
+// DesktopMode local in M6a (remote is reserved for M6b)
+type DesktopMode string
+
+// DesktopOpenRequest defines model for DesktopOpenRequest.
+type DesktopOpenRequest struct {
+	Target DesktopOpenRequestTarget `json:"target"`
+}
+
+// DesktopOpenRequestTarget defines model for DesktopOpenRequest.Target.
+type DesktopOpenRequestTarget string
+
+// DesktopSecretKey defines model for DesktopSecretKey.
+type DesktopSecretKey struct {
+	SecretKey string `json:"secret_key"`
+}
+
+// DesktopSecretRevealRequest defines model for DesktopSecretRevealRequest.
+type DesktopSecretRevealRequest struct {
+	Password string `json:"password"`
+}
+
+// DesktopSettings defines model for DesktopSettings.
+type DesktopSettings struct {
+	// BackupDir Empty = the backups folder inside the data folder
+	BackupDir       string  `json:"backup_dir"`
+	BackupKeepDaily int     `json:"backup_keep_daily"`
+	BackupKeepExit  int     `json:"backup_keep_exit"`
+	DataDir         *string `json:"data_dir,omitempty"`
+
+	// DismissedUpdate Version whose update banner was dismissed
+	DismissedUpdate string `json:"dismissed_update"`
+
+	// LanAddress Empty = automatic
+	LanAddress string  `json:"lan_address"`
+	LanEnabled bool    `json:"lan_enabled"`
+	LanPort    int     `json:"lan_port"`
+	LogsDir    *string `json:"logs_dir,omitempty"`
+
+	// Mode local in M6a (remote is reserved for M6b)
+	Mode DesktopMode `json:"mode"`
+
+	// Port Loopback port of the app window
+	Port        int  `json:"port"`
+	UpdateCheck bool `json:"update_check"`
+}
+
+// DesktopSettingsPatch defines model for DesktopSettingsPatch.
+type DesktopSettingsPatch struct {
+	BackupDir       *string `json:"backup_dir,omitempty"`
+	BackupKeepDaily *int    `json:"backup_keep_daily,omitempty"`
+	BackupKeepExit  *int    `json:"backup_keep_exit,omitempty"`
+	DismissedUpdate *string `json:"dismissed_update,omitempty"`
+	UpdateCheck     *bool   `json:"update_check,omitempty"`
+}
+
+// DesktopStatus defines model for DesktopStatus.
+type DesktopStatus struct {
+	FirstRunPending bool `json:"first_run_pending"`
+
+	// Mode local in M6a (remote is reserved for M6b)
+	Mode        DesktopMode              `json:"mode"`
+	SecretStore DesktopStatusSecretStore `json:"secret_store"`
+
+	// Update A newer version (notify only, never installed); null when none, dismissed or the check is off
+	Update  *DesktopUpdate `json:"update"`
+	Version string         `json:"version"`
+}
+
+// DesktopStatusSecretStore defines model for DesktopStatus.SecretStore.
+type DesktopStatusSecretStore string
+
+// DesktopUpdate defines model for DesktopUpdate.
+type DesktopUpdate struct {
+	Url     string `json:"url"`
+	Version string `json:"version"`
+}
+
 // Device defines model for Device.
 type Device struct {
+	// Access token = po_dev_ device token (native clients); browser = device session cookie (QR pairing)
+	Access      DeviceAccess   `json:"access"`
 	AppVersion  string         `json:"app_version"`
 	CreatedAt   time.Time      `json:"created_at"`
 	Id          string         `json:"id"`
@@ -9870,6 +10115,9 @@ type Device struct {
 	TokenPrefix string         `json:"token_prefix"`
 	User        UserRef        `json:"user"`
 }
+
+// DeviceAccess token = po_dev_ device token (native clients); browser = device session cookie (QR pairing)
+type DeviceAccess string
 
 // DeviceKind defines model for DeviceKind.
 type DeviceKind string
@@ -9888,6 +10136,12 @@ type DeviceSelf struct {
 	Marina      MarinaRef    `json:"marina"`
 	Permissions []Permission `json:"permissions"`
 	User        UserRef      `json:"user"`
+}
+
+// DeviceSessionTotpRequest Exactly one of totp_code and recovery_code.
+type DeviceSessionTotpRequest struct {
+	RecoveryCode *string `json:"recovery_code,omitempty"`
+	TotpCode     *string `json:"totp_code,omitempty"`
 }
 
 // DimensionSource defines model for DimensionSource.
@@ -11006,6 +11260,42 @@ type ItemUsage struct {
 	PriceLists int `json:"price_lists"`
 }
 
+// LanCertificateRotate defines model for LanCertificateRotate.
+type LanCertificateRotate struct {
+	// All Also regenerate the local CA
+	All bool `json:"all"`
+}
+
+// LanStatus defines model for LanStatus.
+type LanStatus struct {
+	Address   string   `json:"address"`
+	Addresses []string `json:"addresses"`
+
+	// CaFingerprint SHA-256 of the local CA certificate (hex)
+	CaFingerprint string     `json:"ca_fingerprint"`
+	CertExpiresAt *time.Time `json:"cert_expires_at"`
+	Enabled       bool       `json:"enabled"`
+
+	// Error Problem slug of the last failed enable (lan_port_unavailable, lan_no_address)
+	Error *string `json:"error"`
+
+	// Fingerprint SHA-256 of the leaf certificate (hex)
+	Fingerprint string `json:"fingerprint"`
+	Listening   bool   `json:"listening"`
+	Port        int    `json:"port"`
+
+	// Url https://<address>:<port> while listening, else empty
+	Url string `json:"url"`
+}
+
+// LanUpdate defines model for LanUpdate.
+type LanUpdate struct {
+	// Address Empty = automatic
+	Address *string `json:"address,omitempty"`
+	Enabled bool    `json:"enabled"`
+	Port    *int    `json:"port,omitempty"`
+}
+
 // LandGridGenerator defines model for LandGridGenerator.
 type LandGridGenerator struct {
 	// AisleCm Length in integer centimetres
@@ -11741,6 +12031,9 @@ type Meta struct {
 	DemoPairing  bool        `json:"demo_pairing"`
 	Edition      MetaEdition `json:"edition"`
 
+	// LocalMode Online features (public page, online payments and payment links, remote signature) are unavailable because the instance is not reachable from the internet (desktop edition)
+	LocalMode bool `json:"local_mode"`
+
 	// PricingEngineVersion Version of the pricing engine (quotes store it with their price snapshot, INV-20)
 	PricingEngineVersion int    `json:"pricing_engine_version"`
 	Version              string `json:"version"`
@@ -12134,13 +12427,45 @@ type PairResult struct {
 	User  UserRef `json:"user"`
 }
 
+// PairSessionRequest defines model for PairSessionRequest.
+type PairSessionRequest struct {
+	Code     string         `json:"code"`
+	Kind     DeviceKind     `json:"kind"`
+	Name     string         `json:"name"`
+	Platform DevicePlatform `json:"platform"`
+}
+
+// PairSessionResult defines model for PairSessionResult.
+type PairSessionResult struct {
+	Device      Device       `json:"device"`
+	Marina      MarinaRef    `json:"marina"`
+	Permissions []Permission `json:"permissions"`
+
+	// TotpRequired The user has a second factor; call verifyDeviceSessionTotp before using the session.
+	TotpRequired bool    `json:"totp_required"`
+	User         UserRef `json:"user"`
+}
+
 // PairingCode defines model for PairingCode.
 type PairingCode struct {
 	// Code XXXX-XXXX
 	Code      string    `json:"code"`
 	ExpiresAt time.Time `json:"expires_at"`
-	QrPayload string    `json:"qr_payload"`
-	QrSvg     string    `json:"qr_svg"`
+
+	// Fingerprint Local-network certificate fingerprint (base64url SHA-256), null outside the local network
+	Fingerprint *string `json:"fingerprint"`
+
+	// PairUrl <origin>/admin/pair#c=<code>[&fp=<fingerprint>]; the code is in the fragment
+	PairUrl string `json:"pair_url"`
+
+	// QrPayload porto://pair?v=1&url=…&code=…[&fp=…] for native clients
+	QrPayload string `json:"qr_payload"`
+
+	// QrSvg QR of pair_url (phones open it with the camera)
+	QrSvg string `json:"qr_svg"`
+
+	// Reachable False when phones cannot reach pair_url (desktop edition with the local network off)
+	Reachable bool `json:"reachable"`
 }
 
 // PairingCodeCreate defines model for PairingCodeCreate.
@@ -15768,6 +16093,9 @@ type FeeTableId = string
 // FileId defines model for FileId.
 type FileId = string
 
+// FirstRunToken defines model for FirstRunToken.
+type FirstRunToken = string
+
 // FiscalDocumentId defines model for FiscalDocumentId.
 type FiscalDocumentId = string
 
@@ -18114,6 +18442,18 @@ type StreamParams struct {
 	LastEventID *string `json:"Last-Event-ID,omitempty"`
 }
 
+// CreateDesktopBackupParams defines parameters for CreateDesktopBackup.
+type CreateDesktopBackupParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DesktopFirstRunRestoreParams defines parameters for DesktopFirstRunRestore.
+type DesktopFirstRunRestoreParams struct {
+	// PortoFirstRunToken Single-use first-run token of the desktop window (never in the URL)
+	PortoFirstRunToken FirstRunToken `json:"Porto-First-Run-Token"`
+}
+
 // PairDeviceParams defines parameters for PairDevice.
 type PairDeviceParams struct {
 	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
@@ -18682,11 +19022,35 @@ type CreateMarinaJSONRequestBody = MarinaCreate
 // AddOrgOwnerJSONRequestBody defines body for AddOrgOwner for application/json ContentType.
 type AddOrgOwnerJSONRequestBody = MemberCreate
 
+// DesktopFirstRunJSONRequestBody defines body for DesktopFirstRun for application/json ContentType.
+type DesktopFirstRunJSONRequestBody = DesktopFirstRunRequest
+
+// SetDesktopLanJSONRequestBody defines body for SetDesktopLan for application/json ContentType.
+type SetDesktopLanJSONRequestBody = LanUpdate
+
+// RotateLanCertificateJSONRequestBody defines body for RotateLanCertificate for application/json ContentType.
+type RotateLanCertificateJSONRequestBody = LanCertificateRotate
+
+// OpenDesktopFolderJSONRequestBody defines body for OpenDesktopFolder for application/json ContentType.
+type OpenDesktopFolderJSONRequestBody = DesktopOpenRequest
+
+// RevealDesktopSecretKeyJSONRequestBody defines body for RevealDesktopSecretKey for application/json ContentType.
+type RevealDesktopSecretKeyJSONRequestBody = DesktopSecretRevealRequest
+
+// UpdateDesktopSettingsJSONRequestBody defines body for UpdateDesktopSettings for application/json ContentType.
+type UpdateDesktopSettingsJSONRequestBody = DesktopSettingsPatch
+
 // DemoPairDeviceJSONRequestBody defines body for DemoPairDevice for application/json ContentType.
 type DemoPairDeviceJSONRequestBody = DemoPairRequest
 
 // PairDeviceJSONRequestBody defines body for PairDevice for application/json ContentType.
 type PairDeviceJSONRequestBody = PairRequest
+
+// PairDeviceSessionJSONRequestBody defines body for PairDeviceSession for application/json ContentType.
+type PairDeviceSessionJSONRequestBody = PairSessionRequest
+
+// VerifyDeviceSessionTotpJSONRequestBody defines body for VerifyDeviceSessionTotp for application/json ContentType.
+type VerifyDeviceSessionTotpJSONRequestBody = DeviceSessionTotpRequest
 
 // AcceptPublicQuoteJSONRequestBody defines body for AcceptPublicQuote for application/json ContentType.
 type AcceptPublicQuoteJSONRequestBody = PublicQuoteAccept
@@ -20257,12 +20621,63 @@ type ServerInterface interface {
 	// Stream Server-sent events of a marina (marina.read)
 	// (GET /api/admin/v1/stream)
 	Stream(w http.ResponseWriter, r *http.Request, params StreamParams)
+	// ActivateDesktop Bring the running app window to the front (second launch on the same data folder)
+	// (POST /api/desktop/v1/activate)
+	ActivateDesktop(w http.ResponseWriter, r *http.Request)
+	// ListDesktopBackups Backups in the backup folder and the scheduler status (owner, loopback)
+	// (GET /api/desktop/v1/backups)
+	ListDesktopBackups(w http.ResponseWriter, r *http.Request)
+	// CreateDesktopBackup Take a manual backup now (owner, loopback)
+	// (POST /api/desktop/v1/backups)
+	CreateDesktopBackup(w http.ResponseWriter, r *http.Request, params CreateDesktopBackupParams)
+	// RestoreDesktopBackup Restore a listed backup after a pre-restore safety backup; the server restarts (owner, loopback)
+	// (POST /api/desktop/v1/backups/{backupId}/restore)
+	RestoreDesktopBackup(w http.ResponseWriter, r *http.Request, backupId string)
+	// DesktopFirstRun Create the first owner and organization from the app window (single-use first-run token)
+	// (POST /api/desktop/v1/first-run)
+	DesktopFirstRun(w http.ResponseWriter, r *http.Request)
+	// DesktopFirstRunRestore Restore a backup instead of creating the owner on the first run (first-run token in a header)
+	// (POST /api/desktop/v1/first-run/restore)
+	DesktopFirstRunRestore(w http.ResponseWriter, r *http.Request, params DesktopFirstRunRestoreParams)
+	// GetDesktopLan Local-network listener status (owner, loopback)
+	// (GET /api/desktop/v1/lan)
+	GetDesktopLan(w http.ResponseWriter, r *http.Request)
+	// SetDesktopLan Switch the local network on or off (owner, loopback); the listener exists only while on
+	// (PUT /api/desktop/v1/lan)
+	SetDesktopLan(w http.ResponseWriter, r *http.Request)
+	// RotateLanCertificate Re-issue the local-network certificate (all=true also regenerates the local CA) (owner, loopback)
+	// (POST /api/desktop/v1/lan/certificate)
+	RotateLanCertificate(w http.ResponseWriter, r *http.Request)
+	// OpenDesktopFolder Open a fixed folder (data, backups, logs) with the operating system (owner, loopback)
+	// (POST /api/desktop/v1/open)
+	OpenDesktopFolder(w http.ResponseWriter, r *http.Request)
+	// UploadDesktopRestore Restore an uploaded backup archive (owner, loopback); the server restarts
+	// (POST /api/desktop/v1/restore-upload)
+	UploadDesktopRestore(w http.ResponseWriter, r *http.Request)
+	// RevealDesktopSecretKey Show the secret key once, after re-entering the password (owner, loopback; 5 per 15 minutes)
+	// (POST /api/desktop/v1/secret-key/reveal)
+	RevealDesktopSecretKey(w http.ResponseWriter, r *http.Request)
+	// GetDesktopSettings Desktop settings (owner, loopback)
+	// (GET /api/desktop/v1/settings)
+	GetDesktopSettings(w http.ResponseWriter, r *http.Request)
+	// UpdateDesktopSettings Change desktop settings (owner, loopback); the local network is switched with PUT /lan
+	// (PATCH /api/desktop/v1/settings)
+	UpdateDesktopSettings(w http.ResponseWriter, r *http.Request)
+	// GetDesktopStatus Desktop edition status for the app window (loopback only, no authentication)
+	// (GET /api/desktop/v1/status)
+	GetDesktopStatus(w http.ResponseWriter, r *http.Request)
 	// DemoPairDevice Pair as the demo user without a code (demo installations only)
 	// (POST /api/device/v1/demo-pairing)
 	DemoPairDevice(w http.ResponseWriter, r *http.Request)
 	// PairDevice Exchange a pairing code for a device token (shown once)
 	// (POST /api/device/v1/pair)
 	PairDevice(w http.ResponseWriter, r *http.Request, params PairDeviceParams)
+	// PairDeviceSession Exchange a pairing code for a browser device session (QR on the local network, M6a)
+	// (POST /api/device/v1/pair-session)
+	PairDeviceSession(w http.ResponseWriter, r *http.Request)
+	// VerifyDeviceSessionTotp Verify the second factor of a browser device session (QR pairing of a user with TOTP, M6a)
+	// (POST /api/device/v1/pair-session/totp)
+	VerifyDeviceSessionTotp(w http.ResponseWriter, r *http.Request)
 	// UnpairDeviceSelf Revoke the calling device's token
 	// (DELETE /api/device/v1/self)
 	UnpairDeviceSelf(w http.ResponseWriter, r *http.Request)
@@ -22801,6 +23216,96 @@ func (_ Unimplemented) Stream(w http.ResponseWriter, r *http.Request, params Str
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ActivateDesktop Bring the running app window to the front (second launch on the same data folder)
+// (POST /api/desktop/v1/activate)
+func (_ Unimplemented) ActivateDesktop(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListDesktopBackups Backups in the backup folder and the scheduler status (owner, loopback)
+// (GET /api/desktop/v1/backups)
+func (_ Unimplemented) ListDesktopBackups(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateDesktopBackup Take a manual backup now (owner, loopback)
+// (POST /api/desktop/v1/backups)
+func (_ Unimplemented) CreateDesktopBackup(w http.ResponseWriter, r *http.Request, params CreateDesktopBackupParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RestoreDesktopBackup Restore a listed backup after a pre-restore safety backup; the server restarts (owner, loopback)
+// (POST /api/desktop/v1/backups/{backupId}/restore)
+func (_ Unimplemented) RestoreDesktopBackup(w http.ResponseWriter, r *http.Request, backupId string) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DesktopFirstRun Create the first owner and organization from the app window (single-use first-run token)
+// (POST /api/desktop/v1/first-run)
+func (_ Unimplemented) DesktopFirstRun(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DesktopFirstRunRestore Restore a backup instead of creating the owner on the first run (first-run token in a header)
+// (POST /api/desktop/v1/first-run/restore)
+func (_ Unimplemented) DesktopFirstRunRestore(w http.ResponseWriter, r *http.Request, params DesktopFirstRunRestoreParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetDesktopLan Local-network listener status (owner, loopback)
+// (GET /api/desktop/v1/lan)
+func (_ Unimplemented) GetDesktopLan(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SetDesktopLan Switch the local network on or off (owner, loopback); the listener exists only while on
+// (PUT /api/desktop/v1/lan)
+func (_ Unimplemented) SetDesktopLan(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RotateLanCertificate Re-issue the local-network certificate (all=true also regenerates the local CA) (owner, loopback)
+// (POST /api/desktop/v1/lan/certificate)
+func (_ Unimplemented) RotateLanCertificate(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// OpenDesktopFolder Open a fixed folder (data, backups, logs) with the operating system (owner, loopback)
+// (POST /api/desktop/v1/open)
+func (_ Unimplemented) OpenDesktopFolder(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UploadDesktopRestore Restore an uploaded backup archive (owner, loopback); the server restarts
+// (POST /api/desktop/v1/restore-upload)
+func (_ Unimplemented) UploadDesktopRestore(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RevealDesktopSecretKey Show the secret key once, after re-entering the password (owner, loopback; 5 per 15 minutes)
+// (POST /api/desktop/v1/secret-key/reveal)
+func (_ Unimplemented) RevealDesktopSecretKey(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetDesktopSettings Desktop settings (owner, loopback)
+// (GET /api/desktop/v1/settings)
+func (_ Unimplemented) GetDesktopSettings(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateDesktopSettings Change desktop settings (owner, loopback); the local network is switched with PUT /lan
+// (PATCH /api/desktop/v1/settings)
+func (_ Unimplemented) UpdateDesktopSettings(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetDesktopStatus Desktop edition status for the app window (loopback only, no authentication)
+// (GET /api/desktop/v1/status)
+func (_ Unimplemented) GetDesktopStatus(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // DemoPairDevice Pair as the demo user without a code (demo installations only)
 // (POST /api/device/v1/demo-pairing)
 func (_ Unimplemented) DemoPairDevice(w http.ResponseWriter, r *http.Request) {
@@ -22810,6 +23315,18 @@ func (_ Unimplemented) DemoPairDevice(w http.ResponseWriter, r *http.Request) {
 // PairDevice Exchange a pairing code for a device token (shown once)
 // (POST /api/device/v1/pair)
 func (_ Unimplemented) PairDevice(w http.ResponseWriter, r *http.Request, params PairDeviceParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PairDeviceSession Exchange a pairing code for a browser device session (QR on the local network, M6a)
+// (POST /api/device/v1/pair-session)
+func (_ Unimplemented) PairDeviceSession(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// VerifyDeviceSessionTotp Verify the second factor of a browser device session (QR pairing of a user with TOTP, M6a)
+// (POST /api/device/v1/pair-session/totp)
+func (_ Unimplemented) VerifyDeviceSessionTotp(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -46016,6 +46533,286 @@ func (siw *ServerInterfaceWrapper) Stream(w http.ResponseWriter, r *http.Request
 	handler.ServeHTTP(w, r)
 }
 
+// ActivateDesktop operation middleware
+func (siw *ServerInterfaceWrapper) ActivateDesktop(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ActivateDesktop(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListDesktopBackups operation middleware
+func (siw *ServerInterfaceWrapper) ListDesktopBackups(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListDesktopBackups(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateDesktopBackup operation middleware
+func (siw *ServerInterfaceWrapper) CreateDesktopBackup(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateDesktopBackupParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateDesktopBackup(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RestoreDesktopBackup operation middleware
+func (siw *ServerInterfaceWrapper) RestoreDesktopBackup(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "backupId" -------------
+	var backupId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "backupId", chi.URLParam(r, "backupId"), &backupId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "backupId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RestoreDesktopBackup(w, r, backupId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DesktopFirstRun operation middleware
+func (siw *ServerInterfaceWrapper) DesktopFirstRun(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DesktopFirstRun(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DesktopFirstRunRestore operation middleware
+func (siw *ServerInterfaceWrapper) DesktopFirstRunRestore(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DesktopFirstRunRestoreParams
+
+	headers := r.Header
+
+	// ------------- Required header parameter "Porto-First-Run-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-First-Run-Token")]; found {
+		var PortoFirstRunToken FirstRunToken
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-First-Run-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-First-Run-Token", valueList[0], &PortoFirstRunToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-First-Run-Token", Err: err})
+			return
+		}
+
+		params.PortoFirstRunToken = PortoFirstRunToken
+
+	} else {
+		err := fmt.Errorf("Header parameter Porto-First-Run-Token is required, but not found")
+		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "Porto-First-Run-Token", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DesktopFirstRunRestore(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetDesktopLan operation middleware
+func (siw *ServerInterfaceWrapper) GetDesktopLan(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetDesktopLan(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetDesktopLan operation middleware
+func (siw *ServerInterfaceWrapper) SetDesktopLan(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetDesktopLan(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RotateLanCertificate operation middleware
+func (siw *ServerInterfaceWrapper) RotateLanCertificate(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RotateLanCertificate(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// OpenDesktopFolder operation middleware
+func (siw *ServerInterfaceWrapper) OpenDesktopFolder(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.OpenDesktopFolder(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UploadDesktopRestore operation middleware
+func (siw *ServerInterfaceWrapper) UploadDesktopRestore(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UploadDesktopRestore(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RevealDesktopSecretKey operation middleware
+func (siw *ServerInterfaceWrapper) RevealDesktopSecretKey(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RevealDesktopSecretKey(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetDesktopSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetDesktopSettings(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetDesktopSettings(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateDesktopSettings operation middleware
+func (siw *ServerInterfaceWrapper) UpdateDesktopSettings(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateDesktopSettings(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetDesktopStatus operation middleware
+func (siw *ServerInterfaceWrapper) GetDesktopStatus(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetDesktopStatus(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // DemoPairDevice operation middleware
 func (siw *ServerInterfaceWrapper) DemoPairDevice(w http.ResponseWriter, r *http.Request) {
 
@@ -46062,6 +46859,34 @@ func (siw *ServerInterfaceWrapper) PairDevice(w http.ResponseWriter, r *http.Req
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PairDevice(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PairDeviceSession operation middleware
+func (siw *ServerInterfaceWrapper) PairDeviceSession(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PairDeviceSession(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// VerifyDeviceSessionTotp operation middleware
+func (siw *ServerInterfaceWrapper) VerifyDeviceSessionTotp(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.VerifyDeviceSessionTotp(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -46993,6 +47818,57 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/device/v1/self", wrapper.GetDeviceSelf)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/device/v1/pair-session", wrapper.PairDeviceSession)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/device/v1/pair-session/totp", wrapper.VerifyDeviceSessionTotp)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/desktop/v1/status", wrapper.GetDesktopStatus)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/first-run", wrapper.DesktopFirstRun)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/first-run/restore", wrapper.DesktopFirstRunRestore)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/desktop/v1/settings", wrapper.GetDesktopSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/desktop/v1/settings", wrapper.UpdateDesktopSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/desktop/v1/lan", wrapper.GetDesktopLan)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/desktop/v1/lan", wrapper.SetDesktopLan)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/lan/certificate", wrapper.RotateLanCertificate)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/desktop/v1/backups", wrapper.ListDesktopBackups)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/backups", wrapper.CreateDesktopBackup)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/backups/{backupId}/restore", wrapper.RestoreDesktopBackup)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/restore-upload", wrapper.UploadDesktopRestore)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/secret-key/reveal", wrapper.RevealDesktopSecretKey)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/open", wrapper.OpenDesktopFolder)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/activate", wrapper.ActivateDesktop)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/public/v1/{slug}", wrapper.GetPublicMarina)

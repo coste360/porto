@@ -15,6 +15,7 @@
     "./money": "./src/money/index.ts",
     "./lib/*": "./src/lib/*.ts",
     "./hooks/*": "./src/hooks/*.ts",
+    "./desktop/*": "./src/desktop/*.ts",
     "./styles/globals.css": "./src/styles/globals.css",
     "./testing": "./src/testing/index.tsx"
   },

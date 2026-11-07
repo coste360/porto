@@ -24,6 +24,7 @@ import { useCurrentMarina } from '../../../auth/hooks';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../../components/PageStates';
 import { CopyButton } from '../components/PaymentRequestDialog';
 import { BillingProblemAlert, EnumSelect, PageFrame, Section } from '../components/kit';
+import { OnlineFeatureNotice } from '../../desktop/OnlineFeatureNotice';
 
 type Method = NonNullable<PaymentProviderSettingsInput['methods']>[number];
 const METHODS: readonly Method[] = ['card', 'wallet', 'sepa_debit'];
@@ -44,6 +45,7 @@ export function PaymentSettingsPage() {
           title={t('paymentProviders:title')}
           description={t('paymentProviders:description')}
         />
+        <OnlineFeatureNotice feature="onlinePayments" />
         <Alert data-testid="offline-banner">
           <AlertTitle>{t('paymentProviders:offline.title')}</AlertTitle>
           <AlertDescription>{t('paymentProviders:offline.description')}</AlertDescription>

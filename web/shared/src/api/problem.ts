@@ -118,6 +118,14 @@ export const PROBLEM_TYPES = [
   'provider_refund_unsupported',
   'provider_error',
   'billing_item_missing',
+  // M6a (m6a-plan §3.4)
+  'first_run_token_invalid',
+  'first_run_done',
+  'lan_port_unavailable',
+  'lan_no_address',
+  'backup_in_progress',
+  'restore_failed',
+  'restore_backup_newer',
 ] as const;
 
 export type ProblemType = (typeof PROBLEM_TYPES)[number];

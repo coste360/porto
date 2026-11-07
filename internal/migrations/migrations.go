@@ -83,6 +83,15 @@ func (r *Runner) Up(ctx context.Context) ([]int64, error) {
 	return out, nil
 }
 
+// UpTo applies the pending migrations up to and including version (restoring an archive taken on an older
+// schema: the database is brought to the archive's version, loaded, then migrated up).
+func (r *Runner) UpTo(ctx context.Context, version int64) error {
+	if _, err := r.provider.UpTo(ctx, version); err != nil {
+		return fmt.Errorf("migrations: up to %d: %w", version, err)
+	}
+	return nil
+}
+
 // Reset rolls every migration back. Tests use it to check the Down sections; operators never need it.
 func (r *Runner) Reset(ctx context.Context) error {
 	if _, err := r.provider.DownTo(ctx, 0); err != nil {

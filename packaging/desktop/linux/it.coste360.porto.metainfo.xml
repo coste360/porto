@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>it.coste360.porto</id>
+  <name>Porto</name>
+  <summary>Gestione del porto turistico e del cantiere</summary>
+  <summary xml:lang="en">Marina and boatyard management</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <developer id="it.coste360">
+    <name>Coste360 SRL</name>
+  </developer>
+  <description>
+    <p>Porto gestisce posti barca, contratti, transiti, addebiti e cantiere. L'edizione desktop funziona senza
+      internet sul computer dell'ufficio e, se attivata, sulla rete locale del porto.</p>
+  </description>
+  <launchable type="desktop-id">porto.desktop</launchable>
+  <releases>
+    <release version="@VERSION@"/>
+  </releases>
+</component>

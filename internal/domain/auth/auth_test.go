@@ -303,6 +303,22 @@ func TestIPPrefixKey(t *testing.T) {
 	}
 }
 
+func TestPeerKey_PrivatePeersFullAddress(t *testing.T) {
+	cases := map[string]string{
+		"192.168.1.20":      "192.168.1.20",
+		"::ffff:10.0.0.7":   "10.0.0.7",
+		"127.0.0.1":         "127.0.0.1",
+		"fe80::1%en0":       "fe80::1",
+		"203.0.113.7":       "203.0.113.0/24",
+		"2001:db8:1:2:3::1": "2001:db8:1::/56",
+	}
+	for in, want := range cases {
+		if got := PeerKey(netip.MustParseAddr(in)); got != want {
+			t.Errorf("%s: %s want %s", in, got, want)
+		}
+	}
+}
+
 func TestParseToken(t *testing.T) {
 	if p, ok := parseToken("po_live_abcd1234_secretsecret", APIKeyPrefix); !ok || p != "po_live_abcd1234" {
 		t.Fatal(p, ok)

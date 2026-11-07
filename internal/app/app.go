@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"slices"
+	"sync"
 	"time"
 
 	"golang.org/x/crypto/acme/autocert"
@@ -19,6 +20,7 @@ import (
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/config"
 	"github.com/coste360/porto/internal/csvimport"
+	"github.com/coste360/porto/internal/desktopport"
 	"github.com/coste360/porto/internal/domain/apikey"
 	"github.com/coste360/porto/internal/domain/audit"
 	"github.com/coste360/porto/internal/domain/auditlog"
@@ -55,12 +57,14 @@ import (
 	"github.com/coste360/porto/internal/filestore"
 	httpserver "github.com/coste360/porto/internal/http"
 	"github.com/coste360/porto/internal/http/admin"
+	httpdesktop "github.com/coste360/porto/internal/http/desktop"
 	httpdevice "github.com/coste360/porto/internal/http/device"
 	"github.com/coste360/porto/internal/http/middleware"
 	"github.com/coste360/porto/internal/http/public"
 	"github.com/coste360/porto/internal/http/sse"
 	"github.com/coste360/porto/internal/http/webhooks"
 	"github.com/coste360/porto/internal/jobs"
+	"github.com/coste360/porto/internal/reqctx"
 	"github.com/coste360/porto/internal/store"
 	"github.com/coste360/porto/pkg/ext"
 )
@@ -78,6 +82,28 @@ type Options struct {
 	Argon2 auth.Argon2Params
 	// Transport overrides the email transport (tests).
 	Transport notify.Transport
+
+	// Desktop is the desktop launcher runtime (M6a, cmd/porto-desktop). nil = server edition: /api/desktop/v1
+	// answers 404 and meta reports edition "server". Set, the instance reports edition "desktop", local_mode and
+	// the desktop.local / desktop.lan capabilities.
+	Desktop desktopport.Runtime
+	// PairTarget tells where pairing QRs point (M6a). nil = the base URL (server edition).
+	PairTarget func() desktopport.PairTarget
+}
+
+// ErrRestart is returned by Run after RequestRestart (desktop restore, m6a-plan §2.6): the caller stops, swaps the
+// database and builds a new App.
+var ErrRestart = errors.New("app: restart requested")
+
+// Listener is a listener Run serves on. Tag marks its connections (reqctx.ListenerKind); AllowedHosts, when not
+// empty, restricts the Host header (middleware.HostCheck). Server, when set, is used as it is (autocert); else
+// Run builds one with NewHTTPServer. A TLS listener is wrapped by the caller (tls.NewListener) unless
+// Server.TLSConfig is set.
+type Listener struct {
+	net.Listener
+	Tag          reqctx.ListenerKind
+	AllowedHosts []string
+	Server       *http.Server
 }
 
 // App is a wired Porto instance.
@@ -135,7 +161,13 @@ type App struct {
 	PayDrivers *paydriver.Registry
 	Collect    *collect.Service
 
-	ownDB bool
+	// M6a
+	Desktop desktopport.Runtime
+
+	ownDB     bool
+	restartMu sync.Mutex
+	restart   chan struct{}
+	restarted bool
 }
 
 // New wires an instance. It opens the database but does not migrate it (Serve and the CLI decide).
@@ -152,7 +184,7 @@ func NewWithOptions(ctx context.Context, cfg *config.Config, version string, x e
 	if clk == nil {
 		clk = clock.System{}
 	}
-	a := &App{Config: cfg, Version: version, Log: log, Clock: clk, DB: o.DB}
+	a := &App{Config: cfg, Version: version, Log: log, Clock: clk, DB: o.DB, Desktop: o.Desktop, restart: make(chan struct{})}
 	if a.DB == nil {
 		db, err := store.Open(ctx, store.Options{PostgresURL: cfg.DatabaseURL, SQLitePath: sqlitePath(cfg)})
 		if err != nil {
@@ -198,6 +230,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	a.APIKeys = apikey.NewService(db, clk, aw, a.Outbox, log)
 	a.Devices = device.NewService(db, clk, aw, a.Outbox, log, device.Options{
 		BaseURL: cfg.BaseURL.String(), DemoUserEmail: cfg.DemoPairingUser, DemoMarinaSlug: cfg.DemoPairingMarina,
+		PairTarget: o.PairTarget,
 	})
 	a.Files = filestore.New(filepath.Join(cfg.DataDir, "files"), cfg.Keys)
 	// The occupancy service exists before the harbour service: it is the harbour guard (m3-plan §3.7).
@@ -288,8 +321,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		Admin: &admin.Handler{
 			Clock: clk, Auth: authSvc, Team: a.Team, Marinas: a.Marinas, APIKeys: a.APIKeys, Devices: a.Devices,
 			Webhooks: a.Webhooks, Audit: auditlog.NewService(db, aw), SSE: sse.NewServer(a.Bus, a.Bus, log),
-			Meta: meta.Get(cfg, a.Version).WithSignatureProviders(len(x.SignatureProviders)).
-				WithBilling(len(x.FiscalDrivers), len(x.ChargeExporters)), SecureCookies: cfg.SecureCookies(),
+			Meta: a.meta(x), SecureCookies: cfg.SecureCookies(),
 			Harbor: a.Harbor, Customers: a.Customers, Vessels: a.Vessels, Documents: a.Documents,
 			Deadlines: a.Deadlines, Catalog: a.Catalog, PriceLists: a.PriceLists,
 			Occupancy: a.Occupancy, Contracts: a.Contracts, Presence: a.Presence,
@@ -297,12 +329,13 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			Charges: a.Charges, Payments: a.Payments, Cash: a.Cash, Fiscal: a.Fiscal, Collect: a.Collect,
 			PayDrivers: a.PayDrivers,
 		},
-		Device: &httpdevice.Handler{Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String()},
+		Device: &httpdevice.Handler{Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String(), SecureCookies: cfg.SecureCookies()},
 		Public: &public.Handler{
 			Marinas: a.Marinas, Contracts: a.Contracts, Links: a.Links, Signatures: a.Signatures, Comms: a.Comms, Docs: a.Docs,
 			Collect: a.Collect,
 		},
 		Webhooks:             &webhooks.Handler{Signatures: a.Signatures, Collect: a.Collect, Clock: clk},
+		Desktop:              &httpdesktop.Handler{Runtime: o.Desktop, SecureCookies: cfg.SecureCookies()},
 		Authenticator:        authSvc,
 		Idempotency:          middleware.StoreIdempotency{DB: db.DB},
 		Ready:                a.Ready,
@@ -316,6 +349,26 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	}
 	a.Router = router
 	return nil
+}
+
+// meta describes the instance: the desktop edition (Options.Desktop set) adds local_mode, desktop.local and, while
+// the local-network listener runs, desktop.lan.
+func (a *App) meta(x ext.Extensions) meta.Meta {
+	edition := meta.EditionServer
+	if a.Desktop != nil {
+		edition = meta.EditionDesktop
+	}
+	m := meta.Get(a.Config, a.Version, edition).WithSignatureProviders(len(x.SignatureProviders)).
+		WithBilling(len(x.FiscalDrivers), len(x.ChargeExporters))
+	if rt := a.Desktop; rt != nil {
+		m.Dynamic = func() []string {
+			if lan := rt.LAN(); lan != nil && lan.Status().Listening {
+				return []string{meta.CapDesktopLAN}
+			}
+			return nil
+		}
+	}
+	return m
 }
 
 // wireBilling builds the M5 services after contracts and rights (m5-plan §2): ledger, fiscal, cash, payment
@@ -480,55 +533,91 @@ func (a *App) bootstrapOwner(ctx context.Context) error {
 }
 
 // Serve prepares the database, starts the jobs and serves HTTP (or HTTPS with autocert) until ctx is done, then
-// shuts down gracefully within ShutdownTimeout.
+// shuts down gracefully within ShutdownTimeout. It is Prepare plus Run on the configured listeners.
 func (a *App) Serve(ctx context.Context) error {
 	if err := a.Prepare(ctx); err != nil {
 		return err
+	}
+	ls, err := a.listeners(ctx)
+	if err != nil {
+		return err
+	}
+	return a.Run(ctx, ls...)
+}
+
+// Run starts the jobs and serves every listener until ctx is done, a listener fails or RequestRestart is called
+// (then it returns ErrRestart), and shuts down within ShutdownTimeout: HTTP servers first, then the jobs. It does
+// not migrate (call Prepare first). Each listener is closed by Run.
+func (a *App) Run(ctx context.Context, listeners ...Listener) error {
+	if len(listeners) == 0 {
+		return errors.New("app: no listener")
 	}
 	jobsCtx, stopJobs := context.WithCancel(context.WithoutCancel(ctx))
 	defer stopJobs()
 	a.Jobs.Start(jobsCtx)
 
-	servers, err := a.servers()
-	if err != nil {
-		return err
-	}
-	errc := make(chan error, len(servers))
-	for _, s := range servers {
+	servers := make([]*http.Server, 0, len(listeners))
+	errc := make(chan error, len(listeners))
+	for _, l := range listeners {
+		srv := l.Server
+		if srv == nil {
+			srv = a.NewHTTPServer(l.Tag, l.AllowedHosts)
+		}
+		servers = append(servers, srv)
 		go func() {
-			a.Log.InfoContext(ctx, "listening", "addr", s.srv.Addr, "tls", s.tls)
+			a.Log.InfoContext(ctx, "listening", "addr", l.Addr().String(), "listener", string(l.Tag),
+				"tls", srv.TLSConfig != nil)
 			var err error
-			if s.tls {
-				err = s.srv.ListenAndServeTLS("", "")
+			if srv.TLSConfig != nil {
+				err = srv.ServeTLS(l.Listener, "", "")
 			} else {
-				err = s.srv.ListenAndServe()
+				err = srv.Serve(l.Listener)
 			}
 			if !errors.Is(err, http.ErrServerClosed) {
 				errc <- err
 			}
 		}()
 	}
-	var serveErr error
+	var runErr error
 	select {
 	case <-ctx.Done():
-	case serveErr = <-errc:
+	case runErr = <-errc:
+	case <-a.restart:
+		runErr = ErrRestart
 	}
 	a.Log.InfoContext(ctx, "shutting down")
 	sctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), ShutdownTimeout)
 	defer cancel()
-	for _, s := range servers {
-		if err := s.srv.Shutdown(sctx); err != nil {
+	for _, srv := range servers {
+		if err := srv.Shutdown(sctx); err != nil {
 			a.Log.WarnContext(sctx, "http shutdown", "error", err)
 		}
 	}
 	stopJobs()
 	a.Jobs.Wait()
-	return serveErr
+	return runErr
 }
 
-type listener struct {
-	srv *http.Server
-	tls bool
+// RequestRestart makes Run return ErrRestart (desktop restore). Safe to call more than once and from any goroutine.
+func (a *App) RequestRestart() {
+	a.restartMu.Lock()
+	defer a.restartMu.Unlock()
+	if !a.restarted {
+		a.restarted = true
+		close(a.restart)
+	}
+}
+
+// NewHTTPServer returns an HTTP server for the router with Porto's timeouts. Its connections are tagged with the
+// listener kind and, when hosts is not empty, the Host header must be one of hosts (421 otherwise). The desktop
+// launcher uses it for the loopback listener, LAN for the local-network listener.
+func (a *App) NewHTTPServer(tag reqctx.ListenerKind, hosts []string) *http.Server {
+	if !tag.Valid() {
+		tag = reqctx.ListenerServer
+	}
+	srv := a.newServer("", middleware.HostCheck(hosts)(a.Router))
+	srv.ConnContext = middleware.ListenerTag(tag)
+	return srv
 }
 
 func (a *App) newServer(addr string, h http.Handler) *http.Server {
@@ -540,17 +629,24 @@ func (a *App) newServer(addr string, h http.Handler) *http.Server {
 	}
 }
 
-func (a *App) servers() ([]listener, error) {
+// listeners opens the listeners of `porto serve`: PORTO_ADDR, or :443 (autocert) and :80 (redirect).
+func (a *App) listeners(ctx context.Context) ([]Listener, error) {
 	cfg := a.Config
+	var lc net.ListenConfig
+	listen := func(addr string) (net.Listener, error) { return lc.Listen(ctx, "tcp", addr) }
 	if len(cfg.AutocertDomains) == 0 {
-		return []listener{{srv: a.newServer(cfg.Addr, a.Router)}}, nil
+		l, err := listen(cfg.Addr)
+		if err != nil {
+			return nil, err
+		}
+		return []Listener{{Listener: l, Tag: reqctx.ListenerServer}}, nil
 	}
 	m := &autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist(cfg.AutocertDomains...),
 		Cache:      autocert.DirCache(filepath.Join(cfg.DataDir, "certs")),
 	}
-	https := a.newServer(":443", a.Router)
+	https := a.NewHTTPServer(reqctx.ListenerServer, nil)
 	https.TLSConfig = &tls.Config{GetCertificate: m.GetCertificate, MinVersion: tls.VersionTLS12, NextProtos: []string{"h2", "http/1.1", "acme-tls/1"}}
 	redirect := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		host, _, err := net.SplitHostPort(r.Host)
@@ -563,7 +659,21 @@ func (a *App) servers() ([]listener, error) {
 		//nolint:gosec // G710: host is one of the configured autocert domains, never client input
 		http.Redirect(w, r, "https://"+host+r.URL.RequestURI(), http.StatusMovedPermanently)
 	})
-	return []listener{{srv: https, tls: true}, {srv: a.newServer(":80", m.HTTPHandler(redirect))}}, nil
+	plain := a.newServer("", m.HTTPHandler(redirect))
+	plain.ConnContext = middleware.ListenerTag(reqctx.ListenerServer)
+	l443, err := listen(":443")
+	if err != nil {
+		return nil, err
+	}
+	l80, err := listen(":80")
+	if err != nil {
+		_ = l443.Close()
+		return nil, err
+	}
+	return []Listener{
+		{Listener: l443, Tag: reqctx.ListenerServer, Server: https},
+		{Listener: l80, Tag: reqctx.ListenerServer, Server: plain},
+	}, nil
 }
 
 // Close releases the database (when the app opened it).

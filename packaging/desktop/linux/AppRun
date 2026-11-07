@@ -1,0 +1,8 @@
+#!/bin/sh
+# AppImage entry point of Porto: the window build (WebKitGTK 4.1) when the library is installed, else the browser
+# build (the panel opens in the default browser).
+HERE="$(dirname "$(readlink -f "$0")")"
+if command -v ldconfig >/dev/null 2>&1 && ldconfig -p 2>/dev/null | grep -q 'libwebkit2gtk-4\.1\.so\.0'; then
+	exec "$HERE/usr/bin/porto-desktop-webview" "$@"
+fi
+exec "$HERE/usr/bin/porto-desktop" "$@"

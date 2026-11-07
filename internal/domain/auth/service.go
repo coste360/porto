@@ -243,14 +243,26 @@ func (s *Service) verifyTOTP(ctx context.Context, tx bun.IDB, userID string, t *
 }
 
 func (s *Service) newSession(ctx context.Context, tx bun.IDB, userID string, totpVerified bool, now time.Time) (string, *store.Session, error) {
+	return insertSession(ctx, tx, sessionSpec{UserID: userID, TOTPVerified: totpVerified, Idle: SessionIdle, Absolute: SessionAbsolute}, now)
+}
+
+// sessionSpec describes a session to open: an ordinary login, or a device session (DeviceID set, longer
+// lifetimes, M6a).
+type sessionSpec struct {
+	UserID, DeviceID string
+	TOTPVerified     bool
+	Idle, Absolute   time.Duration
+}
+
+func insertSession(ctx context.Context, tx bun.IDB, spec sessionSpec, now time.Time) (string, *store.Session, error) {
 	token, err := crypto.RandomToken(32)
 	if err != nil {
 		return "", nil, err
 	}
 	info := reqctx.From(ctx)
 	sess := &store.Session{
-		ID: store.NewID(), TokenHash: crypto.SHA256Hex(token), UserID: userID, TOTPVerified: totpVerified,
-		ExpiresAt: now.Add(SessionAbsolute), IdleExpiresAt: now.Add(SessionIdle), LastSeenAt: now,
+		ID: store.NewID(), TokenHash: crypto.SHA256Hex(token), UserID: spec.UserID, TOTPVerified: spec.TOTPVerified,
+		ExpiresAt: now.Add(spec.Absolute), IdleExpiresAt: now.Add(spec.Idle), LastSeenAt: now, DeviceID: spec.DeviceID,
 		UserAgent: reqctx.TruncateUserAgent(info.UserAgent), CreatedAt: now, UpdatedAt: now,
 	}
 	if info.ClientIP.IsValid() {
@@ -290,6 +302,9 @@ func (s *Service) AuthenticateSession(ctx context.Context, token string) (*Princ
 	user, err := store.GetUser(ctx, s.db.DB, sess.UserID)
 	if err != nil || !user.Active {
 		return nil, ErrUnauthenticated
+	}
+	if sess.DeviceID != "" {
+		return s.authenticateDeviceSession(ctx, sess, user, now)
 	}
 	if now.Sub(sess.LastSeenAt) >= touchInterval {
 		idle := now.Add(SessionIdle)
@@ -394,7 +409,8 @@ func (s *Service) AuthenticateDevice(ctx context.Context, token string) (*Princi
 		}
 		return nil, err
 	}
-	if !crypto.ConstantTimeEqual(d.TokenHash, crypto.SHA256Hex(token)) || !d.RevokedAt.IsZero() {
+	if !crypto.ConstantTimeEqual(d.TokenHash, crypto.SHA256Hex(token)) || !d.RevokedAt.IsZero() ||
+		d.Access == store.DeviceAccessBrowser {
 		return nil, ErrUnauthenticated
 	}
 	scope, err := store.ResolveMarinaScope(ctx, s.db.DB, d.MarinaID)

@@ -8,6 +8,7 @@ import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@porto
 import { EmptyState, PageHeader } from '@porto/shared/ui/patterns';
 
 import { useCurrentMarina } from '../auth/hooks';
+import { LocalModeCard } from '../features/desktop/LocalModeCard';
 import { DeadlinesCard } from '../features/registry/deadlines/DeadlinesCard';
 
 export function DashboardPage() {
@@ -45,6 +46,7 @@ export function DashboardPage() {
             </Card>
           ) : null}
           {can('customers.read') ? <DeadlinesCard /> : null}
+          <LocalModeCard />
         </div>
         <EmptyState icon={<AnchorIcon />} title={t('common:dashboard.comingSoon')} />
       </div>

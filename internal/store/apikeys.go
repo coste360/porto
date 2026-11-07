@@ -62,6 +62,9 @@ func TouchAPIKey(ctx context.Context, db bun.IDB, id string, at time.Time) error
 
 // InsertDevice inserts a device. A token prefix collision is ErrConflict.
 func InsertDevice(ctx context.Context, db bun.IDB, d *Device) error {
+	if d.Access == "" {
+		d.Access = DeviceAccessToken
+	}
 	_, err := db.NewInsert().Model(d).Exec(ctx)
 	if IsUniqueViolation(err) {
 		return ErrConflict

@@ -22,6 +22,7 @@ import {
 } from '@porto/shared/ui/sidebar';
 
 import { useCurrentMarina } from '../auth/hooks';
+import { UpdateBanner } from '../features/desktop/UpdateBanner';
 import { UPCOMING_MODULES, visibleNavItems } from '../nav';
 import { MarinaSwitcher } from './MarinaSwitcher';
 import { UserMenu } from './UserMenu';
@@ -97,6 +98,7 @@ export function AppShell() {
           <span className="truncate text-sm font-medium">{marina?.name}</span>
         </header>
         <div className="flex-1 p-6">
+          <UpdateBanner />
           <Outlet />
         </div>
       </SidebarInset>

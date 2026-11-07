@@ -81,8 +81,19 @@ func (c *Config) DemoPairingEnabled() bool {
 // BootstrapOwnerEnabled reports whether serve should create the first owner.
 func (c *Config) BootstrapOwnerEnabled() bool { return c.BootstrapOwnerEmail != "" }
 
-// SecureCookies reports whether cookies get the Secure flag (always, except dev mode over plain http).
-func (c *Config) SecureCookies() bool { return !c.Dev || c.BaseURL.Scheme != "http" }
+// SecureCookies reports whether cookies get the Secure flag by default: always, except dev mode over plain http
+// and a plain http base URL on a loopback IP literal (the desktop edition on 127.0.0.1, m6a-plan §3.3). Requests
+// that arrive over TLS (the desktop local-network listener) set Secure regardless (middleware).
+func (c *Config) SecureCookies() bool {
+	if c.BaseURL == nil || c.BaseURL.Scheme != "http" {
+		return true
+	}
+	if c.Dev {
+		return false
+	}
+	h := c.BaseURL.Hostname()
+	return h != "127.0.0.1" && h != "::1"
+}
 
 // FromEnviron loads the configuration from the process environment.
 func FromEnviron() (*Config, error) { return Load(os.LookupEnv) }

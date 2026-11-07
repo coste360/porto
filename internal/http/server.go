@@ -17,6 +17,7 @@ import (
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/http/admin"
 	"github.com/coste360/porto/internal/http/api"
+	"github.com/coste360/porto/internal/http/desktop"
 	"github.com/coste360/porto/internal/http/device"
 	"github.com/coste360/porto/internal/http/middleware"
 	"github.com/coste360/porto/internal/http/problem"
@@ -66,6 +67,8 @@ type Deps struct {
 	Public *public.Handler
 	// Webhooks serves the inbound provider callbacks (M4); nil means an empty handler.
 	Webhooks *webhooks.Handler
+	// Desktop serves /api/desktop/v1 (M6a); nil or a nil Runtime (server edition) answers 404 everywhere.
+	Desktop *desktop.Handler
 
 	Authenticator middleware.Authenticator
 	Idempotency   middleware.IdempotencyStore
@@ -88,6 +91,7 @@ type server struct {
 	deviceAPI
 	publicAPI
 	webhooksAPI
+	desktopAPI
 	ready func(ctx context.Context) (int64, error)
 }
 
@@ -96,7 +100,11 @@ type (
 	deviceAPI   struct{ *device.Handler }
 	publicAPI   struct{ *public.Handler }
 	webhooksAPI struct{ *webhooks.Handler }
+	desktopAPI  struct{ *desktop.Handler }
 )
+
+// DesktopPrefix is the path prefix of the desktop API, served only on the desktop loopback listener (INV-80).
+const DesktopPrefix = "/api/desktop/v1/"
 
 var _ api.ServerInterface = (*server)(nil)
 
@@ -144,7 +152,9 @@ func NewRouter(d Deps) (http.Handler, error) {
 		middleware.AccessLog(d.Log, d.Clock),
 		middleware.Recover(d.Log),
 		middleware.SecurityHeaders(middleware.SecurityOptions{HSTS: d.HSTS}),
-		middleware.BodyLimit(MaxBodyBytes),
+		middleware.BodyLimitExcept(MaxBodyBytes, policies.StreamedPaths()),
+		// M6a: the desktop API exists only on the loopback listener from a loopback peer (404 elsewhere).
+		middleware.LoopbackOnly(DesktopPrefix),
 	)
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, "/api/") {
@@ -162,9 +172,13 @@ func NewRouter(d Deps) (http.Handler, error) {
 	// Customer magic-link pages (M4, m4-plan §6.6): one limiter per IP prefix shared by every link operation. The
 	// per-token limit is applied by the link services.
 	byIP := map[string]*middleware.Limiter{
-		"pairDevice":      middleware.NewLimiter(d.Clock, pairingPerMinute, time.Minute),
-		"demoPairDevice":  middleware.NewLimiter(d.Clock, pairingPerMinute, time.Minute),
-		"getPublicMarina": middleware.NewLimiter(d.Clock, d.PublicReadsPerMinute, time.Minute),
+		"pairDevice":     middleware.NewLimiter(d.Clock, pairingPerMinute, time.Minute),
+		"demoPairDevice": middleware.NewLimiter(d.Clock, pairingPerMinute, time.Minute),
+		// M6a browser pairing (m6a-plan §3.3): the pairing limit, its own bucket.
+		"pairDeviceSession": middleware.NewLimiter(d.Clock, pairingPerMinute, time.Minute),
+		// Second factor of a device session: per peer, its own bucket (the per-user budget is in auth).
+		"verifyDeviceSessionTotp": middleware.NewLimiter(d.Clock, pairingPerMinute, time.Minute),
+		"getPublicMarina":         middleware.NewLimiter(d.Clock, d.PublicReadsPerMinute, time.Minute),
 	}
 	links := middleware.NewLimiter(d.Clock, linkRequestsPerMinute, time.Minute)
 	for _, op := range publicLinkOperations {
@@ -194,7 +208,10 @@ func NewRouter(d Deps) (http.Handler, error) {
 	if d.Webhooks == nil {
 		d.Webhooks = &webhooks.Handler{}
 	}
-	srv := &server{adminAPI{d.Admin}, deviceAPI{d.Device}, publicAPI{d.Public}, webhooksAPI{d.Webhooks}, d.Ready}
+	if d.Desktop == nil {
+		d.Desktop = &desktop.Handler{}
+	}
+	srv := &server{adminAPI{d.Admin}, deviceAPI{d.Device}, publicAPI{d.Public}, webhooksAPI{d.Webhooks}, desktopAPI{d.Desktop}, d.Ready}
 	api.HandlerWithOptions(srv, api.ChiServerOptions{
 		BaseRouter:  r,
 		Middlewares: toMiddlewares(perOp),

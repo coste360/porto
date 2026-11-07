@@ -27,6 +27,7 @@ import (
 	"github.com/coste360/porto/internal/http/problem"
 
 	"github.com/coste360/porto/internal/csvimport"
+	"github.com/coste360/porto/internal/desktopport"
 	"github.com/coste360/porto/internal/domain/cash"
 	"github.com/coste360/porto/internal/domain/charge"
 	"github.com/coste360/porto/internal/domain/collect"
@@ -166,6 +167,17 @@ var sentinels = []struct {
 	{charge.ErrImportNotUndoable, problem.ImportNotUndoable},
 	{charge.ErrVersionMismatch, problem.VersionConflict},
 	{charge.ErrNotImplemented, problem.NotImplemented},
+	// M6a (m6a-plan §3.4); desktopport.SettingsError carries the fields (MapError).
+	{desktopport.ErrFirstRunToken, problem.FirstRunTokenInvalid},
+	{desktopport.ErrFirstRunDone, problem.FirstRunDone},
+	{desktopport.ErrLANPortUnavailable, problem.LANPortUnavailable},
+	{desktopport.ErrLANNoAddress, problem.LANNoAddress},
+	{desktopport.ErrBackupInProgress, problem.BackupInProgress},
+	{desktopport.ErrRestoreBackupNewer, problem.RestoreBackupNewer},
+	{desktopport.ErrRestoreFailed, problem.RestoreFailed},
+	{desktopport.ErrInvalidSettings, problem.ValidationFailed},
+	{desktopport.ErrInstanceToken, problem.Unauthorized},
+	{desktopport.ErrNotFound, problem.NotFound},
 	{payment.ErrRefundExceeds, problem.RefundExceeds},
 	{payment.ErrAlreadyReversed, problem.AlreadyReversed},
 	{payment.ErrCreditInsufficient, problem.CreditInsufficient},
@@ -222,6 +234,13 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 	}
 	if t, opts, ok := mapM5(err); ok {
 		return t, opts, true
+	}
+	if se, ok := errors.AsType[*desktopport.SettingsError](err); ok {
+		fields := make([]problem.FieldError, 0, len(se.Fields))
+		for _, f := range se.Fields {
+			fields = append(fields, problem.FieldError{Field: f, Code: "invalid"})
+		}
+		return problem.ValidationFailed, []problem.Option{problem.Fields(fields...)}, true
 	}
 	var v *auth.ValidationError
 	if errors.As(err, &v) {

@@ -177,3 +177,31 @@ func APIKeyScopeAllowed(p Permission) bool { return p.Valid() && !slices.Contain
 
 // requiresTOTPByPolicy lists the roles that must enrol TOTP when PORTO_REQUIRE_TOTP_FOR_OWNERS is on.
 var requiresTOTPByPolicy = []Role{RoleOwner, RoleAccounting}
+
+// IsOwnerAnywhere reports whether the principal is a user with the owner role on an organization-wide grant of
+// any organization (desktop administration, m6a-plan §3.1 D19). API keys and devices are never owners here.
+func (p *Principal) IsOwnerAnywhere() bool {
+	if p == nil || p.Kind != KindUser || p.TOTPEnrolmentRequired {
+		return false
+	}
+	for _, g := range p.Grants {
+		if g.Role == RoleOwner && g.MarinaID == "" {
+			return true
+		}
+	}
+	return false
+}
+
+// FirstOwnedOrganization returns the first organization where the principal is an organization-wide owner ("" if
+// none): desktop audit rows are written there.
+func (p *Principal) FirstOwnedOrganization() string {
+	if p == nil {
+		return ""
+	}
+	for _, g := range p.Grants {
+		if g.Role == RoleOwner && g.MarinaID == "" {
+			return g.OrganizationID
+		}
+	}
+	return ""
+}

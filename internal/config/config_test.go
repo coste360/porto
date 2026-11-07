@@ -190,3 +190,27 @@ func TestConfig_StripeAPIBaseDevOnly(t *testing.T) {
 		t.Fatalf("bad scheme: %v", err)
 	}
 }
+
+func TestConfig_SecureCookies(t *testing.T) {
+	cases := []struct {
+		env  map[string]string
+		want bool
+	}{
+		{map[string]string{"PORTO_BASE_URL": "https://porto.example.com"}, true},
+		{map[string]string{"PORTO_BASE_URL": "http://localhost:8080"}, true},
+		{map[string]string{"PORTO_BASE_URL": "http://127.0.0.1:18090"}, false}, // desktop loopback
+		{map[string]string{"PORTO_BASE_URL": "http://[::1]:18090"}, false},
+		{map[string]string{"PORTO_BASE_URL": "http://porto.lan:8080", "PORTO_DEV": "true"}, false},
+		{map[string]string{"PORTO_BASE_URL": "https://porto.lan", "PORTO_DEV": "true"}, true},
+	}
+	for _, c := range cases {
+		c.env["PORTO_SECRET_KEY"] = validKey(t)
+		cfg, err := Load(envOf(c.env))
+		if err != nil {
+			t.Fatalf("%v: %v", c.env["PORTO_BASE_URL"], err)
+		}
+		if got := cfg.SecureCookies(); got != c.want {
+			t.Errorf("%s dev=%s: SecureCookies = %v", c.env["PORTO_BASE_URL"], c.env["PORTO_DEV"], got)
+		}
+	}
+}

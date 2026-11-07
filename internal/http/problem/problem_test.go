@@ -173,8 +173,8 @@ func TestWriteError_UnmappedIsInternal(t *testing.T) {
 func TestTypes_Registry(t *testing.T) {
 	slug := regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	all := All()
-	if len(all) != 107 {
-		t.Fatalf("declared %d types, want 107 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4 + m5-plan §7.4)", len(all))
+	if len(all) != 114 {
+		t.Fatalf("declared %d types, want 114 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4 + m5-plan §7.4 + m6a-plan §3.4)", len(all))
 	}
 	for _, ty := range all {
 		if !slug.MatchString(string(ty)) {

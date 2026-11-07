@@ -135,6 +135,19 @@ func IPPrefixKey(ip netip.Addr) string {
 	return p.String()
 }
 
+// PeerKey is the per-client throttle key: private, loopback and link-local peers by full address (a marina's
+// office PCs and phones share one /24 on the local network), public peers by IPPrefixKey.
+func PeerKey(ip netip.Addr) string {
+	if !ip.IsValid() {
+		return IPPrefixKey(ip)
+	}
+	ip = ip.Unmap().WithZone("")
+	if ip.IsLoopback() || ip.IsPrivate() || ip.IsLinkLocalUnicast() {
+		return ip.String()
+	}
+	return IPPrefixKey(ip)
+}
+
 // accountKey identifies an account in limiters without keeping the email in memory in clear.
 func accountKey(email string) string {
 	return crypto.SHA256Hex("account:" + strings.ToLower(strings.TrimSpace(email)))
@@ -172,7 +185,7 @@ func (t *LoginThrottle) Check(ip netip.Addr, account string) (ok bool, retryAfte
 	if ok, wait := t.accounts.reserve(key); !ok {
 		return false, wait
 	}
-	if ok, wait := t.ips.take(IPPrefixKey(ip)); !ok {
+	if ok, wait := t.ips.take(PeerKey(ip)); !ok {
 		t.accounts.release(key)
 		return false, wait
 	}
@@ -214,7 +227,7 @@ func newResetThrottle(c clock.Clock) *resetThrottle {
 }
 
 func (t *resetThrottle) take(ip netip.Addr, email string) (bool, time.Duration) {
-	if ok, wait := t.ips.take(IPPrefixKey(ip)); !ok {
+	if ok, wait := t.ips.take(PeerKey(ip)); !ok {
 		return false, wait
 	}
 	return t.accounts.take(accountKey(email))

@@ -8,6 +8,43 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M6a "Edizione desktop locale e rete locale" (spec 31, m6a-plan):
+
+- Desktop launcher `cmd/porto-desktop` (ADR 0010): the server runs in-process on 127.0.0.1 and the panel opens in
+  the system webview (WKWebView, WebView2, WebKitGTK; build tag `webview`, CGO) or in the browser (default build,
+  `CGO_ENABLED=0`; the main binary `cmd/porto` stays without CGO). Data in the per-user folder, SQLite only, secret
+  key in the OS keychain (`go-keyring`) with a 0600 file fallback and a visible warning, never regenerated for an
+  existing database; single instance with activation; first run in the window (single-use token in the URL
+  fragment) or restore from a backup; daily, exit, manual and pre-restore backups with retention and a fallback
+  folder; restore swaps the database and restarts the server in place (backups from before an app update restore,
+  newer ones are refused with `restore_backup_newer`); rotating log; version check on by default,
+  switchable off (`PORTO_UPDATE_CHECK=false`), never required, notify only.
+- Local-network mode (`internal/lan`): HTTPS listener only while the owner enables it, private peers only
+  (INV-79), self-generated local CA and leaf (ECDSA P-256, keys KeyRing-encrypted at rest), periodic refresh for
+  address changes and renewal, Host check against the certificate names. The desktop API answers only on the
+  loopback listener (INV-80).
+- QR pairing of phones in the browser: `pairDeviceSession` exchanges a single-use code (INV-78, race-safe in DB)
+  for a device-bound session cookie (idle 30 days, absolute 180 days), the QR opens `https://…/admin/pair#c=…&fp=…`;
+  revoking the device kills its sessions; a device session acts only on its device's marina. Users with two-factor
+  login verify it on the phone (`verifyDeviceSessionTotp`, throttled like a login): the pending session lives 10
+  minutes and is replaced by a new one on success. Migration `00013_device_sessions` (SQLite and PostgreSQL).
+- Rate limits and the login throttle key private and loopback peers by full address (a marina shares one /24);
+  session cookies are Secure whenever the request arrived over TLS.
+- Web: *Dispositivi* page (kind, access, state, pairing QR with countdown and fingerprint, revoke), `PairPage`,
+  *App desktop* settings (local network, backups and restore, updates, secret key, data folders), first-run page,
+  move-online guide, `LocalModeNotice` on the pages of features unavailable locally (public page, online payments,
+  payment links, remote signature), update banner; downloads, print and external links through the desktop
+  bridge (`web/shared/src/lib/download.ts`). i18n it and en.
+- Packaging scripts `scripts/desktop/` and `packaging/desktop/`: macOS universal `.app`/`.dmg`, Windows x64 Inno
+  Setup installer, Linux x86_64 AppImage, all `-unsigned`; signing and notarisation hooks are documented in
+  `docs/desktop-build.md` and never faked. Make targets `desktop-build`, `desktop-package-{macos,windows,linux}`,
+  `desktop-test`, `e2e-desktop` (also in `check-full` and in the CI e2e job); CI workflow `desktop.yml`
+  (builds, uploads nothing); `make licenses` also checks the webview build.
+- Tests: desktop unit and integration tests (launcher start/stop, restore, first run single owner, owner-only and
+  loopback-only desktop API), LAN unit tests, `TestConcurrency_PairSessionSingleUse`,
+  `TestConcurrency_PairingMixedEndpoints`, `TestAcceptance_M6aLanPairing`, Vitest specs and the Playwright desktop
+  suite (`first-run`, `lan-pairing` with a Pixel 7 phone reaching the dock panel in under 60 s, `local-mode`).
+
 M5 "Addebiti e incassi", contract phase (m5-plan §14.1):
 
 - Migrations `00010_charges`, `00011_cash`, `00012_payments` (SQLite and PostgreSQL): billing settings, origin items,
@@ -295,6 +332,10 @@ M4 review, fix round 1:
 
 ### Known gaps
 
+- M6a: the window build was not opened on a real display in CI; Windows and Linux webview builds are compiled
+  only by the `desktop.yml` jobs; the Linux AppImage step needs `APPIMAGETOOL_SHA256` (repository variable) or a
+  local `APPIMAGETOOL`. Signing and notarisation need Coste360 certificates. M6b (PWA offline queue, per-role phone
+  screens, remote mode, kiosk, local peripherals bridge) is not built.
 - Demo seed: the 2 tacit-renewal contracts and the charter fleet of 8 vessels on pier E (m4-plan §10) are not
   seeded yet.
 - Public quote and renewal acceptance do not return `signature_link` (m4-plan §15 D33, open for a product

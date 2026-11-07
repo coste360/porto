@@ -333,6 +333,15 @@ func Restore(ctx context.Context, db *store.DB, in io.Reader, force bool, filesD
 		return nil, fmt.Errorf("%w: archive %d, database %d", ErrSchemaMismatch, m.SchemaVersion, schema)
 	}
 	for _, name := range append(store.BackupTables(), "sessions", "idempotency_keys") {
+		// The database may be at an older schema than this binary (a desktop restore of an old archive):
+		// tables it does not have yet are empty by definition.
+		exists, err := store.TableExists(ctx, db.DB, db.Kind, name)
+		if err != nil {
+			return nil, err
+		}
+		if !exists {
+			continue
+		}
 		n, err := store.CountRows(ctx, db.DB, name)
 		if err != nil {
 			return nil, err
@@ -402,13 +411,18 @@ func restoreFiles(m *Manifest, from, filesDir string) error {
 }
 
 // extract reads the archive into dir, checking the manifest, the file list and every checksum.
-func extract(in io.Reader, dir string) (*Manifest, error) {
+// ReadManifest reads only the manifest at the head of an archive (format checked, contents not verified): enough
+// to know the archive's schema version before preparing a database for Restore.
+func ReadManifest(in io.Reader) (*Manifest, error) {
 	gz, err := gzip.NewReader(in)
 	if err != nil {
 		return nil, ErrFormat
 	}
 	defer gz.Close()
-	tr := tar.NewReader(gz)
+	return readManifest(tar.NewReader(gz))
+}
+
+func readManifest(tr *tar.Reader) (*Manifest, error) {
 	hdr, err := tr.Next()
 	if err != nil || hdr.Name != manifestName {
 		return nil, ErrFormat
@@ -417,6 +431,21 @@ func extract(in io.Reader, dir string) (*Manifest, error) {
 	if err := json.NewDecoder(io.LimitReader(tr, 1<<20)).Decode(&m); err != nil || m.Format != Format {
 		return nil, ErrFormat
 	}
+	return &m, nil
+}
+
+func extract(in io.Reader, dir string) (*Manifest, error) {
+	gz, err := gzip.NewReader(in)
+	if err != nil {
+		return nil, ErrFormat
+	}
+	defer gz.Close()
+	tr := tar.NewReader(gz)
+	mp, err := readManifest(tr)
+	if err != nil {
+		return nil, err
+	}
+	m := *mp
 	want := map[string]Table{}
 	known := map[string]bool{}
 	for _, n := range store.BackupTables() {

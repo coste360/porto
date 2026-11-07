@@ -159,6 +159,13 @@ func SetSessionCookies(w http.ResponseWriter, token string, expires time.Time, s
 	return nil
 }
 
+// CookieSecure reports whether session cookies of r carry the Secure attribute: always over TLS (the desktop
+// local-network listener serves https while its base URL is the loopback http one), otherwise as configured
+// (config.SecureCookies).
+func CookieSecure(r *http.Request, configured bool) bool {
+	return configured || r.TLS != nil
+}
+
 // ClearSessionCookies expires both cookies.
 func ClearSessionCookies(w http.ResponseWriter, secure bool) {
 	for _, name := range []string{SessionCookie, CSRFCookie} {

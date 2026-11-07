@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { ChevronsUpDownIcon, LogOutIcon, UserIcon } from 'lucide-react';
+import { ChevronsUpDownIcon, LogOutIcon, MonitorIcon, UserIcon } from 'lucide-react';
 
 import { SUPPORTED_LOCALES, useT } from '@porto/shared/i18n';
 import { useTheme, type ThemePreference } from '@porto/shared/theme';
@@ -21,6 +21,7 @@ import {
 } from '@porto/shared/ui/dropdown-menu';
 
 import { useLogout, useMe } from '../auth/hooks';
+import { useDesktopAccess } from '../features/desktop/lib';
 import { initials } from '../lib/text';
 
 const THEMES: { value: ThemePreference; key: string }[] = [
@@ -35,6 +36,7 @@ export function UserMenu({ variant = 'button' }: { variant?: 'button' | 'sidebar
   const { data: me } = useMe();
   const { theme, setTheme } = useTheme();
   const logout = useLogout();
+  const desktop = useDesktopAccess();
   if (!me) return null;
   const name = me.user.name || me.user.email;
 
@@ -75,6 +77,14 @@ export function UserMenu({ variant = 'button' }: { variant?: 'button' | 'sidebar
               {t('common:nav.account')}
             </Link>
           </DropdownMenuItem>
+          {desktop.admin ? (
+            <DropdownMenuItem asChild>
+              <Link to="/desktop">
+                <MonitorIcon />
+                {t('desktop:appName')}
+              </Link>
+            </DropdownMenuItem>
+          ) : null}
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>{t('common:user.theme')}</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>

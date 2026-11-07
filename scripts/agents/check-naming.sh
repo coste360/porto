@@ -11,7 +11,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 pattern='arenile|establishment'
-paths=(cmd internal pkg api web/admin/src web/booking/src web/shared/src deploy compose.yaml)
+paths=(cmd internal pkg api web/admin/src web/booking/src web/shared/src deploy compose.yaml scripts/desktop packaging/desktop .github/workflows/desktop.yml)
 
 existing=()
 for p in "${paths[@]}"; do

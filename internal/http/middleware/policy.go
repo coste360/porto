@@ -23,6 +23,12 @@ type Policy struct {
 	MaxBodyBytes int64
 	// BodyTypes are the request content types the operation declares (empty = no request body).
 	BodyTypes []string
+	// MaxStreamBytes, when > 0, is the limit of a raw body streamed to disk (x-porto-max-stream-bytes, M6a desktop
+	// restore); it replaces MaxBodyBytes and the global MaxBodyCap for that operation.
+	MaxStreamBytes int64
+	// InstanceToken is true when the operation is authenticated by the Porto-Instance-Token header (desktop
+	// activation): the middleware treats it as public and the handler checks the token.
+	InstanceToken bool
 }
 
 // BinaryBody reports whether the operation takes a raw (non-JSON) body: it declares request content types and
@@ -64,10 +70,11 @@ var schemeMethods = map[string]reqctx.AuthMethod{
 }
 
 type specOperation struct {
-	OperationID  string                 `yaml:"operationId"`
-	Security     *[]map[string][]string `yaml:"security"`
-	MaxBodyBytes int64                  `yaml:"x-porto-max-body-bytes"`
-	RequestBody  *struct {
+	OperationID    string                 `yaml:"operationId"`
+	Security       *[]map[string][]string `yaml:"security"`
+	MaxBodyBytes   int64                  `yaml:"x-porto-max-body-bytes"`
+	MaxStreamBytes int64                  `yaml:"x-porto-max-stream-bytes"`
+	RequestBody    *struct {
 		Content map[string]yaml.Node `yaml:"content"`
 	} `yaml:"requestBody"`
 }
@@ -103,14 +110,28 @@ func ParsePolicies(spec []byte) (Policies, error) {
 			if op.MaxBodyBytes < 0 || op.MaxBodyBytes > MaxBodyCap {
 				return nil, fmt.Errorf("middleware: %s %s: x-porto-max-body-bytes out of range", name, path)
 			}
-			p := Policy{OperationID: op.OperationID, MaxBodyBytes: op.MaxBodyBytes}
+			p := Policy{OperationID: op.OperationID, MaxBodyBytes: op.MaxBodyBytes, MaxStreamBytes: op.MaxStreamBytes}
 			if op.RequestBody != nil {
 				for ct := range op.RequestBody.Content {
 					p.BodyTypes = append(p.BodyTypes, strings.ToLower(ct))
 				}
 				slices.Sort(p.BodyTypes)
 			}
+			if op.MaxStreamBytes != 0 {
+				if op.MaxStreamBytes < 0 || op.MaxStreamBytes > MaxStreamCap || op.MaxBodyBytes != 0 || !p.BinaryBody() ||
+					strings.Contains(path, "{") {
+					return nil, fmt.Errorf("middleware: %s %s: x-porto-max-stream-bytes needs a raw body on a fixed path, "+
+						"at most %d, without x-porto-max-body-bytes", name, path, MaxStreamCap)
+				}
+			}
 			for _, alt := range reqs {
+				if _, ok := alt[instanceTokenScheme]; ok {
+					if len(alt) != 1 {
+						return nil, fmt.Errorf("middleware: %s %s: instanceToken goes alone", name, path)
+					}
+					p.InstanceToken = true
+					continue
+				}
 				var method reqctx.AuthMethod
 				csrf := false
 				for scheme := range alt {
@@ -145,9 +166,27 @@ func ParsePolicies(spec []byte) (Policies, error) {
 const (
 	// DefaultMaxBodyBytes applies to operations without x-porto-max-body-bytes.
 	DefaultMaxBodyBytes int64 = 1 << 20
-	// MaxBodyCap is the hard cap of every request body (the global BodyLimit).
+	// MaxBodyCap is the hard cap of every request body (the global BodyLimit), except streamed bodies.
 	MaxBodyCap int64 = 16 << 20
+	// MaxStreamCap bounds x-porto-max-stream-bytes (desktop restore upload, M6a).
+	MaxStreamCap int64 = 4 << 30
 )
+
+// instanceTokenScheme is the security scheme of the desktop activation (checked by the handler).
+const instanceTokenScheme = "instanceToken"
+
+// StreamedPaths returns the fixed request paths ("METHOD /path") whose operation streams a large raw body
+// (x-porto-max-stream-bytes) with their limit: the global body limit lets them through, BodyLimitByPolicy applies
+// the stream limit.
+func (ps Policies) StreamedPaths() map[string]int64 {
+	out := map[string]int64{}
+	for k, p := range ps {
+		if p.MaxStreamBytes > 0 {
+			out[k] = p.MaxStreamBytes
+		}
+	}
+	return out
+}
 
 // unsafeMethod reports whether an HTTP method can change state.
 func unsafeMethod(m string) bool {

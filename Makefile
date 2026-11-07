@@ -52,6 +52,11 @@ LICENSES_OK   := MIT,BSD-2-Clause,BSD-3-Clause,Apache-2.0,ISC,MPL-2.0
 
 LDFLAGS := -s -w -X main.version=$(VERSION)
 
+# Desktop edition (M6a, docs/desktop-build.md). DESKTOP_TAGS="" builds the browser launcher without CGO;
+# DESKTOP_TAGS=webview builds the window launcher (CGO, native toolchain of the host OS).
+DESKTOP_TAGS ?=
+DESKTOP_PKGS := ./internal/desktop/... ./internal/lan/... ./cmd/porto-desktop/...
+
 define skip
 	echo "make: $(1): skipped ($(2) not present yet)"
 endef
@@ -211,7 +216,7 @@ e2e: ## Build the binary and run the Playwright end-to-end tests
 check: gen-check lint test ## Fast gate: gen-check, lint, test (target < 2 min)
 
 .PHONY: check-full
-check-full: check test-db test-race e2e ## Full gate: check, integration tests, race tests, e2e
+check-full: check test-db test-race e2e e2e-desktop ## Full gate: check, integration tests, race tests, e2e (server and desktop)
 
 # ---------------------------------------------------------------------------
 # Build and packaging
@@ -236,6 +241,55 @@ build: web-build ## Build bin/porto (static, no CGO) with the embedded SPAs
 	CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -o bin/porto ./cmd/porto; \
 	echo "built bin/porto $(VERSION)"
 
+# ---------------------------------------------------------------------------
+# Desktop edition (M6a): bin/porto stays CGO_ENABLED=0; only the webview build of the launcher needs CGO
+# ---------------------------------------------------------------------------
+
+.PHONY: desktop-build
+desktop-build: ## Build the desktop launcher for this OS into dist/desktop/bin/ (DESKTOP_TAGS=webview: window, CGO)
+	@set -euo pipefail; \
+	if [ -x scripts/desktop/build.sh ]; then DESKTOP_TAGS="$(DESKTOP_TAGS)" VERSION="$(VERSION)" scripts/desktop/build.sh; \
+	else \
+		out="dist/desktop/bin/$$(go env GOOS)_$$(go env GOARCH)"; mkdir -p "$$out"; \
+		if [ -n "$(DESKTOP_TAGS)" ]; then cgo=1; else cgo=0; fi; \
+		CGO_ENABLED=$$cgo go build -tags "$(DESKTOP_TAGS)" -trimpath -buildvcs=false -ldflags "$(LDFLAGS) -buildid=" \
+			-o "$$out/porto-desktop" ./cmd/porto-desktop; \
+		echo "built $$out/porto-desktop $(VERSION) (tags: $(DESKTOP_TAGS))"; \
+	fi
+
+.PHONY: desktop-package-macos
+desktop-package-macos: ## Package the unsigned macOS .app and .dmg (universal; SKIP_WEB_BUILD=1 skips web-build)
+	@$(MAKE) --no-print-directory desktop-package DESKTOP_OS=macos
+
+.PHONY: desktop-package-windows
+desktop-package-windows: ## Package the unsigned Windows x64 installer (Git Bash, MinGW, Inno Setup)
+	@$(MAKE) --no-print-directory desktop-package DESKTOP_OS=windows
+
+.PHONY: desktop-package-linux
+desktop-package-linux: ## Package the unsigned Linux x86_64 AppImage
+	@$(MAKE) --no-print-directory desktop-package DESKTOP_OS=linux
+
+# desktop-package runs scripts/desktop/package-$(DESKTOP_OS).sh after web-build (skipped with SKIP_WEB_BUILD=1).
+.PHONY: desktop-package
+desktop-package:
+	@set -euo pipefail; \
+	script="scripts/desktop/package-$(DESKTOP_OS).sh"; \
+	if [ ! -x "$$script" ]; then $(call skip,desktop-package-$(DESKTOP_OS),$$script); exit 0; fi; \
+	if [ -z "$${SKIP_WEB_BUILD:-}" ]; then $(MAKE) --no-print-directory web-build; fi; \
+	VERSION="$(VERSION)" "$$script"
+
+.PHONY: desktop-test
+desktop-test: ## Run the desktop launcher and local-network unit tests (no window, no webview toolchain)
+	go test $(DESKTOP_PKGS)
+
+.PHONY: e2e-desktop
+e2e-desktop: ## Build the headless desktop launcher (no CGO) and run the desktop Playwright specs
+	@set -euo pipefail; \
+	if [ -z "$(HAS_E2E)" ] || [ ! -f e2e/playwright.desktop.config.ts ]; then $(call skip,e2e-desktop,e2e/playwright.desktop.config.ts); exit 0; fi; \
+	$(MAKE) --no-print-directory web-build; \
+	CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -o bin/porto-desktop ./cmd/porto-desktop; \
+	cd e2e && npx playwright test -c playwright.desktop.config.ts
+
 .PHONY: docker
 docker: ## Build the container image (IMAGE, tag dev) from deploy/Dockerfile
 	docker build -f deploy/Dockerfile --build-arg VERSION=$(VERSION) -t $(IMAGE):dev .
@@ -248,6 +302,7 @@ up: ## Start the local stack with docker compose
 licenses: ## Check third-party Go and npm licences against the allow-list (Porto itself is ignored)
 	@set -euo pipefail; \
 	go tool go-licenses check ./... --ignore $(MODULE) --allowed_licenses=$(LICENSES_OK); \
+	GOFLAGS=-tags=webview go tool go-licenses check ./cmd/porto-desktop --ignore $(MODULE) --allowed_licenses=$(LICENSES_OK); \
 	if [ -n "$(HAS_WEB)" ]; then npm --prefix web run licenses; \
 	else $(call skip,licenses web,web/package.json); fi; \
 	if [ -d scripts/brand/node_modules ]; then node web/scripts/licenses.mjs scripts/brand; \
@@ -256,7 +311,7 @@ licenses: ## Check third-party Go and npm licences against the allow-list (Porto
 .PHONY: clean
 clean: ## Remove build outputs (keeps bin/golangci-lint and .gitkeep files)
 	@set -euo pipefail; \
-	rm -rf bin/porto tmp dist web/*/dist e2e/test-results e2e/playwright-report; \
+	rm -rf bin/porto bin/porto-desktop tmp dist web/*/dist e2e/test-results e2e/playwright-report; \
 	for app in admin booking; do \
 		[ -d "$(STATIC_DIR)/$$app" ] && find "$(STATIC_DIR)/$$app" -mindepth 1 -not -name .gitkeep -exec rm -rf {} + || true; \
 	done

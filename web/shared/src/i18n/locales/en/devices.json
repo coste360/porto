@@ -23,5 +23,26 @@
   "empty": "No paired devices.",
   "revokeTitle": "Revoke this device?",
   "revokeDescription": "The device will be signed out immediately.",
-  "revoked": "Device revoked."
+  "revoked": "Device revoked.",
+  "access": "Access",
+  "accessKinds": {
+    "token": "App",
+    "browser": "Browser"
+  },
+  "state": "State",
+  "created": "Created",
+  "unreachableTitle": "Enable the local network",
+  "unreachable": "Phones cannot reach this computer while the local network is off.",
+  "openDesktopSettings": "Open the desktop app settings",
+  "fingerprint": "Certificate fingerprint",
+  "newCode": "New code",
+  "scanPhone": "Scan the QR with the camera of a phone on the marina Wi-Fi.",
+  "platforms": {
+    "ios": "iPhone/iPad",
+    "android": "Android",
+    "windows": "Windows",
+    "macos": "macOS",
+    "linux": "Linux",
+    "other": "Other"
+  }
 }

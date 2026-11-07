@@ -1,0 +1,163 @@
+{
+  "appName": "App desktop",
+  "placeholder": "Questa pagina è in preparazione.",
+  "firstRun": {
+    "title": "Benvenuto in Porto",
+    "description": "Crea l'account del titolare. Il porto lo configuri subito dopo.",
+    "organization": "Nome dell'azienda",
+    "name": "Il tuo nome",
+    "email": "Email",
+    "password": "Password",
+    "passwordRepeat": "Ripeti la password",
+    "updateCheck": "Controlla gli aggiornamenti (solo il numero di versione, nessun dato del porto)",
+    "submit": "Crea l'account",
+    "restore": "Ripristina da un backup",
+    "goToLogin": "Vai all'accesso",
+    "restoreDescription": "Hai già usato Porto su un altro computer o su un server? Ripristina il suo backup: serve anche la sua chiave segreta."
+  },
+  "settings": {
+    "title": "App desktop",
+    "description": "Rete locale, backup, aggiornamenti e chiave segreta di questo computer.",
+    "openWarning": "I telefoni e gli altri computer funzionano solo mentre questa app è aperta.",
+    "onlyInApp": "Queste impostazioni sono disponibili solo nella finestra dell'app desktop, sul computer dove è installata."
+  },
+  "lan": {
+    "title": "Rete locale",
+    "description": "Permette agli altri computer dell'ufficio e ai telefoni sul Wi-Fi del porto di usare Porto.",
+    "enable": "Attiva la rete locale",
+    "url": "Indirizzo",
+    "address": "Indirizzo di rete",
+    "addressAuto": "Automatico",
+    "port": "Porta",
+    "fingerprint": "Impronta del certificato",
+    "certExpires": "Il certificato scade il {{date}}",
+    "rotate": "Rigenera certificato",
+    "rotateAll": "Rigenera tutto",
+    "off": "La rete locale è spenta: nessun altro dispositivo può collegarsi.",
+    "apply": "Applica",
+    "listening": "Attiva",
+    "notListening": "Non in ascolto",
+    "portInvalid": "Usa una porta tra 1024 e 65535.",
+    "rotateConfirm": "I telefoni e i computer collegati vedranno di nuovo l'avviso sul certificato: andranno riabbinati se non si collegano.",
+    "rotateAllConfirm": "Rigenera anche l'autorità locale: tutti i dispositivi dovranno accettare di nuovo il certificato."
+  },
+  "backup": {
+    "title": "Backup",
+    "description": "Un backup al giorno e uno a ogni chiusura dell'app.",
+    "folder": "Cartella dei backup",
+    "openFolder": "Apri cartella",
+    "keepDaily": "Backup giornalieri da conservare",
+    "keepExit": "Backup di chiusura da conservare",
+    "now": "Fai un backup ora",
+    "restore": "Ripristina",
+    "restoreConfirm": "Prima del ripristino viene fatto un backup dei dati attuali. Dopo il ripristino tutti dovranno accedere di nuovo.",
+    "fallback": "La cartella scelta non è disponibile: i backup vanno nella cartella dei dati.",
+    "kinds": {
+      "daily": "Giornaliero",
+      "exit": "Chiusura",
+      "manual": "Manuale",
+      "pre-restore": "Prima del ripristino"
+    },
+    "empty": "Nessun backup ancora.",
+    "date": "Data",
+    "done": "Backup completato.",
+    "file": "File di backup (.tar.gz)",
+    "folderHint": "Lascia vuoto per usare la cartella dei dati. Puoi indicare una chiavetta USB o una cartella condivisa.",
+    "kind": "Tipo",
+    "lastDaily": "Ultimo backup giornaliero: {{date}}.",
+    "nextDue": "Prossimo: {{date}}.",
+    "noDaily": "Nessun backup giornaliero ancora.",
+    "lastError": "L'ultimo backup non è riuscito",
+    "restoreFile": "Ripristina da un file",
+    "restoreTitle": "Ripristinare questo backup?",
+    "size": "Dimensione"
+  },
+  "updates": {
+    "title": "Aggiornamenti",
+    "check": "Controlla gli aggiornamenti",
+    "available": "È disponibile Porto {{version}}.",
+    "download": "Scarica",
+    "dismiss": "Non ora",
+    "current": "Versione installata: {{version}}.",
+    "description": "Porto controlla una volta al giorno se c'è una nuova versione: invia solo il numero di versione e il sistema operativo. Non scarica e non installa nulla da solo."
+  },
+  "secret": {
+    "title": "Chiave segreta",
+    "description": "Serve per ripristinare i backup su un altro computer o su un server. Conservala in un posto sicuro.",
+    "reveal": "Mostra la chiave",
+    "password": "Conferma la password",
+    "copy": "Copia",
+    "warning": "Chi ha la chiave e un backup può leggere tutti i dati: non condividerla.",
+    "fileFallback": "Il portachiavi del sistema non è disponibile: la chiave è salvata in un file nella cartella dei dati."
+  },
+  "data": {
+    "title": "Dati",
+    "openData": "Apri la cartella dei dati",
+    "openLogs": "Apri la cartella dei log",
+    "description": "Dove Porto salva il database, i file e i log su questo computer."
+  },
+  "localMode": {
+    "title": "Non disponibile nella versione desktop",
+    "publicPage": "La pagina pubblica del porto non è raggiungibile da internet.",
+    "onlinePayments": "I pagamenti online e i link di pagamento richiedono un server raggiungibile da internet.",
+    "remoteSignature": "La firma a distanza con codice al cliente richiede un server raggiungibile da internet.",
+    "learnMore": "Come passare a un server online",
+    "paymentLinks": "I link di pagamento non sono raggiungibili dai clienti: questo computer non è raggiungibile da internet.",
+    "cardTitle": "Stai usando Porto sul tuo computer",
+    "cardDescription": "Tutto funziona anche senza internet. La pagina pubblica, i pagamenti online e la firma a distanza richiedono invece un server online.",
+    "dismiss": "Ho capito"
+  },
+  "online": {
+    "title": "Passare a un server online",
+    "description": "La versione desktop funziona senza internet. Per la pagina pubblica, i pagamenti online e la firma a distanza serve un server Porto online.",
+    "noSync": "I due non si sincronizzano: si sposta tutto sul server e da lì si continua.",
+    "unavailableTitle": "Cosa non è disponibile nella versione desktop",
+    "whyTitle": "Perché",
+    "why": "Questo computer non è raggiungibile da internet: clienti e fornitori di pagamento non possono contattarlo.",
+    "stepsTitle": "Come passare a un server online",
+    "restoreCommand": "PORTO_SECRET_KEY=<chiave> porto restore --in <file di backup>",
+    "steps": {
+      "backup": "Fai un backup ora dalla versione desktop.",
+      "secret": "Mostra la chiave segreta e conservala in un posto sicuro: senza la chiave il backup non si può leggere.",
+      "server": "Sul server Porto ripristina il backup con la chiave, poi avvia porto serve con un indirizzo https (PORTO_BASE_URL).",
+      "pair": "Abbina di nuovo telefoni e postazioni al server.",
+      "stop": "Smetti di usare la copia desktop: le due non si sincronizzano."
+    }
+  },
+  "pair": {
+    "title": "Collega questo dispositivo",
+    "deviceName": "Nome del dispositivo",
+    "defaultName": "Telefono",
+    "connect": "Collega",
+    "code": "Codice",
+    "fingerprint": "Impronta del certificato",
+    "invalid": "Codice scaduto o già usato: chiedi un nuovo QR.",
+    "network": "Il dispositivo non raggiunge Porto: controlla di essere sul Wi-Fi del porto e accetta l'avviso sul certificato.",
+    "description": "Collega questo telefono o computer a Porto.",
+    "codeInvalid": "Inserisci il codice di 8 caratteri (XXXX-XXXX).",
+    "codePlaceholder": "XXXX-XXXX",
+    "fingerprintHint": "Deve coincidere con quella mostrata sul computer dell'ufficio.",
+    "platforms": {
+      "ios": "iPhone/iPad",
+      "android": "Android",
+      "windows": "Windows",
+      "macos": "macOS",
+      "linux": "Linux",
+      "other": "Altro"
+    },
+    "totpTitle": "Verifica in due passaggi",
+    "totpHint": "Il tuo account usa la verifica in due passaggi: inserisci il codice dell'app di autenticazione o un codice di recupero.",
+    "totpCode": "Codice di verifica",
+    "verify": "Verifica",
+    "useRecovery": "Usa un codice di recupero",
+    "useTotp": "Usa il codice dell'app"
+  },
+  "download": {
+    "failed": "Il file non è stato salvato."
+  },
+  "restore": {
+    "title": "Ripristino in corso",
+    "description": "Porto si riavvia con i dati del backup. Al termine accedi di nuovo con un account presente nel backup.",
+    "login": "Vai all'accesso"
+  }
+}

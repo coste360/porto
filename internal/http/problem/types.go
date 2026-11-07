@@ -125,6 +125,15 @@ const (
 	ProviderRefundUnsupported Type = "provider_refund_unsupported"
 	ProviderError             Type = "provider_error"
 	BillingItemMissing        Type = "billing_item_missing"
+
+	// M6a (m6a-plan §3.4).
+	FirstRunTokenInvalid Type = "first_run_token_invalid"
+	FirstRunDone         Type = "first_run_done"
+	LANPortUnavailable   Type = "lan_port_unavailable"
+	LANNoAddress         Type = "lan_no_address"
+	BackupInProgress     Type = "backup_in_progress"
+	RestoreFailed        Type = "restore_failed"
+	RestoreBackupNewer   Type = "restore_backup_newer"
 )
 
 type typeInfo struct {
@@ -242,6 +251,13 @@ var registry = map[Type]typeInfo{
 	ProviderRefundUnsupported: {http.StatusUnprocessableEntity, "The provider cannot refund this payment"},
 	ProviderError:             {http.StatusBadGateway, "The payment provider returned an error"},
 	BillingItemMissing:        {http.StatusUnprocessableEntity, "No billing item is configured for this charge"},
+	FirstRunTokenInvalid:      {http.StatusBadRequest, "The first-run link is invalid or already used"},
+	FirstRunDone:              {http.StatusConflict, "The first run is already completed"},
+	LANPortUnavailable:        {http.StatusConflict, "The local network port is not available"},
+	LANNoAddress:              {http.StatusConflict, "No local network address is available"},
+	BackupInProgress:          {http.StatusConflict, "A backup or restore is already running"},
+	RestoreFailed:             {http.StatusUnprocessableEntity, "The backup cannot be restored"},
+	RestoreBackupNewer:        {http.StatusUnprocessableEntity, "The backup was made by a newer version"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

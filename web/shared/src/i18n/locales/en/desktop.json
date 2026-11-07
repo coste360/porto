@@ -1,0 +1,163 @@
+{
+  "appName": "Desktop app",
+  "placeholder": "This page is being prepared.",
+  "firstRun": {
+    "title": "Welcome to Porto",
+    "description": "Create the owner account. You set up the marina right after.",
+    "organization": "Company name",
+    "name": "Your name",
+    "email": "Email",
+    "password": "Password",
+    "passwordRepeat": "Repeat the password",
+    "updateCheck": "Check for updates (only the version number, no marina data)",
+    "submit": "Create the account",
+    "restore": "Restore from a backup",
+    "goToLogin": "Go to sign in",
+    "restoreDescription": "Already used Porto on another computer or a server? Restore its backup: you also need its secret key."
+  },
+  "settings": {
+    "title": "Desktop app",
+    "description": "Local network, backups, updates and secret key of this computer.",
+    "openWarning": "Phones and other computers work only while this app is open.",
+    "onlyInApp": "These settings are available only in the desktop app window, on the computer where it is installed."
+  },
+  "lan": {
+    "title": "Local network",
+    "description": "Lets the other office computers and the phones on the marina Wi-Fi use Porto.",
+    "enable": "Enable the local network",
+    "url": "Address",
+    "address": "Network address",
+    "addressAuto": "Automatic",
+    "port": "Port",
+    "fingerprint": "Certificate fingerprint",
+    "certExpires": "The certificate expires on {{date}}",
+    "rotate": "Renew certificate",
+    "rotateAll": "Regenerate everything",
+    "off": "The local network is off: no other device can connect.",
+    "apply": "Apply",
+    "listening": "On",
+    "notListening": "Not listening",
+    "portInvalid": "Use a port between 1024 and 65535.",
+    "rotateConfirm": "Connected phones and computers will see the certificate warning again: pair them again if they cannot connect.",
+    "rotateAllConfirm": "Also regenerates the local authority: every device must accept the certificate again."
+  },
+  "backup": {
+    "title": "Backups",
+    "description": "One backup a day and one every time the app closes.",
+    "folder": "Backup folder",
+    "openFolder": "Open folder",
+    "keepDaily": "Daily backups to keep",
+    "keepExit": "Exit backups to keep",
+    "now": "Back up now",
+    "restore": "Restore",
+    "restoreConfirm": "A backup of the current data is taken before restoring. After the restore everybody logs in again.",
+    "fallback": "The chosen folder is not available: backups go to the data folder.",
+    "kinds": {
+      "daily": "Daily",
+      "exit": "Exit",
+      "manual": "Manual",
+      "pre-restore": "Before restore"
+    },
+    "empty": "No backups yet.",
+    "date": "Date",
+    "done": "Backup completed.",
+    "file": "Backup file (.tar.gz)",
+    "folderHint": "Leave empty to use the data folder. You can choose a USB stick or a shared folder.",
+    "kind": "Kind",
+    "lastDaily": "Last daily backup: {{date}}.",
+    "nextDue": "Next: {{date}}.",
+    "noDaily": "No daily backup yet.",
+    "lastError": "The last backup failed",
+    "restoreFile": "Restore from a file",
+    "restoreTitle": "Restore this backup?",
+    "size": "Size"
+  },
+  "updates": {
+    "title": "Updates",
+    "check": "Check for updates",
+    "available": "Porto {{version}} is available.",
+    "download": "Download",
+    "dismiss": "Not now",
+    "current": "Installed version: {{version}}.",
+    "description": "Porto checks once a day whether a new version exists: it sends only the version number and the operating system. It never downloads or installs anything by itself."
+  },
+  "secret": {
+    "title": "Secret key",
+    "description": "Needed to restore the backups on another computer or a server. Keep it somewhere safe.",
+    "reveal": "Show the key",
+    "password": "Confirm your password",
+    "copy": "Copy",
+    "warning": "Whoever has the key and a backup can read all the data: do not share it.",
+    "fileFallback": "The system keychain is not available: the key is stored in a file in the data folder."
+  },
+  "data": {
+    "title": "Data",
+    "openData": "Open the data folder",
+    "openLogs": "Open the logs folder",
+    "description": "Where Porto keeps the database, the files and the logs on this computer."
+  },
+  "localMode": {
+    "title": "Not available in the desktop edition",
+    "publicPage": "The public marina page cannot be reached from the internet.",
+    "onlinePayments": "Online payments and payment links need a server reachable from the internet.",
+    "remoteSignature": "Remote signature with a code sent to the customer needs a server reachable from the internet.",
+    "learnMore": "How to move to an online server",
+    "paymentLinks": "Payment links cannot be reached by customers: this computer is not reachable from the internet.",
+    "cardTitle": "You are using Porto on your computer",
+    "cardDescription": "Everything works without internet. The public page, online payments and remote signature need an online server instead.",
+    "dismiss": "Got it"
+  },
+  "online": {
+    "title": "Moving to an online server",
+    "description": "The desktop edition works without internet. The public page, online payments and remote signature need an online Porto server.",
+    "noSync": "The two do not synchronise: everything moves to the server and you carry on there.",
+    "unavailableTitle": "What the desktop edition cannot do",
+    "whyTitle": "Why",
+    "why": "This computer is not reachable from the internet: customers and payment providers cannot contact it.",
+    "stepsTitle": "How to move to an online server",
+    "restoreCommand": "PORTO_SECRET_KEY=<key> porto restore --in <backup file>",
+    "steps": {
+      "backup": "Take a backup now from the desktop edition.",
+      "secret": "Show the secret key and keep it somewhere safe: without the key the backup cannot be read.",
+      "server": "On the Porto server restore the backup with the key, then start porto serve with an https address (PORTO_BASE_URL).",
+      "pair": "Pair phones and workstations with the server again.",
+      "stop": "Stop using the desktop copy: the two do not synchronise."
+    }
+  },
+  "pair": {
+    "title": "Connect this device",
+    "deviceName": "Device name",
+    "defaultName": "Phone",
+    "connect": "Connect",
+    "code": "Code",
+    "fingerprint": "Certificate fingerprint",
+    "invalid": "Code expired or already used: ask for a new QR.",
+    "network": "This device cannot reach Porto: check you are on the marina Wi-Fi and accept the certificate warning.",
+    "description": "Connect this phone or computer to Porto.",
+    "codeInvalid": "Enter the 8-character code (XXXX-XXXX).",
+    "codePlaceholder": "XXXX-XXXX",
+    "fingerprintHint": "It must match the one shown on the office computer.",
+    "platforms": {
+      "ios": "iPhone/iPad",
+      "android": "Android",
+      "windows": "Windows",
+      "macos": "macOS",
+      "linux": "Linux",
+      "other": "Other"
+    },
+    "totpTitle": "Two-step verification",
+    "totpHint": "Your account uses two-step verification: enter the code from your authenticator app or a recovery code.",
+    "totpCode": "Verification code",
+    "verify": "Verify",
+    "useRecovery": "Use a recovery code",
+    "useTotp": "Use the app code"
+  },
+  "download": {
+    "failed": "The file was not saved."
+  },
+  "restore": {
+    "title": "Restore in progress",
+    "description": "Porto restarts on the backup data. When it is done, sign in again with an account that is in the backup.",
+    "login": "Go to sign in"
+  }
+}

@@ -32,6 +32,7 @@ import {
   SimpleTable,
 } from '../components/kit';
 import { PayLinkField } from '../components/PaymentRequestDialog';
+import { OnlineFeatureNotice } from '../../desktop/OnlineFeatureNotice';
 
 const STATUSES: readonly PaymentRequest['status'][] = ['open', 'paid', 'cancelled', 'expired'];
 
@@ -52,6 +53,7 @@ export function PaymentRequestsPage() {
           title={t('receivables:requests.title')}
           description={t('receivables:requests.description')}
         />
+        <OnlineFeatureNotice feature="paymentLinks" />
         <EnumSelect
           id="req-status"
           label={t('receivables:fields.status')}

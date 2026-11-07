@@ -67,6 +67,11 @@ oppure PostgreSQL (`DATABASE_URL`). Stesso schema logico sui due dialetti.
 | `internal/backup` | backup portabile (tar.gz con JSONL per tabella) tra SQLite e PostgreSQL |
 | `internal/testutil/testdb` | esegue un test su SQLite e, se `PORTO_TEST_POSTGRES_URL` è impostata, su PostgreSQL |
 | `internal/acceptance` | test di accettazione di sistema M0, solo tramite API |
+| `cmd/porto-desktop` | edizione desktop (M6a): launcher con server su `127.0.0.1` nel processo, finestra webview (tag `webview`, unico package con CGO) o browser |
+| `internal/desktopport` | tipi e interfacce condivise dell'edizione desktop (`Runtime`, `LANController`, `PairTarget`), senza logica |
+| `internal/desktop` | launcher desktop: cartella dati, impostazioni, chiave nel portachiavi, istanza unica, primo avvio, backup, controllo versione, log (implementa `desktopport.Runtime`) |
+| `internal/lan` | modalità rete locale: CA e certificato locali, listener solo peer privati, controllo `Host` (implementa `desktopport.LANController`) |
+| `internal/http/desktop` | handler di `/api/desktop/v1`, solo sul listener di loopback (INV-80) |
 | `pkg/ext` | interfacce pubbliche delle estensioni (sottoinsieme M0 di spec [27.5](spec/27-api-eventi-estensioni.md)) |
 | `web/shared`, `web/admin`, `web/booking` | workspace npm: libreria condivisa (client generato, shadcn/ui, tema, i18n, marchio), pannello, pagina pubblica |
 | `e2e/` | Playwright sul binario reale |
@@ -182,7 +187,12 @@ Spec [29](spec/29-tempo-reale-offline-i18n.md), [31.3](spec/31-multipiattaforma.
   `deploy/docker-compose.postgres.yml` (produzione PostgreSQL). Variabili in `.env.example`.
 - CI (`.github/workflows/ci.yml`): Go (lint, unit, integrazione SQLite + PostgreSQL, race, govulncheck), web,
   codice generato senza differenze, licenze, immagine Docker (Trivy e prova di avvio), e2e, nomi.
-- L'edizione desktop (spec [31.2](spec/31-multipiattaforma.md)) arriva dopo M0.
+- Edizione desktop (M6a, spec [31.2](spec/31-multipiattaforma.md), ADR 0010): `cmd/porto-desktop` avvia nello
+  stesso processo un Porto completo su SQLite (dati nella cartella dell'utente, chiave segreta nel portachiavi del
+  sistema, backup giornalieri e alla chiusura), lo mostra nella webview del sistema (WKWebView, WebView2,
+  WebKitGTK) e, se attivata, lo espone sulla rete locale in HTTPS con un certificato proprio. Il meta riporta
+  `edition: desktop` e `local_mode: true`. Pacchetti non firmati (`make desktop-package-*`,
+  `docs/desktop-build.md`); `make check` non richiede la toolchain webview.
 
 ## 10. Domini pianificati
 
@@ -196,6 +206,7 @@ con le stesse regole: servizio con controllo dei permessi, scope di marina, tran
 | M3 | `occupancy`, `fit` (puro), `presence`, `contract` (transiti di base) | [09](spec/09-mappa-vista-operativa.md), [10](spec/10-motore-di-occupazione.md) |
 | M4 | `contract` completo, `schedule`, `rights`, `allot`, `accrual`, `docs` (+ `tmpl`, `markdown`, `layout`, `pdf`), `signature`, `magiclink`, `comms`, `csvimport`, motore scadenze in `deadline` (niente AI, ADR 0008) | [13](spec/13-contrattualistica.md), [14](spec/14-cessioni-oneri-condominio.md), [15](spec/15-modelli-di-stampa-e-firma.md) |
 | M5 | `chargeplan` (puro), `charge`, `payment`, `collect`, `paydriver` (`manual`, `stripe` opzionale e disattivato di default), `cash` (+ `summary` puro), `fiscal`, `collect/levels` (puro), `internal/xlsx`; nessuna fatturazione: gli addebiti si esportano (spec 33 D4) | [16](spec/16-addebiti-e-incassi.md) |
+| M6a | edizione desktop: `cmd/porto-desktop`, `desktopport`, `desktop`, `lan`, `http/desktop`; sessioni di dispositivo per i browser abbinati via QR | [31](spec/31-multipiattaforma.md) |
 | successive | `storage`, `optimizer` (puro), `yard`, `formula` (puro), `rental`, `maintenance`, `sensor`, `profile`, `online`, `checkout`, `report` | [16](spec/16-addebiti-e-incassi.md)–[25](spec/25-scheda-pubblica.md) |
 
 Le regole che nessuna sequenza di operazioni può violare sono in [`invariants.md`](invariants.md).

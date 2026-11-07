@@ -92,6 +92,8 @@ import itPaymentProviders from './locales/it/paymentProviders.json';
 import itCustomerBilling from './locales/it/customerBilling.json';
 import itWorklist from './locales/it/worklist.json';
 import itPayPublic from './locales/it/payPublic.json';
+import enDesktop from './locales/en/desktop.json';
+import itDesktop from './locales/it/desktop.json';
 
 export const SUPPORTED_LOCALES = ['it', 'en'] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -147,6 +149,8 @@ export const NAMESPACES = [
   'customerBilling',
   'worklist',
   'payPublic',
+  // M6a (m6a-plan §7)
+  'desktop',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -199,6 +203,7 @@ export const resources = {
     customerBilling: itCustomerBilling,
     worklist: itWorklist,
     payPublic: itPayPublic,
+    desktop: itDesktop,
   },
   en: {
     common: enCommon,
@@ -248,5 +253,6 @@ export const resources = {
     customerBilling: enCustomerBilling,
     worklist: enWorklist,
     payPublic: enPayPublic,
+    desktop: enDesktop,
   },
 } as const;

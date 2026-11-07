@@ -25,6 +25,7 @@ import { MarinaPickerPage } from './pages/MarinaPickerPage';
 import { MarinaSettingsPage } from './pages/MarinaSettingsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { OrganizationPage } from './pages/OrganizationPage';
+import { PairPage } from './pages/PairPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { TeamPage } from './pages/TeamPage';
 import { TotpSetupPage } from './pages/TotpSetupPage';
@@ -41,6 +42,7 @@ import { contractsM4Routes } from './features/contracts-m4/routes';
 import { documentsRoutes } from './features/documents/routes';
 import { rightsRoutes } from './features/rights/routes';
 import { billingRoutes } from './features/billing/routes';
+import { desktopRoutes } from './features/desktop/routes';
 
 export type RouterContext = { queryClient: QueryClient; api: ApiClient };
 
@@ -75,6 +77,16 @@ const resetPasswordRoute = createRoute({
   component: ResetPasswordPage,
 });
 
+/** Browser pairing by QR (M6a): public, the code arrives in the URL fragment. */
+const pairRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'pair',
+  component: PairPage,
+});
+
+/** The root route, parent of the public desktop routes (features/desktop/routes.tsx). */
+export type RootRoute = typeof rootRoute;
+
 /** Every route below needs a session; enrolment-required sessions only reach TOTP setup. */
 const authRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -100,6 +112,11 @@ const plainRoute = createRoute({
   id: 'plain',
   component: PlainLayout,
 });
+
+/** The plain (non-marina) layout route, parent of the desktop settings routes. */
+export type PlainRoute = typeof plainRoute;
+
+const desktop = desktopRoutes(rootRoute, plainRoute);
 
 const pickerRoute = createRoute({
   getParentRoute: () => plainRoute,
@@ -174,9 +191,11 @@ export const routeTree = rootRoute.addChildren([
   loginRoute,
   forgotPasswordRoute,
   resetPasswordRoute,
+  pairRoute,
+  ...desktop.publicRoutes,
   authRoute.addChildren([
     totpSetupRoute,
-    plainRoute.addChildren([pickerRoute, accountRoute, organizationRoute]),
+    plainRoute.addChildren([pickerRoute, accountRoute, organizationRoute, ...desktop.plainRoutes]),
     marinaRoute.addChildren([
       dashboardRoute,
       settingsRoute,

@@ -10,7 +10,9 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"github.com/coste360/porto/internal/clock"
+	"github.com/coste360/porto/internal/http/middleware"
 	"github.com/coste360/porto/internal/http/static"
+	"github.com/coste360/porto/internal/reqctx"
 )
 
 func testRouter(t *testing.T) http.Handler {
@@ -71,6 +73,15 @@ func TestPolicies_SecurityOfKeyOperations(t *testing.T) {
 		{"POST", "/api/admin/v1/auth/logout", false, true},
 		{"POST", "/api/admin/v1/marinas/{marinaId}/members", false, true},
 		{"GET", "/api/admin/v1/marinas/{marinaId}/members", false, false},
+		// M6a
+		{"POST", "/api/device/v1/pair-session", true, false},
+		{"POST", "/api/device/v1/pair-session/totp", true, false},
+		{"GET", "/api/desktop/v1/status", true, false},
+		{"POST", "/api/desktop/v1/first-run", true, false},
+		{"GET", "/api/desktop/v1/settings", false, false},
+		{"PUT", "/api/desktop/v1/lan", false, true},
+		{"POST", "/api/desktop/v1/secret-key/reveal", false, true},
+		{"POST", "/api/desktop/v1/restore-upload", false, true},
 	} {
 		p, ok := ps.Lookup(c.method, c.route)
 		if !ok || p.Public() != c.public || p.CSRF != c.csrf {
@@ -99,6 +110,59 @@ func TestStatic_PlaceholderAndProblems(t *testing.T) {
 		}
 		if rec.Header().Get("Content-Security-Policy") == "" || rec.Header().Get("X-Request-ID") == "" {
 			t.Errorf("%s: missing security headers", c.path)
+		}
+	}
+}
+
+// The desktop operations accept the session cookie only, the activation only the instance token, and the restore
+// uploads stream up to 4 GiB.
+func TestPolicies_DesktopOperations(t *testing.T) {
+	ps, err := Policies()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for key, p := range ps {
+		if !strings.Contains(key, " /api/desktop/v1/") || p.Public() {
+			continue
+		}
+		if len(p.Methods) != 1 || p.Methods[0] != reqctx.AuthSession {
+			t.Errorf("%s accepts %v, want the session only", key, p.Methods)
+		}
+	}
+	if p, _ := ps.Lookup("POST", "/api/desktop/v1/activate"); !p.InstanceToken || !p.Public() {
+		t.Errorf("activate: %+v", p)
+	}
+	streamed := ps.StreamedPaths()
+	for _, k := range []string{"POST /api/desktop/v1/restore-upload", "POST /api/desktop/v1/first-run/restore"} {
+		if streamed[k] != middleware.MaxStreamCap {
+			t.Errorf("%s stream limit %d", k, streamed[k])
+		}
+	}
+	if len(streamed) != 2 {
+		t.Errorf("streamed paths %v", streamed)
+	}
+}
+
+// INV-80 (server side): the desktop API is 404 in the server edition and on any non-loopback listener or peer.
+func TestDesktopAPI_LoopbackOnly(t *testing.T) {
+	h := testRouter(t)
+	for _, c := range []struct {
+		name   string
+		kind   reqctx.ListenerKind
+		remote string
+	}{
+		{"server listener", reqctx.ListenerServer, "127.0.0.1:5000"},
+		{"lan listener, loopback peer", reqctx.ListenerLAN, "127.0.0.1:5000"},
+		{"loopback listener, private peer", reqctx.ListenerLoopback, "192.168.1.20:5000"},
+		{"loopback listener and peer, server edition (nil runtime)", reqctx.ListenerLoopback, "127.0.0.1:5000"},
+	} {
+		r := httptest.NewRequest("GET", "/api/desktop/v1/status", nil)
+		r.RemoteAddr = c.remote
+		r = r.WithContext(reqctx.WithListener(r.Context(), c.kind))
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, r)
+		if rec.Code != http.StatusNotFound || !strings.Contains(rec.Body.String(), `"not_found"`) {
+			t.Errorf("%s: %d %s", c.name, rec.Code, rec.Body)
 		}
 	}
 }

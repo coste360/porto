@@ -222,9 +222,18 @@ func APIKey(k *apikey.APIKey) api.ApiKey {
 func Device(d *device.Device) api.Device {
 	return api.Device{
 		Id: d.ID, Name: d.Name, Platform: api.DevicePlatform(d.Platform), Kind: api.DeviceKind(d.Kind),
+		Access:     deviceAccess(d.Access),
 		AppVersion: d.AppVersion, User: api.UserRef{Id: d.UserID, Name: d.UserName}, TokenPrefix: d.TokenPrefix,
 		LastUsedAt: Time(d.LastUsedAt), RevokedAt: Time(d.RevokedAt), CreatedAt: d.CreatedAt.UTC(),
 	}
+}
+
+// deviceAccess defaults rows written before M6a to "token".
+func deviceAccess(a string) api.DeviceAccess {
+	if a == "" {
+		return api.DeviceAccessToken
+	}
+	return api.DeviceAccess(a)
 }
 
 // DeviceSelf converts the device self view.

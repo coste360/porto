@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Porto
+Comment=Gestione del porto turistico e del cantiere
+Comment[en]=Marina and boatyard management
+Exec=porto-desktop
+Icon=porto
+Terminal=false
+Categories=Office;Finance;
+StartupWMClass=porto-desktop

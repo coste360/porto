@@ -219,6 +219,40 @@ linters:
           deny:
             - pkg: github.com/coste360/porto/internal
               desc: public extension interfaces must not leak internal packages
+        # Desktop edition (M6a, m6a-plan §6): the webview binding (CGO) only in cmd/porto-desktop.
+        webview:
+          list-mode: lax
+          files:
+            - "$all"
+            - "!**/cmd/porto-desktop/**"
+          deny:
+            - pkg: github.com/webview/webview_go
+              desc: only cmd/porto-desktop may import the webview binding (CGO stays out of every other package)
+        # desktopport is the frozen M6a contract: standard library and internal/domain/auth only.
+        desktopport:
+          list-mode: lax
+          files:
+            - "**/internal/desktopport/**"
+          allow:
+            - github.com/coste360/porto/internal/domain/auth
+          deny:
+            - pkg: github.com/coste360/porto/internal
+              desc: desktopport imports the standard library and internal/domain/auth only (m6a-plan §2.1)
+            - pkg: github.com/uptrace/bun
+              desc: desktopport carries no logic
+            - pkg: net/http
+              desc: desktopport is transport independent
+        # The launcher and the local-network server go through app, backup and the services, never the store.
+        desktop-lan:
+          list-mode: lax
+          files:
+            - "**/internal/desktop/**"
+            - "**/internal/lan/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/store
+              desc: internal/desktop and internal/lan reach the database through app, backup or the services
+            - pkg: github.com/uptrace/bun
+              desc: internal/desktop and internal/lan do not touch the database directly
         # Pure engines (AGENTS.md, INV-21): no database, no clock, no randomness, no I/O. The optimizer takes
         # an explicit seed (math/rand/v2 with a seeded source is allowed there).
         pure-engines:

@@ -106,5 +106,12 @@
   "provider_disabled": "Nessun pagamento online attivo.",
   "provider_refund_unsupported": "Il fornitore non può rimborsare questo pagamento.",
   "provider_error": "Il fornitore dei pagamenti ha restituito un errore.",
-  "billing_item_missing": "Manca l'articolo di addebito per questa voce nelle impostazioni."
+  "billing_item_missing": "Manca l'articolo di addebito per questa voce nelle impostazioni.",
+  "first_run_token_invalid": "Il link di primo avvio non è valido o è già stato usato: riavvia l'app.",
+  "first_run_done": "Il primo avvio è già stato completato: accedi con il tuo account.",
+  "lan_port_unavailable": "La porta della rete locale è già in uso da un altro programma: scegline un'altra.",
+  "lan_no_address": "Questo computer non ha un indirizzo sulla rete locale: collegalo al Wi-Fi o alla rete dell'ufficio.",
+  "backup_in_progress": "È già in corso un backup o un ripristino: attendi che finisca.",
+  "restore_failed": "Il backup non può essere ripristinato: i dati attuali non sono stati modificati.",
+  "restore_backup_newer": "Il backup è stato creato da una versione più recente di Porto: aggiorna l'app e riprova. I dati attuali non sono stati modificati."
 }

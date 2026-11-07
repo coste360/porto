@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@porto/shared/ui/select';
+import { printPage } from '@porto/shared/lib/download';
 
 import { useCurrentMarina } from '../../auth/hooks';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../components/PageStates';
@@ -117,7 +118,7 @@ export function MapPrintPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={() => window.print()}>
+          <Button onClick={() => void printPage()}>
             <PrinterIcon />
             {t('maps:print.action')}
           </Button>

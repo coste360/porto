@@ -18,3 +18,4 @@ unique, 0004 prezzi puri, 0005 OpenAPI spec-first, 0009 shadcn, 0012 kit della m
 | [0007](0007-marchio.md) | Marchio: Porto (design kit v1.0) | proposta |
 | [0008](0008-nessuna-intelligenza-artificiale.md) | Nessuna intelligenza artificiale, Porto lavora offline | accettata |
 | [0009](0009-scelte-m5.md) | Scelte di M5: credito derivato, pagamenti offline, esportazione riproducibile | proposta |
+| [0010](0010-edizione-desktop-m6a.md) | Edizione desktop (M6a): server nel processo, rete locale con certificato proprio | proposta |

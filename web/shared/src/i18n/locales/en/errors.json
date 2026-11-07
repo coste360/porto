@@ -106,5 +106,12 @@
   "provider_disabled": "No online payment is enabled.",
   "provider_refund_unsupported": "The provider cannot refund this payment.",
   "provider_error": "The payment provider returned an error.",
-  "billing_item_missing": "The billing item for this entry is missing in the settings."
+  "billing_item_missing": "The billing item for this entry is missing in the settings.",
+  "first_run_token_invalid": "The first-run link is invalid or already used: restart the app.",
+  "first_run_done": "The first run is already completed: log in with your account.",
+  "lan_port_unavailable": "The local network port is already used by another program: choose another one.",
+  "lan_no_address": "This computer has no local network address: connect it to the office Wi-Fi or network.",
+  "backup_in_progress": "A backup or restore is already running: wait for it to finish.",
+  "restore_failed": "The backup cannot be restored: the current data was not changed.",
+  "restore_backup_newer": "The backup was made by a newer version of Porto: update the app and try again. The current data was not changed."
 }

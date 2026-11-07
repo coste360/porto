@@ -110,13 +110,15 @@ func str(s *string) string {
 
 // GetMeta implements api.ServerInterface.
 func (h *Handler) GetMeta(w http.ResponseWriter, _ *http.Request) {
-	caps := h.Meta.Capabilities
-	if caps == nil {
-		caps = []string{}
+	caps := h.Meta.AllCapabilities()
+	edition := h.Meta.Edition
+	if edition == "" {
+		edition = meta.EditionServer
 	}
 	respond.JSON(w, http.StatusOK, api.Meta{
-		Version: h.Meta.Version, ApiVersion: h.Meta.APIVersion, Edition: api.MetaEdition(h.Meta.Edition),
-		Capabilities: caps, DemoPairing: h.Meta.DemoPairing, PricingEngineVersion: h.Meta.PricingEngineVersion,
+		Version: h.Meta.Version, ApiVersion: h.Meta.APIVersion, Edition: api.MetaEdition(edition),
+		Capabilities: caps, DemoPairing: h.Meta.DemoPairing, LocalMode: h.Meta.LocalMode,
+		PricingEngineVersion: h.Meta.PricingEngineVersion,
 	})
 }
 
@@ -148,7 +150,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		respond.Error(w, r, err)
 		return
 	}
-	if err := middleware.SetSessionCookies(w, res.Token, res.ExpiresAt, h.SecureCookies); err != nil {
+	if err := middleware.SetSessionCookies(w, res.Token, res.ExpiresAt, middleware.CookieSecure(r, h.SecureCookies)); err != nil {
 		respond.Error(w, r, err)
 		return
 	}
@@ -161,7 +163,7 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 		respond.Error(w, r, err)
 		return
 	}
-	middleware.ClearSessionCookies(w, h.SecureCookies)
+	middleware.ClearSessionCookies(w, middleware.CookieSecure(r, h.SecureCookies))
 	respond.NoContent(w)
 }
 
@@ -250,7 +252,7 @@ func (h *Handler) ConfirmTotp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if token != "" {
-		if err := middleware.SetSessionCookies(w, token, h.Clock.Now().Add(auth.SessionAbsolute), h.SecureCookies); err != nil {
+		if err := middleware.SetSessionCookies(w, token, h.Clock.Now().Add(auth.SessionAbsolute), middleware.CookieSecure(r, h.SecureCookies)); err != nil {
 			respond.Error(w, r, err)
 			return
 		}

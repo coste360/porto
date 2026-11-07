@@ -41,6 +41,7 @@ import { useCurrentMarina } from '../auth/hooks';
 import { LoadingState, QueryErrorState, RequirePermission } from '../components/PageStates';
 import { EMPTY_ADDRESS } from '../lib/address';
 import { requiredString } from '../lib/schemas';
+import { OnlineFeatureNotice } from '../features/desktop/OnlineFeatureNotice';
 
 const KINDS = ['marina', 'yard', 'both'] as const;
 
@@ -117,6 +118,7 @@ export function MarinaSettingsPage() {
         title={t('marina:settings.title')}
         description={t('marina:settings.description')}
       />
+      <OnlineFeatureNotice feature="publicPage" />
       {query.isPending ? (
         <LoadingState rows={6} />
       ) : query.isError ? (

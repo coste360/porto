@@ -1,5 +1,7 @@
 import type { TFunction } from 'i18next';
 
+import { downloadFile } from '../../desktop/files';
+
 /** Owner share in per-mille (1000 = 100 %) → "60" or "33,3" (one decimal at most). */
 export function formatShare(millis: number | null | undefined, locale = 'it'): string {
   if (millis === null || millis === undefined || !Number.isSafeInteger(millis)) return '';
@@ -39,15 +41,7 @@ export function customerName(
   return c.display_name;
 }
 
-/** Saves a JSON value as a file through a temporary object URL (GDPR export, import report). */
+/** Saves a blob as a file (GDPR export, import report), through the desktop bridge when present. */
 export function downloadBlob(filename: string, blob: Blob): void {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.rel = 'noopener';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 0);
+  downloadFile(filename, blob);
 }

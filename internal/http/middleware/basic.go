@@ -242,10 +242,30 @@ func BodyLimitByPolicy(ps Policies) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			n := DefaultMaxBodyBytes
-			if pol, ok := ps.Lookup(r.Method, reqctx.From(r.Context()).Route); ok && pol.MaxBodyBytes > 0 {
-				n = pol.MaxBodyBytes
+			if pol, ok := ps.Lookup(r.Method, reqctx.From(r.Context()).Route); ok {
+				switch {
+				case pol.MaxStreamBytes > 0:
+					n = pol.MaxStreamBytes
+				case pol.MaxBodyBytes > 0:
+					n = pol.MaxBodyBytes
+				}
 			}
 			BodyLimit(n)(next).ServeHTTP(w, r)
+		})
+	}
+}
+
+// BodyLimitExcept is BodyLimit(n) except for the exact "METHOD /path" keys of streamed, whose bodies get their own
+// limit (x-porto-max-stream-bytes, applied again per operation by BodyLimitByPolicy).
+func BodyLimitExcept(n int64, streamed map[string]int64) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		capped := BodyLimit(n)(next)
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if limit, ok := streamed[r.Method+" "+r.URL.Path]; ok {
+				BodyLimit(limit)(next).ServeHTTP(w, r)
+				return
+			}
+			capped.ServeHTTP(w, r)
 		})
 	}
 }

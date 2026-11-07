@@ -364,9 +364,14 @@ func (h *Handler) CreatePairingCode(w http.ResponseWriter, r *http.Request, mari
 		respond.Error(w, r, err)
 		return
 	}
-	respond.JSON(w, http.StatusCreated, api.PairingCode{
-		Code: c.Code, ExpiresAt: c.ExpiresAt.UTC(), QrPayload: c.QRPayload, QrSvg: c.QRSVG,
-	})
+	out := api.PairingCode{
+		Code: c.Code, ExpiresAt: c.ExpiresAt.UTC(), QrPayload: c.QRPayload, QrSvg: c.QRSVG, PairUrl: c.PairURL,
+		Reachable: c.Reachable,
+	}
+	if c.Fingerprint != "" {
+		out.Fingerprint = &c.Fingerprint
+	}
+	respond.JSON(w, http.StatusCreated, out)
 }
 
 // ListDevices implements api.ServerInterface.

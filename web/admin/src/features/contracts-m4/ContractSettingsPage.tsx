@@ -19,6 +19,7 @@ import { useCurrentMarina } from '../../auth/hooks';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../components/PageStates';
 import { EnumSelect, M4ProblemAlert, PageFrame, Section } from './components/kit';
 import { policyForm, policyFromForm, type PolicyForm } from './lib/policy';
+import { OnlineFeatureNotice } from '../desktop/OnlineFeatureNotice';
 
 const DRIVERS: readonly Schemas['SignatureDriver'][] = ['paper', 'otp', 'provider'];
 const INSURANCE: readonly Schemas['InsurancePolicy'][] = ['warn', 'block'];
@@ -115,6 +116,7 @@ function SettingsForm({ settings }: { settings: ContractSettings }) {
           </Button>
         }
       />
+      <OnlineFeatureNotice feature="remoteSignature" />
       {invalid ? <FieldError>{t('contractsM4:settings.invalid')}</FieldError> : null}
       <M4ProblemAlert error={save.error} />
       <Section

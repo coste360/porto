@@ -181,6 +181,19 @@ func sqliteKind(t string) ColumnKind {
 	}
 }
 
+// TableExists reports whether table exists (a database at an older schema version lacks the newer tables).
+func TableExists(ctx context.Context, db bun.IDB, d Dialect, table string) (bool, error) {
+	q := "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = ?"
+	if d == migrations.Postgres {
+		q = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = current_schema() AND table_name = ?"
+	}
+	var n int64
+	if err := db.QueryRowContext(ctx, q, table).Scan(&n); err != nil {
+		return false, err
+	}
+	return n > 0, nil
+}
+
 // CountRows returns the number of rows of table.
 func CountRows(ctx context.Context, db bun.IDB, table string) (int64, error) {
 	var n int64

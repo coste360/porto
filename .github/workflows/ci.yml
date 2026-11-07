@@ -258,6 +258,10 @@ jobs:
       - name: make e2e
         run: make e2e
 
+      - name: make e2e-desktop
+        # Headless desktop launcher (no CGO, no window): first run, local-network QR pairing, local mode.
+        run: make e2e-desktop
+
       - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@v7

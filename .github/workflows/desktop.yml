@@ -1,0 +1,128 @@
+name: Desktop
+
+# Builds the unsigned desktop packages (docs/desktop-build.md) and smoke-tests the launcher. No artefact is
+# uploaded: distribution is from the Coste360 portal after signing outside CI.
+on:
+  pull_request:
+    paths:
+      - cmd/porto-desktop/**
+      - internal/desktop/**
+      - internal/desktopport/**
+      - internal/lan/**
+      - internal/http/desktop/**
+      - scripts/desktop/**
+      - packaging/desktop/**
+      - .github/workflows/desktop.yml
+      - go.mod
+      - go.sum
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22"
+  GOTOOLCHAIN: local
+
+jobs:
+  macos:
+    name: macOS universal .dmg (unsigned)
+    runs-on: macos-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install web dependencies
+        run: npm --prefix web ci
+      - name: Desktop unit tests
+        run: make desktop-test
+      - name: Package
+        run: make desktop-package-macos
+      - name: Smoke test
+        run: |
+          ls dist/desktop/Porto_*_macos_universal-unsigned.dmg dist/desktop/Porto_*_macos_universal-unsigned.dmg.sha256
+          dist/desktop/macos/Porto.app/Contents/MacOS/porto-desktop -version | grep -q '(window)'
+          lipo -archs dist/desktop/macos/Porto.app/Contents/MacOS/porto-desktop | grep -q 'x86_64 arm64'
+
+  windows:
+    name: Windows x64 installer (unsigned)
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          path-type: inherit
+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-binutils make git
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install web dependencies
+        run: npm --prefix web ci
+      - name: Package
+        run: make desktop-package-windows
+      - name: Smoke test
+        run: |
+          ls dist/desktop/Porto_*_windows_amd64_setup-unsigned.exe dist/desktop/Porto_*_windows_amd64_setup-unsigned.exe.sha256
+          dist/desktop/windows/porto-desktop.exe -version
+
+  linux:
+    name: Linux x86_64 AppImage (unsigned)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      # Pin the checksum of scripts/desktop/package-linux.sh's appimagetool download as a repository variable;
+      # without it the job builds and smoke-tests the AppDir and skips the AppImage step.
+      APPIMAGETOOL_SHA256: ${{ vars.APPIMAGETOOL_SHA256 }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install the WebKitGTK toolchain
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libwebkit2gtk-4.1-dev libgtk-3-dev pkg-config
+      - name: Install web dependencies
+        run: npm --prefix web ci
+      - name: Desktop unit tests
+        run: make desktop-test
+      - name: Package
+        run: |
+          if [ -n "$APPIMAGETOOL_SHA256" ]; then
+            make desktop-package-linux
+            ls dist/desktop/Porto_*_linux_x86_64-unsigned.AppImage dist/desktop/Porto_*_linux_x86_64-unsigned.AppImage.sha256
+          else
+            echo "APPIMAGETOOL_SHA256 is not set: building the AppDir only"
+            make desktop-package-linux || test -x dist/desktop/linux/Porto.AppDir/AppRun
+          fi
+      - name: Smoke test
+        run: |
+          dist/desktop/linux/Porto.AppDir/usr/bin/porto-desktop -version | grep -q '(browser)'
+          dist/desktop/linux/Porto.AppDir/usr/bin/porto-desktop-webview -version | grep -q '(window)'

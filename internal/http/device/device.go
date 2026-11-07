@@ -16,6 +16,8 @@ type Handler struct {
 	Auth    *auth.Service
 	Devices *device.Service
 	BaseURL string
+	// SecureCookies is config.SecureCookies (device session cookies of pairDeviceSession).
+	SecureCookies bool
 }
 
 func str(s *string) string {

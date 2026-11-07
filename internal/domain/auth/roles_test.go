@@ -131,3 +131,29 @@ func TestBilling_RouteTableMatchesContract(t *testing.T) {
 		t.Fatal("map.view missing")
 	}
 }
+
+func TestPrincipal_IsOwnerAnywhere(t *testing.T) {
+	orgOwner := Grant{OrganizationID: "o2", Role: RoleOwner}
+	cases := []struct {
+		name string
+		p    *Principal
+		want bool
+		org  string
+	}{
+		{"nil", nil, false, ""},
+		{"organization owner", &Principal{Kind: KindUser, Grants: []Grant{{OrganizationID: "o1", MarinaID: "m", Role: RoleDock}, orgOwner}}, true, "o2"},
+		{"marina-level owner", &Principal{Kind: KindUser, Grants: []Grant{{OrganizationID: "o", MarinaID: "m", Role: RoleOwner}}}, false, ""},
+		{"director", &Principal{Kind: KindUser, Grants: []Grant{{OrganizationID: "o", Role: RoleDirector}}}, false, ""},
+		{"device of an owner", &Principal{Kind: KindDevice, Grants: []Grant{orgOwner}}, false, "o2"},
+		{"api key", &Principal{Kind: KindAPIKey, Grants: []Grant{orgOwner}}, false, "o2"},
+		{"owner enrolling TOTP", &Principal{Kind: KindUser, TOTPEnrolmentRequired: true, Grants: []Grant{orgOwner}}, false, "o2"},
+	}
+	for _, c := range cases {
+		if got := c.p.IsOwnerAnywhere(); got != c.want {
+			t.Errorf("%s: IsOwnerAnywhere = %v", c.name, got)
+		}
+		if got := c.p.FirstOwnedOrganization(); got != c.org {
+			t.Errorf("%s: FirstOwnedOrganization = %q", c.name, got)
+		}
+	}
+}

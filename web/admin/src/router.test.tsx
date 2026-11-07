@@ -32,6 +32,21 @@ describe('router guards', () => {
     expect(await screen.findByText('Pagina non trovata.')).toBeInTheDocument();
   });
 
+  it('serves the QR pairing and desktop first-run pages without a session (M6a)', async () => {
+    const pair = renderApp('/pair', [meRoute(null)]);
+    expect(await screen.findByText('Collega questo dispositivo')).toBeInTheDocument();
+    expect(pair.router.state.location.pathname).toBe('/pair');
+    pair.unmount();
+    const firstRun = renderApp('/desktop/first-run', [meRoute(null)]);
+    expect(await screen.findByText('Benvenuto in Porto')).toBeInTheDocument();
+    expect(firstRun.router.state.location.pathname).toBe('/desktop/first-run');
+  });
+
+  it('keeps the desktop settings behind the session guard (M6a)', async () => {
+    const { router } = renderApp('/desktop', [meRoute(null)]);
+    await waitFor(() => expect(router.state.location.pathname).toBe('/login'));
+  });
+
   it('shows the forbidden state when the role lacks the permission', async () => {
     renderApp(`/m/${MARINA_ID}/team`, [meRoute(makeMe({}, ['marina.read']))]);
     expect(await screen.findByText('Non hai accesso a questa sezione.')).toBeInTheDocument();

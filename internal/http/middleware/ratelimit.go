@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"net/netip"
 	"sync"
 	"time"
 
@@ -57,9 +58,17 @@ func (l *Limiter) Allow(key string) (ok bool, retryAfter time.Duration) {
 	return true, 0
 }
 
+// PeerKey is the rate-limit key of a client address. Public addresses are grouped by prefix (/24, /56) so a
+// client cannot dodge a limit by hopping addresses; private, link-local and loopback peers are keyed by full
+// address, because every phone of a marina shares one /24 on the office Wi-Fi (m6a-plan §2.11, D11).
+func PeerKey(ip netip.Addr) string {
+	return auth.PeerKey(ip)
+}
+
 // RateLimitOptions configure RateLimit.
 type RateLimitOptions struct {
-	// ByIP limits operations (by operation id) per client IP prefix (/24 IPv4, /56 IPv6).
+	// ByIP limits operations (by operation id) per client: public peers by IP prefix (/24 IPv4, /56 IPv6),
+	// private and loopback peers by full address (PeerKey).
 	ByIP map[string]*Limiter
 	// APIKey limits every request authenticated with an API key, per key.
 	APIKey *Limiter
@@ -73,7 +82,7 @@ func RateLimit(ps Policies, o RateLimitOptions) func(http.Handler) http.Handler 
 			info := reqctx.From(r.Context())
 			if pol, ok := ps.Lookup(r.Method, info.Route); ok {
 				if l := o.ByIP[pol.OperationID]; l != nil {
-					if ok, wait := l.Allow(pol.OperationID + "|" + auth.IPPrefixKey(info.ClientIP)); !ok {
+					if ok, wait := l.Allow(pol.OperationID + "|" + PeerKey(info.ClientIP)); !ok {
 						problem.Write(w, r, problem.RateLimited, problem.RetryAfter(durationSeconds(wait)))
 						return
 					}

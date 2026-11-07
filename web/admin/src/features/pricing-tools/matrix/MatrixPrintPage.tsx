@@ -11,6 +11,7 @@ import { useT } from '@porto/shared/i18n';
 import { formatIsoDate } from '@porto/shared/lib/format';
 import { Button } from '@porto/shared/ui/button';
 import { BrandLogo } from '@porto/shared/ui/patterns';
+import { printPage } from '@porto/shared/lib/download';
 
 import { useCurrentMarina } from '../../../auth/hooks';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../../components/PageStates';
@@ -47,7 +48,7 @@ function PrintSheet({ doc }: { doc: PriceListDocument }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-4 print:hidden">
-        <Button onClick={() => window.print()}>
+        <Button onClick={() => void printPage()}>
           <PrinterIcon />
           {t('pricingTools:print.action')}
         </Button>

@@ -1,6 +1,8 @@
 import type { Berth, I18nText, MapExport, MapKind, Structure } from '@porto/shared/api';
 import { isBuoy, type SceneItem } from '@porto/shared/map';
 
+import { downloadFile } from '../desktop/files';
+
 export const MAP_KINDS: readonly MapKind[] = ['water', 'yard', 'shed', 'parking', 'boxes', 'other'];
 
 /** Name of a map in the UI language (Italian when English is missing). */
@@ -9,15 +11,9 @@ export function localName(name: I18nText | undefined, lang: string): string {
   return (lang.startsWith('en') ? name.en : undefined) || name.it;
 }
 
-/** Downloads a JSON value as a file. */
+/** Downloads a JSON value as a file (through the desktop bridge when present). */
 export function downloadJson(value: unknown, filename: string, type = 'application/json'): void {
-  const blob = new Blob([JSON.stringify(value, null, 2)], { type });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 0);
+  downloadFile(filename, new Blob([JSON.stringify(value, null, 2)], { type }));
 }
 
 /** A safe file name from a map name. */

@@ -21,6 +21,15 @@ export const queryKeys = {
     ['marina', marinaId, 'audit', filters] as const,
   publicMarina: (slug: string) => ['public', slug] as const,
 
+  // M6a desktop edition (loopback only, m6a-plan §7): not marina-scoped, never invalidated by SSE.
+  desktop: {
+    all: ['desktop'] as const,
+    status: ['desktop', 'status'] as const,
+    settings: ['desktop', 'settings'] as const,
+    lan: ['desktop', 'lan'] as const,
+    backups: ['desktop', 'backups'] as const,
+  },
+
   // M1 harbour: everything under ['marina', id, 'maps'] (invalidated by map.changed).
   maps: (marinaId: string) => ['marina', marinaId, 'maps'] as const,
   map: (marinaId: string, mapId: string) => ['marina', marinaId, 'maps', 'detail', mapId] as const,

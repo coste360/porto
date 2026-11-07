@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
-import { SmartphoneIcon } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { RefreshCwIcon, SmartphoneIcon, WifiOffIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -9,12 +10,13 @@ import {
   queryKeys,
   unwrap,
   useApi,
+  useDesktopStatus,
   type Device,
   type PairingCode,
 } from '@porto/shared/api';
 import { useT } from '@porto/shared/i18n';
 import { formatDateTime } from '@porto/shared/lib/format';
-import { Alert, AlertDescription } from '@porto/shared/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@porto/shared/ui/alert';
 import { Badge } from '@porto/shared/ui/badge';
 import { Button } from '@porto/shared/ui/button';
 import {
@@ -36,6 +38,7 @@ import {
 } from '@porto/shared/ui/select';
 
 import { useCurrentMarina } from '../auth/hooks';
+import { ownedOrganizations } from '../auth/me';
 import { LoadingState, QueryErrorState, RequirePermission } from '../components/PageStates';
 import { svgDataUrl } from '../lib/svg';
 import { toastProblem } from '../lib/toast';
@@ -92,11 +95,20 @@ function DevicesTable() {
   const columns: ColumnDef<Device, unknown>[] = [
     { header: t('devices:name'), accessorKey: 'name' },
     { header: t('devices:user'), cell: ({ row }) => row.original.user.name },
+    { header: t('devices:kind'), cell: ({ row }) => t(`devices:kinds.${row.original.kind}`) },
     {
       header: t('devices:platform'),
-      cell: ({ row }) => `${row.original.platform} · ${t(`devices:kinds.${row.original.kind}`)}`,
+      cell: ({ row }) =>
+        row.original.app_version
+          ? `${t(`devices:platforms.${row.original.platform}`)} · ${row.original.app_version}`
+          : t(`devices:platforms.${row.original.platform}`),
     },
-    { header: t('devices:appVersion'), cell: ({ row }) => row.original.app_version },
+    {
+      header: t('devices:access'),
+      cell: ({ row }) => (
+        <span data-testid="device-access">{t(`devices:accessKinds.${row.original.access}`)}</span>
+      ),
+    },
     {
       header: t('devices:lastUsed'),
       cell: ({ row }) =>
@@ -105,12 +117,23 @@ function DevicesTable() {
           : t('common:status.never'),
     },
     {
-      id: 'actions',
-      header: () => <span className="sr-only">{t('common:actions.actions')}</span>,
+      header: t('devices:created'),
+      cell: ({ row }) => formatDateTime(row.original.created_at, i18n.language),
+    },
+    {
+      header: t('devices:state'),
       cell: ({ row }) =>
         row.original.revoked_at ? (
           <Badge variant="outline">{t('common:status.revoked')}</Badge>
         ) : (
+          <Badge variant="secondary">{t('common:status.active')}</Badge>
+        ),
+    },
+    {
+      id: 'actions',
+      header: () => <span className="sr-only">{t('common:actions.actions')}</span>,
+      cell: ({ row }) =>
+        row.original.revoked_at ? null : (
           <div className="flex justify-end">
             <ConfirmDialog
               trigger={
@@ -244,29 +267,109 @@ function PairDeviceForm() {
 
       {code ? (
         secondsLeft > 0 ? (
-          <div className="flex flex-col items-center gap-3 rounded-md border p-4">
-            <p className="text-muted-foreground text-center text-sm">{t('devices:scan')}</p>
-            <img
-              src={svgDataUrl(code.qr_svg)}
-              alt={t('devices:qrAlt')}
-              className="bg-brand-white size-48 rounded-md p-2"
-            />
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-muted-foreground text-xs">{t('devices:code')}</span>
-              <code className="font-mono text-2xl tracking-widest" data-testid="pairing-code">
-                {code.code}
-              </code>
-            </div>
-            <span className="text-muted-foreground text-sm" aria-live="polite">
-              {t('devices:expiresIn', { seconds: secondsLeft })}
-            </span>
-          </div>
+          <PairingCodePanel
+            code={code}
+            secondsLeft={secondsLeft}
+            onRenew={() => create.mutate()}
+            renewing={create.isPending}
+          />
         ) : (
-          <Alert>
-            <AlertDescription>{t('devices:expired')}</AlertDescription>
-          </Alert>
+          <div className="flex flex-col gap-2">
+            <Alert>
+              <AlertDescription>{t('devices:expired')}</AlertDescription>
+            </Alert>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => create.mutate()}
+              disabled={create.isPending}
+            >
+              <RefreshCwIcon />
+              {t('devices:newCode')}
+            </Button>
+          </div>
         )
       ) : null}
+    </div>
+  );
+}
+
+/**
+ * The generated code: QR of `pair_url` (phones open it with the camera), code, countdown and certificate
+ * fingerprint; when phones cannot reach it (desktop edition, local network off) a notice replaces the QR.
+ * `data-pair-url` is for the end-to-end tests; the URL is never logged.
+ */
+function PairingCodePanel({
+  code,
+  secondsLeft,
+  onRenew,
+  renewing,
+}: {
+  code: PairingCode;
+  secondsLeft: number;
+  onRenew: () => void;
+  renewing: boolean;
+}) {
+  const { t } = useT();
+  const { me } = useCurrentMarina();
+  const desktop = useDesktopStatus();
+  const owner = ownedOrganizations(me).length > 0;
+
+  if (!code.reachable) {
+    return (
+      <Alert data-testid="pair-unreachable">
+        <WifiOffIcon />
+        <AlertTitle>{t('devices:unreachableTitle')}</AlertTitle>
+        <AlertDescription>
+          <p>{t('devices:unreachable')}</p>
+          {desktop.loopback && owner ? (
+            <Link to="/desktop" className="text-primary font-medium underline underline-offset-4">
+              {t('devices:openDesktopSettings')}
+            </Link>
+          ) : null}
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  return (
+    <div
+      className="flex flex-col items-center gap-3 rounded-md border p-4"
+      data-testid="pairing-panel"
+      data-pair-url={code.pair_url}
+    >
+      <p className="text-muted-foreground text-center text-sm">
+        {code.fingerprint ? t('devices:scanPhone') : t('devices:scan')}
+      </p>
+      <img
+        src={svgDataUrl(code.qr_svg)}
+        alt={t('devices:qrAlt')}
+        className="bg-brand-white size-48 rounded-md p-2"
+      />
+      <div className="flex flex-col items-center gap-1">
+        <span className="text-muted-foreground text-xs">{t('devices:code')}</span>
+        <code className="font-mono text-2xl tracking-widest" data-testid="pairing-code">
+          {code.code}
+        </code>
+      </div>
+      {code.fingerprint ? (
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-muted-foreground text-xs">{t('devices:fingerprint')}</span>
+          <code
+            className="text-center font-mono text-xs break-all"
+            data-testid="pairing-fingerprint"
+          >
+            {code.fingerprint}
+          </code>
+        </div>
+      ) : null}
+      <span className="text-muted-foreground text-sm" aria-live="polite">
+        {t('devices:expiresIn', { seconds: secondsLeft })}
+      </span>
+      <Button type="button" variant="outline" size="sm" onClick={onRenew} disabled={renewing}>
+        <RefreshCwIcon />
+        {t('devices:newCode')}
+      </Button>
     </div>
   );
 }

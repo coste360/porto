@@ -756,6 +756,284 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/device/v1/pair-session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Exchange a pairing code for a browser device session (QR on the local network, M6a)
+         * @description Same single-use consumption as `pairDevice`. Creates a device with `access: browser` bound to a device
+         *     session (idle 30 days, absolute 180 days) and sets the `porto_session` and `porto_csrf` cookies; no token is
+         *     returned. Rate limited like `pairDevice` (10 per minute per peer). No `Idempotency-Key`: the code is single
+         *     use and the response carries a credential that must never be replayed.
+         */
+        post: operations["pairDeviceSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/device/v1/pair-session/totp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify the second factor of a browser device session (QR pairing of a user with TOTP, M6a)
+         * @description A user with a confirmed second factor who pairs a phone with `pairDeviceSession` gets a session that is
+         *     unusable (`totp_required: true` in the result) until a TOTP code (accepted once) or a recovery code is
+         *     entered on the phone. Uses the `porto_session` cookie set by `pairDeviceSession`; 401 `unauthorized` when
+         *     it is not a live device session. The pending session lives 10 minutes only; on success it is replaced by a
+         *     new device session (rotated `porto_session` and `porto_csrf` cookies, the pending token stops working).
+         *     Throttled like a login (5 failures per user in 15 minutes) and rate limited per peer like
+         *     `pairDeviceSession`.
+         */
+        post: operations["verifyDeviceSessionTotp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Desktop edition status for the app window (loopback only, no authentication)
+         * @description Every `/api/desktop/v1` operation answers only on the desktop loopback listener, from a loopback peer, with
+         *     an allowed `Host`; elsewhere (server edition, local network) it is 404 `not_found` (INV-80).
+         */
+        get: operations["getDesktopStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/first-run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create the first owner and organization from the app window (single-use first-run token)
+         * @description Sets the `porto_session` and `porto_csrf` cookies. The marina is created afterwards by the panel.
+         */
+        post: operations["desktopFirstRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/first-run/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore a backup instead of creating the owner on the first run (first-run token in a header)
+         * @description Raw `.tar.gz` body streamed to disk (limit 4 GiB, `x-porto-max-stream-bytes`). Refused (409
+         *     first_run_done) once an owner exists. The first-run token is consumed only when the restore is prepared:
+         *     a corrupt archive (422) leaves it usable. 202: the server restarts on the restored database; everybody
+         *     logs in again.
+         */
+        post: operations["desktopFirstRunRestore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Desktop settings (owner, loopback) */
+        get: operations["getDesktopSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change desktop settings (owner, loopback); the local network is switched with PUT /lan */
+        patch: operations["updateDesktopSettings"];
+        trace?: never;
+    };
+    "/api/desktop/v1/lan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Local-network listener status (owner, loopback) */
+        get: operations["getDesktopLan"];
+        /** Switch the local network on or off (owner, loopback); the listener exists only while on */
+        put: operations["setDesktopLan"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/lan/certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Re-issue the local-network certificate (all=true also regenerates the local CA) (owner, loopback) */
+        post: operations["rotateLanCertificate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/backups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Backups in the backup folder and the scheduler status (owner, loopback) */
+        get: operations["listDesktopBackups"];
+        put?: never;
+        /** Take a manual backup now (owner, loopback) */
+        post: operations["createDesktopBackup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/backups/{backupId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description File name of the backup (porto-YYYYMMDD-HHMMSS-<kind>.tar.gz) */
+                backupId: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore a listed backup after a pre-restore safety backup; the server restarts (owner, loopback) */
+        post: operations["restoreDesktopBackup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/restore-upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore an uploaded backup archive (owner, loopback); the server restarts
+         * @description Raw `.tar.gz` body streamed to disk (limit 4 GiB, `x-porto-max-stream-bytes`).
+         */
+        post: operations["uploadDesktopRestore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/secret-key/reveal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Show the secret key once, after re-entering the password (owner, loopback; 5 per 15 minutes) */
+        post: operations["revealDesktopSecretKey"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Open a fixed folder (data, backups, logs) with the operating system (owner, loopback) */
+        post: operations["openDesktopFolder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Bring the running app window to the front (second launch on the same data folder)
+         * @description Authenticated by the instance token of the running process (header `Porto-Instance-Token`).
+         */
+        post: operations["activateDesktop"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/public/v1/{slug}": {
         parameters: {
             query?: never;
@@ -6667,7 +6945,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer";
         FieldError: {
             field: string;
             code: string;
@@ -6705,9 +6983,11 @@ export interface components {
             version: string;
             api_version: string;
             /** @enum {string} */
-            edition: "server";
+            edition: "server" | "desktop";
             capabilities: string[];
             demo_pairing: boolean;
+            /** @description Online features (public page, online payments and payment links, remote signature) are unavailable because the instance is not reachable from the internet (desktop edition) */
+            local_mode: boolean;
             /** @description Version of the pricing engine (quotes store it with their price snapshot, INV-20) */
             pricing_engine_version: number;
         };
@@ -6967,8 +7247,16 @@ export interface components {
             code: string;
             /** Format: date-time */
             expires_at: string;
+            /** @description porto://pair?v=1&url=…&code=…[&fp=…] for native clients */
             qr_payload: string;
+            /** @description QR of pair_url (phones open it with the camera) */
             qr_svg: string;
+            /** @description <origin>/admin/pair#c=<code>[&fp=<fingerprint>]; the code is in the fragment */
+            pair_url: string;
+            /** @description Local-network certificate fingerprint (base64url SHA-256), null outside the local network */
+            fingerprint: string | null;
+            /** @description False when phones cannot reach pair_url (desktop edition with the local network off) */
+            reachable: boolean;
         };
         UserRef: {
             id: string;
@@ -6979,6 +7267,7 @@ export interface components {
             name: string;
             platform: components["schemas"]["DevicePlatform"];
             kind: components["schemas"]["DeviceKind"];
+            access: components["schemas"]["DeviceAccess"];
             app_version: string;
             user: components["schemas"]["UserRef"];
             token_prefix: string;
@@ -7120,6 +7409,147 @@ export interface components {
             user: components["schemas"]["UserRef"];
             marina: components["schemas"]["MarinaRef"];
             permissions: components["schemas"]["Permission"][];
+        };
+        /**
+         * @description token = po_dev_ device token (native clients); browser = device session cookie (QR pairing)
+         * @enum {string}
+         */
+        DeviceAccess: "token" | "browser";
+        PairSessionRequest: {
+            code: string;
+            name: string;
+            platform: components["schemas"]["DevicePlatform"];
+            kind: components["schemas"]["DeviceKind"];
+        };
+        PairSessionResult: {
+            device: components["schemas"]["Device"];
+            marina: components["schemas"]["MarinaRef"];
+            user: components["schemas"]["UserRef"];
+            permissions: components["schemas"]["Permission"][];
+            /** @description The user has a second factor; call verifyDeviceSessionTotp before using the session. */
+            totp_required: boolean;
+        };
+        /** @description Exactly one of totp_code and recovery_code. */
+        DeviceSessionTotpRequest: {
+            totp_code?: string;
+            recovery_code?: string;
+        };
+        /**
+         * @description local in M6a (remote is reserved for M6b)
+         * @enum {string}
+         */
+        DesktopMode: "local";
+        DesktopUpdate: {
+            version: string;
+            url: string;
+        };
+        DesktopStatus: {
+            version: string;
+            mode: components["schemas"]["DesktopMode"];
+            first_run_pending: boolean;
+            /** @description A newer version (notify only, never installed); null when none, dismissed or the check is off */
+            update: components["schemas"]["DesktopUpdate"] | null;
+            /** @enum {string} */
+            secret_store: "keyring" | "file";
+        };
+        DesktopFirstRunRequest: {
+            token: string;
+            organization: string;
+            name: string;
+            email: string;
+            password: string;
+            update_check: boolean;
+        };
+        DesktopFirstRunResult: {
+            user_id: string;
+        };
+        DesktopSettings: {
+            mode: components["schemas"]["DesktopMode"];
+            /** @description Loopback port of the app window */
+            port: number;
+            lan_enabled: boolean;
+            lan_port: number;
+            /** @description Empty = automatic */
+            lan_address: string;
+            /** @description Empty = the backups folder inside the data folder */
+            backup_dir: string;
+            backup_keep_daily: number;
+            backup_keep_exit: number;
+            update_check: boolean;
+            /** @description Version whose update banner was dismissed */
+            dismissed_update: string;
+            readonly data_dir: string;
+            readonly logs_dir: string;
+        };
+        DesktopSettingsPatch: {
+            backup_dir?: string;
+            backup_keep_daily?: number;
+            backup_keep_exit?: number;
+            update_check?: boolean;
+            dismissed_update?: string;
+        };
+        LanStatus: {
+            enabled: boolean;
+            listening: boolean;
+            /** @description https://<address>:<port> while listening, else empty */
+            url: string;
+            address: string;
+            addresses: string[];
+            port: number;
+            /** @description SHA-256 of the leaf certificate (hex) */
+            fingerprint: string;
+            /** @description SHA-256 of the local CA certificate (hex) */
+            ca_fingerprint: string;
+            /** Format: date-time */
+            cert_expires_at: string | null;
+            /** @description Problem slug of the last failed enable (lan_port_unavailable, lan_no_address) */
+            error: string | null;
+        };
+        LanUpdate: {
+            enabled: boolean;
+            port?: number;
+            /** @description Empty = automatic */
+            address?: string;
+        };
+        LanCertificateRotate: {
+            /** @description Also regenerate the local CA */
+            all: boolean;
+        };
+        /** @enum {string} */
+        DesktopBackupKind: "daily" | "exit" | "manual" | "pre-restore";
+        DesktopBackupFile: {
+            /** @description File name */
+            id: string;
+            kind: components["schemas"]["DesktopBackupKind"];
+            /** Format: int64 */
+            size_bytes: number;
+            /** Format: date-time */
+            created_at: string;
+            sha256: string;
+        };
+        DesktopBackupStatus: {
+            dir: string;
+            /** @description The configured folder is unavailable; backups go to the data folder */
+            fallback: boolean;
+            /** Format: date-time */
+            last_daily_at: string | null;
+            last_error: string | null;
+            /** Format: date-time */
+            next_due_at: string | null;
+        };
+        DesktopBackupList: {
+            items: components["schemas"]["DesktopBackupFile"][];
+            status: components["schemas"]["DesktopBackupStatus"];
+        };
+        DesktopSecretRevealRequest: {
+            password: string;
+        };
+        DesktopSecretKey: {
+            secret_key: string;
+        };
+        DesktopOpenRequest: {
+            /** @enum {string} */
+            target: "data_dir" | "backup_dir" | "logs";
         };
         PublicMarina: {
             slug: string;
@@ -12863,6 +13293,8 @@ export interface components {
         EndpointId: string;
         Cursor: string;
         Limit: number;
+        /** @description Single-use first-run token of the desktop window (never in the URL) */
+        FirstRunToken: string;
         /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
         IdempotencyKey: string;
         /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
@@ -14272,6 +14704,457 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["Unauthorized"];
+        };
+    };
+    pairDeviceSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PairSessionRequest"];
+            };
+        };
+        responses: {
+            /** @description Paired; session cookies set */
+            201: {
+                headers: {
+                    /** @description porto_session and porto_csrf cookies */
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PairSessionResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            422: components["responses"]["UnprocessableEntity"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    verifyDeviceSessionTotp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeviceSessionTotpRequest"];
+            };
+        };
+        responses: {
+            /** @description Second factor verified; the device session is replaced by a usable one */
+            204: {
+                headers: {
+                    /** @description rotated porto_session and porto_csrf cookies */
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getDesktopStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesktopStatus"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+        };
+    };
+    desktopFirstRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesktopFirstRunRequest"];
+            };
+        };
+        responses: {
+            /** @description Owner created; session cookies set */
+            201: {
+                headers: {
+                    /** @description porto_session and porto_csrf cookies */
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesktopFirstRunResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    desktopFirstRunRestore: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Single-use first-run token of the desktop window (never in the URL) */
+                "Porto-First-Run-Token": components["parameters"]["FirstRunToken"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/gzip": string;
+            };
+        };
+        responses: {
+            /** @description Restore scheduled; the server restarts */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    getDesktopSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesktopSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateDesktopSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesktopSettingsPatch"];
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesktopSettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getDesktopLan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LanStatus"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    setDesktopLan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LanUpdate"];
+            };
+        };
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LanStatus"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    rotateLanCertificate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LanCertificateRotate"];
+            };
+        };
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LanStatus"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    listDesktopBackups: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Backups, newest first */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesktopBackupList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createDesktopBackup: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Backup written */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesktopBackupFile"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    restoreDesktopBackup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description File name of the backup (porto-YYYYMMDD-HHMMSS-<kind>.tar.gz) */
+                backupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Restore scheduled; the server restarts */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    uploadDesktopRestore: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/gzip": string;
+            };
+        };
+        responses: {
+            /** @description Restore scheduled; the server restarts */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    revealDesktopSecretKey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesktopSecretRevealRequest"];
+            };
+        };
+        responses: {
+            /** @description The secret key (never logged, never stored by the panel) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesktopSecretKey"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    openDesktopFolder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesktopOpenRequest"];
+            };
+        };
+        responses: {
+            /** @description Opened */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    activateDesktop: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Activated */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
         };
     };
     getPublicMarina: {
