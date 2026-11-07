@@ -21,6 +21,8 @@ GOLANGCI_LINT_VERSION ?= v2.15.0
 POSTGRES_IMAGE        ?= postgres:17-alpine
 # Go packages for test, test-db and lint; narrow it for focused runs: make test PKG=./internal/qty/...
 PKG                   ?= ./...
+# The M3 season simulation alone takes up to 10 minutes on PostgreSQL (m3-plan §9.4).
+TEST_DB_TIMEOUT       ?= 30m
 
 BIN_DIR       := $(CURDIR)/bin
 GOLANGCI_LINT := $(BIN_DIR)/golangci-lint
@@ -188,7 +190,7 @@ test: ## Run Go unit tests and web unit tests
 
 .PHONY: test-db
 test-db: ## Run Go integration tests on SQLite and an ephemeral PostgreSQL
-	@scripts/with-postgres.sh go test -tags=integration $(PKG)
+	@scripts/with-postgres.sh go test -tags=integration -timeout $(TEST_DB_TIMEOUT) $(PKG)
 
 .PHONY: test-race
 test-race: ## Run the TestConcurrency_* tests with the race detector (SQLite + PostgreSQL)

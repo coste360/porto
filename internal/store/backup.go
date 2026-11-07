@@ -47,6 +47,9 @@ var (
 		"pricing_settings.default_price_includes_vat", "items.price_includes_vat", "items.active",
 		"items.online_visible", "price_rules.stackable", "price_rules.active",
 		"price_list_items.price_includes_vat", "price_list_items.active",
+		// M3 (00005_contracts, 00006_occupancy)
+		"occupancy_settings.reprice_on_move", "quote_options.hold", "contracts.hold_lost", "contracts.signed_on_paper",
+		"contracts.pay_at_departure",
 	}
 	sqliteJSONColumns = []string{
 		"organizations.billing_address", "marinas.locales", "marinas.contacts", "marinas.address", "marinas.geo",
@@ -64,6 +67,9 @@ var (
 		"revenue_classes.name", "items.name", "items.description", "berth_categories.name",
 		"berth_categories.applies_to", "price_lists.name", "price_lists.contract_types", "price_lists.settings",
 		"rate_periods.name", "rate_periods.ranges", "price_rules.body",
+		// M3 (00005_contracts, 00006_occupancy)
+		"quotes.policy", "quote_options.price_snapshot", "quote_options.fit_override", "contracts.price_snapshot",
+		"contracts.policy", "allocations.fit_override", "move_undo_log.payload",
 	}
 )
 
@@ -160,13 +166,28 @@ func CountRows(ctx context.Context, db bun.IDB, table string) (int64, error) {
 	return n, err
 }
 
-// DumpTable calls fn with every row of table (ordered by id), converted to portable values (see ColumnKind).
+// dumpOrder is the ORDER BY of the tables without an id column (M3): their primary key.
+var dumpOrder = map[string]string{
+	"occupancy_settings": "marina_id",
+	"number_sequences":   "marina_id, series, year",
+	"berth_occupancies":  "berth_id, night",
+	"cell_occupancies":   "area_id, cell, night",
+	"land_occupancies":   "resource_id, night",
+	"vessel_presence":    "vessel_id",
+}
+
+// DumpTable calls fn with every row of table (ordered by id, or by its primary key when it has no id), converted
+// to portable values (see ColumnKind).
 func DumpTable(ctx context.Context, db bun.IDB, table string, cols []Column, fn func(row []any) error) error {
 	names := make([]string, len(cols))
 	for i, c := range cols {
 		names[i] = quoteIdent(c.Name)
 	}
-	rows, err := db.QueryContext(ctx, "SELECT "+strings.Join(names, ", ")+" FROM "+quoteIdent(table)+" ORDER BY id")
+	order := "id"
+	if o, ok := dumpOrder[table]; ok {
+		order = o
+	}
+	rows, err := db.QueryContext(ctx, "SELECT "+strings.Join(names, ", ")+" FROM "+quoteIdent(table)+" ORDER BY "+order)
 	if err != nil {
 		return err
 	}

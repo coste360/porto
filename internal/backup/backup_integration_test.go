@@ -17,6 +17,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/uptrace/bun"
+
 	"github.com/coste360/porto/internal/app"
 	"github.com/coste360/porto/internal/calendar"
 	"github.com/coste360/porto/internal/config"
@@ -67,6 +69,124 @@ func seeded(t *testing.T, db *store.DB) {
 		t.Fatal(err)
 	}
 	seedPricingRows(t, db, res.MarinaID, me.ID)
+	seedOccupancyRows(t, db, res.MarinaID, me.ID)
+}
+
+// seedOccupancyRows adds one row of every M3 table (m3-plan §5.3): an inquiry, a quote with an option and a
+// placement holding a berth, a transit contract with its line, two chained allocations (the successor gets the
+// lower id, so restore defers moved_from_id), their occupancy rows in the three families, a release, a presence,
+// the vessel presence, a closure and the forward links inquiry → quote/contract and quote → option/contract that
+// restore sets late.
+func seedOccupancyRows(t *testing.T, db *store.DB, marinaID, userID string) {
+	t.Helper()
+	ctx := context.Background()
+	now := store.UTC(time.Now())
+	var berth store.Berth
+	if err := db.NewSelect().Model(&berth).Where("marina_id = ?", marinaID).OrderExpr("id").Limit(1).Scan(ctx); err != nil {
+		t.Fatalf("berth: %v", err)
+	}
+	var area store.DynamicArea
+	if err := db.NewSelect().Model(&area).Where("marina_id = ?", marinaID).OrderExpr("id").Limit(1).Scan(ctx); err != nil {
+		t.Fatalf("area: %v", err)
+	}
+	var land store.LandResource
+	if err := db.NewSelect().Model(&land).Where("marina_id = ?", marinaID).OrderExpr("id").Limit(1).Scan(ctx); err != nil {
+		t.Fatalf("land resource: %v", err)
+	}
+	var vessel store.Vessel
+	if err := db.NewSelect().Model(&vessel).Where("marina_id = ?", marinaID).OrderExpr("id").Limit(1).Scan(ctx); err != nil {
+		t.Fatalf("vessel: %v", err)
+	}
+	var customer store.Customer
+	if err := db.NewSelect().Model(&customer).Where("marina_id = ?", marinaID).OrderExpr("id").Limit(1).Scan(ctx); err != nil {
+		t.Fatalf("customer: %v", err)
+	}
+	d := calendar.MustParse
+	successorID := store.NewID() // lower id than its predecessor
+	inquiry := &store.Inquiry{
+		ID: store.NewID(), MarinaID: marinaID, Channel: "desk", Source: "phone", Purpose: "transit", VesselID: vessel.ID,
+		LOACm: vessel.LOACm, BeamCm: vessel.BeamCm, Arrival: d("2027-07-01"), Departure: d("2027-07-04"), Outcome: "booked",
+		CreatedByUserID: userID, Version: 1, CreatedAt: now, UpdatedAt: now,
+	}
+	quote := &store.Quote{
+		ID: store.NewID(), MarinaID: marinaID, Number: 1, Year: 2027, Status: "accepted", Kind: "transit",
+		CustomerID: customer.ID, VesselID: vessel.ID, StartsOn: d("2027-07-01"), EndsOn: d("2027-07-04"),
+		ValidUntil: d("2027-06-20"), ExpiresAt: now.Add(24 * time.Hour), Channel: "desk", Policy: store.JSON(`{"version":1}`),
+		InquiryID: inquiry.ID, DecidedAt: now, CreatedByUserID: userID, Version: 2, CreatedAt: now, UpdatedAt: now,
+	}
+	option := &store.QuoteOption{
+		ID: store.NewID(), MarinaID: marinaID, QuoteID: quote.ID, Seq: 1, Label: "A", Hold: true,
+		PriceSnapshot: store.JSON(`{"total_cents":12000}`), EngineVersion: 1, TotalCents: 12000, CreatedAt: now, UpdatedAt: now,
+	}
+	contract := &store.Contract{
+		ID: store.NewID(), MarinaID: marinaID, Kind: store.ContractKindTransit, Number: 1, Year: 2027, Status: "confirmed",
+		CustomerID: customer.ID, VesselID: vessel.ID, StartsOn: d("2027-07-01"), EndsOn: d("2027-07-04"), Channel: "desk",
+		QuoteID: quote.ID, PriceSnapshot: store.JSON(`{"total_cents":12000}`), EngineVersion: 1, TotalCents: 12000,
+		Policy: store.JSON(`{"version":1}`), ConfirmedAt: now, ConfirmedByUserID: userID, ConfirmationSource: "manual",
+		PayAtDeparture: true, CreatedByUserID: userID, Version: 2, CreatedAt: now, UpdatedAt: now,
+	}
+	line := &store.ContractLine{
+		ID: store.NewID(), MarinaID: marinaID, ContractID: contract.ID, Seq: 1, LineKind: "resource",
+		ResourceType: store.ResourceBerth, ResourceID: berth.ID, QtyMilli: 1000, AmountCents: 12000, CreatedAt: now, UpdatedAt: now,
+	}
+	first := &store.Allocation{
+		ID: store.NewID(), MarinaID: marinaID, ContractLineID: line.ID, VesselID: vessel.ID, ResourceType: store.ResourceBerth,
+		ResourceID: berth.ID, MapID: berth.MapID, FirstNight: d("2027-07-01"), LastNight: d("2027-07-01"),
+		Kind: store.AllocKindTransit, Status: store.AllocActive, FitOverride: store.JSON(`{"reason":"r","codes":["loa_exceeds"]}`),
+		CreatedByUserID: userID, Version: 1, CreatedAt: now, UpdatedAt: now,
+	}
+	x, y := int64(100), int64(0)
+	second := &store.Allocation{
+		ID: successorID, MarinaID: marinaID, ContractLineID: line.ID, VesselID: vessel.ID, ResourceType: store.ResourceArea,
+		ResourceID: area.ID, MapID: area.MapID, XCm: &x, YCm: &y, FirstNight: d("2027-07-02"), LastNight: d("2027-07-03"),
+		Kind: store.AllocKindTransit, Status: store.AllocActive, MovedFromID: first.ID, Version: 1, CreatedAt: now, UpdatedAt: now,
+	}
+	block := &store.Allocation{
+		ID: store.NewID(), MarinaID: marinaID, ResourceType: store.ResourceLand, ResourceID: land.ID, MapID: land.MapID,
+		FirstNight: d("2027-07-01"), LastNight: d("2027-07-01"), Kind: store.AllocKindBlock, Status: store.AllocActive,
+		BlockReason: "works", Version: 1, CreatedAt: now, UpdatedAt: now,
+	}
+	placement := &store.QuoteOptionPlacement{
+		ID: store.NewID(), MarinaID: marinaID, OptionID: option.ID, Seq: 1, ResourceType: store.ResourceBerth, ResourceID: berth.ID,
+		FirstNight: d("2027-07-01"), LastNight: d("2027-07-03"), AllocationID: first.ID, CreatedAt: now, UpdatedAt: now,
+	}
+	presence := &store.Presence{
+		ID: store.NewID(), MarinaID: marinaID, VesselID: vessel.ID, AllocationID: first.ID, ContractID: contract.ID,
+		Event: "arrived", At: now, Night: d("2027-07-01"), Source: "staff", UserID: userID, CreatedAt: now, UpdatedAt: now,
+	}
+	rows := []any{
+		store.DefaultOccupancySettings(marinaID, now),
+		&store.NumberSequence{MarinaID: marinaID, Series: "transit", Year: 2027, NextNumber: 2},
+		inquiry, quote, option, contract, line, first, second, block, placement,
+		&store.BerthOccupancy{MarinaID: marinaID, BerthID: berth.ID, Night: d("2027-07-01"), AllocationID: first.ID, Kind: first.Kind},
+		&store.CellOccupancy{MarinaID: marinaID, AreaID: area.ID, Cell: 2, Night: d("2027-07-02"), AllocationID: second.ID, Kind: second.Kind},
+		&store.CellOccupancy{MarinaID: marinaID, AreaID: area.ID, Cell: 2, Night: d("2027-07-03"), AllocationID: second.ID, Kind: second.Kind},
+		&store.LandOccupancy{MarinaID: marinaID, ResourceID: land.ID, Night: d("2027-07-01"), AllocationID: block.ID, Kind: block.Kind},
+		&store.Release{
+			ID: store.NewID(), MarinaID: marinaID, AllocationID: second.ID, ContractID: contract.ID, ResourceType: store.ResourceArea,
+			ResourceID: area.ID, FromNight: d("2027-07-03"), ToNight: d("2027-07-03"), Status: "revoked", Source: "office",
+			RevokedAt: now, Version: 2, CreatedAt: now, UpdatedAt: now,
+		},
+		presence,
+		&store.VesselPresence{VesselID: vessel.ID, MarinaID: marinaID, State: "in_port", Since: now, AllocationID: first.ID, LastPresenceID: presence.ID, UpdatedAt: now},
+		&store.Closure{
+			ID: store.NewID(), MarinaID: marinaID, ScopeType: "map", ScopeID: berth.MapID, FromDate: d("2027-08-01"), ToDate: d("2027-08-02"),
+			Reason: "regatta", Version: 1, CreatedAt: now, UpdatedAt: now,
+		},
+	}
+	for _, row := range rows {
+		if _, err := db.NewInsert().Model(row).Exec(ctx); err != nil {
+			t.Fatalf("insert %T: %v", row, err)
+		}
+	}
+	for _, q := range []*bun.UpdateQuery{
+		db.NewUpdate().Table("inquiries").Set("quote_id = ?", quote.ID).Set("contract_id = ?", contract.ID).Where("id = ?", inquiry.ID),
+		db.NewUpdate().Table("quotes").Set("accepted_option_id = ?", option.ID).Set("contract_id = ?", contract.ID).Where("id = ?", quote.ID),
+	} {
+		if _, err := q.Exec(ctx); err != nil {
+			t.Fatalf("link: %v", err)
+		}
+	}
 }
 
 // seedPricingRows adds an active and an archived price list (with periods, bands, rules and item snapshot), a subclass of a
@@ -186,7 +306,8 @@ func roundTrip(t *testing.T, src, dst *store.DB) {
 		t.Fatal(err)
 	}
 	if m1.Rows("users") < 9 || m1.Rows("audit_log") == 0 || m1.Rows("webhook_endpoints") != 1 ||
-		m1.Rows("price_lists") < 2 || m1.Rows("price_rules") < 2 || m1.Rows("price_list_items") < 4 {
+		m1.Rows("price_lists") < 2 || m1.Rows("price_rules") < 2 || m1.Rows("price_list_items") < 4 ||
+		m1.Rows("allocations") < 3 || m1.Rows("cell_occupancies") < 2 || m1.Rows("vessel_presence") < 1 {
 		t.Fatalf("unexpected counts: %+v", m1.Tables)
 	}
 	if len(m1.Files) != 1 || m1.Files[0].Path != "files/marina-1/file-1.bin" {

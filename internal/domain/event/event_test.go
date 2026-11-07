@@ -241,6 +241,12 @@ func TestTypes_Catalogue(t *testing.T) {
 			DeadlineChanged:    {DeadlineChanged, TopicRegistry, false},
 			// M2 (m2-plan §4.7): public (spec 27.3).
 			ConfigPricingChanged: {ConfigPricingChanged, TopicPricing, true},
+			// M3 (m3-plan §7.5): the internal ones are not public.
+			QuoteChanged:          {QuoteChanged, TopicContract, false},
+			ContractChanged:       {ContractChanged, TopicContract, false},
+			TransitChanged:        {TransitChanged, TopicContract, false},
+			InquiryChanged:        {InquiryChanged, TopicContract, false},
+			ConfigOccupancyChange: {ConfigOccupancyChange, TopicOccupancy, false},
 		}
 		if want, ok := m1[ti.Type]; ok {
 			if ti != want {
@@ -249,8 +255,15 @@ func TestTypes_Catalogue(t *testing.T) {
 			continue
 		}
 		wantTopic := TopicTeam
-		if strings.HasPrefix(ti.Type, "organization.") || strings.HasPrefix(ti.Type, "marina.") {
+		switch {
+		case strings.HasPrefix(ti.Type, "organization.") || strings.HasPrefix(ti.Type, "marina."):
 			wantTopic = TopicMarina
+		case strings.HasPrefix(ti.Type, "occupancy.") || strings.HasPrefix(ti.Type, "release."):
+			wantTopic = TopicOccupancy
+		case strings.HasPrefix(ti.Type, "presence."):
+			wantTopic = TopicPresence
+		case strings.HasPrefix(ti.Type, "quote.") || strings.HasPrefix(ti.Type, "contract.") || strings.HasPrefix(ti.Type, "transit."):
+			wantTopic = TopicContract
 		}
 		if ti.Topic != wantTopic || !ti.Public {
 			t.Errorf("%s: %+v", ti.Type, ti)

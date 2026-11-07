@@ -1,6 +1,12 @@
 import type { QueryClient } from '@tanstack/react-query';
 
-import { keysForTopic } from './queryKeys';
+import {
+  keysForMessage,
+  keysForTopic,
+  NARROWED_TOPICS,
+  type QueryKey,
+  type StreamMessage,
+} from './queryKeys';
 
 export const SSE_TOPICS = [
   'marina.changed',
@@ -8,7 +14,28 @@ export const SSE_TOPICS = [
   'map.changed',
   'registry.changed',
   'pricing.changed',
+  'occupancy.changed',
+  'presence.changed',
+  'contract.changed',
 ] as const;
+
+/** Debounce of the narrowed (M3) invalidations, per query key. */
+export const SSE_DEBOUNCE_MS = 250;
+
+function parseMessage(topic: string, event: Event): StreamMessage {
+  const data = (event as MessageEvent).data;
+  if (typeof data === 'string') {
+    try {
+      const msg = JSON.parse(data) as Partial<StreamMessage>;
+      if (msg && typeof msg === 'object') {
+        return { type: '', marina_id: '', entity_ids: [], ...msg, topic };
+      }
+    } catch {
+      // fall through: invalidate the whole topic
+    }
+  }
+  return { topic, type: '', marina_id: '', entity_ids: [] };
+}
 
 export type EventSourceFactory = (url: string) => EventSource;
 
@@ -34,8 +61,25 @@ export function subscribeMarinaStream(
   } catch {
     return () => undefined;
   }
+  const pending = new Map<string, { key: QueryKey; timer: ReturnType<typeof setTimeout> }>();
+  const debounced = (queryKey: QueryKey) => {
+    const id = JSON.stringify(queryKey);
+    const prev = pending.get(id);
+    if (prev) clearTimeout(prev.timer);
+    const timer = setTimeout(() => {
+      pending.delete(id);
+      void queryClient.invalidateQueries({ queryKey });
+    }, SSE_DEBOUNCE_MS);
+    pending.set(id, { key: queryKey, timer });
+  };
+  const narrowed: readonly string[] = NARROWED_TOPICS;
   const listeners = SSE_TOPICS.map((topic) => {
-    const listener = () => {
+    const listener = (event: Event) => {
+      if (narrowed.includes(topic)) {
+        for (const queryKey of keysForMessage(parseMessage(topic, event), marinaId))
+          debounced(queryKey);
+        return;
+      }
       for (const queryKey of keysForTopic(topic, marinaId)) {
         void queryClient.invalidateQueries({ queryKey });
       }
@@ -45,6 +89,8 @@ export function subscribeMarinaStream(
   });
   return () => {
     for (const [topic, listener] of listeners) source.removeEventListener(topic, listener);
+    for (const { timer } of pending.values()) clearTimeout(timer);
+    pending.clear();
     source.close();
   };
 }

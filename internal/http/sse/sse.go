@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"regexp"
 	"sort"
 	"strings"
 	"sync"
@@ -81,15 +82,29 @@ func (b *ReplayBus) Since(marinaID, lastID string) ([]ext.Event, bool) {
 	return nil, false
 }
 
-// Message is the data of one SSE message.
+// Message is the data of one SSE message. MapID, ResourceIDs and Nights (M3, spec 27.4) let a client narrow its
+// invalidation; they are copied from the event data keys map_id, resource_ids and from/to.
 type Message struct {
-	Topic     string   `json:"topic"`
-	Type      string   `json:"type"`
-	MarinaID  string   `json:"marina_id"`
-	EntityIDs []string `json:"entity_ids"`
+	Topic       string   `json:"topic"`
+	Type        string   `json:"type"`
+	MarinaID    string   `json:"marina_id"`
+	EntityIDs   []string `json:"entity_ids"`
+	MapID       string   `json:"map_id,omitempty"`
+	ResourceIDs []string `json:"resource_ids,omitempty"`
+	Nights      *Nights  `json:"nights,omitempty"`
 }
 
-// MessageOf builds the SSE data of an event: only the values of keys ending in "_id" are kept.
+// Nights is the inclusive range of nights an occupancy event touches (YYYY-MM-DD).
+type Nights struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+}
+
+// datePattern is the only form accepted for Nights values (anything else is dropped, never echoed).
+var datePattern = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
+
+// MessageOf builds the SSE data of an event: only the values of keys ending in "_id" are kept as entity ids;
+// map_id, resource_ids (strings only) and from/to (dates only) fill the narrowing fields.
 func MessageOf(ev ext.Event) Message {
 	m := Message{Topic: event.TopicOf(ev.Type), Type: ev.Type, MarinaID: ev.MarinaID, EntityIDs: []string{}}
 	var data map[string]any
@@ -103,6 +118,21 @@ func MessageOf(ev ext.Event) Message {
 			if s, ok := data[k].(string); ok && strings.HasSuffix(k, "_id") && s != "" {
 				m.EntityIDs = append(m.EntityIDs, s)
 			}
+		}
+		if s, ok := data["map_id"].(string); ok {
+			m.MapID = s
+		}
+		if list, ok := data["resource_ids"].([]any); ok {
+			for _, v := range list {
+				if s, ok := v.(string); ok && s != "" {
+					m.ResourceIDs = append(m.ResourceIDs, s)
+				}
+			}
+		}
+		from, _ := data["from"].(string)
+		to, _ := data["to"].(string)
+		if datePattern.MatchString(from) && datePattern.MatchString(to) {
+			m.Nights = &Nights{From: from, To: to}
 		}
 	}
 	return m

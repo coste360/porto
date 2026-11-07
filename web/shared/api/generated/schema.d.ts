@@ -1885,12 +1885,808 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/marinas/{marinaId}/occupancy-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Occupancy settings of the marina, defaults until saved (map.view) */
+        get: operations["getOccupancySettings"];
+        /** Replace the occupancy settings (harbor.configure) */
+        put: operations["updateOccupancySettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}/day": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        /** Day view of a map: status, vessel, contract, presence, release, fit, deadlines and anomalies per element on the night of date (default today); customer names only with customers.read (map.view) */
+        get: operations["getMapDay"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}/occupancy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        /** Allocations of a map intersecting [from, to] (default today..today+30, at most 400 nights), for the planner and the drag preview (map.view) */
+        get: operations["getMapOccupancy"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/allocations/{allocationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                allocationId: components["parameters"]["AllocationId"];
+            };
+            cookie?: never;
+        };
+        /** An allocation with its contract summary, releases and moved_from chain (map.view) */
+        get: operations["getAllocation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/occupancies/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Search placements for a vessel and a stay (spec 10.7); nothing is written (transits.desk; purpose contract also contracts.write) */
+        post: operations["searchOccupancy"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/occupancies/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Advisory check of a placement: fit, footprint, conflicting rows and price effect; nothing is written (map.view) */
+        post: operations["checkPlacement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/occupancies/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move an allocation from a night (default today), optionally only an interval; one transaction, undoable for 24 h (occupancy.move) */
+        post: operations["moveAllocation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/occupancies/swap": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Swap two vessels from a night in one transaction (occupancy.move) */
+        post: operations["swapAllocations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/dynamic-areas/{areaId}/layout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Save a layout session of a dynamic area: every allocation of the area from from_night with its version in base, all placements applied or none (occupancy.move) */
+        post: operations["saveAreaLayout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/dynamic-areas/{areaId}/compact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Propose compacted placements of a linear area for [from, to]; nothing is written (occupancy.move) */
+        post: operations["proposeCompaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/move-undo/{undoId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                undoId: components["parameters"]["UndoId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Undo the last move, swap or layout save within 24 h (occupancy.move) */
+        post: operations["undoMove"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/blocks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Block a berth, cells of an area or a land resource for a period with a reason (occupancy.move) */
+        post: operations["createBlock"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/blocks/{allocationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                allocationId: components["parameters"]["AllocationId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a block from today; past nights are kept (occupancy.move) */
+        delete: operations["deleteBlock"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/releases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Releases of contract allocations (contracts.read) */
+        get: operations["listReleases"];
+        put?: never;
+        /** Release nights of a contract allocation for resale (occupancy.move) */
+        post: operations["createRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/releases/{releaseId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                releaseId: components["parameters"]["ReleaseId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke a release (early return): free nights are occupied again, resold nights are 409 resource_taken with alternatives (occupancy.move) */
+        post: operations["revokeRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/closures": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Closures of arrivals intersecting [from, to] (map.view) */
+        get: operations["listClosures"];
+        put?: never;
+        /** Close new arrivals on a scope for a period (harbor.configure) */
+        post: operations["createClosure"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/closures/{closureId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                closureId: components["parameters"]["ClosureId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a closure (harbor.configure) */
+        delete: operations["deleteClosure"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/quotes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Quotes, newest first (contracts.read) */
+        get: operations["listQuotes"];
+        put?: never;
+        /** Create a draft quote with 1-3 priced options; options with hold allocate a hold until the quote expiry (contracts.write) */
+        post: operations["createQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/quotes/{quoteId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                quoteId: components["parameters"]["QuoteId"];
+            };
+            cookie?: never;
+        };
+        /** A quote with options, placements, prices and holds (contracts.read) */
+        get: operations["getQuote"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Replace the fields and options of a draft quote (contracts.write) */
+        patch: operations["updateQuote"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/quotes/{quoteId}/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                quoteId: components["parameters"]["QuoteId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark a draft quote as sent (manual mark, no email in M3) (contracts.write) */
+        post: operations["markQuoteSent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/quotes/{quoteId}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                quoteId: components["parameters"]["QuoteId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accept an option: its holds are converted (or allocated now), the other holds cancelled, and the contract or transit created in one transaction (contracts.write) */
+        post: operations["acceptQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/quotes/{quoteId}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                quoteId: components["parameters"]["QuoteId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decline a quote; its holds are cancelled (contracts.write) */
+        post: operations["declineQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/contracts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Contracts of a kind (default mooring) (contracts.read) */
+        get: operations["listContracts"];
+        put?: never;
+        /** Create a mooring contract, draft (holding its places) or active (signed on paper) (contracts.write) */
+        post: operations["createContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/contracts/{contractId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        /** A contract or transit with lines, allocations, releases and presences (contracts.read) */
+        get: operations["getContract"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change notes (and, for drafts, billing customer and policy) (contracts.write) */
+        patch: operations["updateContract"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/contracts/{contractId}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Activate a draft contract (signed on paper): holds become contract allocations (contracts.write) */
+        post: operations["activateContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/contracts/{contractId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a draft contract (contracts.write) */
+        post: operations["cancelContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/contracts/{contractId}/terminate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Terminate an active contract from effective_on: later nights are freed (contracts.write) */
+        post: operations["terminateContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/transits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Transits (contracts.read) */
+        get: operations["listTransits"];
+        put?: never;
+        /** Create a transit held on its placements, or confirmed at once with the manual driver (transits.desk) */
+        post: operations["createTransit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/transits/{contractId}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm a held transit with the manual driver; the only confirmation path besides the payment webhook (INV-09) (transits.desk) */
+        post: operations["confirmTransit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/transits/{contractId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a held or confirmed transit (transits.desk) */
+        post: operations["cancelTransit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/transits/{contractId}/no-show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark a confirmed transit as no-show from its arrival date (transits.desk) */
+        post: operations["markTransitNoShow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/transits/{contractId}/stay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Change arrival and/or departure; added nights must be free (409 with alternatives) and the price is recomputed (transits.desk) */
+        post: operations["changeTransitStay"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/transits/{contractId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change customer, notes and expected times of a transit (transits.desk) */
+        patch: operations["updateTransit"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Inquiries, newest first (contracts.read) */
+        get: operations["listInquiries"];
+        put?: never;
+        /** Record an inquiry, e.g. a search saved as unserved request (transits.desk) */
+        post: operations["createInquiry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/inquiries/{inquiryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                inquiryId: components["parameters"]["InquiryId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change outcome, links and notes of an inquiry (transits.desk) */
+        patch: operations["updateInquiry"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/presences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Presence events of a night (default today) or of a vessel; notes only with customers.read (map.view) */
+        get: operations["listPresences"];
+        put?: never;
+        /** Record an arrival or departure (hauled_out and launched are accepted for M9) (presence.write) */
+        post: operations["recordPresence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/presences/unexpected-arrival": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unexpected arrival: vessel (new or existing), a held transit on the target and the arrival in one transaction (presence.write and transits.desk) */
+        post: operations["recordUnexpectedArrival"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/presences/{presenceId}/photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                presenceId: components["parameters"]["PresenceId"];
+            };
+            cookie?: never;
+        };
+        /** A short-lived (5 minutes) signed link to the photo (customers.read) */
+        get: operations["getPresencePhotoLink"];
+        put?: never;
+        /** Attach a photo to a presence (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write) */
+        post: operations["uploadPresencePhoto"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/presences/{presenceId}/photo/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                presenceId: components["parameters"]["PresenceId"];
+            };
+            cookie?: never;
+        };
+        /** Download the photo through a signed link from getPresencePhotoLink (exp and sig checked in the service) (customers.read) */
+        get: operations["getPresencePhotoFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/movements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Movements of a night (default today): expected arrivals and departures, vessels out, arrivals without booking, arrived, departed (map.view) */
+        get: operations["getMovements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required";
         FieldError: {
             field: string;
             code: string;
@@ -1909,7 +2705,7 @@ export interface components {
             issues?: components["schemas"]["MapIssue"][];
             /** @description Price list validation issues (price_list_invalid) */
             price_list_issues?: components["schemas"]["PriceListIssue"][];
-            /** @description Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}. Ids, codes and integers only. */
+            /** @description Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}; resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?}; invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid {reason}. Ids, codes, dates and integers only. */
             details?: {
                 [key: string]: unknown;
             };
@@ -1937,7 +2733,7 @@ export interface components {
         /** @enum {string} */
         Role: "owner" | "director" | "office" | "accounting" | "dock" | "yard_mgr" | "yard" | "rental" | "viewer";
         /** @enum {string} */
-        Permission: "organization.manage" | "marina.configure" | "marina.read" | "users.manage" | "devices.manage" | "devices.pair_self" | "audit.read" | "customers.write" | "customers.read" | "contracts.write" | "transits.desk" | "occupancy.move" | "presence.write" | "occupancy.override_fit" | "rights.manage" | "charges.manage" | "charges.export" | "payments.collect" | "payments.collect_cash" | "refunds.issue" | "storage.manage" | "storage.read" | "yard.manage" | "yard.read" | "yard.timesheets" | "rental.manage" | "maintenance.manage" | "maintenance.report" | "reports.all" | "reports.operational" | "reports.yard" | "reports.rental" | "map.view" | "harbor.configure" | "pricing.configure" | "pricing.read";
+        Permission: "organization.manage" | "marina.configure" | "marina.read" | "users.manage" | "devices.manage" | "devices.pair_self" | "audit.read" | "customers.write" | "customers.read" | "contracts.write" | "transits.desk" | "occupancy.move" | "presence.write" | "occupancy.override_fit" | "rights.manage" | "charges.manage" | "charges.export" | "payments.collect" | "payments.collect_cash" | "refunds.issue" | "storage.manage" | "storage.read" | "yard.manage" | "yard.read" | "yard.timesheets" | "rental.manage" | "maintenance.manage" | "maintenance.report" | "reports.all" | "reports.operational" | "reports.yard" | "reports.rental" | "map.view" | "harbor.configure" | "pricing.configure" | "pricing.read" | "contracts.read";
         /** @enum {string} */
         Locale: "it" | "en";
         LoginRequest: {
@@ -4201,6 +4997,952 @@ export interface components {
             unknown_categories: components["schemas"]["CodeCount"][];
             checked: number;
         };
+        /** @enum {string} */
+        ResourceType: "berth" | "dynamic_area" | "land_resource";
+        ResourceRef: {
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+        };
+        /** @description A resource and, for dynamic areas, the placement (x along the axis or x/y in grid space, rotation for surfaces) */
+        PlacementInput: {
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["RotationDd"];
+        };
+        /** @description A placement for the inclusive nights [first_night, last_night] */
+        SegmentInput: components["schemas"]["PlacementInput"] & {
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+        };
+        /** @description Inclusive range of nights */
+        NightRange: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+        };
+        FitIssue: {
+            code: components["schemas"]["FitCode"];
+            limit_cm?: components["schemas"]["Cm"];
+            actual_cm?: components["schemas"]["Cm"];
+        };
+        /** @enum {string} */
+        FitCode: "loa_exceeds" | "beam_exceeds" | "draft_exceeds" | "air_draft_exceeds" | "multihull_not_allowed" | "vessel_invalid" | "fill_below_threshold" | "depth_near_limit" | "power_insufficient" | "insurance_missing" | "insurance_expires_in_period" | "overhang";
+        FitResult: {
+            ok: boolean;
+            overridable: boolean;
+            fill_bp: components["schemas"]["BasisPoints"];
+            blocking: components["schemas"]["FitIssue"][];
+            warnings: components["schemas"]["FitIssue"][];
+        };
+        /** @description Accept the blocking dimensional fit codes (occupancy.override_fit); the reason is audited */
+        FitOverrideInput: {
+            reason: string;
+        };
+        FitOverride: {
+            user_id: string;
+            reason: string;
+            codes: string[];
+        };
+        PriceSummary: {
+            price_list_id: string;
+            total_cents: components["schemas"]["Cents"];
+            deposit_cents: components["schemas"]["Cents"];
+            engine_version: number;
+        };
+        PriceEffect: {
+            old_total_cents: components["schemas"]["Cents"];
+            new_total_cents: components["schemas"]["Cents"];
+            delta_cents: components["schemas"]["Cents"];
+            /** @description true when the contract price was replaced (reprice) */
+            applied?: boolean;
+        };
+        /** @description Details of resource_taken; alternatives come from a search when the service runs one */
+        ConflictDetail: {
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            cells?: number[];
+            allocation_ids: string[];
+            vessel_id?: string;
+            alternatives?: components["schemas"]["OccupancySolution"][];
+        };
+        /** @description The vessel embedded in occupancy and contract views (no registration, no owner) */
+        VesselBrief: {
+            id: string;
+            name: string;
+            loa_cm: components["schemas"]["Cm"];
+            beam_cm: components["schemas"]["Cm"];
+            hull_type: components["schemas"]["HullType"];
+            draft_cm?: components["schemas"]["Cm"];
+        };
+        /** @description The customer embedded in views; display_name only with customers.read */
+        CustomerBrief: {
+            id: string;
+            display_name?: string;
+        };
+        /** @enum {string} */
+        AllocationKind: "hold" | "contract" | "transit" | "owner" | "block" | "maintenance";
+        /** @enum {string} */
+        AllocationStatus: "active" | "cancelled" | "expired" | "superseded";
+        /** @enum {string} */
+        ContractKind: "mooring" | "transit" | "storage" | "charter";
+        /** @enum {string} */
+        ContractTerm: "annual" | "seasonal" | "monthly" | "period";
+        /**
+         * @description Mooring statuses (draft..suspended) and transit statuses (held..awaiting_approval)
+         * @enum {string}
+         */
+        ContractStatus: "draft" | "awaiting_signature" | "active" | "expired" | "renewed" | "terminated" | "cancelled" | "suspended" | "held" | "pending_payment" | "confirmed" | "arrived" | "departed" | "no_show" | "awaiting_approval";
+        ContractBrief: {
+            id: string;
+            kind: components["schemas"]["ContractKind"];
+            term?: components["schemas"]["ContractTerm"];
+            status: components["schemas"]["ContractStatus"];
+            /** @description ORM-2026-0001, TRN-2026-0001 */
+            code: string;
+        };
+        Allocation: {
+            id: string;
+            contract_line_id?: string;
+            contract_id?: string;
+            vessel_id?: string;
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            resource_code?: string;
+            map_id: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["RotationDd"];
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+            kind: components["schemas"]["AllocationKind"];
+            status: components["schemas"]["AllocationStatus"];
+            /** Format: date-time */
+            expires_at?: string;
+            fit_override?: components["schemas"]["FitOverride"];
+            block_reason?: string;
+            moved_from_id?: string;
+            released: components["schemas"]["NightRange"][];
+            version: number;
+        };
+        AllocationList: {
+            allocations: components["schemas"]["Allocation"][];
+        };
+        AllocationDetail: components["schemas"]["Allocation"] & {
+            contract?: components["schemas"]["ContractBrief"];
+            vessel?: components["schemas"]["VesselBrief"];
+            releases: components["schemas"]["Release"][];
+            /** @description Ids of the predecessors, nearest first */
+            moved_from_chain: string[];
+        };
+        /** @description Occupied cells of an area placement; linear areas give first/last, surfaces the indexes */
+        CellsRange: {
+            first?: number;
+            last?: number;
+            indexes?: number[];
+        };
+        MapAllocation: {
+            id: string;
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["RotationDd"];
+            cells?: components["schemas"]["CellsRange"];
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+            kind: components["schemas"]["AllocationKind"];
+            status: components["schemas"]["AllocationStatus"];
+            /** Format: date-time */
+            expires_at?: string;
+            version: number;
+            released: components["schemas"]["NightRange"][];
+            vessel?: components["schemas"]["VesselBrief"];
+            contract?: components["schemas"]["ContractBrief"];
+        };
+        MapOccupancy: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            allocations: components["schemas"]["MapAllocation"][];
+        };
+        /** @enum {string} */
+        DayStatus: "free" | "hold" | "contract" | "transit" | "block" | "maintenance" | "owner" | "released" | "closed";
+        /** @enum {string} */
+        PresenceState: "in_port" | "out" | "ashore" | "yard";
+        DayPresence: {
+            state: components["schemas"]["PresenceState"];
+            /** Format: date-time */
+            since: string;
+            expected_return_on?: components["schemas"]["IsoDate"];
+            away_days: number;
+        };
+        DayRelease: {
+            id: string;
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            resold: boolean;
+        };
+        DayFit: {
+            fill_bp: components["schemas"]["BasisPoints"];
+            override: boolean;
+            blocking_codes: components["schemas"]["FitCode"][];
+        };
+        /** @enum {string} */
+        DeadlineState: "ok" | "expiring" | "expired" | "missing";
+        DayDeadlines: {
+            contract_ends_on?: components["schemas"]["IsoDate"];
+            insurance: components["schemas"]["DeadlineState"];
+            documents: components["schemas"]["DeadlineState"];
+        };
+        DayUtilities: {
+            power_a?: number;
+            power_phase?: components["schemas"]["PowerPhase"];
+            water: boolean;
+        };
+        /** @enum {string} */
+        AnomalyCode: "presence_without_allocation" | "not_arrived" | "departure_overdue" | "vessel_exceeds_limits" | "insurance_expired_active" | "hold_lost_draft";
+        DayElement: {
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            code: string;
+            status: components["schemas"]["DayStatus"];
+            allocation_id?: string;
+            allocation_version?: number;
+            kind?: components["schemas"]["AllocationKind"];
+            /** Format: date-time */
+            hold_expires_at?: string;
+            contract?: components["schemas"]["ContractBrief"];
+            vessel?: components["schemas"]["VesselBrief"];
+            customer?: components["schemas"]["CustomerBrief"];
+            presence?: components["schemas"]["DayPresence"];
+            release?: components["schemas"]["DayRelease"];
+            arrival_today: boolean;
+            departure_today: boolean;
+            fit?: components["schemas"]["DayFit"];
+            deadlines?: components["schemas"]["DayDeadlines"];
+            utilities?: components["schemas"]["DayUtilities"];
+            anomalies: components["schemas"]["AnomalyCode"][];
+        };
+        AreaPlacement: {
+            area_id: string;
+            allocation_id: string;
+            allocation_version: number;
+            x_cm: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["RotationDd"];
+            cells: components["schemas"]["CellsRange"];
+            status: components["schemas"]["DayStatus"];
+            kind: components["schemas"]["AllocationKind"];
+            contract?: components["schemas"]["ContractBrief"];
+            vessel: components["schemas"]["VesselBrief"];
+            customer?: components["schemas"]["CustomerBrief"];
+            presence?: components["schemas"]["DayPresence"];
+            fit?: components["schemas"]["DayFit"];
+            anomalies: components["schemas"]["AnomalyCode"][];
+        };
+        UnplacedVessel: {
+            vessel: components["schemas"]["VesselBrief"];
+            presence_id: string;
+            /** @enum {string} */
+            reason: "arrived_without_booking";
+        };
+        DayView: {
+            map_id: string;
+            date: components["schemas"]["IsoDate"];
+            map_version: number;
+            /** Format: date-time */
+            generated_at: string;
+            elements: components["schemas"]["DayElement"][];
+            area_placements: components["schemas"]["AreaPlacement"][];
+            unplaced: components["schemas"]["UnplacedVessel"][];
+            counts: {
+                anomalies: number;
+            };
+        };
+        /** @enum {string} */
+        ReleasePolicy: "never" | "with_consent";
+        OccupancySettings: {
+            /** Format: int64 */
+            safety_clearance_cm: number;
+            /** Format: int64 */
+            waste_threshold_bp: number;
+            draft_hold_days: number;
+            desk_hold_hours: number;
+            quote_validity_days: number;
+            max_segments: number;
+            absent_days_threshold: number;
+            arrival_grace_minutes: number;
+            default_arrival_time: components["schemas"]["LocalTime"];
+            default_departure_time: components["schemas"]["LocalTime"];
+            reprice_on_move: boolean;
+            release_policy: components["schemas"]["ReleasePolicy"];
+            version: number;
+        };
+        OccupancySettingsUpdate: {
+            /** Format: int64 */
+            safety_clearance_cm: number;
+            /** Format: int64 */
+            waste_threshold_bp: number;
+            draft_hold_days: number;
+            desk_hold_hours: number;
+            quote_validity_days: number;
+            max_segments: number;
+            absent_days_threshold: number;
+            arrival_grace_minutes: number;
+            default_arrival_time: components["schemas"]["LocalTime"];
+            default_departure_time: components["schemas"]["LocalTime"];
+            reprice_on_move: boolean;
+            release_policy: components["schemas"]["ReleasePolicy"];
+        };
+        /** @description Local time HH:MM in the marina timezone */
+        LocalTime: string;
+        /** @enum {string} */
+        SearchPurpose: "transit" | "contract";
+        SearchVessel: {
+            loa_cm: components["schemas"]["PositiveCm"];
+            beam_cm: components["schemas"]["PositiveCm"];
+            draft_cm?: components["schemas"]["PositiveCm"];
+            air_draft_cm?: components["schemas"]["PositiveCm"];
+            hull_type: components["schemas"]["HullType"];
+        };
+        SearchPrefs: {
+            group_ids?: string[];
+            structure_ids?: string[];
+            power_a?: number;
+            water?: boolean;
+        };
+        /** @description vessel_id or vessel; nights are [arrival, departure) */
+        OccupancySearchRequest: {
+            purpose: components["schemas"]["SearchPurpose"];
+            vessel_id?: string;
+            vessel?: components["schemas"]["SearchVessel"];
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            term?: components["schemas"]["ContractTerm"];
+            resource_types?: components["schemas"]["ResourceType"][];
+            prefs?: components["schemas"]["SearchPrefs"];
+            consider_out?: boolean;
+            max_segments?: number;
+            customer_id?: string;
+            /** @enum {string} */
+            channel?: "desk" | "api";
+            services?: components["schemas"]["SimulateService"][];
+            limit?: number;
+        };
+        SolutionSegment: {
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            code: string;
+            map_id: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["RotationDd"];
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+        };
+        OccupancySolution: {
+            key: string;
+            segments: components["schemas"]["SolutionSegment"][];
+            /** Format: int64 */
+            score: number;
+            fit: components["schemas"]["FitResult"];
+            requires_release?: {
+                allocation_id: string;
+                contract_id: string;
+            };
+            pricing?: components["schemas"]["PriceSummary"];
+            pricing_error?: {
+                /** @description Problem slug (no_price) */
+                type: string;
+                reason?: string;
+            };
+        };
+        OccupancySearchResult: {
+            solutions: components["schemas"]["OccupancySolution"][];
+            considered: number;
+        };
+        /** @description allocation_id (a move) or vessel_id (a new placement) */
+        PlacementCheckRequest: {
+            allocation_id?: string;
+            vessel_id?: string;
+            target: components["schemas"]["PlacementInput"];
+            from_night: components["schemas"]["IsoDate"];
+            to_night: components["schemas"]["IsoDate"];
+        };
+        PlacementCheck: {
+            ok: boolean;
+            fit: components["schemas"]["FitResult"];
+            /** @description unsnapped */
+            placement_error?: string;
+            conflicts: components["schemas"]["ConflictDetail"][];
+            closure_id?: string;
+            price_effect?: components["schemas"]["PriceEffect"];
+        };
+        MoveRequest: {
+            allocation_id: string;
+            version: number;
+            target: components["schemas"]["PlacementInput"];
+            from_night?: components["schemas"]["IsoDate"];
+            to_night?: components["schemas"]["IsoDate"];
+            fit_override?: components["schemas"]["FitOverrideInput"];
+            reprice?: boolean;
+        };
+        VersionedAllocation: {
+            allocation_id: string;
+            version: number;
+        };
+        SwapRequest: {
+            a: components["schemas"]["VersionedAllocation"];
+            b: components["schemas"]["VersionedAllocation"];
+            from_night?: components["schemas"]["IsoDate"];
+            fit_override?: components["schemas"]["FitOverrideInput"];
+        };
+        MoveResult: {
+            allocations: components["schemas"]["Allocation"][];
+            undo_id: string;
+            /** Format: date-time */
+            undo_until: string;
+            price_effect?: components["schemas"]["PriceEffect"];
+        };
+        LayoutPlacement: {
+            allocation_id: string;
+            x_cm: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["RotationDd"];
+        };
+        AreaLayoutSave: {
+            date: components["schemas"]["IsoDate"];
+            from_night?: components["schemas"]["IsoDate"];
+            base: components["schemas"]["VersionedAllocation"][];
+            placements: components["schemas"]["LayoutPlacement"][];
+            fit_overrides?: {
+                allocation_id: string;
+                reason: string;
+            }[];
+        };
+        CompactionRequest: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+        };
+        CompactionProposal: {
+            placements: {
+                allocation_id: string;
+                x_cm: components["schemas"]["Cm"];
+            }[];
+            freed_cm: components["schemas"]["Cm"];
+            base: components["schemas"]["VersionedAllocation"][];
+        };
+        /** @description For dynamic areas loa_cm and beam_cm give the blocked footprint */
+        BlockCreate: {
+            target: components["schemas"]["PlacementInput"];
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            reason: string;
+            loa_cm?: components["schemas"]["PositiveCm"];
+            beam_cm?: components["schemas"]["PositiveCm"];
+        };
+        /** @enum {string} */
+        ReleaseStatus: "active" | "revoked";
+        /** @enum {string} */
+        ReleaseSource: "customer_phone" | "customer_desk" | "customer_link" | "dock" | "office" | "system";
+        Release: {
+            id: string;
+            allocation_id: string;
+            contract_id: string;
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            resource_code?: string;
+            from_night: components["schemas"]["IsoDate"];
+            to_night: components["schemas"]["IsoDate"];
+            status: components["schemas"]["ReleaseStatus"];
+            source: components["schemas"]["ReleaseSource"];
+            resold_allocation_id?: string;
+            resold_nights: number;
+            credit_cents: components["schemas"]["Cents"];
+            /** @description Only with customers.read */
+            notes?: string;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            revoked_at?: string;
+            version: number;
+        };
+        ReleasePage: {
+            items: components["schemas"]["Release"][];
+            next_cursor: string | null;
+        };
+        ReleaseCreate: {
+            allocation_id: string;
+            from_night: components["schemas"]["IsoDate"];
+            to_night: components["schemas"]["IsoDate"];
+            source: components["schemas"]["ReleaseSource"];
+            notes?: string;
+        };
+        /** @description Without from_night/to_night the whole release is revoked */
+        RevokeRequest: {
+            from_night?: components["schemas"]["IsoDate"];
+            to_night?: components["schemas"]["IsoDate"];
+        };
+        RevokeResult: {
+            release: components["schemas"]["Release"];
+            restored_nights: number;
+            remaining?: components["schemas"]["Release"];
+        };
+        /** @enum {string} */
+        ClosureScope: "marina" | "map" | "structure" | "group" | "resource";
+        Closure: {
+            id: string;
+            scope_type: components["schemas"]["ClosureScope"];
+            scope_id?: string;
+            resource_type?: components["schemas"]["ResourceType"];
+            from_date: components["schemas"]["IsoDate"];
+            to_date: components["schemas"]["IsoDate"];
+            reason: string;
+            version: number;
+        };
+        ClosureList: {
+            items: components["schemas"]["Closure"][];
+        };
+        /** @description scope_id is required except for scope marina; resource_type is required for scope resource */
+        ClosureCreate: {
+            scope_type: components["schemas"]["ClosureScope"];
+            scope_id?: string;
+            resource_type?: components["schemas"]["ResourceType"];
+            from_date: components["schemas"]["IsoDate"];
+            to_date: components["schemas"]["IsoDate"];
+            reason: string;
+        };
+        /** @enum {string} */
+        QuoteStatus: "draft" | "sent" | "accepted" | "declined" | "expired";
+        /** @enum {string} */
+        QuoteKind: "mooring" | "transit";
+        /** @description Versioned contract policy (m3-plan §4.7); unknown keys are rejected */
+        ContractPolicy: {
+            /** @enum {integer} */
+            version?: 1;
+            reprice_on_move?: boolean;
+            release_policy?: components["schemas"]["ReleasePolicy"];
+            allow_segments?: boolean;
+        };
+        QuoteOptionInput: {
+            label?: string;
+            hold: boolean;
+            placements: components["schemas"]["SegmentInput"][];
+            services?: components["schemas"]["SimulateService"][];
+            fit_override?: components["schemas"]["FitOverrideInput"];
+        };
+        QuoteInput: {
+            kind: components["schemas"]["QuoteKind"];
+            term?: components["schemas"]["ContractTerm"];
+            customer_id: string;
+            vessel_id: string;
+            starts_on: components["schemas"]["IsoDate"];
+            ends_on: components["schemas"]["IsoDate"];
+            valid_until?: components["schemas"]["IsoDate"];
+            /** @enum {string} */
+            channel?: "desk" | "api";
+            policy?: components["schemas"]["ContractPolicy"];
+            notes?: string;
+            inquiry_id?: string;
+            options: components["schemas"]["QuoteOptionInput"][];
+        };
+        QuotePlacement: {
+            seq: number;
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            resource_code?: string;
+            map_id?: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["RotationDd"];
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+            /** @description The hold */
+            allocation_id?: string;
+        };
+        QuoteOption: {
+            id: string;
+            seq: number;
+            label: string;
+            hold: boolean;
+            placements: components["schemas"]["QuotePlacement"][];
+            price_list_id?: string;
+            total_cents: components["schemas"]["Cents"];
+            deposit_cents: components["schemas"]["Cents"];
+            engine_version: number;
+            breakdown?: components["schemas"]["PriceBreakdown"];
+            fit_override?: components["schemas"]["FitOverride"];
+        };
+        Quote: {
+            id: string;
+            /** @description PRV-2026-0001 */
+            code: string;
+            /** Format: int64 */
+            number: number;
+            year: number;
+            status: components["schemas"]["QuoteStatus"];
+            kind: components["schemas"]["QuoteKind"];
+            term?: components["schemas"]["ContractTerm"];
+            customer: components["schemas"]["CustomerBrief"];
+            vessel: components["schemas"]["VesselBrief"];
+            starts_on: components["schemas"]["IsoDate"];
+            ends_on: components["schemas"]["IsoDate"];
+            valid_until: components["schemas"]["IsoDate"];
+            /** Format: date-time */
+            expires_at: string;
+            channel: components["schemas"]["Channel"];
+            policy?: components["schemas"]["ContractPolicy"];
+            notes?: string;
+            inquiry_id?: string;
+            accepted_option_id?: string;
+            contract_id?: string;
+            /** Format: date-time */
+            sent_at?: string;
+            /** Format: date-time */
+            decided_at?: string;
+            decline_reason?: string;
+            options: components["schemas"]["QuoteOption"][];
+            /** Format: date-time */
+            created_at: string;
+            version: number;
+        };
+        QuoteSummary: {
+            id: string;
+            code: string;
+            status: components["schemas"]["QuoteStatus"];
+            kind: components["schemas"]["QuoteKind"];
+            term?: components["schemas"]["ContractTerm"];
+            customer: components["schemas"]["CustomerBrief"];
+            vessel: components["schemas"]["VesselBrief"];
+            starts_on: components["schemas"]["IsoDate"];
+            ends_on: components["schemas"]["IsoDate"];
+            valid_until: components["schemas"]["IsoDate"];
+            options_count: number;
+            min_total_cents?: components["schemas"]["Cents"];
+            /** Format: date-time */
+            created_at: string;
+            version: number;
+        };
+        QuotePage: {
+            items: components["schemas"]["QuoteSummary"][];
+            next_cursor: string | null;
+        };
+        /** @description Manual driver confirmation (M3); the reference is free text, stored and never logged */
+        ManualConfirmation: {
+            reference?: string;
+            pay_at_departure?: boolean;
+        };
+        QuoteAccept: {
+            option_id: string;
+            /** @description Mooring quotes create an active contract instead of a draft */
+            activate?: boolean;
+            confirm?: components["schemas"]["ManualConfirmation"];
+        };
+        QuoteAcceptResult: {
+            quote: components["schemas"]["Quote"];
+            contract: components["schemas"]["Contract"];
+        };
+        ReasonInput: {
+            reason?: string;
+        };
+        /** @enum {string} */
+        ContractLineKind: "resource" | "service";
+        ContractLine: {
+            id: string;
+            seq: number;
+            line_kind: components["schemas"]["ContractLineKind"];
+            item_id?: string;
+            resource_type?: components["schemas"]["ResourceType"];
+            resource_id?: string;
+            resource_code?: string;
+            qty_milli: components["schemas"]["QtyMilli"];
+            amount_cents: components["schemas"]["Cents"];
+        };
+        /** @enum {string} */
+        PresenceEvent: "arrived" | "departed" | "hauled_out" | "launched";
+        /** @enum {string} */
+        PresenceSource: "staff" | "sensor" | "customer";
+        Presence: {
+            id: string;
+            vessel: components["schemas"]["VesselBrief"];
+            allocation_id?: string;
+            contract_id?: string;
+            event: components["schemas"]["PresenceEvent"];
+            /** Format: date-time */
+            at: string;
+            night: components["schemas"]["IsoDate"];
+            source: components["schemas"]["PresenceSource"];
+            user_id?: string;
+            /** @description Only with customers.read */
+            notes?: string;
+            has_photo: boolean;
+        };
+        /** @description A mooring contract or a transit */
+        Contract: {
+            id: string;
+            /** @description ORM-2026-0001, TRN-2026-0001 */
+            code: string;
+            kind: components["schemas"]["ContractKind"];
+            term?: components["schemas"]["ContractTerm"];
+            /** Format: int64 */
+            number: number;
+            year: number;
+            status: components["schemas"]["ContractStatus"];
+            customer?: components["schemas"]["CustomerBrief"];
+            billing_customer?: components["schemas"]["CustomerBrief"];
+            vessel: components["schemas"]["VesselBrief"];
+            starts_on: components["schemas"]["IsoDate"];
+            ends_on: components["schemas"]["IsoDate"];
+            channel: components["schemas"]["Channel"];
+            quote_id?: string;
+            price_list_id?: string;
+            total_cents: components["schemas"]["Cents"];
+            deposit_cents: components["schemas"]["Cents"];
+            engine_version: number;
+            breakdown?: components["schemas"]["PriceBreakdown"];
+            policy?: components["schemas"]["ContractPolicy"];
+            expected_arrival_time?: components["schemas"]["LocalTime"];
+            expected_departure_time?: components["schemas"]["LocalTime"];
+            notes?: string;
+            hold_lost: boolean;
+            /** Format: date-time */
+            hold_expires_at?: string;
+            /** Format: date-time */
+            activated_at?: string;
+            signed_on_paper: boolean;
+            /** Format: date-time */
+            confirmed_at?: string;
+            /** @enum {string} */
+            confirmation_source?: "manual" | "provider";
+            /** @description Only with contracts.write or transits.desk */
+            confirmation_ref?: string;
+            pay_at_departure: boolean;
+            /** Format: date-time */
+            cancelled_at?: string;
+            cancel_reason?: string;
+            terminated_on?: components["schemas"]["IsoDate"];
+            terminate_reason?: string;
+            lines: components["schemas"]["ContractLine"][];
+            allocations: components["schemas"]["Allocation"][];
+            releases: components["schemas"]["Release"][];
+            presences: components["schemas"]["Presence"][];
+            /** Format: date-time */
+            created_at: string;
+            version: number;
+        };
+        ContractSummary: {
+            id: string;
+            code: string;
+            kind: components["schemas"]["ContractKind"];
+            term?: components["schemas"]["ContractTerm"];
+            status: components["schemas"]["ContractStatus"];
+            customer?: components["schemas"]["CustomerBrief"];
+            vessel: components["schemas"]["VesselBrief"];
+            starts_on: components["schemas"]["IsoDate"];
+            ends_on: components["schemas"]["IsoDate"];
+            total_cents: components["schemas"]["Cents"];
+            hold_lost: boolean;
+            /** Format: date-time */
+            hold_expires_at?: string;
+            /** @description Current resources of the resource lines */
+            resources: {
+                resource_type: components["schemas"]["ResourceType"];
+                resource_id: string;
+                code: string;
+                map_id?: string;
+            }[];
+            presence_state?: components["schemas"]["PresenceState"];
+            /** Format: date-time */
+            created_at: string;
+            version: number;
+        };
+        ContractPage: {
+            items: components["schemas"]["ContractSummary"][];
+            next_cursor: string | null;
+        };
+        ExtraResource: {
+            land_resource_id: string;
+            item_id?: string;
+        };
+        /** @description ends_on defaults by term (annual +1 year, seasonal the season end of the active seasonal list, monthly +1 month; period requires it) */
+        ContractCreate: {
+            term: components["schemas"]["ContractTerm"];
+            customer_id: string;
+            billing_customer_id?: string;
+            vessel_id: string;
+            starts_on: components["schemas"]["IsoDate"];
+            ends_on?: components["schemas"]["IsoDate"];
+            placements: components["schemas"]["SegmentInput"][];
+            extra_resources?: components["schemas"]["ExtraResource"][];
+            services?: components["schemas"]["SimulateService"][];
+            policy?: components["schemas"]["ContractPolicy"];
+            notes?: string;
+            activate?: boolean;
+            fit_override?: components["schemas"]["FitOverrideInput"];
+        };
+        ContractPatch: {
+            notes?: string;
+            billing_customer_id?: string | null;
+            policy?: components["schemas"]["ContractPolicy"];
+        };
+        TerminateInput: {
+            effective_on: components["schemas"]["IsoDate"];
+            reason: string;
+        };
+        /** @description A vessel created on the spot with declared (estimated) dimensions */
+        NewVesselInput: {
+            name: string;
+            loa_cm: components["schemas"]["PositiveCm"];
+            beam_cm: components["schemas"]["PositiveCm"];
+            hull_type: components["schemas"]["HullType"];
+            draft_cm?: components["schemas"]["PositiveCm"];
+        };
+        /** @description vessel_id or new_vessel; placements, or solution_key with the search_request that produced it */
+        TransitCreate: {
+            vessel_id?: string;
+            new_vessel?: components["schemas"]["NewVesselInput"];
+            customer_id?: string;
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            placements?: components["schemas"]["SegmentInput"][];
+            solution_key?: string;
+            search_request?: components["schemas"]["OccupancySearchRequest"];
+            /** @enum {string} */
+            channel?: "desk" | "api";
+            expected_arrival_time?: components["schemas"]["LocalTime"];
+            notes?: string;
+            services?: components["schemas"]["SimulateService"][];
+            fit_override?: components["schemas"]["FitOverrideInput"];
+            confirm?: components["schemas"]["ManualConfirmation"];
+            inquiry_id?: string;
+        };
+        StayChange: {
+            arrival?: components["schemas"]["IsoDate"];
+            departure?: components["schemas"]["IsoDate"];
+            extension_target?: components["schemas"]["PlacementInput"];
+            fit_override?: components["schemas"]["FitOverrideInput"];
+        };
+        StayChangeResult: {
+            contract: components["schemas"]["Contract"];
+            price_effect: components["schemas"]["PriceEffect"];
+        };
+        TransitPatch: {
+            customer_id?: string | null;
+            notes?: string;
+            expected_arrival_time?: string | null;
+            expected_departure_time?: string | null;
+        };
+        /** @enum {string} */
+        InquiryOutcome: "open" | "quoted" | "booked" | "declined_no_space" | "declined_size" | "declined_other" | "lost";
+        /** @enum {string} */
+        InquirySource: "phone" | "email" | "desk" | "public" | "channel";
+        Inquiry: {
+            id: string;
+            channel: components["schemas"]["Channel"];
+            source: components["schemas"]["InquirySource"];
+            purpose: components["schemas"]["SearchPurpose"];
+            term?: components["schemas"]["ContractTerm"];
+            vessel?: components["schemas"]["VesselBrief"];
+            customer?: components["schemas"]["CustomerBrief"];
+            loa_cm: components["schemas"]["Cm"];
+            beam_cm: components["schemas"]["Cm"];
+            draft_cm?: components["schemas"]["Cm"];
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            outcome: components["schemas"]["InquiryOutcome"];
+            quote_id?: string;
+            contract_id?: string;
+            /** @description Only with customers.read */
+            notes?: string;
+            /** Format: date-time */
+            created_at: string;
+            version: number;
+        };
+        InquiryPage: {
+            items: components["schemas"]["Inquiry"][];
+            next_cursor: string | null;
+        };
+        /** @description vessel_id or loa_cm and beam_cm */
+        InquiryCreate: {
+            purpose: components["schemas"]["SearchPurpose"];
+            term?: components["schemas"]["ContractTerm"];
+            source: components["schemas"]["InquirySource"];
+            channel?: components["schemas"]["Channel"];
+            vessel_id?: string;
+            loa_cm?: components["schemas"]["PositiveCm"];
+            beam_cm?: components["schemas"]["PositiveCm"];
+            draft_cm?: components["schemas"]["PositiveCm"];
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            customer_id?: string;
+            outcome?: components["schemas"]["InquiryOutcome"];
+            notes?: string;
+        };
+        InquiryPatch: {
+            outcome?: components["schemas"]["InquiryOutcome"];
+            quote_id?: string | null;
+            contract_id?: string | null;
+            notes?: string;
+        };
+        PresencePage: {
+            items: components["schemas"]["Presence"][];
+            next_cursor: string | null;
+        };
+        PresenceCreate: {
+            vessel_id: string;
+            event: components["schemas"]["PresenceEvent"];
+            /** Format: date-time */
+            at?: string;
+            allocation_id?: string;
+            notes?: string;
+            expected_return_on?: components["schemas"]["IsoDate"];
+        };
+        PresenceResult: {
+            presence: components["schemas"]["Presence"];
+            contract?: components["schemas"]["Contract"];
+        };
+        /** @description vessel_id or new_vessel; departure defaults to the next day */
+        UnexpectedArrival: {
+            vessel_id?: string;
+            new_vessel?: components["schemas"]["NewVesselInput"];
+            target: components["schemas"]["PlacementInput"];
+            departure?: components["schemas"]["IsoDate"];
+            notes?: string;
+            fit_override?: components["schemas"]["FitOverrideInput"];
+        };
+        PresencePhoto: {
+            file_id: string;
+        };
+        FileLink: {
+            url: string;
+            /** Format: date-time */
+            expires_at: string;
+        };
+        MovementResource: {
+            type: components["schemas"]["ResourceType"];
+            id: string;
+            code: string;
+            map_id?: string;
+        };
+        Movement: {
+            vessel: components["schemas"]["VesselBrief"];
+            contract?: components["schemas"]["ContractBrief"];
+            resource?: components["schemas"]["MovementResource"];
+            expected_time?: components["schemas"]["LocalTime"];
+            presence_id?: string;
+            allocation_id?: string;
+        };
+        Movements: {
+            date: components["schemas"]["IsoDate"];
+            arrivals_expected: components["schemas"]["Movement"][];
+            departures_expected: components["schemas"]["Movement"][];
+            vessels_out: components["schemas"]["Movement"][];
+            arrived_without_booking: components["schemas"]["Movement"][];
+            arrived: components["schemas"]["Movement"][];
+            departed: components["schemas"]["Movement"][];
+        };
     };
     responses: {
         /** @description Malformed request or validation failure */
@@ -4321,6 +6063,15 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description The vessel does not fit (fit_blocked, with the FitResult in details), the placement is invalid (placement_invalid, details {reason, allocation_id?}), a customer is required (customer_required), no price (no_price), a validation failure, or an idempotency key was reused */
+        OccupancyUnprocessable: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
         /** @description Not ready */
         ServiceUnavailable: {
             headers: {
@@ -4353,6 +6104,15 @@ export interface components {
         RevenueClassId: string;
         CategoryId: string;
         PriceListId: string;
+        AllocationId: string;
+        QuoteId: string;
+        ContractId: string;
+        ReleaseId: string;
+        ClosureId: string;
+        InquiryId: string;
+        PresenceId: string;
+        UndoId: string;
+        AreaId: string;
         /** @description Value of the porto_csrf cookie; required on cookie-authenticated unsafe requests. */
         CSRFToken: string;
     };
@@ -8417,6 +10177,1749 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             422: components["responses"]["PricingUnprocessable"];
+        };
+    };
+    getOccupancySettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OccupancySettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateOccupancySettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OccupancySettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OccupancySettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getMapDay: {
+        parameters: {
+            query?: {
+                /** @description Night (default today in the marina timezone) */
+                date?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DayView"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getMapOccupancy: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                /** @description Comma-separated resource ids */
+                resource_ids?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapOccupancy"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getAllocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                allocationId: components["parameters"]["AllocationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AllocationDetail"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    searchOccupancy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OccupancySearchRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OccupancySearchResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    checkPlacement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlacementCheckRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlacementCheck"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    moveAllocation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MoveRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MoveResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["OccupancyUnprocessable"];
+        };
+    };
+    swapAllocations: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SwapRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MoveResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["OccupancyUnprocessable"];
+        };
+    };
+    saveAreaLayout: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AreaLayoutSave"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MoveResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            413: components["responses"]["PayloadTooLarge"];
+            422: components["responses"]["OccupancyUnprocessable"];
+        };
+    };
+    proposeCompaction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompactionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompactionProposal"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    undoMove: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                undoId: components["parameters"]["UndoId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AllocationList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    createBlock: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlockCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Allocation"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["OccupancyUnprocessable"];
+        };
+    };
+    deleteBlock: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                allocationId: components["parameters"]["AllocationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Done */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listReleases: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                resource_id?: string;
+                status?: components["schemas"]["ReleaseStatus"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReleasePage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createRelease: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReleaseCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Release"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    revokeRelease: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                releaseId: components["parameters"]["ReleaseId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevokeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RevokeResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listClosures: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClosureList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createClosure: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClosureCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Closure"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    deleteClosure: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                closureId: components["parameters"]["ClosureId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Done */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listQuotes: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["QuoteStatus"];
+                kind?: components["schemas"]["QuoteKind"];
+                customer_id?: string;
+                /** @description Code or vessel name */
+                q?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuotePage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuoteInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Quote"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["OccupancyUnprocessable"];
+        };
+    };
+    getQuote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                quoteId: components["parameters"]["QuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Quote"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                quoteId: components["parameters"]["QuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuoteInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Quote"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["OccupancyUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    markQuoteSent: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                quoteId: components["parameters"]["QuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Quote"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    acceptQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                quoteId: components["parameters"]["QuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuoteAccept"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuoteAcceptResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["OccupancyUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    declineQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                quoteId: components["parameters"]["QuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Quote"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listContracts: {
+        parameters: {
+            query?: {
+                kind?: components["schemas"]["ContractKind"];
+                status?: components["schemas"]["ContractStatus"];
+                term?: components["schemas"]["ContractTerm"];
+                customer_id?: string;
+                vessel_id?: string;
+                active_on?: components["schemas"]["IsoDate"];
+                /** @description Code or vessel name */
+                q?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createContract: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContractCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["OccupancyUnprocessable"];
+        };
+    };
+    getContract: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateContract: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContractPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    activateContract: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["OccupancyUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    cancelContract: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    terminateContract: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TerminateInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listTransits: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["ContractStatus"];
+                arrival_from?: components["schemas"]["IsoDate"];
+                arrival_to?: components["schemas"]["IsoDate"];
+                /** @description Transits whose stay covers this night */
+                on?: components["schemas"]["IsoDate"];
+                /** @description Code or vessel name */
+                q?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createTransit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransitCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["OccupancyUnprocessable"];
+        };
+    };
+    confirmTransit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManualConfirmation"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["OccupancyUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    cancelTransit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReasonInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    markTransitNoShow: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    changeTransitStay: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StayChange"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StayChangeResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["OccupancyUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateTransit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransitPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Contract"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listInquiries: {
+        parameters: {
+            query?: {
+                outcome?: components["schemas"]["InquiryOutcome"];
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InquiryPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createInquiry: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InquiryCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Inquiry"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateInquiry: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                inquiryId: components["parameters"]["InquiryId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InquiryPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Inquiry"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listPresences: {
+        parameters: {
+            query?: {
+                date?: components["schemas"]["IsoDate"];
+                vessel_id?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresencePage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    recordPresence: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresenceCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresenceResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    recordUnexpectedArrival: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UnexpectedArrival"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresenceResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["OccupancyUnprocessable"];
+        };
+    };
+    getPresencePhotoLink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                presenceId: components["parameters"]["PresenceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileLink"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    uploadPresencePhoto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                presenceId: components["parameters"]["PresenceId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "image/jpeg": string;
+                "image/png": string;
+                "image/webp": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresencePhoto"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+        };
+    };
+    getPresencePhotoFile: {
+        parameters: {
+            query?: {
+                exp?: number;
+                sig?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                presenceId: components["parameters"]["PresenceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "image/png": string;
+                    "image/webp": string;
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getMovements: {
+        parameters: {
+            query?: {
+                date?: components["schemas"]["IsoDate"];
+                map_id?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Movements"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
         };
     };
 }

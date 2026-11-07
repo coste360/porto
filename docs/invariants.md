@@ -12,16 +12,22 @@ contratti, 40–49 diritti e condominio, 50–59 addebiti e incassi, 60–69 rep
 `(resource_id, night)` esiste al più una riga, anche con 100 richieste parallele, su SQLite e PostgreSQL. Garantita
 dai vincoli unique, non da controlli applicativi; vale per ogni canale (banco, online, API, canali esterni).
 Verificata da: `TestConcurrency_BerthAllocation`, `TestConcurrency_CellAllocation`,
-`TestConcurrency_LandAllocation`, `TestConcurrency_ChannelVsDesk`. Stato: planned.
+`TestConcurrency_CellAllocationSurface`, `TestConcurrency_LandAllocation`, `TestConcurrency_ChannelVsDesk`,
+`TestMigrations_OccupancyPrimaryKeys` (le tre chiavi primarie e le FK RESTRICT su entrambi i dialetti), query Q1
+di `store.CheckOccupancyInvariants`. Stato: implemented.
 
 **INV-02 — Celle disgiunte implicano barche fisicamente separate.** Se due posizionamenti sulla stessa area hanno
 insiemi di celle disgiunti, i loro ingombri (con margini) non si intersecano. Verificata da:
 `TestFootprint_DisjointCellsImplyNoOverlap` (property test), con `TestFootprint_ParityVectors` per la parità Go ↔
-TypeScript. In M1 vale per `layout.Footprint`; le allocazioni arrivano in M3. Stato: partial.
+TypeScript. In M1 vale per `layout.Footprint`; da M3 anche per le allocazioni: `TestRapid_SolutionsAreFreeAndFit`,
+`TestConcurrency_CellAllocationSurface`, la query Q15 e l'oracolo cella per cella di
+`TestAcceptance_M3_SeasonSimulation` (aree lineari e di superficie, spostamenti in area, sessioni di layout e
+compattazione). Stato: implemented.
 
 **INV-03 — Ogni allocazione è coerente con le sue righe.** Per ogni allocazione attiva le righe di occupazione sono
 esattamente quelle prodotte da `Footprint × notti` della sua posizione e del suo periodo. Verificata da:
-`TestAllocation_RowsMatchFootprint` (property test, tag `integration`). Stato: planned.
+`TestAllocation_RowsMatchFootprint` (property test, tag `integration`), `TestPlan_RowsAreFootprintTimesNights`,
+`TestRapid_PlanExcludesReleased`, query Q15 di `store.CheckOccupancyInvariants`. Stato: implemented.
 
 **INV-04 — Nessuna mappa salvata ha posti sovrapposti.** Un solo percorso di scrittura (`applyDocument`) valida lo
 stato completo della mappa dopo il salvataggio dentro la stessa transazione, serializzata sulla versione della
@@ -32,22 +38,54 @@ rifiutati come `invalid_geometry`, perché sotto quella misura il controllo di s
 `TestConcurrency_MapSaveSingleWinner`. Stato: implemented.
 
 **INV-05 — Hold scaduti non bloccano le vendite.** Un hold con `expires_at < now` viene ignorato e ripulito al
-momento del conflitto anche se il job non è passato. Verificata da: `TestOccupancy_ExpiredHoldIsReclaimed`.
-Stato: planned.
+momento del conflitto anche se il job non è passato. Il recupero non scade mai un hold convertito nel frattempo
+(conferma o attivazione concorrente): l'aggiornamento ricontrolla tipo `hold` e scadenza e cancella le righe solo
+delle allocazioni effettivamente scadute. Verificata da: `TestOccupancy_ExpiredHoldIsReclaimed`,
+`TestConcurrency_ExpiredHoldReclaim`, `TestConcurrency_ConvertVsReclaim` (conferma a T−ε contro allocazione a T+ε
+sullo stesso posto, 100 goroutine, SQLite e PostgreSQL, `-race`). Stato: implemented.
 
 **INV-06 — Spostamenti e ipotesi sono atomici.** Uno spostamento, uno scambio o l'applicazione di un'ipotesi o la
 modifica completa o lascia tutto invariato. Verificata da: `TestConcurrency_SwapVessels`,
-`TestScenarioApply_AllOrNothing`. Stato: planned.
+`TestConcurrency_LayoutSaveSingleWinner`, `TestOccupancy_LayoutSaveExchangePlaces` (M3);
+`TestScenarioApply_AllOrNothing` (ipotesi, M9). Stato: partial.
 
 **INV-07 — Compatibilità rispettata o derogata esplicitamente.** Ogni allocazione attiva supera `fit.Check` senza
-bloccanti oppure ha `fit_override` con utente e motivazione. Verificata da: `TestAllocation_FitOrOverride`.
-Stato: planned.
+bloccanti oppure ha `fit_override` con utente e motivazione (per una chiave API: la chiave e l'utente che l'ha
+creata). Verificata da: `TestAllocation_FitOrOverride`, query Q14 di `store.CheckOccupancyInvariants` (deroga senza
+motivazione o senza autore). Stato: implemented.
 
 **INV-08 — Una prenotazione online occupa sempre una risorsa concreta.** Ogni transito in `held`, `pending_payment`
-o `confirmed` ha almeno un'allocazione. Verificata da: `TestCheckout_HoldHasAllocation`. Stato: planned.
+o `confirmed` ha almeno un'allocazione attiva; solo un transito ancora `held` può avere invece un'allocazione
+`expired` finché il job non lo chiude (un hold scaduto recuperato al momento del conflitto, INV-05), e la conferma
+di un hold perso rialloca o fallisce con `resource_taken`. Ogni preventivo `draft` o `sent` ancora valido ha un hold
+attivo per ogni posizionamento delle opzioni con opzione; un hold di preventivo spostato resta l'hold dell'opzione.
+Verificata da: `TestContract_HoldTransitHasAllocation` (banco e API, M3), `TestInvariants_Q8QuoteHold`, query Q8;
+`TestCheckout_HoldHasAllocation` (online, M8). Stato: partial.
 
 **INV-09 — Conferma solo dal pagamento.** Un transito online passa a `confirmed` solo dal webhook del provider o dal
-driver manuale. Verificata da: `TestCheckout_BrowserReturnDoesNotConfirm`. Stato: planned.
+driver manuale. Verificata da: `TestContract_TransitConfirmOnlyManualDriver`,
+`TestContract_ConfirmedOnlyInConfirmTransit` (M3, driver manuale: la tabella degli stati entra in `confirmed` solo
+da `held` con `confirm`); `TestCheckout_BrowserReturnDoesNotConfirm`
+(webhook, M5/M8). Stato: partial.
+
+**INV-10 — Le allocazioni di una riga di contratto non si sovrappongono e coprono il periodo.** Per ogni riga di
+risorsa di un contratto o transito vivo ogni notte del periodo è coperta da esattamente un'allocazione attiva
+(salvo le notti troncate da partenza o cessazione); le bozze non sono controllate (`hold_lost`) e un transito
+`held` è esente solo se ha un'allocazione `expired` senza un successore attivo (hold recuperato non ancora chiuso
+dal job). Il collegamento di un rilascio rivenduto (Q16) richiede solo la stessa risorsa e lo stesso porto:
+l'allocazione che ha rivenduto può poi essere troncata o spostata. Verificata da: query Q6 e Q7 di
+`store.CheckOccupancyInvariants`, `TestInvariants_Q7AfterHoldLapse`, `TestContract_ConfirmAfterLapseWithIntervalMove`
+e `TestContract_ActivateAfterLapseWithIntervalMove` (conferma o attivazione dopo la perdita degli hold di una riga
+con più allocazioni: ogni allocazione scaduta che chiude una catena viva è riallocata una volta),
+`TestAllocation_RowsMatchFootprint`, `TestAcceptance_M3_SeasonSimulation`. Stato: implemented.
+
+**INV-11 — Le catene `moved_from_id` sono ordinate.** Un'allocazione attiva che deriva da un'altra
+(`moved_from_id`) ha la stessa riga di contratto e la stessa imbarcazione e, se il predecessore è ancora attivo,
+comincia dopo la sua ultima notte; nessuna operazione (spostamento, spostamento a intervallo, estensione,
+ridimensionamento) porta un'allocazione prima di un predecessore attivo o dopo l'inizio di un successore attivo
+(`ResizeTx` rifiuta questi intervalli come `validation_failed`). Verificata da: query Q12 di
+`store.CheckOccupancyInvariants`, `TestAllocation_RowsMatchFootprint` (property test, anche con
+`-rapid.checks=2000`). Stato: implemented.
 
 ## Prezzi (spec 12)
 
@@ -82,11 +120,21 @@ identico a una simulazione dello stesso input. Verificata da: `TestMatrix_Equals
 **INV-25 — Lo scorporo IVA somma il totale.** Per ogni breakdown `Σ imponibile + Σ IVA = totale`, per riga e per
 aliquota. Verificata da: `TestRapid_VATSumsExactly`. Stato: implemented.
 
+**INV-27 — Il totale è il preventivo più le rettifiche.** Per ogni contratto o transito con `price_snapshot`
+`total_cents = Breakdown.Total + Σ(new_cents − old_cents)` delle `adjustments` dello snapshot. Uno spostamento
+riprezzato aggiunge una rettifica `move`; il suo annullamento aggiunge la rettifica opposta `move_undo` (con audit
+`contract.reprice`/`transit.reprice` `undo: true` ed evento `*.changed`) nella stessa transazione, così il totale
+torna quello di prima dello spostamento; un cambio di soggiorno riprezza da capo. Un riprezzamento senza snapshot o
+che porterebbe il totale sotto zero è rifiutato (`409 conflict`). Verificata da: `TestContract_TotalMatchesSnapshot`
+(property test su sequenze di spostamenti, riprezzamenti, annullamenti e cambi di soggiorno, tag `integration`),
+`TestContract_MoveReprice`. Stato: implemented.
+
 ## Contratti (spec 13)
 
 **INV-30 — Un solo punto di cambio di stato.** Ogni cambio di stato di contratti e transiti passa da
 `internal/domain/contract` e scrive audit ed evento nella stessa transazione. Verificata da:
-`TestContract_StateChangeWritesAuditAndOutbox`. Stato: planned.
+`TestContract_StateChangeWritesAuditAndOutbox`, `TestContract_TransitionTable` (le tabelle di stato di
+`internal/domain/contract/states.go`). Stato: implemented.
 
 **INV-31 — Le rate sommano il totale.** Per ogni piano rate `Σ rate = totale del contratto` al centesimo.
 Verificata da: `TestInstallmentPlan_SumsToTotal` (property test). Stato: planned.
@@ -129,8 +177,10 @@ giornaliere è uguale all'importo. Verificata da: `TestAccrual_SumsToAmount` (pr
 
 ## Altri
 
-**INV-70 — Nessun dato personale negli eventi SSE e nei log.** Verificata da: `TestSSE_PayloadHasNoPII`,
-`TestEvents_DataHasNoPII` (con i campioni degli eventi M1 di mappa e anagrafiche e di `config.pricing_changed` M2), `TestLogs_NoPII`. Stato: partial.
+**INV-70 — Nessun dato personale negli eventi SSE e nei log.** Verificata da:
+`TestEvents_DataHasNoPII` (con i campioni degli eventi M1 di mappa e anagrafiche, di `config.pricing_changed` M2 e
+degli eventi M3 di occupazione, presenze, preventivi, contratti e transiti), `TestSSE_PayloadHasNoPII` (con
+`map_id`, `resource_ids`, `nights` di M3), `TestLogs_NoPII`. Stato: partial.
 
 **INV-71 — Offline senza effetti sulle risorse.** Nessuna operazione accodata offline crea o sposta allocazioni né
 emette documenti numerati. Verificata da: test Vitest della allowlist della coda. Stato: planned.
@@ -142,7 +192,8 @@ PostgreSQL (trigger del database). Verificata da: `TestAuditLog_InsertOnly`. Sta
 una risorsa di un altro marina risponde 404. Verificata da: `TestAcceptance_CrossMarinaIsolation` (tutte le rotte
 con `{marinaId}`, comprese quelle M1 di mappa, clienti, imbarcazioni, documenti e scadenze e quelle M2 di articoli, classificazioni e listini),
 `TestAcceptance_CrossMarinaResourceIds` (il proprio `{marinaId}` con id di risorse di un altro marina, comprese
-le rotte M2 con `{revenueClassId}`, `{itemId}`, `{categoryId}` e `{priceListId}`),
+le rotte M2 con `{revenueClassId}`, `{itemId}`, `{categoryId}` e `{priceListId}` e le rotte M3 con `{contractId}`,
+`{quoteId}`, `{allocationId}`, `{releaseId}`, `{inquiryId}`, `{presenceId}`, `{undoId}`, `{areaId}` e `{closureId}`),
 `TestStore_ElementReferencesStayInMarina` e `TestRegistryStore_MergeTargetStaysInMarina` (FK composite
 `(…_id, marina_id)` per strutture, colonnine, struttura padre e cliente di destinazione della fusione). Stato: partial.
 

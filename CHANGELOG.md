@@ -8,6 +8,56 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M3 — Occupazione, transiti e mappa operativa (spec 32.3):
+
+- Migrations `00005_contracts.sql` (occupancy settings, number sequences, inquiries, quotes and options, contracts
+  and contract lines) and `00006_occupancy.sql` (allocations, `berth_occupancies`, `cell_occupancies`,
+  `land_occupancies` with their primary keys as the no-double-occupancy guarantee (INV-01) and RESTRICT foreign
+  keys to the map elements, releases, presences, vessel presence, move undo log, closures, quote option
+  placements) for SQLite and PostgreSQL; new tables in backups (`move_undo_log` excluded).
+- OpenAPI operations of the occupancy engine (settings, day view, map occupancy, allocation, search, placement
+  check, move, swap, area layout save, compaction, undo, blocks, releases, closures), of quotes, contracts,
+  transits and inquiries, and of presences (record, unexpected arrival, photo, movements of the day); problem types `resource_taken`, `fit_blocked`, `placement_invalid`,
+  `invalid_transition`, `quote_expired`, `hold_expired`, `closure_active`, `undo_unavailable`, `release_invalid`,
+  `customer_required`.
+- Permission `contracts.read` (owner, director, office, accounting, dock); M3 domain events and the SSE topics
+  `occupancy.changed`, `presence.changed`, `contract.changed`; SSE messages carry `map_id`, `resource_ids` and
+  `nights` for narrowed invalidation; meta capabilities; job `contracts.expire`.
+- Skeletons of `fit` and `occupancy/engine` (pure), `occupancy`, `contract` (with the state tables) and
+  `presence`; the harbour guard hook refuses deleting map elements that have occupancy rows (`in_use`).
+- Web: lens colour tokens `--harbor-*` with a contrast check, shadcn `drawer`, i18n namespaces `occupancyEnums`,
+  `opsMap`, `desk`, `dock`, query keys and SSE invalidation for M3, operations and desk routes and navigation.
+- Pure `fit.Check` (Go and TypeScript, shared parity vectors) and occupancy engine (plan, free intervals, search
+  with best fit in linear areas, segments and "consider out", compaction, anomalies).
+- Occupancy service: allocations writing exactly `Footprint × nights` rows, holds reclaimed when expired, moves
+  (from a night or an interval), swaps, dynamic-area layout sessions, 24 h undo, blocks, releases with resale and
+  revoke, closures, search with prices from the M2 engine, day view and map occupancy, harbour guard.
+- Contracts: transits (held, manual confirmation, stay change, cancel, no-show), mooring contracts (draft,
+  activate, cancel, terminate), quotes with 1–3 options and holds, inquiries, presences, numbering, price
+  snapshots, the `contracts.expire` job and the demo seed (`porto seed demo`).
+- Web: operational view (lenses, legend filter, scale/schema modes, quick card, drag & drop with "Da quando",
+  swap, undo), dynamic-area layout session, incoming-vessel search, transit wizard, quote editor, contract wizard,
+  berth planner, movements of the day, occupancy settings and closures, phone/tablet dock panel.
+- CI job `e2e-perf`: the operational map budget (3,000 berths, 2,000 occupied) is asserted.
+- Move price effect (m3-plan §13 D34): move, swap, layout save and placement check report `price_effect` for the
+  remaining nights; it is applied with the contract policy `reprice_on_move` or an explicit `reprice`
+  (`contracts.write`), recorded as a snapshot adjustment with audit and `*.changed` (`repriced`).
+- Segment solutions of the search also chain linear areas (D37); a moved quote hold stays the option's hold (D35);
+  revoking a release never re-occupies past nights (D36); fit overrides given by an API key record the key and
+  its creator (INV-07).
+- Invariant queries: Q8 checks the holds of valid quotes and accepts an expired allocation only for a held transit;
+  Q7 exempts only a held transit with a reclaimed hold (D33); Q14 flags an override without its author.
+- Season simulation: surface area, moves into and inside areas, layout saves and compaction, an oracle compared
+  cell by cell built from mutation responses only, ≥ 1 400 successes, an audit row and outbox event per counted
+  status change; the cross-marina sweep covers the M3 resource ids.
+- Invariants review fixes: a lazy reclaim never expires a hold converted concurrently (the update re-checks kind
+  and expiry, rows deleted only for the allocations it expired; `TestConcurrency_ConvertVsReclaim`); confirming a
+  transit or activating a draft contract re-allocates every lapsed allocation of a line, not only the first one
+  (interval moves, extensions); undoing a repriced move reverses the price with a `move_undo` snapshot
+  adjustment, a `*.reprice` audit row (`undo: true`) and `*.changed` (INV-27); a reprice without a price
+  snapshot or below a zero total is refused (`409 conflict`); `ResizeTx` keeps `moved_from_id` chains ordered
+  (INV-11).
+
 M2 — Listini e prezzi (spec 32.3):
 
 - Migration `00004_pricing.sql` (pricing settings, revenue classes, items, berth categories, price lists, rate

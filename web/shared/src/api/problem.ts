@@ -56,6 +56,17 @@ export const PROBLEM_TYPES = [
   'price_list_immutable',
   'price_list_overlap',
   'in_use',
+  // M3
+  'resource_taken',
+  'fit_blocked',
+  'placement_invalid',
+  'invalid_transition',
+  'quote_expired',
+  'hold_expired',
+  'closure_active',
+  'undo_unavailable',
+  'release_invalid',
+  'customer_required',
 ] as const;
 
 export type ProblemType = (typeof PROBLEM_TYPES)[number];

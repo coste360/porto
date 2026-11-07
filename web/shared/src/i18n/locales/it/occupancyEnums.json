@@ -1,0 +1,243 @@
+{
+  "allocationKind": {
+    "hold": "Opzione",
+    "contract": "Contratto",
+    "transit": "Transito",
+    "owner": "Diritto d'uso",
+    "block": "Blocco",
+    "maintenance": "Manutenzione"
+  },
+  "allocationStatus": {
+    "active": "Attiva",
+    "cancelled": "Annullata",
+    "expired": "Scaduta",
+    "superseded": "Sostituita"
+  },
+  "resourceType": {
+    "berth": "Posto barca",
+    "dynamic_area": "Area dinamica",
+    "land_resource": "Risorsa a terra"
+  },
+  "contractKind": {
+    "mooring": "Ormeggio",
+    "transit": "Transito",
+    "storage": "Rimessaggio",
+    "charter": "Charter"
+  },
+  "contractTerm": {
+    "annual": "Annuale",
+    "seasonal": "Stagionale",
+    "monthly": "Mensile",
+    "period": "Periodo"
+  },
+  "contractStatus": {
+    "draft": "Bozza",
+    "awaiting_signature": "In attesa di firma",
+    "active": "Attivo",
+    "expired": "Scaduto",
+    "renewed": "Rinnovato",
+    "terminated": "Cessato",
+    "cancelled": "Annullato",
+    "suspended": "Sospeso"
+  },
+  "transitStatus": {
+    "held": "In opzione",
+    "pending_payment": "In attesa di pagamento",
+    "awaiting_approval": "In attesa di approvazione",
+    "confirmed": "Confermato",
+    "arrived": "Arrivato",
+    "departed": "Partito",
+    "cancelled": "Annullato",
+    "expired": "Scaduto",
+    "no_show": "Non arrivato"
+  },
+  "quoteStatus": {
+    "draft": "Bozza",
+    "sent": "Inviato",
+    "accepted": "Accettato",
+    "declined": "Rifiutato",
+    "expired": "Scaduto"
+  },
+  "quoteKind": {
+    "mooring": "Ormeggio",
+    "transit": "Transito"
+  },
+  "inquiryOutcome": {
+    "open": "Aperta",
+    "quoted": "Preventivata",
+    "booked": "Prenotata",
+    "declined_no_space": "Rifiutata: nessun posto",
+    "declined_size": "Rifiutata: dimensioni",
+    "declined_other": "Rifiutata: altro motivo",
+    "lost": "Persa"
+  },
+  "inquirySource": {
+    "phone": "Telefono",
+    "email": "Email",
+    "desk": "Banco",
+    "public": "Pagina pubblica",
+    "channel": "Canale esterno"
+  },
+  "channel": {
+    "desk": "Banco",
+    "online": "Online",
+    "api": "API",
+    "external": "Canale esterno"
+  },
+  "releaseSource": {
+    "customer_phone": "Cliente al telefono",
+    "customer_desk": "Cliente al banco",
+    "customer_link": "Link al cliente",
+    "dock": "Banchina",
+    "office": "Ufficio",
+    "system": "Sistema"
+  },
+  "releaseStatus": {
+    "active": "Attivo",
+    "revoked": "Revocato"
+  },
+  "presenceEvent": {
+    "arrived": "Arrivato",
+    "departed": "Partito",
+    "hauled_out": "Alato",
+    "launched": "Varato"
+  },
+  "presenceState": {
+    "in_port": "In porto",
+    "out": "Fuori",
+    "ashore": "A terra",
+    "yard": "In cantiere"
+  },
+  "presenceSource": {
+    "staff": "Personale",
+    "sensor": "Sensore",
+    "customer": "Cliente"
+  },
+  "closureScope": {
+    "marina": "Tutto il porto",
+    "map": "Mappa",
+    "structure": "Struttura",
+    "group": "Gruppo",
+    "resource": "Posto o risorsa"
+  },
+  "releasePolicy": {
+    "never": "Mai",
+    "with_consent": "Con il consenso del cliente"
+  },
+  "confirmationSource": {
+    "manual": "Manuale",
+    "provider": "Pagamento online"
+  },
+  "dayStatus": {
+    "free": "Libero",
+    "hold": "In opzione",
+    "contract": "Contratto",
+    "transit": "Transito",
+    "block": "Bloccato",
+    "maintenance": "In manutenzione",
+    "owner": "Diritto d'uso",
+    "released": "Rilasciato",
+    "closed": "Chiuso agli arrivi"
+  },
+  "deadlineState": {
+    "ok": "In regola",
+    "expiring": "In scadenza",
+    "expired": "Scaduto",
+    "missing": "Mancante"
+  },
+  "moveOperation": {
+    "move": "Spostamento",
+    "swap": "Scambio",
+    "layout": "Disposizione dell'area",
+    "undo": "Annullamento"
+  },
+  "fit": {
+    "loa_exceeds": "Lunghezza oltre il massimo del posto",
+    "beam_exceeds": "Larghezza oltre il massimo del posto",
+    "draft_exceeds": "Pescaggio oltre il fondale disponibile",
+    "air_draft_exceeds": "Altezza oltre il massimo consentito",
+    "multihull_not_allowed": "Multiscafo non ammesso",
+    "vessel_invalid": "Misure dell'imbarcazione non valide",
+    "fill_below_threshold": "Posto sovradimensionato per l'imbarcazione",
+    "depth_near_limit": "Fondale al limite",
+    "power_insufficient": "Potenza elettrica insufficiente",
+    "insurance_missing": "Assicurazione non registrata",
+    "insurance_expires_in_period": "Assicurazione in scadenza nel periodo",
+    "overhang": "Sporgenza oltre il posto"
+  },
+  "anomaly": {
+    "presence_without_allocation": "In porto senza posto assegnato",
+    "not_arrived": "Arrivo previsto non avvenuto",
+    "departure_overdue": "Partenza scaduta",
+    "vessel_exceeds_limits": "Imbarcazione oltre i limiti del posto",
+    "insurance_expired_active": "Assicurazione scaduta o mancante",
+    "hold_lost_draft": "Bozza senza più opzione sul posto"
+  },
+  "lens": {
+    "occupancy": "Occupazione",
+    "contractType": "Tipo di contratto",
+    "vesselType": "Tipo di imbarcazione",
+    "presence": "Presenze",
+    "deadlines": "Scadenze",
+    "fitness": "Adeguatezza",
+    "utilities": "Utenze",
+    "anomalies": "Anomalie",
+    "legend": {
+      "free": "Libero",
+      "hold": "In opzione",
+      "contract": "Contratto",
+      "transit": "Transito",
+      "released": "Rilasciato",
+      "blocked": "Bloccato",
+      "closed": "Chiuso",
+      "maintenance": "Manutenzione",
+      "owner": "Diritto d'uso",
+      "annual": "Annuale",
+      "seasonal": "Stagionale",
+      "monthly": "Mensile",
+      "period": "Periodo",
+      "in": "In porto",
+      "out": "Fuori",
+      "awayLong": "Fuori da molti giorni",
+      "arrival": "In arrivo oggi",
+      "departure": "In partenza oggi",
+      "ok": "In regola",
+      "warn": "Da verificare",
+      "bad": "Non compatibile",
+      "override": "In deroga",
+      "power": "Con colonnina",
+      "water": "Con acqua",
+      "none": "Nessuna",
+      "anomaly": "Con anomalie",
+      "monohull_motor": "Motore",
+      "monohull_sail": "Vela",
+      "catamaran": "Catamarano",
+      "trimaran": "Trimarano",
+      "rib": "Gommone",
+      "gozzo": "Gozzo",
+      "other": "Altro"
+    }
+  },
+  "placementError": {
+    "unsnapped": "La posizione non è allineata alla griglia",
+    "outside_area": "La posizione è fuori dall'area",
+    "blocked_cell": "La posizione occupa celle bloccate",
+    "invalid_vessel": "Misure dell'imbarcazione non valide",
+    "placement_required": "Serve una posizione nell'area",
+    "placement_not_allowed": "Questo posto non accetta una posizione"
+  },
+  "releaseError": {
+    "not_contract": "Si possono rilasciare solo i posti di un contratto",
+    "past_night": "Non si possono rilasciare notti passate",
+    "outside_allocation": "Le notti sono fuori dal periodo del posto",
+    "overlapping": "Il periodo si sovrappone a un altro rilascio",
+    "not_active": "L'assegnazione non è attiva"
+  },
+  "conflict": {
+    "title": "Posto occupato",
+    "nights": "Notti in conflitto: dal {{from}} al {{to}}",
+    "cells": "Celle in conflitto: {{count}}",
+    "alternatives": "Alternative disponibili",
+    "none": "Nessuna alternativa disponibile"
+  }
+}

@@ -31,7 +31,9 @@ import { TotpSetupPage } from './pages/TotpSetupPage';
 import { WebhooksPage } from './pages/WebhooksPage';
 import { safeRedirect } from './lib/hash';
 import { berthImportRoutes } from './features/berth-import/routes';
+import { deskRoutes } from './features/desk/routes';
 import { mapRoutes } from './features/maps/routes';
+import { operationsRoutes } from './features/operations/routes';
 import { pricingRoutes } from './features/pricing/routes';
 import { pricingToolRoutes } from './features/pricing-tools/routes';
 import { registryRoutes } from './features/registry/routes';
@@ -184,6 +186,8 @@ export const routeTree = rootRoute.addChildren([
       ...berthImportRoutes(marinaRoute),
       ...pricingRoutes(marinaRoute),
       ...pricingToolRoutes(marinaRoute),
+      ...operationsRoutes(marinaRoute),
+      ...deskRoutes(marinaRoute),
     ]),
   ]),
 ]);

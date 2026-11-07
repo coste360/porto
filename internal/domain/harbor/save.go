@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/uptrace/bun"
@@ -111,6 +112,11 @@ func (s *Service) applyDocument(ctx context.Context, tx bun.IDB, p *auth.Princip
 	}
 	sum, err := store.SaveMapElements(ctx, tx, scope, m.ID, before, after)
 	if err != nil {
+		// An element with occupancy rows (past nights included) cannot be deleted: the RESTRICT foreign keys of
+		// 00006_occupancy refuse it (m3-plan §3.7). History is kept; deactivate the element instead.
+		if store.IsForeignKeyViolation(err) {
+			return nil, fmt.Errorf("%w: %w", ErrElementInUse, err)
+		}
 		return nil, err
 	}
 	if err := store.ReplaceGroupMembers(ctx, tx, scope, m.ID, members); err != nil {

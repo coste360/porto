@@ -24,7 +24,8 @@ describe('theme tokens', () => {
 
   it('primary is the brand navy in light mode', () => {
     expect(root.primary).toBe(tokens.colors.navy);
-    expect(root.sidebar).toBe(tokens.colors.navy);
+    // The light theme has a light sidebar (acba753); its primary stays the brand navy.
+    expect(root['sidebar-primary']).toBe(tokens.colors.navy);
     expect(dark.primary).toBe(tokens.colors.sky);
   });
 

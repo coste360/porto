@@ -17,7 +17,15 @@ export type MarinaRoutePath =
   | '/m/$marinaId/items'
   | '/m/$marinaId/pricing/classifications'
   | '/m/$marinaId/pricing/simulator'
-  | '/m/$marinaId/pricing/settings';
+  | '/m/$marinaId/pricing/settings'
+  | '/m/$marinaId/ops'
+  | '/m/$marinaId/planner'
+  | '/m/$marinaId/transits'
+  | '/m/$marinaId/quotes'
+  | '/m/$marinaId/contracts'
+  | '/m/$marinaId/inquiries'
+  | '/m/$marinaId/dock'
+  | '/m/$marinaId/occupancy-settings';
 
 export type NavItem = {
   id: string;
@@ -29,6 +37,38 @@ export type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
   { id: 'dashboard', to: '/m/$marinaId', labelKey: 'common:nav.dashboard', anyOf: ['marina.read'] },
+  { id: 'ops', to: '/m/$marinaId/ops', labelKey: 'common:nav.ops', anyOf: ['map.view'] },
+  {
+    id: 'planner',
+    to: '/m/$marinaId/planner',
+    labelKey: 'common:nav.planner',
+    anyOf: ['map.view'],
+  },
+  {
+    id: 'transits',
+    to: '/m/$marinaId/transits',
+    labelKey: 'common:nav.transits',
+    anyOf: ['contracts.read'],
+  },
+  {
+    id: 'quotes',
+    to: '/m/$marinaId/quotes',
+    labelKey: 'common:nav.quotes',
+    anyOf: ['contracts.read'],
+  },
+  {
+    id: 'contracts',
+    to: '/m/$marinaId/contracts',
+    labelKey: 'common:nav.contracts',
+    anyOf: ['contracts.read'],
+  },
+  {
+    id: 'inquiries',
+    to: '/m/$marinaId/inquiries',
+    labelKey: 'common:nav.inquiries',
+    anyOf: ['contracts.read'],
+  },
+  { id: 'dock', to: '/m/$marinaId/dock', labelKey: 'common:nav.dock', anyOf: ['presence.write'] },
   { id: 'maps', to: '/m/$marinaId/maps', labelKey: 'common:nav.maps', anyOf: ['map.view'] },
   {
     id: 'customers',
@@ -74,6 +114,12 @@ export const NAV_ITEMS: NavItem[] = [
     anyOf: ['harbor.configure'],
   },
   {
+    id: 'occupancy-settings',
+    to: '/m/$marinaId/occupancy-settings',
+    labelKey: 'common:nav.occupancySettings',
+    anyOf: ['harbor.configure'],
+  },
+  {
     id: 'pricing-settings',
     to: '/m/$marinaId/pricing/settings',
     labelKey: 'common:nav.pricingSettings',
@@ -109,7 +155,6 @@ export const NAV_ITEMS: NavItem[] = [
 
 /** Modules of the next milestones, listed disabled in the sidebar. */
 export const UPCOMING_MODULES = [
-  'common:nav.modules.contracts',
   'common:nav.modules.charges',
   'common:nav.modules.storage',
   'common:nav.modules.yard',

@@ -7,14 +7,18 @@ import (
 	"github.com/coste360/porto/internal/domain/apikey"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/catalog"
+	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/customer"
 	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/device"
 	"github.com/coste360/porto/internal/domain/document"
 	"github.com/coste360/porto/internal/domain/domainerr"
+	"github.com/coste360/porto/internal/domain/fit"
 	"github.com/coste360/porto/internal/domain/harbor"
 	"github.com/coste360/porto/internal/domain/layout"
 	"github.com/coste360/porto/internal/domain/marina"
+	"github.com/coste360/porto/internal/domain/occupancy"
+	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/pricing"
 	"github.com/coste360/porto/internal/domain/team"
@@ -84,6 +88,27 @@ var sentinels = []struct {
 	{pricelist.ErrOverlap, problem.PriceListOverlap},
 	{pricelist.ErrInvalid, problem.PriceListInvalid},
 	{pricelist.ErrVersionMismatch, problem.VersionConflict},
+	// M3 (m3-plan §7.4)
+	{occupancy.ErrResourceTaken, problem.ResourceTaken},
+	{occupancy.ErrFitBlocked, problem.FitBlocked},
+	{occupancy.ErrOverrideForbidden, problem.Forbidden},
+	{occupancy.ErrRepriceForbidden, problem.Forbidden},
+	{occupancy.ErrOverrideReasonRequired, problem.ValidationFailed},
+	{occupancy.ErrPlacementInvalid, problem.PlacementInvalid},
+	{occupancy.ErrClosed, problem.ClosureActive},
+	{occupancy.ErrHoldExpired, problem.HoldExpired},
+	{occupancy.ErrAllocationNotActive, problem.Conflict},
+	{occupancy.ErrVersionMismatch, problem.VersionConflict},
+	{occupancy.ErrUndoUnavailable, problem.UndoUnavailable},
+	{occupancy.ErrReleaseInvalid, problem.ReleaseInvalid},
+	{harbor.ErrElementInUse, problem.InUse},
+	{contract.ErrInvalidTransition, problem.InvalidTransition},
+	{contract.ErrQuoteExpired, problem.QuoteExpired},
+	{contract.ErrCustomerRequired, problem.CustomerRequired},
+	{contract.ErrPriceListChanged, problem.Conflict},
+	{contract.ErrRepriceRefused, problem.Conflict},
+	{contract.ErrVersionMismatch, problem.VersionConflict},
+	{presence.ErrInvalidTransition, problem.InvalidTransition},
 	{domainerr.ErrImmutable, problem.PriceListImmutable},
 	{domainerr.ErrInvalidCursor, problem.BadRequest},
 	{domainerr.ErrNotFound, problem.NotFound},
@@ -104,6 +129,9 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 		return problem.MapInvalid, []problem.Option{problem.WithIssues(MapIssues(mi.Report))}, true
 	}
 	if t, opts, ok := mapPricing(err); ok {
+		return t, opts, true
+	}
+	if t, opts, ok := mapOccupancy(err); ok {
 		return t, opts, true
 	}
 	var v *auth.ValidationError
@@ -183,6 +211,99 @@ func mapPricing(err error) (problem.Type, []problem.Option, bool) {
 	}
 	if ue, ok := errors.AsType[*catalog.InUseError](err); ok {
 		return problem.InUse, []problem.Option{problem.WithDetails(map[string]int{"references": ue.References})}, true
+	}
+	return "", nil, false
+}
+
+// FitIssue is the wire form of a fit.Issue (schema FitIssue of the contract).
+type FitIssue struct {
+	Code     string `json:"code"`
+	LimitCm  *int64 `json:"limit_cm,omitempty"`
+	ActualCm *int64 `json:"actual_cm,omitempty"`
+}
+
+// FitResult is the wire form of a fit.Result (schema FitResult of the contract).
+type FitResult struct {
+	OK          bool       `json:"ok"`
+	Overridable bool       `json:"overridable"`
+	FillBP      int64      `json:"fill_bp"`
+	Blocking    []FitIssue `json:"blocking"`
+	Warnings    []FitIssue `json:"warnings"`
+}
+
+// FitResultOf converts a fit.Result to its wire form (shared by the problem details and the views).
+func FitResultOf(r fit.Result) FitResult {
+	conv := func(list []fit.Issue) []FitIssue {
+		out := make([]FitIssue, 0, len(list))
+		for _, is := range list {
+			fi := FitIssue{Code: is.Code}
+			if is.Limit != 0 || is.Actual != 0 {
+				l, a := int64(is.Limit), int64(is.Actual)
+				fi.LimitCm, fi.ActualCm = &l, &a
+			}
+			out = append(out, fi)
+		}
+		return out
+	}
+	return FitResult{OK: r.OK, Overridable: r.Overridable, FillBP: r.FillBP, Blocking: conv(r.Blocking), Warnings: conv(r.Warnings)}
+}
+
+// ConflictDetail is the details of resource_taken (schema ConflictDetail of the contract). Alternatives are
+// added by the services that search them (revoke, stay change, accept).
+type ConflictDetail struct {
+	ResourceType  string   `json:"resource_type"`
+	ResourceID    string   `json:"resource_id"`
+	From          string   `json:"from"`
+	To            string   `json:"to"`
+	Cells         []int    `json:"cells,omitempty"`
+	AllocationIDs []string `json:"allocation_ids"`
+	// Alternatives marshal to the OccupancySolution schema.
+	Alternatives []occupancy.Solution `json:"alternatives,omitempty"`
+}
+
+// mapOccupancy maps the typed errors of M3 that carry details (m3-plan §7.4).
+func mapOccupancy(err error) (problem.Type, []problem.Option, bool) {
+	if ce, ok := errors.AsType[*occupancy.ConflictError](err); ok {
+		ids := ce.AllocationIDs
+		if ids == nil {
+			ids = []string{}
+		}
+		d := ConflictDetail{
+			ResourceType: ce.ResourceType, ResourceID: ce.ResourceID, From: ce.From.String(), To: ce.To.String(),
+			Cells: ce.Cells, AllocationIDs: ids, Alternatives: ce.Alternatives,
+		}
+		return problem.ResourceTaken, []problem.Option{problem.WithDetails(d)}, true
+	}
+	if fe, ok := errors.AsType[*occupancy.FitError](err); ok {
+		return problem.FitBlocked, []problem.Option{problem.WithDetails(FitResultOf(fe.Result))}, true
+	}
+	if pe, ok := errors.AsType[*occupancy.PlacementError](err); ok {
+		d := map[string]string{"reason": pe.Reason}
+		if pe.AllocationID != "" {
+			d["allocation_id"] = pe.AllocationID
+		}
+		if pe.VesselID != "" {
+			d["vessel_id"] = pe.VesselID
+		}
+		return problem.PlacementInvalid, []problem.Option{problem.WithDetails(d)}, true
+	}
+	if ce, ok := errors.AsType[*occupancy.ClosureError](err); ok {
+		d := map[string]string{"closure_id": ce.ClosureID, "from_date": ce.FromDate.String(), "to_date": ce.ToDate.String()}
+		return problem.ClosureActive, []problem.Option{problem.WithDetails(d)}, true
+	}
+	if re, ok := errors.AsType[*occupancy.ReleaseError](err); ok {
+		return problem.ReleaseInvalid, []problem.Option{problem.WithDetails(map[string]string{"reason": re.Reason})}, true
+	}
+	if te, ok := errors.AsType[*contract.TransitionError](err); ok {
+		d := map[string]string{"from": te.From, "action": string(te.Action)}
+		return problem.InvalidTransition, []problem.Option{problem.WithDetails(d)}, true
+	}
+	if ue, ok := errors.AsType[*harbor.ElementInUseError](err); ok {
+		refs := ue.References
+		if refs == nil {
+			refs = []string{}
+		}
+		return problem.InUse, []problem.Option{problem.WithDetails(map[string]any{"references": refs})}, true
 	}
 	return "", nil, false
 }

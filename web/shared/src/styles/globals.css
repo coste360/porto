@@ -57,6 +57,29 @@
   --sidebar-accent-foreground: #0b2542;
   --sidebar-border: #e2e8f0;
   --sidebar-ring: #185482;
+
+  /* Operational map lenses (M3, m3-plan §8.2): contrast >= 3:1 against the water fill (scripts/contrast-check.mjs). */
+  --harbor-free: #64748b;
+  --harbor-annual: #0b2542;
+  --harbor-seasonal: #0f766e;
+  --harbor-monthly: #6d28d9;
+  --harbor-period: #a16207;
+  --harbor-transit: #c2410c;
+  --harbor-hold: #b45309;
+  --harbor-released: #15803d;
+  --harbor-blocked: #374151;
+  --harbor-maintenance: #7e22ce;
+  --harbor-owner: #1d4ed8;
+  --harbor-in: #15803d;
+  --harbor-out: #9a3412;
+  --harbor-away-long: #991b1b;
+  --harbor-arrival: #0e7490;
+  --harbor-departure: #be185d;
+  --harbor-ok: #15803d;
+  --harbor-warn: #b45309;
+  --harbor-bad: #b91c1c;
+  --harbor-override: #6d28d9;
+  --harbor-muted: #64748b;
 }
 
 .dark {
@@ -94,6 +117,28 @@
   --sidebar-accent-foreground: #f8fafc;
   --sidebar-border: #1e3a5f;
   --sidebar-ring: #7dd3fc;
+
+  --harbor-free: #94a3b8;
+  --harbor-annual: #7dd3fc;
+  --harbor-seasonal: #5eead4;
+  --harbor-monthly: #c4b5fd;
+  --harbor-period: #fde047;
+  --harbor-transit: #fdba74;
+  --harbor-hold: #fcd34d;
+  --harbor-released: #86efac;
+  --harbor-blocked: #cbd5e1;
+  --harbor-maintenance: #d8b4fe;
+  --harbor-owner: #93c5fd;
+  --harbor-in: #86efac;
+  --harbor-out: #fdba74;
+  --harbor-away-long: #fca5a5;
+  --harbor-arrival: #67e8f9;
+  --harbor-departure: #f9a8d4;
+  --harbor-ok: #86efac;
+  --harbor-warn: #fcd34d;
+  --harbor-bad: #f87171;
+  --harbor-override: #c4b5fd;
+  --harbor-muted: #94a3b8;
 }
 
 @theme inline {
@@ -134,6 +179,27 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-harbor-free: var(--harbor-free);
+  --color-harbor-annual: var(--harbor-annual);
+  --color-harbor-seasonal: var(--harbor-seasonal);
+  --color-harbor-monthly: var(--harbor-monthly);
+  --color-harbor-period: var(--harbor-period);
+  --color-harbor-transit: var(--harbor-transit);
+  --color-harbor-hold: var(--harbor-hold);
+  --color-harbor-released: var(--harbor-released);
+  --color-harbor-blocked: var(--harbor-blocked);
+  --color-harbor-maintenance: var(--harbor-maintenance);
+  --color-harbor-owner: var(--harbor-owner);
+  --color-harbor-in: var(--harbor-in);
+  --color-harbor-out: var(--harbor-out);
+  --color-harbor-away-long: var(--harbor-away-long);
+  --color-harbor-arrival: var(--harbor-arrival);
+  --color-harbor-departure: var(--harbor-departure);
+  --color-harbor-ok: var(--harbor-ok);
+  --color-harbor-warn: var(--harbor-warn);
+  --color-harbor-bad: var(--harbor-bad);
+  --color-harbor-override: var(--harbor-override);
+  --color-harbor-muted: var(--harbor-muted);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

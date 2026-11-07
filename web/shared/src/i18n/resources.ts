@@ -18,6 +18,10 @@ import enPricingTools from './locales/en/pricingTools.json';
 import enTeam from './locales/en/team.json';
 import enVessels from './locales/en/vessels.json';
 import enWebhooks from './locales/en/webhooks.json';
+import enDock from './locales/en/dock.json';
+import enDesk from './locales/en/desk.json';
+import enOpsMap from './locales/en/opsMap.json';
+import enOccupancyEnums from './locales/en/occupancyEnums.json';
 import itAudit from './locales/it/audit.json';
 import itAuth from './locales/it/auth.json';
 import itBooking from './locales/it/booking.json';
@@ -38,6 +42,10 @@ import itPricingTools from './locales/it/pricingTools.json';
 import itTeam from './locales/it/team.json';
 import itVessels from './locales/it/vessels.json';
 import itWebhooks from './locales/it/webhooks.json';
+import itDock from './locales/it/dock.json';
+import itDesk from './locales/it/desk.json';
+import itOpsMap from './locales/it/opsMap.json';
+import itOccupancyEnums from './locales/it/occupancyEnums.json';
 
 export const SUPPORTED_LOCALES = ['it', 'en'] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -65,6 +73,10 @@ export const NAMESPACES = [
   'pricingEnums',
   'pricing',
   'pricingTools',
+  'occupancyEnums',
+  'opsMap',
+  'desk',
+  'dock',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -90,6 +102,10 @@ export const resources = {
     pricingEnums: itPricingEnums,
     pricing: itPricing,
     pricingTools: itPricingTools,
+    occupancyEnums: itOccupancyEnums,
+    opsMap: itOpsMap,
+    desk: itDesk,
+    dock: itDock,
   },
   en: {
     common: enCommon,
@@ -112,5 +128,9 @@ export const resources = {
     pricingEnums: enPricingEnums,
     pricing: enPricing,
     pricingTools: enPricingTools,
+    occupancyEnums: enOccupancyEnums,
+    opsMap: enOpsMap,
+    desk: enDesk,
+    dock: enDock,
   },
 } as const;

@@ -1,0 +1,243 @@
+{
+  "allocationKind": {
+    "hold": "Hold",
+    "contract": "Contract",
+    "transit": "Transit",
+    "owner": "Berth right",
+    "block": "Block",
+    "maintenance": "Maintenance"
+  },
+  "allocationStatus": {
+    "active": "Active",
+    "cancelled": "Cancelled",
+    "expired": "Expired",
+    "superseded": "Superseded"
+  },
+  "resourceType": {
+    "berth": "Berth",
+    "dynamic_area": "Dynamic area",
+    "land_resource": "Land resource"
+  },
+  "contractKind": {
+    "mooring": "Mooring",
+    "transit": "Transit",
+    "storage": "Dry storage",
+    "charter": "Charter"
+  },
+  "contractTerm": {
+    "annual": "Annual",
+    "seasonal": "Seasonal",
+    "monthly": "Monthly",
+    "period": "Period"
+  },
+  "contractStatus": {
+    "draft": "Draft",
+    "awaiting_signature": "Awaiting signature",
+    "active": "Active",
+    "expired": "Expired",
+    "renewed": "Renewed",
+    "terminated": "Terminated",
+    "cancelled": "Cancelled",
+    "suspended": "Suspended"
+  },
+  "transitStatus": {
+    "held": "On hold",
+    "pending_payment": "Awaiting payment",
+    "awaiting_approval": "Awaiting approval",
+    "confirmed": "Confirmed",
+    "arrived": "Arrived",
+    "departed": "Departed",
+    "cancelled": "Cancelled",
+    "expired": "Expired",
+    "no_show": "No-show"
+  },
+  "quoteStatus": {
+    "draft": "Draft",
+    "sent": "Sent",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "expired": "Expired"
+  },
+  "quoteKind": {
+    "mooring": "Mooring",
+    "transit": "Transit"
+  },
+  "inquiryOutcome": {
+    "open": "Open",
+    "quoted": "Quoted",
+    "booked": "Booked",
+    "declined_no_space": "Declined: no space",
+    "declined_size": "Declined: size",
+    "declined_other": "Declined: other reason",
+    "lost": "Lost"
+  },
+  "inquirySource": {
+    "phone": "Phone",
+    "email": "Email",
+    "desk": "Desk",
+    "public": "Public page",
+    "channel": "External channel"
+  },
+  "channel": {
+    "desk": "Desk",
+    "online": "Online",
+    "api": "API",
+    "external": "External channel"
+  },
+  "releaseSource": {
+    "customer_phone": "Customer on the phone",
+    "customer_desk": "Customer at the desk",
+    "customer_link": "Customer link",
+    "dock": "Dock",
+    "office": "Office",
+    "system": "System"
+  },
+  "releaseStatus": {
+    "active": "Active",
+    "revoked": "Revoked"
+  },
+  "presenceEvent": {
+    "arrived": "Arrived",
+    "departed": "Departed",
+    "hauled_out": "Hauled out",
+    "launched": "Launched"
+  },
+  "presenceState": {
+    "in_port": "In port",
+    "out": "Out",
+    "ashore": "Ashore",
+    "yard": "In the yard"
+  },
+  "presenceSource": {
+    "staff": "Staff",
+    "sensor": "Sensor",
+    "customer": "Customer"
+  },
+  "closureScope": {
+    "marina": "Whole marina",
+    "map": "Map",
+    "structure": "Structure",
+    "group": "Group",
+    "resource": "Berth or resource"
+  },
+  "releasePolicy": {
+    "never": "Never",
+    "with_consent": "With the customer's consent"
+  },
+  "confirmationSource": {
+    "manual": "Manual",
+    "provider": "Online payment"
+  },
+  "dayStatus": {
+    "free": "Free",
+    "hold": "On hold",
+    "contract": "Contract",
+    "transit": "Transit",
+    "block": "Blocked",
+    "maintenance": "Under maintenance",
+    "owner": "Berth right",
+    "released": "Released",
+    "closed": "Closed to arrivals"
+  },
+  "deadlineState": {
+    "ok": "Valid",
+    "expiring": "Expiring",
+    "expired": "Expired",
+    "missing": "Missing"
+  },
+  "moveOperation": {
+    "move": "Move",
+    "swap": "Swap",
+    "layout": "Area layout",
+    "undo": "Undo"
+  },
+  "fit": {
+    "loa_exceeds": "Length above the berth maximum",
+    "beam_exceeds": "Beam above the berth maximum",
+    "draft_exceeds": "Draft above the available depth",
+    "air_draft_exceeds": "Height above the allowed maximum",
+    "multihull_not_allowed": "Multihulls not allowed",
+    "vessel_invalid": "Invalid vessel dimensions",
+    "fill_below_threshold": "Berth oversized for the vessel",
+    "depth_near_limit": "Depth near the limit",
+    "power_insufficient": "Insufficient electrical power",
+    "insurance_missing": "No insurance on file",
+    "insurance_expires_in_period": "Insurance expires during the stay",
+    "overhang": "Overhang beyond the berth"
+  },
+  "anomaly": {
+    "presence_without_allocation": "In port without an assigned place",
+    "not_arrived": "Expected arrival not happened",
+    "departure_overdue": "Departure overdue",
+    "vessel_exceeds_limits": "Vessel beyond the berth limits",
+    "insurance_expired_active": "Insurance expired or missing",
+    "hold_lost_draft": "Draft without its hold"
+  },
+  "lens": {
+    "occupancy": "Occupancy",
+    "contractType": "Contract type",
+    "vesselType": "Vessel type",
+    "presence": "Presence",
+    "deadlines": "Deadlines",
+    "fitness": "Fitness",
+    "utilities": "Utilities",
+    "anomalies": "Anomalies",
+    "legend": {
+      "free": "Free",
+      "hold": "On hold",
+      "contract": "Contract",
+      "transit": "Transit",
+      "released": "Released",
+      "blocked": "Blocked",
+      "closed": "Closed",
+      "maintenance": "Maintenance",
+      "owner": "Berth right",
+      "annual": "Annual",
+      "seasonal": "Seasonal",
+      "monthly": "Monthly",
+      "period": "Period",
+      "in": "In port",
+      "out": "Out",
+      "awayLong": "Out for many days",
+      "arrival": "Arriving today",
+      "departure": "Leaving today",
+      "ok": "Valid",
+      "warn": "To check",
+      "bad": "Not compatible",
+      "override": "Accepted by exception",
+      "power": "With pedestal",
+      "water": "With water",
+      "none": "None",
+      "anomaly": "With anomalies",
+      "monohull_motor": "Motor",
+      "monohull_sail": "Sail",
+      "catamaran": "Catamaran",
+      "trimaran": "Trimaran",
+      "rib": "RIB",
+      "gozzo": "Gozzo",
+      "other": "Other"
+    }
+  },
+  "placementError": {
+    "unsnapped": "The position is not aligned to the grid",
+    "outside_area": "The position is outside the area",
+    "blocked_cell": "The position covers blocked cells",
+    "invalid_vessel": "Invalid vessel dimensions",
+    "placement_required": "A position in the area is required",
+    "placement_not_allowed": "This place does not take a position"
+  },
+  "releaseError": {
+    "not_contract": "Only places of a contract can be released",
+    "past_night": "Past nights cannot be released",
+    "outside_allocation": "The nights are outside the place's period",
+    "overlapping": "The period overlaps another release",
+    "not_active": "The allocation is not active"
+  },
+  "conflict": {
+    "title": "Place occupied",
+    "nights": "Nights in conflict: from {{from}} to {{to}}",
+    "cells": "Cells in conflict: {{count}}",
+    "alternatives": "Available alternatives",
+    "none": "No alternative available"
+  }
+}

@@ -33,6 +33,9 @@ func Get(cfg *config.Config, version string) Meta {
 			"harbor.editor", "harbor.georef", "harbor.berth_import", "registry.customers", "registry.documents",
 			// M2
 			"pricing.engine", "pricing.simulator", "pricing.matrix", "pricing.coverage", "pricing.renewal",
+			// M3
+			"occupancy.engine", "occupancy.search", "occupancy.layout", "contracts.mooring_base", "transits.desk",
+			"quotes.option", "presences",
 		},
 		DemoPairing:          cfg != nil && cfg.DemoPairingEnabled(),
 		PricingEngineVersion: pricing.EngineVersion,

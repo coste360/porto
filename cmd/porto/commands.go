@@ -287,8 +287,11 @@ func cmdSeedDemo(ctx context.Context, args []string, e env) error {
 	if err != nil {
 		return describe(err)
 	}
-	m1 := fmt.Sprintf("maps %d, berths %d, customers %d, vessels %d, documents %d, items %d, price_lists %d, price_rules %d",
-		res.Maps, res.Berths, res.Customers, res.Vessels, res.Documents, res.Items, res.PriceLists, res.PriceRules)
+	m1 := fmt.Sprintf("maps %d, berths %d, customers %d, vessels %d, documents %d, items %d, price_lists %d, price_rules %d, "+
+		"contracts %d, transits %d, quotes %d, inquiries %d, allocations %d, rows berth/cell/land %d/%d/%d, releases %d, presences %d",
+		res.Maps, res.Berths, res.Customers, res.Vessels, res.Documents, res.Items, res.PriceLists, res.PriceRules,
+		res.Contracts, res.Transits, res.Quotes, res.Inquiries, res.Allocations, res.BerthRows, res.CellRows, res.LandRows,
+		res.Releases, res.Presences)
 	if !res.Created {
 		fmt.Fprintf(e.stdout, "demo marina %q already exists (%s); added: %s\n", app.DemoMarinaSlug, res.MarinaID, m1)
 		return nil

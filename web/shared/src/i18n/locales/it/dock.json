@@ -1,0 +1,26 @@
+{
+  "title": "Banchina",
+  "tabs": {
+    "today": "Oggi",
+    "map": "Mappa",
+    "unexpected": "Arrivo",
+    "releases": "Rilasci"
+  },
+  "mapHint": "Apri la vista operativa del giorno in modalità schema.",
+  "openMap": "Apri la mappa",
+  "notAllowed": "Il tuo ruolo non prevede questa funzione.",
+  "release": {
+    "title": "Rilascio di un posto",
+    "search": "Cerca il contratto per barca o codice",
+    "none": "Nessun posto da rilasciare in questo contratto."
+  },
+  "block": {
+    "title": "Blocco di un posto",
+    "open": "Blocca il posto"
+  },
+  "card": {
+    "title": "Pannello di banchina",
+    "description": "Arrivi, partenze, arrivi non previsti e rilasci dal telefono.",
+    "open": "Apri il pannello"
+  }
+}

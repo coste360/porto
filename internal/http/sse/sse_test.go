@@ -46,7 +46,10 @@ func TestSSE_PayloadHasNoPII(t *testing.T) {
 		var keys map[string]any
 		_ = json.Unmarshal(b, &keys)
 		for k := range keys {
-			if !map[string]bool{"topic": true, "type": true, "marina_id": true, "entity_ids": true}[k] {
+			if !map[string]bool{
+				"topic": true, "type": true, "marina_id": true, "entity_ids": true,
+				"map_id": true, "resource_ids": true, "nights": true, // M3 (m3-plan §7.5, §13 D22)
+			}[k] {
 				t.Fatalf("%s: unexpected key %q", ev.Type, k)
 			}
 		}
@@ -63,6 +66,27 @@ func TestSSE_PayloadHasNoPII(t *testing.T) {
 	})
 	if len(m.EntityIDs) != 1 || m.EntityIDs[0] != "u1" {
 		t.Fatalf("entity ids = %v", m.EntityIDs)
+	}
+	for _, id := range m.ResourceIDs {
+		if piiPattern.MatchString(id) {
+			t.Fatalf("resource id %q looks like personal data", id)
+		}
+	}
+}
+
+// TestSSE_OccupancyNarrowing: occupancy events fill map_id, resource_ids and nights; malformed values are dropped.
+func TestSSE_OccupancyNarrowing(t *testing.T) {
+	m := MessageOf(ext.Event{
+		Type: event.OccupancyAllocated, MarinaID: "m1",
+		Data: json.RawMessage(`{"allocation_ids":["a1"],"resource_ids":["r1","r2"],"map_id":"map1","from":"2027-07-01","to":"2027-07-03","kind":"transit"}`),
+	})
+	if m.Topic != event.TopicOccupancy || m.MapID != "map1" || len(m.ResourceIDs) != 2 || m.Nights == nil ||
+		m.Nights.From != "2027-07-01" || m.Nights.To != "2027-07-03" {
+		t.Fatalf("message = %+v", m)
+	}
+	m = MessageOf(ext.Event{Type: event.OccupancyAllocated, MarinaID: "m1", Data: json.RawMessage(`{"from":"Mario","to":"2027-07-03","resource_ids":[1]}`)})
+	if m.Nights != nil || len(m.ResourceIDs) != 0 {
+		t.Fatalf("malformed narrowing kept: %+v", m)
 	}
 }
 

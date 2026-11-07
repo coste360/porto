@@ -16,11 +16,16 @@ import { RectElement, rectLabelFontCm } from './elements/Berth';
 import { lodFor, structureLabelFontCm, type Lod } from './elements/common';
 import { DecorationElement } from './elements/Decoration';
 import { DynamicAreaElement } from './elements/DynamicArea';
+import { GlyphDefs } from './elements/Glyphs';
+import { LensFill, lensLod } from './elements/LensFill';
+import { Vessel } from './elements/Vessel';
 import { Grid, NorthArrow, ScaleBar } from './elements/Overlays';
 import { PedestalElement } from './elements/Pedestal';
 import { ConcessionOutline, WaterLand } from './elements/Polygons';
 import { StructureElement, structureNominalFontCm } from './elements/Structure';
-import { expandBox } from './geometry';
+import type { VesselItem } from './dayView';
+import { boxesIntersect, expandBox, type Box } from './geometry';
+import type { GlyphId, LensStyle } from './lenses/types';
 import { KitDefs } from './kit/KitDefs';
 import { DEFAULT_LAYERS, type LayerId, type LayerVisibility } from './layers';
 import {
@@ -81,7 +86,31 @@ export type HarborMapProps = Omit<SVGProps<SVGSVGElement>, 'ref' | 'viewBox' | '
   svgRef?: Ref<SVGSVGElement>;
   /** Hide the screen-fixed scale bar and north arrow (print page draws its own). */
   hideChrome?: boolean;
+  // ---- operational view (M3, m3-plan §8.2); absent = editor/viewer behaviour unchanged ----
+  /** Lens style of berths, land resources (by ref) and area vessels (by placement ref). */
+  lensStyles?: ReadonlyMap<string, LensStyle>;
+  /** Refs greyed by the filters or the legend. */
+  dimmed?: ReadonlySet<string>;
+  /** Vessel silhouettes in scale (not drawn in schema mode on berths). */
+  vessels?: readonly VesselItem[];
+  /** Refs outlined (search solutions, focus). */
+  highlight?: ReadonlySet<string>;
+  /** Scale (geometry, silhouettes) or schema (tiles with code and vessel name; berths of the scene are tiles). */
+  mode?: 'scale' | 'schema';
+  /** Second line of a schema tile (vessel name) by ref. */
+  tileLabels?: ReadonlyMap<string, string>;
+  /** Accessible name of an interactive vessel silhouette. */
+  vesselLabel?: (item: VesselItem) => string;
 };
+
+/** Bounds of a vessel silhouette (loa around its stern, any heading). */
+function vesselBox(v: VesselItem): Box {
+  const r = v.loa + v.beam;
+  return { minX: v.origin.x - r, minY: v.origin.y - r, maxX: v.origin.x + r, maxY: v.origin.y + r };
+}
+
+/** Below this on-screen beam (px) silhouettes are not drawn (the berth is a filled rect). */
+const VESSEL_MIN_PX = 5;
 
 /** Cull margin around the view box, as a fraction of its size. */
 const CULL_MARGIN = 0.1;
@@ -161,6 +190,13 @@ export function HarborMap({
   children,
   svgRef,
   hideChrome = false,
+  lensStyles,
+  dimmed,
+  vessels,
+  highlight,
+  mode = 'scale',
+  tileLabels,
+  vesselLabel,
   className,
   ...svgProps
 }: HarborMapProps) {
@@ -183,9 +219,20 @@ export function HarborMap({
     return set;
   }, [scene, preview]);
 
+  const glyphs = useMemo(() => {
+    const set = new Set<GlyphId>();
+    if (lensStyles) for (const st of lensStyles.values()) if (st.glyph) set.add(st.glyph);
+    return set;
+  }, [lensStyles]);
+
   const s = pxPerCm(viewport);
   const view = viewBoxOf(viewport);
-  const visible = index.query(expandBox(view, Math.max(viewport.w, viewport.h) * CULL_MARGIN));
+  const cullBox = expandBox(view, Math.max(viewport.w, viewport.h) * CULL_MARGIN);
+  const visible = index.query(cullBox);
+  const visibleVessels =
+    vessels && mode === 'scale'
+      ? vessels.filter((v) => boxesIntersect(vesselBox(v), cullBox) && v.beam * s >= VESSEL_MIN_PX)
+      : [];
 
   const render = (item: SceneItem, state: ElementState, isInteractive: boolean) => {
     if (!layers[LAYER_OF_KIND[item.kind]]) return null;
@@ -205,9 +252,42 @@ export function HarborMap({
           />
         );
       case 'berth':
-        return <RectElement key={item.ref} {...common} el={item.el} kind="berth" />;
-      case 'land':
-        return <RectElement key={item.ref} {...common} el={item.el} kind="land" />;
+      case 'land': {
+        const lens = lensStyles?.get(item.ref);
+        if (lens && state !== 'preview') {
+          const el = item.el;
+          const buoy = item.kind === 'berth' && isBuoy(item.el);
+          const size = buoy
+            ? 2 * (item.el.swing_radius_cm ?? el.length_cm / 2)
+            : Math.min(el.width_cm, el.length_cm);
+          return (
+            <LensFill
+              key={item.ref}
+              refId={item.ref}
+              kind={item.kind}
+              geom={el}
+              buoyRadiusCm={buoy ? size / 2 : undefined}
+              code={el.code}
+              lensStyle={lens}
+              lod={lensLod(size, s)}
+              pxPerCm={s}
+              dimmed={dimmed?.has(item.ref) ?? false}
+              selected={state === 'selected'}
+              highlighted={highlight?.has(item.ref) ?? false}
+              schema={mode === 'schema'}
+              secondary={tileLabels?.get(item.ref)}
+              glyphPrefix={uid}
+              interactive={isInteractive}
+              label={label}
+            />
+          );
+        }
+        return item.kind === 'berth' ? (
+          <RectElement key={item.ref} {...common} el={item.el} kind="berth" />
+        ) : (
+          <RectElement key={item.ref} {...common} el={item.el} kind="land" />
+        );
+      }
       case 'area':
         return (
           <DynamicAreaElement
@@ -270,6 +350,7 @@ export function HarborMap({
       }}
     >
       <KitDefs prefix={uid} assets={kitAssets} />
+      {lensStyles ? <GlyphDefs prefix={uid} glyphs={glyphs} /> : null}
       <rect
         x={0}
         y={0}
@@ -301,6 +382,22 @@ export function HarborMap({
       <g data-layer="elements">
         {visible.map((item) => render(item, stateOf(item.ref), interactive))}
       </g>
+      {visibleVessels.length > 0 ? (
+        <g data-layer="vessels">
+          {visibleVessels.map((v) => (
+            <Vessel
+              key={v.key}
+              item={v}
+              token={lensStyles?.get(v.ref)?.colorToken ?? 'muted'}
+              dimmed={dimmed?.has(v.ref) ?? false}
+              selected={selected?.has(v.ref) ?? false}
+              showName={v.beam * s >= 14}
+              pxPerCm={s}
+              label={v.interactive && vesselLabel ? vesselLabel(v) : ''}
+            />
+          ))}
+        </g>
+      ) : null}
       {preview && preview.length > 0 ? (
         <g data-layer="preview">{preview.map((item) => render(item, 'preview', false))}</g>
       ) : null}

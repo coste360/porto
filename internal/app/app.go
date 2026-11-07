@@ -23,6 +23,7 @@ import (
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/catalog"
+	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/customer"
 	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/device"
@@ -32,6 +33,8 @@ import (
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/meta"
 	"github.com/coste360/porto/internal/domain/notify"
+	"github.com/coste360/porto/internal/domain/occupancy"
+	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/team"
 	"github.com/coste360/porto/internal/domain/vessel"
@@ -96,6 +99,11 @@ type App struct {
 	// M2
 	Catalog    *catalog.Service
 	PriceLists *pricelist.Service
+
+	// M3
+	Occupancy *occupancy.Service
+	Contracts *contract.Service
+	Presence  *presence.Service
 
 	ownDB bool
 }
@@ -162,8 +170,11 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		BaseURL: cfg.BaseURL.String(), DemoUserEmail: cfg.DemoPairingUser, DemoMarinaSlug: cfg.DemoPairingMarina,
 	})
 	a.Files = filestore.New(filepath.Join(cfg.DataDir, "files"), cfg.Keys)
+	// The occupancy service exists before the harbour service: it is the harbour guard (m3-plan §3.7).
+	a.Occupancy = occupancy.NewService(occupancy.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log})
 	a.Harbor = harbor.NewService(harbor.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
+		Guard: a.Occupancy.Guard(),
 	})
 	a.Customers = customer.NewService(customer.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
@@ -179,6 +190,14 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	})
 	a.Catalog = catalog.NewService(catalog.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log})
 	a.PriceLists = pricelist.NewService(pricelist.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log})
+	a.Contracts = contract.NewService(contract.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Occupancy: a.Occupancy, Prices: a.PriceLists,
+	})
+	a.Occupancy.SetMovePricer(a.Contracts)
+	a.Presence = presence.NewService(presence.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
+		Contracts: a.Contracts, Occupancy: a.Occupancy,
+	})
 	policy := event.EgressPolicy{AllowPrivate: cfg.WebhooksAllowPrivate, AllowHTTP: cfg.WebhooksAllowPrivate}
 	a.Webhooks = webhook.NewService(db, clk, cfg.Keys, aw, a.Outbox, policy, log)
 	a.Deliverer = webhook.NewDeliverer(db, clk, cfg.Keys, event.NewEgress(policy, webhook.DeliveryTimeout), aw, a.Version, log)
@@ -203,6 +222,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			Meta: meta.Get(cfg, a.Version), SecureCookies: cfg.SecureCookies(),
 			Harbor: a.Harbor, Customers: a.Customers, Vessels: a.Vessels, Documents: a.Documents,
 			Deadlines: a.Deadlines, Catalog: a.Catalog, PriceLists: a.PriceLists,
+			Occupancy: a.Occupancy, Contracts: a.Contracts, Presence: a.Presence,
 		},
 		Device:               &httpdevice.Handler{Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String()},
 		Public:               &public.Handler{Marinas: a.Marinas},
@@ -259,6 +279,10 @@ func (a *App) registerJobs() error {
 		{Name: "webhooks.retention", Every: 24 * time.Hour, Run: func(ctx context.Context) error {
 			_, err := a.Webhooks.PurgeOld(ctx, webhook.Retention)
 			return err
+		}},
+		// M3 (m3-plan §7.6): expired holds and the reconciliation of transits, quotes and contracts.
+		{Name: "contracts.expire", Every: time.Minute, RunAtStart: true, Run: func(ctx context.Context) error {
+			return a.Contracts.RunExpiry(ctx)
 		}},
 	}
 	for _, j := range defs {

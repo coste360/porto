@@ -11,13 +11,14 @@
     "gen": "npm run gen -w @porto/shared",
     "dev": "concurrently -n admin,booking -c blue,green \"npm run dev -w @porto/admin\" \"npm run dev -w @porto/booking\"",
     "build": "npm run build -w @porto/admin && npm run build -w @porto/booking",
-    "lint": "node scripts/css-guard.mjs && node scripts/i18n-check.mjs && eslint . --max-warnings 0",
+    "lint": "node scripts/css-guard.mjs && node scripts/i18n-check.mjs && node scripts/contrast-check.mjs && eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "vitest run",
     "budget": "npm run budget -w @porto/booking",
-    "licenses": "node scripts/licenses.mjs"
+    "licenses": "node scripts/licenses.mjs",
+    "contrast": "node scripts/contrast-check.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -85,7 +85,15 @@
     "items": "Articoli e servizi",
     "pricingClassifications": "Classificazioni",
     "pricingSimulator": "Simulatore prezzi",
-    "pricingSettings": "Impostazioni prezzi"
+    "pricingSettings": "Impostazioni prezzi",
+    "ops": "Vista operativa",
+    "planner": "Calendario posti",
+    "transits": "Transiti",
+    "quotes": "Preventivi",
+    "contracts": "Contratti",
+    "inquiries": "Richieste",
+    "dock": "Banchina",
+    "occupancySettings": "Impostazioni occupazione"
   },
   "user": {
     "menu": "Menu utente",

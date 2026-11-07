@@ -256,6 +256,51 @@ jobs:
             e2e/test-results
           retention-days: 7
 
+  e2e-perf:
+    name: Map performance budget (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            web/package-lock.json
+            e2e/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm --prefix web ci
+          npm --prefix e2e ci
+
+      - name: Install Playwright Chromium
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium
+
+      # Operational map with 3,000 berths and 2,000 occupied: avg frame <= 20 ms and p95 <= 34 ms (m3-plan §9.5).
+      - name: Map performance spec
+        run: |
+          make build
+          cd e2e && PORTO_E2E_PERF=1 npx playwright test tests/map-perf.spec.ts
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-perf-report
+          path: |
+            e2e/playwright-report
+            e2e/test-results
+          retention-days: 7
+
   naming:
     name: Naming (no residue from the reference project)
     runs-on: ubuntu-latest

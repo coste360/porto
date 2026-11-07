@@ -195,6 +195,10 @@ export async function createMapWithPier(
 
 /** Fails on serious or critical axe findings (WCAG 2.x A/AA rules). */
 export async function expectNoSeriousViolations(page: Page, label: string) {
+  // Popovers and dialogs fade in and out: contrast measured mid-animation is not what the user reads.
+  await page.waitForFunction(() =>
+    document.getAnimations().every((a) => a.playState !== 'running'),
+  );
   const result = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
     .analyze();

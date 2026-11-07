@@ -1,0 +1,26 @@
+{
+  "title": "Dock",
+  "tabs": {
+    "today": "Today",
+    "map": "Map",
+    "unexpected": "Arrival",
+    "releases": "Releases"
+  },
+  "mapHint": "Open today's operational view in schema mode.",
+  "openMap": "Open the map",
+  "notAllowed": "Your role does not include this function.",
+  "release": {
+    "title": "Release a place",
+    "search": "Find the contract by vessel or code",
+    "none": "No place to release in this contract."
+  },
+  "block": {
+    "title": "Block a place",
+    "open": "Block the place"
+  },
+  "card": {
+    "title": "Dock panel",
+    "description": "Arrivals, departures, unexpected arrivals and releases from the phone.",
+    "open": "Open the panel"
+  }
+}

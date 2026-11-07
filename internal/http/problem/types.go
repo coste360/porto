@@ -60,6 +60,18 @@ const (
 	PriceListImmutable Type = "price_list_immutable"
 	PriceListOverlap   Type = "price_list_overlap"
 	InUse              Type = "in_use"
+
+	// M3 (m3-plan §7.4).
+	ResourceTaken     Type = "resource_taken"
+	FitBlocked        Type = "fit_blocked"
+	PlacementInvalid  Type = "placement_invalid"
+	InvalidTransition Type = "invalid_transition"
+	QuoteExpired      Type = "quote_expired"
+	HoldExpired       Type = "hold_expired"
+	ClosureActive     Type = "closure_active"
+	UndoUnavailable   Type = "undo_unavailable"
+	ReleaseInvalid    Type = "release_invalid"
+	CustomerRequired  Type = "customer_required"
 )
 
 type typeInfo struct {
@@ -118,6 +130,16 @@ var registry = map[Type]typeInfo{
 	PriceListImmutable:    {http.StatusConflict, "Published price lists cannot change"},
 	PriceListOverlap:      {http.StatusConflict, "Another active price list covers the same nights"},
 	InUse:                 {http.StatusConflict, "Still in use"},
+	ResourceTaken:         {http.StatusConflict, "The resource is already occupied on some nights"},
+	FitBlocked:            {http.StatusUnprocessableEntity, "The vessel does not fit the resource"},
+	PlacementInvalid:      {http.StatusUnprocessableEntity, "Invalid placement"},
+	InvalidTransition:     {http.StatusConflict, "Action not allowed in the current state"},
+	QuoteExpired:          {http.StatusConflict, "The quote has expired"},
+	HoldExpired:           {http.StatusConflict, "The hold has expired"},
+	ClosureActive:         {http.StatusConflict, "Arrivals are closed on that date"},
+	UndoUnavailable:       {http.StatusConflict, "The move can no longer be undone"},
+	ReleaseInvalid:        {http.StatusConflict, "Invalid release"},
+	CustomerRequired:      {http.StatusUnprocessableEntity, "A customer is required"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

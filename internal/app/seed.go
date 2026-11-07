@@ -39,6 +39,18 @@ type SeedResult struct {
 	Items      int
 	PriceLists int
 	PriceRules int
+
+	// M3 counts (0 when the occupancy part already existed, m3-plan §10).
+	Contracts   int // mooring contracts
+	Transits    int
+	Quotes      int
+	Inquiries   int
+	Allocations int
+	BerthRows   int // berth_occupancies rows
+	CellRows    int // cell_occupancies rows
+	LandRows    int // land_occupancies rows
+	Releases    int
+	Presences   int
 }
 
 // SeedDemo creates a minimal demo: organization "Porto Demo", marina "Marina Demo" (slug demo) and one user per
@@ -113,8 +125,9 @@ func demoOwner(userID, orgID string) *auth.Principal {
 }
 
 // seedM1 seeds the harbour (seed_harbor.go, when the marina has no maps), the registry (seed_registry.go, when
-// it has no customers) and, from M2, the pricing catalogue and price lists (seed_pricing.go, when the marina has
-// no price lists). Each part decides its own idempotency.
+// it has no customers), from M2 the pricing catalogue and price lists (seed_pricing.go, when the marina has no
+// price lists) and from M3 contracts, transits, quotes and presences (seed_occupancy.go, when the marina has no
+// contracts). Each part decides its own idempotency.
 func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) error {
 	if err := a.seedHarbor(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: harbour: %w", err)
@@ -124,6 +137,9 @@ func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) er
 	}
 	if err := a.seedPricing(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: pricing: %w", err)
+	}
+	if err := a.seedOccupancy(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: occupancy: %w", err)
 	}
 	return nil
 }

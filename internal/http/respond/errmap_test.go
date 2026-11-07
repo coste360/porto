@@ -6,12 +6,16 @@ import (
 
 	"github.com/coste360/porto/internal/calendar"
 	"github.com/coste360/porto/internal/domain/catalog"
+	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/customer"
 	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/document"
 	"github.com/coste360/porto/internal/domain/domainerr"
+	"github.com/coste360/porto/internal/domain/fit"
 	"github.com/coste360/porto/internal/domain/harbor"
 	"github.com/coste360/porto/internal/domain/layout"
+	"github.com/coste360/porto/internal/domain/occupancy"
+	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/pricing"
 	"github.com/coste360/porto/internal/domain/vessel"
@@ -111,5 +115,64 @@ func TestMapError_M2Details(t *testing.T) {
 	typ, _, _ = MapError(pricelist.ErrNoActiveList)
 	if typ != problem.NoPrice {
 		t.Fatalf("no active list = %q", typ)
+	}
+}
+
+func TestMapError_M3Sentinels(t *testing.T) {
+	cases := map[error]problem.Type{
+		occupancy.ErrResourceTaken:          problem.ResourceTaken,
+		occupancy.ErrFitBlocked:             problem.FitBlocked,
+		occupancy.ErrOverrideForbidden:      problem.Forbidden,
+		occupancy.ErrRepriceForbidden:       problem.Forbidden,
+		occupancy.ErrOverrideReasonRequired: problem.ValidationFailed,
+		occupancy.ErrPlacementInvalid:       problem.PlacementInvalid,
+		occupancy.ErrClosed:                 problem.ClosureActive,
+		occupancy.ErrHoldExpired:            problem.HoldExpired,
+		occupancy.ErrAllocationNotActive:    problem.Conflict,
+		occupancy.ErrVersionMismatch:        problem.VersionConflict,
+		occupancy.ErrUndoUnavailable:        problem.UndoUnavailable,
+		occupancy.ErrReleaseInvalid:         problem.ReleaseInvalid,
+		occupancy.ErrNotFound:               problem.NotFound,
+		harbor.ErrElementInUse:              problem.InUse,
+		contract.ErrInvalidTransition:       problem.InvalidTransition,
+		contract.ErrQuoteExpired:            problem.QuoteExpired,
+		contract.ErrCustomerRequired:        problem.CustomerRequired,
+		contract.ErrPriceListChanged:        problem.Conflict,
+		contract.ErrRepriceRefused:          problem.Conflict,
+		contract.ErrVersionMismatch:         problem.VersionConflict,
+		presence.ErrInvalidTransition:       problem.InvalidTransition,
+	}
+	for err, want := range cases {
+		got, _, ok := MapError(fmt.Errorf("wrapped: %w", err))
+		if !ok || got != want {
+			t.Errorf("%v: %q, %v; want %q", err, got, ok, want)
+		}
+	}
+}
+
+func TestMapError_M3Details(t *testing.T) {
+	night := calendar.MustParse("2027-07-01")
+	cases := []struct {
+		err    error
+		typ    problem.Type
+		status int
+	}{
+		{&occupancy.ConflictError{ResourceType: "berth", ResourceID: "b1", From: night, To: night, AllocationIDs: []string{"a1"}}, problem.ResourceTaken, 409},
+		{&occupancy.FitError{Result: fit.Result{Blocking: []fit.Issue{{Code: fit.CodeLOAExceeds, Limit: 1200, Actual: 1250}}, Overridable: true}}, problem.FitBlocked, 422},
+		{&occupancy.PlacementError{Reason: occupancy.PlacementUnsnapped, AllocationID: "a1"}, problem.PlacementInvalid, 422},
+		{&occupancy.ClosureError{ClosureID: "c1", FromDate: night, ToDate: night}, problem.ClosureActive, 409},
+		{&occupancy.ReleaseError{Reason: "past_night"}, problem.ReleaseInvalid, 409},
+		{&contract.TransitionError{From: "held", Action: contract.ActionNoShow}, problem.InvalidTransition, 409},
+		{&harbor.ElementInUseError{References: []string{"b1"}}, problem.InUse, 409},
+	}
+	for _, c := range cases {
+		typ, opts, ok := MapError(fmt.Errorf("op: %w", c.err))
+		if !ok || typ != c.typ {
+			t.Fatalf("%T: type = %q, %v", c.err, typ, ok)
+		}
+		p := problem.New(typ, opts...)
+		if p.Status != c.status || p.Details == nil {
+			t.Fatalf("%T: problem = %+v", c.err, p)
+		}
 	}
 }

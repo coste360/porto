@@ -73,6 +73,12 @@ tags:
     description: Pricing settings, revenue classes, items, berth categories and the price simulator
   - name: price-lists
     description: Price lists (periods, bands, rules), activation, renewal, matrix and coverage
+  - name: occupancy
+    description: Occupancy engine, day view, search, moves, layout sessions, blocks, releases and closures
+  - name: contracts
+    description: Quotes with options, mooring contracts, transits and inquiries
+  - name: presences
+    description: Arrivals, departures, unexpected arrivals and movements of the day
 
 paths:
   /healthz:
@@ -3136,6 +3142,1405 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "422": { $ref: "#/components/responses/PricingUnprocessable" }
 
+  # ---- M3 occupancy, contracts and transits, presences (m3-plan §7.3) ----
+
+  /api/admin/v1/marinas/{marinaId}/occupancy-settings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [occupancy]
+      operationId: getOccupancySettings
+      summary: >-
+        Occupancy settings of the marina, defaults until saved (map.view)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OccupancySettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [occupancy]
+      operationId: updateOccupancySettings
+      summary: >-
+        Replace the occupancy settings (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OccupancySettingsUpdate" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OccupancySettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}/day:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+    get:
+      tags: [occupancy]
+      operationId: getMapDay
+      summary: >-
+        Day view of a map: status, vessel, contract, presence, release, fit, deadlines and anomalies per element on the night of date (default today); customer names only with customers.read (map.view)
+      security: *readSecurity
+      parameters:
+        - { name: date, in: query, required: false, description: Night (default today in the marina timezone), schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DayView" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}/occupancy:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+    get:
+      tags: [occupancy]
+      operationId: getMapOccupancy
+      summary: >-
+        Allocations of a map intersecting [from, to] (default today..today+30, at most 400 nights), for the planner and the drag preview (map.view)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: resource_ids, in: query, required: false, description: Comma-separated resource ids, schema: { type: string, maxLength: 4000 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MapOccupancy" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/allocations/{allocationId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/AllocationId"
+    get:
+      tags: [occupancy]
+      operationId: getAllocation
+      summary: >-
+        An allocation with its contract summary, releases and moved_from chain (map.view)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AllocationDetail" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/occupancies/search:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [occupancy]
+      operationId: searchOccupancy
+      summary: >-
+        Search placements for a vessel and a stay (spec 10.7); nothing is written (transits.desk; purpose contract also contracts.write)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OccupancySearchRequest" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OccupancySearchResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/occupancies/check:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [occupancy]
+      operationId: checkPlacement
+      summary: >-
+        Advisory check of a placement: fit, footprint, conflicting rows and price effect; nothing is written (map.view)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PlacementCheckRequest" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PlacementCheck" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/occupancies/move:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [occupancy]
+      operationId: moveAllocation
+      summary: >-
+        Move an allocation from a night (default today), optionally only an interval; one transaction, undoable for 24 h (occupancy.move)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MoveRequest" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MoveResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/occupancies/swap:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [occupancy]
+      operationId: swapAllocations
+      summary: >-
+        Swap two vessels from a night in one transaction (occupancy.move)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SwapRequest" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MoveResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/dynamic-areas/{areaId}/layout:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/AreaId"
+    post:
+      tags: [occupancy]
+      operationId: saveAreaLayout
+      summary: >-
+        Save a layout session of a dynamic area: every allocation of the area from from_night with its version in base, all placements applied or none (occupancy.move)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 1048576
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AreaLayoutSave" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MoveResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/dynamic-areas/{areaId}/compact:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/AreaId"
+    post:
+      tags: [occupancy]
+      operationId: proposeCompaction
+      summary: >-
+        Propose compacted placements of a linear area for [from, to]; nothing is written (occupancy.move)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CompactionRequest" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CompactionProposal" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/move-undo/{undoId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/UndoId"
+    post:
+      tags: [occupancy]
+      operationId: undoMove
+      summary: >-
+        Undo the last move, swap or layout save within 24 h (occupancy.move)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AllocationList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/blocks:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [occupancy]
+      operationId: createBlock
+      summary: >-
+        Block a berth, cells of an area or a land resource for a period with a reason (occupancy.move)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BlockCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Allocation" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/blocks/{allocationId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/AllocationId"
+    delete:
+      tags: [occupancy]
+      operationId: deleteBlock
+      summary: >-
+        Remove a block from today; past nights are kept (occupancy.move)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204": { description: Done }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/releases:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [occupancy]
+      operationId: listReleases
+      summary: >-
+        Releases of contract allocations (contracts.read)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: resource_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/ReleaseStatus" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReleasePage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [occupancy]
+      operationId: createRelease
+      summary: >-
+        Release nights of a contract allocation for resale (occupancy.move)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReleaseCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Release" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/releases/{releaseId}/revoke:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ReleaseId"
+    post:
+      tags: [occupancy]
+      operationId: revokeRelease
+      summary: >-
+        Revoke a release (early return): free nights are occupied again, resold nights are 409 resource_taken with alternatives (occupancy.move)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RevokeRequest" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RevokeResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/closures:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [occupancy]
+      operationId: listClosures
+      summary: >-
+        Closures of arrivals intersecting [from, to] (map.view)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ClosureList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [occupancy]
+      operationId: createClosure
+      summary: >-
+        Close new arrivals on a scope for a period (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ClosureCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Closure" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/closures/{closureId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ClosureId"
+    delete:
+      tags: [occupancy]
+      operationId: deleteClosure
+      summary: >-
+        Delete a closure (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204": { description: Done }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/quotes:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [contracts]
+      operationId: listQuotes
+      summary: >-
+        Quotes, newest first (contracts.read)
+      security: *readSecurity
+      parameters:
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/QuoteStatus" } }
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/QuoteKind" } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: q, in: query, required: false, description: Code or vessel name, schema: { type: string, maxLength: 64 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/QuotePage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [contracts]
+      operationId: createQuote
+      summary: >-
+        Create a draft quote with 1-3 priced options; options with hold allocate a hold until the quote expiry (contracts.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/QuoteInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Quote" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/quotes/{quoteId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/QuoteId"
+    get:
+      tags: [contracts]
+      operationId: getQuote
+      summary: >-
+        A quote with options, placements, prices and holds (contracts.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Quote" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [contracts]
+      operationId: updateQuote
+      summary: >-
+        Replace the fields and options of a draft quote (contracts.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/QuoteInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Quote" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/quotes/{quoteId}/send:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/QuoteId"
+    post:
+      tags: [contracts]
+      operationId: markQuoteSent
+      summary: >-
+        Mark a draft quote as sent (manual mark, no email in M3) (contracts.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Quote" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/quotes/{quoteId}/accept:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/QuoteId"
+    post:
+      tags: [contracts]
+      operationId: acceptQuote
+      summary: >-
+        Accept an option: its holds are converted (or allocated now), the other holds cancelled, and the contract or transit created in one transaction (contracts.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/QuoteAccept" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/QuoteAcceptResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/quotes/{quoteId}/decline:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/QuoteId"
+    post:
+      tags: [contracts]
+      operationId: declineQuote
+      summary: >-
+        Decline a quote; its holds are cancelled (contracts.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReasonInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Quote" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/contracts:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [contracts]
+      operationId: listContracts
+      summary: >-
+        Contracts of a kind (default mooring) (contracts.read)
+      security: *readSecurity
+      parameters:
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/ContractKind" } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/ContractStatus" } }
+        - { name: term, in: query, required: false, schema: { $ref: "#/components/schemas/ContractTerm" } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: vessel_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: active_on, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: q, in: query, required: false, description: Code or vessel name, schema: { type: string, maxLength: 64 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ContractPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [contracts]
+      operationId: createContract
+      summary: >-
+        Create a mooring contract, draft (holding its places) or active (signed on paper) (contracts.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ContractCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/contracts/{contractId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    get:
+      tags: [contracts]
+      operationId: getContract
+      summary: >-
+        A contract or transit with lines, allocations, releases and presences (contracts.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [contracts]
+      operationId: updateContract
+      summary: >-
+        Change notes (and, for drafts, billing customer and policy) (contracts.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ContractPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/contracts/{contractId}/activate:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [contracts]
+      operationId: activateContract
+      summary: >-
+        Activate a draft contract (signed on paper): holds become contract allocations (contracts.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/contracts/{contractId}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [contracts]
+      operationId: cancelContract
+      summary: >-
+        Cancel a draft contract (contracts.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReasonInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/contracts/{contractId}/terminate:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [contracts]
+      operationId: terminateContract
+      summary: >-
+        Terminate an active contract from effective_on: later nights are freed (contracts.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TerminateInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/transits:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [contracts]
+      operationId: listTransits
+      summary: >-
+        Transits (contracts.read)
+      security: *readSecurity
+      parameters:
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/ContractStatus" } }
+        - { name: arrival_from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: arrival_to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: on, in: query, required: false, description: Transits whose stay covers this night, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: q, in: query, required: false, description: Code or vessel name, schema: { type: string, maxLength: 64 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ContractPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [contracts]
+      operationId: createTransit
+      summary: >-
+        Create a transit held on its placements, or confirmed at once with the manual driver (transits.desk)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TransitCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/transits/{contractId}/confirm:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [contracts]
+      operationId: confirmTransit
+      summary: >-
+        Confirm a held transit with the manual driver; the only confirmation path besides the payment webhook (INV-09) (transits.desk)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ManualConfirmation" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/transits/{contractId}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [contracts]
+      operationId: cancelTransit
+      summary: >-
+        Cancel a held or confirmed transit (transits.desk)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReasonInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/transits/{contractId}/no-show:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [contracts]
+      operationId: markTransitNoShow
+      summary: >-
+        Mark a confirmed transit as no-show from its arrival date (transits.desk)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/transits/{contractId}/stay:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [contracts]
+      operationId: changeTransitStay
+      summary: >-
+        Change arrival and/or departure; added nights must be free (409 with alternatives) and the price is recomputed (transits.desk)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StayChange" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StayChangeResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/transits/{contractId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    patch:
+      tags: [contracts]
+      operationId: updateTransit
+      summary: >-
+        Change customer, notes and expected times of a transit (transits.desk)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TransitPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Contract" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/inquiries:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [contracts]
+      operationId: listInquiries
+      summary: >-
+        Inquiries, newest first (contracts.read)
+      security: *readSecurity
+      parameters:
+        - { name: outcome, in: query, required: false, schema: { $ref: "#/components/schemas/InquiryOutcome" } }
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/InquiryPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [contracts]
+      operationId: createInquiry
+      summary: >-
+        Record an inquiry, e.g. a search saved as unserved request (transits.desk)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/InquiryCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Inquiry" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/inquiries/{inquiryId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/InquiryId"
+    patch:
+      tags: [contracts]
+      operationId: updateInquiry
+      summary: >-
+        Change outcome, links and notes of an inquiry (transits.desk)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/InquiryPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Inquiry" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/presences:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [presences]
+      operationId: listPresences
+      summary: >-
+        Presence events of a night (default today) or of a vessel; notes only with customers.read (map.view)
+      security: *readSecurity
+      parameters:
+        - { name: date, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: vessel_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PresencePage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [presences]
+      operationId: recordPresence
+      summary: >-
+        Record an arrival or departure (hauled_out and launched are accepted for M9) (presence.write)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PresenceCreate" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PresenceResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/presences/unexpected-arrival:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [presences]
+      operationId: recordUnexpectedArrival
+      summary: >-
+        Unexpected arrival: vessel (new or existing), a held transit on the target and the arrival in one transaction (presence.write and transits.desk)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UnexpectedArrival" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PresenceResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/presences/{presenceId}/photo:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PresenceId"
+    post:
+      tags: [presences]
+      operationId: uploadPresencePhoto
+      summary: >-
+        Attach a photo to a presence (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema: { type: string, format: binary }
+          image/png:
+            schema: { type: string, format: binary }
+          image/webp:
+            schema: { type: string, format: binary }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PresencePhoto" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+    get:
+      tags: [presences]
+      operationId: getPresencePhotoLink
+      summary: >-
+        A short-lived (5 minutes) signed link to the photo (customers.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FileLink" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/presences/{presenceId}/photo/file:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PresenceId"
+    get:
+      tags: [presences]
+      operationId: getPresencePhotoFile
+      summary: >-
+        Download the photo through a signed link from getPresencePhotoLink (exp and sig checked in the service) (customers.read)
+      security: *readSecurity
+      parameters:
+        - { name: exp, in: query, required: false, schema: { type: integer, format: int64 } }
+        - { name: sig, in: query, required: false, schema: { type: string, maxLength: 128 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            image/jpeg:
+              schema: { type: string, format: binary }
+            image/png:
+              schema: { type: string, format: binary }
+            image/webp:
+              schema: { type: string, format: binary }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/movements:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [presences]
+      operationId: getMovements
+      summary: >-
+        Movements of a night (default today): expected arrivals and departures, vessels out, arrivals without booking, arrived, departed (map.view)
+      security: *readSecurity
+      parameters:
+        - { name: date, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: map_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Movements" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
 components:
   securitySchemes:
     cookieAuth:
@@ -3259,6 +4664,51 @@ components:
       in: path
       required: true
       schema: { type: string }
+    AllocationId:
+      name: allocationId
+      in: path
+      required: true
+      schema: { type: string }
+    QuoteId:
+      name: quoteId
+      in: path
+      required: true
+      schema: { type: string }
+    ContractId:
+      name: contractId
+      in: path
+      required: true
+      schema: { type: string }
+    ReleaseId:
+      name: releaseId
+      in: path
+      required: true
+      schema: { type: string }
+    ClosureId:
+      name: closureId
+      in: path
+      required: true
+      schema: { type: string }
+    InquiryId:
+      name: inquiryId
+      in: path
+      required: true
+      schema: { type: string }
+    PresenceId:
+      name: presenceId
+      in: path
+      required: true
+      schema: { type: string }
+    UndoId:
+      name: undoId
+      in: path
+      required: true
+      schema: { type: string }
+    AreaId:
+      name: areaId
+      in: path
+      required: true
+      schema: { type: string }
     CSRFToken:
       name: X-CSRF-Token
       in: header
@@ -3338,6 +4788,14 @@ components:
       content:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
+    OccupancyUnprocessable:
+      description: >-
+        The vessel does not fit (fit_blocked, with the FitResult in details), the placement is invalid
+        (placement_invalid, details {reason, allocation_id?}), a customer is required (customer_required), no price
+        (no_price), a validation failure, or an idempotency key was reused
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
     ServiceUnavailable:
       description: Not ready
       content:
@@ -3396,6 +4854,16 @@ components:
         - price_list_immutable
         - price_list_overlap
         - in_use
+        - resource_taken
+        - fit_blocked
+        - placement_invalid
+        - invalid_transition
+        - quote_expired
+        - hold_expired
+        - closure_active
+        - undo_unavailable
+        - release_invalid
+        - customer_required
 
     FieldError:
       type: object
@@ -3430,8 +4898,10 @@ components:
         details:
           description: >-
             Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason};
-            price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}. Ids, codes
-            and integers only.
+            price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references};
+            resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?};
+            invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid
+            {reason}. Ids, codes, dates and integers only.
           type: object
           additionalProperties: true
 
@@ -3506,6 +4976,7 @@ components:
         - harbor.configure
         - pricing.configure
         - pricing.read
+        - contracts.read
 
     Locale:
       type: string
@@ -6890,3 +8361,1395 @@ components:
           type: array
           items: { $ref: "#/components/schemas/CodeCount" }
         checked: { type: integer }
+
+    # ---- M3 occupancy, contracts and transits, presences (spec 9, 10, 13 base; m3-plan §7, §8.3). Nights are
+    # inclusive YYYY-MM-DD ranges; stays are [arrival/starts_on, departure/ends_on). Lengths cm, money cents,
+    # ratios basis points. Customer names only with customers.read. ----
+
+    ResourceType:
+      type: string
+      enum: [berth, dynamic_area, land_resource]
+
+    ResourceRef:
+      type: object
+      required: [resource_type, resource_id]
+      properties:
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string, maxLength: 36 }
+
+    PlacementInput:
+      description: A resource and, for dynamic areas, the placement (x along the axis or x/y in grid space, rotation for surfaces)
+      type: object
+      required: [resource_type, resource_id]
+      properties:
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string, maxLength: 36 }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+
+    SegmentInput:
+      description: A placement for the inclusive nights [first_night, last_night]
+      allOf:
+        - $ref: "#/components/schemas/PlacementInput"
+        - type: object
+          required: [first_night, last_night]
+          properties:
+            first_night: { $ref: "#/components/schemas/IsoDate" }
+            last_night: { $ref: "#/components/schemas/IsoDate" }
+
+    NightRange:
+      description: Inclusive range of nights
+      type: object
+      required: [from, to]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+
+    FitIssue:
+      type: object
+      required: [code]
+      properties:
+        code: { $ref: "#/components/schemas/FitCode" }
+        limit_cm: { $ref: "#/components/schemas/Cm" }
+        actual_cm: { $ref: "#/components/schemas/Cm" }
+
+    FitCode:
+      type: string
+      enum: [loa_exceeds, beam_exceeds, draft_exceeds, air_draft_exceeds, multihull_not_allowed, vessel_invalid,
+             fill_below_threshold, depth_near_limit, power_insufficient, insurance_missing, insurance_expires_in_period,
+             overhang]
+
+    FitResult:
+      type: object
+      required: [ok, overridable, fill_bp, blocking, warnings]
+      properties:
+        ok: { type: boolean }
+        overridable: { type: boolean }
+        fill_bp: { $ref: "#/components/schemas/BasisPoints" }
+        blocking:
+          type: array
+          items: { $ref: "#/components/schemas/FitIssue" }
+        warnings:
+          type: array
+          items: { $ref: "#/components/schemas/FitIssue" }
+
+    FitOverrideInput:
+      description: Accept the blocking dimensional fit codes (occupancy.override_fit); the reason is audited
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 200 }
+
+    FitOverride:
+      type: object
+      required: [user_id, reason, codes]
+      properties:
+        user_id: { type: string }
+        reason: { type: string }
+        codes:
+          type: array
+          items: { type: string }
+
+    PriceSummary:
+      type: object
+      required: [price_list_id, total_cents, deposit_cents, engine_version]
+      properties:
+        price_list_id: { type: string }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        deposit_cents: { $ref: "#/components/schemas/Cents" }
+        engine_version: { type: integer }
+
+    PriceEffect:
+      type: object
+      required: [old_total_cents, new_total_cents, delta_cents]
+      properties:
+        old_total_cents: { $ref: "#/components/schemas/Cents" }
+        new_total_cents: { $ref: "#/components/schemas/Cents" }
+        delta_cents: { $ref: "#/components/schemas/Cents" }
+        applied: { type: boolean, description: true when the contract price was replaced (reprice) }
+
+    ConflictDetail:
+      description: Details of resource_taken; alternatives come from a search when the service runs one
+      type: object
+      required: [resource_type, resource_id, from, to, allocation_ids]
+      properties:
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        cells:
+          type: array
+          items: { type: integer }
+        allocation_ids:
+          type: array
+          items: { type: string }
+        vessel_id: { type: string }
+        alternatives:
+          type: array
+          items: { $ref: "#/components/schemas/OccupancySolution" }
+
+    VesselBrief:
+      description: The vessel embedded in occupancy and contract views (no registration, no owner)
+      type: object
+      required: [id, name, loa_cm, beam_cm, hull_type]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+        draft_cm: { $ref: "#/components/schemas/Cm" }
+
+    CustomerBrief:
+      description: The customer embedded in views; display_name only with customers.read
+      type: object
+      required: [id]
+      properties:
+        id: { type: string }
+        display_name: { type: string }
+
+    AllocationKind:
+      type: string
+      enum: [hold, contract, transit, owner, block, maintenance]
+
+    AllocationStatus:
+      type: string
+      enum: [active, cancelled, expired, superseded]
+
+    ContractKind:
+      type: string
+      enum: [mooring, transit, storage, charter]
+
+    ContractTerm:
+      type: string
+      enum: [annual, seasonal, monthly, period]
+
+    ContractStatus:
+      description: Mooring statuses (draft..suspended) and transit statuses (held..awaiting_approval)
+      type: string
+      enum: [draft, awaiting_signature, active, expired, renewed, terminated, cancelled, suspended, held,
+             pending_payment, confirmed, arrived, departed, no_show, awaiting_approval]
+
+    ContractBrief:
+      type: object
+      required: [id, kind, status, code]
+      properties:
+        id: { type: string }
+        kind: { $ref: "#/components/schemas/ContractKind" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        status: { $ref: "#/components/schemas/ContractStatus" }
+        code: { type: string, description: "ORM-2026-0001, TRN-2026-0001" }
+
+    Allocation:
+      type: object
+      required: [id, resource_type, resource_id, map_id, first_night, last_night, kind, status, version, released]
+      properties:
+        id: { type: string }
+        contract_line_id: { type: string }
+        contract_id: { type: string }
+        vessel_id: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        resource_code: { type: string }
+        map_id: { type: string }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+        kind: { $ref: "#/components/schemas/AllocationKind" }
+        status: { $ref: "#/components/schemas/AllocationStatus" }
+        expires_at: { type: string, format: date-time }
+        fit_override: { $ref: "#/components/schemas/FitOverride" }
+        block_reason: { type: string }
+        moved_from_id: { type: string }
+        released:
+          type: array
+          items: { $ref: "#/components/schemas/NightRange" }
+        version: { type: integer }
+
+    AllocationList:
+      type: object
+      required: [allocations]
+      properties:
+        allocations:
+          type: array
+          items: { $ref: "#/components/schemas/Allocation" }
+
+    AllocationDetail:
+      allOf:
+        - $ref: "#/components/schemas/Allocation"
+        - type: object
+          required: [releases, moved_from_chain]
+          properties:
+            contract: { $ref: "#/components/schemas/ContractBrief" }
+            vessel: { $ref: "#/components/schemas/VesselBrief" }
+            releases:
+              type: array
+              items: { $ref: "#/components/schemas/Release" }
+            moved_from_chain:
+              description: Ids of the predecessors, nearest first
+              type: array
+              items: { type: string }
+
+    CellsRange:
+      description: Occupied cells of an area placement; linear areas give first/last, surfaces the indexes
+      type: object
+      properties:
+        first: { type: integer }
+        last: { type: integer }
+        indexes:
+          type: array
+          items: { type: integer }
+
+    MapAllocation:
+      type: object
+      required: [id, resource_type, resource_id, first_night, last_night, kind, status, version, released]
+      properties:
+        id: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        cells: { $ref: "#/components/schemas/CellsRange" }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+        kind: { $ref: "#/components/schemas/AllocationKind" }
+        status: { $ref: "#/components/schemas/AllocationStatus" }
+        expires_at: { type: string, format: date-time }
+        version: { type: integer }
+        released:
+          type: array
+          items: { $ref: "#/components/schemas/NightRange" }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        contract: { $ref: "#/components/schemas/ContractBrief" }
+
+    MapOccupancy:
+      type: object
+      required: [from, to, allocations]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        allocations:
+          type: array
+          items: { $ref: "#/components/schemas/MapAllocation" }
+
+    DayStatus:
+      type: string
+      enum: [free, hold, contract, transit, block, maintenance, owner, released, closed]
+
+    PresenceState:
+      type: string
+      enum: [in_port, out, ashore, yard]
+
+    DayPresence:
+      type: object
+      required: [state, since, away_days]
+      properties:
+        state: { $ref: "#/components/schemas/PresenceState" }
+        since: { type: string, format: date-time }
+        expected_return_on: { $ref: "#/components/schemas/IsoDate" }
+        away_days: { type: integer }
+
+    DayRelease:
+      type: object
+      required: [id, from, to, resold]
+      properties:
+        id: { type: string }
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        resold: { type: boolean }
+
+    DayFit:
+      type: object
+      required: [fill_bp, override, blocking_codes]
+      properties:
+        fill_bp: { $ref: "#/components/schemas/BasisPoints" }
+        override: { type: boolean }
+        blocking_codes:
+          type: array
+          items: { $ref: "#/components/schemas/FitCode" }
+
+    DeadlineState:
+      type: string
+      enum: [ok, expiring, expired, missing]
+
+    DayDeadlines:
+      type: object
+      required: [insurance, documents]
+      properties:
+        contract_ends_on: { $ref: "#/components/schemas/IsoDate" }
+        insurance: { $ref: "#/components/schemas/DeadlineState" }
+        documents: { $ref: "#/components/schemas/DeadlineState" }
+
+    DayUtilities:
+      type: object
+      required: [water]
+      properties:
+        power_a: { type: integer }
+        power_phase: { $ref: "#/components/schemas/PowerPhase" }
+        water: { type: boolean }
+
+    AnomalyCode:
+      type: string
+      enum: [presence_without_allocation, not_arrived, departure_overdue, vessel_exceeds_limits, insurance_expired_active,
+             hold_lost_draft]
+
+    DayElement:
+      type: object
+      required: [resource_type, resource_id, code, status, arrival_today, departure_today, anomalies]
+      properties:
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        code: { type: string }
+        status: { $ref: "#/components/schemas/DayStatus" }
+        allocation_id: { type: string }
+        allocation_version: { type: integer }
+        kind: { $ref: "#/components/schemas/AllocationKind" }
+        hold_expires_at: { type: string, format: date-time }
+        contract: { $ref: "#/components/schemas/ContractBrief" }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        presence: { $ref: "#/components/schemas/DayPresence" }
+        release: { $ref: "#/components/schemas/DayRelease" }
+        arrival_today: { type: boolean }
+        departure_today: { type: boolean }
+        fit: { $ref: "#/components/schemas/DayFit" }
+        deadlines: { $ref: "#/components/schemas/DayDeadlines" }
+        utilities: { $ref: "#/components/schemas/DayUtilities" }
+        anomalies:
+          type: array
+          items: { $ref: "#/components/schemas/AnomalyCode" }
+
+    AreaPlacement:
+      type: object
+      required: [area_id, allocation_id, allocation_version, x_cm, cells, status, kind, vessel, anomalies]
+      properties:
+        area_id: { type: string }
+        allocation_id: { type: string }
+        allocation_version: { type: integer }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        cells: { $ref: "#/components/schemas/CellsRange" }
+        status: { $ref: "#/components/schemas/DayStatus" }
+        kind: { $ref: "#/components/schemas/AllocationKind" }
+        contract: { $ref: "#/components/schemas/ContractBrief" }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        presence: { $ref: "#/components/schemas/DayPresence" }
+        fit: { $ref: "#/components/schemas/DayFit" }
+        anomalies:
+          type: array
+          items: { $ref: "#/components/schemas/AnomalyCode" }
+
+    UnplacedVessel:
+      type: object
+      required: [vessel, presence_id, reason]
+      properties:
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        presence_id: { type: string }
+        reason: { type: string, enum: [arrived_without_booking] }
+
+    DayView:
+      type: object
+      required: [map_id, date, map_version, generated_at, elements, area_placements, unplaced, counts]
+      properties:
+        map_id: { type: string }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        map_version: { type: integer }
+        generated_at: { type: string, format: date-time }
+        elements:
+          type: array
+          items: { $ref: "#/components/schemas/DayElement" }
+        area_placements:
+          type: array
+          items: { $ref: "#/components/schemas/AreaPlacement" }
+        unplaced:
+          type: array
+          items: { $ref: "#/components/schemas/UnplacedVessel" }
+        counts:
+          type: object
+          required: [anomalies]
+          properties:
+            anomalies: { type: integer }
+
+    ReleasePolicy:
+      type: string
+      enum: [never, with_consent]
+
+    OccupancySettings:
+      type: object
+      required: [safety_clearance_cm, waste_threshold_bp, draft_hold_days, desk_hold_hours, quote_validity_days,
+                 max_segments, absent_days_threshold, arrival_grace_minutes, default_arrival_time,
+                 default_departure_time, reprice_on_move, release_policy, version]
+      properties:
+        safety_clearance_cm: { type: integer, format: int64, minimum: 0, maximum: 300 }
+        waste_threshold_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        draft_hold_days: { type: integer, minimum: 1, maximum: 60 }
+        desk_hold_hours: { type: integer, minimum: 1, maximum: 168 }
+        quote_validity_days: { type: integer, minimum: 1, maximum: 120 }
+        max_segments: { type: integer, minimum: 0, maximum: 2 }
+        absent_days_threshold: { type: integer, minimum: 1, maximum: 365 }
+        arrival_grace_minutes: { type: integer, minimum: 0, maximum: 1440 }
+        default_arrival_time: { $ref: "#/components/schemas/LocalTime" }
+        default_departure_time: { $ref: "#/components/schemas/LocalTime" }
+        reprice_on_move: { type: boolean }
+        release_policy: { $ref: "#/components/schemas/ReleasePolicy" }
+        version: { type: integer }
+
+    OccupancySettingsUpdate:
+      type: object
+      required: [safety_clearance_cm, waste_threshold_bp, draft_hold_days, desk_hold_hours, quote_validity_days,
+                 max_segments, absent_days_threshold, arrival_grace_minutes, default_arrival_time,
+                 default_departure_time, reprice_on_move, release_policy]
+      properties:
+        safety_clearance_cm: { type: integer, format: int64, minimum: 0, maximum: 300 }
+        waste_threshold_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        draft_hold_days: { type: integer, minimum: 1, maximum: 60 }
+        desk_hold_hours: { type: integer, minimum: 1, maximum: 168 }
+        quote_validity_days: { type: integer, minimum: 1, maximum: 120 }
+        max_segments: { type: integer, minimum: 0, maximum: 2 }
+        absent_days_threshold: { type: integer, minimum: 1, maximum: 365 }
+        arrival_grace_minutes: { type: integer, minimum: 0, maximum: 1440 }
+        default_arrival_time: { $ref: "#/components/schemas/LocalTime" }
+        default_departure_time: { $ref: "#/components/schemas/LocalTime" }
+        reprice_on_move: { type: boolean }
+        release_policy: { $ref: "#/components/schemas/ReleasePolicy" }
+
+    LocalTime:
+      description: Local time HH:MM in the marina timezone
+      type: string
+      pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+
+    SearchPurpose:
+      type: string
+      enum: [transit, contract]
+
+    SearchVessel:
+      type: object
+      required: [loa_cm, beam_cm, hull_type]
+      properties:
+        loa_cm: { $ref: "#/components/schemas/PositiveCm" }
+        beam_cm: { $ref: "#/components/schemas/PositiveCm" }
+        draft_cm: { $ref: "#/components/schemas/PositiveCm" }
+        air_draft_cm: { $ref: "#/components/schemas/PositiveCm" }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+
+    SearchPrefs:
+      type: object
+      properties:
+        group_ids:
+          type: array
+          maxItems: 50
+          items: { type: string }
+        structure_ids:
+          type: array
+          maxItems: 50
+          items: { type: string }
+        power_a: { type: integer }
+        water: { type: boolean }
+
+    OccupancySearchRequest:
+      description: vessel_id or vessel; nights are [arrival, departure)
+      type: object
+      required: [purpose, arrival, departure]
+      properties:
+        purpose: { $ref: "#/components/schemas/SearchPurpose" }
+        vessel_id: { type: string, maxLength: 36 }
+        vessel: { $ref: "#/components/schemas/SearchVessel" }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        resource_types:
+          type: array
+          items: { $ref: "#/components/schemas/ResourceType" }
+        prefs: { $ref: "#/components/schemas/SearchPrefs" }
+        consider_out: { type: boolean }
+        max_segments: { type: integer, minimum: 0, maximum: 2 }
+        customer_id: { type: string, maxLength: 36 }
+        channel: { type: string, enum: [desk, api] }
+        services:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/SimulateService" }
+        limit: { type: integer, minimum: 1, maximum: 50 }
+
+    SolutionSegment:
+      type: object
+      required: [resource_type, resource_id, code, map_id, first_night, last_night]
+      properties:
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        code: { type: string }
+        map_id: { type: string }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+
+    OccupancySolution:
+      type: object
+      required: [key, segments, score, fit]
+      properties:
+        key: { type: string }
+        segments:
+          type: array
+          items: { $ref: "#/components/schemas/SolutionSegment" }
+        score: { type: integer, format: int64 }
+        fit: { $ref: "#/components/schemas/FitResult" }
+        requires_release:
+          type: object
+          required: [allocation_id, contract_id]
+          properties:
+            allocation_id: { type: string }
+            contract_id: { type: string }
+        pricing: { $ref: "#/components/schemas/PriceSummary" }
+        pricing_error:
+          type: object
+          required: [type]
+          properties:
+            type: { type: string, description: Problem slug (no_price) }
+            reason: { type: string }
+
+    OccupancySearchResult:
+      type: object
+      required: [solutions, considered]
+      properties:
+        solutions:
+          type: array
+          items: { $ref: "#/components/schemas/OccupancySolution" }
+        considered: { type: integer }
+
+    PlacementCheckRequest:
+      description: allocation_id (a move) or vessel_id (a new placement)
+      type: object
+      required: [target, from_night, to_night]
+      properties:
+        allocation_id: { type: string, maxLength: 36 }
+        vessel_id: { type: string, maxLength: 36 }
+        target: { $ref: "#/components/schemas/PlacementInput" }
+        from_night: { $ref: "#/components/schemas/IsoDate" }
+        to_night: { $ref: "#/components/schemas/IsoDate" }
+
+    PlacementCheck:
+      type: object
+      required: [ok, fit, conflicts]
+      properties:
+        ok: { type: boolean }
+        fit: { $ref: "#/components/schemas/FitResult" }
+        placement_error: { type: string, description: unsnapped, outside_area, blocked_cell, invalid_vessel, placement_required, placement_not_allowed }
+        conflicts:
+          type: array
+          items: { $ref: "#/components/schemas/ConflictDetail" }
+        closure_id: { type: string }
+        price_effect: { $ref: "#/components/schemas/PriceEffect" }
+
+    MoveRequest:
+      type: object
+      required: [allocation_id, version, target]
+      properties:
+        allocation_id: { type: string, maxLength: 36 }
+        version: { type: integer }
+        target: { $ref: "#/components/schemas/PlacementInput" }
+        from_night: { $ref: "#/components/schemas/IsoDate" }
+        to_night: { $ref: "#/components/schemas/IsoDate" }
+        fit_override: { $ref: "#/components/schemas/FitOverrideInput" }
+        reprice: { type: boolean }
+
+    VersionedAllocation:
+      type: object
+      required: [allocation_id, version]
+      properties:
+        allocation_id: { type: string, maxLength: 36 }
+        version: { type: integer }
+
+    SwapRequest:
+      type: object
+      required: [a, b]
+      properties:
+        a: { $ref: "#/components/schemas/VersionedAllocation" }
+        b: { $ref: "#/components/schemas/VersionedAllocation" }
+        from_night: { $ref: "#/components/schemas/IsoDate" }
+        fit_override: { $ref: "#/components/schemas/FitOverrideInput" }
+
+    MoveResult:
+      type: object
+      required: [allocations, undo_id, undo_until]
+      properties:
+        allocations:
+          type: array
+          items: { $ref: "#/components/schemas/Allocation" }
+        undo_id: { type: string }
+        undo_until: { type: string, format: date-time }
+        price_effect: { $ref: "#/components/schemas/PriceEffect" }
+
+    LayoutPlacement:
+      type: object
+      required: [allocation_id, x_cm]
+      properties:
+        allocation_id: { type: string, maxLength: 36 }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+
+    AreaLayoutSave:
+      type: object
+      required: [date, base, placements]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        from_night: { $ref: "#/components/schemas/IsoDate" }
+        base:
+          type: array
+          maxItems: 2000
+          items: { $ref: "#/components/schemas/VersionedAllocation" }
+        placements:
+          type: array
+          maxItems: 2000
+          items: { $ref: "#/components/schemas/LayoutPlacement" }
+        fit_overrides:
+          type: array
+          maxItems: 2000
+          items:
+            type: object
+            required: [allocation_id, reason]
+            properties:
+              allocation_id: { type: string, maxLength: 36 }
+              reason: { type: string, minLength: 1, maxLength: 200 }
+
+    CompactionRequest:
+      type: object
+      required: [from, to]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+
+    CompactionProposal:
+      type: object
+      required: [placements, freed_cm, base]
+      properties:
+        placements:
+          type: array
+          items:
+            type: object
+            required: [allocation_id, x_cm]
+            properties:
+              allocation_id: { type: string }
+              x_cm: { $ref: "#/components/schemas/Cm" }
+        freed_cm: { $ref: "#/components/schemas/Cm" }
+        base:
+          type: array
+          items: { $ref: "#/components/schemas/VersionedAllocation" }
+
+    BlockCreate:
+      description: For dynamic areas loa_cm and beam_cm give the blocked footprint
+      type: object
+      required: [target, from, to, reason]
+      properties:
+        target: { $ref: "#/components/schemas/PlacementInput" }
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        reason: { type: string, minLength: 1, maxLength: 200 }
+        loa_cm: { $ref: "#/components/schemas/PositiveCm" }
+        beam_cm: { $ref: "#/components/schemas/PositiveCm" }
+
+    ReleaseStatus:
+      type: string
+      enum: [active, revoked]
+
+    ReleaseSource:
+      type: string
+      enum: [customer_phone, customer_desk, customer_link, dock, office, system]
+
+    Release:
+      type: object
+      required: [id, allocation_id, contract_id, resource_type, resource_id, from_night, to_night, status, source,
+                 resold_nights, credit_cents, created_at, version]
+      properties:
+        id: { type: string }
+        allocation_id: { type: string }
+        contract_id: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        resource_code: { type: string }
+        from_night: { $ref: "#/components/schemas/IsoDate" }
+        to_night: { $ref: "#/components/schemas/IsoDate" }
+        status: { $ref: "#/components/schemas/ReleaseStatus" }
+        source: { $ref: "#/components/schemas/ReleaseSource" }
+        resold_allocation_id: { type: string }
+        resold_nights: { type: integer }
+        credit_cents: { $ref: "#/components/schemas/Cents" }
+        notes: { type: string, description: Only with customers.read }
+        created_at: { type: string, format: date-time }
+        revoked_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    ReleasePage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Release" }
+        next_cursor: { type: [string, "null"] }
+
+    ReleaseCreate:
+      type: object
+      required: [allocation_id, from_night, to_night, source]
+      properties:
+        allocation_id: { type: string, maxLength: 36 }
+        from_night: { $ref: "#/components/schemas/IsoDate" }
+        to_night: { $ref: "#/components/schemas/IsoDate" }
+        source: { $ref: "#/components/schemas/ReleaseSource" }
+        notes: { type: string, maxLength: 1000 }
+
+    RevokeRequest:
+      description: Without from_night/to_night the whole release is revoked
+      type: object
+      properties:
+        from_night: { $ref: "#/components/schemas/IsoDate" }
+        to_night: { $ref: "#/components/schemas/IsoDate" }
+
+    RevokeResult:
+      type: object
+      required: [release, restored_nights]
+      properties:
+        release: { $ref: "#/components/schemas/Release" }
+        restored_nights: { type: integer }
+        remaining: { $ref: "#/components/schemas/Release" }
+
+    ClosureScope:
+      type: string
+      enum: [marina, map, structure, group, resource]
+
+    Closure:
+      type: object
+      required: [id, scope_type, from_date, to_date, reason, version]
+      properties:
+        id: { type: string }
+        scope_type: { $ref: "#/components/schemas/ClosureScope" }
+        scope_id: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        from_date: { $ref: "#/components/schemas/IsoDate" }
+        to_date: { $ref: "#/components/schemas/IsoDate" }
+        reason: { type: string }
+        version: { type: integer }
+
+    ClosureList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Closure" }
+
+    ClosureCreate:
+      description: scope_id is required except for scope marina; resource_type is required for scope resource
+      type: object
+      required: [scope_type, from_date, to_date, reason]
+      properties:
+        scope_type: { $ref: "#/components/schemas/ClosureScope" }
+        scope_id: { type: string, maxLength: 36 }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        from_date: { $ref: "#/components/schemas/IsoDate" }
+        to_date: { $ref: "#/components/schemas/IsoDate" }
+        reason: { type: string, minLength: 1, maxLength: 200 }
+
+    # ---- quotes, contracts, transits, inquiries ----
+
+    QuoteStatus:
+      type: string
+      enum: [draft, sent, accepted, declined, expired]
+
+    QuoteKind:
+      type: string
+      enum: [mooring, transit]
+
+    ContractPolicy:
+      description: Versioned contract policy (m3-plan §4.7); unknown keys are rejected
+      type: object
+      additionalProperties: false
+      properties:
+        version: { type: integer, enum: [1] }
+        reprice_on_move: { type: boolean }
+        release_policy: { $ref: "#/components/schemas/ReleasePolicy" }
+        allow_segments: { type: boolean }
+
+    QuoteOptionInput:
+      type: object
+      required: [hold, placements]
+      properties:
+        label: { type: string, maxLength: 120 }
+        hold: { type: boolean }
+        placements:
+          type: array
+          minItems: 1
+          maxItems: 2
+          items: { $ref: "#/components/schemas/SegmentInput" }
+        services:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/SimulateService" }
+        fit_override: { $ref: "#/components/schemas/FitOverrideInput" }
+
+    QuoteInput:
+      type: object
+      required: [kind, customer_id, vessel_id, starts_on, ends_on, options]
+      properties:
+        kind: { $ref: "#/components/schemas/QuoteKind" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        customer_id: { type: string, maxLength: 36 }
+        vessel_id: { type: string, maxLength: 36 }
+        starts_on: { $ref: "#/components/schemas/IsoDate" }
+        ends_on: { $ref: "#/components/schemas/IsoDate" }
+        valid_until: { $ref: "#/components/schemas/IsoDate" }
+        channel: { type: string, enum: [desk, api] }
+        policy: { $ref: "#/components/schemas/ContractPolicy" }
+        notes: { type: string, maxLength: 4000 }
+        inquiry_id: { type: string, maxLength: 36 }
+        options:
+          type: array
+          minItems: 1
+          maxItems: 3
+          items: { $ref: "#/components/schemas/QuoteOptionInput" }
+
+    QuotePlacement:
+      type: object
+      required: [seq, resource_type, resource_id, first_night, last_night]
+      properties:
+        seq: { type: integer }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        resource_code: { type: string }
+        map_id: { type: string }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/RotationDd" }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+        allocation_id: { type: string, description: The hold, when the option holds and it is still active }
+
+    QuoteOption:
+      type: object
+      required: [id, seq, label, hold, placements, total_cents, deposit_cents, engine_version]
+      properties:
+        id: { type: string }
+        seq: { type: integer }
+        label: { type: string }
+        hold: { type: boolean }
+        placements:
+          type: array
+          items: { $ref: "#/components/schemas/QuotePlacement" }
+        price_list_id: { type: string }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        deposit_cents: { $ref: "#/components/schemas/Cents" }
+        engine_version: { type: integer }
+        breakdown: { $ref: "#/components/schemas/PriceBreakdown" }
+        fit_override: { $ref: "#/components/schemas/FitOverride" }
+
+    Quote:
+      type: object
+      required: [id, code, number, year, status, kind, customer, vessel, starts_on, ends_on, valid_until, expires_at,
+                 channel, options, created_at, version]
+      properties:
+        id: { type: string }
+        code: { type: string, description: PRV-2026-0001 }
+        number: { type: integer, format: int64 }
+        year: { type: integer }
+        status: { $ref: "#/components/schemas/QuoteStatus" }
+        kind: { $ref: "#/components/schemas/QuoteKind" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        starts_on: { $ref: "#/components/schemas/IsoDate" }
+        ends_on: { $ref: "#/components/schemas/IsoDate" }
+        valid_until: { $ref: "#/components/schemas/IsoDate" }
+        expires_at: { type: string, format: date-time }
+        channel: { $ref: "#/components/schemas/Channel" }
+        policy: { $ref: "#/components/schemas/ContractPolicy" }
+        notes: { type: string }
+        inquiry_id: { type: string }
+        accepted_option_id: { type: string }
+        contract_id: { type: string }
+        sent_at: { type: string, format: date-time }
+        decided_at: { type: string, format: date-time }
+        decline_reason: { type: string }
+        options:
+          type: array
+          items: { $ref: "#/components/schemas/QuoteOption" }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    QuoteSummary:
+      type: object
+      required: [id, code, status, kind, customer, vessel, starts_on, ends_on, valid_until, options_count, created_at, version]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        status: { $ref: "#/components/schemas/QuoteStatus" }
+        kind: { $ref: "#/components/schemas/QuoteKind" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        starts_on: { $ref: "#/components/schemas/IsoDate" }
+        ends_on: { $ref: "#/components/schemas/IsoDate" }
+        valid_until: { $ref: "#/components/schemas/IsoDate" }
+        options_count: { type: integer }
+        min_total_cents: { $ref: "#/components/schemas/Cents" }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    QuotePage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/QuoteSummary" }
+        next_cursor: { type: [string, "null"] }
+
+    ManualConfirmation:
+      description: Manual driver confirmation (M3); the reference is free text, stored and never logged
+      type: object
+      properties:
+        reference: { type: string, maxLength: 200 }
+        pay_at_departure: { type: boolean }
+
+    QuoteAccept:
+      type: object
+      required: [option_id]
+      properties:
+        option_id: { type: string, maxLength: 36 }
+        activate: { type: boolean, description: Mooring quotes create an active contract instead of a draft }
+        confirm: { $ref: "#/components/schemas/ManualConfirmation" }
+
+    QuoteAcceptResult:
+      type: object
+      required: [quote, contract]
+      properties:
+        quote: { $ref: "#/components/schemas/Quote" }
+        contract: { $ref: "#/components/schemas/Contract" }
+
+    ReasonInput:
+      type: object
+      properties:
+        reason: { type: string, maxLength: 500 }
+
+    ContractLineKind:
+      type: string
+      enum: [resource, service]
+
+    ContractLine:
+      type: object
+      required: [id, seq, line_kind, qty_milli, amount_cents]
+      properties:
+        id: { type: string }
+        seq: { type: integer }
+        line_kind: { $ref: "#/components/schemas/ContractLineKind" }
+        item_id: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        resource_code: { type: string }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+
+    PresenceEvent:
+      type: string
+      enum: [arrived, departed, hauled_out, launched]
+
+    PresenceSource:
+      type: string
+      enum: [staff, sensor, customer]
+
+    Presence:
+      type: object
+      required: [id, vessel, event, at, night, source, has_photo]
+      properties:
+        id: { type: string }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        allocation_id: { type: string }
+        contract_id: { type: string }
+        event: { $ref: "#/components/schemas/PresenceEvent" }
+        at: { type: string, format: date-time }
+        night: { $ref: "#/components/schemas/IsoDate" }
+        source: { $ref: "#/components/schemas/PresenceSource" }
+        user_id: { type: string }
+        notes: { type: string, description: Only with customers.read }
+        has_photo: { type: boolean }
+
+    Contract:
+      description: A mooring contract or a transit
+      type: object
+      required: [id, code, kind, number, year, status, vessel, starts_on, ends_on, channel, total_cents, deposit_cents,
+                 engine_version, hold_lost, signed_on_paper, pay_at_departure, lines, allocations, releases, presences,
+                 created_at, version]
+      properties:
+        id: { type: string }
+        code: { type: string, description: "ORM-2026-0001, TRN-2026-0001" }
+        kind: { $ref: "#/components/schemas/ContractKind" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        number: { type: integer, format: int64 }
+        year: { type: integer }
+        status: { $ref: "#/components/schemas/ContractStatus" }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        billing_customer: { $ref: "#/components/schemas/CustomerBrief" }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        starts_on: { $ref: "#/components/schemas/IsoDate" }
+        ends_on: { $ref: "#/components/schemas/IsoDate" }
+        channel: { $ref: "#/components/schemas/Channel" }
+        quote_id: { type: string }
+        price_list_id: { type: string }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        deposit_cents: { $ref: "#/components/schemas/Cents" }
+        engine_version: { type: integer }
+        breakdown: { $ref: "#/components/schemas/PriceBreakdown" }
+        policy: { $ref: "#/components/schemas/ContractPolicy" }
+        expected_arrival_time: { $ref: "#/components/schemas/LocalTime" }
+        expected_departure_time: { $ref: "#/components/schemas/LocalTime" }
+        notes: { type: string }
+        hold_lost: { type: boolean }
+        hold_expires_at: { type: string, format: date-time }
+        activated_at: { type: string, format: date-time }
+        signed_on_paper: { type: boolean }
+        confirmed_at: { type: string, format: date-time }
+        confirmation_source: { type: string, enum: [manual, provider] }
+        confirmation_ref: { type: string, description: Only with contracts.write or transits.desk }
+        pay_at_departure: { type: boolean }
+        cancelled_at: { type: string, format: date-time }
+        cancel_reason: { type: string }
+        terminated_on: { $ref: "#/components/schemas/IsoDate" }
+        terminate_reason: { type: string }
+        lines:
+          type: array
+          items: { $ref: "#/components/schemas/ContractLine" }
+        allocations:
+          type: array
+          items: { $ref: "#/components/schemas/Allocation" }
+        releases:
+          type: array
+          items: { $ref: "#/components/schemas/Release" }
+        presences:
+          type: array
+          items: { $ref: "#/components/schemas/Presence" }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    ContractSummary:
+      type: object
+      required: [id, code, kind, status, vessel, starts_on, ends_on, total_cents, hold_lost, resources, created_at, version]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        kind: { $ref: "#/components/schemas/ContractKind" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        status: { $ref: "#/components/schemas/ContractStatus" }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        starts_on: { $ref: "#/components/schemas/IsoDate" }
+        ends_on: { $ref: "#/components/schemas/IsoDate" }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        hold_lost: { type: boolean }
+        hold_expires_at: { type: string, format: date-time }
+        resources:
+          description: Current resources of the resource lines
+          type: array
+          items:
+            type: object
+            required: [resource_type, resource_id, code]
+            properties:
+              resource_type: { $ref: "#/components/schemas/ResourceType" }
+              resource_id: { type: string }
+              code: { type: string }
+              map_id: { type: string }
+        presence_state: { $ref: "#/components/schemas/PresenceState" }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    ContractPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/ContractSummary" }
+        next_cursor: { type: [string, "null"] }
+
+    ExtraResource:
+      type: object
+      required: [land_resource_id]
+      properties:
+        land_resource_id: { type: string, maxLength: 36 }
+        item_id: { type: string, maxLength: 36 }
+
+    ContractCreate:
+      description: ends_on defaults by term (annual +1 year, seasonal the season end of the active seasonal list, monthly +1 month; period requires it)
+      type: object
+      required: [term, customer_id, vessel_id, starts_on, placements]
+      properties:
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        customer_id: { type: string, maxLength: 36 }
+        billing_customer_id: { type: string, maxLength: 36 }
+        vessel_id: { type: string, maxLength: 36 }
+        starts_on: { $ref: "#/components/schemas/IsoDate" }
+        ends_on: { $ref: "#/components/schemas/IsoDate" }
+        placements:
+          type: array
+          minItems: 1
+          maxItems: 3
+          items: { $ref: "#/components/schemas/SegmentInput" }
+        extra_resources:
+          type: array
+          maxItems: 10
+          items: { $ref: "#/components/schemas/ExtraResource" }
+        services:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/SimulateService" }
+        policy: { $ref: "#/components/schemas/ContractPolicy" }
+        notes: { type: string, maxLength: 4000 }
+        activate: { type: boolean }
+        fit_override: { $ref: "#/components/schemas/FitOverrideInput" }
+
+    ContractPatch:
+      type: object
+      properties:
+        notes: { type: string, maxLength: 4000 }
+        billing_customer_id: { type: [string, "null"], maxLength: 36 }
+        policy: { $ref: "#/components/schemas/ContractPolicy" }
+
+    TerminateInput:
+      type: object
+      required: [effective_on, reason]
+      properties:
+        effective_on: { $ref: "#/components/schemas/IsoDate" }
+        reason: { type: string, minLength: 1, maxLength: 500 }
+
+    NewVesselInput:
+      description: A vessel created on the spot with declared (estimated) dimensions
+      type: object
+      required: [name, loa_cm, beam_cm, hull_type]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100 }
+        loa_cm: { $ref: "#/components/schemas/PositiveCm" }
+        beam_cm: { $ref: "#/components/schemas/PositiveCm" }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+        draft_cm: { $ref: "#/components/schemas/PositiveCm" }
+
+    TransitCreate:
+      description: vessel_id or new_vessel; placements, or solution_key with the search_request that produced it
+      type: object
+      required: [arrival, departure]
+      properties:
+        vessel_id: { type: string, maxLength: 36 }
+        new_vessel: { $ref: "#/components/schemas/NewVesselInput" }
+        customer_id: { type: string, maxLength: 36 }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        placements:
+          type: array
+          minItems: 1
+          maxItems: 3
+          items: { $ref: "#/components/schemas/SegmentInput" }
+        solution_key: { type: string, maxLength: 512 }
+        search_request: { $ref: "#/components/schemas/OccupancySearchRequest" }
+        channel: { type: string, enum: [desk, api] }
+        expected_arrival_time: { $ref: "#/components/schemas/LocalTime" }
+        notes: { type: string, maxLength: 4000 }
+        services:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/SimulateService" }
+        fit_override: { $ref: "#/components/schemas/FitOverrideInput" }
+        confirm: { $ref: "#/components/schemas/ManualConfirmation" }
+        inquiry_id: { type: string, maxLength: 36 }
+
+    StayChange:
+      type: object
+      properties:
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        extension_target: { $ref: "#/components/schemas/PlacementInput" }
+        fit_override: { $ref: "#/components/schemas/FitOverrideInput" }
+
+    StayChangeResult:
+      type: object
+      required: [contract, price_effect]
+      properties:
+        contract: { $ref: "#/components/schemas/Contract" }
+        price_effect: { $ref: "#/components/schemas/PriceEffect" }
+
+    TransitPatch:
+      type: object
+      properties:
+        customer_id: { type: [string, "null"], maxLength: 36 }
+        notes: { type: string, maxLength: 4000 }
+        expected_arrival_time: { type: [string, "null"], pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$" }
+        expected_departure_time: { type: [string, "null"], pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$" }
+
+    InquiryOutcome:
+      type: string
+      enum: [open, quoted, booked, declined_no_space, declined_size, declined_other, lost]
+
+    InquirySource:
+      type: string
+      enum: [phone, email, desk, public, channel]
+
+    Inquiry:
+      type: object
+      required: [id, channel, source, purpose, loa_cm, beam_cm, arrival, departure, outcome, created_at, version]
+      properties:
+        id: { type: string }
+        channel: { $ref: "#/components/schemas/Channel" }
+        source: { $ref: "#/components/schemas/InquirySource" }
+        purpose: { $ref: "#/components/schemas/SearchPurpose" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        draft_cm: { $ref: "#/components/schemas/Cm" }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        outcome: { $ref: "#/components/schemas/InquiryOutcome" }
+        quote_id: { type: string }
+        contract_id: { type: string }
+        notes: { type: string, description: Only with customers.read }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    InquiryPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Inquiry" }
+        next_cursor: { type: [string, "null"] }
+
+    InquiryCreate:
+      description: vessel_id or loa_cm and beam_cm
+      type: object
+      required: [purpose, source, arrival, departure]
+      properties:
+        purpose: { $ref: "#/components/schemas/SearchPurpose" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        source: { $ref: "#/components/schemas/InquirySource" }
+        channel: { $ref: "#/components/schemas/Channel" }
+        vessel_id: { type: string, maxLength: 36 }
+        loa_cm: { $ref: "#/components/schemas/PositiveCm" }
+        beam_cm: { $ref: "#/components/schemas/PositiveCm" }
+        draft_cm: { $ref: "#/components/schemas/PositiveCm" }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        customer_id: { type: string, maxLength: 36 }
+        outcome: { $ref: "#/components/schemas/InquiryOutcome" }
+        notes: { type: string, maxLength: 4000 }
+
+    InquiryPatch:
+      type: object
+      properties:
+        outcome: { $ref: "#/components/schemas/InquiryOutcome" }
+        quote_id: { type: [string, "null"], maxLength: 36 }
+        contract_id: { type: [string, "null"], maxLength: 36 }
+        notes: { type: string, maxLength: 4000 }
+
+    # ---- presences ----
+
+    PresencePage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Presence" }
+        next_cursor: { type: [string, "null"] }
+
+    PresenceCreate:
+      type: object
+      required: [vessel_id, event]
+      properties:
+        vessel_id: { type: string, maxLength: 36 }
+        event: { $ref: "#/components/schemas/PresenceEvent" }
+        at: { type: string, format: date-time }
+        allocation_id: { type: string, maxLength: 36 }
+        notes: { type: string, maxLength: 1000 }
+        expected_return_on: { $ref: "#/components/schemas/IsoDate" }
+
+    PresenceResult:
+      type: object
+      required: [presence]
+      properties:
+        presence: { $ref: "#/components/schemas/Presence" }
+        contract: { $ref: "#/components/schemas/Contract" }
+
+    UnexpectedArrival:
+      description: vessel_id or new_vessel; departure defaults to the next day
+      type: object
+      required: [target]
+      properties:
+        vessel_id: { type: string, maxLength: 36 }
+        new_vessel: { $ref: "#/components/schemas/NewVesselInput" }
+        target: { $ref: "#/components/schemas/PlacementInput" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        notes: { type: string, maxLength: 1000 }
+        fit_override: { $ref: "#/components/schemas/FitOverrideInput" }
+
+    PresencePhoto:
+      type: object
+      required: [file_id]
+      properties:
+        file_id: { type: string }
+
+    FileLink:
+      type: object
+      required: [url, expires_at]
+      properties:
+        url: { type: string }
+        expires_at: { type: string, format: date-time }
+
+    MovementResource:
+      type: object
+      required: [type, id, code]
+      properties:
+        type: { $ref: "#/components/schemas/ResourceType" }
+        id: { type: string }
+        code: { type: string }
+        map_id: { type: string }
+
+    Movement:
+      type: object
+      required: [vessel]
+      properties:
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        contract: { $ref: "#/components/schemas/ContractBrief" }
+        resource: { $ref: "#/components/schemas/MovementResource" }
+        expected_time: { $ref: "#/components/schemas/LocalTime" }
+        presence_id: { type: string }
+        allocation_id: { type: string }
+
+    Movements:
+      type: object
+      required: [date, arrivals_expected, departures_expected, vessels_out, arrived_without_booking, arrived, departed]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        arrivals_expected:
+          type: array
+          items: { $ref: "#/components/schemas/Movement" }
+        departures_expected:
+          type: array
+          items: { $ref: "#/components/schemas/Movement" }
+        vessels_out:
+          type: array
+          items: { $ref: "#/components/schemas/Movement" }
+        arrived_without_booking:
+          type: array
+          items: { $ref: "#/components/schemas/Movement" }
+        arrived:
+          type: array
+          items: { $ref: "#/components/schemas/Movement" }
+        departed:
+          type: array
+          items: { $ref: "#/components/schemas/Movement" }

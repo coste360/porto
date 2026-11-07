@@ -73,6 +73,9 @@ const (
 	// PermPricingRead reads items, price lists, the matrix, the coverage check and runs the simulator: every role
 	// except yard (m2-plan §12 D1). Added in M2.
 	PermPricingRead Permission = "pricing.read"
+	// PermContractsRead reads quotes, contracts, transits, inquiries and releases: owner, director, office,
+	// accounting and dock (m3-plan §13 D1). Added in M3.
+	PermContractsRead Permission = "contracts.read"
 )
 
 // Permissions returns every permission.
@@ -85,6 +88,7 @@ func Permissions() []Permission {
 		PermStorageManage, PermStorageRead, PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage,
 		PermMaintenanceManage, PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard,
 		PermReportsRental, PermMapView, PermHarborConfigure, PermPricingConfigure, PermPricingRead,
+		PermContractsRead,
 	}
 }
 
@@ -102,6 +106,7 @@ var rolePermissions = map[Role][]Permission{
 		PermStorageManage, PermStorageRead, PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage,
 		PermMaintenanceManage, PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard,
 		PermReportsRental, PermMapView, PermHarborConfigure, PermPricingConfigure, PermPricingRead,
+		PermContractsRead,
 	},
 	RoleDirector: {
 		PermMarinaConfigure, PermMarinaRead, PermDevicesManage, PermDevicesPairSelf, PermAuditRead,
@@ -110,24 +115,25 @@ var rolePermissions = map[Role][]Permission{
 		PermPaymentsCollect, PermPaymentsCollectCash, PermRefundsIssue, PermStorageManage, PermStorageRead,
 		PermYardManage, PermYardRead, PermYardTimesheets, PermRentalManage, PermMaintenanceManage,
 		PermMaintenanceReport, PermReportsAll, PermReportsOperational, PermReportsYard, PermReportsRental,
-		PermMapView, PermHarborConfigure, PermPricingConfigure, PermPricingRead,
+		PermMapView, PermHarborConfigure, PermPricingConfigure, PermPricingRead, PermContractsRead,
 	},
 	RoleOffice: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersWrite, PermCustomersRead, PermContractsWrite,
 		PermTransitsDesk, PermOccupancyMove, PermPresenceWrite, PermRightsManage, PermChargesManage,
 		PermPaymentsCollect, PermPaymentsCollectCash, PermStorageManage, PermStorageRead, PermYardRead,
 		PermRentalManage, PermMaintenanceManage, PermMaintenanceReport, PermReportsOperational, PermMapView,
-		PermPricingRead,
+		PermPricingRead, PermContractsRead,
 	},
 	RoleAccounting: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersRead, PermRightsManage, PermChargesManage,
 		PermChargesExport, PermPaymentsCollect, PermPaymentsCollectCash, PermRefundsIssue, PermYardRead,
 		PermReportsAll, PermReportsOperational, PermReportsYard, PermReportsRental, PermMapView, PermPricingRead,
+		PermContractsRead,
 	},
 	RoleDock: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersRead, PermTransitsDesk, PermOccupancyMove,
 		PermPresenceWrite, PermPaymentsCollectCash, PermStorageRead, PermMaintenanceManage, PermMaintenanceReport,
-		PermMapView, PermPricingRead,
+		PermMapView, PermPricingRead, PermContractsRead,
 	},
 	RoleYardMgr: {
 		PermMarinaRead, PermDevicesPairSelf, PermCustomersRead, PermStorageManage, PermStorageRead,

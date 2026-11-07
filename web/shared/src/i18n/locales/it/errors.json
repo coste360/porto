@@ -47,5 +47,15 @@
   "price_list_invalid": "Il listino ha errori bloccanti: correggili prima di attivarlo.",
   "price_list_immutable": "Il listino è già pubblicato e non può cambiare: crea una copia o un rinnovo.",
   "price_list_overlap": "Un altro listino attivo copre gli stessi giorni per lo stesso tipo di contratto.",
-  "in_use": "L'elemento è ancora in uso e non può essere eliminato: disattivalo."
+  "in_use": "L'elemento è ancora in uso e non può essere eliminato: disattivalo.",
+  "resource_taken": "Il posto è già occupato in alcune notti del periodo richiesto.",
+  "fit_blocked": "L'imbarcazione non è compatibile con il posto scelto.",
+  "placement_invalid": "Posizione non valida nell'area.",
+  "invalid_transition": "Operazione non consentita nello stato attuale.",
+  "quote_expired": "Il preventivo è scaduto.",
+  "hold_expired": "L'opzione sul posto è scaduta.",
+  "closure_active": "Gli arrivi sono chiusi in quella data.",
+  "undo_unavailable": "Lo spostamento non può più essere annullato.",
+  "release_invalid": "Rilascio non valido.",
+  "customer_required": "Serve un cliente per confermare."
 }

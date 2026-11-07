@@ -211,6 +211,7 @@ linters:
           files:
             - "**/internal/domain/layout/**"
             - "**/internal/domain/fit/**"
+            - "**/internal/domain/occupancy/engine/**"
             - "**/internal/domain/pricing/**"
             - "**/internal/domain/accrual/**"
             - "**/internal/domain/formula/**"
@@ -237,11 +238,13 @@ linters:
           files:
             - "**/internal/domain/layout/**"
             - "**/internal/domain/fit/**"
+            - "**/internal/domain/occupancy/engine/**"
             - "**/internal/domain/pricing/**"
             - "**/internal/domain/accrual/**"
             - "**/internal/domain/formula/**"
-            # Seeded generator of the layout parity vectors (test data, not the engine).
+            # Seeded generators of the layout and fit parity vectors (test data, not the engines).
             - "!**/internal/domain/layout/internal/vectors/**"
+            - "!**/internal/domain/fit/internal/genvectors/**"
           deny:
             - pkg: math/rand
               desc: pure engines are deterministic; only the optimizer takes an explicit seed (INV-21)

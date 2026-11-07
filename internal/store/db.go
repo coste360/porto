@@ -285,7 +285,9 @@ func IsForeignKeyViolation(err error) bool {
 		return pe.Field('C') == "23503"
 	}
 	if se, ok := errors.AsType[*sqlite.Error](err); ok {
-		return se.Code() == 787 // SQLITE_CONSTRAINT_FOREIGNKEY
+		// SQLITE_CONSTRAINT_FOREIGNKEY; an ON DELETE RESTRICT action is enforced through an internal trigger and
+		// reports SQLITE_CONSTRAINT_TRIGGER with the foreign key message (occupancy rows of 00006, m3-plan §3.7).
+		return se.Code() == 787 || (se.Code() == 1811 && strings.Contains(se.Error(), "FOREIGN KEY constraint failed"))
 	}
 	return false
 }

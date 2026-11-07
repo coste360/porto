@@ -47,5 +47,15 @@
   "price_list_invalid": "The price list has blocking errors: fix them before activating it.",
   "price_list_immutable": "The price list is already published and cannot change: create a copy or a renewal.",
   "price_list_overlap": "Another active price list covers the same days for the same contract type.",
-  "in_use": "This is still in use and cannot be deleted: deactivate it instead."
+  "in_use": "This is still in use and cannot be deleted: deactivate it instead.",
+  "resource_taken": "The place is already occupied on some nights of the requested period.",
+  "fit_blocked": "The vessel does not fit the chosen place.",
+  "placement_invalid": "Invalid position in the area.",
+  "invalid_transition": "This action is not allowed in the current state.",
+  "quote_expired": "The quote has expired.",
+  "hold_expired": "The hold on the place has expired.",
+  "closure_active": "Arrivals are closed on that date.",
+  "undo_unavailable": "The move can no longer be undone.",
+  "release_invalid": "Invalid release.",
+  "customer_required": "A customer is required to confirm."
 }

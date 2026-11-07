@@ -12,6 +12,7 @@ import (
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/catalog"
+	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/customer"
 	"github.com/coste360/porto/internal/domain/deadline"
 	"github.com/coste360/porto/internal/domain/device"
@@ -20,6 +21,8 @@ import (
 	"github.com/coste360/porto/internal/domain/harbor"
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/meta"
+	"github.com/coste360/porto/internal/domain/occupancy"
+	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/team"
 	"github.com/coste360/porto/internal/domain/vessel"
@@ -57,6 +60,11 @@ type Handler struct {
 	// M2
 	Catalog    *catalog.Service
 	PriceLists *pricelist.Service
+
+	// M3
+	Occupancy *occupancy.Service
+	Contracts *contract.Service
+	Presence  *presence.Service
 }
 
 func principal(r *http.Request) *auth.Principal {

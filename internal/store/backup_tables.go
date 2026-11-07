@@ -51,10 +51,30 @@ func BackupTables() []string {
 		"price_list_bands",
 		"price_rules",
 		"price_list_items",
+		// M3 contracts and occupancy (00005_contracts, 00006_occupancy). inquiries.quote_id/contract_id and
+		// quotes.accepted_option_id/contract_id point forward: restore sets them after every table is loaded
+		// (internal/backup, lateColumns); allocations.moved_from_id is a deferred self reference.
+		"occupancy_settings",
+		"number_sequences",
+		"inquiries",
+		"quotes",
+		"quote_options",
+		"contracts",
+		"contract_lines",
+		"allocations",
+		"quote_option_placements",
+		"berth_occupancies",
+		"cell_occupancies",
+		"land_occupancies",
+		"releases",
+		"presences",
+		"vessel_presence",
+		"closures",
 	}
 }
 
 // BackupExcludedTables are never backed up: short-lived state that is useless (or unsafe) on another instance.
 func BackupExcludedTables() []string {
-	return []string{"sessions", "idempotency_keys", "goose_db_version"}
+	// move_undo_log (M3): undo entries live 24 h and refer to the moment of the move; restoring them is useless.
+	return []string{"sessions", "idempotency_keys", "goose_db_version", "move_undo_log"}
 }

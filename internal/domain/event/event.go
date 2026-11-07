@@ -51,6 +51,34 @@ const (
 	ConfigPricingChanged = "config.pricing_changed"
 )
 
+// M3 event types (version 1, m3-plan §7.5). Data carry ids, enums, dates and counts only (INV-70).
+const (
+	OccupancyAllocated    = "occupancy.allocated"
+	OccupancyMoved        = "occupancy.moved"
+	OccupancyReleased     = "occupancy.released"
+	OccupancyHoldExpired  = "occupancy.hold_expired"
+	ReleaseCreated        = "release.created"
+	ReleaseResold         = "release.resold"
+	PresenceArrived       = "presence.arrived"
+	PresenceDeparted      = "presence.departed"
+	QuoteSent             = "quote.sent"
+	QuoteAccepted         = "quote.accepted"
+	QuoteExpired          = "quote.expired"
+	ContractCreated       = "contract.created"
+	ContractActivated     = "contract.activated"
+	ContractTerminated    = "contract.terminated"
+	TransitHeld           = "transit.held"
+	TransitConfirmed      = "transit.confirmed"
+	TransitCancelled      = "transit.cancelled"
+	TransitArrived        = "transit.arrived"
+	TransitDeparted       = "transit.departed"
+	QuoteChanged          = "quote.changed"
+	ContractChanged       = "contract.changed"
+	TransitChanged        = "transit.changed"
+	InquiryChanged        = "inquiry.changed"
+	ConfigOccupancyChange = "config.occupancy_changed"
+)
+
 // SSE topics.
 const (
 	TopicMarina = "marina.changed"
@@ -61,6 +89,12 @@ const (
 	TopicRegistry = "registry.changed"
 	// TopicPricing carries pricing settings, revenue class, item, berth category and price list changes (M2).
 	TopicPricing = "pricing.changed"
+	// TopicOccupancy carries allocations, moves, releases, holds, blocks, closures and occupancy settings (M3).
+	TopicOccupancy = "occupancy.changed"
+	// TopicPresence carries arrivals and departures (M3).
+	TopicPresence = "presence.changed"
+	// TopicContract carries quotes, contracts, transits and inquiries (M3).
+	TopicContract = "contract.changed"
 )
 
 // TypeInfo describes an event type. Public types can be subscribed by webhook endpoints; Topic is the SSE event
@@ -93,6 +127,30 @@ var catalogue = []TypeInfo{
 	{DocumentChanged, TopicRegistry, false},
 	{DeadlineChanged, TopicRegistry, false},
 	{ConfigPricingChanged, TopicPricing, true},
+	{OccupancyAllocated, TopicOccupancy, true},
+	{OccupancyMoved, TopicOccupancy, true},
+	{OccupancyReleased, TopicOccupancy, true},
+	{OccupancyHoldExpired, TopicOccupancy, true},
+	{ReleaseCreated, TopicOccupancy, true},
+	{ReleaseResold, TopicOccupancy, true},
+	{PresenceArrived, TopicPresence, true},
+	{PresenceDeparted, TopicPresence, true},
+	{QuoteSent, TopicContract, true},
+	{QuoteAccepted, TopicContract, true},
+	{QuoteExpired, TopicContract, true},
+	{ContractCreated, TopicContract, true},
+	{ContractActivated, TopicContract, true},
+	{ContractTerminated, TopicContract, true},
+	{TransitHeld, TopicContract, true},
+	{TransitConfirmed, TopicContract, true},
+	{TransitCancelled, TopicContract, true},
+	{TransitArrived, TopicContract, true},
+	{TransitDeparted, TopicContract, true},
+	{QuoteChanged, TopicContract, false},
+	{ContractChanged, TopicContract, false},
+	{TransitChanged, TopicContract, false},
+	{InquiryChanged, TopicContract, false},
+	{ConfigOccupancyChange, TopicOccupancy, false},
 }
 
 // Types returns the catalogue of event types.

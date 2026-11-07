@@ -1,0 +1,174 @@
+{
+  "title": "Operations view",
+  "description": "Harbour occupancy on the chosen night, with lenses, filters and moves.",
+  "canvas": "Operations map",
+  "toolbar": "Map tools",
+  "maps": "Maps",
+  "noMaps": "No maps yet: create the harbour map first.",
+  "updating": "Updating…",
+  "picking": "Tap a berth on the map",
+  "actions": {
+    "fit": "Fit to view",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "print": "Print map",
+    "showList": "List",
+    "showMap": "Map",
+    "unexpectedArrival": "Unexpected arrival"
+  },
+  "date": {
+    "label": "Date",
+    "previous": "Previous night",
+    "next": "Next night",
+    "pick": "Pick the date",
+    "today": "Today"
+  },
+  "mode": {
+    "label": "Drawing mode",
+    "scale": "To scale",
+    "schema": "Schema"
+  },
+  "lens": {
+    "label": "Lens",
+    "other": "More"
+  },
+  "legend": {
+    "title": "Legend",
+    "label": "Legend and status filter",
+    "selectAll": "Select all",
+    "selectNone": "Deselect all",
+    "showList": "Show the {{count}} elements: {{label}}",
+    "listDescription": "Elements: {{count}}"
+  },
+  "filters": {
+    "title": "Filters",
+    "label": "Map filters",
+    "all": "All",
+    "text": "Search",
+    "textPlaceholder": "Vessel, customer or code",
+    "structure": "Pier or quay",
+    "group": "Group",
+    "category": "Category",
+    "contractType": "Contract type",
+    "loaMin": "Length from",
+    "loaMax": "Length up to",
+    "clear": "Clear all filters",
+    "contract": {
+      "annual": "Annual",
+      "seasonal": "Seasonal",
+      "monthly": "Monthly",
+      "period": "Period",
+      "transit": "Transit",
+      "none": "No contract"
+    }
+  },
+  "element": {
+    "aria": "{{code}}, {{status}}, {{vessel}}",
+    "noVessel": "no vessel"
+  },
+  "list": {
+    "code": "Code",
+    "status": "Status",
+    "vessel": "Vessel",
+    "legend": "Lens",
+    "other": "Other elements"
+  },
+  "quick": {
+    "label": "Quick card of {{code}}",
+    "size": "Size",
+    "hull": "Type",
+    "customer": "Customer",
+    "contract": "Contract",
+    "presence": "Presence",
+    "expectedReturn": "Expected return",
+    "release": "Released nights",
+    "resold": "resold",
+    "holdExpires": "Held until",
+    "fill": "Berth fill",
+    "override": "with override",
+    "fitIssue": "Limit exceeded",
+    "contractEnds": "Contract end",
+    "insurance": "Insurance",
+    "unblocked": "Block removed",
+    "action": {
+      "newTransit": "New transit",
+      "newQuote": "New quote",
+      "arrived": "Record arrival",
+      "departed": "Record departure",
+      "move": "Move",
+      "swap": "Swap with…",
+      "release": "Release nights",
+      "block": "Block",
+      "unblock": "Remove block",
+      "openLayout": "Open the layout",
+      "undo": "Undo last move"
+    }
+  },
+  "move": {
+    "title": "Move {{vessel}}",
+    "description": "The server rechecks berth, size and nights: the preview is not a guarantee.",
+    "target": "Destination",
+    "targetPlaceholder": "Choose the berth",
+    "targetSearch": "Search a berth",
+    "targetEmpty": "No berth",
+    "x": "Position along the area",
+    "to": "To {{target}}",
+    "when": "From when",
+    "from_today": "From today",
+    "from_date": "From a date",
+    "interval": "Only for an interval",
+    "fromNight": "From night",
+    "toNight": "To night",
+    "priceEffect": "Price: from {{old}} to {{next}} (difference {{delta}})",
+    "overrideReason": "Override reason",
+    "confirm": "Move"
+  },
+  "swap": {
+    "title": "Swap {{vessel}}",
+    "description": "The two vessels swap berths from the night of {{date}}.",
+    "with": "Swap with",
+    "confirm": "Swap"
+  },
+  "drag": {
+    "conflict": "{{vessel}} occupies the berth from {{from}} to {{to}}"
+  },
+  "undo": {
+    "action": "Undo",
+    "done": "Move undone",
+    "moved": "Vessel moved",
+    "swapped": "Vessels swapped"
+  },
+  "layout": {
+    "title": "Layout of {{code}}",
+    "description": "Draft for the night of {{date}}: save to apply every move together.",
+    "back": "Back to the map",
+    "compact": "Compact",
+    "compacted": "Compaction proposal: {{freed}} freed. Save to apply it.",
+    "restore": "Restore",
+    "save": "Save",
+    "saved": "Layout saved",
+    "staleTitle": "The layout has changed",
+    "stale": "Meanwhile these vessels changed: {{vessels}}. The draft was re-applied: check it and save again.",
+    "toPlace": "To place",
+    "nothingToPlace": "No vessel to place.",
+    "arrivedWithoutBooking": "arrived without booking",
+    "placeAllToSave": "Place every vessel to save.",
+    "inArea": "In the area",
+    "remove": "Take out of the area",
+    "rotate": "Rotate ({{deg}}°)",
+    "vesselAria": "Vessel {{vessel}}, drag to move it",
+    "draft": "Changes in the draft: {{count}}"
+  },
+  "picker": {
+    "title": "Pick on the map",
+    "description": "Nights from {{from}} to {{to}}: green free, yellow with warnings, red taken.",
+    "hint": "Hover a berth to see whether the vessel fits.",
+    "state": {
+      "ok": "{{code}}: free and compatible",
+      "warn": "{{code}}: compatible with warnings",
+      "conflict": "{{code}}: taken or not compatible",
+      "invalid": "{{code}}: invalid position"
+    }
+  },
+  "unplacedArrivals": "Arrivals without booking: {{count}}"
+}

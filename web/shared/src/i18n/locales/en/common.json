@@ -85,7 +85,15 @@
     "items": "Items and services",
     "pricingClassifications": "Classifications",
     "pricingSimulator": "Price simulator",
-    "pricingSettings": "Pricing settings"
+    "pricingSettings": "Pricing settings",
+    "ops": "Operations",
+    "planner": "Berth calendar",
+    "transits": "Transits",
+    "quotes": "Quotes",
+    "contracts": "Contracts",
+    "inquiries": "Inquiries",
+    "dock": "Dock",
+    "occupancySettings": "Occupancy settings"
   },
   "user": {
     "menu": "User menu",

@@ -1,0 +1,174 @@
+{
+  "title": "Vista operativa",
+  "description": "Occupazione del porto nella notte scelta, con contesti, filtri e spostamenti.",
+  "canvas": "Mappa operativa",
+  "toolbar": "Strumenti della mappa",
+  "maps": "Mappe",
+  "noMaps": "Nessuna mappa: crea prima la mappa del porto.",
+  "updating": "Aggiornamento…",
+  "picking": "Tocca un posto sulla mappa",
+  "actions": {
+    "fit": "Adatta alla vista",
+    "zoomIn": "Ingrandisci",
+    "zoomOut": "Riduci",
+    "print": "Stampa mappa",
+    "showList": "Elenco",
+    "showMap": "Mappa",
+    "unexpectedArrival": "Arrivo non previsto"
+  },
+  "date": {
+    "label": "Data",
+    "previous": "Notte precedente",
+    "next": "Notte successiva",
+    "pick": "Scegli la data",
+    "today": "Oggi"
+  },
+  "mode": {
+    "label": "Modo di disegno",
+    "scale": "In scala",
+    "schema": "Schema"
+  },
+  "lens": {
+    "label": "Contesto",
+    "other": "Altri"
+  },
+  "legend": {
+    "title": "Legenda",
+    "label": "Legenda e filtro per stato",
+    "selectAll": "Seleziona tutto",
+    "selectNone": "Deseleziona tutto",
+    "showList": "Mostra i {{count}} elementi: {{label}}",
+    "listDescription": "Elementi: {{count}}"
+  },
+  "filters": {
+    "title": "Filtri",
+    "label": "Filtri della mappa",
+    "all": "Tutti",
+    "text": "Cerca",
+    "textPlaceholder": "Barca, cliente o codice",
+    "structure": "Pontile o banchina",
+    "group": "Gruppo",
+    "category": "Categoria",
+    "contractType": "Tipo di contratto",
+    "loaMin": "Lunghezza da",
+    "loaMax": "Lunghezza fino a",
+    "clear": "Rimuovi tutti i filtri",
+    "contract": {
+      "annual": "Annuale",
+      "seasonal": "Stagionale",
+      "monthly": "Mensile",
+      "period": "Periodo",
+      "transit": "Transito",
+      "none": "Senza contratto"
+    }
+  },
+  "element": {
+    "aria": "{{code}}, {{status}}, {{vessel}}",
+    "noVessel": "nessuna barca"
+  },
+  "list": {
+    "code": "Codice",
+    "status": "Stato",
+    "vessel": "Barca",
+    "legend": "Contesto",
+    "other": "Altri elementi"
+  },
+  "quick": {
+    "label": "Scheda rapida di {{code}}",
+    "size": "Misure",
+    "hull": "Tipo",
+    "customer": "Cliente",
+    "contract": "Contratto",
+    "presence": "Presenza",
+    "expectedReturn": "Rientro previsto",
+    "release": "Notti rilasciate",
+    "resold": "rivendute",
+    "holdExpires": "Opzione fino a",
+    "fill": "Riempimento del posto",
+    "override": "in deroga",
+    "fitIssue": "Limite superato",
+    "contractEnds": "Fine contratto",
+    "insurance": "Assicurazione",
+    "unblocked": "Blocco rimosso",
+    "action": {
+      "newTransit": "Nuovo transito",
+      "newQuote": "Nuovo preventivo",
+      "arrived": "Registra arrivo",
+      "departed": "Registra partenza",
+      "move": "Sposta",
+      "swap": "Scambia con…",
+      "release": "Rilascia notti",
+      "block": "Blocca",
+      "unblock": "Rimuovi blocco",
+      "openLayout": "Apri la disposizione",
+      "undo": "Annulla ultimo spostamento"
+    }
+  },
+  "move": {
+    "title": "Sposta {{vessel}}",
+    "description": "Il server ricontrolla posto, misure e notti: l'anteprima non è una garanzia.",
+    "target": "Destinazione",
+    "targetPlaceholder": "Scegli il posto",
+    "targetSearch": "Cerca un posto",
+    "targetEmpty": "Nessun posto",
+    "x": "Posizione lungo l'area",
+    "to": "Verso {{target}}",
+    "when": "Da quando",
+    "from_today": "Da oggi",
+    "from_date": "Da una data",
+    "interval": "Solo per un intervallo",
+    "fromNight": "Dalla notte",
+    "toNight": "Fino alla notte",
+    "priceEffect": "Prezzo: da {{old}} a {{next}} (differenza {{delta}})",
+    "overrideReason": "Motivo della deroga",
+    "confirm": "Sposta"
+  },
+  "swap": {
+    "title": "Scambia {{vessel}}",
+    "description": "Le due barche si scambiano il posto dalla notte del {{date}}.",
+    "with": "Scambia con",
+    "confirm": "Scambia"
+  },
+  "drag": {
+    "conflict": "{{vessel}} occupa il posto dal {{from}} al {{to}}"
+  },
+  "undo": {
+    "action": "Annulla",
+    "done": "Spostamento annullato",
+    "moved": "Barca spostata",
+    "swapped": "Barche scambiate"
+  },
+  "layout": {
+    "title": "Disposizione di {{code}}",
+    "description": "Bozza della notte del {{date}}: salva per applicare tutte le mosse insieme.",
+    "back": "Torna alla mappa",
+    "compact": "Compatta",
+    "compacted": "Proposta di compattazione: {{freed}} liberi. Salva per applicarla.",
+    "restore": "Ripristina",
+    "save": "Salva",
+    "saved": "Disposizione salvata",
+    "staleTitle": "La disposizione è cambiata",
+    "stale": "Nel frattempo sono cambiate queste barche: {{vessels}}. La bozza è stata riapplicata, controlla e salva di nuovo.",
+    "toPlace": "Da collocare",
+    "nothingToPlace": "Nessuna barca da collocare.",
+    "arrivedWithoutBooking": "arrivata senza prenotazione",
+    "placeAllToSave": "Colloca tutte le barche per salvare.",
+    "inArea": "Nell'area",
+    "remove": "Togli dall'area",
+    "rotate": "Ruota ({{deg}}°)",
+    "vesselAria": "Barca {{vessel}}, trascina per spostarla",
+    "draft": "Modifiche nella bozza: {{count}}"
+  },
+  "picker": {
+    "title": "Scegli sulla mappa",
+    "description": "Notti dal {{from}} al {{to}}: verde libero, giallo con avvisi, rosso occupato.",
+    "hint": "Passa sopra un posto per vedere se la barca ci sta.",
+    "state": {
+      "ok": "{{code}}: libero e compatibile",
+      "warn": "{{code}}: compatibile con avvisi",
+      "conflict": "{{code}}: occupato o non compatibile",
+      "invalid": "{{code}}: posizione non valida"
+    }
+  },
+  "unplacedArrivals": "Arrivi senza prenotazione: {{count}}"
+}

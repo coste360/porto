@@ -53,13 +53,18 @@ var deferredColumns = map[string][]string{
 	"customers":         {"merged_into_id"},
 	"revenue_classes":   {"parent_id"},
 	"price_lists":       {"source_price_list_id"},
+	"allocations":       {"moved_from_id"},
 }
 
 // lateColumns are inserted with a placeholder value and set to their real value after every table is loaded.
 // price_lists.status: the immutability triggers (INV-22) refuse periods, bands and rules of a list that is not a
 // draft, so lists are restored as drafts and get their status once every table (rules, item snapshot) is in.
+// inquiries and quotes (M3) point forward to quotes, quote options and contracts: they are inserted as NULL and
+// set at the end.
 var lateColumns = map[string]map[string]any{
 	"price_lists": {"status": "draft"},
+	"inquiries":   {"quote_id": nil, "contract_id": nil},
+	"quotes":      {"accepted_option_id": nil, "contract_id": nil},
 }
 
 // lateUpdate is a column value set after the whole archive is loaded.

@@ -16,7 +16,20 @@ var (
 	ErrInvalidFile      = errors.New("harbor: invalid file")
 	ErrFileTooLarge     = errors.New("harbor: file too large")
 	ErrUnsupportedMedia = errors.New("harbor: unsupported media type")
+	// ErrElementInUse means a map save would delete an element that has occupancy rows, or change the cell grid
+	// of an area with current or future allocations (M3, m3-plan §3.7). The error may be an *ElementInUseError.
+	ErrElementInUse = errors.New("harbor: element in use")
 )
+
+// ElementInUseError names the elements a map save may not delete or reshape (409 in_use, details.references).
+type ElementInUseError struct {
+	References []string // element ids
+}
+
+func (e *ElementInUseError) Error() string { return ErrElementInUse.Error() }
+
+// Is makes errors.Is(err, ErrElementInUse) true.
+func (e *ElementInUseError) Is(target error) bool { return target == ErrElementInUse }
 
 // MapInvalidError carries the validation report of a refused map document (422 map_invalid with issues).
 type MapInvalidError struct {
