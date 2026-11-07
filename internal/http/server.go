@@ -42,6 +42,13 @@ var totpEnrolmentOperations = []string{"getMe", "logout", "enrollTotp", "confirm
 // linkRequestsPerMinute is the rate limit of the customer link pages per IP prefix (m4-plan §6.6).
 const linkRequestsPerMinute = 30
 
+// publicPayOperations are the operations of the public pay page /api/public/v1/{slug}/pay/{payToken} (M5,
+// m5-plan §5.5): 30 requests per minute per IP prefix, like the customer links.
+var publicPayOperations = []string{"getPayPage", "startPayCheckout", "getPayStatus"}
+
+// paymentWebhooksPerMinute is the rate limit of the payment provider callbacks per IP prefix (m5-plan §5.4).
+const paymentWebhooksPerMinute = 600
+
 // publicLinkOperations are the operations of /api/public/v1/{slug}/links/{token} (m4-plan §7.3.6).
 var publicLinkOperations = []string{
 	"resolvePublicLink", "getPublicLinkDocument", "acceptPublicQuote", "uploadPublicDocument", "acceptPublicRenewal",
@@ -163,6 +170,11 @@ func NewRouter(d Deps) (http.Handler, error) {
 	for _, op := range publicLinkOperations {
 		byIP[op] = links
 	}
+	pay := middleware.NewLimiter(d.Clock, linkRequestsPerMinute, time.Minute)
+	for _, op := range publicPayOperations {
+		byIP[op] = pay
+	}
+	byIP["paymentWebhook"] = middleware.NewLimiter(d.Clock, paymentWebhooksPerMinute, time.Minute)
 
 	// Per-operation middleware, outermost first; the generated wrapper applies the list in reverse.
 	perOp := []func(http.Handler) http.Handler{

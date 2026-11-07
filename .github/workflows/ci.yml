@@ -38,11 +38,23 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 20
+          --shm-size 1g
     env:
       # Read by internal/testutil/testdb and scripts/with-postgres.sh: integration tests run on both dialects.
       PORTO_TEST_POSTGRES_URL: postgres://porto:porto@localhost:5432/porto_test?sslmode=disable
     steps:
       - uses: actions/checkout@v7
+
+      # The M5 integration tests lock many tables per transaction (same setting as scripts/with-postgres.sh).
+      - name: Raise the PostgreSQL lock table
+        run: |
+          docker exec ${{ job.services.postgres.id }} psql -U porto -d porto_test -c "ALTER SYSTEM SET max_locks_per_transaction = 512"
+          docker exec ${{ job.services.postgres.id }} psql -U porto -d porto_test -c "ALTER SYSTEM SET max_connections = 300"
+          docker restart ${{ job.services.postgres.id }}
+          for _ in $(seq 1 60); do
+            docker exec ${{ job.services.postgres.id }} pg_isready -U porto -d porto_test && break
+            sleep 1
+          done
 
       - uses: actions/setup-go@v7
         with:

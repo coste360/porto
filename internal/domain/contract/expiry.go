@@ -129,12 +129,13 @@ func (s *Service) expireTransitsTx(ctx context.Context, tx bun.IDB, scope store.
 		if err != nil {
 			return 0, err
 		}
+		from := c.Status
 		c.Status = string(t.To)
 		if err := updateContract(ctx, tx, scope, c.Version, c, s.now()); err != nil {
 			return 0, err
 		}
 		if err := s.writeAudit(ctx, tx, scope, system, "transit.expire", entityTransit, c.ID, map[string]any{
-			"from_status": string(StatusHeld), "status": c.Status, "allocation_ids": idsOf(ended),
+			"from_status": from, "status": c.Status, "allocation_ids": idsOf(ended),
 		}); err != nil {
 			return 0, err
 		}

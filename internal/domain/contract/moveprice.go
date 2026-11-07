@@ -235,7 +235,14 @@ func (s *Service) adjustPriceTx(ctx context.Context, tx bun.IDB, scope store.Mar
 	if err := s.writeAudit(ctx, tx, scope, a, action, entity, c.ID, diff); err != nil {
 		return err
 	}
-	return s.emit(ctx, tx, scope, typ, data)
+	if err := s.emit(ctx, tx, scope, typ, data); err != nil {
+		return err
+	}
+	reason := RepriceMove
+	if undo {
+		reason = RepriceMoveUndo
+	}
+	return s.repricedTx(ctx, tx, scope, a, c, reason)
 }
 
 // UndoMovePriceTx implements occupancy.MovePricer: in the undo transaction of a repriced move, every adjustment

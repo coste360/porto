@@ -287,6 +287,16 @@ func (s *Service) issueOneTx(ctx context.Context, tx bun.IDB, scope store.Marina
 	}); err != nil {
 		return false, err
 	}
+	if s.billingActive() {
+		c, err := store.GetContract(ctx, tx, scope, r.ContractID)
+		if err != nil {
+			return false, err
+		}
+		if err := s.billing().OnInstallmentIssuedTx(ctx, tx, scope, a.audit(), c, r); err != nil {
+			return false, err
+		}
+		return true, nil
+	}
 	if r.AmountCents > 0 {
 		if _, err := s.installmentMailTx(ctx, tx, scope, r, MailInstallmentPaymentRequest, "installment:"+r.ID+":issued"); err != nil &&
 			!errors.Is(err, ErrCustomerEmailMissing) {
@@ -456,7 +466,14 @@ func (s *Service) ReplanInstallments(ctx context.Context, p *auth.Principal, mar
 		if err := updateContract(ctx, tx, scope, c.Version, c, s.now()); err != nil {
 			return err
 		}
-		return s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: event.ChangeReplanned})
+		if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: event.ChangeReplanned}); err != nil {
+			return err
+		}
+		reason := RepriceReplan
+		if in.Plan == PlanEarlyPayment {
+			reason = RepriceEarlyPayment
+		}
+		return s.repricedTx(ctx, tx, scope, a, c, reason)
 	})
 	if err != nil {
 		return nil, err

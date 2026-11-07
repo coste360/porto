@@ -1,0 +1,135 @@
+{
+  "actions": {
+    "adjust": "Adjust",
+    "cancel": "Cancel charge",
+    "collect": "Collect",
+    "edit": "Edit",
+    "invoiceRef": "Invoice reference",
+    "requestPayment": "Request payment"
+  },
+  "adjust": {
+    "title": "Adjust charge {{number}}",
+    "description": "The charge is already exported or collected: the correction is a new linked charge, included in the next export.",
+    "mode": "Adjustment type",
+    "modes": {
+      "delta": "Difference only",
+      "replace": "Reversal and replacement"
+    },
+    "hints": {
+      "delta": "Enter only the difference lines; negative quantities reduce.",
+      "replace": "The charge is fully reversed and replaced by the corrected lines."
+    },
+    "reason": "Reason",
+    "submit": "Create adjustment",
+    "done": "Adjustments created: {{count}}"
+  },
+  "cancel": {
+    "title": "Cancel charge {{number}}?",
+    "description": "Only a charge neither exported nor collected can be cancelled. The reason is kept in the log."
+  },
+  "detail": {
+    "title": "Charge {{number}}",
+    "at": "Date",
+    "correctionOf": "Corrects {{number}}",
+    "corrections": "Adjustments and offsets",
+    "exports": "Exports",
+    "lines": "Lines",
+    "matches": "Matched payments",
+    "noCorrections": "No adjustments.",
+    "noExports": "Not exported yet.",
+    "noMatches": "No matched payments.",
+    "noReminders": "No reminders.",
+    "offset": "Offset",
+    "payment": "Payment",
+    "reminders": "Reminders",
+    "reversal": "Reversal",
+    "summary": "Summary",
+    "vatSummary": "VAT summary"
+  },
+  "edit": {
+    "title": "Edit charge {{number}}",
+    "description": "The charge is neither exported nor collected yet: you can edit it in place."
+  },
+  "fields": {
+    "cancelReason": "Cancellation reason",
+    "corrects": "Corrects",
+    "credited": "Offset",
+    "customer": "Customer",
+    "dueOn": "Due date",
+    "invoice": "Invoice",
+    "issuedOn": "Issue date",
+    "number": "Number",
+    "origin": "Origin",
+    "paid": "Paid",
+    "residual": "Outstanding",
+    "service": "Service period",
+    "status": "Status",
+    "total": "Total"
+  },
+  "invoice": {
+    "title": "Invoice reference",
+    "description": "Number and date of the invoice issued by the invoicing software (information only).",
+    "number": "Invoice number",
+    "date": "Invoice date"
+  },
+  "lines": {
+    "add": "Add line",
+    "discount": "Discount",
+    "discountOf": "Discount of line {{n}}",
+    "empty": "No lines.",
+    "fromList": "From price list",
+    "item": "Item",
+    "itemOf": "Item of line {{n}}",
+    "itemPlaceholder": "Choose an item",
+    "itemSearch": "Search item",
+    "noItems": "No items",
+    "previewHint": "Preview: price list prices and final amounts are computed when saving.",
+    "qty": "Quantity",
+    "qtyOf": "Quantity of line {{n}}",
+    "remove": "Remove line {{n}}",
+    "total": "Line total",
+    "unit": "Unit price",
+    "unitOf": "Unit price of line {{n}}",
+    "vat": "VAT"
+  },
+  "list": {
+    "title": "Charges",
+    "description": "Everything customers owe: outstanding, overdue, to invoice and adjustments.",
+    "all": "All",
+    "csv": "Export CSV",
+    "xlsx": "Export Excel",
+    "empty": "No charges.",
+    "issuedFrom": "From",
+    "issuedTo": "To",
+    "new": "New charge",
+    "overdue": "Overdue",
+    "search": "Number",
+    "views": "Views",
+    "walkIn": "Walk-in customer"
+  },
+  "views": {
+    "all": "All",
+    "open": "Outstanding",
+    "overdue": "Overdue",
+    "toInvoice": "To invoice",
+    "adjustments": "Adjustments"
+  },
+  "new": {
+    "title": "New charge",
+    "description": "Manual charge or counter sale on account: customer, items and VAT.",
+    "header": "Customer and due date",
+    "dueHint": "Without a due date the default days of the settings apply.",
+    "submit": "Create charge"
+  },
+  "panel": {
+    "title": "Charges",
+    "empty": "No charges for this contract."
+  },
+  "vat": {
+    "empty": "No amounts.",
+    "gross": "Total",
+    "net": "Net",
+    "rate": "Rate",
+    "vat": "VAT"
+  }
+}

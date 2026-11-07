@@ -83,6 +83,34 @@
       "signers": "Signers",
       "user_agent_sha256": "Browser fingerprint"
     },
+    "export": {
+      "by_origin": "Totals by origin",
+      "by_revenue_class": "Totals by revenue class",
+      "charge_corrects": "Corrects",
+      "charge_count": "Charge count",
+      "charge_customer": "Customer",
+      "charge_issued_on": "Charge date",
+      "charge_net": "Net",
+      "charge_number": "Charge number",
+      "charge_origin": "Origin",
+      "charge_total": "Total",
+      "charge_vat": "VAT",
+      "charges": "Charges",
+      "created_at": "Created at",
+      "filters": "Filters",
+      "kind": "Type",
+      "line_count": "Line count",
+      "net": "Total net",
+      "number": "Export number",
+      "period_from": "Period from",
+      "period_to": "Period to",
+      "total": "Total",
+      "total_count": "Count",
+      "total_gross": "Total",
+      "total_key": "Item",
+      "vat": "VAT summary",
+      "vat_total": "Total VAT"
+    },
     "fee": {
       "amount": "Amount",
       "base": "Base",
@@ -241,6 +269,20 @@
       "price": "Price",
       "seq": "Number"
     },
+    "receipt": {
+      "amount": "Amount",
+      "date": "Date",
+      "fiscal_number": "Commercial document number",
+      "footer": "Footer notes",
+      "line_description": "Description",
+      "line_gross": "Amount",
+      "line_qty": "Quantity",
+      "line_vat_rate": "VAT rate",
+      "lines": "Lines",
+      "method": "Payment method",
+      "number": "Number",
+      "vat": "VAT summary"
+    },
     "renewal": {
       "berths": "Berths",
       "contract": "Contract",
@@ -263,12 +305,35 @@
       "title_number": "Title number",
       "to_on": "To"
     },
+    "statement": {
+      "closing": "Closing balance",
+      "credit": "Available credit",
+      "from": "From",
+      "opening": "Opening balance",
+      "row_balance": "Running balance",
+      "row_credit": "Credit",
+      "row_date": "Date",
+      "row_debit": "Debit",
+      "row_description": "Description",
+      "row_due_on": "Due on",
+      "row_kind": "Type",
+      "row_number": "Number",
+      "rows": "Entries",
+      "to": "To"
+    },
     "transfer": {
       "declared_price": "Declared price",
       "effective_on": "Effective date",
       "from": "From",
       "takeover_fee": "Takeover fee",
       "to": "To"
+    },
+    "vat": {
+      "gross": "Gross",
+      "nature": "Nature",
+      "net": "Net",
+      "rate": "Rate",
+      "vat": "VAT"
     },
     "vessel": {
       "beam": "Beam",
@@ -306,6 +371,7 @@
     "map_print": "Map print",
     "receipt": "Receipt",
     "statement_of_account": "Statement of account",
+    "charge_export_summary": "Charge export summary",
     "yard_work_order": "Yard work order",
     "yard_quote": "Yard quote",
     "rental_contract": "Rental contract",

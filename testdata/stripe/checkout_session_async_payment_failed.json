@@ -1,0 +1,3 @@
+{"id": "evt_t_async_ko", "object": "event", "type": "checkout.session.async_payment_failed", "created": 1814100000,
+ "data": {"object": {"id": "cs_test_sepa", "object": "checkout.session", "mode": "payment", "status": "complete",
+  "payment_status": "unpaid", "amount_total": 50000, "currency": "eur", "payment_intent": "pi_test_sepa", "metadata": {"marina_id": "01900000-0000-7000-8000-00000000000a", "intent_id": "01900000-0000-7000-8000-0000000000b1"}}}}

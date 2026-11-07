@@ -36,7 +36,7 @@ test('an expiring insurance shows as due soon and can be marked done', async ({ 
   await page.reload();
   await expect(page.getByTestId('deadlines-due_soon')).not.toHaveText('0');
 
-  await page.getByRole('link', { name: 'Scadenze' }).first().click();
+  await page.getByRole('link', { name: 'Scadenze', exact: true }).first().click();
   const section = page.getByRole('region', { name: /In scadenza/ });
   const row = section.getByRole('row', {
     name: new RegExp(`Tramontana ${tag}`),

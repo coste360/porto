@@ -1,0 +1,19 @@
+{
+  "title": "Office worklist",
+  "description": "To-dos collected from charges, payments, reminders and deadlines.",
+  "status": "Status",
+  "kind": "Type",
+  "all": "All",
+  "mine": "Mine only",
+  "empty": "Nothing to do.",
+  "customer": "Customer",
+  "amount": "Amount",
+  "dueOn": "Due date",
+  "assignee": "Assignee",
+  "me": "Me",
+  "someone": "A colleague",
+  "take": "Take",
+  "done": "Done",
+  "dismiss": "Dismiss",
+  "reopen": "Reopen"
+}

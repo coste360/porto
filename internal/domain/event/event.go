@@ -108,6 +108,27 @@ const (
 	CommunicationChanged   = "communication.changed"
 )
 
+// M5 event types (version 1, m5-plan §7.5). Data carry ids, enums, dates, amounts and counts only (INV-70). The
+// public ones can be subscribed by webhooks; the others feed SSE and cache invalidation only.
+const (
+	ChargeCreated         = "charge.created"
+	ChargePaid            = "charge.paid"
+	ChargeCancelled       = "charge.cancelled"
+	ChargeExported        = "charge.exported"
+	ChargeInvoiced        = "charge.invoiced"
+	ChargeChanged         = "charge.changed"
+	InstallmentCharged    = "installment.charged"
+	PaymentSucceeded      = "payment.succeeded"
+	PaymentFailed         = "payment.failed"
+	PaymentRefunded       = "payment.refunded"
+	PaymentChanged        = "payment.changed"
+	CashChanged           = "cash.changed"
+	FiscalDocumentChanged = "fiscal_document.changed"
+	PaymentRequestChanged = "payment_request.changed"
+	ReminderChanged       = "reminder.changed"
+	BillingChanged        = "billing.changed"
+)
+
 // SSE topics.
 const (
 	TopicMarina = "marina.changed"
@@ -129,6 +150,9 @@ const (
 	TopicRights = "rights.changed"
 	// TopicDocuments carries templates, generated documents, signatures and communications (M4).
 	TopicDocuments = "documents.changed"
+	// TopicBilling carries charges, exports, payments, refunds, credits, cash, fiscal documents, payment requests,
+	// reminders, provider settings, mandates and the worklist (M5, spec 27.4).
+	TopicBilling = "billing.changed"
 )
 
 // TypeInfo describes an event type. Public types can be subscribed by webhook endpoints; Topic is the SSE event
@@ -210,6 +234,24 @@ var catalogue = []TypeInfo{
 	{SignatureFailed, TopicDocuments, false},
 	{TemplateChanged, TopicDocuments, false},
 	{CommunicationChanged, TopicDocuments, false},
+	{ChargeCreated, TopicBilling, true},
+	{ChargePaid, TopicBilling, true},
+	{ChargeCancelled, TopicBilling, true},
+	{ChargeExported, TopicBilling, true},
+	{ChargeInvoiced, TopicBilling, true},
+	{ChargeChanged, TopicBilling, false},
+	// installment.charged: one SSE topic per type; the web client invalidates the contract keys on billing.changed
+	// too (m5-plan §7.5 lists contract.changed + billing.changed).
+	{InstallmentCharged, TopicBilling, true},
+	{PaymentSucceeded, TopicBilling, true},
+	{PaymentFailed, TopicBilling, true},
+	{PaymentRefunded, TopicBilling, true},
+	{PaymentChanged, TopicBilling, false},
+	{CashChanged, TopicBilling, false},
+	{FiscalDocumentChanged, TopicBilling, false},
+	{PaymentRequestChanged, TopicBilling, false},
+	{ReminderChanged, TopicBilling, false},
+	{BillingChanged, TopicBilling, false},
 }
 
 // Types returns the catalogue of event types.

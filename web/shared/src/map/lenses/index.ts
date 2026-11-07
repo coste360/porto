@@ -16,6 +16,7 @@ export * from './legend';
 export { daysBetween } from './deadlines';
 export { FIT_OK_BP, FIT_WARN_BP } from './fitness';
 export * from './rights';
+export * from './payments';
 
 export const LENSES: Readonly<Record<LensId, Lens>> = {
   occupancy: occupancyLens,

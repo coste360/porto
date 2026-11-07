@@ -34,6 +34,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@porto/shared/ui/tabs'
 import { useCurrentMarina } from '../../../auth/hooks';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../../components/PageStates';
 import { toastProblem } from '../../../lib/toast';
+import { CustomerDashboardTab, CustomerStatementTab } from '../../billing/public';
 import { DocumentsPanel } from '../documents/DocumentsPanel';
 import { DeadlineTable } from '../deadlines/DeadlineTable';
 import { customerName, downloadBlob, formatShare } from '../lib/format';
@@ -253,6 +254,10 @@ function CustomerView({ data }: { data: CustomerOverview }) {
           <TabsTrigger value="deadlines">
             {t('customers:tabs.deadlines')} ({data.deadlines.length})
           </TabsTrigger>
+          <TabsTrigger value="dashboard">{t('customerBilling:tabs.dashboard')}</TabsTrigger>
+          {can('charges.manage') ? (
+            <TabsTrigger value="statement">{t('customerBilling:tabs.statement')}</TabsTrigger>
+          ) : null}
         </TabsList>
 
         <TabsContent value="data">
@@ -340,6 +345,16 @@ function CustomerView({ data }: { data: CustomerOverview }) {
         <TabsContent value="deadlines">
           <DeadlineTable deadlines={data.deadlines} canWrite={can('customers.write')} hideSubject />
         </TabsContent>
+
+        {/* M5 (m5-plan §9.1): customer dashboard (11.4) and statement of account. */}
+        <TabsContent value="dashboard">
+          <CustomerDashboardTab customerId={customer.id} customerName={customerName(t, customer)} />
+        </TabsContent>
+        {can('charges.manage') ? (
+          <TabsContent value="statement">
+            <CustomerStatementTab customerId={customer.id} />
+          </TabsContent>
+        ) : null}
       </Tabs>
 
       <MergeDialog

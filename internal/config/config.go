@@ -57,6 +57,9 @@ type Config struct {
 	Dev                  bool
 	WebhooksAllowPrivate bool
 	PublicReadsPerMinute int
+	// StripeAPIBase overrides https://api.stripe.com for the optional Stripe driver (M5); honoured only with
+	// PORTO_DEV=true (local fake servers in tests and development).
+	StripeAPIBase string
 
 	BootstrapOwnerEmail string
 	BootstrapOwnerName  string
@@ -290,6 +293,18 @@ func Load(env func(string) (string, bool)) (*Config, error) {
 
 	c.WebhooksAllowPrivate = l.bool("PORTO_WEBHOOKS_ALLOW_PRIVATE", false)
 	c.PublicReadsPerMinute = l.int("PORTO_PUBLIC_READS_PER_MINUTE", 120, 1, 10000)
+
+	if base := l.get("PORTO_STRIPE_API_BASE", ""); base != "" {
+		u, err := url.Parse(base)
+		switch {
+		case !c.Dev:
+			l.fail("PORTO_STRIPE_API_BASE", "is allowed only with PORTO_DEV=true")
+		case err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" || u.RawQuery != "":
+			l.fail("PORTO_STRIPE_API_BASE", "must be an http(s) URL without query")
+		default:
+			c.StripeAPIBase = strings.TrimRight(base, "/")
+		}
+	}
 
 	c.BootstrapOwnerEmail = strings.ToLower(l.get("PORTO_BOOTSTRAP_OWNER_EMAIL", ""))
 	c.BootstrapOwnerName = l.get("PORTO_BOOTSTRAP_OWNER_NAME", "")

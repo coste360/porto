@@ -70,6 +70,20 @@ type SeedResult struct {
 	GeneratedDocuments int
 	Communications     int
 	Deadlines          int
+
+	// M5 counts (0 when that part already existed, m5-plan §10).
+	Charges          int
+	ChargeExports    int
+	OpeningBalances  int
+	Payments         int
+	Refunds          int
+	CustomersCredit  int
+	CashSessions     int
+	CounterSales     int
+	FiscalDocuments  int
+	PaymentRequests  int
+	ReminderItems    int
+	DunningExclusion int
 }
 
 // SeedDemo creates a minimal demo: organization "Porto Demo", marina "Marina Demo" (slug demo) and one user per
@@ -169,6 +183,17 @@ func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) er
 	}
 	if err := a.seedRights(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: rights: %w", err)
+	}
+	// M5 (m5-plan §10): charges (backfill of the M4 instalments, exports), then the ledger, then cash and
+	// collection. Each part is a no-op when the demo marina already has its data.
+	if err := a.seedBilling(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: billing: %w", err)
+	}
+	if err := a.seedPayments(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: payments: %w", err)
+	}
+	if err := a.seedCash(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: cash: %w", err)
 	}
 	return nil
 }

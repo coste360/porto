@@ -1,0 +1,12 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+abbiamo ricevuto il tuo pagamento. Grazie.
+{{with v . "payment_number"}}Pagamento: {{.}}
+{{end}}{{with v . "amount"}}Importo: {{.}}
+{{end}}{{with v . "received_on"}}Data: {{.}}
+{{end}}{{with v . "method"}}Metodo: {{.}}
+{{end}}
+Ricevuta di cortesia, non valida ai fini fiscali.
+
+--
+{{v . "marina_name"}}

@@ -36,6 +36,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@porto/shared/ui/tabs'
 
 import { useCurrentMarina } from '../../../auth/hooks';
 import { LoadingState, QueryErrorState } from '../../../components/PageStates';
+import { ContractChargesCard, SepaMandatesPanel } from '../../billing/public';
 import { GeneratedDocuments, RequestSignatureDialog, SignaturePanel } from '../../documents/public';
 import { proposalActions, proposalVariant } from '../lib/campaign';
 import { CONTRACT_TABS, type ContractTab } from '../lib/tabs';
@@ -269,6 +270,11 @@ function InstallmentsTab({ contract }: { contract: Contract }) {
         </Section>
       ) : null}
       <M4ProblemAlert error={replan.error} />
+      {/* M5 (m5-plan §9.1): charge number and status per instalment, collect, payment request, SEPA. */}
+      <ContractChargesCard contractId={contract.id} customer={contract.customer ?? null} />
+      {contract.customer && canSettle ? (
+        <SepaMandatesPanel customerId={contract.customer.id} />
+      ) : null}
       {settling ? (
         <SettleDialog
           open

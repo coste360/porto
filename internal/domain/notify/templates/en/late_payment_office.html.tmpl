@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>an online payment arrived for a transit that can no longer be confirmed. The amount was recorded as customer credit: check the worklist to refund it or use it.</p>
+<table>
+{{with v . "contract_code"}}<tr><td>Transit</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "amount"}}<tr><td>Amount</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

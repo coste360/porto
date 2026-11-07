@@ -1,0 +1,98 @@
+{
+  "tabs": {
+    "dashboard": "Cruscotto",
+    "statement": "Estratto conto"
+  },
+  "dashboard": {
+    "balance": "Saldo da incassare",
+    "credit": "Credito",
+    "overdue": "Scaduto",
+    "collect": "Registra pagamento",
+    "applyCredit": "Usa il credito",
+    "applied": "Credito usato: {{amount}}",
+    "charges": "Vai agli addebiti",
+    "contracts": "Contratti",
+    "code": "Codice",
+    "period": "Periodo",
+    "status": "Stato",
+    "none": "Nessuno.",
+    "vessels": "Imbarcazioni",
+    "berthsToday": "Posti occupati oggi: {{count}}",
+    "futureInstallments": "Rate future",
+    "recentPayments": "Ultimi pagamenti",
+    "documents": "Documenti in scadenza",
+    "document": "Documento",
+    "expires": "Scadenza",
+    "communications": "Comunicazioni",
+    "message": "Messaggio",
+    "notes": "Note"
+  },
+  "sepa": {
+    "title": "Mandati SEPA",
+    "description": "Autorizzazioni all'addebito diretto delle rate.",
+    "request": "Richiedi mandato",
+    "reference": "Riferimento",
+    "iban": "IBAN",
+    "revoke": "Revoca",
+    "empty": "Nessun mandato."
+  },
+  "statement": {
+    "from": "Dal",
+    "to": "Al",
+    "pdf": "Estratto conto PDF",
+    "csv": "Esporta CSV",
+    "opening": "Saldo iniziale",
+    "closing": "Saldo finale",
+    "date": "Data",
+    "kind": "Movimento",
+    "number": "Numero",
+    "dueOn": "Scadenza",
+    "debit": "Dare",
+    "credit": "Avere",
+    "balance": "Saldo",
+    "empty": "Nessun movimento nel periodo."
+  },
+  "opening": {
+    "title": "Saldi di apertura",
+    "description": "Importa da CSV o Excel i saldi dei clienti del software precedente: nascono già fatturati e non vengono riesportati.",
+    "file": "File",
+    "upload": "File CSV o Excel",
+    "delimiter": "Separatore",
+    "delimiters": {
+      "semicolon": "Punto e virgola",
+      "comma": "Virgola",
+      "tab": "Tabulazione"
+    },
+    "hasHeader": "La prima riga è l'intestazione",
+    "mapping": "Colonne",
+    "mappingHint": "Numero di colonna a partire da 0. Importi in euro con virgola; negativi = credito.",
+    "match": "Riconosci il cliente da",
+    "matches": {
+      "fiscal_code": "Codice fiscale",
+      "vat_number": "Partita IVA",
+      "customer_code": "Codice cliente"
+    },
+    "columns": {
+      "customer_column": "Cliente",
+      "amount_column": "Importo",
+      "due_on_column": "Scadenza",
+      "description_column": "Descrizione",
+      "reference_column": "Riferimento"
+    },
+    "dryRun": "Prova",
+    "apply": "Importa",
+    "applied": "Saldi importati: {{count}}",
+    "result": "Esito",
+    "summary": "Righe valide: {{valid}}, problemi: {{issues}}",
+    "row": "Riga",
+    "issue": "Problema",
+    "noIssues": "Nessun problema.",
+    "history": "Importazioni",
+    "createdAt": "Data",
+    "status": "Stato",
+    "charges": "Addebiti",
+    "total": "Totale",
+    "undo": "Annulla importazione",
+    "empty": "Nessuna importazione."
+  }
+}

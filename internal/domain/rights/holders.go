@@ -294,8 +294,19 @@ func (s *Service) SettleHolderInstallment(ctx context.Context, p *auth.Principal
 		if !settleable(h.Status) {
 			return ErrInvalidTransition
 		}
-		if err := s.settleTx(ctx, tx, scope, p, h, h.Version, store.SettlementManual, in); err != nil {
+		// M5 (m5-plan §8.2): a holder instalment with a charge is settled by a manual payment of the charge;
+		// rows without one (before the backfill) keep the manual path.
+		handled, err := s.settleViaPaymentTx(ctx, tx, scope, p, h, in)
+		if err != nil {
 			return err
+		}
+		if !handled {
+			if h.Status == store.InstallmentPartiallyPaid {
+				return ErrInvalidTransition
+			}
+			if err := s.settleTx(ctx, tx, scope, p, h, h.Version, store.SettlementManual, in); err != nil {
+				return err
+			}
 		}
 		vs, err := s.holderViews(ctx, tx, scope, p, []store.HolderInstallment{*h}, s.today(ctx, tx, scope))
 		if err != nil {
@@ -357,11 +368,20 @@ func (s *Service) SettleHolderInstallments(ctx context.Context, p *auth.Principa
 			if h.Version != expected || !settleable(h.Status) {
 				return store.ErrConflict
 			}
-			if err := s.settleTx(ctx, tx, scope, p, h, expected, store.SettlementManual, in); err != nil {
-				if errors.Is(err, store.ErrVersionMismatch) {
+			handled, err := s.settleViaPaymentTx(ctx, tx, scope, p, h, in)
+			if err != nil {
+				return err
+			}
+			if !handled {
+				if h.Status == store.InstallmentPartiallyPaid {
 					return store.ErrConflict
 				}
-				return err
+				if err := s.settleTx(ctx, tx, scope, p, h, expected, store.SettlementManual, in); err != nil {
+					if errors.Is(err, store.ErrVersionMismatch) {
+						return store.ErrConflict
+					}
+					return err
+				}
 			}
 			n++
 		}

@@ -12,6 +12,7 @@
     "./ui/*": "./src/ui/*.tsx",
     "./theme": "./src/theme/index.ts",
     "./i18n": "./src/i18n/index.ts",
+    "./money": "./src/money/index.ts",
     "./lib/*": "./src/lib/*.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./styles/globals.css": "./src/styles/globals.css",

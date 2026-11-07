@@ -1,0 +1,6 @@
+è arrivato un pagamento online per un transito che non può più essere confermato. L'importo è stato registrato come credito del cliente: verifica nella lista di lavoro se rimborsarlo o utilizzarlo.
+{{with v . "contract_code"}}Transito: {{.}}
+{{end}}{{with v . "amount"}}Importo: {{.}}
+{{end}}
+--
+{{v . "marina_name"}}

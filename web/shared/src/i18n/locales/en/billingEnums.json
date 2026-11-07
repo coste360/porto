@@ -1,0 +1,232 @@
+{
+  "originType": {
+    "installment": "Contract instalment",
+    "holder_installment": "Holder instalment",
+    "transit": "Transit",
+    "contract_trueup": "Contract true-up",
+    "counter_sale": "Counter sale",
+    "termination": "Termination",
+    "deposit_retention": "Deposit retention",
+    "manual": "Manual",
+    "adjustment": "Adjustment",
+    "opening_balance": "Opening balance",
+    "utility": "Utilities",
+    "work_order": "Yard work order",
+    "rental": "Rental"
+  },
+  "paymentStatus": {
+    "open": "To collect",
+    "partially_paid": "Partially paid",
+    "paid": "Paid",
+    "cancelled": "Cancelled"
+  },
+  "invoicingStatus": {
+    "to_invoice": "To invoice",
+    "exported": "Exported",
+    "invoiced": "Invoiced"
+  },
+  "fiscalMode": {
+    "invoice": "Invoice",
+    "receipt": "Commercial document"
+  },
+  "correctionKind": {
+    "delta": "Adjustment",
+    "replace": "Reversal and replacement"
+  },
+  "paymentKind": {
+    "payment": "Payment",
+    "deposit": "Deposit",
+    "credit": "Credit"
+  },
+  "paymentMethod": {
+    "cash": "Cash",
+    "card_pos": "Card (POS)",
+    "bank_transfer": "Bank transfer",
+    "cheque": "Cheque",
+    "other": "Other",
+    "card_online": "Online card",
+    "wallet": "Wallet",
+    "sepa_debit": "SEPA debit",
+    "credit_note": "Credit"
+  },
+  "paymentSource": {
+    "manual": "Manual",
+    "provider": "Online payment",
+    "backfill": "History",
+    "adjustment": "Adjustment",
+    "goodwill": "Goodwill credit",
+    "release": "Release credit",
+    "mandate": "Mandate compensation",
+    "opening_balance": "Opening balance"
+  },
+  "refundKind": {
+    "refund": "Refund",
+    "payout": "Payout"
+  },
+  "refundStatus": {
+    "pending": "Pending",
+    "succeeded": "Succeeded",
+    "failed": "Failed"
+  },
+  "exportKind": {
+    "export": "Export",
+    "reexport": "Re-export"
+  },
+  "deliveryStatus": {
+    "none": "File",
+    "pending": "Sending",
+    "sent": "Sent",
+    "failed": "Failed"
+  },
+  "reconciliationOutcome": {
+    "ok": "Matched",
+    "unknown_charge": "Unknown charge",
+    "not_exported": "Not exported",
+    "cancelled": "Cancelled",
+    "invalid_date": "Invalid date",
+    "duplicate_row": "Duplicate row"
+  },
+  "importStatus": {
+    "dry_run": "Dry run",
+    "applied": "Imported",
+    "undone": "Undone",
+    "failed": "Failed"
+  },
+  "importIssue": {
+    "unknown_customer": "Customer not found",
+    "ambiguous_customer": "Ambiguous customer",
+    "invalid_amount": "Invalid amount",
+    "invalid_date": "Invalid date",
+    "zero_amount": "Zero amount"
+  },
+  "originItemKey": {
+    "management_fee": "Management fees",
+    "common_advance": "Common charges advance",
+    "common_balance": "Common charges balance",
+    "transfer_fee": "Transfer fee",
+    "termination_penalty": "Termination penalty",
+    "termination_refund": "Termination refund",
+    "deposit_retention": "Deposit retention",
+    "opening_balance": "Opening balance",
+    "contract_trueup_fallback": "Contract true-up"
+  },
+  "sessionStatus": {
+    "open": "Open",
+    "closed": "Closed"
+  },
+  "movementKind": {
+    "in": "Cash in",
+    "out": "Cash out"
+  },
+  "fiscalStatus": {
+    "pending": "Pending",
+    "issued": "Issued",
+    "failed": "Failed",
+    "void": "Void"
+  },
+  "fiscalDriver": {
+    "none": "None (tracking only)",
+    "export": "Daily takings file"
+  },
+  "requestStatus": {
+    "open": "Open",
+    "paid": "Paid",
+    "cancelled": "Cancelled",
+    "expired": "Expired"
+  },
+  "requestSource": {
+    "manual": "Manual",
+    "auto": "Automatic",
+    "reminder": "Reminder",
+    "transit": "Transit"
+  },
+  "intentStatus": {
+    "created": "Created",
+    "open": "Open",
+    "processing": "Verifying",
+    "succeeded": "Succeeded",
+    "failed": "Failed",
+    "expired": "Expired",
+    "cancelled": "Cancelled"
+  },
+  "reminderLevel": {
+    "pre_due": "Upcoming due date",
+    "due": "Due today",
+    "courteous": "Courteous reminder",
+    "formal": "Formal reminder",
+    "final_notice": "Final notice"
+  },
+  "reminderItemStatus": {
+    "queued": "Queued",
+    "awaiting_approval": "Awaiting approval",
+    "skipped_excluded": "Excluded",
+    "skipped_paid": "Already paid",
+    "skipped_no_email": "No email",
+    "sent": "Sent",
+    "dismissed": "Dismissed"
+  },
+  "runStatus": {
+    "running": "Running",
+    "done": "Done",
+    "failed": "Failed"
+  },
+  "exclusionKind": {
+    "payment_plan": "Repayment plan",
+    "disputed": "Disputed",
+    "other": "Other"
+  },
+  "mandateStatus": {
+    "pending": "Pending",
+    "active": "Active",
+    "revoked": "Revoked",
+    "failed": "Failed"
+  },
+  "providerMode": {
+    "test": "Test",
+    "live": "Live"
+  },
+  "workItemKind": {
+    "reminder_approval": "Final notice to approve",
+    "charges_to_export": "Charges to export",
+    "payment_failed": "Failed payment",
+    "late_payment": "Late payment",
+    "overpayment": "Overpayment",
+    "sepa_failed": "Failed SEPA debit",
+    "billing_item_missing": "Missing billing item",
+    "billing_target_mismatch": "Inconsistent contract amounts",
+    "arrears_paid": "Arrears paid",
+    "deadline": "Deadline",
+    "dispute": "Dispute"
+  },
+  "workItemStatus": {
+    "open": "To do",
+    "in_progress": "In progress",
+    "done": "Done",
+    "dismissed": "Dismissed"
+  },
+  "ageingBucket": {
+    "not_due": "Not due",
+    "d0_30": "0–30 days",
+    "d31_60": "31–60 days",
+    "d61_90": "61–90 days",
+    "d90_plus": "Over 90 days"
+  },
+  "lensState": {
+    "ok": "In order",
+    "due_soon": "Due soon",
+    "overdue": "Overdue",
+    "overdue_60": "Overdue over 60 days",
+    "disputed": "Disputed",
+    "suspended": "Suspended"
+  },
+  "statementKind": {
+    "charge": "Charge",
+    "payment": "Payment",
+    "refund": "Refund",
+    "credit": "Credit"
+  },
+  "receivableKind": {
+    "charge": "Charge",
+    "scheduled_installment": "Future instalment"
+  }
+}

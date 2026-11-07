@@ -195,6 +195,7 @@ con le stesse regole: servizio con controllo dei permessi, scope di marina, tran
 | M2 | `catalog`, `pricing` (puro), `pricelist` | [12](spec/12-listini-articoli-prezzi.md) |
 | M3 | `occupancy`, `fit` (puro), `presence`, `contract` (transiti di base) | [09](spec/09-mappa-vista-operativa.md), [10](spec/10-motore-di-occupazione.md) |
 | M4 | `contract` completo, `schedule`, `rights`, `allot`, `accrual`, `docs` (+ `tmpl`, `markdown`, `layout`, `pdf`), `signature`, `magiclink`, `comms`, `csvimport`, motore scadenze in `deadline` (niente AI, ADR 0008) | [13](spec/13-contrattualistica.md), [14](spec/14-cessioni-oneri-condominio.md), [15](spec/15-modelli-di-stampa-e-firma.md) |
-| successive | `charge`, `payment`, `cash`, `fiscal`, `accrual` (puro), `storage`, `optimizer` (puro), `yard`, `formula` (puro), `rental`, `maintenance`, `sensor`, `profile`, `online`, `checkout`, `report` | [16](spec/16-addebiti-e-incassi.md)–[25](spec/25-scheda-pubblica.md) |
+| M5 | `chargeplan` (puro), `charge`, `payment`, `collect`, `paydriver` (`manual`, `stripe` opzionale e disattivato di default), `cash` (+ `summary` puro), `fiscal`, `collect/levels` (puro), `internal/xlsx`; nessuna fatturazione: gli addebiti si esportano (spec 33 D4) | [16](spec/16-addebiti-e-incassi.md) |
+| successive | `storage`, `optimizer` (puro), `yard`, `formula` (puro), `rental`, `maintenance`, `sensor`, `profile`, `online`, `checkout`, `report` | [16](spec/16-addebiti-e-incassi.md)–[25](spec/25-scheda-pubblica.md) |
 
 Le regole che nessuna sequenza di operazioni può violare sono in [`invariants.md`](invariants.md).

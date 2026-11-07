@@ -19,8 +19,9 @@ const (
 	StatusSuspended         Status = "suspended"
 )
 
-// Transit statuses (m3-plan §4.2). pending_payment (M5) and awaiting_approval (M8) are in the CHECK only.
-// StatusConfirmed is assigned only by ConfirmTransit, the manual driver entry point (INV-09).
+// Transit statuses (m3-plan §4.2). pending_payment is reached from M5 (payment link, m5-plan §8.1);
+// awaiting_approval (M8) is in the CHECK only. StatusConfirmed is assigned only by confirmTx, called by the manual
+// driver or by the provider webhook (INV-09).
 const (
 	StatusHeld             Status = "held"
 	StatusPendingPayment   Status = "pending_payment"
@@ -75,6 +76,10 @@ const (
 	ActionTacitRenew    Action = "tacit_renew"
 	ActionAddendum      Action = "addendum"
 	ActionChangeVessel  Action = "change_vessel"
+
+	// M5 (m5-plan §8.1): a payment link puts a held transit in pending_payment; an expired payment brings it back.
+	ActionRequestPayment Action = "request_payment"
+	ActionPaymentExpired Action = "payment_expired"
 )
 
 // Transition is one row of a state table: Events are the outbox types written by the transition, in order.
@@ -304,6 +309,13 @@ var TransitTransitions = []Transition{
 	{StatusArrived, ActionDepart, StatusDeparted, []string{event.TransitDeparted}},
 	{StatusArrived, ActionChangeStay, StatusArrived, []string{event.TransitChanged}},
 	{StatusArrived, ActionUpdate, StatusArrived, []string{event.TransitChanged}},
+	// M5 (m5-plan §8.1): online payment of a held transit. pending_payment → confirmed only through confirmTx
+	// (provider webhook or manual driver, INV-09).
+	{StatusHeld, ActionRequestPayment, StatusPendingPayment, []string{event.TransitChanged}},
+	{StatusPendingPayment, ActionConfirm, StatusConfirmed, []string{event.TransitConfirmed}},
+	{StatusPendingPayment, ActionPaymentExpired, StatusHeld, []string{event.TransitChanged}},
+	{StatusPendingPayment, ActionExpire, StatusExpired, []string{event.TransitChanged, event.OccupancyHoldExpired}},
+	{StatusPendingPayment, ActionCancel, StatusCancelled, []string{event.TransitCancelled}},
 }
 
 // QuoteTransitions is the table of m3-plan §4.3. Anything else is ErrInvalidTransition.

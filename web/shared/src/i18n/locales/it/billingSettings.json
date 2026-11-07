@@ -1,0 +1,52 @@
+{
+  "title": "Addebiti e incassi",
+  "description": "Scadenze, articoli per gli addebiti automatici, solleciti, morosità, ricevute e casse.",
+  "saved": "Impostazioni salvate",
+  "charges": {
+    "title": "Addebiti",
+    "dueDays": "Giorni di scadenza predefiniti",
+    "exportReminderDays": "Promemoria esportazione dopo (giorni)",
+    "sepaLeadDays": "Anticipo addebito SEPA (giorni)",
+    "autoRequest": "Invia automaticamente la richiesta di pagamento alla creazione dell'addebito"
+  },
+  "originItems": {
+    "title": "Articoli per origine",
+    "description": "Gli addebiti senza listino (oneri, spese comuni, subentri, recessi, cauzioni, saldi di apertura) usano questi articoli per IVA e codici.",
+    "none": "Nessun articolo"
+  },
+  "reminders": {
+    "title": "Solleciti",
+    "description": "Giorni rispetto alla scadenza (negativi = prima) e livelli attivi.",
+    "hour": "Ora di invio",
+    "level": "Livello",
+    "days": "Giorni",
+    "enabled": "Attivo",
+    "daysOf": "Giorni per {{level}}",
+    "enabledOf": "{{level}} attivo",
+    "finalHint": "La diffida richiede sempre l'approvazione di un operatore."
+  },
+  "arrears": {
+    "title": "Morosità",
+    "description": "Se attiva, sospende i contratti con scaduti oltre soglia; la ripresa è manuale e l'uscita non viene mai bloccata.",
+    "enabled": "Sospendi i contratti morosi",
+    "days": "Giorni di ritardo",
+    "min": "Importo minimo"
+  },
+  "fiscal": {
+    "title": "Ricevute e modulo fiscale",
+    "driver": "Modulo fiscale",
+    "footer": "Piè di pagina della ricevuta"
+  },
+  "registers": {
+    "title": "Casse",
+    "code": "Codice",
+    "name": "Nome",
+    "active": "Attiva",
+    "activeOf": "{{name}} attiva",
+    "default": "Predefinita",
+    "isDefault": "Predefinita",
+    "makeDefault": "Rendi predefinita",
+    "add": "Aggiungi cassa",
+    "empty": "Nessuna cassa."
+  }
+}

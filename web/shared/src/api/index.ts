@@ -43,3 +43,5 @@ export * from './hooks/contractsM4';
 export * from './hooks/rights';
 export * from './hooks/documents';
 export * from './hooks/publicLinks';
+export * from './hooks/billing';
+export * from './hooks/payPublic';

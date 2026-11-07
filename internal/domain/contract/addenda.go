@@ -532,7 +532,17 @@ func (s *Service) applyAddendumTx(ctx context.Context, tx bun.IDB, scope store.M
 	if ad.Kind == AddVesselChange {
 		change = event.ChangeVesselChanged
 	}
-	return s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: change})
+	if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: change}); err != nil {
+		return err
+	}
+	if ad.AmountDeltaCents == 0 {
+		return nil
+	}
+	reason := RepriceAddendum
+	if ad.Kind == AddVesselChange {
+		reason = RepriceVesselChange
+	}
+	return s.repricedTx(ctx, tx, scope, a, c, reason)
 }
 
 // holdUntil returns the expiry of the live holds of a contract (zero when none).

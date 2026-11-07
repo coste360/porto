@@ -1,0 +1,135 @@
+{
+  "actions": {
+    "adjust": "Rettifica",
+    "cancel": "Annulla addebito",
+    "collect": "Incassa",
+    "edit": "Modifica",
+    "invoiceRef": "Estremi fattura",
+    "requestPayment": "Richiedi pagamento"
+  },
+  "adjust": {
+    "title": "Rettifica dell'addebito {{number}}",
+    "description": "L'addebito è già esportato o incassato: la correzione è un nuovo addebito collegato, che finirà nella prossima esportazione.",
+    "mode": "Tipo di rettifica",
+    "modes": {
+      "delta": "Rettifica per differenza",
+      "replace": "Storno e sostituzione"
+    },
+    "hints": {
+      "delta": "Inserisci solo le righe di differenza; quantità negative per ridurre.",
+      "replace": "L'addebito viene stornato per intero e sostituito dalle righe corrette."
+    },
+    "reason": "Motivo",
+    "submit": "Crea rettifica",
+    "done": "Rettifiche create: {{count}}"
+  },
+  "cancel": {
+    "title": "Annullare l'addebito {{number}}?",
+    "description": "Solo un addebito non esportato e non incassato può essere annullato. Il motivo resta nel registro."
+  },
+  "detail": {
+    "title": "Addebito {{number}}",
+    "at": "Data",
+    "correctionOf": "Rettifica di {{number}}",
+    "corrections": "Rettifiche e compensazioni",
+    "exports": "Esportazioni",
+    "lines": "Righe",
+    "matches": "Incassi abbinati",
+    "noCorrections": "Nessuna rettifica.",
+    "noExports": "Non ancora esportato.",
+    "noMatches": "Nessun incasso abbinato.",
+    "noReminders": "Nessun sollecito.",
+    "offset": "Compensazione",
+    "payment": "Pagamento",
+    "reminders": "Solleciti",
+    "reversal": "Storno",
+    "summary": "Riepilogo",
+    "vatSummary": "Riepilogo IVA"
+  },
+  "edit": {
+    "title": "Modifica dell'addebito {{number}}",
+    "description": "L'addebito non è ancora esportato né incassato: puoi modificarlo direttamente."
+  },
+  "fields": {
+    "cancelReason": "Motivo annullamento",
+    "corrects": "Rettifica di",
+    "credited": "Compensato",
+    "customer": "Cliente",
+    "dueOn": "Scadenza",
+    "invoice": "Fattura",
+    "issuedOn": "Data addebito",
+    "number": "Numero",
+    "origin": "Origine",
+    "paid": "Pagato",
+    "residual": "Da incassare",
+    "service": "Competenza",
+    "status": "Stato",
+    "total": "Totale"
+  },
+  "invoice": {
+    "title": "Estremi della fattura",
+    "description": "Numero e data della fattura emessa dal software di fatturazione (solo informativi).",
+    "number": "Numero fattura",
+    "date": "Data fattura"
+  },
+  "lines": {
+    "add": "Aggiungi riga",
+    "discount": "Sconto",
+    "discountOf": "Sconto della riga {{n}}",
+    "empty": "Nessuna riga.",
+    "fromList": "Da listino",
+    "item": "Articolo",
+    "itemOf": "Articolo della riga {{n}}",
+    "itemPlaceholder": "Scegli un articolo",
+    "itemSearch": "Cerca articolo",
+    "noItems": "Nessun articolo",
+    "previewHint": "Anteprima: i prezzi da listino e gli importi definitivi sono calcolati al salvataggio.",
+    "qty": "Quantità",
+    "qtyOf": "Quantità della riga {{n}}",
+    "remove": "Rimuovi la riga {{n}}",
+    "total": "Totale riga",
+    "unit": "Prezzo unitario",
+    "unitOf": "Prezzo unitario della riga {{n}}",
+    "vat": "IVA"
+  },
+  "list": {
+    "title": "Addebiti",
+    "description": "Tutto quello che i clienti devono: da incassare, scaduti, da fatturare e rettifiche.",
+    "all": "Tutte",
+    "csv": "Esporta CSV",
+    "xlsx": "Esporta Excel",
+    "empty": "Nessun addebito.",
+    "issuedFrom": "Dal",
+    "issuedTo": "Al",
+    "new": "Nuovo addebito",
+    "overdue": "Scaduto",
+    "search": "Numero",
+    "views": "Viste",
+    "walkIn": "Cliente occasionale"
+  },
+  "views": {
+    "all": "Tutti",
+    "open": "Da incassare",
+    "overdue": "Scaduti",
+    "toInvoice": "Da fatturare",
+    "adjustments": "Rettifiche"
+  },
+  "new": {
+    "title": "Nuovo addebito",
+    "description": "Addebito manuale o vendita al banco a credito: cliente, articoli e IVA.",
+    "header": "Cliente e scadenza",
+    "dueHint": "Senza scadenza si usano i giorni predefiniti delle impostazioni.",
+    "submit": "Crea addebito"
+  },
+  "panel": {
+    "title": "Addebiti",
+    "empty": "Nessun addebito per questo contratto."
+  },
+  "vat": {
+    "empty": "Nessun importo.",
+    "gross": "Totale",
+    "net": "Imponibile",
+    "rate": "Aliquota",
+    "vat": "IVA"
+  }
+}

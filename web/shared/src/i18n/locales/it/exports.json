@@ -1,0 +1,94 @@
+{
+  "title": "Da fatturare",
+  "description": "Esportazioni degli addebiti verso il software di fatturazione e riconciliazione dei numeri di fattura.",
+  "new": "Nuova esportazione",
+  "history": "Esportazioni",
+  "empty": "Nessuna esportazione.",
+  "download": {
+    "csv": "Scarica CSV",
+    "xlsx": "Scarica Excel",
+    "pdf": "Riepilogo PDF"
+  },
+  "fields": {
+    "number": "Numero",
+    "kind": "Tipo",
+    "period": "Periodo",
+    "charges": "Addebiti",
+    "lines": "Righe",
+    "total": "Totale",
+    "delivery": "Consegna",
+    "createdAt": "Creata",
+    "first": "Prima esportazione"
+  },
+  "detail": {
+    "title": "Esportazione {{number}}",
+    "summary": "Riepilogo",
+    "items": "Addebiti esportati",
+    "noItems": "Nessun addebito.",
+    "reexport": "Riesporta",
+    "reexported": "Riesportazione {{number}} creata"
+  },
+  "wizard": {
+    "title": "Esporta da fatturare",
+    "description": "Gli addebiti da fatturare del periodo passano allo stato esportato: ognuno compare in una sola esportazione.",
+    "steps": "Passaggi",
+    "stepNames": {
+      "filters": "Periodo e filtri",
+      "preview": "Anteprima",
+      "done": "File"
+    },
+    "from": "Dal",
+    "to": "Al",
+    "customer": "Cliente (facoltativo)",
+    "origins": "Origini",
+    "originsHint": "Nessuna origine scelta = tutte.",
+    "errors": {
+      "period": "Indica il periodo.",
+      "order": "La data iniziale è successiva a quella finale."
+    },
+    "preview": "Anteprima",
+    "count": "Addebiti",
+    "mismatch": "I totali IVA non coincidono con il totale: segnala il problema.",
+    "warningsTitle": "Dati fiscali da completare",
+    "warnings": {
+      "customer_fiscal_incomplete": "Cliente con dati fiscali incompleti ({{count}} addebiti)."
+    },
+    "openCustomer": "Apri cliente",
+    "byVat": "Totali per aliquota",
+    "byOrigin": "Totali per origine",
+    "nothing": "Nessun addebito da fatturare nel periodo.",
+    "back": "Indietro",
+    "confirm": "Conferma esportazione",
+    "doneTitle": "Esportazione {{number}}",
+    "done": "Addebiti esportati: {{count}}, totale",
+    "openExport": "Apri esportazione"
+  },
+  "reconcile": {
+    "open": "Riconcilia fatture",
+    "title": "Riconciliazione delle fatture",
+    "description": "Carica il CSV del software di fatturazione: gli addebiti esportati ricevono numero e data della fattura.",
+    "file": "File",
+    "upload": "File CSV",
+    "paste": "Oppure incolla il contenuto",
+    "columns": "Colonne: id addebito o numero addebito, numero fattura, data (GG/MM/AAAA).",
+    "dryRunAction": "Prova",
+    "apply": "Applica",
+    "reportDry": "Esito della prova",
+    "reportDone": "Riconciliazione applicata",
+    "summary": "Righe: {{rows}}, abbinate: {{matched}}",
+    "row": "Riga",
+    "outcome": "Esito",
+    "history": "Riconciliazioni",
+    "source": "Origine",
+    "sources": {
+      "csv": "CSV",
+      "manual": "Manuale",
+      "exporter": "Integrazione"
+    },
+    "rows": "Righe",
+    "matched": "Abbinate",
+    "dryRun": "Prova",
+    "yes": "Sì",
+    "empty": "Nessuna riconciliazione."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "title": "Corrispettivi",
+  "description": "Corrispettivi per giorno o mese, aliquota e metodo, e documenti commerciali emessi.",
+  "tabs": {
+    "totals": "Corrispettivi",
+    "documents": "Documenti"
+  },
+  "from": "Dal",
+  "to": "Al",
+  "group": "Raggruppa per",
+  "groups": {
+    "day": "Giorno",
+    "month": "Mese"
+  },
+  "csv": "Esporta CSV",
+  "xlsx": "Esporta Excel",
+  "empty": "Nessun corrispettivo nel periodo.",
+  "grandTotal": "Totale del periodo:",
+  "all": "Tutti",
+  "noDocuments": "Nessun documento.",
+  "retry": "Riprova",
+  "void": "Annulla",
+  "fields": {
+    "period": "Periodo",
+    "rate": "Aliquota",
+    "method": "Metodo",
+    "net": "Imponibile",
+    "vat": "IVA",
+    "total": "Totale",
+    "documents": "Documenti",
+    "number": "Numero",
+    "businessDate": "Giorno",
+    "driver": "Modulo",
+    "status": "Stato"
+  }
+}

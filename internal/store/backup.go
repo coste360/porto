@@ -54,6 +54,10 @@ var (
 		"contracts.charter", "contract_settings.marina_countersign", "contract_settings.require_paper_scan",
 		"charter_fleet_vessels.active", "berth_right_vessels.is_primary", "management_fee_lines.excluded",
 		"templates.is_default", "generated_documents.pdfa", "generated_documents.signed",
+		// M5 (00010_charges, 00011_cash, 00012_payments)
+		"billing_settings.auto_payment_request", "charge_lines.price_includes_vat", "charge_export_items.is_first",
+		"invoice_reconciliations.dry_run", "cash_registers.active", "cash_registers.is_default",
+		"payment_provider_settings.enabled", "payment_provider_settings.sepa_enabled", "payment_intent_charges.open_flag",
 	}
 	sqliteJSONColumns = []string{
 		"organizations.billing_address", "marinas.locales", "marinas.contacts", "marinas.address", "marinas.geo",
@@ -83,6 +87,11 @@ var (
 		"management_fee_lines.holders", "common_charge_runs.totals", "common_charge_runs.plan", "template_versions.page",
 		"comm_campaigns.audience", "comm_campaigns.channels", "comm_campaigns.attachments", "comm_campaigns.counts",
 		"import_runs.mapping", "import_runs.report",
+		// M5 (00010_charges, 00011_cash, 00012_payments)
+		"billing_settings.reminder_policy", "billing_settings.arrears_policy", "charge_exports.filters",
+		"charge_exports.totals", "invoice_reconciliations.report", "charge_imports.mapping", "charge_imports.report",
+		"cash_sessions.expected", "cash_sessions.counted", "payments.vat_split", "fiscal_documents.lines",
+		"fiscal_documents.vat", "payment_provider_settings.methods", "reminder_runs.counts",
 	}
 )
 
@@ -192,6 +201,10 @@ var dumpOrder = map[string]string{
 	"charter_contracts":       "contract_id",
 	"berth_right_allocations": "allocation_id",
 	"signature_settings":      "marina_id",
+	// M5
+	"billing_settings":  "marina_id",
+	"billing_sequences": "marina_id, series, period",
+	"fiscal_sequences":  "marina_id, day",
 }
 
 // DumpTable calls fn with every row of table (ordered by id, or by its primary key when it has no id), converted

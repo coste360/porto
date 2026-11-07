@@ -4,7 +4,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { MARINA_ID, makeMe, renderApp } from '../../test/renderApp';
 import { photoError } from '../desk/lib/photo';
-import { API, ALLOC_ID, VESSEL_ID, baseRoutes, meDesk, vesselBrief } from '../desk/test/fixtures';
+import {
+  API,
+  ALLOC_ID,
+  MAP_ID,
+  VESSEL_ID,
+  baseRoutes,
+  meDesk,
+  vesselBrief,
+} from '../desk/test/fixtures';
 
 vi.mock('../operations/public', () => ({ opsMapSearch: () => ({}), PlacementPicker: () => null }));
 vi.mock('../operations/routes', () => ({ operationsRoutes: () => [] }));
@@ -149,6 +157,39 @@ describe('dock panel', () => {
       'href',
       `/admin/m/${MARINA_ID}/dock`,
     );
+  });
+
+  it('warns about a departure with an overdue balance without blocking it', async () => {
+    phone();
+    const departing = {
+      ...movements,
+      arrivals_expected: [],
+      departures_expected: [
+        {
+          vessel: vesselBrief,
+          contract: { id: 'c2', kind: 'transit', status: 'arrived', code: 'TRN-2026-0002' },
+          resource: { type: 'berth', id: 'b7', code: 'A07' },
+          allocation_id: ALLOC_ID,
+        },
+      ],
+    };
+    renderApp(`/m/${MARINA_ID}/dock`, [
+      ...baseRoutes(),
+      { path: `${API}/movements`, body: departing },
+      {
+        path: `${API}/maps/${MAP_ID}/payment-status`,
+        body: {
+          date: '2026-07-10',
+          resources: [
+            { resource_type: 'berth', resource_id: 'b7', state: 'overdue', suspended: false },
+            { resource_type: 'berth', resource_id: 'b8', state: 'ok', suspended: false },
+          ],
+        },
+      },
+    ]);
+    const alert = await screen.findByTestId('dock-payment-warning');
+    expect(within(alert).getByText('Saldo da verificare')).toBeInTheDocument();
+    expect(within(alert).getByText(/A07/)).toBeInTheDocument();
   });
 
   it('checks photo type and size before upload', () => {

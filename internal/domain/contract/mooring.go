@@ -466,6 +466,9 @@ func (s *Service) TerminateContract(ctx context.Context, p *auth.Principal, mari
 		if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c}); err != nil {
 			return err
 		}
+		if err := s.closedTx(ctx, tx, scope, a, c, CloseTerminated); err != nil {
+			return err
+		}
 		return s.onContractFreedTx(ctx, tx, scope, c)
 	})
 	if err != nil {

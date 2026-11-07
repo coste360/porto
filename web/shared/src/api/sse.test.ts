@@ -120,4 +120,14 @@ describe('keysForMessage', () => {
     expect(SSE_TOPICS).toContain('rights.changed');
     expect(SSE_TOPICS).toContain('documents.changed');
   });
+
+  it('invalidates the M5 billing area and the instalment lists', () => {
+    const base = { type: 'x', marina_id: 'm1', entity_ids: [] };
+    const keys = keysForMessage({ ...base, topic: 'billing.changed' }, 'm1');
+    expect(keys).toContainEqual(queryKeys.billing('m1'));
+    expect(keys).toContainEqual(queryKeys.installments('m1'));
+    expect(keys).toContainEqual(queryKeys.holderInstallments('m1'));
+    expect(queryKeys.charge('m1', 'c1').slice(0, 3)).toEqual(queryKeys.billing('m1'));
+    expect(SSE_TOPICS).toContain('billing.changed');
+  });
 });

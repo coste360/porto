@@ -5,6 +5,7 @@ import (
 	"embed"
 	"fmt"
 	htmltemplate "html/template"
+	"io/fs"
 	"strings"
 	texttemplate "text/template"
 )
@@ -32,6 +33,29 @@ const (
 	TemplateMandateStatement          = "mandate_statement"
 	TemplateCommunication             = "communication"
 )
+
+// M5 template names (m5-plan §14.1). The files under templates/{it,en}/ are written by CASH-DRIVERS; until a
+// file set exists the name is not loaded (Render returns an unknown template error).
+const (
+	TemplatePaymentRequest      = "payment_request"
+	TemplatePaymentReceipt      = "payment_receipt"
+	TemplateReminderPreDue      = "reminder_pre_due"
+	TemplateReminderDue         = "reminder_due"
+	TemplateReminderCourteous   = "reminder_courteous"
+	TemplateReminderFormal      = "reminder_formal"
+	TemplateReminderFinalNotice = "reminder_final_notice"
+	TemplateSEPAMandateRequest  = "sepa_mandate_request"
+	TemplateLatePaymentOffice   = "late_payment_office"
+)
+
+// M5Templates lists the M5 templates.
+func M5Templates() []string {
+	return []string{
+		TemplatePaymentRequest, TemplatePaymentReceipt, TemplateReminderPreDue, TemplateReminderDue,
+		TemplateReminderCourteous, TemplateReminderFormal, TemplateReminderFinalNotice, TemplateSEPAMandateRequest,
+		TemplateLatePaymentOffice,
+	}
+}
 
 // M4Templates lists the M4 templates.
 func M4Templates() []string {
@@ -107,9 +131,16 @@ type templateSet struct {
 var templates = func() map[string]templateSet {
 	out := map[string]templateSet{}
 	names := append([]string{TemplatePasswordReset, TemplateInvitation}, M4Templates()...)
+	optional := map[string]bool{}
+	for _, name := range M5Templates() {
+		names, optional[name] = append(names, name), true
+	}
 	for _, loc := range locales {
 		for _, name := range names {
 			base := "templates/" + loc + "/" + name
+			if _, err := fs.Stat(templateFS, base+".subject.tmpl"); err != nil && optional[name] {
+				continue // M5 template not written yet
+			}
 			parse := func(suffix string) *texttemplate.Template {
 				return texttemplate.Must(texttemplate.New(name+suffix).Funcs(textFuncs).ParseFS(templateFS, base+suffix))
 			}

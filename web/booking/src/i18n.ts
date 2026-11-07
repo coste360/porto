@@ -17,6 +17,10 @@ import itCommon from '../../shared/src/i18n/locales/it/common.json';
 import itCustomerLinks from '../../shared/src/i18n/locales/it/customerLinks.json';
 import itDocsEnums from '../../shared/src/i18n/locales/it/docsEnums.json';
 import itErrors from '../../shared/src/i18n/locales/it/errors.json';
+import enBillingEnums from '../../shared/src/i18n/locales/en/billingEnums.json';
+import enPayPublic from '../../shared/src/i18n/locales/en/payPublic.json';
+import itBillingEnums from '../../shared/src/i18n/locales/it/billingEnums.json';
+import itPayPublic from '../../shared/src/i18n/locales/it/payPublic.json';
 
 export const BOOKING_NAMESPACES = [
   'common',
@@ -24,6 +28,9 @@ export const BOOKING_NAMESPACES = [
   'booking',
   'customerLinks',
   'docsEnums',
+  // M5 public pay page (m5-plan §9.3)
+  'payPublic',
+  'billingEnums',
 ] as const;
 
 const resources = {
@@ -33,6 +40,8 @@ const resources = {
     booking: itBooking,
     customerLinks: itCustomerLinks,
     docsEnums: itDocsEnums,
+    payPublic: itPayPublic,
+    billingEnums: itBillingEnums,
   },
   en: {
     common: enCommon,
@@ -40,6 +49,8 @@ const resources = {
     booking: enBooking,
     customerLinks: enCustomerLinks,
     docsEnums: enDocsEnums,
+    payPublic: enPayPublic,
+    billingEnums: enBillingEnums,
   },
 };
 

@@ -1,0 +1,16 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Statement of account
+To Mario Rossi · Tax code RSSMRA80A01H501U
+Period from 01/01/2027 to 30/06/2027.
+Opening balance: €0.00
+Date | Type | Number | Description | Due | Debit | Credit | Balance
+07/11/2026 | charge | A2026-0000 | Acconto | 21/11/2026 | €1,455.00 | €0.00 | €1,455.00
+42 | ORM-2027-0042
+18/11/2026 | payment | P2026-0000 | Bonifico | €0.00 | €1,455.00 | €0.00
+31
+15/03/2027 | charge | A2027-0001 | Rata 2 | 31/03/2027 | €1,131.66 | €0.00 | €1,131.66
+10 | ORM-2027-0042
+Closing balance: €1,131.66
+Charges are Porto's internal references: invoices are issued by the marina's invoicing software.
+Porto Demo S.r.l. · VAT 01234567890 · Page 1 of 1

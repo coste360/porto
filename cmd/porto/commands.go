@@ -298,8 +298,12 @@ func cmdSeedDemo(ctx context.Context, args []string, e env) error {
 		res.Installments, res.RenewalCampaigns, res.RenewalProposals, res.Charters, res.Addenda, res.WaitlistEntries,
 		res.Rights, res.Mandates, res.Transfers, res.FeeRuns, res.MillesimalTables, res.CommonChargeRuns, res.HolderInstallments,
 		res.Templates, res.GeneratedDocuments, res.Communications, res.Deadlines)
+	m5 := fmt.Sprintf("charges %d, charge_exports %d, opening_balances %d, payments %d, refunds %d, customers_with_credit %d, "+
+		"cash_sessions %d, counter_sales %d, fiscal_documents %d, payment_requests %d, reminder_items %d, dunning_exclusions %d",
+		res.Charges, res.ChargeExports, res.OpeningBalances, res.Payments, res.Refunds, res.CustomersCredit,
+		res.CashSessions, res.CounterSales, res.FiscalDocuments, res.PaymentRequests, res.ReminderItems, res.DunningExclusion)
 	if !res.Created {
-		fmt.Fprintf(e.stdout, "demo marina %q already exists (%s); added: %s; M4: %s\n", app.DemoMarinaSlug, res.MarinaID, m1, m4)
+		fmt.Fprintf(e.stdout, "demo marina %q already exists (%s); added: %s; M4: %s; M5: %s\n", app.DemoMarinaSlug, res.MarinaID, m1, m4, m5)
 		return nil
 	}
 	fmt.Fprintf(e.stdout, "demo organization %q, marina %q (slug %s)\n", app.DemoOrganization, app.DemoMarinaName, app.DemoMarinaSlug)
@@ -307,6 +311,7 @@ func cmdSeedDemo(ctx context.Context, args []string, e env) error {
 	fmt.Fprintf(e.stdout, "owner login: %s\n", res.OwnerEmail)
 	fmt.Fprintf(e.stdout, "harbour and registry: %s\n", m1)
 	fmt.Fprintf(e.stdout, "contracts, rights and documents (M4): %s\n", m4)
+	fmt.Fprintf(e.stdout, "charges, payments and cash (M5): %s\n", m5)
 	if pw == "" {
 		// Shown once: it is not stored anywhere in clear.
 		fmt.Fprintf(e.stdout, "generated password (shown once): %s\n", res.Password)

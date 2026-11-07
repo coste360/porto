@@ -32,7 +32,8 @@ test('scadenzario filters, bulk settle and CSV', async ({ page }) => {
   await page.getByRole('button', { name: 'Registra incasso' }).click();
   const dialog = page.getByRole('dialog');
   await dialog.getByRole('combobox', { name: 'Metodo' }).click();
-  await page.getByRole('option', { name: 'Contanti' }).click();
+  // From M5 cash lands in an open cash session and transfers need a reference; a POS payment needs neither.
+  await page.getByRole('option', { name: 'Carta (POS)' }).click();
   await dialog.getByRole('button', { name: 'Registra' }).click();
   await expect(page.getByText(/Rate incassate:/)).toBeVisible();
 

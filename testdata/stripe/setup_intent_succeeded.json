@@ -1,0 +1,4 @@
+{"id": "evt_t_seti_ok", "object": "event", "type": "setup_intent.succeeded", "created": 1814000000,
+ "data": {"object": {"id": "seti_test_1", "object": "setup_intent", "status": "succeeded", "customer": "cus_test_1",
+  "payment_method": {"id": "pm_test_1", "object": "payment_method", "type": "sepa_debit", "sepa_debit": {"last4": "3000", "country": "IT"},
+  "billing_details": {"name": "Mario Rossi", "email": "mario@example.test"}}, "mandate": "mandate_test_1", "metadata": {"marina_id": "01900000-0000-7000-8000-00000000000a", "intent_id": "01900000-0000-7000-8000-0000000000b1"}}}}

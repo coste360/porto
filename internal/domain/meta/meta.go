@@ -39,6 +39,10 @@ func Get(cfg *config.Config, version string) Meta {
 			// M4 (m4-plan §7.6); signature.providers is added by WithSignatureProviders.
 			"contracts.full", "installments", "renewals.campaigns", "charter", "rights", "common_charges",
 			"templates.pdf", "signature.paper", "signature.otp", "communications", "deadlines.engine", "imports.csv",
+			// M5 (m5-plan §7.6); fiscal.drivers and charge_exporters are added by WithBilling. Stripe is compiled in
+			// (payments.providers) but disabled until a marina enables it.
+			"charges", "charge_exports", "payments", "credits", "cash", "fiscal.none", "fiscal.export",
+			"payment_requests", "reminders", "payments.providers", "payments.sepa", "imports.xlsx", "opening_balances",
 		},
 		DemoPairing:          cfg != nil && cfg.DemoPairingEnabled(),
 		PricingEngineVersion: pricing.EngineVersion,
@@ -51,5 +55,19 @@ func (m Meta) WithSignatureProviders(registered int) Meta {
 	if registered > 0 {
 		m.Capabilities = append(append([]string(nil), m.Capabilities...), "signature.providers")
 	}
+	return m
+}
+
+// WithBilling adds fiscal.drivers when fiscal device drivers are registered and charge_exporters when at least one
+// ext.ChargeExporter is registered (none ships with Porto, spec 33 D4).
+func (m Meta) WithBilling(fiscalDrivers, chargeExporters int) Meta {
+	caps := append([]string(nil), m.Capabilities...)
+	if fiscalDrivers > 0 {
+		caps = append(caps, "fiscal.drivers")
+	}
+	if chargeExporters > 0 {
+		caps = append(caps, "charge_exporters")
+	}
+	m.Capabilities = caps
 	return m
 }

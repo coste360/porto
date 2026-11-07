@@ -20,4 +20,19 @@ describe('booking routes', () => {
       slug: 'porto-demo',
     });
   });
+
+  it('routes the payment page and its return page', () => {
+    expect(routeFromPath('/b/porto-demo/pay/ABCDEFGHIJKLMNOP1234', slugFromPath)).toEqual({
+      page: 'pay',
+      slug: 'porto-demo',
+      token: 'ABCDEFGHIJKLMNOP1234',
+      ret: false,
+    });
+    expect(routeFromPath('/b/porto-demo/pay/ABCDEFGHIJKLMNOP1234/return', slugFromPath)).toEqual({
+      page: 'pay',
+      slug: 'porto-demo',
+      token: 'ABCDEFGHIJKLMNOP1234',
+      ret: true,
+    });
+  });
 });

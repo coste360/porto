@@ -8,6 +8,60 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M5 "Addebiti e incassi", contract phase (m5-plan §14.1):
+
+- Migrations `00010_charges`, `00011_cash`, `00012_payments` (SQLite and PostgreSQL): billing settings, origin items,
+  billing sequences, charges with lines, offsets, exports and items, invoice reconciliations, opening balance
+  imports; cash registers, sessions, movements, fiscal numbering; payments, matches, refunds, fiscal documents,
+  provider settings, intents, provider events, SEPA mandates, payment requests, reminders, dunning exclusions and
+  worklist states. Database guarantees: one live primary charge per origin (INV-54), one first export per charge
+  (INV-53), immutable exported and cancelled charges and their lines (INV-51), payment and charge limits (INV-52),
+  insert-only matches, offsets, export items and cash movements, one open session per register (INV-55), frozen
+  closed sessions and issued fiscal documents, one provider event once (INV-56), each (charge, level) reminded once
+  and one run per day (INV-58); `TestMigrations_M5Constraints`.
+- Store models, backup registration (charges restored as to_invoice/open and flipped at the end), lock helpers
+  `LockPayment`, `LockChargesSorted`, `LockCashSession`, the `CheckBillingInvariants` dispatcher.
+- OpenAPI: 85 M5 operations (charges, exports and reconciliation, payments, refunds, credits, receivables,
+  statement, customer dashboard, map payment lens, worklist, cash, counter sales, receipts, corrispettivi, payment
+  requests, reminders, exclusions, payment providers, SEPA mandates, payment webhook, public pay page), 25 problem
+  types.
+- Events `charge.*`, `installment.charged`, `payment.*`, `cash.changed`, `fiscal_document.changed`,
+  `payment_request.changed`, `reminder.changed`, `billing.changed` on the SSE topic `billing.changed`.
+- `pkg/ext`: `PaymentProvider`, `FiscalDriver`, `ChargeExporter` (none ships with Porto, spec 33 D4) and their
+  `Extensions` fields; core payment driver `manual`; core fiscal drivers `none` and `export`.
+- Billing hooks of contracts and rights (`contract.BillingHooks`, `rights.BillingHooks`), the M5 transit
+  transitions `held → pending_payment → confirmed | held | expired | cancelled`, M5 jobs (no-ops), meta
+  capabilities, `PORTO_STRIPE_API_BASE` (dev only).
+- Web: SSE topic, query keys, billing hooks types, `MoneyInput` with vectors shared with Go
+  (`testdata/money/parse.json`), i18n namespaces (`billingEnums` complete), admin routes and navigation of the
+  "Amministrazione" pages, booking route `/b/{slug}/pay/{token}`.
+
+M5 "Addebiti e incassi", builders and integration:
+
+- Charges from every origin (instalments with cumulative VAT rounding through the pure `chargeplan`, true-up,
+  transits, holder instalments, manual charges, counter sales, terminations, deposit retentions, opening balances),
+  edits of unexported charges, adjustments (delta and replace) with offsets and customer credit, backfill of M4
+  instalments into charges and backfill payments.
+- "Da fatturare" export (preview, CSV, Excel through the own stdlib `internal/xlsx`, PDF summary), re-export, invoice
+  reconciliation from CSV/Excel, the `ChargeExporter` interface (no vendor, spec 33 D4), Excel input for the imports.
+- Payments ledger: idempotent recording, explicit and oldest-first matching, reversals, refunds only from
+  unallocated money, credits (goodwill, release, adjustment, mandate, opening balance), deposits and retentions,
+  mandate settlement; statement of account (JSON, CSV, PDF), scadenzario and ageing, customer dashboard, map
+  payments lens, office worklist.
+- Cash registers and sessions with Z report, counter sales with 80/58 mm and A4 courtesy receipts ("Non valido ai
+  fini fiscali"), fiscal documents and corrispettivi (drivers `none` and `export`).
+- Collection: payment requests with public pay page and tokenised links, reminders with levels and approval of the
+  final notice, arrears policy (disabled by default), SEPA mandates; optional Stripe driver (plain HTTPS over the
+  egress client, signed and idempotent webhooks), registered but disabled until a marina configures it; every flow
+  works offline with the manual driver.
+- Web: the 18 "Amministrazione" pages, customer dashboard and statement tabs, transit and contract charge panels,
+  booking pay page, Pagamenti lens and the dock departure warning (never a block).
+- `scripts/with-postgres.sh` and CI give PostgreSQL 1 GB of shared memory, `max_locks_per_transaction` 512 and
+  `max_connections` 300 for the M5 integration and concurrency tests.
+- Worklist signals that recur (arrears paid, disputes, billing mismatches) reopen a closed item on a new occurrence
+  instead of being dropped.
+
+
 Brand (ADR 0007, decision D13):
 
 - `scripts/brand/build-brand.mjs` (`make brand`, standalone Node project with opentype.js) outlines the "porto"
@@ -208,6 +262,14 @@ M0 — Fondamenta (spec 32.3):
 - Documentation: `docs/architecture.md`, `CONTRIBUTING.md`, invariants INV-72 and INV-73.
 
 ### Fixed
+
+M5 polish:
+
+- Contract lines showed 0,00 € while the contract total was correct: each line now carries its share of the price
+  snapshot, computed when the contract is read (shares always sum to the total).
+- The berth-use rights list shows the berth code instead of its internal id.
+- `web/.gitignore` no longer hides `src/**/coverage/` source folders (the price list coverage page was missing
+  from a clean checkout).
 
 M4 review, fix round 1:
 

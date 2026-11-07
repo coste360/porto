@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"sync"
+
+	"github.com/uptrace/bun"
 )
 
 // localLocks are named in-process locks (SQLite: one process owns the database file).
@@ -70,4 +72,69 @@ func (db *DB) TryAdvisoryLock(ctx context.Context, name string) (unlock func(), 
 			localUnlock()
 		})
 	}, true, nil
+}
+
+// LockPayment takes a row lock on a payment of the marina (SELECT … FOR UPDATE on PostgreSQL; on SQLite the single
+// writer of the write queue serialises transactions) and returns it. Lock order (m5-plan §0.8): contract →
+// instalments → payment → charges (ascending id) → cash session → sequences.
+func LockPayment(ctx context.Context, db bun.IDB, s MarinaScope, id string) (*Payment, error) {
+	if !ValidID(id) {
+		return nil, ErrNotFound
+	}
+	p := new(Payment)
+	q := db.NewSelect().Model(p).Where("marina_id = ?", s.ID()).Where("id = ?", id)
+	if IsPostgres(db) {
+		q = q.For("UPDATE")
+	}
+	if err := q.Scan(ctx); err != nil {
+		return nil, notFound(err)
+	}
+	return p, nil
+}
+
+// LockChargesSorted locks the charges of the marina with the given ids in ascending id order (so that two
+// transactions never deadlock) and returns them in that order. Unknown ids are ErrNotFound.
+func LockChargesSorted(ctx context.Context, db bun.IDB, s MarinaScope, ids []string) ([]Charge, error) {
+	uniq := map[string]bool{}
+	var want []string
+	for _, id := range ids {
+		if !ValidID(id) {
+			return nil, ErrNotFound
+		}
+		if !uniq[id] {
+			uniq[id] = true
+			want = append(want, id)
+		}
+	}
+	out := []Charge{}
+	if len(want) == 0 {
+		return out, nil
+	}
+	q := db.NewSelect().Model(&out).Where("marina_id = ?", s.ID()).Where("id IN (?)", bun.List(want)).OrderExpr("id")
+	if IsPostgres(db) {
+		q = q.For("UPDATE")
+	}
+	if err := q.Scan(ctx); err != nil {
+		return nil, err
+	}
+	if len(out) != len(want) {
+		return nil, ErrNotFound
+	}
+	return out, nil
+}
+
+// LockCashSession takes a row lock on a cash session of the marina and returns it.
+func LockCashSession(ctx context.Context, db bun.IDB, s MarinaScope, id string) (*CashSession, error) {
+	if !ValidID(id) {
+		return nil, ErrNotFound
+	}
+	c := new(CashSession)
+	q := db.NewSelect().Model(c).Where("marina_id = ?", s.ID()).Where("id = ?", id)
+	if IsPostgres(db) {
+		q = q.For("UPDATE")
+	}
+	if err := q.Scan(ctx); err != nil {
+		return nil, notFound(err)
+	}
+	return c, nil
 }

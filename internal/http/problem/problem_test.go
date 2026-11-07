@@ -173,8 +173,8 @@ func TestWriteError_UnmappedIsInternal(t *testing.T) {
 func TestTypes_Registry(t *testing.T) {
 	slug := regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	all := All()
-	if len(all) != 82 {
-		t.Fatalf("declared %d types, want 82 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4)", len(all))
+	if len(all) != 107 {
+		t.Fatalf("declared %d types, want 107 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4 + m5-plan §7.4)", len(all))
 	}
 	for _, ty := range all {
 		if !slug.MatchString(string(ty)) {
@@ -200,6 +200,12 @@ func TestTypes_Registry(t *testing.T) {
 		TemplateLimits: 422, PaperScanRequired: 422, InsuranceRequired: 422, CustomerEmailMissing: 422,
 		SharesInvalid: 422, TableIncomplete: 422, TableActive: 409, TransferRequirements: 422, MandateOverlap: 409,
 		VesselInOtherFleet: 409, VesselNotInFleet: 422, ImportNotUndoable: 409, ProviderUnknown: 422, CodeTaken: 409,
+		ChargeImmutable: 409, ChargeCancelled: 409, UseEdit: 409, MatchExceeds: 409, RefundExceeds: 409,
+		AlreadyReversed: 409, CreditInsufficient: 409, NotDeposit: 409, NothingToSettle: 409, ChargeExists: 409,
+		NoTerminationAmount: 409, NotExported: 409, ExportEmpty: 422, ExportTooLarge: 422, ChargesNotOpen: 422,
+		ReleaseNotResold: 422, CashSessionRequired: 409, CashSessionOpen: 409, CashSessionClosed: 409,
+		CashInsufficient: 409, RegisterInUse: 409, ProviderDisabled: 422, ProviderRefundUnsupported: 422,
+		ProviderError: 502, BillingItemMissing: 422,
 	}
 	for ty, s := range want {
 		if StatusOf(ty) != s {

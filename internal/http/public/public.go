@@ -6,6 +6,7 @@ package public
 import (
 	"net/http"
 
+	"github.com/coste360/porto/internal/domain/collect"
 	"github.com/coste360/porto/internal/domain/comms"
 	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/docs"
@@ -28,6 +29,9 @@ type Handler struct {
 	Signatures *signature.Service
 	Comms      *comms.Service
 	Docs       *docs.Service
+
+	// M5 public pay page of payment requests (m5-plan §5.5, CASH-DRIVERS).
+	Collect *collect.Service
 }
 
 // GetPublicMarina implements api.ServerInterface.

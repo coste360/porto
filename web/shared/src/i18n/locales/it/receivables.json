@@ -1,0 +1,74 @@
+{
+  "title": "Scadenzario",
+  "description": "Addebiti aperti e rate future per scadenza, con anzianità, richieste di pagamento e solleciti.",
+  "tabs": {
+    "list": "Scadenze",
+    "ageing": "Sospesi per cliente"
+  },
+  "all": "Tutti",
+  "csv": "Esporta CSV",
+  "xlsx": "Esporta Excel",
+  "empty": "Nessuna scadenza.",
+  "excluded": "Escluso dai solleciti",
+  "select": "Seleziona {{number}}",
+  "selectAll": "Seleziona tutti",
+  "selected": "Selezionati: {{count}}",
+  "statuses": {
+    "open": "Aperti",
+    "overdue": "Scaduti",
+    "scheduled": "Rate future"
+  },
+  "fields": {
+    "amount": "Importo",
+    "bucket": "Anzianità",
+    "customer": "Cliente",
+    "dueFrom": "Scadenza dal",
+    "dueTo": "Scadenza al",
+    "dueOn": "Scadenza",
+    "lastReminder": "Ultimo sollecito",
+    "number": "Numero",
+    "origin": "Origine",
+    "residual": "Da incassare",
+    "status": "Stato"
+  },
+  "bulk": {
+    "request": "Invia richiesta di pagamento",
+    "requested": "Richieste create: {{created}}, saltate: {{skipped}}",
+    "remind": "Sollecita",
+    "reminded": "Solleciti in coda: {{queued}}, saltati: {{skipped}}"
+  },
+  "ageing": {
+    "title": "Anzianità dei crediti",
+    "total": "Totale",
+    "credit": "Credito",
+    "empty": "Nessun cliente con sospesi."
+  },
+  "lens": {
+    "title": "Pagamenti",
+    "none": "Nessun contratto",
+    "hint": "Il segnale è solo informativo: l'uscita della barca non viene mai bloccata."
+  },
+  "request": {
+    "title": "Richiesta di pagamento",
+    "description": "Addebiti inclusi: {{count}}, totale",
+    "expires": "Scade il (facoltativo)",
+    "send": "Invia subito l'email al cliente",
+    "submit": "Crea richiesta",
+    "sent": "Richiesta creata e inviata.",
+    "created": "Richiesta creata.",
+    "link": "Link di pagamento",
+    "copy": "Copia link",
+    "linkOnce": "Il link è mostrato solo ora: Porto ne conserva solo l'impronta."
+  },
+  "requests": {
+    "title": "Richieste di pagamento",
+    "description": "Richieste inviate ai clienti, con stato, reinvio e annullamento.",
+    "charges": "Addebiti",
+    "source": "Origine",
+    "sentAt": "Inviata",
+    "empty": "Nessuna richiesta.",
+    "resend": "Reinvia",
+    "newLink": "Nuovo link",
+    "cancel": "Annulla"
+  }
+}

@@ -289,7 +289,7 @@ func TestAcceptance_M4_QuoteToContract(t *testing.T) {
 			t.Fatalf("first instalment %v", first)
 		}
 		w.h.drainMail()
-		if len(w.h.mailTo(email, "installment_payment_request")) == 0 {
+		if len(w.h.mailTo(email, "payment_request")) == 0 {
 			t.Fatal("no payment request email")
 		}
 		if len(eventsOf(t, db, "contract.signed")) != 1 {
@@ -304,7 +304,7 @@ func TestAcceptance_M4_QuoteToContract(t *testing.T) {
 			}
 		}
 		paid := office.expect(t, 200, "POST", M+"/installments/"+str(first, "id")+"/settle", settle, "If-Match", etagOf(first["version"]))
-		if str(paid, "status") != "paid" || str(paid, "settlement_source") != "manual" {
+		if str(paid, "status") != "paid" || str(paid, "settlement_source") != "payment" { // M5 (D7): a settlement records a payment
 			t.Fatalf("settled %v", paid)
 		}
 

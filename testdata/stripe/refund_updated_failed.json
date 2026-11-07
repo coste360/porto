@@ -1,0 +1,3 @@
+{"id": "evt_t_refund_failed", "object": "event", "type": "refund.updated", "created": 1814300000,
+ "data": {"object": {"id": "re_test_2", "object": "refund", "status": "failed", "amount": 1500, "currency": "eur",
+  "payment_intent": "pi_test_paid", "failure_reason": "expired_or_canceled_card", "metadata": {"marina_id": "01900000-0000-7000-8000-00000000000a"}}}}

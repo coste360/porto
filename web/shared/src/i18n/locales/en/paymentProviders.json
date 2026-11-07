@@ -1,0 +1,47 @@
+{
+  "title": "Online payments",
+  "description": "Optional payment providers: without configuration Porto collects by bank transfer, cash and POS.",
+  "offline": {
+    "title": "Porto works without online payments too",
+    "description": "Payment requests with bank details, cash desk, receipts and reminders always work, even offline."
+  },
+  "manual": {
+    "title": "Manual collection",
+    "description": "Bank transfer, cash, POS, cheque: recorded by the office or at the desk.",
+    "alwaysOn": "Always on"
+  },
+  "names": {
+    "stripe": "Stripe"
+  },
+  "enabled": "Enabled",
+  "disabled": "Disabled",
+  "provider": {
+    "description": "Cards, wallets and SEPA debit. Keys are stored encrypted and never shown.",
+    "enable": "Enable the provider",
+    "mode": "Mode",
+    "secretKey": "Secret key",
+    "webhookSecret": "Webhook secret",
+    "publishableKey": "Publishable key",
+    "descriptor": "Statement descriptor",
+    "methods": "Methods",
+    "sepa": "SEPA mandates and debits",
+    "webhookUrl": "Webhook URL to configure in the provider",
+    "copy": "Copy URL"
+  },
+  "methods": {
+    "card": "Card",
+    "wallet": "Wallet",
+    "sepa_debit": "SEPA debit"
+  },
+  "secret": {
+    "set": "Set (leave empty to keep it)",
+    "notSet": "Not set"
+  },
+  "saved": "Settings saved",
+  "copied": "Copied",
+  "test": {
+    "run": "Test connection",
+    "ok": "Connection succeeded.",
+    "failed": "Connection failed ({{code}})."
+  }
+}

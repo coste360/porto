@@ -59,6 +59,12 @@ type Table struct {
 // Parse reads text with delimiter (0 = detect ';' or ','). It refuses invalid UTF-8, more than MaxRows rows and
 // rows of different lengths are padded (the mapping decides what is read).
 func Parse(text string, delimiter rune, hasHeader bool) (*Table, error) {
+	if b, ok, err := xlsxPayload(text); ok || err != nil { // Excel workbook as a data URL (xlsx.go)
+		if err != nil {
+			return nil, err
+		}
+		return ParseXLSX(b, hasHeader)
+	}
 	if !utf8.ValidString(text) {
 		return nil, fmt.Errorf("%w: not UTF-8", ErrCSVInvalid)
 	}

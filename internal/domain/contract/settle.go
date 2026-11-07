@@ -2,6 +2,7 @@ package contract
 
 import (
 	"context"
+	"errors"
 	"slices"
 	"strings"
 
@@ -13,9 +14,10 @@ import (
 	"github.com/coste360/porto/internal/store"
 )
 
-// Settlement of instalments (m4-plan §3.3, §15 D1, INV-32): SettleInstallment and SettleInstallments are the
-// only code paths that make an instalment paid. In M4 the source is the manual driver (an operator records a bank
-// transfer, cash, ...); M5 payment matching calls settleTx with source payment.
+// Settlement of instalments (m4-plan §3.3, §15 D1, INV-32; m5-plan §8.2): an instalment becomes paid only through
+// settleTx, reached from the payment matching of its charge (ApplyChargeSettlementTx, source payment) or, for the
+// historical rows without a charge, from the manual settlement. In M5 SettleInstallment(s) record a manual payment
+// of the charge residual (issuing a scheduled instalment first) and the matching drives the status.
 
 // Settlement methods.
 var settlementMethods = []string{"bank_transfer", "cash", "card_pos", "cheque", "other"}
@@ -70,20 +72,20 @@ func (s *Service) SettleInstallment(ctx context.Context, p *auth.Principal, mari
 		if err != nil {
 			return notFound(err)
 		}
-		if r.Status != store.InstallmentIssued && r.Status != store.InstallmentScheduled {
+		// Lock order contract → instalments → payment → charges (INV-31, m5-plan §0.8), then read again.
+		if _, err := store.LockContract(ctx, tx, scope, r.ContractID); err != nil {
+			return notFound(err)
+		}
+		if r, err = store.GetInstallment(ctx, tx, scope, id); err != nil {
+			return notFound(err)
+		}
+		if !settleableStatus(r.Status) {
 			return &TransitionError{From: r.Status, Action: "settle"}
 		}
 		if ifMatch != 0 && r.Version != ifMatch {
 			return ErrVersionMismatch
 		}
-		ok, err := s.settleTx(ctx, tx, scope, a, r, ifMatch, store.SettlementManual, in)
-		if err != nil {
-			return err
-		}
-		if !ok {
-			return ErrVersionMismatch
-		}
-		return nil
+		return s.settleOneTx(ctx, tx, scope, a, r, ifMatch, in)
 	})
 	if err != nil {
 		return nil, err
@@ -144,12 +146,18 @@ func (s *Service) SettleInstallments(ctx context.Context, p *auth.Principal, mar
 			if r == nil {
 				return &SettleError{ID: it.ID}
 			}
-			ok, err := s.settleTx(ctx, tx, scope, a, r, it.Version, store.SettlementManual, in)
+			cur, err := store.GetInstallment(ctx, tx, scope, r.ID)
 			if err != nil {
 				return err
 			}
-			if !ok {
+			if !settleableStatus(cur.Status) || (it.Version != 0 && cur.Version != it.Version) {
 				return &SettleError{ID: it.ID}
+			}
+			if err := s.settleOneTx(ctx, tx, scope, a, cur, it.Version, in); err != nil {
+				if errors.Is(err, ErrVersionMismatch) || errors.Is(err, ErrSettleConflict) {
+					return &SettleError{ID: it.ID}
+				}
+				return err
 			}
 			n++
 		}
@@ -179,7 +187,7 @@ func (s *Service) settleTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 	if _, err := store.LockContract(ctx, tx, scope, r.ContractID); err != nil {
 		return false, err
 	}
-	ok, err := store.SettleInstallmentRow(ctx, tx, scope, r.ID, expected, st)
+	ok, err := store.PayInstallment(ctx, tx, scope, r.ID, expected, st)
 	if err != nil || !ok {
 		return false, err
 	}
@@ -200,6 +208,32 @@ func (s *Service) settleTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 		}
 	}
 	return true, nil
+}
+
+// settleableStatus reports whether an instalment can be settled (partially_paid only through its charge).
+func settleableStatus(status string) bool {
+	return status == store.InstallmentIssued || status == store.InstallmentScheduled || status == store.InstallmentPartiallyPaid
+}
+
+// settleOneTx settles a locked instalment: through a manual payment of its charge (M5, INV-32: settlement_source
+// payment) or, for an instalment without a charge (M4 data before the backfill, billing hooks not wired), through
+// the historical manual path.
+func (s *Service) settleOneTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, a actor, r *store.Installment, expected int, in SettleInput) error {
+	handled, err := s.settleViaPaymentTx(ctx, tx, scope, a, r, in)
+	if err != nil || handled {
+		return err
+	}
+	if r.Status == store.InstallmentPartiallyPaid {
+		return &TransitionError{From: r.Status, Action: "settle"}
+	}
+	ok, err := s.settleTx(ctx, tx, scope, a, r, expected, store.SettlementManual, in)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return ErrVersionMismatch
+	}
+	return nil
 }
 
 // lockContractsSorted locks the distinct contracts of ids in ascending id order.

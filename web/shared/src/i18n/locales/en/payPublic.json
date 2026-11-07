@@ -1,0 +1,50 @@
+{
+  "title": "Payment",
+  "loading": "Loading",
+  "amount": "Amount to pay",
+  "expires": "Request valid until {{date}}",
+  "charges": "Charges",
+  "dueOn": "Due {{date}}",
+  "invalid": {
+    "title": "Invalid link",
+    "description": "The link has expired or is no longer valid. Contact the marina for a new link."
+  },
+  "online": {
+    "card": "Pay online by card",
+    "sepa_debit": "Pay by SEPA debit"
+  },
+  "bank": {
+    "title": "Bank transfer",
+    "iban": "IBAN",
+    "holder": "Account holder",
+    "bank": "Bank",
+    "bic": "BIC",
+    "reference": "Payment reference",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyOf": "Copy {{label}}",
+    "hint": "Use the payment reference in the transfer: the marina will match the payment to the charges."
+  },
+  "status": {
+    "open": {
+      "title": "Payment due",
+      "description": "The request is open."
+    },
+    "verifying": {
+      "title": "Payment being verified",
+      "description": "We are waiting for the payment provider's confirmation. You can close this page: you will receive the receipt by email."
+    },
+    "paid": {
+      "title": "Payment received",
+      "description": "Thank you, the payment has been recorded."
+    },
+    "cancelled": {
+      "title": "Request cancelled",
+      "description": "This payment request was cancelled by the marina."
+    },
+    "expired": {
+      "title": "Request expired",
+      "description": "Contact the marina for a new payment request."
+    }
+  }
+}

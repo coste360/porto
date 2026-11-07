@@ -57,7 +57,7 @@ func rcFitOverride(raw json.RawMessage) *api.FitOverride {
 // Right converts a right.
 func Right(r *rights.Right) api.Right {
 	out := api.Right{
-		Id: r.ID, Berth: rcBerthRef(r.BerthID), Kind: api.RightKind(r.Kind), FromOn: r.FromOn.String(), ToOn: r.ToOn.String(),
+		Id: r.ID, Berth: rcBerthRef(r.BerthID), BerthCode: String(r.BerthCode), Kind: api.RightKind(r.Kind), FromOn: r.FromOn.String(), ToOn: r.ToOn.String(),
 		Title:  api.RightTitle{Deed: String(r.Title.Deed), Number: String(r.Title.Number), Notary: String(r.Title.Notary), Date: rightsDate(r.Title.Date)},
 		Status: api.RightStatus(r.Status), EndReason: String(r.EndReason), Holders: rcHolders(r.Holders), Vessels: []api.RightVessel{},
 		ActiveMandateId: String(r.ActiveMandateID), CreatedAt: r.CreatedAt.UTC(), Version: r.Version,

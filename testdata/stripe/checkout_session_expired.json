@@ -1,0 +1,3 @@
+{"id": "evt_t_expired", "object": "event", "type": "checkout.session.expired", "created": 1814000000,
+ "data": {"object": {"id": "cs_test_old", "object": "checkout.session", "mode": "payment", "status": "expired",
+  "payment_status": "unpaid", "amount_total": 9000, "currency": "eur", "payment_intent": null, "metadata": {"marina_id": "01900000-0000-7000-8000-00000000000a", "intent_id": "01900000-0000-7000-8000-0000000000b1"}}}}

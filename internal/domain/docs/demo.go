@@ -179,6 +179,44 @@ func DemoView(kind Kind) any {
 				OpenedAt:        demoAt, OTPSentAt: demoAt.Add(2 * time.Minute), SignedAt: demoAt.Add(4 * time.Minute),
 			}},
 		}
+	case KindReceipt:
+		c := demoCustomer
+		return views.ReceiptView{
+			Marina: demoMarina, Customer: &c, Number: "P2027-000045", Date: calendar.MustParse("2027-07-12"),
+			Method: "card", AmountCents: 7320,
+			Lines: []views.ReceiptLine{
+				{Description: "Gettone docce", Qty: 2000, Gross: 1220, VATRate: 2200},
+				{Description: "Carburante", Qty: 1000, Gross: 6100, VATRate: 2200},
+			},
+			VAT:          []views.VATRow{{RateBP: 2200, Net: 6000, VAT: 1320, Gross: 7320}},
+			FiscalNumber: "20270712-0007", Footer: "Grazie e buona navigazione.",
+		}
+	case KindStatementOfAccount:
+		return views.StatementView{
+			Marina: demoMarina, Customer: demoCustomer, From: calendar.MustParse("2027-01-01"),
+			To: calendar.MustParse("2027-06-30"), Opening: 0, Closing: 113166, Credit: 0,
+			Rows: []views.StatementRow{
+				{Date: calendar.MustParse("2026-11-07"), Kind: "charge", Number: "A2026-000042", Description: "Acconto ORM-2027-0042", DueOn: calendar.MustParse("2026-11-21"), Debit: 145500, Balance: 145500},
+				{Date: calendar.MustParse("2026-11-18"), Kind: "payment", Number: "P2026-000031", Description: "Bonifico", Credit: 145500, Balance: 0},
+				{Date: calendar.MustParse("2027-03-15"), Kind: "charge", Number: "A2027-000110", Description: "Rata 2 ORM-2027-0042", DueOn: calendar.MustParse("2027-03-31"), Debit: 113166, Balance: 113166},
+			},
+		}
+	case KindChargeExportSummary:
+		return views.ChargeExportSummaryView{
+			Marina: demoMarina, Number: "E2027-0012", Kind: "export", PeriodFrom: calendar.MustParse("2027-03-01"),
+			PeriodTo: calendar.MustParse("2027-03-31"), CreatedAt: demoAt, ChargeCount: 2, LineCount: 3,
+			VAT: []views.VATRow{{RateBP: 2200, Net: 98783, VAT: 21733, Gross: 120516}},
+			ByOrigin: []views.TotalRow{
+				{Key: "installment", Count: 1, Gross: 113166},
+				{Key: "counter_sale", Count: 1, Gross: 7350},
+			},
+			ByRevenueClass: []views.TotalRow{{Key: "mooring", Count: 1, Gross: 113166}, {Key: "services", Count: 1, Gross: 7350}},
+			Charges: []views.ExportChargeRow{
+				{Number: "A2027-000110", IssuedOn: calendar.MustParse("2027-03-15"), Customer: "Mario Rossi", OriginType: "installment", Net: 92759, VAT: 20407, Total: 113166},
+				{Number: "A2027-000111", IssuedOn: calendar.MustParse("2027-03-16"), Customer: "Anna Bianchi", OriginType: "counter_sale", Net: 6024, VAT: 1326, Total: 7350},
+			},
+			Net: 98783, VATTotal: 21733, Total: 120516,
+		}
 	case KindMapPrint:
 		return views.MapPrintView{Marina: demoMarina, MapName: "Porto", Date: calendar.MustParse("2026-11-07"), Lens: "occupancy"}
 	}

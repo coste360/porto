@@ -1,0 +1,20 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+questo è l'ultimo avviso prima delle azioni previste dal contratto: gli importi indicati risultano ancora da pagare.
+{{with v . "charges"}}
+Addebiti:
+{{.}}
+{{end}}{{with v . "amount"}}Importo: {{.}}
+{{end}}{{with v . "due_on"}}Scadenza: {{.}}
+{{end}}{{with v . "iban"}}
+Puoi pagare con bonifico bancario:
+IBAN: {{.}}
+{{end}}{{with v . "bank_holder"}}Intestatario: {{.}}
+{{end}}{{with v . "bank"}}Banca: {{.}}
+{{end}}{{with v . "reference"}}Causale: {{.}}
+{{end}}{{with v . "link"}}
+Paga o consulta i dettagli: {{.}}
+{{end}}{{with v . "expires_at"}}Link valido fino al {{.}}
+{{end}}
+--
+{{v . "marina_name"}}

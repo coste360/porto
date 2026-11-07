@@ -197,3 +197,23 @@ func TestSSE_M4Topics(t *testing.T) {
 		}
 	}
 }
+
+// TestSSE_M5Topics: the M5 events reach the billing.changed topic with their ids as entity ids (m5-plan §7.5).
+func TestSSE_M5Topics(t *testing.T) {
+	samples := event.Samples()
+	for _, typ := range []string{
+		event.ChargeCreated, event.ChargePaid, event.ChargeCancelled, event.ChargeExported, event.ChargeInvoiced,
+		event.ChargeChanged, event.InstallmentCharged, event.PaymentSucceeded, event.PaymentFailed, event.PaymentRefunded,
+		event.PaymentChanged, event.CashChanged, event.FiscalDocumentChanged, event.PaymentRequestChanged,
+		event.ReminderChanged, event.BillingChanged,
+	} {
+		data, err := json.Marshal(samples[typ])
+		if err != nil {
+			t.Fatal(err)
+		}
+		m := MessageOf(ext.Event{Type: typ, MarinaID: "m1", Data: data})
+		if m.Topic != event.TopicBilling || len(m.EntityIDs) == 0 {
+			t.Errorf("%s: %+v, want topic %s with entity ids", typ, m, event.TopicBilling)
+		}
+	}
+}

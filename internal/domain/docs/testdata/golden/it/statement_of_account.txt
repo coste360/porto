@@ -1,0 +1,17 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Estratto conto
+Spett.le Mario Rossi · C.F. RSSMRA80A01H501U
+Periodo dal 01/01/2027 al 30/06/2027.
+Saldo iniziale: 0,00 €
+Data | Tipo | Numero | Descrizione | Scadenza | Dare | Avere | Saldo
+07/11/2026 | charge | A2026-0000 | Acconto | 21/11/2026 | 1.455,00 | 0,00 € | 1.455,00
+42 | ORM-2027-0042 | € | €
+18/11/2026 | payment | P2026-0000 | Bonifico | 0,00 € | 1.455,00 | 0,00 €
+31 | €
+15/03/2027 | charge | A2027-0001 | Rata 2 | 31/03/2027 | 1.131,66 | 0,00 € | 1.131,66
+10 | ORM-2027-0042 | € | €
+Saldo finale: 1.131,66 €
+Gli addebiti sono riferimenti interni di Porto: le fatture sono emesse dal software di fatturazione della
+marina.
+Porto Demo S.r.l. · P. IVA 01234567890 · Pagina 1 di 1

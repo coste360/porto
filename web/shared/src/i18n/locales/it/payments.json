@@ -1,0 +1,112 @@
+{
+  "desk": {
+    "collect": "Incassa ora",
+    "fiscalDocument": "Emetti documento commerciale",
+    "paymentLink": "Invia link di pagamento",
+    "paymentLinkSent": "Il link è stato inviato al cliente; puoi anche copiarlo."
+  },
+  "detail": {
+    "title": "Pagamento {{number}}",
+    "at": "Data",
+    "fiscalDocuments": "Documenti commerciali",
+    "hasReference": "Registrato (non mostrato)",
+    "match": "Abbina ad addebiti",
+    "matchDescription": "Importo non abbinato disponibile:",
+    "matchSubmit": "Abbina",
+    "matches": "Abbinamenti",
+    "noMatches": "Nessun abbinamento.",
+    "noRefunds": "Nessun rimborso.",
+    "refunds": "Rimborsi",
+    "reversal": "Storno",
+    "reverse": "Storna",
+    "reversed": "Stornato",
+    "summary": "Riepilogo",
+    "vatSplit": "Ripartizione IVA"
+  },
+  "fields": {
+    "allocated": "Abbinato",
+    "amount": "Importo",
+    "customer": "Cliente",
+    "fee": "Commissione",
+    "kind": "Tipo",
+    "method": "Metodo",
+    "notes": "Note",
+    "number": "Numero",
+    "receivedOn": "Data incasso",
+    "reference": "Riferimento",
+    "refunded": "Rimborsato",
+    "source": "Origine",
+    "status": "Stato",
+    "unallocated": "Non abbinato"
+  },
+  "list": {
+    "title": "Pagamenti",
+    "description": "Incassi registrati, abbinamenti agli addebiti, rimborsi e crediti.",
+    "all": "Tutti",
+    "csv": "Esporta CSV",
+    "xlsx": "Esporta Excel",
+    "empty": "Nessun pagamento.",
+    "from": "Dal",
+    "to": "Al",
+    "unallocated": "Solo con importo non abbinato"
+  },
+  "mandate": {
+    "open": "Liquida",
+    "title": "Liquidazione del mandato",
+    "description": "Le quote del titolare fino alla data scelta diventano credito o un pagamento registrato.",
+    "through": "Fino al",
+    "mode": "Modalità",
+    "modes": {
+      "credit": "Credito al titolare",
+      "payout": "Pagamento al titolare"
+    },
+    "submit": "Liquida",
+    "done": "Credito {{credited}}, pagato {{paid}}"
+  },
+  "match": {
+    "title": "Abbinamento agli addebiti",
+    "autoFill": "Dal più vecchio",
+    "charge": "Addebito",
+    "dueOn": "Scadenza",
+    "residual": "Da incassare",
+    "amount": "Importo",
+    "amountOf": "Importo per {{number}}",
+    "empty": "Nessun addebito aperto per il cliente.",
+    "allocated": "Abbinato",
+    "credit": "Resta a credito"
+  },
+  "record": {
+    "open": "Registra pagamento",
+    "title": "Registra pagamento",
+    "description": "L'importo viene abbinato agli addebiti scelti; la parte non abbinata resta a credito del cliente.",
+    "noCustomer": "Scegli un cliente per abbinare l'importo agli addebiti.",
+    "sendReceipt": "Invia la ricevuta per email",
+    "submit": "Registra",
+    "done": "Pagamento registrato",
+    "doneNumber": "Pagamento {{number}} registrato"
+  },
+  "receipt": {
+    "mm80": "Ricevuta 80 mm",
+    "mm58": "Ricevuta 58 mm",
+    "a4": "Ricevuta A4"
+  },
+  "refund": {
+    "open": "Rimborsa",
+    "title": "Rimborso del pagamento {{number}}",
+    "description": "Si rimborsa solo l'importo non abbinato: per rimborsare un addebito pagato, togli prima l'abbinamento qui sotto.",
+    "amount": "Importo da rimborsare",
+    "max": "Massimo rimborsabile:",
+    "reason": "Motivo",
+    "unmatch": "Togli abbinamento",
+    "unmatchOf": "Importo da togliere da {{number}}",
+    "viaProvider": "Rimborsa tramite il circuito di pagamento online",
+    "submit": "Rimborsa",
+    "done": "Rimborso registrato"
+  },
+  "retain": {
+    "open": "Trattieni cauzione",
+    "title": "Trattenuta della cauzione",
+    "description": "La parte trattenuta diventa un addebito pagato con la cauzione.",
+    "submit": "Trattieni"
+  }
+}

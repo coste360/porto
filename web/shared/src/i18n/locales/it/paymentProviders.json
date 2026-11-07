@@ -1,0 +1,47 @@
+{
+  "title": "Pagamenti online",
+  "description": "Circuiti di pagamento facoltativi: senza configurazione Porto incassa con bonifico, contanti e POS.",
+  "offline": {
+    "title": "Porto funziona anche senza pagamenti online",
+    "description": "Richieste di pagamento con coordinate bancarie, cassa, ricevute e solleciti funzionano sempre, anche senza connessione."
+  },
+  "manual": {
+    "title": "Incasso manuale",
+    "description": "Bonifico, contanti, POS, assegno: registrati dall'ufficio o dalla cassa.",
+    "alwaysOn": "Sempre attivo"
+  },
+  "names": {
+    "stripe": "Stripe"
+  },
+  "enabled": "Attivo",
+  "disabled": "Non attivo",
+  "provider": {
+    "description": "Carte, wallet e addebito SEPA. Le chiavi sono conservate cifrate e non vengono mai mostrate.",
+    "enable": "Attiva il circuito",
+    "mode": "Modalità",
+    "secretKey": "Chiave segreta",
+    "webhookSecret": "Segreto del webhook",
+    "publishableKey": "Chiave pubblicabile",
+    "descriptor": "Descrizione sull'estratto conto",
+    "methods": "Metodi",
+    "sepa": "Mandati e addebiti SEPA",
+    "webhookUrl": "URL del webhook da configurare nel circuito",
+    "copy": "Copia URL"
+  },
+  "methods": {
+    "card": "Carta",
+    "wallet": "Wallet",
+    "sepa_debit": "Addebito SEPA"
+  },
+  "secret": {
+    "set": "Impostata (lascia vuoto per non cambiarla)",
+    "notSet": "Non impostata"
+  },
+  "saved": "Impostazioni salvate",
+  "copied": "Copiato",
+  "test": {
+    "run": "Prova connessione",
+    "ok": "Connessione riuscita.",
+    "failed": "Connessione non riuscita ({{code}})."
+  }
+}

@@ -111,7 +111,7 @@ export function RightsPage() {
                           params={{ marinaId, rightId: r.id }}
                           className="font-medium underline-offset-4 hover:underline"
                         >
-                          {r.allocations?.[0]?.resource_code ?? r.berth.resource_id}
+                          {r.berth_code ?? r.allocations?.[0]?.resource_code ?? r.berth.resource_id}
                         </Link>
                       </TableCell>
                       <TableCell>{t(`docsEnums:rightKind.${r.kind}`)}</TableCell>

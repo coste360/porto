@@ -1,0 +1,79 @@
+{
+  "title": "Cassa",
+  "description": "Sessione di cassa, vendita al banco, versamenti e prelievi, chiusura con conteggio e report Z.",
+  "register": "Cassa",
+  "tabs": {
+    "session": "Sessione",
+    "history": "Storico"
+  },
+  "open": {
+    "title": "Apri la cassa",
+    "description": "Indica il fondo cassa iniziale.",
+    "float": "Fondo cassa",
+    "submit": "Apri cassa"
+  },
+  "session": {
+    "openedAt": "Aperta il {{at}}",
+    "totals": "Totali della sessione",
+    "float": "Fondo cassa",
+    "payments": "Incassi",
+    "refunds": "Rimborsi",
+    "movements": "Versamenti e prelievi",
+    "byMethod": "Atteso per metodo",
+    "noPayments": "Nessun incasso.",
+    "movementsTitle": "Movimenti",
+    "noMovements": "Nessun movimento."
+  },
+  "fields": {
+    "method": "Metodo",
+    "expected": "Atteso",
+    "counted": "Contato",
+    "difference": "Differenza",
+    "kind": "Tipo",
+    "amount": "Importo",
+    "reason": "Causale",
+    "businessDate": "Giorno",
+    "closedAt": "Chiusa il",
+    "status": "Stato"
+  },
+  "sale": {
+    "open": "Vendita al banco",
+    "title": "Vendita al banco",
+    "description": "Articoli, cliente facoltativo, metodo di pagamento e ricevuta.",
+    "customer": "Cliente (facoltativo)",
+    "receipt": "Ricevuta",
+    "receipts": {
+      "print": "Stampa",
+      "email": "Email al cliente",
+      "none": "Nessuna"
+    },
+    "format": "Formato",
+    "fiscalDocument": "Emetti documento commerciale",
+    "walkInHint": "Senza cliente il documento commerciale è obbligatorio.",
+    "notFiscal": "La ricevuta stampata da Porto non è valida ai fini fiscali.",
+    "submit": "Incassa",
+    "done": "Vendita registrata: pagamento {{number}}"
+  },
+  "movement": {
+    "open": "Versamento o prelievo",
+    "title": "Movimento di cassa",
+    "description": "Versamenti e prelievi entrano nel conteggio di chiusura."
+  },
+  "close": {
+    "open": "Chiudi cassa",
+    "title": "Chiusura della cassa",
+    "description": "Conta l'incassato per metodo: la differenza con l'atteso viene registrata.",
+    "countedOf": "Contato {{method}}",
+    "total": "Differenza totale:",
+    "notes": "Note",
+    "submit": "Chiudi cassa",
+    "done": "Cassa chiusa. Differenza:"
+  },
+  "z": {
+    "html": "Report Z (stampa)",
+    "pdf": "Report Z (PDF)"
+  },
+  "history": {
+    "empty": "Nessuna sessione chiusa."
+  }
+}

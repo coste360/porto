@@ -56,6 +56,9 @@ type Deps struct {
 	Documents *document.Service
 	// Mailer queues the customer emails of M4 (quote, proposal, payment request, ...); nil = no email.
 	Mailer Mailer
+
+	// M5 (m5-plan §8.1): charges of instalments, transits and corrections; nil = no charge (noBilling).
+	Billing BillingHooks
 }
 
 // Service is the contract service.
@@ -75,6 +78,9 @@ type Service struct {
 	mailer   Mailer
 	// afterDocument runs after the document row of a quote acceptance is composed (tests force a failure).
 	afterDocument func() error
+
+	// settler records the payment of an instalment's charge (M5, payments.go); set once at wiring.
+	settler ChargeSettler
 }
 
 func (s *Service) priced() {

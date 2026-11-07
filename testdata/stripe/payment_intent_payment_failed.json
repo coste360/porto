@@ -1,0 +1,4 @@
+{"id": "evt_t_pi_failed", "object": "event", "type": "payment_intent.payment_failed", "created": 1814200000,
+ "data": {"object": {"id": "pi_test_mandate", "object": "payment_intent", "status": "requires_payment_method",
+  "amount": 30000, "amount_received": 0, "currency": "eur", "payment_method_types": ["sepa_debit"],
+  "last_payment_error": {"code": "insufficient_funds", "message": "The account of Mario Rossi has insufficient funds"}, "metadata": {"marina_id": "01900000-0000-7000-8000-00000000000a", "intent_id": "01900000-0000-7000-8000-0000000000b1"}}}}

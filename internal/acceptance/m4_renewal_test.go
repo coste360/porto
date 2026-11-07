@@ -249,7 +249,7 @@ func TestAcceptance_M4_RenewalCampaign300(t *testing.T) {
 		}
 		payReq := 0
 		for i := range accepted {
-			if len(w.h.mailTo(emails[i], "installment_payment_request")) >= 2 { // the source deposit, then the successor's
+			if len(w.h.mailTo(emails[i], "payment_request")) >= 2 { // the source deposit, then the successor's
 				payReq++
 			}
 		}

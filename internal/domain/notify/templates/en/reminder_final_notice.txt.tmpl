@@ -1,0 +1,20 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+this is the final notice before the actions provided by the contract: the amounts below are still unpaid.
+{{with v . "charges"}}
+Charges:
+{{.}}
+{{end}}{{with v . "amount"}}Amount: {{.}}
+{{end}}{{with v . "due_on"}}Due date: {{.}}
+{{end}}{{with v . "iban"}}
+You can pay by bank transfer:
+IBAN: {{.}}
+{{end}}{{with v . "bank_holder"}}Account holder: {{.}}
+{{end}}{{with v . "bank"}}Bank: {{.}}
+{{end}}{{with v . "reference"}}Reference: {{.}}
+{{end}}{{with v . "link"}}
+Pay or see the details: {{.}}
+{{end}}{{with v . "expires_at"}}Link valid until {{.}}
+{{end}}
+--
+{{v . "marina_name"}}

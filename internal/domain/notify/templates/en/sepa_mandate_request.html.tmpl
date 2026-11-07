@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},</p>
+<p>to pay your instalments by SEPA Direct Debit, please authorise the mandate at the link below.</p>
+{{with v . "link"}}<p><a href="{{.}}">Authorise the mandate</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

@@ -42,7 +42,19 @@ export type MarinaRoutePath =
   | '/m/$marinaId/imports'
   | '/m/$marinaId/templates'
   | '/m/$marinaId/settings/contracts'
-  | '/m/$marinaId/settings/signature';
+  | '/m/$marinaId/settings/signature'
+  | '/m/$marinaId/charges'
+  | '/m/$marinaId/payments'
+  | '/m/$marinaId/cash'
+  | '/m/$marinaId/receivables'
+  | '/m/$marinaId/payment-requests'
+  | '/m/$marinaId/reminders'
+  | '/m/$marinaId/exports'
+  | '/m/$marinaId/fiscal'
+  | '/m/$marinaId/opening-balances'
+  | '/m/$marinaId/worklist'
+  | '/m/$marinaId/settings/billing'
+  | '/m/$marinaId/settings/payments';
 
 export type NavItem = {
   id: string;
@@ -188,6 +200,79 @@ export const NAV_ITEMS: NavItem[] = [
     labelKey: 'common:nav.signatureSettings',
     anyOf: ['providers.configure'],
   },
+  // M5 (m5-plan §9.1), group "Amministrazione"
+  {
+    id: 'charges',
+    to: '/m/$marinaId/charges',
+    labelKey: 'common:nav.charges',
+    anyOf: ['charges.manage', 'payments.collect'],
+  },
+  {
+    id: 'payments',
+    to: '/m/$marinaId/payments',
+    labelKey: 'common:nav.payments',
+    anyOf: ['payments.collect', 'charges.manage'],
+  },
+  {
+    id: 'cash',
+    to: '/m/$marinaId/cash',
+    labelKey: 'common:nav.cash',
+    anyOf: ['payments.collect', 'payments.collect_cash'],
+  },
+  {
+    id: 'receivables',
+    to: '/m/$marinaId/receivables',
+    labelKey: 'common:nav.receivables',
+    anyOf: ['charges.manage'],
+  },
+  {
+    id: 'payment-requests',
+    to: '/m/$marinaId/payment-requests',
+    labelKey: 'common:nav.paymentRequests',
+    anyOf: ['charges.manage'],
+  },
+  {
+    id: 'reminders',
+    to: '/m/$marinaId/reminders',
+    labelKey: 'common:nav.reminders',
+    anyOf: ['charges.manage'],
+  },
+  {
+    id: 'exports',
+    to: '/m/$marinaId/exports',
+    labelKey: 'common:nav.exports',
+    anyOf: ['charges.export'],
+  },
+  {
+    id: 'fiscal',
+    to: '/m/$marinaId/fiscal',
+    labelKey: 'common:nav.fiscal',
+    anyOf: ['charges.export'],
+  },
+  {
+    id: 'opening-balances',
+    to: '/m/$marinaId/opening-balances',
+    labelKey: 'common:nav.openingBalances',
+    anyOf: ['charges.manage'],
+  },
+  {
+    id: 'worklist',
+    to: '/m/$marinaId/worklist',
+    labelKey: 'common:nav.worklist',
+    anyOf: ['contracts.read', 'charges.manage'],
+  },
+  {
+    id: 'billing-settings',
+    to: '/m/$marinaId/settings/billing',
+    labelKey: 'common:nav.billingSettings',
+    anyOf: ['marina.configure'],
+  },
+  {
+    id: 'payment-settings',
+    to: '/m/$marinaId/settings/payments',
+    labelKey: 'common:nav.paymentSettings',
+    anyOf: ['providers.configure'],
+  },
   { id: 'dock', to: '/m/$marinaId/dock', labelKey: 'common:nav.dock', anyOf: ['presence.write'] },
   { id: 'maps', to: '/m/$marinaId/maps', labelKey: 'common:nav.maps', anyOf: ['map.view'] },
   {
@@ -275,7 +360,6 @@ export const NAV_ITEMS: NavItem[] = [
 
 /** Modules of the next milestones, listed disabled in the sidebar. */
 export const UPCOMING_MODULES = [
-  'common:nav.modules.charges',
   'common:nav.modules.storage',
   'common:nav.modules.yard',
   'common:nav.modules.rental',

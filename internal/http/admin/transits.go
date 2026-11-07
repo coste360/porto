@@ -5,9 +5,11 @@ import (
 
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/contract"
+	"github.com/coste360/porto/internal/domain/payment"
 	"github.com/coste360/porto/internal/http/api"
 	"github.com/coste360/porto/internal/http/respond"
 	"github.com/coste360/porto/internal/http/view"
+	"github.com/coste360/porto/internal/money"
 )
 
 // Transit operations (m3-plan §7.3).
@@ -129,6 +131,27 @@ func (h *Handler) ConfirmTransit(w http.ResponseWriter, r *http.Request, marinaI
 	}
 	var in *api.ManualConfirmation
 	if !respond.DecodeOrFail(w, r, &in, true) {
+		return
+	}
+	if in != nil && in.Payment != nil {
+		// M5 (m5-plan §8.2): confirmation with the payment collected at the desk, one transaction.
+		pay := payment.TransitPayment{
+			Method: string(in.Payment.Method), CashRegisterID: str(in.Payment.RegisterId), Reference: str(in.Reference),
+			IdempotencyKey: str(params.IdempotencyKey),
+		}
+		if in.Payment.AmountCents != nil {
+			pay.Amount = money.Cents(*in.Payment.AmountCents)
+		}
+		if _, err := h.Payments.ConfirmTransitWithPayment(r.Context(), principal(r), marinaID, contractID, ifMatch, pay); err != nil {
+			respond.Error(w, r, err)
+			return
+		}
+		c, err := h.Contracts.GetContract(r.Context(), principal(r), marinaID, contractID)
+		if err != nil {
+			respond.Error(w, r, err)
+			return
+		}
+		writeContract(w, c, http.StatusOK)
 		return
 	}
 	mc := contract.ManualConfirmation{}

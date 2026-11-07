@@ -434,3 +434,100 @@ type MapPrintView struct {
 	Date    calendar.Date `json:"date" doc:"date,fields.map_print.date"`
 	Lens    string        `json:"lens" doc:"lens,fields.map_print.lens"`
 }
+
+// ---- M5 (m5-plan §8.3): ephemeral documents, rendered on demand and never archived ----
+
+// VATRow is the total of one VAT rate or nature.
+type VATRow struct {
+	RateBP BP          `json:"vat_rate_bp" doc:"vat_rate,fields.vat.rate"`
+	Nature string      `json:"vat_nature" doc:"vat_nature,fields.vat.nature"` // a FatturaPA nature (N1..N7 with subcodes) when the rate is 0
+	Net    money.Cents `json:"net_cents" doc:"net,fields.vat.net"`
+	VAT    money.Cents `json:"vat_cents" doc:"vat,fields.vat.vat"`
+	Gross  money.Cents `json:"gross_cents" doc:"gross,fields.vat.gross"`
+}
+
+// ReceiptLine is a line of a courtesy receipt (sold item or matched charge).
+type ReceiptLine struct {
+	Description string      `json:"description" doc:"description,fields.receipt.line_description"`
+	Qty         Millis      `json:"qty_milli" doc:"qty,fields.receipt.line_qty"`
+	Gross       money.Cents `json:"gross_cents" doc:"gross,fields.receipt.line_gross"`
+	VATRate     BP          `json:"vat_rate_bp" doc:"vat_rate,fields.receipt.line_vat_rate"`
+}
+
+// ReceiptView is the data of kind receipt: the courtesy receipt of a payment ("Non valido ai fini fiscali").
+type ReceiptView struct {
+	Marina       Marina        `json:"marina" doc:"marina,fields.groups.marina"`
+	Customer     *Party        `json:"customer,omitempty" doc:"customer,fields.customer"`
+	Number       string        `json:"number" doc:"number,fields.receipt.number"`
+	Date         calendar.Date `json:"date" doc:"date,fields.receipt.date"`
+	Method       string        `json:"method" doc:"method,fields.receipt.method"`
+	AmountCents  money.Cents   `json:"amount_cents" doc:"amount,fields.receipt.amount"`
+	Lines        []ReceiptLine `json:"lines" doc:"lines,fields.receipt.lines"`
+	VAT          []VATRow      `json:"vat" doc:"vat,fields.receipt.vat"`
+	FiscalNumber string        `json:"fiscal_number" doc:"fiscal_number,fields.receipt.fiscal_number"`
+	Footer       Notes         `json:"footer" doc:"footer,fields.receipt.footer"`
+}
+
+// StatementRow is a row of a statement of account: a charge (debit), a payment or credit (credit), a refund
+// (debit), with the running balance.
+type StatementRow struct {
+	Date        calendar.Date `json:"date" doc:"date,fields.statement.row_date"`
+	Kind        string        `json:"kind" doc:"kind,fields.statement.row_kind"` // charge, payment, refund, credit
+	Number      string        `json:"number" doc:"number,fields.statement.row_number"`
+	Description string        `json:"description" doc:"description,fields.statement.row_description"`
+	DueOn       calendar.Date `json:"due_on" doc:"due_on,fields.statement.row_due_on"`
+	Debit       money.Cents   `json:"debit_cents" doc:"debit,fields.statement.row_debit"`
+	Credit      money.Cents   `json:"credit_cents" doc:"credit,fields.statement.row_credit"`
+	Balance     money.Cents   `json:"balance_cents" doc:"balance,fields.statement.row_balance"`
+}
+
+// StatementView is the data of kind statement_of_account.
+type StatementView struct {
+	Marina   Marina         `json:"marina" doc:"marina,fields.groups.marina"`
+	Customer Party          `json:"customer" doc:"customer,fields.customer"`
+	From     calendar.Date  `json:"from" doc:"from,fields.statement.from"`
+	To       calendar.Date  `json:"to" doc:"to,fields.statement.to"`
+	Opening  money.Cents    `json:"opening_cents" doc:"opening,fields.statement.opening"`
+	Closing  money.Cents    `json:"closing_cents" doc:"closing,fields.statement.closing"`
+	Credit   money.Cents    `json:"credit_cents" doc:"credit,fields.statement.credit"`
+	Rows     []StatementRow `json:"rows" doc:"rows,fields.statement.rows"`
+}
+
+// TotalRow is a total of an export summary grouped by a key (origin type or revenue class).
+type TotalRow struct {
+	Key   string      `json:"key" doc:"key,fields.export.total_key"`
+	Count int         `json:"count" doc:"count,fields.export.total_count"`
+	Gross money.Cents `json:"gross_cents" doc:"gross,fields.export.total_gross"`
+}
+
+// ExportChargeRow is a charge of an export summary.
+type ExportChargeRow struct {
+	Number     string        `json:"number" doc:"number,fields.export.charge_number"`
+	IssuedOn   calendar.Date `json:"issued_on" doc:"issued_on,fields.export.charge_issued_on"`
+	Customer   string        `json:"customer" doc:"customer,fields.export.charge_customer"`
+	OriginType string        `json:"origin_type" doc:"origin_type,fields.export.charge_origin"`
+	Net        money.Cents   `json:"net_cents" doc:"net,fields.export.charge_net"`
+	VAT        money.Cents   `json:"vat_cents" doc:"vat,fields.export.charge_vat"`
+	Total      money.Cents   `json:"total_cents" doc:"total,fields.export.charge_total"`
+	Corrects   string        `json:"corrects" doc:"corrects,fields.export.charge_corrects"`
+}
+
+// ChargeExportSummaryView is the data of kind charge_export_summary (for the accountant).
+type ChargeExportSummaryView struct {
+	Marina         Marina            `json:"marina" doc:"marina,fields.groups.marina"`
+	Number         string            `json:"number" doc:"number,fields.export.number"`
+	Kind           string            `json:"kind" doc:"kind,fields.export.kind"` // export, reexport
+	PeriodFrom     calendar.Date     `json:"period_from" doc:"period_from,fields.export.period_from"`
+	PeriodTo       calendar.Date     `json:"period_to" doc:"period_to,fields.export.period_to"`
+	Filters        string            `json:"filters" doc:"filters,fields.export.filters"`
+	CreatedAt      time.Time         `json:"created_at" doc:"created_at,fields.export.created_at"`
+	ChargeCount    int               `json:"charge_count" doc:"charge_count,fields.export.charge_count"`
+	LineCount      int               `json:"line_count" doc:"line_count,fields.export.line_count"`
+	VAT            []VATRow          `json:"vat" doc:"vat,fields.export.vat"`
+	ByOrigin       []TotalRow        `json:"by_origin" doc:"by_origin,fields.export.by_origin"`
+	ByRevenueClass []TotalRow        `json:"by_revenue_class" doc:"by_revenue_class,fields.export.by_revenue_class"`
+	Charges        []ExportChargeRow `json:"charges" doc:"charges,fields.export.charges"`
+	Net            money.Cents       `json:"net_cents" doc:"net,fields.export.net"`
+	VATTotal       money.Cents       `json:"vat_cents" doc:"vat_total,fields.export.vat_total"`
+	Total          money.Cents       `json:"total_cents" doc:"total,fields.export.total"`
+}

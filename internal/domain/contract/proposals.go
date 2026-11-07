@@ -208,6 +208,9 @@ func (s *Service) acceptProposalTx(ctx context.Context, tx bun.IDB, scope store.
 		if err := updateContract(ctx, tx, scope, c.Version, c, s.now()); err != nil {
 			return "", err
 		}
+		if err := s.repricedTx(ctx, tx, scope, a, c, RepriceEarlyPayment); err != nil {
+			return "", err
+		}
 	}
 	cs, err := s.settingsTx(ctx, tx, scope)
 	if err != nil {

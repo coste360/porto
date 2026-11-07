@@ -22,5 +22,9 @@
     "title": "Pannello di banchina",
     "description": "Arrivi, partenze, arrivi non previsti e rilasci dal telefono.",
     "open": "Apri il pannello"
+  },
+  "paymentWarning": {
+    "title": "Saldo da verificare",
+    "description": "Queste partenze di oggi hanno un saldo scaduto o contestato. L'uscita non è bloccata: avvisa l'ufficio."
   }
 }

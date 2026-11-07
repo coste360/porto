@@ -1,0 +1,19 @@
+{
+  "title": "Attività dell'ufficio",
+  "description": "Cose da fare raccolte da addebiti, pagamenti, solleciti e scadenze.",
+  "status": "Stato",
+  "kind": "Tipo",
+  "all": "Tutti",
+  "mine": "Solo le mie",
+  "empty": "Niente da fare.",
+  "customer": "Cliente",
+  "amount": "Importo",
+  "dueOn": "Scadenza",
+  "assignee": "Assegnata a",
+  "me": "Me",
+  "someone": "Un collega",
+  "take": "Prendi in carico",
+  "done": "Fatto",
+  "dismiss": "Archivia",
+  "reopen": "Riapri"
+}

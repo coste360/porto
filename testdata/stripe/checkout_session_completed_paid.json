@@ -1,0 +1,4 @@
+{"id": "evt_t_session_paid", "object": "event", "type": "checkout.session.completed", "created": 1814000000,
+ "data": {"object": {"id": "cs_test_paid", "object": "checkout.session", "mode": "payment", "status": "complete",
+  "payment_status": "paid", "amount_total": 12345, "currency": "eur", "customer": null, "payment_intent": "pi_test_paid",
+  "metadata": {"marina_id": "01900000-0000-7000-8000-00000000000a", "intent_id": "01900000-0000-7000-8000-0000000000b1"}, "created": 1813999000}}}

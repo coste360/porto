@@ -1,0 +1,94 @@
+{
+  "title": "To invoice",
+  "description": "Exports of charges to the invoicing software and reconciliation of invoice numbers.",
+  "new": "New export",
+  "history": "Exports",
+  "empty": "No exports.",
+  "download": {
+    "csv": "Download CSV",
+    "xlsx": "Download Excel",
+    "pdf": "PDF summary"
+  },
+  "fields": {
+    "number": "Number",
+    "kind": "Type",
+    "period": "Period",
+    "charges": "Charges",
+    "lines": "Lines",
+    "total": "Total",
+    "delivery": "Delivery",
+    "createdAt": "Created",
+    "first": "First export"
+  },
+  "detail": {
+    "title": "Export {{number}}",
+    "summary": "Summary",
+    "items": "Exported charges",
+    "noItems": "No charges.",
+    "reexport": "Re-export",
+    "reexported": "Re-export {{number}} created"
+  },
+  "wizard": {
+    "title": "Export charges to invoice",
+    "description": "The period's charges to invoice become exported: each one appears in a single export.",
+    "steps": "Steps",
+    "stepNames": {
+      "filters": "Period and filters",
+      "preview": "Preview",
+      "done": "Files"
+    },
+    "from": "From",
+    "to": "To",
+    "customer": "Customer (optional)",
+    "origins": "Origins",
+    "originsHint": "No origin chosen = all.",
+    "errors": {
+      "period": "Enter the period.",
+      "order": "The start date is after the end date."
+    },
+    "preview": "Preview",
+    "count": "Charges",
+    "mismatch": "The VAT totals do not match the total: please report the problem.",
+    "warningsTitle": "Fiscal data to complete",
+    "warnings": {
+      "customer_fiscal_incomplete": "Customer with incomplete fiscal data ({{count}} charges)."
+    },
+    "openCustomer": "Open customer",
+    "byVat": "Totals by rate",
+    "byOrigin": "Totals by origin",
+    "nothing": "No charges to invoice in the period.",
+    "back": "Back",
+    "confirm": "Confirm export",
+    "doneTitle": "Export {{number}}",
+    "done": "Charges exported: {{count}}, total",
+    "openExport": "Open export"
+  },
+  "reconcile": {
+    "open": "Reconcile invoices",
+    "title": "Invoice reconciliation",
+    "description": "Upload the CSV of the invoicing software: exported charges receive the invoice number and date.",
+    "file": "File",
+    "upload": "CSV file",
+    "paste": "Or paste the content",
+    "columns": "Columns: charge id or charge number, invoice number, date (DD/MM/YYYY).",
+    "dryRunAction": "Dry run",
+    "apply": "Apply",
+    "reportDry": "Dry run result",
+    "reportDone": "Reconciliation applied",
+    "summary": "Rows: {{rows}}, matched: {{matched}}",
+    "row": "Row",
+    "outcome": "Outcome",
+    "history": "Reconciliations",
+    "source": "Source",
+    "sources": {
+      "csv": "CSV",
+      "manual": "Manual",
+      "exporter": "Integration"
+    },
+    "rows": "Rows",
+    "matched": "Matched",
+    "dryRun": "Dry run",
+    "yes": "Yes",
+    "empty": "No reconciliations."
+  }
+}

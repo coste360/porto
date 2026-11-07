@@ -25,7 +25,8 @@ var (
 		ActionCreate, ActionCreateActive, ActionActivate, ActionCancel, ActionTerminate, ActionExpire,
 		ActionConfirm, ActionNoShow, ActionArrive, ActionDepart, ActionChangeStay, ActionUpdate, ActionSend, ActionAccept,
 		ActionDecline, ActionRequestSignature, ActionSign, ActionSignatureFailed, ActionSuspend, ActionResume,
-		ActionExpireRenewed, ActionTacitRenew, ActionAddendum, ActionChangeVessel,
+		ActionExpireRenewed, ActionTacitRenew, ActionAddendum, ActionChangeVessel, ActionRequestPayment,
+		ActionPaymentExpired,
 	}
 )
 
@@ -56,6 +57,10 @@ func TestContract_TransitionTable(t *testing.T) {
 			{"confirmed", "no_show"}: StatusNoShow, {"confirmed", "arrive"}: StatusArrived,
 			{"confirmed", "change_stay"}: StatusConfirmed, {"confirmed", "update"}: StatusConfirmed,
 			{"arrived", "depart"}: StatusDeparted, {"arrived", "change_stay"}: StatusArrived, {"arrived", "update"}: StatusArrived,
+			// m5-plan §8.1
+			{"held", "request_payment"}: StatusPendingPayment, {"pending_payment", "confirm"}: StatusConfirmed,
+			{"pending_payment", "payment_expired"}: StatusHeld, {"pending_payment", "expire"}: StatusExpired,
+			{"pending_payment", "cancel"}: StatusCancelled,
 		},
 		"quote": {
 			{"", "create"}: QuoteDraft, {"draft", "update"}: QuoteDraft, {"draft", "send"}: QuoteSent,
@@ -103,8 +108,8 @@ func TestContract_TransitionTable(t *testing.T) {
 			}
 		}
 	}
-	// Statuses reserved for later milestones are never reached (M5 pending_payment, M8 awaiting_approval).
-	for _, s := range []Status{StatusPendingPayment, StatusAwaitingApproval} {
+	// Statuses reserved for later milestones are never reached (M8 awaiting_approval).
+	for _, s := range []Status{StatusAwaitingApproval} {
 		for _, table := range [][]Transition{MooringTransitions, TransitTransitions} {
 			for _, tr := range table {
 				if tr.To == s || tr.From == s {
@@ -129,9 +134,10 @@ func TestContract_ConfirmedOnlyInConfirmTransit(t *testing.T) {
 	assign := regexp.MustCompile(`(?i)\bstatus\s*(=|:)\s*(string\()?(contract\.)?(StatusConfirmed|"confirmed")`)
 	sqlSet := regexp.MustCompile(`(?i)status\s*=\s*'confirmed'`)
 	lookup := regexp.MustCompile(`\bActionConfirm\b`)
-	// The table itself: the only way into confirmed is confirm from held (INV-09).
+	// The table itself: the only way into confirmed is confirm from held or pending_payment (INV-09, M5).
 	for _, tr := range TransitTransitions {
-		if tr.To == StatusConfirmed && tr.From != StatusConfirmed && (tr.From != StatusHeld || tr.Action != ActionConfirm) {
+		if tr.To == StatusConfirmed && tr.From != StatusConfirmed &&
+			((tr.From != StatusHeld && tr.From != StatusPendingPayment) || tr.Action != ActionConfirm) {
 			t.Errorf("transition %s/%s reaches confirmed outside confirmTx", tr.From, tr.Action)
 		}
 	}

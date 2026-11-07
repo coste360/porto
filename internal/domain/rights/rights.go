@@ -54,6 +54,7 @@ type Vessel struct {
 type Right struct {
 	ID              string
 	BerthID         string
+	BerthCode       string
 	Kind            string
 	FromOn, ToOn    calendar.Date // inclusive last night
 	Title           Title
@@ -227,7 +228,7 @@ func names(ctx context.Context, db bun.IDB, scope store.MarinaScope, withNames b
 	return out, nil
 }
 
-// loadRights builds the views of right rows: holders, vessels, active owner allocations, current mandate and
+// loadRights builds the views of right rows: berth code, holders, vessels, active owner allocations, current mandate and
 // unpaid fees.
 func (s *Service) loadRights(ctx context.Context, db bun.IDB, scope store.MarinaScope, p *auth.Principal, rows []store.BerthRight) ([]Right, error) {
 	ids := make([]string, len(rows))
@@ -243,6 +244,14 @@ func (s *Service) loadRights(ctx context.Context, db bun.IDB, scope store.Marina
 		return nil, err
 	}
 	allocs, err := store.AllocationsOfRights(ctx, db, scope, ids, true)
+	if err != nil {
+		return nil, err
+	}
+	bids := make([]string, len(rows))
+	for i := range rows {
+		bids[i] = rows[i].BerthID
+	}
+	berths, err := store.RightsBerthsByIDs(ctx, db, scope, bids)
 	if err != nil {
 		return nil, err
 	}
@@ -278,7 +287,7 @@ func (s *Service) loadRights(ctx context.Context, db bun.IDB, scope store.Marina
 	for i := range rows {
 		r := &rows[i]
 		x := Right{
-			ID: r.ID, BerthID: r.BerthID, Kind: r.Kind, FromOn: r.FromOn, ToOn: r.ToOn, Status: r.Status, EndReason: r.EndReason,
+			ID: r.ID, BerthID: r.BerthID, BerthCode: berths[r.BerthID].Code, Kind: r.Kind, FromOn: r.FromOn, ToOn: r.ToOn, Status: r.Status, EndReason: r.EndReason,
 			Holders: []Holder{}, Vessels: []Vessel{}, Allocations: allocs[r.ID], UnpaidFees: unpaid[r.ID], CreatedAt: r.CreatedAt, Version: r.Version,
 		}
 		if len(r.Title) > 0 {

@@ -23,7 +23,10 @@ import (
 	"github.com/coste360/porto/internal/domain/audit"
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
+	"github.com/coste360/porto/internal/domain/cash"
 	"github.com/coste360/porto/internal/domain/catalog"
+	"github.com/coste360/porto/internal/domain/charge"
+	"github.com/coste360/porto/internal/domain/collect"
 	"github.com/coste360/porto/internal/domain/comms"
 	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/customer"
@@ -32,12 +35,16 @@ import (
 	"github.com/coste360/porto/internal/domain/docs"
 	"github.com/coste360/porto/internal/domain/document"
 	"github.com/coste360/porto/internal/domain/event"
+	"github.com/coste360/porto/internal/domain/fiscal"
 	"github.com/coste360/porto/internal/domain/harbor"
 	"github.com/coste360/porto/internal/domain/magiclink"
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/meta"
 	"github.com/coste360/porto/internal/domain/notify"
 	"github.com/coste360/porto/internal/domain/occupancy"
+	"github.com/coste360/porto/internal/domain/paydriver"
+	"github.com/coste360/porto/internal/domain/paydriver/stripe"
+	"github.com/coste360/porto/internal/domain/payment"
 	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/rights"
@@ -119,6 +126,14 @@ type App struct {
 	Rights     *rights.Service
 	Comms      *comms.Service
 	Imports    *csvimport.Registry
+
+	// M5
+	Charges    *charge.Service
+	Payments   *payment.Service
+	Fiscal     *fiscal.Service
+	Cash       *cash.Service
+	PayDrivers *paydriver.Registry
+	Collect    *collect.Service
 
 	ownDB bool
 }
@@ -211,6 +226,11 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Notify: a.Notify, Log: log,
 	})
 	a.Links = magiclink.NewService(magiclink.Deps{DB: db, Clock: clk, BaseURL: cfg.BaseURL.String(), Log: log})
+	// M5 (m5-plan §2): charges exist before rights and contracts, which call them through their BillingHooks.
+	a.Charges = charge.NewService(charge.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Prices: a.PriceLists,
+		Docs: a.Docs, Log: log, Exporters: x.ChargeExporters,
+	})
 	a.Signatures = signature.NewService(signature.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Docs: a.Docs, Links: a.Links,
 		Notify: a.Notify, Providers: x.SignatureProviders, Notifiers: x.Notifiers, Log: log,
@@ -219,6 +239,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Occupancy: a.Occupancy, Prices: a.PriceLists,
 		Docs: a.Docs, Signatures: a.Signatures, Notify: a.Notify, Log: log,
 	})
+	a.Rights.SetBilling(a.Charges.RightsHooks())
 	a.Comms = comms.NewService(comms.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Docs: a.Docs, Links: a.Links, Notify: a.Notify,
 		Notifiers: x.Notifiers, Log: log,
@@ -226,7 +247,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	a.Contracts = contract.NewService(contract.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Occupancy: a.Occupancy, Prices: a.PriceLists,
 		Keys: cfg.Keys, Files: a.Files, Notify: a.Notify, Docs: a.Docs, Signatures: a.Signatures, Links: a.Links,
-		Holders: a.Rights, Documents: a.Documents,
+		Holders: a.Rights, Documents: a.Documents, Billing: a.Charges.ContractHooks(),
 	})
 	for _, sub := range a.Contracts.SignatureSubjects() {
 		a.Signatures.RegisterSubject(sub)
@@ -241,6 +262,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	a.Imports.Register(a.Rights.ImportHandler())
 	a.Imports.Register(a.Deadlines.ImportHandler())
 	a.Occupancy.SetMovePricer(a.Contracts)
+	a.wireBilling(x)
 	a.Presence = presence.NewService(presence.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
 		Contracts: a.Contracts, Occupancy: a.Occupancy,
@@ -266,17 +288,21 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		Admin: &admin.Handler{
 			Clock: clk, Auth: authSvc, Team: a.Team, Marinas: a.Marinas, APIKeys: a.APIKeys, Devices: a.Devices,
 			Webhooks: a.Webhooks, Audit: auditlog.NewService(db, aw), SSE: sse.NewServer(a.Bus, a.Bus, log),
-			Meta: meta.Get(cfg, a.Version).WithSignatureProviders(len(x.SignatureProviders)), SecureCookies: cfg.SecureCookies(),
+			Meta: meta.Get(cfg, a.Version).WithSignatureProviders(len(x.SignatureProviders)).
+				WithBilling(len(x.FiscalDrivers), len(x.ChargeExporters)), SecureCookies: cfg.SecureCookies(),
 			Harbor: a.Harbor, Customers: a.Customers, Vessels: a.Vessels, Documents: a.Documents,
 			Deadlines: a.Deadlines, Catalog: a.Catalog, PriceLists: a.PriceLists,
 			Occupancy: a.Occupancy, Contracts: a.Contracts, Presence: a.Presence,
 			Rights: a.Rights, Docs: a.Docs, Signatures: a.Signatures, Links: a.Links, Comms: a.Comms, Imports: a.Imports,
+			Charges: a.Charges, Payments: a.Payments, Cash: a.Cash, Fiscal: a.Fiscal, Collect: a.Collect,
+			PayDrivers: a.PayDrivers,
 		},
 		Device: &httpdevice.Handler{Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String()},
 		Public: &public.Handler{
 			Marinas: a.Marinas, Contracts: a.Contracts, Links: a.Links, Signatures: a.Signatures, Comms: a.Comms, Docs: a.Docs,
+			Collect: a.Collect,
 		},
-		Webhooks:             &webhooks.Handler{Signatures: a.Signatures},
+		Webhooks:             &webhooks.Handler{Signatures: a.Signatures, Collect: a.Collect, Clock: clk},
 		Authenticator:        authSvc,
 		Idempotency:          middleware.StoreIdempotency{DB: db.DB},
 		Ready:                a.Ready,
@@ -290,6 +316,41 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	}
 	a.Router = router
 	return nil
+}
+
+// wireBilling builds the M5 services after contracts and rights (m5-plan §2): ledger, fiscal, cash, payment
+// drivers and collection, then the registrations between them (interfaces, so charge and payment never import
+// collect or cash).
+func (a *App) wireBilling(x ext.Extensions) {
+	cfg, db, clk, log := a.Config, a.DB, a.Clock, a.Log
+	aw := audit.NewWriter(clk)
+	a.Payments = payment.NewService(payment.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Charges: a.Charges, Contracts: a.Contracts,
+		Rights: a.Rights, Docs: a.Docs, Notify: a.Notify, Log: log,
+	})
+	a.Fiscal = fiscal.NewService(fiscal.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Drivers: x.FiscalDrivers})
+	a.Cash = cash.NewService(cash.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Charges: a.Charges, Payments: a.Payments, Fiscal: a.Fiscal,
+		Prices: a.PriceLists, Docs: a.Docs, Notify: a.Notify, Log: log,
+	})
+	// The core Stripe driver goes over the anti-SSRF egress client (base URL cfg.StripeAPIBase only in dev); it is
+	// registered but stays unused until a marina enables it, so the manual driver alone covers every flow.
+	// A local base URL is accepted only with PORTO_DEV=true (config), so private/http stays dev-only.
+	devStripe := cfg.WebhooksAllowPrivate || cfg.StripeAPIBase != ""
+	stripePolicy := event.EgressPolicy{AllowPrivate: devStripe, AllowHTTP: devStripe}
+	drivers := append([]ext.PaymentProvider{stripe.New(event.NewEgressClient(stripePolicy, 30*time.Second), cfg.StripeAPIBase)},
+		x.PaymentProviders...)
+	a.PayDrivers = paydriver.NewRegistry(drivers...)
+	a.Collect = collect.NewService(collect.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Payments: a.Payments, Charges: a.Charges,
+		Contracts: a.Contracts, Drivers: a.PayDrivers, Docs: a.Docs, Notify: a.Notify, BaseURL: cfg.BaseURL.String(),
+		Log: log,
+	})
+	a.Charges.SetPaymentRequester(a.Collect)
+	a.Charges.SetCreditGranter(a.Payments)
+	a.Payments.SetCash(a.Cash)
+	a.Payments.SetFiscal(a.Fiscal)
+	a.Payments.SetProviderRefunder(a.Collect)
 }
 
 func mailTransport(cfg *config.Config, log *slog.Logger) (notify.Transport, error) {
@@ -347,6 +408,16 @@ func (a *App) registerJobs() error {
 		{Name: "deadlines.sync", Every: 15 * time.Minute, RunAtStart: true, Run: a.Deadlines.RunSync},
 		{Name: "deadlines.notify", Every: time.Hour, Run: a.Deadlines.RunNotify},
 		{Name: "links.cleanup", Every: 24 * time.Hour, Run: a.Links.Cleanup},
+		// M5 (m5-plan §7.6). Each job is idempotent and implemented by its owner; the contract phase registers
+		// no-ops.
+		{Name: "charges.backfill", Every: time.Hour, RunAtStart: true, Run: a.Charges.RunBackfill},
+		{Name: "charges.exporter", Every: time.Minute, Run: a.Charges.RunExporter},
+		// Hourly; the job itself runs once per marina day after billing_settings.reminder_hour (arrears included).
+		{Name: "payments.reminders", Every: time.Hour, RunAtStart: true, Run: a.Collect.RunReminders},
+		{Name: "payments.sepa_collect", Every: 15 * time.Minute, Run: a.Collect.RunSEPACollect},
+		{Name: "payments.reconcile", Every: 15 * time.Minute, Run: a.Collect.RunReconcile},
+		{Name: "payments.intents_expire", Every: time.Minute, RunAtStart: true, Run: a.Collect.RunIntentsExpire},
+		{Name: "fiscal.issue", Every: 30 * time.Second, Wake: a.Fiscal.Wake(), Run: a.Fiscal.RunIssue},
 	}
 	for _, j := range defs {
 		if err := a.Jobs.Register(j); err != nil {

@@ -1,0 +1,50 @@
+{
+  "title": "Pagamento",
+  "loading": "Caricamento",
+  "amount": "Importo da pagare",
+  "expires": "Richiesta valida fino al {{date}}",
+  "charges": "Addebiti",
+  "dueOn": "Scadenza {{date}}",
+  "invalid": {
+    "title": "Link non valido",
+    "description": "Il link è scaduto o non è più valido. Contatta il porto per un nuovo link."
+  },
+  "online": {
+    "card": "Paga online con carta",
+    "sepa_debit": "Paga con addebito SEPA"
+  },
+  "bank": {
+    "title": "Bonifico bancario",
+    "iban": "IBAN",
+    "holder": "Intestatario",
+    "bank": "Banca",
+    "bic": "BIC",
+    "reference": "Causale",
+    "copy": "Copia",
+    "copied": "Copiato",
+    "copyOf": "Copia {{label}}",
+    "hint": "Indica la causale nel bonifico: il porto abbinerà il pagamento agli addebiti."
+  },
+  "status": {
+    "open": {
+      "title": "Pagamento da effettuare",
+      "description": "La richiesta è aperta."
+    },
+    "verifying": {
+      "title": "Pagamento in verifica",
+      "description": "Stiamo aspettando la conferma del circuito di pagamento. Puoi chiudere questa pagina: riceverai la ricevuta per email."
+    },
+    "paid": {
+      "title": "Pagamento ricevuto",
+      "description": "Grazie, il pagamento è stato registrato."
+    },
+    "cancelled": {
+      "title": "Richiesta annullata",
+      "description": "Questa richiesta di pagamento è stata annullata dal porto."
+    },
+    "expired": {
+      "title": "Richiesta scaduta",
+      "description": "Contatta il porto per una nuova richiesta di pagamento."
+    }
+  }
+}

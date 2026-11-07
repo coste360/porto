@@ -37,6 +37,8 @@ const (
 	KindMapPrint            Kind = "map_print"
 	KindReceipt             Kind = "receipt"
 	KindStatementOfAccount  Kind = "statement_of_account"
+	// KindChargeExportSummary is the summary PDF of a "da fatturare" export (M5, m5-plan §3.6, §8.3).
+	KindChargeExportSummary Kind = "charge_export_summary"
 	KindYardWorkOrder       Kind = "yard_work_order"
 	KindYardQuote           Kind = "yard_quote"
 	KindRentalContract      Kind = "rental_contract"
@@ -112,8 +114,10 @@ func Catalogue() []KindInfo {
 		{Kind: KindCommunication, View: t(views.CommunicationView{})},
 		{Kind: KindSignatureEvidence, View: t(views.EvidenceView{}), BuiltinOnly: true},
 		{Kind: KindMapPrint, View: t(views.MapPrintView{}), BuiltinOnly: true},
-		{Kind: KindReceipt, AvailableFrom: "M5"},
-		{Kind: KindStatementOfAccount, AvailableFrom: "M5"},
+		// M5 kinds are rendered ephemerally (RenderEphemeral), never archived in generated_documents (m5-plan D20).
+		{Kind: KindReceipt, View: t(views.ReceiptView{})},
+		{Kind: KindStatementOfAccount, View: t(views.StatementView{})},
+		{Kind: KindChargeExportSummary, View: t(views.ChargeExportSummaryView{})},
 		{Kind: KindYardWorkOrder, AvailableFrom: "M10"},
 		{Kind: KindYardQuote, AvailableFrom: "M10"},
 		{Kind: KindRentalContract, AvailableFrom: "M11"},

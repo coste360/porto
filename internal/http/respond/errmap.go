@@ -27,8 +27,13 @@ import (
 	"github.com/coste360/porto/internal/http/problem"
 
 	"github.com/coste360/porto/internal/csvimport"
+	"github.com/coste360/porto/internal/domain/cash"
+	"github.com/coste360/porto/internal/domain/charge"
+	"github.com/coste360/porto/internal/domain/collect"
 	"github.com/coste360/porto/internal/domain/docs"
+	"github.com/coste360/porto/internal/domain/fiscal"
 	"github.com/coste360/porto/internal/domain/magiclink"
+	"github.com/coste360/porto/internal/domain/payment"
 	"github.com/coste360/porto/internal/domain/rights"
 	"github.com/coste360/porto/internal/domain/signature"
 )
@@ -146,6 +151,52 @@ var sentinels = []struct {
 	{csvimport.ErrCSVInvalid, problem.CSVInvalid},
 	{csvimport.ErrNotUndoable, problem.ImportNotUndoable},
 	{csvimport.ErrUnknownEntity, problem.ValidationFailed},
+	// M5 (m5-plan §7.4)
+	{charge.ErrImmutable, problem.ChargeImmutable},
+	{charge.ErrCancelled, problem.ChargeCancelled},
+	{charge.ErrUseEdit, problem.UseEdit},
+	{charge.ErrExportEmpty, problem.ExportEmpty},
+	{charge.ErrChargeExists, problem.ChargeExists},
+	{charge.ErrNoTerminationAmount, problem.NoTerminationAmount},
+	{charge.ErrNotExported, problem.NotExported},
+	{charge.ErrBillingItemMissing, problem.BillingItemMissing},
+	{charge.ErrTargetMismatch, problem.Conflict},
+	{charge.ErrCustomerRequired, problem.CustomerRequired},
+	{charge.ErrExporterUnknown, problem.ProviderUnknown},
+	{charge.ErrImportNotUndoable, problem.ImportNotUndoable},
+	{charge.ErrVersionMismatch, problem.VersionConflict},
+	{charge.ErrNotImplemented, problem.NotImplemented},
+	{payment.ErrRefundExceeds, problem.RefundExceeds},
+	{payment.ErrAlreadyReversed, problem.AlreadyReversed},
+	{payment.ErrCreditInsufficient, problem.CreditInsufficient},
+	{payment.ErrNotDeposit, problem.NotDeposit},
+	{payment.ErrNothingToSettle, problem.NothingToSettle},
+	{payment.ErrIdempotencyMismatch, problem.IdempotencyKeyReused},
+	{payment.ErrReleaseNotResold, problem.ReleaseNotResold},
+	{payment.ErrProviderRefundUnsupported, problem.ProviderRefundUnsupported},
+	{payment.ErrVersionMismatch, problem.VersionConflict},
+	{payment.ErrNotImplemented, problem.NotImplemented},
+	{cash.ErrSessionRequired, problem.CashSessionRequired},
+	{cash.ErrSessionOpen, problem.CashSessionOpen},
+	{cash.ErrSessionClosed, problem.CashSessionClosed},
+	{cash.ErrInsufficient, problem.CashInsufficient},
+	{cash.ErrRegisterInUse, problem.RegisterInUse},
+	{cash.ErrCodeTaken, problem.CodeTaken},
+	{cash.ErrVersionMismatch, problem.VersionConflict},
+	{cash.ErrNotImplemented, problem.NotImplemented},
+	{fiscal.ErrDriverUnknown, problem.ValidationFailed},
+	{fiscal.ErrNotImplemented, problem.NotImplemented},
+	{collect.ErrProviderDisabled, problem.ProviderDisabled},
+	{collect.ErrProviderRefundUnsupported, problem.ProviderRefundUnsupported},
+	{collect.ErrProviderUnknown, problem.ProviderUnknown},
+	{collect.ErrChargesNotOpen, problem.ChargesNotOpen},
+	{collect.ErrInvalidWebhookSignature, problem.InvalidSignature},
+	{collect.ErrLinkInvalid, problem.LinkInvalid},
+	{collect.ErrRetryLater, problem.NotReady},
+	{collect.ErrVersionMismatch, problem.VersionConflict},
+	{collect.ErrNotImplemented, problem.NotImplemented},
+	{contract.ErrNotImplementedM5, problem.NotImplemented},
+	{docs.ErrNotImplemented, problem.NotImplemented},
 	{ErrBadJSON, problem.BadRequest},
 	{errUnsupportedMedia, problem.UnsupportedMediaType},
 }
@@ -167,6 +218,9 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 		return t, opts, true
 	}
 	if t, opts, ok := mapM4(err); ok {
+		return t, opts, true
+	}
+	if t, opts, ok := mapM5(err); ok {
 		return t, opts, true
 	}
 	var v *auth.ValidationError
@@ -241,6 +295,33 @@ func mapM4(err error) (problem.Type, []problem.Option, bool) {
 	}
 	if errors.Is(err, rights.ErrTransferRequirements) {
 		return problem.TransferRequirements, nil, true
+	}
+	return "", nil, false
+}
+
+// mapM5 maps the typed errors of M5 that carry details (m5-plan §7.4). Details hold ids, codes and integers only.
+func mapM5(err error) (problem.Type, []problem.Option, bool) {
+	if le, ok := errors.AsType[*payment.LimitError](err); ok {
+		d := map[string]string{"limit": le.Limit}
+		if le.ChargeID != "" {
+			d["charge_id"] = le.ChargeID
+		}
+		return problem.MatchExceeds, []problem.Option{problem.WithDetails(d)}, true
+	}
+	if errors.Is(err, payment.ErrMatchExceeds) {
+		return problem.MatchExceeds, nil, true
+	}
+	if te, ok := errors.AsType[*charge.ExportTooLargeError](err); ok {
+		return problem.ExportTooLarge, []problem.Option{problem.WithDetails(map[string]int{"count": te.Count})}, true
+	}
+	if errors.Is(err, charge.ErrExportTooLarge) {
+		return problem.ExportTooLarge, nil, true
+	}
+	if pe, ok := errors.AsType[*collect.ProviderError](err); ok {
+		return problem.ProviderError, []problem.Option{problem.WithDetails(map[string]string{"code": pe.Code})}, true
+	}
+	if errors.Is(err, collect.ErrProviderError) {
+		return problem.ProviderError, nil, true
 	}
 	return "", nil, false
 }

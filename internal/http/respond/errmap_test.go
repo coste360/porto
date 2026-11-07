@@ -5,7 +5,10 @@ import (
 	"testing"
 
 	"github.com/coste360/porto/internal/calendar"
+	"github.com/coste360/porto/internal/domain/cash"
 	"github.com/coste360/porto/internal/domain/catalog"
+	"github.com/coste360/porto/internal/domain/charge"
+	"github.com/coste360/porto/internal/domain/collect"
 	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/customer"
 	"github.com/coste360/porto/internal/domain/deadline"
@@ -15,6 +18,7 @@ import (
 	"github.com/coste360/porto/internal/domain/harbor"
 	"github.com/coste360/porto/internal/domain/layout"
 	"github.com/coste360/porto/internal/domain/occupancy"
+	"github.com/coste360/porto/internal/domain/payment"
 	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/pricing"
@@ -231,6 +235,68 @@ func TestMapError_M4Details(t *testing.T) {
 		{&rights.SumError{Err: rights.ErrSharesInvalid, SumMillis: 999}, problem.SharesInvalid},
 		{&rights.SumError{Err: rights.ErrTableIncomplete, SumMillis: 999}, problem.TableIncomplete},
 		{&rights.RequirementsError{}, problem.TransferRequirements},
+	}
+	for _, c := range cases {
+		typ, opts, ok := MapError(fmt.Errorf("x: %w", c.err))
+		if !ok || typ != c.want || len(opts) != 1 {
+			t.Errorf("%v: %q %d %v, want %q with details", c.err, typ, len(opts), ok, c.want)
+		}
+	}
+}
+
+func TestMapError_M5Sentinels(t *testing.T) {
+	cases := map[error]problem.Type{
+		charge.ErrImmutable:                  problem.ChargeImmutable,
+		charge.ErrCancelled:                  problem.ChargeCancelled,
+		charge.ErrUseEdit:                    problem.UseEdit,
+		charge.ErrExportEmpty:                problem.ExportEmpty,
+		charge.ErrExportTooLarge:             problem.ExportTooLarge,
+		charge.ErrChargeExists:               problem.ChargeExists,
+		charge.ErrNoTerminationAmount:        problem.NoTerminationAmount,
+		charge.ErrNotExported:                problem.NotExported,
+		charge.ErrBillingItemMissing:         problem.BillingItemMissing,
+		charge.ErrCustomerRequired:           problem.CustomerRequired,
+		charge.ErrExporterUnknown:            problem.ProviderUnknown,
+		charge.ErrNotImplemented:             problem.NotImplemented,
+		payment.ErrMatchExceeds:              problem.MatchExceeds,
+		payment.ErrRefundExceeds:             problem.RefundExceeds,
+		payment.ErrAlreadyReversed:           problem.AlreadyReversed,
+		payment.ErrCreditInsufficient:        problem.CreditInsufficient,
+		payment.ErrNotDeposit:                problem.NotDeposit,
+		payment.ErrNothingToSettle:           problem.NothingToSettle,
+		payment.ErrIdempotencyMismatch:       problem.IdempotencyKeyReused,
+		payment.ErrReleaseNotResold:          problem.ReleaseNotResold,
+		cash.ErrSessionRequired:              problem.CashSessionRequired,
+		cash.ErrSessionOpen:                  problem.CashSessionOpen,
+		cash.ErrSessionClosed:                problem.CashSessionClosed,
+		cash.ErrInsufficient:                 problem.CashInsufficient,
+		cash.ErrRegisterInUse:                problem.RegisterInUse,
+		collect.ErrProviderDisabled:          problem.ProviderDisabled,
+		collect.ErrProviderRefundUnsupported: problem.ProviderRefundUnsupported,
+		payment.ErrProviderRefundUnsupported: problem.ProviderRefundUnsupported,
+		collect.ErrProviderError:             problem.ProviderError,
+		collect.ErrChargesNotOpen:            problem.ChargesNotOpen,
+		collect.ErrInvalidWebhookSignature:   problem.InvalidSignature,
+		collect.ErrLinkInvalid:               problem.LinkInvalid,
+		collect.ErrRetryLater:                problem.NotReady,
+		contract.ErrNotImplementedM5:         problem.NotImplemented,
+	}
+	for err, want := range cases {
+		got, _, ok := MapError(fmt.Errorf("wrapped: %w", err))
+		if !ok || got != want {
+			t.Errorf("%v: %q, %v; want %q", err, got, ok, want)
+		}
+	}
+}
+
+func TestMapError_M5Details(t *testing.T) {
+	cases := []struct {
+		err  error
+		want problem.Type
+	}{
+		{&payment.LimitError{Limit: payment.LimitCharge, ChargeID: "c1"}, problem.MatchExceeds},
+		{&charge.ExportTooLargeError{Count: 20001}, problem.ExportTooLarge},
+		{&collect.ProviderError{Code: "card_declined"}, problem.ProviderError},
 	}
 	for _, c := range cases {
 		typ, opts, ok := MapError(fmt.Errorf("x: %w", c.err))

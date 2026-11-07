@@ -1,0 +1,74 @@
+{
+  "title": "Receivables",
+  "description": "Open charges and future instalments by due date, with ageing, payment requests and reminders.",
+  "tabs": {
+    "list": "Due items",
+    "ageing": "Ageing by customer"
+  },
+  "all": "All",
+  "csv": "Export CSV",
+  "xlsx": "Export Excel",
+  "empty": "No due items.",
+  "excluded": "Excluded from reminders",
+  "select": "Select {{number}}",
+  "selectAll": "Select all",
+  "selected": "Selected: {{count}}",
+  "statuses": {
+    "open": "Open",
+    "overdue": "Overdue",
+    "scheduled": "Future instalments"
+  },
+  "fields": {
+    "amount": "Amount",
+    "bucket": "Ageing",
+    "customer": "Customer",
+    "dueFrom": "Due from",
+    "dueTo": "Due to",
+    "dueOn": "Due date",
+    "lastReminder": "Last reminder",
+    "number": "Number",
+    "origin": "Origin",
+    "residual": "Outstanding",
+    "status": "Status"
+  },
+  "bulk": {
+    "request": "Send payment request",
+    "requested": "Requests created: {{created}}, skipped: {{skipped}}",
+    "remind": "Remind",
+    "reminded": "Reminders queued: {{queued}}, skipped: {{skipped}}"
+  },
+  "ageing": {
+    "title": "Receivables ageing",
+    "total": "Total",
+    "credit": "Credit",
+    "empty": "No customers with outstanding amounts."
+  },
+  "lens": {
+    "title": "Payments",
+    "none": "No contract",
+    "hint": "The signal is informative only: the boat's departure is never blocked."
+  },
+  "request": {
+    "title": "Payment request",
+    "description": "Charges included: {{count}}, total",
+    "expires": "Expires on (optional)",
+    "send": "Email the customer now",
+    "submit": "Create request",
+    "sent": "Request created and sent.",
+    "created": "Request created.",
+    "link": "Payment link",
+    "copy": "Copy link",
+    "linkOnce": "The link is shown only now: Porto keeps only its fingerprint."
+  },
+  "requests": {
+    "title": "Payment requests",
+    "description": "Requests sent to customers, with status, resend and cancel.",
+    "charges": "Charges",
+    "source": "Source",
+    "sentAt": "Sent",
+    "empty": "No requests.",
+    "resend": "Resend",
+    "newLink": "New link",
+    "cancel": "Cancel"
+  }
+}

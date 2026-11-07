@@ -9,7 +9,9 @@ info:
     vessels, documents, deadlines). M2 adds items, classifications, price lists and the pricing tools
     (simulator, matrix, coverage, renewal). M3 adds occupancy, quotes, contracts and transits; M4 adds instalments,
     renewals, charter, rights and common charges, print templates and PDF, signatures, communications, the deadline
-    engine, CSV imports and the customer magic-link pages.
+    engine, CSV imports and the customer magic-link pages. M5 adds charges from every origin, payments, refunds and
+    credits, cash and corrispettivi, payment requests and reminders, optional online payments (Stripe with SEPA),
+    the "da fatturare" export with invoice reconciliation, statements and the customer dashboard.
 
     - `/api/admin/v1` — admin panel API (session cookie, API key or device token).
     - `/api/device/v1` — paired devices (device token, spec 29).
@@ -105,6 +107,34 @@ tags:
     description: CSV imports with dry run and undo (M4)
   - name: customer-links
     description: Public pages of customer magic links (quote, renewal, signature, unsubscribe) (M4)
+  - name: charges
+    description: Charges from every origin, adjustments, opening balances (M5)
+  - name: charge-exports
+    description: The "da fatturare" export, re-export and invoice reconciliation (M5)
+  - name: payments
+    description: Payments, matches and refunds (M5)
+  - name: credits
+    description: Customer credits and mandate compensation (M5)
+  - name: receivables
+    description: Scadenzario, ageing, statement, customer dashboard, payment lens (M5)
+  - name: cash
+    description: Cash registers, sessions, counter sales and receipts (M5)
+  - name: fiscal
+    description: Fiscal documents and corrispettivi (M5)
+  - name: payment-requests
+    description: Payment requests and payment links (M5)
+  - name: reminders
+    description: Reminders and dunning exclusions (M5)
+  - name: payment-providers
+    description: Payment drivers, provider settings and SEPA mandates (M5)
+  - name: billing-settings
+    description: Billing settings (M5)
+  - name: worklist
+    description: Office worklist (M5)
+  - name: payments-public
+    description: Public payment page of a payment request (M5)
+  - name: webhooks-payments
+    description: Payment provider callbacks (M5)
 
 paths:
   /healthz:
@@ -8949,6 +8979,2186 @@ paths:
         "429": { $ref: "#/components/responses/TooManyRequests" }
 
 
+  /api/admin/v1/marinas/{marinaId}/charges:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [charges]
+      operationId: listCharges
+      summary: >-
+        Charges with filters; CSV or Excel with format (charges.manage or payments.collect)
+      security: *readSecurity
+      parameters:
+        - { name: payment_status, in: query, required: false, schema: { $ref: "#/components/schemas/ChargePaymentStatus" } }
+        - { name: invoicing_status, in: query, required: false, schema: { $ref: "#/components/schemas/ChargeInvoicingStatus" } }
+        - { name: origin_type, in: query, required: false, schema: { $ref: "#/components/schemas/ChargeOriginType" } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: contract_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: issued_from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: issued_to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: due_from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: due_to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: overdue, in: query, required: false, schema: { type: boolean } }
+        - { name: revenue_class, in: query, required: false, schema: { type: string, maxLength: 64 } }
+        - { name: q, in: query, required: false, schema: { type: string, maxLength: 32 } }
+        - { name: format, in: query, required: false, schema: { type: string, enum: [json, csv, xlsx] } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChargePage" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [charges]
+      operationId: createCharge
+      summary: >-
+        Create a manual charge or a counter sale on account (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ChargeCreate" }
+      responses:
+        "201":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Charge" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/charges/{chargeId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ChargeId"
+    get:
+      tags: [charges]
+      operationId: getCharge
+      summary: >-
+        A charge with lines, matches, offsets, corrections, exports and reminders (charges.manage or payments.collect)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Charge" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [charges]
+      operationId: updateCharge
+      summary: >-
+        Edit a charge: lines, due date, customer and description while to_invoice and unpaid; due date and description when exported (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ChargePatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Charge" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/charges/{chargeId}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ChargeId"
+    post:
+      tags: [charges]
+      operationId: cancelCharge
+      summary: >-
+        Cancel a charge while to_invoice, unpaid and not offset (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ChargeCancel" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Charge" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/charges/{chargeId}/adjust:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ChargeId"
+    post:
+      tags: [charges]
+      operationId: adjustCharge
+      summary: >-
+        Correct a charge with a linked adjustment (delta) or a reversal and replacement (charges.manage; refunds.issue when negative)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ChargeAdjust" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AdjustResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/charges/{chargeId}/invoice:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ChargeId"
+    put:
+      tags: [charges]
+      operationId: setChargeInvoice
+      summary: >-
+        Record the external invoice number and date of an exported charge; information only (charges.export)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/InvoiceRefInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Charge" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/contracts/{contractId}/termination-charge:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [charges]
+      operationId: createTerminationCharge
+      summary: >-
+        Charge the stored termination amount of a terminated contract once (charges.manage; refunds.issue when negative)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Charge" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/charge-exports:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [charge-exports]
+      operationId: listChargeExports
+      summary: >-
+        Exports to invoicing (charges.export)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChargeExportPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [charge-exports]
+      operationId: createChargeExport
+      summary: >-
+        Export the to_invoice charges of a period; each charge is in exactly one first export (INV-53) (charges.export)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ExportCreate" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChargeExport" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/charge-exports/preview:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [charge-exports]
+      operationId: previewChargeExport
+      summary: >-
+        Preview a "da fatturare" export: counts, totals per VAT and origin, warnings (charges.export)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ExportFilter" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ExportPreview" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/charge-exports/reexport:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [charge-exports]
+      operationId: reexportCharges
+      summary: >-
+        Explicit re-export of an export or of charges; statuses unchanged (charges.export)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReexportInput" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChargeExport" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/charge-exports/{exportId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ChargeExportId"
+    get:
+      tags: [charge-exports]
+      operationId: getChargeExport
+      summary: >-
+        An export with a page of its items (charges.export)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChargeExportDetail" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/charge-exports/{exportId}/file:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ChargeExportId"
+    get:
+      tags: [charge-exports]
+      operationId: downloadChargeExport
+      summary: >-
+        Download the export file: CSV, Excel or the summary PDF (charges.export)
+      security: *readSecurity
+      parameters:
+        - { name: format, in: query, required: false, schema: { type: string, enum: [csv, xlsx, pdf] } }
+      responses:
+        "200":
+          description: OK
+          content:
+            text/csv:
+              schema: { type: string, format: binary }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+            application/pdf:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/invoice-reconciliations:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [charge-exports]
+      operationId: listInvoiceReconciliations
+      summary: >-
+        Invoice reconciliations (charges.export)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/InvoiceReconciliationPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [charge-exports]
+      operationId: createInvoiceReconciliation
+      summary: >-
+        Reconcile invoice numbers and dates from a CSV or rows, with dry run (charges.export)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/InvoiceReconciliationInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/InvoiceReconciliation" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/billing-settings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [billing-settings]
+      operationId: getBillingSettings
+      summary: >-
+        Billing settings and origin items (charges.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BillingSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [billing-settings]
+      operationId: updateBillingSettings
+      summary: >-
+        Change the billing settings and origin items (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BillingSettingsInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BillingSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/opening-balances/import:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [charges]
+      operationId: importOpeningBalances
+      summary: >-
+        Import opening balances from CSV or Excel, with dry run; charges are born invoiced (charges.manage)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OpeningBalanceImportInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChargeImport" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/opening-balances/imports:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [charges]
+      operationId: listOpeningBalanceImports
+      summary: >-
+        Opening balance imports (charges.manage)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChargeImportPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/opening-balances/imports/{importId}/undo:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ChargeImportId"
+    post:
+      tags: [charges]
+      operationId: undoOpeningBalanceImport
+      summary: >-
+        Undo an opening balance import while none of its charges has matches or offsets (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChargeImport" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/payments/export:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [payments]
+      operationId: exportPayments
+      summary: >-
+        Payments and refunds of a period by method, for reconciliation outside Porto (charges.export)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: method, in: query, required: false, schema: { $ref: "#/components/schemas/PaymentMethod" } }
+        - { name: format, in: query, required: false, schema: { type: string, enum: [csv, xlsx] } }
+      responses:
+        "200":
+          description: OK
+          content:
+            text/csv:
+              schema: { type: string, format: binary }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/payments:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [payments]
+      operationId: listPayments
+      summary: >-
+        Payments (payments.collect or charges.manage)
+      security: *readSecurity
+      parameters:
+        - { name: method, in: query, required: false, schema: { $ref: "#/components/schemas/PaymentMethod" } }
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/PaymentKind" } }
+        - { name: source, in: query, required: false, schema: { $ref: "#/components/schemas/PaymentSource" } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: unallocated, in: query, required: false, schema: { type: boolean } }
+        - { name: session_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [payments]
+      operationId: recordPayment
+      summary: >-
+        Record a payment with matches or automatic matching; the rest stays as customer credit (payments.collect; payments.collect_cash for cash)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RecordPayment" }
+      responses:
+        "201":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Payment" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/payments/{paymentId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentId"
+    get:
+      tags: [payments]
+      operationId: getPayment
+      summary: >-
+        A payment with matches, refunds and fiscal documents (payments.collect or charges.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Payment" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentId"
+    post:
+      tags: [payments]
+      operationId: matchPayment
+      summary: >-
+        Match unallocated money of a payment to charges (payments.collect)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MatchPaymentInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Payment" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches/{matchId}/reverse:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentId"
+      - $ref: "#/components/parameters/PaymentMatchId"
+    post:
+      tags: [payments]
+      operationId: reverseMatch
+      summary: >-
+        Reverse a match (refunds.issue)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Payment" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/refunds:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentId"
+    post:
+      tags: [payments]
+      operationId: refundPayment
+      summary: >-
+        Refund unallocated money, optionally reversing matches first; through the provider when possible (refunds.issue)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RefundInput" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Refund" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "502": { $ref: "#/components/responses/BadGateway" }
+
+  /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/retain:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentId"
+    post:
+      tags: [payments]
+      operationId: retainDeposit
+      summary: >-
+        Retain (part of) a deposit: a deposit_retention charge matched to it (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RetainInput" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Charge" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/refunds:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [payments]
+      operationId: listRefunds
+      summary: >-
+        Refunds and payouts (payments.collect or charges.manage)
+      security: *readSecurity
+      parameters:
+        - { name: payment_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/RefundStatus" } }
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RefundPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/credits:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [credits]
+      operationId: listCredits
+      summary: >-
+        Customers with credit (charges.manage)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CreditPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    get:
+      tags: [credits]
+      operationId: getCustomerCredit
+      summary: >-
+        Credit, deposits and the unallocated payments of a customer (charges.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CustomerCredit" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [credits]
+      operationId: grantCustomerCredit
+      summary: >-
+        Grant a goodwill or release credit (refunds.issue)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreditGrantInput" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Payment" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits/apply:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    post:
+      tags: [credits]
+      operationId: applyCustomerCredit
+      summary: >-
+        Apply customer credit to open charges, oldest first (payments.collect)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ApplyCreditInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApplyCreditResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/statement:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    get:
+      tags: [receivables]
+      operationId: getCustomerStatement
+      summary: >-
+        Statement of account with running balance; PDF or CSV with format (charges.manage)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: format, in: query, required: false, schema: { type: string, enum: [json, pdf, csv] } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Statement" }
+            application/pdf:
+              schema: { type: string, format: binary }
+            text/csv:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/dashboard:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    get:
+      tags: [receivables]
+      operationId: getCustomerDashboard
+      summary: >-
+        Customer dashboard (customers.read; billing sections with charges.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CustomerDashboard" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/receivables:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [receivables]
+      operationId: listReceivables
+      summary: >-
+        Scadenzario: open charges and scheduled instalments by due date and age (charges.manage)
+      security: *readSecurity
+      parameters:
+        - { name: due_from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: due_to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: bucket, in: query, required: false, schema: { $ref: "#/components/schemas/AgeingBucket" } }
+        - { name: status, in: query, required: false, schema: { type: string, enum: [open, overdue, scheduled] } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: contract_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: group_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: origin_type, in: query, required: false, schema: { $ref: "#/components/schemas/ChargeOriginType" } }
+        - { name: format, in: query, required: false, schema: { type: string, enum: [json, csv, xlsx] } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReceivablePage" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/receivables/ageing:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [receivables]
+      operationId: getReceivablesAgeing
+      summary: >-
+        Receivables overview by customer and age (charges.manage)
+      security: *readSecurity
+      parameters:
+        - { name: format, in: query, required: false, schema: { type: string, enum: [json, csv, xlsx] } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AgeingReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/maps/{mapId}/payment-status:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MapId"
+    get:
+      tags: [receivables]
+      operationId: getMapPaymentStatus
+      summary: >-
+        Payment lens of a map on a night: states for everyone with map.view, amounts with charges.manage
+      security: *readSecurity
+      parameters:
+        - { name: date, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MapPaymentStatus" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/mandates/{mandateId}/settle:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MandateId"
+    post:
+      tags: [credits]
+      operationId: settleMandate
+      summary: >-
+        Settle the owner compensation of a management mandate as credit or payout (refunds.issue)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SettleMandateInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SettleMandateResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/worklist:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [worklist]
+      operationId: listWorklist
+      summary: >-
+        Office worklist (items visible by the permission of their source)
+      security: *readSecurity
+      parameters:
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/WorkItemKind" } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/WorkItemStatus" } }
+        - { name: assignee_user_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkItemPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/worklist/{sourceType}/{sourceId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/WorkSourceType"
+      - $ref: "#/components/parameters/WorkSourceId"
+    patch:
+      tags: [worklist]
+      operationId: updateWorkItem
+      summary: >-
+        Assign a worklist item or change its status
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkItemPatch" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkItem" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/cash-registers:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [cash]
+      operationId: listCashRegisters
+      summary: >-
+        Cash registers (payments.collect or payments.collect_cash)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashRegisterList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [cash]
+      operationId: createCashRegister
+      summary: >-
+        Create a cash register (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CashRegisterInput" }
+      responses:
+        "201":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashRegister" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/cash-registers/{registerId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CashRegisterId"
+    patch:
+      tags: [cash]
+      operationId: updateCashRegister
+      summary: >-
+        Change a cash register (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CashRegisterPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashRegister" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/cash-sessions:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [cash]
+      operationId: listCashSessions
+      summary: >-
+        Cash sessions (payments.collect or payments.collect_cash)
+      security: *readSecurity
+      parameters:
+        - { name: register_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: status, in: query, required: false, schema: { type: string, enum: [open, closed] } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashSessionPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [cash]
+      operationId: openCashSession
+      summary: >-
+        Open a session with its float; one open session per register (INV-55) (payments.collect or payments.collect_cash)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OpenCashSessionInput" }
+      responses:
+        "201":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashSession" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/cash-sessions/current:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [cash]
+      operationId: getCurrentCashSession
+      summary: >-
+        The open session of a register, default when omitted (payments.collect or payments.collect_cash)
+      security: *readSecurity
+      parameters:
+        - { name: register_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashSession" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CashSessionId"
+    get:
+      tags: [cash]
+      operationId: getCashSession
+      summary: >-
+        A session with its live summary (payments.collect or payments.collect_cash)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashSession" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/movements:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CashSessionId"
+    post:
+      tags: [cash]
+      operationId: addCashMovement
+      summary: >-
+        Cash in or out of an open session (payments.collect or payments.collect_cash)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CashMovementInput" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashMovement" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/close:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CashSessionId"
+    post:
+      tags: [cash]
+      operationId: closeCashSession
+      summary: >-
+        Close a session with the counted amounts per method (payments.collect or payments.collect_cash)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CloseCashSessionInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashSession" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/z-report:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CashSessionId"
+    get:
+      tags: [cash]
+      operationId: getZReport
+      summary: >-
+        Z report of a session as print-ready HTML or PDF (payments.collect or payments.collect_cash)
+      security: *readSecurity
+      parameters:
+        - { name: format, in: query, required: false, schema: { type: string, enum: [html, pdf] } }
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema: { type: string, format: binary }
+            application/pdf:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/counter-sales:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [cash]
+      operationId: createCounterSale
+      summary: >-
+        Counter sale: charge, payment, match and optional fiscal document in one transaction (payments.collect; payments.collect_cash for cash)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CounterSaleInput" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CounterSaleResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/receipt:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentId"
+    get:
+      tags: [cash]
+      operationId: getPaymentReceipt
+      summary: >-
+        Courtesy receipt (not valid for tax purposes): 80/58 mm HTML or A4 PDF (payments.collect, charges.manage or payments.collect_cash)
+      security: *readSecurity
+      parameters:
+        - { name: format, in: query, required: false, schema: { type: string, enum: ["80", "58", a4] } }
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema: { type: string, format: binary }
+            application/pdf:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/fiscal/daily-totals:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [fiscal]
+      operationId: getFiscalDailyTotals
+      summary: >-
+        Corrispettivi per day or month, VAT rate and method; CSV or Excel with format (charges.export)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: group, in: query, required: false, schema: { type: string, enum: [day, month] } }
+        - { name: format, in: query, required: false, schema: { type: string, enum: [json, csv, xlsx] } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FiscalDailyTotals" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/fiscal/documents:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [fiscal]
+      operationId: listFiscalDocuments
+      summary: >-
+        Fiscal documents (charges.export)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/FiscalDocumentStatus" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FiscalDocumentPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/fiscal/documents/{fiscalDocumentId}/retry:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/FiscalDocumentId"
+    post:
+      tags: [fiscal]
+      operationId: retryFiscalDocument
+      summary: >-
+        Retry a pending or failed fiscal document (charges.export)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FiscalDocument" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/fiscal/documents/{fiscalDocumentId}/void:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/FiscalDocumentId"
+    post:
+      tags: [fiscal]
+      operationId: voidFiscalDocument
+      summary: >-
+        Void an issued fiscal document through its driver (refunds.issue)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FiscalDocument" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/payment-requests:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [payment-requests]
+      operationId: listPaymentRequests
+      summary: >-
+        Payment requests (charges.manage)
+      security: *readSecurity
+      parameters:
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/PaymentRequestStatus" } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentRequestPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [payment-requests]
+      operationId: createPaymentRequest
+      summary: >-
+        Request payment of open charges of a customer, optionally by email (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PaymentRequestCreate" }
+      responses:
+        "201":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentRequestCreated" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/payment-requests/bulk:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [payment-requests]
+      operationId: createPaymentRequestsBulk
+      summary: >-
+        One payment request per customer for up to 500 charges (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PaymentRequestBulk" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentRequestBulkResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentRequestId"
+    get:
+      tags: [payment-requests]
+      operationId: getPaymentRequest
+      summary: >-
+        A payment request with its charges (charges.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}/send:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentRequestId"
+    post:
+      tags: [payment-requests]
+      operationId: sendPaymentRequest
+      summary: >-
+        Send (again) a payment request; rotate makes a new link (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PaymentRequestSend" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentRequestCreated" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentRequestId"
+    post:
+      tags: [payment-requests]
+      operationId: cancelPaymentRequest
+      summary: >-
+        Cancel a payment request (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/transits/{contractId}/payment-link:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [payment-requests]
+      operationId: createTransitPaymentLink
+      summary: >-
+        Payment link for a held transit: pending_payment until the provider webhook confirms it (transits.desk)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TransitPaymentLinkInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TransitPaymentLink" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/reminder-runs:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reminders]
+      operationId: listReminderRuns
+      summary: >-
+        Reminder runs (charges.manage)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReminderRunPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [reminders]
+      operationId: createReminderRun
+      summary: >-
+        Run today's reminders now (the existing run of the day when it already ran) (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReminderRun" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/reminder-runs/{runId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ReminderRunId"
+    get:
+      tags: [reminders]
+      operationId: getReminderRun
+      summary: >-
+        A reminder run with its items (charges.manage)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReminderRunDetail" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/reminders/send:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [reminders]
+      operationId: sendReminders
+      summary: >-
+        Remind up to 500 charges at their next due level (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SendRemindersInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SendRemindersResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/reminder-items/{reminderItemId}/approve:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ReminderItemId"
+    post:
+      tags: [reminders]
+      operationId: approveReminderItem
+      summary: >-
+        Approve a final notice awaiting approval (charges.manage)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReminderItem" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/reminder-items/{reminderItemId}/dismiss:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ReminderItemId"
+    post:
+      tags: [reminders]
+      operationId: dismissReminderItem
+      summary: >-
+        Dismiss a reminder item awaiting approval (charges.manage)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReminderItem" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/dunning-exclusions:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reminders]
+      operationId: listDunningExclusions
+      summary: >-
+        Dunning exclusions (charges.manage)
+      security: *readSecurity
+      parameters:
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: charge_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DunningExclusionPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [reminders]
+      operationId: createDunningExclusion
+      summary: >-
+        Exclude a customer or a charge from reminders (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DunningExclusionInput" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DunningExclusion" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/dunning-exclusions/{exclusionId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/DunningExclusionId"
+    delete:
+      tags: [reminders]
+      operationId: deleteDunningExclusion
+      summary: >-
+        Remove a dunning exclusion (charges.manage)
+      security: *writeSecurity
+      responses:
+        "204":
+          description: No content
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/payment-providers:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [payment-providers]
+      operationId: listPaymentProviders
+      summary: >-
+        Payment drivers with capabilities and the marina's enabled state (payments.collect)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentProviderList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/settings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentProviderCode"
+    get:
+      tags: [payment-providers]
+      operationId: getPaymentProviderSettings
+      summary: >-
+        Provider settings; secrets are never returned (providers.configure)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentProviderSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+    put:
+      tags: [payment-providers]
+      operationId: updatePaymentProviderSettings
+      summary: >-
+        Configure a provider; secrets are write-only (providers.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PaymentProviderSettingsInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentProviderSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/test:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PaymentProviderCode"
+    post:
+      tags: [payment-providers]
+      operationId: testPaymentProvider
+      summary: >-
+        Test the provider credentials (providers.configure)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProviderTestResult" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "502": { $ref: "#/components/responses/BadGateway" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+    get:
+      tags: [payment-providers]
+      operationId: listSepaMandates
+      summary: >-
+        SEPA mandates of a customer (charges.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SepaMandateList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [payment-providers]
+      operationId: createSepaMandate
+      summary: >-
+        Request a SEPA mandate: a setup link for the customer (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SepaMandateCreate" }
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SepaMandateCreated" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "502": { $ref: "#/components/responses/BadGateway" }
+
+  /api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates/{sepaMandateId}/revoke:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/CustomerId"
+      - $ref: "#/components/parameters/SepaMandateId"
+    post:
+      tags: [payment-providers]
+      operationId: revokeSepaMandate
+      summary: >-
+        Revoke a SEPA mandate (charges.manage)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SepaMandate" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /webhooks/payments/{provider}/{marinaId}:
+    parameters:
+      - $ref: "#/components/parameters/ProviderCode"
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [webhooks-payments]
+      operationId: paymentWebhook
+      summary: >-
+        Payment provider callback, verified with the marina's webhook secret; duplicates are no-ops (INV-56); unknown provider or marina is 404
+      security: []
+      x-porto-max-body-bytes: 262144
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema: { type: string, format: binary }
+      responses:
+        "204":
+          description: No content
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+
+  /api/public/v1/{slug}/pay/{payToken}:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/PayToken"
+    get:
+      tags: [payments-public]
+      operationId: getPayPage
+      summary: >-
+        Public payment page of a payment request: amount, charges, bank details, online availability
+      security: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PayPage" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/pay/{payToken}/checkout:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/PayToken"
+    post:
+      tags: [payments-public]
+      operationId: startPayCheckout
+      summary: >-
+        Start an online payment of the request (provider hosted page)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PayCheckoutInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PayCheckoutResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "502": { $ref: "#/components/responses/BadGateway" }
+
+  /api/public/v1/{slug}/pay/{payToken}/status:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/PayToken"
+    get:
+      tags: [payments-public]
+      operationId: getPayStatus
+      summary: >-
+        Status of the request for the return page (the browser return never confirms, INV-09)
+      security: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PayStatus" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
 components:
   securitySchemes:
     cookieAuth:
@@ -8975,6 +11185,91 @@ components:
       schema: { type: string }
 
   parameters:
+    ChargeId:
+      name: chargeId
+      in: path
+      required: true
+      schema: { type: string }
+    ChargeExportId:
+      name: exportId
+      in: path
+      required: true
+      schema: { type: string }
+    PaymentId:
+      name: paymentId
+      in: path
+      required: true
+      schema: { type: string }
+    PaymentMatchId:
+      name: matchId
+      in: path
+      required: true
+      schema: { type: string }
+    CashRegisterId:
+      name: registerId
+      in: path
+      required: true
+      schema: { type: string }
+    CashSessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema: { type: string }
+    FiscalDocumentId:
+      name: fiscalDocumentId
+      in: path
+      required: true
+      schema: { type: string }
+    PaymentRequestId:
+      name: requestId
+      in: path
+      required: true
+      schema: { type: string }
+    ReminderRunId:
+      name: runId
+      in: path
+      required: true
+      schema: { type: string }
+    ReminderItemId:
+      name: reminderItemId
+      in: path
+      required: true
+      schema: { type: string }
+    DunningExclusionId:
+      name: exclusionId
+      in: path
+      required: true
+      schema: { type: string }
+    SepaMandateId:
+      name: sepaMandateId
+      in: path
+      required: true
+      schema: { type: string }
+    ChargeImportId:
+      name: importId
+      in: path
+      required: true
+      schema: { type: string }
+    PayToken:
+      name: payToken
+      in: path
+      required: true
+      schema: { type: string, minLength: 16, maxLength: 128 }
+    PaymentProviderCode:
+      name: providerCode
+      in: path
+      required: true
+      schema: { type: string, maxLength: 64, pattern: "^[a-z0-9_-]+$" }
+    WorkSourceType:
+      name: sourceType
+      in: path
+      required: true
+      schema: { type: string, maxLength: 40, pattern: "^[a-z0-9_]+$" }
+    WorkSourceId:
+      name: sourceId
+      in: path
+      required: true
+      schema: { type: string, maxLength: 64 }
     BerthId:
       name: berthId
       in: path
@@ -9353,6 +11648,20 @@ components:
       content:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
+    BadGateway:
+      description: The payment provider failed (provider_error, details.code)
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    M5Unprocessable:
+      description: >-
+        A domain rule refused the request (m5-plan §7.4: customer_required, no_price, export_empty,
+        export_too_large, charges_not_open, release_not_resold, provider_disabled, provider_refund_unsupported,
+        provider_unknown, billing_item_missing, customer_email_missing, ...), a validation failure, or an
+        idempotency key was reused
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
 
   schemas:
     ProblemType:
@@ -9440,6 +11749,31 @@ components:
         - import_not_undoable
         - provider_unknown
         - code_taken
+        - charge_immutable
+        - charge_cancelled
+        - use_edit
+        - match_exceeds
+        - refund_exceeds
+        - already_reversed
+        - credit_insufficient
+        - not_deposit
+        - nothing_to_settle
+        - charge_exists
+        - no_termination_amount
+        - not_exported
+        - export_empty
+        - export_too_large
+        - charges_not_open
+        - release_not_resold
+        - cash_session_required
+        - cash_session_open
+        - cash_session_closed
+        - cash_insufficient
+        - register_in_use
+        - provider_disabled
+        - provider_refund_unsupported
+        - provider_error
+        - billing_item_missing
 
     FieldError:
       type: object
@@ -13917,6 +16251,8 @@ components:
       properties:
         reference: { type: string, maxLength: 200 }
         pay_at_departure: { type: boolean }
+        payment: { $ref: "#/components/schemas/TransitPaymentInput" }
+        fiscal_document: { type: boolean, description: Issue a commercial document for the desk payment (M5) }
 
     QuoteAccept:
       type: object
@@ -14643,6 +16979,7 @@ components:
         settled_on: { $ref: "#/components/schemas/IsoDate" }
         settled_at: { type: string, format: date-time }
         charge_id: { type: string, description: M5 }
+        payment_id: { type: string, description: The payment of the settlement (M5) }
         version: { type: integer }
 
     PlannedInstallment:
@@ -15225,6 +17562,7 @@ components:
       properties:
         id: { type: string }
         berth: { $ref: "#/components/schemas/ResourceRef" }
+        berth_code: { type: string, description: Code of the berth of the right }
         kind: { $ref: "#/components/schemas/RightKind" }
         from_on: { $ref: "#/components/schemas/IsoDate" }
         to_on: { $ref: "#/components/schemas/IsoDate" }
@@ -15940,6 +18278,8 @@ components:
         overdue: { type: boolean }
         settlement_method: { $ref: "#/components/schemas/SettlementMethod" }
         settled_on: { $ref: "#/components/schemas/IsoDate" }
+        charge_id: { type: string, description: The instalment's charge (M5) }
+        payment_id: { type: string, description: The payment of the settlement (M5) }
         version: { type: integer }
 
     HolderInstallmentPage:
@@ -16797,3 +19137,1440 @@ components:
         request_status: { $ref: "#/components/schemas/SignatureRequestStatus" }
         attempts_left: { type: integer }
         deposit: { $ref: "#/components/schemas/PublicDeposit" }
+
+    # ---- M5 charges (m5-plan §3, §7) ----
+
+    ChargeOriginType:
+      type: string
+      enum: [installment, holder_installment, transit, contract_trueup, counter_sale, termination, deposit_retention,
+             manual, adjustment, opening_balance, utility, work_order, rental]
+
+    ChargePaymentStatus:
+      type: string
+      enum: [open, partially_paid, paid, cancelled]
+
+    ChargeInvoicingStatus:
+      type: string
+      enum: [to_invoice, exported, invoiced]
+
+    FiscalMode:
+      type: string
+      enum: [invoice, receipt]
+
+    CorrectionKind:
+      type: string
+      enum: [delta, replace]
+
+    ChargeLine:
+      type: object
+      required: [seq, item_code, description, qty_milli, unit_cents, discount_cents, net_cents, vat_cents, gross_cents, vat_rate_bp, price_includes_vat]
+      properties:
+        seq: { type: integer }
+        item_id: { type: string }
+        item_code: { type: string }
+        description: { type: string }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        unit_cents: { $ref: "#/components/schemas/Cents" }
+        discount_cents: { $ref: "#/components/schemas/Cents" }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        vat_rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+        vat_nature: { $ref: "#/components/schemas/VatNature" }
+        price_includes_vat: { type: boolean }
+        revenue_class: { type: string }
+        external_code: { type: string }
+        service_from: { $ref: "#/components/schemas/IsoDate" }
+        service_to: { $ref: "#/components/schemas/IsoDate" }
+
+    ChargeLineInput:
+      type: object
+      required: [item_id, qty_milli]
+      properties:
+        item_id: { type: string, maxLength: 36 }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        unit_cents: { description: Staff unit price (charges.manage); default from the active price list, $ref: "#/components/schemas/Cents" }
+        discount_cents: { $ref: "#/components/schemas/Cents" }
+        description: { type: string, maxLength: 300 }
+        service_from: { $ref: "#/components/schemas/IsoDate" }
+        service_to: { $ref: "#/components/schemas/IsoDate" }
+
+    ChargeMatchRef:
+      type: object
+      required: [id, payment_id, payment_number, amount_cents, created_at]
+      properties:
+        id: { type: string }
+        payment_id: { type: string }
+        payment_number: { type: string }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        reverses_match_id: { type: string }
+        created_at: { type: string, format: date-time }
+
+    ChargeOffsetRef:
+      type: object
+      required: [negative_charge_id, target_charge_id, amount_cents]
+      properties:
+        negative_charge_id: { type: string }
+        target_charge_id: { type: string }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+
+    ChargeRef:
+      type: object
+      required: [id, number]
+      properties:
+        id: { type: string }
+        number: { type: string }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        payment_status: { $ref: "#/components/schemas/ChargePaymentStatus" }
+
+    ChargeExportRef:
+      type: object
+      required: [export_id, number, first]
+      properties:
+        export_id: { type: string }
+        number: { type: string }
+        first: { type: boolean }
+        created_at: { type: string, format: date-time }
+
+    ChargeReminderRef:
+      type: object
+      required: [level, status, created_at]
+      properties:
+        level: { $ref: "#/components/schemas/ReminderLevel" }
+        status: { $ref: "#/components/schemas/ReminderItemStatus" }
+        created_at: { type: string, format: date-time }
+
+    Charge:
+      type: object
+      required: [id, number, origin_type, origin_id, issued_on, due_on, total_cents, net_cents, vat_cents, paid_amount_cents,
+                 credited_cents, residual_cents, payment_status, invoicing_status, fiscal_mode, description, version]
+      properties:
+        id: { type: string }
+        number: { type: string, description: "A{yyyy}-{n:06}, an internal reference (not a fiscal number)" }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        origin_type: { $ref: "#/components/schemas/ChargeOriginType" }
+        origin_id: { type: string }
+        contract_id: { type: string }
+        contract_code: { type: string }
+        vessel_id: { type: string }
+        right_id: { type: string }
+        issued_on: { $ref: "#/components/schemas/IsoDate" }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        service_from: { $ref: "#/components/schemas/IsoDate" }
+        service_to: { $ref: "#/components/schemas/IsoDate" }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        paid_amount_cents: { $ref: "#/components/schemas/Cents" }
+        credited_cents: { $ref: "#/components/schemas/Cents" }
+        residual_cents: { $ref: "#/components/schemas/Cents" }
+        payment_status: { $ref: "#/components/schemas/ChargePaymentStatus" }
+        invoicing_status: { $ref: "#/components/schemas/ChargeInvoicingStatus" }
+        fiscal_mode: { $ref: "#/components/schemas/FiscalMode" }
+        overdue: { type: boolean }
+        corrects_charge: { $ref: "#/components/schemas/ChargeRef" }
+        correction_kind: { $ref: "#/components/schemas/CorrectionKind" }
+        description: { type: string }
+        external_invoice_number: { type: string }
+        external_invoice_date: { $ref: "#/components/schemas/IsoDate" }
+        cancel_reason: { type: string }
+        exported_at: { type: string, format: date-time }
+        cancelled_at: { type: string, format: date-time }
+        created_at: { type: string, format: date-time }
+        vat_summary: { type: array, items: { $ref: "#/components/schemas/VatBucket" } }
+        lines: { type: array, items: { $ref: "#/components/schemas/ChargeLine" } }
+        matches: { type: array, items: { $ref: "#/components/schemas/ChargeMatchRef" } }
+        offsets: { type: array, items: { $ref: "#/components/schemas/ChargeOffsetRef" } }
+        corrections: { description: Linked adjustments of this charge, type: array, items: { $ref: "#/components/schemas/ChargeRef" } }
+        exports: { type: array, items: { $ref: "#/components/schemas/ChargeExportRef" } }
+        reminders: { type: array, items: { $ref: "#/components/schemas/ChargeReminderRef" } }
+        version: { type: integer }
+
+    ChargePage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Charge" } }
+        next_cursor: { type: [string, "null"] }
+
+    ChargeCreate:
+      type: object
+      required: [origin_type, lines]
+      properties:
+        origin_type: { type: string, enum: [manual, counter_sale] }
+        customer_id: { type: string, maxLength: 36 }
+        contract_id: { type: string, maxLength: 36 }
+        vessel_id: { type: string, maxLength: 36 }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        description: { type: string, maxLength: 300 }
+        lines: { type: array, minItems: 1, maxItems: 200, items: { $ref: "#/components/schemas/ChargeLineInput" } }
+
+    ChargePatch:
+      type: object
+      properties:
+        customer_id: { type: string, maxLength: 36 }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        description: { type: string, maxLength: 300 }
+        lines: { type: array, minItems: 1, maxItems: 200, items: { $ref: "#/components/schemas/ChargeLineInput" } }
+
+    ChargeCancel:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 500 }
+
+    AdjustLineInput:
+      description: A line of an adjustment; quantities or prices may be negative in delta mode
+      type: object
+      required: [item_id, qty_milli]
+      properties:
+        item_id: { type: string, maxLength: 36 }
+        qty_milli: { type: integer, format: int64 }
+        unit_cents: { type: integer, format: int64 }
+        description: { type: string, maxLength: 300 }
+        service_from: { $ref: "#/components/schemas/IsoDate" }
+        service_to: { $ref: "#/components/schemas/IsoDate" }
+
+    ChargeAdjust:
+      type: object
+      required: [mode, lines, reason]
+      properties:
+        mode: { $ref: "#/components/schemas/CorrectionKind" }
+        lines: { type: array, minItems: 1, maxItems: 200, items: { $ref: "#/components/schemas/AdjustLineInput" } }
+        reason: { type: string, minLength: 1, maxLength: 500 }
+
+    AdjustResult:
+      type: object
+      required: [adjustments]
+      properties:
+        adjustments: { type: array, items: { $ref: "#/components/schemas/Charge" } }
+
+    InvoiceRefInput:
+      type: object
+      required: [number, date]
+      properties:
+        number: { type: string, minLength: 1, maxLength: 64 }
+        date: { $ref: "#/components/schemas/IsoDate" }
+
+    ExportFilter:
+      type: object
+      required: [period_from, period_to]
+      properties:
+        period_from: { $ref: "#/components/schemas/IsoDate" }
+        period_to: { $ref: "#/components/schemas/IsoDate" }
+        customer_id: { type: string, maxLength: 36 }
+        origin_types: { type: array, maxItems: 13, items: { $ref: "#/components/schemas/ChargeOriginType" } }
+        revenue_class: { type: string, maxLength: 64 }
+
+    ExportCreate:
+      type: object
+      required: [period_from, period_to]
+      properties:
+        period_from: { $ref: "#/components/schemas/IsoDate" }
+        period_to: { $ref: "#/components/schemas/IsoDate" }
+        customer_id: { type: string, maxLength: 36 }
+        origin_types: { type: array, maxItems: 13, items: { $ref: "#/components/schemas/ChargeOriginType" } }
+        revenue_class: { type: string, maxLength: 64 }
+        exporter_code: { type: string, maxLength: 64, description: A registered ChargeExporter (none ships with Porto) }
+
+    OriginTotal:
+      type: object
+      required: [origin_type, count, total_cents]
+      properties:
+        origin_type: { $ref: "#/components/schemas/ChargeOriginType" }
+        count: { type: integer }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+
+    ExportWarning:
+      type: object
+      required: [code, charge_ids]
+      properties:
+        code: { type: string, enum: [customer_fiscal_incomplete] }
+        customer_id: { type: string }
+        charge_ids: { type: array, items: { type: string } }
+
+    ExportPreview:
+      type: object
+      required: [count, total_cents, totals_by_vat, totals_by_origin, warnings]
+      properties:
+        count: { type: integer }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        totals_by_vat: { type: array, items: { $ref: "#/components/schemas/VatBucket" } }
+        totals_by_origin: { type: array, items: { $ref: "#/components/schemas/OriginTotal" } }
+        warnings: { type: array, items: { $ref: "#/components/schemas/ExportWarning" } }
+
+    ChargeExport:
+      type: object
+      required: [id, number, kind, delivery, delivery_status, charge_count, line_count, total_cents, created_at, version]
+      properties:
+        id: { type: string }
+        number: { type: string }
+        kind: { type: string, enum: [export, reexport] }
+        reexport_of: { type: string }
+        period_from: { $ref: "#/components/schemas/IsoDate" }
+        period_to: { $ref: "#/components/schemas/IsoDate" }
+        filters: { $ref: "#/components/schemas/ExportFilter" }
+        delivery: { type: string, enum: [file, exporter] }
+        exporter_code: { type: string }
+        delivery_status: { type: string, enum: [none, pending, sent, failed] }
+        delivery_error: { type: string }
+        charge_count: { type: integer }
+        line_count: { type: integer }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        totals_by_vat: { type: array, items: { $ref: "#/components/schemas/VatBucket" } }
+        files: { type: array, items: { type: string, enum: [csv, xlsx, pdf] } }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    ChargeExportPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/ChargeExport" } }
+        next_cursor: { type: [string, "null"] }
+
+    ChargeExportItem:
+      type: object
+      required: [charge_id, number, first, total_cents]
+      properties:
+        charge_id: { type: string }
+        number: { type: string }
+        first: { type: boolean }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+
+    ChargeExportDetail:
+      type: object
+      required: [export, items, next_cursor]
+      properties:
+        export: { $ref: "#/components/schemas/ChargeExport" }
+        items: { type: array, items: { $ref: "#/components/schemas/ChargeExportItem" } }
+        next_cursor: { type: [string, "null"] }
+
+    ReexportInput:
+      type: object
+      properties:
+        export_id: { type: string, maxLength: 36 }
+        charge_ids: { type: array, maxItems: 20000, items: { type: string, maxLength: 36 } }
+
+    InvoiceReconciliationRowInput:
+      type: object
+      required: [invoice_number, invoice_date]
+      properties:
+        charge_id: { type: string, maxLength: 36 }
+        charge_number: { type: string, maxLength: 32 }
+        invoice_number: { type: string, maxLength: 64 }
+        invoice_date: { type: string, maxLength: 10, description: GG/MM/AAAA or YYYY-MM-DD }
+
+    InvoiceReconciliationInput:
+      type: object
+      required: [dry_run]
+      properties:
+        csv: { $ref: "#/components/schemas/CsvText" }
+        rows: { type: array, maxItems: 20000, items: { $ref: "#/components/schemas/InvoiceReconciliationRowInput" } }
+        dry_run: { type: boolean }
+
+    InvoiceReconciliationRow:
+      type: object
+      required: [row, outcome]
+      properties:
+        row: { type: integer }
+        charge_number: { type: string }
+        outcome: { type: string, enum: [ok, unknown_charge, not_exported, cancelled, invalid_date, duplicate_row] }
+
+    InvoiceReconciliation:
+      type: object
+      required: [id, source, dry_run, row_count, matched_count, report, created_at]
+      properties:
+        id: { type: string }
+        source: { type: string, enum: [csv, manual, exporter] }
+        dry_run: { type: boolean }
+        row_count: { type: integer }
+        matched_count: { type: integer }
+        report: { type: array, items: { $ref: "#/components/schemas/InvoiceReconciliationRow" } }
+        created_at: { type: string, format: date-time }
+
+    InvoiceReconciliationPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/InvoiceReconciliation" } }
+        next_cursor: { type: [string, "null"] }
+
+    OriginItemKey:
+      type: string
+      enum: [management_fee, common_advance, common_balance, transfer_fee, termination_penalty, termination_refund,
+             deposit_retention, opening_balance, contract_trueup_fallback]
+
+    OriginItem:
+      type: object
+      required: [origin_key, item_id]
+      properties:
+        origin_key: { $ref: "#/components/schemas/OriginItemKey" }
+        item_id: { type: string, maxLength: 36 }
+
+    ReminderLevelPolicy:
+      type: object
+      required: [level, days, enabled]
+      properties:
+        level: { $ref: "#/components/schemas/ReminderLevel" }
+        days: { type: integer, minimum: -60, maximum: 365, description: Days after the due date (negative = before) }
+        enabled: { type: boolean }
+
+    ReminderPolicy:
+      type: object
+      required: [levels]
+      properties:
+        levels: { type: array, maxItems: 5, items: { $ref: "#/components/schemas/ReminderLevelPolicy" } }
+
+    ArrearsPolicy:
+      type: object
+      required: [enabled, days_overdue, min_amount_cents]
+      properties:
+        enabled: { type: boolean }
+        days_overdue: { type: integer, minimum: 1, maximum: 365 }
+        min_amount_cents: { $ref: "#/components/schemas/Cents" }
+
+    BillingSettingsInput:
+      type: object
+      required: [default_due_days, auto_payment_request, reminder_policy, reminder_hour, arrears_policy, export_reminder_days, fiscal_driver, receipt_footer, sepa_lead_days, origin_items]
+      properties:
+        default_due_days: { type: integer, minimum: 0, maximum: 365 }
+        auto_payment_request: { type: boolean }
+        reminder_policy: { $ref: "#/components/schemas/ReminderPolicy" }
+        reminder_hour: { type: integer, minimum: 0, maximum: 23 }
+        arrears_policy: { $ref: "#/components/schemas/ArrearsPolicy" }
+        export_reminder_days: { type: integer, minimum: 1, maximum: 365 }
+        fiscal_driver: { type: string, maxLength: 64 }
+        receipt_footer: { type: string, maxLength: 1000 }
+        sepa_lead_days: { type: integer, minimum: 0, maximum: 30 }
+        origin_items: { type: array, maxItems: 9, items: { $ref: "#/components/schemas/OriginItem" } }
+
+    BillingSettings:
+      type: object
+      required: [default_due_days, auto_payment_request, reminder_policy, reminder_hour, arrears_policy, export_reminder_days, fiscal_driver, receipt_footer, sepa_lead_days, origin_items, fiscal_drivers, version]
+      properties:
+        default_due_days: { type: integer }
+        auto_payment_request: { type: boolean }
+        reminder_policy: { $ref: "#/components/schemas/ReminderPolicy" }
+        reminder_hour: { type: integer }
+        arrears_policy: { $ref: "#/components/schemas/ArrearsPolicy" }
+        export_reminder_days: { type: integer }
+        fiscal_driver: { type: string }
+        receipt_footer: { type: string }
+        sepa_lead_days: { type: integer }
+        origin_items: { type: array, items: { $ref: "#/components/schemas/OriginItem" } }
+        fiscal_drivers: { description: Available fiscal driver codes (none, export and extensions), type: array, items: { type: string } }
+        version: { type: integer }
+
+    OpeningBalanceMapping:
+      description: Column indexes (0-based) of the file
+      type: object
+      required: [customer_match, customer_column, amount_column, due_on_column]
+      properties:
+        customer_match: { type: string, enum: [fiscal_code, vat_number, customer_code] }
+        customer_column: { type: integer, minimum: 0, maximum: 200 }
+        amount_column: { type: integer, minimum: 0, maximum: 200, description: Amount in euros with a decimal comma or point (negative = credit) }
+        due_on_column: { type: integer, minimum: 0, maximum: 200 }
+        description_column: { type: integer, minimum: 0, maximum: 200 }
+        reference_column: { type: integer, minimum: 0, maximum: 200 }
+
+    OpeningBalanceImportInput:
+      type: object
+      required: [format, file_base64, has_header, mapping, dry_run]
+      properties:
+        format: { type: string, enum: [csv, xlsx] }
+        file_base64: { type: string, maxLength: 8000000, description: The file, base64 encoded (at most 5 000 rows) }
+        delimiter: { type: string, enum: [semicolon, comma, tab] }
+        has_header: { type: boolean }
+        mapping: { $ref: "#/components/schemas/OpeningBalanceMapping" }
+        dry_run: { type: boolean }
+
+    ChargeImportRowIssue:
+      type: object
+      required: [row, code]
+      properties:
+        row: { type: integer }
+        code: { type: string, enum: [unknown_customer, ambiguous_customer, invalid_amount, invalid_date, zero_amount] }
+
+    ChargeImport:
+      type: object
+      required: [id, status, format, charge_count, valid_rows, issues, created_at, version]
+      properties:
+        id: { type: string }
+        status: { type: string, enum: [dry_run, applied, undone, failed] }
+        format: { type: string, enum: [csv, xlsx] }
+        charge_count: { type: integer }
+        valid_rows: { type: integer }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        issues: { type: array, items: { $ref: "#/components/schemas/ChargeImportRowIssue" } }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    ChargeImportPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/ChargeImport" } }
+        next_cursor: { type: [string, "null"] }
+
+    # ---- M5 payments, refunds, credits (m5-plan §4) ----
+
+    PaymentKind:
+      type: string
+      enum: [payment, deposit, credit]
+
+    PaymentMethod:
+      type: string
+      enum: [cash, card_pos, bank_transfer, cheque, other, card_online, wallet, sepa_debit, credit_note]
+
+    PaymentSource:
+      type: string
+      enum: [manual, provider, backfill, adjustment, goodwill, release, mandate, opening_balance]
+
+    RefundStatus:
+      type: string
+      enum: [pending, succeeded, failed]
+
+    PaymentMatch:
+      type: object
+      required: [id, charge_id, charge_number, amount_cents, created_at]
+      properties:
+        id: { type: string }
+        charge_id: { type: string }
+        charge_number: { type: string }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        reverses_match_id: { type: string }
+        reversed: { type: boolean }
+        created_at: { type: string, format: date-time }
+
+    Payment:
+      type: object
+      required: [id, number, kind, method, source, amount_cents, allocated_cents, refunded_cents, unallocated_cents, fee_cents, currency, received_on, version]
+      properties:
+        id: { type: string }
+        number: { type: string, description: "P{yyyy}-{n:06}, an internal reference" }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        kind: { $ref: "#/components/schemas/PaymentKind" }
+        method: { $ref: "#/components/schemas/PaymentMethod" }
+        source: { $ref: "#/components/schemas/PaymentSource" }
+        provider_code: { type: string }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        allocated_cents: { $ref: "#/components/schemas/Cents" }
+        refunded_cents: { $ref: "#/components/schemas/Cents" }
+        unallocated_cents: { $ref: "#/components/schemas/Cents" }
+        fee_cents: { $ref: "#/components/schemas/Cents" }
+        currency: { type: string }
+        received_on: { $ref: "#/components/schemas/IsoDate" }
+        cash_session_id: { type: string }
+        has_reference: { type: boolean, description: The staff reference is stored encrypted and never returned in lists }
+        notes: { type: string }
+        vat_split: { type: array, items: { $ref: "#/components/schemas/VatBucket" } }
+        matches: { type: array, items: { $ref: "#/components/schemas/PaymentMatch" } }
+        refunds: { type: array, items: { $ref: "#/components/schemas/Refund" } }
+        fiscal_documents: { type: array, items: { $ref: "#/components/schemas/FiscalDocument" } }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    PaymentPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Payment" } }
+        next_cursor: { type: [string, "null"] }
+
+    MatchInput:
+      type: object
+      required: [charge_id, amount_cents]
+      properties:
+        charge_id: { type: string, maxLength: 36 }
+        amount_cents: { type: integer, format: int64, minimum: 1 }
+
+    RecordPayment:
+      type: object
+      required: [kind, method, amount_cents]
+      properties:
+        customer_id: { type: string, maxLength: 36 }
+        kind: { type: string, enum: [payment, deposit] }
+        method: { type: string, enum: [cash, card_pos, bank_transfer, cheque, other] }
+        amount_cents: { type: integer, format: int64, minimum: 1 }
+        received_on: { $ref: "#/components/schemas/IsoDate" }
+        reference: { type: string, maxLength: 200, description: Stored encrypted, never logged }
+        notes: { type: string, maxLength: 500 }
+        matches: { type: array, maxItems: 500, items: { $ref: "#/components/schemas/MatchInput" } }
+        auto_match: { type: string, enum: [oldest_due_first] }
+        cash_register_id: { type: string, maxLength: 36 }
+        send_receipt: { type: boolean }
+
+    MatchPaymentInput:
+      type: object
+      required: [matches]
+      properties:
+        matches: { type: array, minItems: 1, maxItems: 500, items: { $ref: "#/components/schemas/MatchInput" } }
+
+    UnmatchInput:
+      type: object
+      required: [match_id, amount_cents]
+      properties:
+        match_id: { type: string, maxLength: 36 }
+        amount_cents: { type: integer, format: int64, minimum: 1 }
+
+    RefundInput:
+      type: object
+      required: [amount_cents, reason]
+      properties:
+        amount_cents: { type: integer, format: int64, minimum: 1 }
+        via_provider: { type: boolean }
+        method: { type: string, enum: [cash, card_pos, bank_transfer, cheque, other] }
+        reason: { type: string, minLength: 1, maxLength: 500 }
+        unmatch: { type: array, maxItems: 100, items: { $ref: "#/components/schemas/UnmatchInput" } }
+        cash_register_id: { type: string, maxLength: 36 }
+
+    Refund:
+      type: object
+      required: [id, number, kind, method, source, status, amount_cents, reason, business_date, created_at]
+      properties:
+        id: { type: string }
+        number: { type: string }
+        payment_id: { type: string }
+        kind: { type: string, enum: [refund, payout] }
+        method: { $ref: "#/components/schemas/PaymentMethod" }
+        source: { type: string, enum: [manual, provider] }
+        provider_code: { type: string }
+        status: { $ref: "#/components/schemas/RefundStatus" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        reason: { type: string }
+        business_date: { $ref: "#/components/schemas/IsoDate" }
+        failure_code: { type: string }
+        created_at: { type: string, format: date-time }
+
+    RefundPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Refund" } }
+        next_cursor: { type: [string, "null"] }
+
+    RetainInput:
+      type: object
+      required: [amount_cents, reason]
+      properties:
+        amount_cents: { type: integer, format: int64, minimum: 1 }
+        item_id: { type: string, maxLength: 36 }
+        reason: { type: string, minLength: 1, maxLength: 500 }
+
+    CreditRow:
+      type: object
+      required: [customer, credit_cents, deposits_cents]
+      properties:
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        credit_cents: { $ref: "#/components/schemas/Cents" }
+        deposits_cents: { $ref: "#/components/schemas/Cents" }
+
+    CreditPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/CreditRow" } }
+        next_cursor: { type: [string, "null"] }
+
+    CustomerCredit:
+      type: object
+      required: [customer, credit_cents, deposits_cents, payments]
+      properties:
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        credit_cents: { $ref: "#/components/schemas/Cents" }
+        deposits_cents: { $ref: "#/components/schemas/Cents" }
+        payments: { description: Payments with unallocated money, type: array, items: { $ref: "#/components/schemas/Payment" } }
+
+    CreditGrantInput:
+      type: object
+      required: [amount_cents, reason, source]
+      properties:
+        amount_cents: { type: integer, format: int64, minimum: 1 }
+        reason: { type: string, minLength: 1, maxLength: 500 }
+        source: { type: string, enum: [goodwill, release] }
+        release_id: { type: string, maxLength: 36 }
+
+    ApplyCreditInput:
+      type: object
+      properties:
+        charge_ids: { type: array, maxItems: 500, items: { type: string, maxLength: 36 } }
+
+    ApplyCreditResult:
+      type: object
+      required: [matched_cents]
+      properties:
+        matched_cents: { $ref: "#/components/schemas/Cents" }
+
+    StatementRow:
+      type: object
+      required: [date, kind, number, description, debit_cents, credit_cents, balance_cents]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        kind: { type: string, enum: [charge, payment, refund, credit] }
+        id: { type: string }
+        number: { type: string }
+        description: { type: string }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        debit_cents: { $ref: "#/components/schemas/Cents" }
+        credit_cents: { $ref: "#/components/schemas/Cents" }
+        balance_cents: { $ref: "#/components/schemas/Cents" }
+
+    Statement:
+      type: object
+      required: [customer, from, to, opening_cents, closing_cents, rows]
+      properties:
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        opening_cents: { $ref: "#/components/schemas/Cents" }
+        closing_cents: { $ref: "#/components/schemas/Cents" }
+        rows: { type: array, items: { $ref: "#/components/schemas/StatementRow" } }
+
+    AgeingBucket:
+      type: string
+      enum: [not_due, d0_30, d31_60, d61_90, d90_plus]
+
+    AgeingAmounts:
+      description: Residuals of open charges by age bucket (AgeingBucket)
+      type: object
+      required: [not_due_cents, d0_30_cents, d31_60_cents, d61_90_cents, d90_plus_cents, total_cents]
+      properties:
+        not_due_cents: { $ref: "#/components/schemas/Cents" }
+        d0_30_cents: { $ref: "#/components/schemas/Cents" }
+        d31_60_cents: { $ref: "#/components/schemas/Cents" }
+        d61_90_cents: { $ref: "#/components/schemas/Cents" }
+        d90_plus_cents: { $ref: "#/components/schemas/Cents" }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+
+    AgeingRow:
+      type: object
+      required: [customer, amounts, credit_cents]
+      properties:
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        amounts: { $ref: "#/components/schemas/AgeingAmounts" }
+        credit_cents: { $ref: "#/components/schemas/Cents" }
+
+    AgeingReport:
+      type: object
+      required: [rows, totals]
+      properties:
+        rows: { type: array, items: { $ref: "#/components/schemas/AgeingRow" } }
+        totals: { $ref: "#/components/schemas/AgeingAmounts" }
+
+    Receivable:
+      type: object
+      required: [kind, id, due_on, amount_cents, residual_cents, bucket]
+      properties:
+        kind: { type: string, enum: [charge, scheduled_installment] }
+        id: { type: string }
+        number: { type: string }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        contract_id: { type: string }
+        contract_code: { type: string }
+        origin_type: { $ref: "#/components/schemas/ChargeOriginType" }
+        description: { type: string }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        residual_cents: { $ref: "#/components/schemas/Cents" }
+        bucket: { $ref: "#/components/schemas/AgeingBucket" }
+        last_reminder_level: { $ref: "#/components/schemas/ReminderLevel" }
+        excluded: { type: boolean }
+
+    ReceivablePage:
+      type: object
+      required: [items, next_cursor, totals]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Receivable" } }
+        next_cursor: { type: [string, "null"] }
+        totals: { $ref: "#/components/schemas/AgeingAmounts" }
+
+    CustomerDashboard:
+      description: Customer dashboard (spec 11.4); billing sections only with charges.manage, work orders and rentals are empty until M10/M11
+      type: object
+      required: [customer, vessels, contracts, berths_today, documents_expiring, communications, notes, work_orders, rentals]
+      properties:
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        vessels: { type: array, items: { $ref: "#/components/schemas/VesselRef" } }
+        contracts: { type: array, items: { $ref: "#/components/schemas/DashboardContract" } }
+        berths_today: { type: array, items: { $ref: "#/components/schemas/ResourceRef" } }
+        arrears: { $ref: "#/components/schemas/AgeingAmounts" }
+        balance_cents: { $ref: "#/components/schemas/Cents" }
+        credit_cents: { $ref: "#/components/schemas/Cents" }
+        future_installments: { type: array, items: { $ref: "#/components/schemas/Receivable" } }
+        recent_payments: { type: array, items: { $ref: "#/components/schemas/Payment" } }
+        documents_expiring: { type: array, items: { $ref: "#/components/schemas/DashboardDocument" } }
+        communications: { type: array, items: { $ref: "#/components/schemas/DashboardMessage" } }
+        notes: { type: string }
+        work_orders: { type: array, items: { type: object } }
+        rentals: { type: array, items: { type: object } }
+
+    DashboardContract:
+      type: object
+      required: [id, code, kind, status, starts_on, ends_on]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        kind: { type: string }
+        status: { type: string }
+        starts_on: { $ref: "#/components/schemas/IsoDate" }
+        ends_on: { $ref: "#/components/schemas/IsoDate" }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+
+    DashboardDocument:
+      type: object
+      required: [id, type, expires_on]
+      properties:
+        id: { type: string }
+        type: { type: string }
+        expires_on: { $ref: "#/components/schemas/IsoDate" }
+
+    DashboardMessage:
+      type: object
+      required: [id, template, status, created_at]
+      properties:
+        id: { type: string }
+        template: { type: string }
+        status: { type: string }
+        created_at: { type: string, format: date-time }
+
+    LensState:
+      type: string
+      enum: [ok, due_soon, overdue, overdue_60, disputed]
+
+    MapPaymentResource:
+      type: object
+      required: [resource_type, resource_id, state, suspended]
+      properties:
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        contract_id: { type: string }
+        state: { $ref: "#/components/schemas/LensState" }
+        suspended: { type: boolean }
+        residual_cents: { description: Only with charges.manage, $ref: "#/components/schemas/Cents" }
+
+    MapPaymentStatus:
+      type: object
+      required: [date, resources]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        resources: { type: array, items: { $ref: "#/components/schemas/MapPaymentResource" } }
+
+    SettleMandateInput:
+      type: object
+      required: [through, mode]
+      properties:
+        through: { $ref: "#/components/schemas/IsoDate" }
+        mode: { type: string, enum: [credit, payout] }
+
+    SettleMandateResult:
+      type: object
+      required: [credited_cents, paid_out_cents]
+      properties:
+        credited_cents: { $ref: "#/components/schemas/Cents" }
+        paid_out_cents: { $ref: "#/components/schemas/Cents" }
+
+    WorkItemKind:
+      type: string
+      enum: [reminder_approval, charges_to_export, payment_failed, late_payment, overpayment, sepa_failed,
+             billing_item_missing, billing_target_mismatch, arrears_paid, deadline, dispute]
+
+    WorkItemStatus:
+      type: string
+      enum: [open, in_progress, done, dismissed]
+
+    WorkItem:
+      type: object
+      required: [kind, source_type, source_id, status, created_at]
+      properties:
+        kind: { $ref: "#/components/schemas/WorkItemKind" }
+        source_type: { type: string }
+        source_id: { type: string }
+        status: { $ref: "#/components/schemas/WorkItemStatus" }
+        assignee_user_id: { type: string }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        created_at: { type: string, format: date-time }
+
+    WorkItemPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/WorkItem" } }
+        next_cursor: { type: [string, "null"] }
+
+    WorkItemPatch:
+      type: object
+      required: [status]
+      properties:
+        assignee_user_id: { type: [string, "null"], maxLength: 36 }
+        status: { $ref: "#/components/schemas/WorkItemStatus" }
+        note: { type: string, maxLength: 500 }
+
+    TransitPaymentInput:
+      description: Payment collected at the desk with the confirmation (M5, payments.collect; payments.collect_cash for cash)
+      type: object
+      required: [method]
+      properties:
+        method: { type: string, enum: [cash, card_pos, bank_transfer, cheque, other] }
+        amount_cents: { type: integer, format: int64, minimum: 1, description: Default the transit charge total }
+        register_id: { type: string, maxLength: 36 }
+
+    # ---- M5 cash and fiscal (m5-plan §5.1-§5.3) ----
+
+    CashRegister:
+      type: object
+      required: [id, code, name, active, is_default, version]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { type: string }
+        active: { type: boolean }
+        is_default: { type: boolean }
+        open_session_id: { type: string }
+        version: { type: integer }
+
+    CashRegisterList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/CashRegister" } }
+
+    CashRegisterInput:
+      type: object
+      required: [code, name]
+      properties:
+        code: { type: string, minLength: 1, maxLength: 32, pattern: "^[a-z0-9_-]+$" }
+        name: { type: string, minLength: 1, maxLength: 100 }
+        active: { type: boolean }
+
+    CashRegisterPatch:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100 }
+        active: { type: boolean }
+        is_default: { type: boolean }
+
+    MethodAmount:
+      type: object
+      required: [method, amount_cents]
+      properties:
+        method: { $ref: "#/components/schemas/PaymentMethod" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+
+    CashSummary:
+      type: object
+      required: [expected, counted, difference_cents, payments_cents, refunds_cents, movements_in_cents, movements_out_cents]
+      properties:
+        expected: { type: array, items: { $ref: "#/components/schemas/MethodAmount" } }
+        counted: { type: array, items: { $ref: "#/components/schemas/MethodAmount" } }
+        difference_cents: { $ref: "#/components/schemas/Cents" }
+        payments_cents: { $ref: "#/components/schemas/Cents" }
+        refunds_cents: { $ref: "#/components/schemas/Cents" }
+        movements_in_cents: { $ref: "#/components/schemas/Cents" }
+        movements_out_cents: { $ref: "#/components/schemas/Cents" }
+
+    CashMovement:
+      type: object
+      required: [id, kind, amount_cents, reason, created_at]
+      properties:
+        id: { type: string }
+        kind: { type: string, enum: [in, out] }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        reason: { type: string }
+        created_by_user_id: { type: string }
+        created_at: { type: string, format: date-time }
+
+    CashSession:
+      type: object
+      required: [id, register_id, status, opened_at, business_date, float_cents, summary, version]
+      properties:
+        id: { type: string }
+        register_id: { type: string }
+        register_code: { type: string }
+        status: { type: string, enum: [open, closed] }
+        opened_by_user_id: { type: string }
+        opened_at: { type: string, format: date-time }
+        business_date: { $ref: "#/components/schemas/IsoDate" }
+        float_cents: { $ref: "#/components/schemas/Cents" }
+        closed_by_user_id: { type: string }
+        closed_at: { type: string, format: date-time }
+        notes: { type: string }
+        summary: { $ref: "#/components/schemas/CashSummary" }
+        movements: { type: array, items: { $ref: "#/components/schemas/CashMovement" } }
+        version: { type: integer }
+
+    CashSessionPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/CashSession" } }
+        next_cursor: { type: [string, "null"] }
+
+    OpenCashSessionInput:
+      type: object
+      required: [float_cents]
+      properties:
+        register_id: { type: string, maxLength: 36 }
+        float_cents: { type: integer, format: int64, minimum: 0 }
+
+    CashMovementInput:
+      type: object
+      required: [kind, amount_cents, reason]
+      properties:
+        kind: { type: string, enum: [in, out] }
+        amount_cents: { type: integer, format: int64, minimum: 1 }
+        reason: { type: string, minLength: 1, maxLength: 300 }
+
+    CountedInput:
+      type: object
+      required: [method, amount_cents]
+      properties:
+        method: { type: string, enum: [cash, card_pos, bank_transfer, cheque, other] }
+        amount_cents: { type: integer, format: int64, minimum: 0 }
+
+    CloseCashSessionInput:
+      type: object
+      required: [counted]
+      properties:
+        counted: { type: array, maxItems: 5, items: { $ref: "#/components/schemas/CountedInput" } }
+        notes: { type: string, maxLength: 500 }
+
+    CounterSaleLineInput:
+      type: object
+      required: [item_id, qty_milli]
+      properties:
+        item_id: { type: string, maxLength: 36 }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        unit_cents: { description: Staff unit price (charges.manage), $ref: "#/components/schemas/Cents" }
+        discount_cents: { $ref: "#/components/schemas/Cents" }
+
+    CounterSalePayment:
+      type: object
+      required: [method]
+      properties:
+        method: { type: string, enum: [cash, card_pos, bank_transfer, cheque, other] }
+        amount_cents: { type: integer, format: int64, minimum: 1 }
+        register_id: { type: string, maxLength: 36 }
+
+    CounterSaleInput:
+      type: object
+      required: [lines, payment, fiscal_document, receipt]
+      properties:
+        customer_id: { type: string, maxLength: 36 }
+        vessel_id: { type: string, maxLength: 36 }
+        lines: { type: array, minItems: 1, maxItems: 100, items: { $ref: "#/components/schemas/CounterSaleLineInput" } }
+        payment: { $ref: "#/components/schemas/CounterSalePayment" }
+        fiscal_document: { type: boolean }
+        receipt: { type: string, enum: [none, print, email] }
+
+    CounterSaleResult:
+      type: object
+      required: [charge, payment, receipt_url]
+      properties:
+        charge: { $ref: "#/components/schemas/Charge" }
+        payment: { $ref: "#/components/schemas/Payment" }
+        fiscal_document: { $ref: "#/components/schemas/FiscalDocument" }
+        receipt_url: { type: string }
+
+    FiscalDocumentStatus:
+      type: string
+      enum: [pending, issued, failed, void]
+
+    FiscalDocument:
+      type: object
+      required: [id, payment_id, charge_id, driver, number, business_date, status, total_cents, vat, created_at, version]
+      properties:
+        id: { type: string }
+        payment_id: { type: string }
+        charge_id: { type: string }
+        driver: { type: string }
+        number: { type: string, description: Internal daily number YYYYMMDD-NNNN }
+        business_date: { $ref: "#/components/schemas/IsoDate" }
+        status: { $ref: "#/components/schemas/FiscalDocumentStatus" }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        vat: { type: array, items: { $ref: "#/components/schemas/VatBucket" } }
+        external_ref: { type: string }
+        error_code: { type: string }
+        issued_at: { type: string, format: date-time }
+        voided_at: { type: string, format: date-time }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    FiscalDocumentPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/FiscalDocument" } }
+        next_cursor: { type: [string, "null"] }
+
+    FiscalTotalRow:
+      type: object
+      required: [period, vat_rate_bp, method, net_cents, vat_cents, gross_cents, documents]
+      properties:
+        period: { type: string, description: YYYY-MM-DD or YYYY-MM }
+        vat_rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+        vat_nature: { $ref: "#/components/schemas/VatNature" }
+        method: { $ref: "#/components/schemas/PaymentMethod" }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        documents: { type: integer }
+
+    FiscalDailyTotals:
+      type: object
+      required: [from, to, group, rows, total_cents]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        group: { type: string, enum: [day, month] }
+        rows: { type: array, items: { $ref: "#/components/schemas/FiscalTotalRow" } }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+
+    # ---- M5 collection: requests, reminders, providers, SEPA (m5-plan §5.4, §5.5) ----
+
+    PaymentRequestStatus:
+      type: string
+      enum: [open, paid, cancelled, expired]
+
+    PaymentRequestCharge:
+      type: object
+      required: [charge_id, number, due_on, amount_cents, residual_cents]
+      properties:
+        charge_id: { type: string }
+        number: { type: string }
+        description: { type: string }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        residual_cents: { $ref: "#/components/schemas/Cents" }
+
+    PaymentRequest:
+      type: object
+      required: [id, customer, amount_cents, currency, status, source, sent_count, charges, created_at, version]
+      properties:
+        id: { type: string }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        currency: { type: string }
+        status: { $ref: "#/components/schemas/PaymentRequestStatus" }
+        source: { type: string, enum: [manual, auto, reminder, transit] }
+        expires_at: { type: string, format: date-time }
+        sent_at: { type: string, format: date-time }
+        sent_count: { type: integer }
+        charges: { type: array, items: { $ref: "#/components/schemas/PaymentRequestCharge" } }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    PaymentRequestPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/PaymentRequest" } }
+        next_cursor: { type: [string, "null"] }
+
+    PaymentRequestCreated:
+      description: The request and, only in this response, its payment link
+      type: object
+      required: [request]
+      properties:
+        request: { $ref: "#/components/schemas/PaymentRequest" }
+        url: { type: string, description: Shown once to staff (copy link); stored only as a hash }
+
+    PaymentRequestCreate:
+      type: object
+      required: [customer_id, charge_ids]
+      properties:
+        customer_id: { type: string, maxLength: 36 }
+        charge_ids: { type: array, minItems: 1, maxItems: 500, items: { type: string, maxLength: 36 } }
+        expires_on: { $ref: "#/components/schemas/IsoDate" }
+        send: { type: boolean }
+
+    PaymentRequestBulk:
+      type: object
+      required: [charge_ids, send]
+      properties:
+        charge_ids: { type: array, minItems: 1, maxItems: 500, items: { type: string, maxLength: 36 } }
+        send: { type: boolean }
+
+    PaymentRequestBulkResult:
+      type: object
+      required: [created, skipped]
+      properties:
+        created: { type: integer }
+        skipped: { type: integer }
+        request_ids: { type: array, items: { type: string } }
+
+    PaymentRequestSend:
+      type: object
+      properties:
+        rotate: { type: boolean, description: Issue a new link (the old one stops working) }
+
+    TransitPaymentLinkInput:
+      type: object
+      properties:
+        expires_in_hours: { type: integer, minimum: 1, maximum: 72, default: 24 }
+        send: { type: boolean }
+
+    TransitPaymentLink:
+      type: object
+      required: [request, url]
+      properties:
+        request: { $ref: "#/components/schemas/PaymentRequest" }
+        url: { type: string }
+
+    ReminderLevel:
+      type: string
+      enum: [pre_due, due, courteous, formal, final_notice]
+
+    ReminderItemStatus:
+      type: string
+      enum: [queued, awaiting_approval, skipped_excluded, skipped_paid, skipped_no_email, sent, dismissed]
+
+    ReminderRun:
+      type: object
+      required: [id, run_on, status, counts, started_at]
+      properties:
+        id: { type: string }
+        run_on: { $ref: "#/components/schemas/IsoDate" }
+        status: { type: string, enum: [running, done, failed] }
+        counts: { type: object, additionalProperties: { type: integer } }
+        started_at: { type: string, format: date-time }
+        finished_at: { type: string, format: date-time }
+
+    ReminderRunPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/ReminderRun" } }
+        next_cursor: { type: [string, "null"] }
+
+    ReminderItem:
+      type: object
+      required: [id, charge_id, customer, level, status, created_at, version]
+      properties:
+        id: { type: string }
+        run_id: { type: string }
+        charge_id: { type: string }
+        charge_number: { type: string }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        level: { $ref: "#/components/schemas/ReminderLevel" }
+        status: { $ref: "#/components/schemas/ReminderItemStatus" }
+        request_id: { type: string }
+        residual_cents: { $ref: "#/components/schemas/Cents" }
+        created_at: { type: string, format: date-time }
+        version: { type: integer }
+
+    ReminderRunDetail:
+      type: object
+      required: [run, items, next_cursor]
+      properties:
+        run: { $ref: "#/components/schemas/ReminderRun" }
+        items: { type: array, items: { $ref: "#/components/schemas/ReminderItem" } }
+        next_cursor: { type: [string, "null"] }
+
+    SendRemindersInput:
+      type: object
+      required: [charge_ids]
+      properties:
+        charge_ids: { type: array, minItems: 1, maxItems: 500, items: { type: string, maxLength: 36 } }
+        level: { $ref: "#/components/schemas/ReminderLevel" }
+
+    SendRemindersResult:
+      type: object
+      required: [queued, skipped]
+      properties:
+        queued: { type: integer }
+        skipped: { type: integer }
+
+    DunningExclusionKind:
+      type: string
+      enum: [payment_plan, disputed, other]
+
+    DunningExclusion:
+      type: object
+      required: [id, kind, note, active, created_at]
+      properties:
+        id: { type: string }
+        customer: { $ref: "#/components/schemas/CustomerBrief" }
+        charge_id: { type: string }
+        kind: { $ref: "#/components/schemas/DunningExclusionKind" }
+        until: { $ref: "#/components/schemas/IsoDate" }
+        note: { type: string }
+        active: { type: boolean }
+        removed_at: { type: string, format: date-time }
+        created_at: { type: string, format: date-time }
+
+    DunningExclusionPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/DunningExclusion" } }
+        next_cursor: { type: [string, "null"] }
+
+    DunningExclusionInput:
+      type: object
+      required: [kind]
+      properties:
+        customer_id: { type: string, maxLength: 36 }
+        charge_id: { type: string, maxLength: 36 }
+        kind: { $ref: "#/components/schemas/DunningExclusionKind" }
+        until: { $ref: "#/components/schemas/IsoDate" }
+        note: { type: string, maxLength: 500 }
+
+    PaymentProviderCapabilities:
+      type: object
+      required: [checkout, mandate_setup, mandate_charge, refund, status_check, methods]
+      properties:
+        checkout: { type: boolean }
+        mandate_setup: { type: boolean }
+        mandate_charge: { type: boolean }
+        refund: { type: boolean }
+        status_check: { type: boolean }
+        methods: { type: array, items: { type: string } }
+
+    PaymentProviderInfo:
+      type: object
+      required: [code, capabilities, enabled]
+      properties:
+        code: { type: string }
+        capabilities: { $ref: "#/components/schemas/PaymentProviderCapabilities" }
+        enabled: { type: boolean }
+        mode: { type: string, enum: [test, live] }
+
+    PaymentProviderList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/PaymentProviderInfo" } }
+
+    PaymentProviderSettings:
+      description: Secrets are never returned, only whether they are set
+      type: object
+      required: [provider_code, enabled, mode, has_secret_key, has_webhook_secret, sepa_enabled, methods, statement_descriptor, webhook_url, version]
+      properties:
+        provider_code: { type: string }
+        enabled: { type: boolean }
+        mode: { type: string, enum: [test, live] }
+        has_secret_key: { type: boolean }
+        has_webhook_secret: { type: boolean }
+        publishable_key_last4: { type: string }
+        sepa_enabled: { type: boolean }
+        methods: { type: array, items: { type: string } }
+        statement_descriptor: { type: string }
+        webhook_url: { type: string }
+        version: { type: integer }
+
+    PaymentProviderSettingsInput:
+      description: Secrets are write-only; omitted secrets keep their stored value
+      type: object
+      required: [enabled, mode, sepa_enabled, methods]
+      properties:
+        enabled: { type: boolean }
+        mode: { type: string, enum: [test, live] }
+        secret_key: { type: string, maxLength: 256 }
+        publishable_key: { type: string, maxLength: 256 }
+        webhook_secret: { type: string, maxLength: 256 }
+        sepa_enabled: { type: boolean }
+        methods: { type: array, maxItems: 5, items: { type: string, enum: [card, wallet, sepa_debit] } }
+        statement_descriptor: { type: string, maxLength: 22 }
+
+    ProviderTestResult:
+      type: object
+      required: [ok]
+      properties:
+        ok: { type: boolean }
+        code: { type: string }
+
+    SepaMandate:
+      type: object
+      required: [id, provider_code, status, iban_last4, created_at]
+      properties:
+        id: { type: string }
+        provider_code: { type: string }
+        status: { type: string, enum: [pending, active, revoked, failed] }
+        mandate_ref: { type: string }
+        iban_last4: { type: string }
+        activated_at: { type: string, format: date-time }
+        revoked_at: { type: string, format: date-time }
+        created_at: { type: string, format: date-time }
+
+    SepaMandateList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/SepaMandate" } }
+
+    SepaMandateCreate:
+      type: object
+      properties:
+        provider_code: { type: string, maxLength: 64 }
+        send: { type: boolean }
+
+    SepaMandateCreated:
+      type: object
+      required: [mandate, setup_url]
+      properties:
+        mandate: { $ref: "#/components/schemas/SepaMandate" }
+        setup_url: { type: string }
+
+    # ---- M5 public pay page (m5-plan §5.5) ----
+
+    PayBank:
+      type: object
+      required: [iban, holder, reference]
+      properties:
+        iban: { type: string }
+        holder: { type: string }
+        bank: { type: string }
+        bic: { type: string }
+        reference: { type: string, description: Causale (charge numbers) }
+
+    PayCharge:
+      type: object
+      required: [number, description, due_on, residual_cents]
+      properties:
+        number: { type: string }
+        description: { type: string }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        residual_cents: { $ref: "#/components/schemas/Cents" }
+
+    PayPage:
+      type: object
+      required: [marina, amount_cents, currency, status, charges, online, methods]
+      properties:
+        marina:
+          type: object
+          required: [name, default_locale, locales]
+          properties:
+            name: { type: string }
+            default_locale: { $ref: "#/components/schemas/Locale" }
+            locales: { type: array, items: { $ref: "#/components/schemas/Locale" } }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        currency: { type: string }
+        status: { $ref: "#/components/schemas/PaymentRequestStatus" }
+        charges: { type: array, items: { $ref: "#/components/schemas/PayCharge" } }
+        bank: { $ref: "#/components/schemas/PayBank" }
+        online: { type: boolean, description: An enabled provider can take the payment online }
+        methods: { type: array, items: { type: string, enum: [card, sepa_debit] } }
+        expires_at: { type: string, format: date-time }
+
+    PayCheckoutInput:
+      type: object
+      required: [method]
+      properties:
+        method: { type: string, enum: [card, sepa_debit] }
+
+    PayCheckoutResult:
+      type: object
+      required: [redirect_url]
+      properties:
+        redirect_url: { type: string }
+
+    PayStatus:
+      type: object
+      required: [status, verifying]
+      properties:
+        status: { $ref: "#/components/schemas/PaymentRequestStatus" }
+        verifying: { type: boolean, description: An online payment is in progress (pagamento in verifica) }

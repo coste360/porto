@@ -978,3 +978,29 @@ func TestConcurrency_ConvertVsReclaim(t *testing.T) {
 		}
 	})
 }
+
+// TestContract_DetailLinesCarryTheirShare (demo ORM-…-0258): the lines of a contract view carry their share of the
+// total (the single berth line of a mooring the whole price, a transit's berth its stay), never 0 next to a non-zero
+// total; Σ line amounts = total.
+func TestContract_DetailLinesCarryTheirShare(t *testing.T) {
+	testdb.Run(t, func(t *testing.T, db *store.DB) {
+		e := newTenv(t, db)
+		ctx := fixture.Ctx()
+		for _, c := range []*Detail{
+			e.mooring(t, e.Owner, e.berths[0], "2027-06-10", false),
+			e.transit(t, e.Owner, e.berths[1], "2027-06-10", "2027-06-13", true),
+		} {
+			got, err := e.svc.GetContract(ctx, e.Owner, e.MarinaID, c.Row.ID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var sum int64
+			for _, l := range got.Lines {
+				sum += l.AmountCents
+			}
+			if got.Row.TotalCents == 0 || len(got.Lines) == 0 || got.Lines[0].AmountCents == 0 || sum != got.Row.TotalCents {
+				t.Fatalf("%s: lines %+v, total %d", got.Code, got.Lines, got.Row.TotalCents)
+			}
+		}
+	})
+}

@@ -66,6 +66,32 @@ import itSignature from './locales/it/signature.json';
 import itCommunications from './locales/it/communications.json';
 import itDocsEnums from './locales/it/docsEnums.json';
 import itCustomerLinks from './locales/it/customerLinks.json';
+import enBillingEnums from './locales/en/billingEnums.json';
+import enCharges from './locales/en/charges.json';
+import enPayments from './locales/en/payments.json';
+import enCash from './locales/en/cash.json';
+import enFiscal from './locales/en/fiscal.json';
+import enReceivables from './locales/en/receivables.json';
+import enReminders from './locales/en/reminders.json';
+import enExports from './locales/en/exports.json';
+import enBillingSettings from './locales/en/billingSettings.json';
+import enPaymentProviders from './locales/en/paymentProviders.json';
+import enCustomerBilling from './locales/en/customerBilling.json';
+import enWorklist from './locales/en/worklist.json';
+import enPayPublic from './locales/en/payPublic.json';
+import itBillingEnums from './locales/it/billingEnums.json';
+import itCharges from './locales/it/charges.json';
+import itPayments from './locales/it/payments.json';
+import itCash from './locales/it/cash.json';
+import itFiscal from './locales/it/fiscal.json';
+import itReceivables from './locales/it/receivables.json';
+import itReminders from './locales/it/reminders.json';
+import itExports from './locales/it/exports.json';
+import itBillingSettings from './locales/it/billingSettings.json';
+import itPaymentProviders from './locales/it/paymentProviders.json';
+import itCustomerBilling from './locales/it/customerBilling.json';
+import itWorklist from './locales/it/worklist.json';
+import itPayPublic from './locales/it/payPublic.json';
 
 export const SUPPORTED_LOCALES = ['it', 'en'] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -107,6 +133,20 @@ export const NAMESPACES = [
   'communications',
   'docsEnums',
   'customerLinks',
+  // M5 (m5-plan §9.3)
+  'billingEnums',
+  'charges',
+  'payments',
+  'cash',
+  'fiscal',
+  'receivables',
+  'reminders',
+  'exports',
+  'billingSettings',
+  'paymentProviders',
+  'customerBilling',
+  'worklist',
+  'payPublic',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -146,6 +186,19 @@ export const resources = {
     communications: itCommunications,
     docsEnums: itDocsEnums,
     customerLinks: itCustomerLinks,
+    billingEnums: itBillingEnums,
+    charges: itCharges,
+    payments: itPayments,
+    cash: itCash,
+    fiscal: itFiscal,
+    receivables: itReceivables,
+    reminders: itReminders,
+    exports: itExports,
+    billingSettings: itBillingSettings,
+    paymentProviders: itPaymentProviders,
+    customerBilling: itCustomerBilling,
+    worklist: itWorklist,
+    payPublic: itPayPublic,
   },
   en: {
     common: enCommon,
@@ -182,5 +235,18 @@ export const resources = {
     communications: enCommunications,
     docsEnums: enDocsEnums,
     customerLinks: enCustomerLinks,
+    billingEnums: enBillingEnums,
+    charges: enCharges,
+    payments: enPayments,
+    cash: enCash,
+    fiscal: enFiscal,
+    receivables: enReceivables,
+    reminders: enReminders,
+    exports: enExports,
+    billingSettings: enBillingSettings,
+    paymentProviders: enPaymentProviders,
+    customerBilling: enCustomerBilling,
+    worklist: enWorklist,
+    payPublic: enPayPublic,
   },
 } as const;

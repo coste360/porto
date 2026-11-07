@@ -1,0 +1,42 @@
+{
+  "title": "Reminders",
+  "description": "Daily runs by level, final notices awaiting approval and exclusions.",
+  "tabs": {
+    "runs": "Runs",
+    "exclusions": "Exclusions"
+  },
+  "runs": {
+    "run": "Run now",
+    "started": "Run started",
+    "runOn": "Day",
+    "status": "Status",
+    "counts": "Outcomes",
+    "startedAt": "Started",
+    "show": "Details",
+    "empty": "No runs."
+  },
+  "items": {
+    "title": "Reminders of the run",
+    "approvalTitle": "Final notices to approve",
+    "approvalDescription": "Final notices are sent only after an operator approves them.",
+    "approve": "Approve and send",
+    "dismiss": "Dismiss",
+    "empty": "No reminders."
+  },
+  "fields": {
+    "charge": "Charge",
+    "customer": "Customer",
+    "level": "Level",
+    "residual": "Outstanding",
+    "status": "Status"
+  },
+  "exclusions": {
+    "new": "New exclusion",
+    "kind": "Reason",
+    "until": "Until",
+    "note": "Note",
+    "add": "Exclude",
+    "remove": "Remove",
+    "empty": "No active exclusions."
+  }
+}

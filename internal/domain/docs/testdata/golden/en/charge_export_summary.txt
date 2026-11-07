@@ -1,0 +1,22 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Charge export summary E2027-0012
+Export to invoice of the period 01/03/2027 – 31/03/2027.
+Charges: 2 · lines: 3 · net €987.83 · VAT €217.33 · total €1,205.16
+Charges are Porto's internal references: invoices are issued by the invoicing software.
+VAT summary
+Rate | Nature | Net | VAT | Total
+22% | €987.83 | €217.33 | €1,205.16
+By origin
+Origin | Charges | Total
+installment | 1 | €1,131.66
+counter_sale | 1 | €73.50
+By revenue class
+Class | Lines | Total
+mooring | 1 | €1,131.66
+services | 1 | €73.50
+Charges
+Number | Date | Customer | Origin | Net | VAT | Total | Corrects
+A2027-000110 | 15/03/2027 | Mario Rossi | installment | €927.59 | €204.07 | €1,131.66
+A2027-000111 | 16/03/2027 | Anna Bianchi | counter_sale | €60.24 | €13.26 | €73.50
+Porto Demo S.r.l. · VAT 01234567890 · Page 1 of 1

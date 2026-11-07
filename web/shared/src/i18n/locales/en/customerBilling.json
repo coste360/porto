@@ -1,0 +1,98 @@
+{
+  "tabs": {
+    "dashboard": "Dashboard",
+    "statement": "Statement"
+  },
+  "dashboard": {
+    "balance": "Balance due",
+    "credit": "Credit",
+    "overdue": "Overdue",
+    "collect": "Record payment",
+    "applyCredit": "Apply credit",
+    "applied": "Credit applied: {{amount}}",
+    "charges": "Go to charges",
+    "contracts": "Contracts",
+    "code": "Code",
+    "period": "Period",
+    "status": "Status",
+    "none": "None.",
+    "vessels": "Vessels",
+    "berthsToday": "Berths occupied today: {{count}}",
+    "futureInstallments": "Future instalments",
+    "recentPayments": "Recent payments",
+    "documents": "Expiring documents",
+    "document": "Document",
+    "expires": "Expires",
+    "communications": "Communications",
+    "message": "Message",
+    "notes": "Notes"
+  },
+  "sepa": {
+    "title": "SEPA mandates",
+    "description": "Direct debit authorisations for instalments.",
+    "request": "Request mandate",
+    "reference": "Reference",
+    "iban": "IBAN",
+    "revoke": "Revoke",
+    "empty": "No mandates."
+  },
+  "statement": {
+    "from": "From",
+    "to": "To",
+    "pdf": "Statement PDF",
+    "csv": "Export CSV",
+    "opening": "Opening balance",
+    "closing": "Closing balance",
+    "date": "Date",
+    "kind": "Entry",
+    "number": "Number",
+    "dueOn": "Due date",
+    "debit": "Debit",
+    "credit": "Credit",
+    "balance": "Balance",
+    "empty": "No entries in the period."
+  },
+  "opening": {
+    "title": "Opening balances",
+    "description": "Import customers' balances from the previous software from CSV or Excel: they are born invoiced and never re-exported.",
+    "file": "File",
+    "upload": "CSV or Excel file",
+    "delimiter": "Delimiter",
+    "delimiters": {
+      "semicolon": "Semicolon",
+      "comma": "Comma",
+      "tab": "Tab"
+    },
+    "hasHeader": "The first row is the header",
+    "mapping": "Columns",
+    "mappingHint": "Column number starting from 0. Amounts in euro with a decimal comma; negative = credit.",
+    "match": "Match the customer by",
+    "matches": {
+      "fiscal_code": "Fiscal code",
+      "vat_number": "VAT number",
+      "customer_code": "Customer code"
+    },
+    "columns": {
+      "customer_column": "Customer",
+      "amount_column": "Amount",
+      "due_on_column": "Due date",
+      "description_column": "Description",
+      "reference_column": "Reference"
+    },
+    "dryRun": "Dry run",
+    "apply": "Import",
+    "applied": "Balances imported: {{count}}",
+    "result": "Result",
+    "summary": "Valid rows: {{valid}}, issues: {{issues}}",
+    "row": "Row",
+    "issue": "Issue",
+    "noIssues": "No issues.",
+    "history": "Imports",
+    "createdAt": "Date",
+    "status": "Status",
+    "charges": "Charges",
+    "total": "Total",
+    "undo": "Undo import",
+    "empty": "No imports."
+  }
+}

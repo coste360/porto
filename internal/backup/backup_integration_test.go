@@ -71,6 +71,7 @@ func seeded(t *testing.T, db *store.DB) {
 	seedPricingRows(t, db, res.MarinaID, me.ID)
 	seedOccupancyRows(t, db, res.MarinaID, me.ID)
 	seedM4Rows(t, db, res.MarinaID, me.ID)
+	seedM5Rows(t, db, res.MarinaID, me.ID)
 }
 
 // seedOccupancyRows adds one row of every M3 table (m3-plan §5.3): an inquiry, a quote with an option and a
@@ -315,7 +316,8 @@ func roundTrip(t *testing.T, src, dst *store.DB) {
 		m1.Rows("price_lists") < 2 || m1.Rows("price_rules") < 2 || m1.Rows("price_list_items") < 4 ||
 		m1.Rows("allocations") < 3 || m1.Rows("cell_occupancies") < 2 || m1.Rows("vessel_presence") < 1 ||
 		m1.Rows("installments") < 2 || m1.Rows("common_charge_allocations") < 1 || m1.Rows("millesimal_entries") < 1 ||
-		m1.Rows("management_fee_lines") < 1 || m1.Rows("generated_documents") < 2 || m1.Rows("signature_signers") < 1 {
+		m1.Rows("management_fee_lines") < 1 || m1.Rows("generated_documents") < 2 || m1.Rows("signature_signers") < 1 ||
+		m1.Rows("charges") < 3 || m1.Rows("charge_lines") < 3 || m1.Rows("payment_matches") < 3 || m1.Rows("fiscal_documents") < 1 {
 		t.Fatalf("unexpected counts: %+v", m1.Tables)
 	}
 	if len(m1.Files) != 1 || m1.Files[0].Path != "files/marina-1/file-1.bin" {

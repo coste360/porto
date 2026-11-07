@@ -83,6 +83,34 @@
       "signers": "Firmatari",
       "user_agent_sha256": "Impronta del browser"
     },
+    "export": {
+      "by_origin": "Totali per origine",
+      "by_revenue_class": "Totali per categoria di ricavo",
+      "charge_corrects": "Rettifica di",
+      "charge_count": "Numero addebiti",
+      "charge_customer": "Cliente",
+      "charge_issued_on": "Data addebito",
+      "charge_net": "Imponibile",
+      "charge_number": "Numero addebito",
+      "charge_origin": "Origine",
+      "charge_total": "Totale",
+      "charge_vat": "IVA",
+      "charges": "Addebiti",
+      "created_at": "Creata il",
+      "filters": "Filtri",
+      "kind": "Tipo",
+      "line_count": "Numero righe",
+      "net": "Imponibile totale",
+      "number": "Numero esportazione",
+      "period_from": "Periodo dal",
+      "period_to": "Periodo al",
+      "total": "Totale",
+      "total_count": "Numero",
+      "total_gross": "Totale",
+      "total_key": "Voce",
+      "vat": "Riepilogo IVA",
+      "vat_total": "IVA totale"
+    },
     "fee": {
       "amount": "Importo",
       "base": "Base",
@@ -241,6 +269,20 @@
       "price": "Prezzo",
       "seq": "Numero"
     },
+    "receipt": {
+      "amount": "Importo",
+      "date": "Data",
+      "fiscal_number": "Numero documento commerciale",
+      "footer": "Note a piè di pagina",
+      "line_description": "Descrizione",
+      "line_gross": "Importo",
+      "line_qty": "Quantità",
+      "line_vat_rate": "Aliquota IVA",
+      "lines": "Righe",
+      "method": "Metodo di pagamento",
+      "number": "Numero",
+      "vat": "Riepilogo IVA"
+    },
     "renewal": {
       "berths": "Posti",
       "contract": "Contratto",
@@ -263,12 +305,35 @@
       "title_number": "Numero del titolo",
       "to_on": "Al"
     },
+    "statement": {
+      "closing": "Saldo finale",
+      "credit": "Credito disponibile",
+      "from": "Dal",
+      "opening": "Saldo iniziale",
+      "row_balance": "Saldo progressivo",
+      "row_credit": "Avere",
+      "row_date": "Data",
+      "row_debit": "Dare",
+      "row_description": "Descrizione",
+      "row_due_on": "Scadenza",
+      "row_kind": "Tipo",
+      "row_number": "Numero",
+      "rows": "Movimenti",
+      "to": "Al"
+    },
     "transfer": {
       "declared_price": "Prezzo dichiarato",
       "effective_on": "Decorrenza",
       "from": "Dal",
       "takeover_fee": "Diritto di subentro",
       "to": "Al"
+    },
+    "vat": {
+      "gross": "Totale",
+      "nature": "Natura",
+      "net": "Imponibile",
+      "rate": "Aliquota",
+      "vat": "IVA"
     },
     "vessel": {
       "beam": "Larghezza",
@@ -306,6 +371,7 @@
     "map_print": "Stampa della mappa",
     "receipt": "Ricevuta",
     "statement_of_account": "Estratto conto",
+    "charge_export_summary": "Riepilogo esportazione addebiti",
     "yard_work_order": "Ordine di lavoro cantiere",
     "yard_quote": "Preventivo cantiere",
     "rental_contract": "Contratto di noleggio",

@@ -117,6 +117,39 @@ func BackupTables() []string {
 		"signature_settings",
 		"import_runs",
 		"import_run_items",
+		// M5 charges, cash and payments (00010_charges, 00011_cash, 00012_payments). charges.first_export_id,
+		// export, intent, request, release and mandate references are plain columns; charges.corrects_charge_id always
+		// points to an older charge (UUIDv7 order), so it needs no deferral. charges are restored as to_invoice and open and get their invoicing and payment
+		// status at the end (internal/backup, lateColumns), because the triggers freeze the lines of exported
+		// charges and every column of cancelled ones (INV-51).
+		"billing_settings",
+		"charge_origin_items",
+		"billing_sequences",
+		"charges",
+		"charge_lines",
+		"charge_offsets",
+		"charge_exports",
+		"charge_export_items",
+		"invoice_reconciliations",
+		"charge_imports",
+		"cash_registers",
+		"cash_sessions",
+		"cash_movements",
+		"fiscal_sequences",
+		"payments",
+		"payment_matches",
+		"refunds",
+		"fiscal_documents",
+		"payment_provider_settings",
+		"payment_intents",
+		"payment_intent_charges",
+		"sepa_mandates",
+		"payment_requests",
+		"payment_request_charges",
+		"reminder_runs",
+		"reminder_items",
+		"dunning_exclusions",
+		"work_item_states",
 	}
 }
 
@@ -124,5 +157,9 @@ func BackupTables() []string {
 func BackupExcludedTables() []string {
 	// move_undo_log (M3): undo entries live 24 h and refer to the moment of the move; restoring them is useless.
 	// signature_otps (M4): 10-minute codes, useless after a restore (signers request a new one).
-	return []string{"sessions", "idempotency_keys", "goose_db_version", "move_undo_log", "signature_otps"}
+	// payment_provider_events (M5): dedupe cache of provider events; after a restore provider retries are harmless
+	// because payments and refunds are unique by provider reference.
+	return []string{
+		"sessions", "idempotency_keys", "goose_db_version", "move_undo_log", "signature_otps", "payment_provider_events",
+	}
 }

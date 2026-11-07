@@ -1,0 +1,8 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+to pay your instalments by SEPA Direct Debit, please authorise the mandate at the link below.
+{{with v . "link"}}
+Authorise the mandate: {{.}}
+{{end}}
+--
+{{v . "marina_name"}}

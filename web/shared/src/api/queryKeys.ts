@@ -211,6 +211,71 @@ export const queryKeys = {
 
   // M4 customer magic-link pages (booking SPA): never under a marina id, the token is the only credential.
   publicLink: (slug: string, token: string) => ['public', slug, 'link', token] as const,
+
+  // M5 billing: everything under ['marina', id, 'billing'] (invalidated by billing.changed, m5-plan §9.2).
+  billing: (marinaId: string) => ['marina', marinaId, 'billing'] as const,
+  charges: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'billing', 'charges', filters]),
+  charge: (marinaId: string, chargeId?: string) =>
+    trim(['marina', marinaId, 'billing', 'charge', chargeId]),
+  payments: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'billing', 'payments', filters]),
+  payment: (marinaId: string, paymentId?: string) =>
+    trim(['marina', marinaId, 'billing', 'payment', paymentId]),
+  refunds: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'billing', 'refunds', filters]),
+  credits: (marinaId: string) => ['marina', marinaId, 'billing', 'credits'] as const,
+  receivables: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'billing', 'receivables', filters]),
+  ageing: (marinaId: string) => ['marina', marinaId, 'billing', 'ageing'] as const,
+  cashRegisters: (marinaId: string) => ['marina', marinaId, 'billing', 'cash-registers'] as const,
+  cashSessions: (marinaId: string, registerId?: string) =>
+    trim(['marina', marinaId, 'billing', 'cash-sessions', registerId]),
+  cashSession: (marinaId: string, sessionId?: string) =>
+    trim(['marina', marinaId, 'billing', 'cash-session', sessionId]),
+  fiscalTotals: (marinaId: string, range?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'billing', 'fiscal-totals', range]),
+  fiscalDocs: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'billing', 'fiscal-docs', filters]),
+  chargeExports: (marinaId: string) => ['marina', marinaId, 'billing', 'exports'] as const,
+  chargeExport: (marinaId: string, exportId?: string) =>
+    trim(['marina', marinaId, 'billing', 'export', exportId]),
+  reconciliations: (marinaId: string) =>
+    ['marina', marinaId, 'billing', 'reconciliations'] as const,
+  chargeImports: (marinaId: string) => ['marina', marinaId, 'billing', 'charge-imports'] as const,
+  paymentRequests: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'billing', 'payment-requests', filters]),
+  paymentRequest: (marinaId: string, requestId?: string) =>
+    trim(['marina', marinaId, 'billing', 'payment-request', requestId]),
+  reminderRuns: (marinaId: string) => ['marina', marinaId, 'billing', 'reminder-runs'] as const,
+  reminderRun: (marinaId: string, runId?: string) =>
+    trim(['marina', marinaId, 'billing', 'reminder-run', runId]),
+  exclusions: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'billing', 'exclusions', filters]),
+  paymentProviders: (marinaId: string) =>
+    ['marina', marinaId, 'billing', 'payment-providers'] as const,
+  providerSettings: (marinaId: string, code?: string) =>
+    trim(['marina', marinaId, 'billing', 'provider-settings', code]),
+  billingSettings: (marinaId: string) =>
+    ['marina', marinaId, 'billing', 'billing-settings'] as const,
+  customerDashboard: (marinaId: string, customerId?: string) =>
+    trim(['marina', marinaId, 'billing', 'customer-dashboard', customerId]),
+  customerStatement: (
+    marinaId: string,
+    customerId?: string,
+    range?: Record<string, string | undefined>,
+  ) => trim(['marina', marinaId, 'billing', 'customer-statement', customerId, range]),
+  customerCredits: (marinaId: string, customerId?: string) =>
+    trim(['marina', marinaId, 'billing', 'customer-credits', customerId]),
+  sepaMandates: (marinaId: string, customerId?: string) =>
+    trim(['marina', marinaId, 'billing', 'sepa-mandates', customerId]),
+  mapPayments: (marinaId: string, mapId?: string, date?: string) =>
+    trim(['marina', marinaId, 'billing', 'map-payments', mapId, date]),
+  worklist: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'billing', 'worklist', filters]),
+
+  // M5 public pay page (booking SPA): never under a marina id, the token is the only credential.
+  publicPay: (slug: string, token: string) => ['public', slug, 'pay', token] as const,
 };
 
 /** Drops the trailing undefined segments, so a key with fewer arguments is a prefix of the full one. */
@@ -311,6 +376,16 @@ export function keysForTopic(topic: string, marinaId: string): QueryKey[] {
     case 'documents.changed':
       // templates, generated documents, signatures, communications, imports and customer messages (M4).
       return [queryKeys.docsArea(marinaId)];
+    case 'billing.changed':
+      // Charges, payments, cash, fiscal, exports, requests, reminders, providers, settings, dashboards, the
+      // payment lens and the worklist live under billing (M5); installment.charged also refreshes the instalment
+      // lists of contracts and holders (m5-plan §7.5).
+      return [
+        queryKeys.billing(marinaId),
+        queryKeys.installments(marinaId),
+        queryKeys.contractInstallments(marinaId),
+        queryKeys.holderInstallments(marinaId),
+      ];
     default:
       return [];
   }

@@ -1,0 +1,2 @@
+{"id": "evt_t_mandate_inactive", "object": "event", "type": "mandate.updated", "created": 1814400000,
+ "data": {"object": {"id": "mandate_test_1", "object": "mandate", "status": "inactive", "payment_method": "pm_test_1"}}}

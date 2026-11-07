@@ -111,3 +111,41 @@ describe('right wizard holders', () => {
     expect(within(dialog).getByText('Le quote devono sommare 1000 ‰.')).toBeInTheDocument();
   });
 });
+
+describe('rights list', () => {
+  it('shows the berth code, not the berth id, in the berth column', async () => {
+    const BERTH_ID = '0193a4c2-1111-7000-8000-000000000001';
+    renderApp(`/m/${MARINA_ID}/rights`, [
+      ...base,
+      {
+        path: `${API}/rights`,
+        body: {
+          items: [
+            {
+              id: 'r1',
+              berth: { resource_type: 'berth', resource_id: BERTH_ID },
+              berth_code: 'B12',
+              kind: 'long_term_use',
+              from_on: '2026-01-01',
+              to_on: '2040-12-31',
+              title: {},
+              status: 'active',
+              holders: [],
+              vessels: [],
+              allocations: [],
+              created_at: '2026-01-01T00:00:00Z',
+              version: 1,
+            },
+          ],
+          next_cursor: null,
+        },
+      },
+      { path: `${API}/maps`, body: { items: [] } },
+      { path: `${API}/customers`, body: { items: [], next_cursor: null } },
+      { path: `${API}/vessels`, body: { items: [], next_cursor: null } },
+    ]);
+    const row = await screen.findByTestId('right-row');
+    expect(within(row).getByRole('link', { name: 'B12' })).toBeInTheDocument();
+    expect(row).not.toHaveTextContent(BERTH_ID);
+  });
+});

@@ -28,7 +28,7 @@ func TestTemplateHandlers_Scenario(t *testing.T) {
 		t.Fatalf("template %+v", tp)
 	}
 	c.expect(t, 409, "code_taken", "POST", M+"/templates", body, nil)
-	c.expect(t, 400, "validation_failed", "POST", M+"/templates", map[string]any{"kind": "receipt", "code": "r", "name": "R"}, nil)
+	c.expect(t, 400, "validation_failed", "POST", M+"/templates", map[string]any{"kind": "yard_work_order", "code": "r", "name": "R"}, nil)
 	T := M + "/templates/" + tp.Id
 	c.expect(t, 200, "", "GET", T, nil, nil)
 	ps.other.expect(t, 404, "not_found", "GET", ps.otherM+"/templates/"+tp.Id, nil, nil)

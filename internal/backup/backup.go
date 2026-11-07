@@ -63,6 +63,8 @@ var deferredColumns = map[string][]string{
 // set at the end.
 // M4: active millesimal tables and issued fee and common charge runs freeze their entries, lines and allocations
 // (INV-41, INV-44), so they are restored as drafts and get their status at the end, like price lists.
+// M5: exported charges freeze their lines and cancelled charges every column (INV-51), so charges are restored as
+// to_invoice and open and get their statuses at the end.
 var lateColumns = map[string]map[string]any{
 	"price_lists":         {"status": "draft"},
 	"inquiries":           {"quote_id": nil, "contract_id": nil},
@@ -70,6 +72,7 @@ var lateColumns = map[string]map[string]any{
 	"millesimal_tables":   {"status": "draft"},
 	"management_fee_runs": {"status": "draft"},
 	"common_charge_runs":  {"status": "draft"},
+	"charges":             {"invoicing_status": "to_invoice", "payment_status": "open"},
 }
 
 // lateUpdate is a column value set after the whole archive is loaded.

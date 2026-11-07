@@ -145,13 +145,15 @@ linters:
               desc: domain errors are mapped in internal/http (errmap.go), not here
             - pkg: github.com/coste360/porto/internal/store
               desc: problem must not depend on the store
-        # Domain services: no HTTP (except the webhook egress client and the SMTP transport), no SQL drivers.
+        # Domain services: no HTTP (except the webhook egress client, the SMTP transport and the payment drivers,
+        # which implement ext.PaymentProvider over the egress client, M5), no SQL drivers.
         domain:
           list-mode: lax
           files:
             - "**/internal/domain/**"
             - "!**/internal/domain/event/**"
             - "!**/internal/domain/notify/**"
+            - "!**/internal/domain/paydriver/**"
           deny:
             - pkg: net/http
               desc: domain services are transport independent
@@ -168,6 +170,7 @@ linters:
           files:
             - "**/internal/domain/event/**"
             - "**/internal/domain/notify/**"
+            - "**/internal/domain/paydriver/**"
           deny:
             - pkg: github.com/coste360/porto/internal/http
               desc: domain must not depend on the HTTP layer
@@ -175,6 +178,18 @@ linters:
               desc: SQL drivers belong to internal/store
             - pkg: github.com/uptrace/bun/driver
               desc: SQL drivers belong to internal/store
+        # Payment drivers (M5, m5-plan §2): pkg/ext and the egress client only, never the store. The registry
+        # (internal/domain/paydriver itself) reads the marina settings.
+        paydriver:
+          list-mode: lax
+          files:
+            - "**/internal/domain/paydriver/manual/**"
+            - "**/internal/domain/paydriver/stripe/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/store
+              desc: payment drivers talk to providers, the store belongs to the domain services
+            - pkg: github.com/uptrace/bun
+              desc: payment drivers never touch the database
         # HTTP layer: talks to domain services, never to the store.
         http:
           list-mode: lax
@@ -222,6 +237,11 @@ linters:
             - "**/internal/domain/docs/tmpl/**"
             - "**/internal/domain/docs/markdown/**"
             - "**/internal/domain/docs/layout/**"
+            # M5 (m5-plan §0.7)
+            - "**/internal/domain/chargeplan/**"
+            - "**/internal/domain/cash/summary/**"
+            - "**/internal/domain/collect/levels/**"
+            - "**/internal/xlsx/**"
           deny:
             - pkg: github.com/coste360/porto/internal/store
               desc: pure engines must not touch the database (INV-21)
@@ -253,6 +273,10 @@ linters:
             - "**/internal/domain/docs/tmpl/**"
             - "**/internal/domain/docs/markdown/**"
             - "**/internal/domain/docs/layout/**"
+            - "**/internal/domain/chargeplan/**"
+            - "**/internal/domain/cash/summary/**"
+            - "**/internal/domain/collect/levels/**"
+            - "**/internal/xlsx/**"
             # Seeded generators of the layout and fit parity vectors (test data, not the engines).
             - "!**/internal/domain/layout/internal/vectors/**"
             - "!**/internal/domain/fit/internal/genvectors/**"

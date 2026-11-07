@@ -257,6 +257,23 @@ func TestTypes_Catalogue(t *testing.T) {
 			SignatureFailed:        {SignatureFailed, TopicDocuments, false},
 			TemplateChanged:        {TemplateChanged, TopicDocuments, false},
 			CommunicationChanged:   {CommunicationChanged, TopicDocuments, false},
+			// M5 (m5-plan §7.5): every type on billing.changed; internal ones are not public.
+			ChargeCreated:         {ChargeCreated, TopicBilling, true},
+			ChargePaid:            {ChargePaid, TopicBilling, true},
+			ChargeCancelled:       {ChargeCancelled, TopicBilling, true},
+			ChargeExported:        {ChargeExported, TopicBilling, true},
+			ChargeInvoiced:        {ChargeInvoiced, TopicBilling, true},
+			ChargeChanged:         {ChargeChanged, TopicBilling, false},
+			InstallmentCharged:    {InstallmentCharged, TopicBilling, true},
+			PaymentSucceeded:      {PaymentSucceeded, TopicBilling, true},
+			PaymentFailed:         {PaymentFailed, TopicBilling, true},
+			PaymentRefunded:       {PaymentRefunded, TopicBilling, true},
+			PaymentChanged:        {PaymentChanged, TopicBilling, false},
+			CashChanged:           {CashChanged, TopicBilling, false},
+			FiscalDocumentChanged: {FiscalDocumentChanged, TopicBilling, false},
+			PaymentRequestChanged: {PaymentRequestChanged, TopicBilling, false},
+			ReminderChanged:       {ReminderChanged, TopicBilling, false},
+			BillingChanged:        {BillingChanged, TopicBilling, false},
 		}
 		if want, ok := m1[ti.Type]; ok {
 			if ti != want {

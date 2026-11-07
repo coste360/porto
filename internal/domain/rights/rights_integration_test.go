@@ -34,6 +34,13 @@ func TestRight_OwnerOccupancy(t *testing.T) {
 		if len(r.Allocations) != 1 || !r.Allocations[0].FirstNight.Equal(d(today)) || r.Allocations[0].Kind != store.AllocKindOwner {
 			t.Fatalf("allocations %+v", r.Allocations)
 		}
+		// the views carry the berth code (the list shows it, not the berth id)
+		if bs, err := store.RightsBerthsByIDs(context.Background(), db.DB, e.scope(t), []string{a1}); err != nil || r.BerthCode == "" || r.BerthCode != bs[a1].Code {
+			t.Fatalf("berth code %q, berths %+v %v", r.BerthCode, bs, err)
+		}
+		if page, err := e.Rights.ListRights(ctx, e.Owner, e.MarinaID, RightFilter{}, "", 50); err != nil || len(page.Items) != 1 || page.Items[0].BerthCode != r.BerthCode {
+			t.Fatalf("list %+v %v", page.Items, err)
+		}
 		// a transit on the right's berth is refused by the rows (INV-01)
 		if _, err := e.Contracts.CreateTransit(ctx, e.Owner, e.MarinaID, contract.TransitInput{
 			VesselID: e.Vessel, CustomerID: e.Customer, Arrival: d("2027-07-01"), Departure: d("2027-07-05"),

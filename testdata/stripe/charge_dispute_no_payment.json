@@ -1,0 +1,2 @@
+{"id": "evt_t_dispute_np", "object": "event", "type": "charge.dispute.created", "created": 1814500000,
+ "data": {"object": {"id": "dp_test_2", "object": "dispute", "amount": 100, "charge": "ch_test_2"}}}

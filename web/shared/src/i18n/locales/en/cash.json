@@ -1,0 +1,79 @@
+{
+  "title": "Cash desk",
+  "description": "Cash session, counter sale, cash in and out, closing count and Z report.",
+  "register": "Register",
+  "tabs": {
+    "session": "Session",
+    "history": "History"
+  },
+  "open": {
+    "title": "Open the register",
+    "description": "Enter the opening float.",
+    "float": "Float",
+    "submit": "Open register"
+  },
+  "session": {
+    "openedAt": "Opened on {{at}}",
+    "totals": "Session totals",
+    "float": "Float",
+    "payments": "Payments",
+    "refunds": "Refunds",
+    "movements": "Cash in and out",
+    "byMethod": "Expected by method",
+    "noPayments": "No payments.",
+    "movementsTitle": "Movements",
+    "noMovements": "No movements."
+  },
+  "fields": {
+    "method": "Method",
+    "expected": "Expected",
+    "counted": "Counted",
+    "difference": "Difference",
+    "kind": "Type",
+    "amount": "Amount",
+    "reason": "Reason",
+    "businessDate": "Business day",
+    "closedAt": "Closed on",
+    "status": "Status"
+  },
+  "sale": {
+    "open": "Counter sale",
+    "title": "Counter sale",
+    "description": "Items, optional customer, payment method and receipt.",
+    "customer": "Customer (optional)",
+    "receipt": "Receipt",
+    "receipts": {
+      "print": "Print",
+      "email": "Email to the customer",
+      "none": "None"
+    },
+    "format": "Format",
+    "fiscalDocument": "Issue a commercial document",
+    "walkInHint": "Without a customer the commercial document is required.",
+    "notFiscal": "The receipt printed by Porto is not valid for tax purposes.",
+    "submit": "Collect",
+    "done": "Sale recorded: payment {{number}}"
+  },
+  "movement": {
+    "open": "Cash in or out",
+    "title": "Cash movement",
+    "description": "Cash in and out are part of the closing count."
+  },
+  "close": {
+    "open": "Close register",
+    "title": "Closing the register",
+    "description": "Count the takings per method: the difference from the expected amount is recorded.",
+    "countedOf": "Counted {{method}}",
+    "total": "Total difference:",
+    "notes": "Notes",
+    "submit": "Close register",
+    "done": "Register closed. Difference:"
+  },
+  "z": {
+    "html": "Z report (print)",
+    "pdf": "Z report (PDF)"
+  },
+  "history": {
+    "empty": "No closed sessions."
+  }
+}

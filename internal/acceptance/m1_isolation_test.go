@@ -97,6 +97,9 @@ func TestAcceptance_CrossMarinaResourceIds(t *testing.T) {
 			"POST /api/admin/v1/marinas/{marinaId}/dynamic-areas/{areaId}/layout": map[string]any{
 				"date": "2027-06-01", "base": []any{}, "placements": []any{},
 			},
+			"POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits": map[string]any{
+				"amount_cents": 1000, "reason": "cortesia", "source": "goodwill",
+			},
 			"POST /api/admin/v1/marinas/{marinaId}/price-lists/{priceListId}/renewal": map[string]any{
 				"dry_run": true, "code": "ISO-B", "name": map[string]string{"it": "Rinnovo"}, "shift_years": 1, "amount_rounding": "none",
 			},

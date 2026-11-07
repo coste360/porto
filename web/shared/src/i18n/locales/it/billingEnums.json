@@ -1,0 +1,232 @@
+{
+  "originType": {
+    "installment": "Rata di contratto",
+    "holder_installment": "Rata del titolare",
+    "transit": "Transito",
+    "contract_trueup": "Conguaglio contratto",
+    "counter_sale": "Vendita al banco",
+    "termination": "Recesso",
+    "deposit_retention": "Trattenuta cauzione",
+    "manual": "Manuale",
+    "adjustment": "Rettifica",
+    "opening_balance": "Saldo di apertura",
+    "utility": "Consumi",
+    "work_order": "Commessa cantiere",
+    "rental": "Noleggio"
+  },
+  "paymentStatus": {
+    "open": "Da incassare",
+    "partially_paid": "Pagato in parte",
+    "paid": "Pagato",
+    "cancelled": "Annullato"
+  },
+  "invoicingStatus": {
+    "to_invoice": "Da fatturare",
+    "exported": "Esportato",
+    "invoiced": "Fatturato"
+  },
+  "fiscalMode": {
+    "invoice": "Fattura",
+    "receipt": "Documento commerciale"
+  },
+  "correctionKind": {
+    "delta": "Rettifica",
+    "replace": "Storno e sostituzione"
+  },
+  "paymentKind": {
+    "payment": "Pagamento",
+    "deposit": "Cauzione",
+    "credit": "Credito"
+  },
+  "paymentMethod": {
+    "cash": "Contanti",
+    "card_pos": "Carta (POS)",
+    "bank_transfer": "Bonifico",
+    "cheque": "Assegno",
+    "other": "Altro",
+    "card_online": "Carta online",
+    "wallet": "Wallet",
+    "sepa_debit": "Addebito SEPA",
+    "credit_note": "Credito"
+  },
+  "paymentSource": {
+    "manual": "Manuale",
+    "provider": "Pagamento online",
+    "backfill": "Storico",
+    "adjustment": "Rettifica",
+    "goodwill": "Credito commerciale",
+    "release": "Credito per rilascio",
+    "mandate": "Compenso mandato",
+    "opening_balance": "Saldo di apertura"
+  },
+  "refundKind": {
+    "refund": "Rimborso",
+    "payout": "Liquidazione"
+  },
+  "refundStatus": {
+    "pending": "In corso",
+    "succeeded": "Eseguito",
+    "failed": "Non riuscito"
+  },
+  "exportKind": {
+    "export": "Esportazione",
+    "reexport": "Riesportazione"
+  },
+  "deliveryStatus": {
+    "none": "File",
+    "pending": "In invio",
+    "sent": "Inviato",
+    "failed": "Non riuscito"
+  },
+  "reconciliationOutcome": {
+    "ok": "Abbinato",
+    "unknown_charge": "Addebito sconosciuto",
+    "not_exported": "Non esportato",
+    "cancelled": "Annullato",
+    "invalid_date": "Data non valida",
+    "duplicate_row": "Riga duplicata"
+  },
+  "importStatus": {
+    "dry_run": "Prova",
+    "applied": "Importato",
+    "undone": "Annullato",
+    "failed": "Non riuscito"
+  },
+  "importIssue": {
+    "unknown_customer": "Cliente non trovato",
+    "ambiguous_customer": "Cliente ambiguo",
+    "invalid_amount": "Importo non valido",
+    "invalid_date": "Data non valida",
+    "zero_amount": "Importo zero"
+  },
+  "originItemKey": {
+    "management_fee": "Oneri di gestione",
+    "common_advance": "Acconto spese comuni",
+    "common_balance": "Conguaglio spese comuni",
+    "transfer_fee": "Diritto di subentro",
+    "termination_penalty": "Penale di recesso",
+    "termination_refund": "Rimborso per recesso",
+    "deposit_retention": "Trattenuta cauzione",
+    "opening_balance": "Saldo di apertura",
+    "contract_trueup_fallback": "Conguaglio contratto"
+  },
+  "sessionStatus": {
+    "open": "Aperta",
+    "closed": "Chiusa"
+  },
+  "movementKind": {
+    "in": "Versamento",
+    "out": "Prelievo"
+  },
+  "fiscalStatus": {
+    "pending": "In attesa",
+    "issued": "Emesso",
+    "failed": "Non riuscito",
+    "void": "Annullato"
+  },
+  "fiscalDriver": {
+    "none": "Nessuno (solo registrazione)",
+    "export": "File dei corrispettivi"
+  },
+  "requestStatus": {
+    "open": "Aperta",
+    "paid": "Pagata",
+    "cancelled": "Annullata",
+    "expired": "Scaduta"
+  },
+  "requestSource": {
+    "manual": "Manuale",
+    "auto": "Automatica",
+    "reminder": "Sollecito",
+    "transit": "Transito"
+  },
+  "intentStatus": {
+    "created": "Creato",
+    "open": "Aperto",
+    "processing": "In verifica",
+    "succeeded": "Riuscito",
+    "failed": "Non riuscito",
+    "expired": "Scaduto",
+    "cancelled": "Annullato"
+  },
+  "reminderLevel": {
+    "pre_due": "Promemoria scadenza",
+    "due": "Scadenza oggi",
+    "courteous": "Sollecito cortese",
+    "formal": "Sollecito formale",
+    "final_notice": "Diffida"
+  },
+  "reminderItemStatus": {
+    "queued": "In coda",
+    "awaiting_approval": "Da approvare",
+    "skipped_excluded": "Escluso",
+    "skipped_paid": "Già pagato",
+    "skipped_no_email": "Senza email",
+    "sent": "Inviato",
+    "dismissed": "Scartato"
+  },
+  "runStatus": {
+    "running": "In corso",
+    "done": "Completato",
+    "failed": "Non riuscito"
+  },
+  "exclusionKind": {
+    "payment_plan": "Piano di rientro",
+    "disputed": "Contestazione",
+    "other": "Altro"
+  },
+  "mandateStatus": {
+    "pending": "In attesa",
+    "active": "Attivo",
+    "revoked": "Revocato",
+    "failed": "Non riuscito"
+  },
+  "providerMode": {
+    "test": "Test",
+    "live": "Produzione"
+  },
+  "workItemKind": {
+    "reminder_approval": "Diffida da approvare",
+    "charges_to_export": "Addebiti da esportare",
+    "payment_failed": "Pagamento non riuscito",
+    "late_payment": "Pagamento tardivo",
+    "overpayment": "Pagamento in eccesso",
+    "sepa_failed": "Addebito SEPA non riuscito",
+    "billing_item_missing": "Articolo di addebito mancante",
+    "billing_target_mismatch": "Importi del contratto non coerenti",
+    "arrears_paid": "Morosità saldata",
+    "deadline": "Scadenza",
+    "dispute": "Contestazione"
+  },
+  "workItemStatus": {
+    "open": "Da fare",
+    "in_progress": "In corso",
+    "done": "Fatto",
+    "dismissed": "Archiviato"
+  },
+  "ageingBucket": {
+    "not_due": "Non scaduto",
+    "d0_30": "0–30 giorni",
+    "d31_60": "31–60 giorni",
+    "d61_90": "61–90 giorni",
+    "d90_plus": "Oltre 90 giorni"
+  },
+  "lensState": {
+    "ok": "In regola",
+    "due_soon": "In scadenza",
+    "overdue": "Scaduto",
+    "overdue_60": "Scaduto da oltre 60 giorni",
+    "disputed": "Contestato",
+    "suspended": "Sospeso"
+  },
+  "statementKind": {
+    "charge": "Addebito",
+    "payment": "Pagamento",
+    "refund": "Rimborso",
+    "credit": "Credito"
+  },
+  "receivableKind": {
+    "charge": "Addebito",
+    "scheduled_installment": "Rata futura"
+  }
+}

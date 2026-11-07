@@ -339,12 +339,12 @@ func MarinaIDsForJobs(ctx context.Context, db bun.IDB) ([]string, error) {
 	return ids, err
 }
 
-// HeldTransitsToExpire returns the held transits of a marina whose hold is gone: no active allocation left, or an
+// HeldTransitsToExpire returns the held and pending_payment transits of a marina whose hold is gone: no active allocation left, or an
 // active hold allocation past its expiry (at most limit).
 func HeldTransitsToExpire(ctx context.Context, db bun.IDB, s MarinaScope, now time.Time, limit int) ([]Contract, error) {
 	out := []Contract{}
 	err := db.NewSelect().Model(&out).Where("contract.marina_id = ?", s.ID()).
-		Where("contract.kind = ?", ContractKindTransit).Where("contract.status = 'held'").
+		Where("contract.kind = ?", ContractKindTransit).Where("contract.status IN ('held','pending_payment')").
 		Where(`(NOT EXISTS (SELECT 1 FROM allocations AS a JOIN contract_lines AS cl ON cl.id = a.contract_line_id
 			WHERE cl.contract_id = contract.id AND a.status = 'active')
 		OR EXISTS (SELECT 1 FROM allocations AS a JOIN contract_lines AS cl ON cl.id = a.contract_line_id

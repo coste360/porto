@@ -1,0 +1,25 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Riepilogo esportazione addebiti E2027-0012
+Esportazione da fatturare del periodo 01/03/2027 – 31/03/2027.
+Addebiti: 2 · righe: 3 · imponibile 987,83 € · IVA 217,33 € · totale 1.205,16 €
+Gli addebiti sono riferimenti interni di Porto: le fatture sono emesse dal software di fatturazione.
+Riepilogo IVA
+Aliquota | Natura | Imponibile | IVA | Totale
+22 % | 987,83 € | 217,33 € | 1.205,16 €
+Per origine
+Origine | Addebiti | Totale
+installment | 1 | 1.131,66 €
+counter_sale | 1 | 73,50 €
+Per classe di ricavo
+Classe | Righe | Totale
+mooring | 1 | 1.131,66 €
+services | 1 | 73,50 €
+Addebiti
+Numero | Data | Cliente | Origine | Imponibil | IVA | Totale | Rettifica
+e | di
+A2027-00011 | 15/03/2027 | Mario Rossi | installment | 927,59 € | 204,07 | 1.131,66
+0 | € | €
+A2027-00011 | 16/03/2027 | Anna | counter_sal | 60,24 € | 13,26 € | 73,50 €
+1 | Bianchi | e
+Porto Demo S.r.l. · P. IVA 01234567890 · Pagina 1 di 1

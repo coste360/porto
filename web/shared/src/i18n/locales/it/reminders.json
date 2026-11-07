@@ -1,0 +1,42 @@
+{
+  "title": "Solleciti",
+  "description": "Esecuzioni giornaliere per livello, diffide da approvare ed esclusioni.",
+  "tabs": {
+    "runs": "Esecuzioni",
+    "exclusions": "Esclusioni"
+  },
+  "runs": {
+    "run": "Esegui ora",
+    "started": "Esecuzione avviata",
+    "runOn": "Giorno",
+    "status": "Stato",
+    "counts": "Esiti",
+    "startedAt": "Avviata",
+    "show": "Dettaglio",
+    "empty": "Nessuna esecuzione."
+  },
+  "items": {
+    "title": "Solleciti dell'esecuzione",
+    "approvalTitle": "Diffide da approvare",
+    "approvalDescription": "Le diffide partono solo dopo l'approvazione di un operatore.",
+    "approve": "Approva e invia",
+    "dismiss": "Scarta",
+    "empty": "Nessun sollecito."
+  },
+  "fields": {
+    "charge": "Addebito",
+    "customer": "Cliente",
+    "level": "Livello",
+    "residual": "Da incassare",
+    "status": "Stato"
+  },
+  "exclusions": {
+    "new": "Nuova esclusione",
+    "kind": "Motivo",
+    "until": "Fino al",
+    "note": "Nota",
+    "add": "Escludi",
+    "remove": "Rimuovi",
+    "empty": "Nessuna esclusione attiva."
+  }
+}

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>abbiamo ricevuto il tuo pagamento. Grazie.</p>
+<table>
+{{with v . "payment_number"}}<tr><td>Pagamento</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "amount"}}<tr><td>Importo</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "received_on"}}<tr><td>Data</td><td>{{.}}</td></tr>{{end}}
+{{with v . "method"}}<tr><td>Metodo</td><td>{{.}}</td></tr>{{end}}
+</table>
+<p style="color: #666;">Ricevuta di cortesia, non valida ai fini fiscali.</p>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

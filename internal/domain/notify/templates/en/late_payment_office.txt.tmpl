@@ -1,0 +1,6 @@
+an online payment arrived for a transit that can no longer be confirmed. The amount was recorded as customer credit: check the worklist to refund it or use it.
+{{with v . "contract_code"}}Transit: {{.}}
+{{end}}{{with v . "amount"}}Amount: {{.}}
+{{end}}
+--
+{{v . "marina_name"}}

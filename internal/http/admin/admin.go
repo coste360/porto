@@ -12,7 +12,10 @@ import (
 	"github.com/coste360/porto/internal/domain/apikey"
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
+	"github.com/coste360/porto/internal/domain/cash"
 	"github.com/coste360/porto/internal/domain/catalog"
+	"github.com/coste360/porto/internal/domain/charge"
+	"github.com/coste360/porto/internal/domain/collect"
 	"github.com/coste360/porto/internal/domain/comms"
 	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/customer"
@@ -21,11 +24,14 @@ import (
 	"github.com/coste360/porto/internal/domain/docs"
 	"github.com/coste360/porto/internal/domain/document"
 	"github.com/coste360/porto/internal/domain/event"
+	"github.com/coste360/porto/internal/domain/fiscal"
 	"github.com/coste360/porto/internal/domain/harbor"
 	"github.com/coste360/porto/internal/domain/magiclink"
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/meta"
 	"github.com/coste360/porto/internal/domain/occupancy"
+	"github.com/coste360/porto/internal/domain/paydriver"
+	"github.com/coste360/porto/internal/domain/payment"
 	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/rights"
@@ -79,6 +85,15 @@ type Handler struct {
 	Links      *magiclink.Service
 	Comms      *comms.Service
 	Imports    *csvimport.Registry
+
+	// M5 (m5-plan §7.3): charges and exports (CHARGES-EXPORT), ledger (PAYMENTS), cash, fiscal and collection
+	// (CASH-DRIVERS).
+	Charges    *charge.Service
+	Payments   *payment.Service
+	Cash       *cash.Service
+	Fiscal     *fiscal.Service
+	Collect    *collect.Service
+	PayDrivers *paydriver.Registry
 }
 
 func principal(r *http.Request) *auth.Principal {

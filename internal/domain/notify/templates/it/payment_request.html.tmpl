@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>ti chiediamo il pagamento degli importi indicati.</p>
+{{with v . "charges"}}<pre style="font-family: inherit;">{{.}}</pre>{{end}}
+<table>
+{{with v . "amount"}}<tr><td>Importo</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "due_on"}}<tr><td>Scadenza</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+{{with v . "iban"}}<p>Puoi pagare con bonifico bancario:</p>
+<table><tr><td>IBAN</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "bank_holder"}}<tr><td>Intestatario</td><td>{{.}}</td></tr>{{end}}
+{{with v . "bank"}}<tr><td>Banca</td><td>{{.}}</td></tr>{{end}}
+{{with v . "reference"}}<tr><td>Causale</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{if v . "iban"}}</table>{{end}}
+{{with v . "link"}}<p><a href="{{.}}">Paga o consulta i dettagli</a></p>{{end}}
+{{with v . "expires_at"}}<p style="color: #666;">Link valido fino al {{.}}</p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

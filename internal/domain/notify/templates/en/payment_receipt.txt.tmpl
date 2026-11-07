@@ -1,0 +1,12 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+we have received your payment. Thank you.
+{{with v . "payment_number"}}Payment: {{.}}
+{{end}}{{with v . "amount"}}Amount: {{.}}
+{{end}}{{with v . "received_on"}}Date: {{.}}
+{{end}}{{with v . "method"}}Method: {{.}}
+{{end}}
+Courtesy receipt, not valid for tax purposes (non valido ai fini fiscali).
+
+--
+{{v . "marina_name"}}

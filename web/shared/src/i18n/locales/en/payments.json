@@ -1,0 +1,112 @@
+{
+  "desk": {
+    "collect": "Collect now",
+    "fiscalDocument": "Issue a commercial document",
+    "paymentLink": "Send payment link",
+    "paymentLinkSent": "The link was sent to the customer; you can also copy it."
+  },
+  "detail": {
+    "title": "Payment {{number}}",
+    "at": "Date",
+    "fiscalDocuments": "Commercial documents",
+    "hasReference": "Recorded (not shown)",
+    "match": "Match to charges",
+    "matchDescription": "Unallocated amount available:",
+    "matchSubmit": "Match",
+    "matches": "Matches",
+    "noMatches": "No matches.",
+    "noRefunds": "No refunds.",
+    "refunds": "Refunds",
+    "reversal": "Reversal",
+    "reverse": "Reverse",
+    "reversed": "Reversed",
+    "summary": "Summary",
+    "vatSplit": "VAT split"
+  },
+  "fields": {
+    "allocated": "Allocated",
+    "amount": "Amount",
+    "customer": "Customer",
+    "fee": "Fee",
+    "kind": "Type",
+    "method": "Method",
+    "notes": "Notes",
+    "number": "Number",
+    "receivedOn": "Received on",
+    "reference": "Reference",
+    "refunded": "Refunded",
+    "source": "Source",
+    "status": "Status",
+    "unallocated": "Unallocated"
+  },
+  "list": {
+    "title": "Payments",
+    "description": "Recorded payments, matches to charges, refunds and credits.",
+    "all": "All",
+    "csv": "Export CSV",
+    "xlsx": "Export Excel",
+    "empty": "No payments.",
+    "from": "From",
+    "to": "To",
+    "unallocated": "Only with unallocated amount"
+  },
+  "mandate": {
+    "open": "Settle",
+    "title": "Mandate settlement",
+    "description": "The holder's shares up to the chosen date become credit or a recorded payout.",
+    "through": "Through",
+    "mode": "Mode",
+    "modes": {
+      "credit": "Credit to the holder",
+      "payout": "Payout to the holder"
+    },
+    "submit": "Settle",
+    "done": "Credited {{credited}}, paid out {{paid}}"
+  },
+  "match": {
+    "title": "Matching to charges",
+    "autoFill": "Oldest first",
+    "charge": "Charge",
+    "dueOn": "Due date",
+    "residual": "Outstanding",
+    "amount": "Amount",
+    "amountOf": "Amount for {{number}}",
+    "empty": "No open charges for the customer.",
+    "allocated": "Allocated",
+    "credit": "Left as credit"
+  },
+  "record": {
+    "open": "Record payment",
+    "title": "Record payment",
+    "description": "The amount is matched to the chosen charges; the unmatched part stays as customer credit.",
+    "noCustomer": "Choose a customer to match the amount to charges.",
+    "sendReceipt": "Email the receipt",
+    "submit": "Record",
+    "done": "Payment recorded",
+    "doneNumber": "Payment {{number}} recorded"
+  },
+  "receipt": {
+    "mm80": "Receipt 80 mm",
+    "mm58": "Receipt 58 mm",
+    "a4": "Receipt A4"
+  },
+  "refund": {
+    "open": "Refund",
+    "title": "Refund of payment {{number}}",
+    "description": "Only the unallocated amount can be refunded: to refund a paid charge, unmatch it below first.",
+    "amount": "Amount to refund",
+    "max": "Maximum refundable:",
+    "reason": "Reason",
+    "unmatch": "Unmatch",
+    "unmatchOf": "Amount to unmatch from {{number}}",
+    "viaProvider": "Refund through the online payment provider",
+    "submit": "Refund",
+    "done": "Refund recorded"
+  },
+  "retain": {
+    "open": "Retain deposit",
+    "title": "Deposit retention",
+    "description": "The retained part becomes a charge paid by the deposit.",
+    "submit": "Retain"
+  }
+}

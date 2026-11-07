@@ -92,6 +92,9 @@ func (s *Service) confirmTx(ctx context.Context, tx bun.IDB, scope store.MarinaS
 	if err := s.emitAllocated(ctx, tx, scope, reallocated, c.ID); err != nil {
 		return err
 	}
+	if err := s.billing().OnTransitConfirmedTx(ctx, tx, scope, a.audit(), c); err != nil {
+		return err
+	}
 	// Held + already arrived: chain confirmed → arrived.
 	vp, err := store.GetVesselPresence(ctx, tx, scope, c.VesselID)
 	if err != nil && !errors.Is(err, store.ErrNotFound) {

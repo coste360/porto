@@ -1,0 +1,4 @@
+{"id": "evt_t_charge_refunded", "object": "event", "type": "charge.refunded", "created": 1814300000,
+ "data": {"object": {"id": "ch_test_1", "object": "charge", "payment_intent": "pi_test_paid", "amount_refunded": 2000,
+  "currency": "eur", "refunds": {"object": "list", "data": [{"id": "re_test_1", "object": "refund", "status": "succeeded",
+  "amount": 2000, "currency": "eur", "payment_intent": "pi_test_paid"}]}}}}

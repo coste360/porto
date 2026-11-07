@@ -170,3 +170,14 @@ func notFound(err error) error {
 	}
 	return err
 }
+
+// ErrNotImplemented is returned by RenderEphemeral until CHARGES-EXPORT lands the implementation (ephemeral.go).
+var ErrNotImplemented = errors.New("docs: not implemented")
+
+// RenderEphemeral renders a document of an M5 ephemeral kind (receipt, statement_of_account,
+// charge_export_summary, m5-plan §8.3) with the marina's published template of the kind or the built-in default,
+// in the given locale, from a view (views.ReceiptView, views.StatementView, views.ChargeExportSummaryView). The
+// PDF is not archived in generated_documents; the same view gives the same bytes.
+func (s *Service) RenderEphemeral(ctx context.Context, scope store.MarinaScope, kind Kind, locale string, view any) ([]byte, error) {
+	return s.renderEphemeralImpl(ctx, scope, kind, locale, view)
+}

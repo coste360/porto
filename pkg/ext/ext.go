@@ -168,6 +168,12 @@ type Extensions struct {
 	BotProtection  BotProtection
 	// SignatureProviders are the registered signature drivers (M4, spec 15.4); none ships with Porto.
 	SignatureProviders []SignatureProvider
+	// PaymentProviders are extra payment drivers (M5, spec 16.2); manual and stripe are in the core.
+	PaymentProviders []PaymentProvider
+	// FiscalDrivers are fiscal device drivers (M5, spec 16.3); none and export are in the core.
+	FiscalDrivers []FiscalDriver
+	// ChargeExporters send charges to an external invoicing software (M5, spec 16.5); none ships with Porto.
+	ChargeExporters []ChargeExporter
 	// HTTPRoutes mounts extra routes on the root router.
 	HTTPRoutes func(r chi.Router)
 }

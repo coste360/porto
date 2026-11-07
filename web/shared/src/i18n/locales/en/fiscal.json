@@ -1,0 +1,36 @@
+{
+  "title": "Daily takings",
+  "description": "Takings by day or month, rate and method, and issued commercial documents.",
+  "tabs": {
+    "totals": "Takings",
+    "documents": "Documents"
+  },
+  "from": "From",
+  "to": "To",
+  "group": "Group by",
+  "groups": {
+    "day": "Day",
+    "month": "Month"
+  },
+  "csv": "Export CSV",
+  "xlsx": "Export Excel",
+  "empty": "No takings in the period.",
+  "grandTotal": "Period total:",
+  "all": "All",
+  "noDocuments": "No documents.",
+  "retry": "Retry",
+  "void": "Void",
+  "fields": {
+    "period": "Period",
+    "rate": "Rate",
+    "method": "Method",
+    "net": "Net",
+    "vat": "VAT",
+    "total": "Total",
+    "documents": "Documents",
+    "number": "Number",
+    "businessDate": "Business day",
+    "driver": "Driver",
+    "status": "Status"
+  }
+}

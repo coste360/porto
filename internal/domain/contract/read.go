@@ -160,7 +160,7 @@ func (s *Service) detail(ctx context.Context, db bun.IDB, scope store.MarinaScop
 		return nil, err
 	}
 	d := &Detail{
-		Row: *c, Code: Code(c), Lines: lines, Allocations: allocs, Releases: releases, Presences: presences, Vessel: *v,
+		Row: *c, Code: Code(c), Lines: withLineShares(lines, DecodeSnapshot(c.PriceSnapshot), c.TotalCents), Allocations: allocs, Releases: releases, Presences: presences, Vessel: *v,
 		Customer: partyOf(ps, c.CustomerID), BillingCustomer: partyOf(ps, c.BillingCustomerID), Resources: refs,
 		Snapshot: DecodeSnapshot(c.PriceSnapshot), HoldExpiresAt: holdExpiry(allocs), ShowNotes: withNames,
 		ShowRef: s.can(ctx, p, scope.ID(), auth.PermContractsWrite) || s.can(ctx, p, scope.ID(), auth.PermTransitsDesk),

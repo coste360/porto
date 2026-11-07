@@ -20,6 +20,8 @@ export const SSE_TOPICS = [
   // M4 (m4-plan §7.5, §15 D21)
   'rights.changed',
   'documents.changed',
+  // M5 (m5-plan §7.5)
+  'billing.changed',
 ] as const;
 
 /** Debounce of the narrowed (M3) invalidations, per query key. */

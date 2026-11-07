@@ -16,6 +16,7 @@ import {
   useDayView,
   useDeleteBlock,
   useMap,
+  useMapPaymentStatus,
   useMapRights,
   useMaps,
   useOccupancySettingsForOps,
@@ -30,6 +31,7 @@ import {
   DragGhost,
   HarborMap,
   applyLens,
+  applyPaymentsLens,
   applyRightsLens,
   daySubjects,
   fitToView,
@@ -78,6 +80,7 @@ import { DateSelector } from './components/DateSelector';
 import { ElementList, type ListGroup } from './components/ElementList';
 import { LegendFilter } from './components/LegendFilter';
 import { LensTabs } from './components/LensTabs';
+import { PaymentsLegend } from './components/PaymentsLegend';
 import { RightsLegend } from './components/RightsLegend';
 import { MoveDialog, type MoveTarget } from './components/MoveDialog';
 import { OpsFiltersPanel } from './components/OpsFiltersPanel';
@@ -162,6 +165,10 @@ export function OpsPage() {
   const [rightsOn, setRightsOn] = useState(false);
   const [rightsHidden, setRightsHidden] = useState<ReadonlySet<string>>(new Set());
   const mapRights = useMapRights(marinaId, mapId ?? '', date, rightsOn);
+  // M5 Pagamenti lens (m5-plan §4.5, §9.1): composed with the day view from getMapPaymentStatus, like rights.
+  const [paymentsOn, setPaymentsOn] = useState(false);
+  const [paymentsHidden, setPaymentsHidden] = useState<ReadonlySet<string>>(new Set());
+  const mapPayments = useMapPaymentStatus(marinaId, mapId ?? '', date, paymentsOn);
 
   const setSearch = useCallback(
     (patch: Partial<typeof search>) =>
@@ -205,8 +212,12 @@ export function OpsPage() {
     () => (rightsOn && dv ? applyRightsLens(subjects, mapRights.data, rightsHidden) : null),
     [rightsOn, dv, subjects, mapRights.data, rightsHidden],
   );
-  const shownStyles = rightsResult?.styles ?? lensResult?.styles;
-  const shownDimmed = rightsResult?.dimmed ?? lensResult?.dimmed;
+  const paymentsResult = useMemo(
+    () => (paymentsOn && dv ? applyPaymentsLens(subjects, mapPayments.data, paymentsHidden) : null),
+    [paymentsOn, dv, subjects, mapPayments.data, paymentsHidden],
+  );
+  const shownStyles = paymentsResult?.styles ?? rightsResult?.styles ?? lensResult?.styles;
+  const shownDimmed = paymentsResult?.dimmed ?? rightsResult?.dimmed ?? lensResult?.dimmed;
   const vessels = useMemo<VesselItem[]>(() => (doc && dv ? opsVessels(doc, dv) : []), [doc, dv]);
   const tileLabels = useMemo(() => {
     const m = new Map<string, string>();
@@ -629,6 +640,7 @@ export function OpsPage() {
                 rememberLens(userId, l);
                 setHidden(new Set());
                 setRightsOn(false);
+                setPaymentsOn(false);
                 setSearch({ lens: l });
               }}
             />
@@ -637,9 +649,24 @@ export function OpsPage() {
               size="sm"
               aria-pressed={rightsOn}
               data-testid="ops-rights-lens"
-              onClick={() => setRightsOn((v) => !v)}
+              onClick={() => {
+                setPaymentsOn(false);
+                setRightsOn((v) => !v);
+              }}
             >
               {t('rights:lens.title')}
+            </Button>
+            <Button
+              variant={paymentsOn ? 'default' : 'outline'}
+              size="sm"
+              aria-pressed={paymentsOn}
+              data-testid="ops-payments-lens"
+              onClick={() => {
+                setRightsOn(false);
+                setPaymentsOn((v) => !v);
+              }}
+            >
+              {t('receivables:lens.title')}
             </Button>
           </div>
           <div className="grid gap-3 lg:grid-cols-12">
@@ -649,7 +676,13 @@ export function OpsPage() {
                   <CardTitle>{t('opsMap:legend.title')}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {rightsResult ? (
+                  {paymentsResult ? (
+                    <PaymentsLegend
+                      counts={paymentsResult.counts}
+                      hidden={paymentsHidden}
+                      onHiddenChange={setPaymentsHidden}
+                    />
+                  ) : rightsResult ? (
                     <RightsLegend
                       counts={rightsResult.counts}
                       hidden={rightsHidden}
@@ -719,7 +752,11 @@ export function OpsPage() {
                       <ZoomOutIcon />
                     </Button>
                     {mapId ? (
-                      <PrintMapButton mapId={mapId} date={date} {...(rightsOn ? {} : { lens })} />
+                      <PrintMapButton
+                        mapId={mapId}
+                        date={date}
+                        {...(rightsOn || paymentsOn ? {} : { lens })}
+                      />
                     ) : null}
                     {picking ? (
                       <Badge variant="secondary" data-testid="ops-picking">

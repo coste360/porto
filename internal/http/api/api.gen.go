@@ -68,6 +68,33 @@ func (e AddendumStatus) Valid() bool {
 	}
 }
 
+// Defines values for AgeingBucket.
+const (
+	D030    AgeingBucket = "d0_30"
+	D3160   AgeingBucket = "d31_60"
+	D6190   AgeingBucket = "d61_90"
+	D90Plus AgeingBucket = "d90_plus"
+	NotDue  AgeingBucket = "not_due"
+)
+
+// Valid indicates whether the value is a known member of the AgeingBucket enum.
+func (e AgeingBucket) Valid() bool {
+	switch e {
+	case D030:
+		return true
+	case D3160:
+		return true
+	case D6190:
+		return true
+	case D90Plus:
+		return true
+	case NotDue:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AllocationKind.
 const (
 	AllocationKindBlock       AllocationKind = "block"
@@ -434,6 +461,60 @@ func (e CancellationPolicyRefund) Valid() bool {
 	}
 }
 
+// Defines values for CashMovementKind.
+const (
+	CashMovementKindIn  CashMovementKind = "in"
+	CashMovementKindOut CashMovementKind = "out"
+)
+
+// Valid indicates whether the value is a known member of the CashMovementKind enum.
+func (e CashMovementKind) Valid() bool {
+	switch e {
+	case CashMovementKindIn:
+		return true
+	case CashMovementKindOut:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CashMovementInputKind.
+const (
+	CashMovementInputKindIn  CashMovementInputKind = "in"
+	CashMovementInputKindOut CashMovementInputKind = "out"
+)
+
+// Valid indicates whether the value is a known member of the CashMovementInputKind enum.
+func (e CashMovementInputKind) Valid() bool {
+	switch e {
+	case CashMovementInputKindIn:
+		return true
+	case CashMovementInputKindOut:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CashSessionStatus.
+const (
+	CashSessionStatusClosed CashSessionStatus = "closed"
+	CashSessionStatusOpen   CashSessionStatus = "open"
+)
+
+// Valid indicates whether the value is a known member of the CashSessionStatus enum.
+func (e CashSessionStatus) Valid() bool {
+	switch e {
+	case CashSessionStatusClosed:
+		return true
+	case CashSessionStatusOpen:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CategoryTarget.
 const (
 	CategoryTargetBerth        CategoryTarget = "berth"
@@ -473,6 +554,270 @@ func (e Channel) Valid() bool {
 	case ChannelExternal:
 		return true
 	case ChannelOnline:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargeCreateOriginType.
+const (
+	ChargeCreateOriginTypeCounterSale ChargeCreateOriginType = "counter_sale"
+	ChargeCreateOriginTypeManual      ChargeCreateOriginType = "manual"
+)
+
+// Valid indicates whether the value is a known member of the ChargeCreateOriginType enum.
+func (e ChargeCreateOriginType) Valid() bool {
+	switch e {
+	case ChargeCreateOriginTypeCounterSale:
+		return true
+	case ChargeCreateOriginTypeManual:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargeExportDelivery.
+const (
+	ChargeExportDeliveryExporter ChargeExportDelivery = "exporter"
+	ChargeExportDeliveryFile     ChargeExportDelivery = "file"
+)
+
+// Valid indicates whether the value is a known member of the ChargeExportDelivery enum.
+func (e ChargeExportDelivery) Valid() bool {
+	switch e {
+	case ChargeExportDeliveryExporter:
+		return true
+	case ChargeExportDeliveryFile:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargeExportDeliveryStatus.
+const (
+	ChargeExportDeliveryStatusFailed  ChargeExportDeliveryStatus = "failed"
+	ChargeExportDeliveryStatusNone    ChargeExportDeliveryStatus = "none"
+	ChargeExportDeliveryStatusPending ChargeExportDeliveryStatus = "pending"
+	ChargeExportDeliveryStatusSent    ChargeExportDeliveryStatus = "sent"
+)
+
+// Valid indicates whether the value is a known member of the ChargeExportDeliveryStatus enum.
+func (e ChargeExportDeliveryStatus) Valid() bool {
+	switch e {
+	case ChargeExportDeliveryStatusFailed:
+		return true
+	case ChargeExportDeliveryStatusNone:
+		return true
+	case ChargeExportDeliveryStatusPending:
+		return true
+	case ChargeExportDeliveryStatusSent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargeExportFiles.
+const (
+	ChargeExportFilesCsv  ChargeExportFiles = "csv"
+	ChargeExportFilesPdf  ChargeExportFiles = "pdf"
+	ChargeExportFilesXlsx ChargeExportFiles = "xlsx"
+)
+
+// Valid indicates whether the value is a known member of the ChargeExportFiles enum.
+func (e ChargeExportFiles) Valid() bool {
+	switch e {
+	case ChargeExportFilesCsv:
+		return true
+	case ChargeExportFilesPdf:
+		return true
+	case ChargeExportFilesXlsx:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargeExportKind.
+const (
+	Export   ChargeExportKind = "export"
+	Reexport ChargeExportKind = "reexport"
+)
+
+// Valid indicates whether the value is a known member of the ChargeExportKind enum.
+func (e ChargeExportKind) Valid() bool {
+	switch e {
+	case Export:
+		return true
+	case Reexport:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargeImportFormat.
+const (
+	ChargeImportFormatCsv  ChargeImportFormat = "csv"
+	ChargeImportFormatXlsx ChargeImportFormat = "xlsx"
+)
+
+// Valid indicates whether the value is a known member of the ChargeImportFormat enum.
+func (e ChargeImportFormat) Valid() bool {
+	switch e {
+	case ChargeImportFormatCsv:
+		return true
+	case ChargeImportFormatXlsx:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargeImportStatus.
+const (
+	ChargeImportStatusApplied ChargeImportStatus = "applied"
+	ChargeImportStatusDryRun  ChargeImportStatus = "dry_run"
+	ChargeImportStatusFailed  ChargeImportStatus = "failed"
+	ChargeImportStatusUndone  ChargeImportStatus = "undone"
+)
+
+// Valid indicates whether the value is a known member of the ChargeImportStatus enum.
+func (e ChargeImportStatus) Valid() bool {
+	switch e {
+	case ChargeImportStatusApplied:
+		return true
+	case ChargeImportStatusDryRun:
+		return true
+	case ChargeImportStatusFailed:
+		return true
+	case ChargeImportStatusUndone:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargeImportRowIssueCode.
+const (
+	ChargeImportRowIssueCodeAmbiguousCustomer ChargeImportRowIssueCode = "ambiguous_customer"
+	ChargeImportRowIssueCodeInvalidAmount     ChargeImportRowIssueCode = "invalid_amount"
+	ChargeImportRowIssueCodeInvalidDate       ChargeImportRowIssueCode = "invalid_date"
+	ChargeImportRowIssueCodeUnknownCustomer   ChargeImportRowIssueCode = "unknown_customer"
+	ChargeImportRowIssueCodeZeroAmount        ChargeImportRowIssueCode = "zero_amount"
+)
+
+// Valid indicates whether the value is a known member of the ChargeImportRowIssueCode enum.
+func (e ChargeImportRowIssueCode) Valid() bool {
+	switch e {
+	case ChargeImportRowIssueCodeAmbiguousCustomer:
+		return true
+	case ChargeImportRowIssueCodeInvalidAmount:
+		return true
+	case ChargeImportRowIssueCodeInvalidDate:
+		return true
+	case ChargeImportRowIssueCodeUnknownCustomer:
+		return true
+	case ChargeImportRowIssueCodeZeroAmount:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargeInvoicingStatus.
+const (
+	Exported  ChargeInvoicingStatus = "exported"
+	Invoiced  ChargeInvoicingStatus = "invoiced"
+	ToInvoice ChargeInvoicingStatus = "to_invoice"
+)
+
+// Valid indicates whether the value is a known member of the ChargeInvoicingStatus enum.
+func (e ChargeInvoicingStatus) Valid() bool {
+	switch e {
+	case Exported:
+		return true
+	case Invoiced:
+		return true
+	case ToInvoice:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargeOriginType.
+const (
+	ChargeOriginTypeAdjustment        ChargeOriginType = "adjustment"
+	ChargeOriginTypeContractTrueup    ChargeOriginType = "contract_trueup"
+	ChargeOriginTypeCounterSale       ChargeOriginType = "counter_sale"
+	ChargeOriginTypeDepositRetention  ChargeOriginType = "deposit_retention"
+	ChargeOriginTypeHolderInstallment ChargeOriginType = "holder_installment"
+	ChargeOriginTypeInstallment       ChargeOriginType = "installment"
+	ChargeOriginTypeManual            ChargeOriginType = "manual"
+	ChargeOriginTypeOpeningBalance    ChargeOriginType = "opening_balance"
+	ChargeOriginTypeRental            ChargeOriginType = "rental"
+	ChargeOriginTypeTermination       ChargeOriginType = "termination"
+	ChargeOriginTypeTransit           ChargeOriginType = "transit"
+	ChargeOriginTypeUtility           ChargeOriginType = "utility"
+	ChargeOriginTypeWorkOrder         ChargeOriginType = "work_order"
+)
+
+// Valid indicates whether the value is a known member of the ChargeOriginType enum.
+func (e ChargeOriginType) Valid() bool {
+	switch e {
+	case ChargeOriginTypeAdjustment:
+		return true
+	case ChargeOriginTypeContractTrueup:
+		return true
+	case ChargeOriginTypeCounterSale:
+		return true
+	case ChargeOriginTypeDepositRetention:
+		return true
+	case ChargeOriginTypeHolderInstallment:
+		return true
+	case ChargeOriginTypeInstallment:
+		return true
+	case ChargeOriginTypeManual:
+		return true
+	case ChargeOriginTypeOpeningBalance:
+		return true
+	case ChargeOriginTypeRental:
+		return true
+	case ChargeOriginTypeTermination:
+		return true
+	case ChargeOriginTypeTransit:
+		return true
+	case ChargeOriginTypeUtility:
+		return true
+	case ChargeOriginTypeWorkOrder:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChargePaymentStatus.
+const (
+	ChargePaymentStatusCancelled     ChargePaymentStatus = "cancelled"
+	ChargePaymentStatusOpen          ChargePaymentStatus = "open"
+	ChargePaymentStatusPaid          ChargePaymentStatus = "paid"
+	ChargePaymentStatusPartiallyPaid ChargePaymentStatus = "partially_paid"
+)
+
+// Valid indicates whether the value is a known member of the ChargePaymentStatus enum.
+func (e ChargePaymentStatus) Valid() bool {
+	switch e {
+	case ChargePaymentStatusCancelled:
+		return true
+	case ChargePaymentStatusOpen:
+		return true
+	case ChargePaymentStatusPaid:
+		return true
+	case ChargePaymentStatusPartiallyPaid:
 		return true
 	default:
 		return false
@@ -995,6 +1340,117 @@ func (e ContractType) Valid() bool {
 	case ContractTypeStorage:
 		return true
 	case ContractTypeTransit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CorrectionKind.
+const (
+	Delta   CorrectionKind = "delta"
+	Replace CorrectionKind = "replace"
+)
+
+// Valid indicates whether the value is a known member of the CorrectionKind enum.
+func (e CorrectionKind) Valid() bool {
+	switch e {
+	case Delta:
+		return true
+	case Replace:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CountedInputMethod.
+const (
+	CountedInputMethodBankTransfer CountedInputMethod = "bank_transfer"
+	CountedInputMethodCardPos      CountedInputMethod = "card_pos"
+	CountedInputMethodCash         CountedInputMethod = "cash"
+	CountedInputMethodCheque       CountedInputMethod = "cheque"
+	CountedInputMethodOther        CountedInputMethod = "other"
+)
+
+// Valid indicates whether the value is a known member of the CountedInputMethod enum.
+func (e CountedInputMethod) Valid() bool {
+	switch e {
+	case CountedInputMethodBankTransfer:
+		return true
+	case CountedInputMethodCardPos:
+		return true
+	case CountedInputMethodCash:
+		return true
+	case CountedInputMethodCheque:
+		return true
+	case CountedInputMethodOther:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CounterSaleInputReceipt.
+const (
+	CounterSaleInputReceiptEmail CounterSaleInputReceipt = "email"
+	CounterSaleInputReceiptNone  CounterSaleInputReceipt = "none"
+	CounterSaleInputReceiptPrint CounterSaleInputReceipt = "print"
+)
+
+// Valid indicates whether the value is a known member of the CounterSaleInputReceipt enum.
+func (e CounterSaleInputReceipt) Valid() bool {
+	switch e {
+	case CounterSaleInputReceiptEmail:
+		return true
+	case CounterSaleInputReceiptNone:
+		return true
+	case CounterSaleInputReceiptPrint:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CounterSalePaymentMethod.
+const (
+	CounterSalePaymentMethodBankTransfer CounterSalePaymentMethod = "bank_transfer"
+	CounterSalePaymentMethodCardPos      CounterSalePaymentMethod = "card_pos"
+	CounterSalePaymentMethodCash         CounterSalePaymentMethod = "cash"
+	CounterSalePaymentMethodCheque       CounterSalePaymentMethod = "cheque"
+	CounterSalePaymentMethodOther        CounterSalePaymentMethod = "other"
+)
+
+// Valid indicates whether the value is a known member of the CounterSalePaymentMethod enum.
+func (e CounterSalePaymentMethod) Valid() bool {
+	switch e {
+	case CounterSalePaymentMethodBankTransfer:
+		return true
+	case CounterSalePaymentMethodCardPos:
+		return true
+	case CounterSalePaymentMethodCash:
+		return true
+	case CounterSalePaymentMethodCheque:
+		return true
+	case CounterSalePaymentMethodOther:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CreditGrantInputSource.
+const (
+	CreditGrantInputSourceGoodwill CreditGrantInputSource = "goodwill"
+	CreditGrantInputSourceRelease  CreditGrantInputSource = "release"
+)
+
+// Valid indicates whether the value is a known member of the CreditGrantInputSource enum.
+func (e CreditGrantInputSource) Valid() bool {
+	switch e {
+	case CreditGrantInputSourceGoodwill:
+		return true
+	case CreditGrantInputSourceRelease:
 		return true
 	default:
 		return false
@@ -1631,6 +2087,27 @@ func (e DocumentType) Valid() bool {
 	}
 }
 
+// Defines values for DunningExclusionKind.
+const (
+	DunningExclusionKindDisputed    DunningExclusionKind = "disputed"
+	DunningExclusionKindOther       DunningExclusionKind = "other"
+	DunningExclusionKindPaymentPlan DunningExclusionKind = "payment_plan"
+)
+
+// Valid indicates whether the value is a known member of the DunningExclusionKind enum.
+func (e DunningExclusionKind) Valid() bool {
+	switch e {
+	case DunningExclusionKindDisputed:
+		return true
+	case DunningExclusionKindOther:
+		return true
+	case DunningExclusionKindPaymentPlan:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for DynamicAreaGridRotationDd.
 const (
 	DynamicAreaGridRotationDdN0    DynamicAreaGridRotationDd = 0
@@ -1670,6 +2147,21 @@ func (e DynamicAreaSupports) Valid() bool {
 	case DynamicAreaSupportsRack:
 		return true
 	case DynamicAreaSupportsTrailer:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ExportWarningCode.
+const (
+	CustomerFiscalIncomplete ExportWarningCode = "customer_fiscal_incomplete"
+)
+
+// Valid indicates whether the value is a known member of the ExportWarningCode enum.
+func (e ExportWarningCode) Valid() bool {
+	switch e {
+	case CustomerFiscalIncomplete:
 		return true
 	default:
 		return false
@@ -1805,6 +2297,66 @@ func (e FieldType) Valid() bool {
 	case FieldTypeObject:
 		return true
 	case FieldTypeText:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for FiscalDailyTotalsGroup.
+const (
+	FiscalDailyTotalsGroupDay   FiscalDailyTotalsGroup = "day"
+	FiscalDailyTotalsGroupMonth FiscalDailyTotalsGroup = "month"
+)
+
+// Valid indicates whether the value is a known member of the FiscalDailyTotalsGroup enum.
+func (e FiscalDailyTotalsGroup) Valid() bool {
+	switch e {
+	case FiscalDailyTotalsGroupDay:
+		return true
+	case FiscalDailyTotalsGroupMonth:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for FiscalDocumentStatus.
+const (
+	FiscalDocumentStatusFailed  FiscalDocumentStatus = "failed"
+	FiscalDocumentStatusIssued  FiscalDocumentStatus = "issued"
+	FiscalDocumentStatusPending FiscalDocumentStatus = "pending"
+	FiscalDocumentStatusVoid    FiscalDocumentStatus = "void"
+)
+
+// Valid indicates whether the value is a known member of the FiscalDocumentStatus enum.
+func (e FiscalDocumentStatus) Valid() bool {
+	switch e {
+	case FiscalDocumentStatusFailed:
+		return true
+	case FiscalDocumentStatusIssued:
+		return true
+	case FiscalDocumentStatusPending:
+		return true
+	case FiscalDocumentStatusVoid:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for FiscalMode.
+const (
+	FiscalModeInvoice FiscalMode = "invoice"
+	FiscalModeReceipt FiscalMode = "receipt"
+)
+
+// Valid indicates whether the value is a known member of the FiscalMode enum.
+func (e FiscalMode) Valid() bool {
+	switch e {
+	case FiscalModeInvoice:
+		return true
+	case FiscalModeReceipt:
 		return true
 	default:
 		return false
@@ -2002,22 +2554,22 @@ func (e HolderInstallmentKind) Valid() bool {
 
 // Defines values for HolderInstallmentSource.
 const (
-	CommonAdvance HolderInstallmentSource = "common_advance"
-	CommonBalance HolderInstallmentSource = "common_balance"
-	ManagementFee HolderInstallmentSource = "management_fee"
-	TransferFee   HolderInstallmentSource = "transfer_fee"
+	HolderInstallmentSourceCommonAdvance HolderInstallmentSource = "common_advance"
+	HolderInstallmentSourceCommonBalance HolderInstallmentSource = "common_balance"
+	HolderInstallmentSourceManagementFee HolderInstallmentSource = "management_fee"
+	HolderInstallmentSourceTransferFee   HolderInstallmentSource = "transfer_fee"
 )
 
 // Valid indicates whether the value is a known member of the HolderInstallmentSource enum.
 func (e HolderInstallmentSource) Valid() bool {
 	switch e {
-	case CommonAdvance:
+	case HolderInstallmentSourceCommonAdvance:
 		return true
-	case CommonBalance:
+	case HolderInstallmentSourceCommonBalance:
 		return true
-	case ManagementFee:
+	case HolderInstallmentSourceManagementFee:
 		return true
-	case TransferFee:
+	case HolderInstallmentSourceTransferFee:
 		return true
 	default:
 		return false
@@ -2282,6 +2834,57 @@ func (e InsurancePolicy) Valid() bool {
 	}
 }
 
+// Defines values for InvoiceReconciliationSource.
+const (
+	InvoiceReconciliationSourceCsv      InvoiceReconciliationSource = "csv"
+	InvoiceReconciliationSourceExporter InvoiceReconciliationSource = "exporter"
+	InvoiceReconciliationSourceManual   InvoiceReconciliationSource = "manual"
+)
+
+// Valid indicates whether the value is a known member of the InvoiceReconciliationSource enum.
+func (e InvoiceReconciliationSource) Valid() bool {
+	switch e {
+	case InvoiceReconciliationSourceCsv:
+		return true
+	case InvoiceReconciliationSourceExporter:
+		return true
+	case InvoiceReconciliationSourceManual:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for InvoiceReconciliationRowOutcome.
+const (
+	InvoiceReconciliationRowOutcomeCancelled     InvoiceReconciliationRowOutcome = "cancelled"
+	InvoiceReconciliationRowOutcomeDuplicateRow  InvoiceReconciliationRowOutcome = "duplicate_row"
+	InvoiceReconciliationRowOutcomeInvalidDate   InvoiceReconciliationRowOutcome = "invalid_date"
+	InvoiceReconciliationRowOutcomeNotExported   InvoiceReconciliationRowOutcome = "not_exported"
+	InvoiceReconciliationRowOutcomeOk            InvoiceReconciliationRowOutcome = "ok"
+	InvoiceReconciliationRowOutcomeUnknownCharge InvoiceReconciliationRowOutcome = "unknown_charge"
+)
+
+// Valid indicates whether the value is a known member of the InvoiceReconciliationRowOutcome enum.
+func (e InvoiceReconciliationRowOutcome) Valid() bool {
+	switch e {
+	case InvoiceReconciliationRowOutcomeCancelled:
+		return true
+	case InvoiceReconciliationRowOutcomeDuplicateRow:
+		return true
+	case InvoiceReconciliationRowOutcomeInvalidDate:
+		return true
+	case InvoiceReconciliationRowOutcomeNotExported:
+		return true
+	case InvoiceReconciliationRowOutcomeOk:
+		return true
+	case InvoiceReconciliationRowOutcomeUnknownCharge:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ItemType.
 const (
 	ItemTypeBerthFee ItemType = "berth_fee"
@@ -2447,6 +3050,33 @@ func (e LengthRoundingStepCm) Valid() bool {
 	case LengthRoundingStepCmN100:
 		return true
 	case LengthRoundingStepCmN50:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LensState.
+const (
+	LensStateDisputed  LensState = "disputed"
+	LensStateDueSoon   LensState = "due_soon"
+	LensStateOk        LensState = "ok"
+	LensStateOverdue   LensState = "overdue"
+	LensStateOverdue60 LensState = "overdue_60"
+)
+
+// Valid indicates whether the value is a known member of the LensState enum.
+func (e LensState) Valid() bool {
+	switch e {
+	case LensStateDisputed:
+		return true
+	case LensStateDueSoon:
+		return true
+	case LensStateOk:
+		return true
+	case LensStateOverdue:
+		return true
+	case LensStateOverdue60:
 		return true
 	default:
 		return false
@@ -2954,6 +3584,201 @@ func (e OccupancySearchRequestChannel) Valid() bool {
 	}
 }
 
+// Defines values for OpeningBalanceImportInputDelimiter.
+const (
+	OpeningBalanceImportInputDelimiterComma     OpeningBalanceImportInputDelimiter = "comma"
+	OpeningBalanceImportInputDelimiterSemicolon OpeningBalanceImportInputDelimiter = "semicolon"
+	OpeningBalanceImportInputDelimiterTab       OpeningBalanceImportInputDelimiter = "tab"
+)
+
+// Valid indicates whether the value is a known member of the OpeningBalanceImportInputDelimiter enum.
+func (e OpeningBalanceImportInputDelimiter) Valid() bool {
+	switch e {
+	case OpeningBalanceImportInputDelimiterComma:
+		return true
+	case OpeningBalanceImportInputDelimiterSemicolon:
+		return true
+	case OpeningBalanceImportInputDelimiterTab:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OpeningBalanceImportInputFormat.
+const (
+	OpeningBalanceImportInputFormatCsv  OpeningBalanceImportInputFormat = "csv"
+	OpeningBalanceImportInputFormatXlsx OpeningBalanceImportInputFormat = "xlsx"
+)
+
+// Valid indicates whether the value is a known member of the OpeningBalanceImportInputFormat enum.
+func (e OpeningBalanceImportInputFormat) Valid() bool {
+	switch e {
+	case OpeningBalanceImportInputFormatCsv:
+		return true
+	case OpeningBalanceImportInputFormatXlsx:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OpeningBalanceMappingCustomerMatch.
+const (
+	OpeningBalanceMappingCustomerMatchCustomerCode OpeningBalanceMappingCustomerMatch = "customer_code"
+	OpeningBalanceMappingCustomerMatchFiscalCode   OpeningBalanceMappingCustomerMatch = "fiscal_code"
+	OpeningBalanceMappingCustomerMatchVatNumber    OpeningBalanceMappingCustomerMatch = "vat_number"
+)
+
+// Valid indicates whether the value is a known member of the OpeningBalanceMappingCustomerMatch enum.
+func (e OpeningBalanceMappingCustomerMatch) Valid() bool {
+	switch e {
+	case OpeningBalanceMappingCustomerMatchCustomerCode:
+		return true
+	case OpeningBalanceMappingCustomerMatchFiscalCode:
+		return true
+	case OpeningBalanceMappingCustomerMatchVatNumber:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OriginItemKey.
+const (
+	OriginItemKeyCommonAdvance          OriginItemKey = "common_advance"
+	OriginItemKeyCommonBalance          OriginItemKey = "common_balance"
+	OriginItemKeyContractTrueupFallback OriginItemKey = "contract_trueup_fallback"
+	OriginItemKeyDepositRetention       OriginItemKey = "deposit_retention"
+	OriginItemKeyManagementFee          OriginItemKey = "management_fee"
+	OriginItemKeyOpeningBalance         OriginItemKey = "opening_balance"
+	OriginItemKeyTerminationPenalty     OriginItemKey = "termination_penalty"
+	OriginItemKeyTerminationRefund      OriginItemKey = "termination_refund"
+	OriginItemKeyTransferFee            OriginItemKey = "transfer_fee"
+)
+
+// Valid indicates whether the value is a known member of the OriginItemKey enum.
+func (e OriginItemKey) Valid() bool {
+	switch e {
+	case OriginItemKeyCommonAdvance:
+		return true
+	case OriginItemKeyCommonBalance:
+		return true
+	case OriginItemKeyContractTrueupFallback:
+		return true
+	case OriginItemKeyDepositRetention:
+		return true
+	case OriginItemKeyManagementFee:
+		return true
+	case OriginItemKeyOpeningBalance:
+		return true
+	case OriginItemKeyTerminationPenalty:
+		return true
+	case OriginItemKeyTerminationRefund:
+		return true
+	case OriginItemKeyTransferFee:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PayCheckoutInputMethod.
+const (
+	PayCheckoutInputMethodCard      PayCheckoutInputMethod = "card"
+	PayCheckoutInputMethodSepaDebit PayCheckoutInputMethod = "sepa_debit"
+)
+
+// Valid indicates whether the value is a known member of the PayCheckoutInputMethod enum.
+func (e PayCheckoutInputMethod) Valid() bool {
+	switch e {
+	case PayCheckoutInputMethodCard:
+		return true
+	case PayCheckoutInputMethodSepaDebit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PayPageMethods.
+const (
+	PayPageMethodsCard      PayPageMethods = "card"
+	PayPageMethodsSepaDebit PayPageMethods = "sepa_debit"
+)
+
+// Valid indicates whether the value is a known member of the PayPageMethods enum.
+func (e PayPageMethods) Valid() bool {
+	switch e {
+	case PayPageMethodsCard:
+		return true
+	case PayPageMethodsSepaDebit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentKind.
+const (
+	PaymentKindCredit  PaymentKind = "credit"
+	PaymentKindDeposit PaymentKind = "deposit"
+	PaymentKindPayment PaymentKind = "payment"
+)
+
+// Valid indicates whether the value is a known member of the PaymentKind enum.
+func (e PaymentKind) Valid() bool {
+	switch e {
+	case PaymentKindCredit:
+		return true
+	case PaymentKindDeposit:
+		return true
+	case PaymentKindPayment:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentMethod.
+const (
+	PaymentMethodBankTransfer PaymentMethod = "bank_transfer"
+	PaymentMethodCardOnline   PaymentMethod = "card_online"
+	PaymentMethodCardPos      PaymentMethod = "card_pos"
+	PaymentMethodCash         PaymentMethod = "cash"
+	PaymentMethodCheque       PaymentMethod = "cheque"
+	PaymentMethodCreditNote   PaymentMethod = "credit_note"
+	PaymentMethodOther        PaymentMethod = "other"
+	PaymentMethodSepaDebit    PaymentMethod = "sepa_debit"
+	PaymentMethodWallet       PaymentMethod = "wallet"
+)
+
+// Valid indicates whether the value is a known member of the PaymentMethod enum.
+func (e PaymentMethod) Valid() bool {
+	switch e {
+	case PaymentMethodBankTransfer:
+		return true
+	case PaymentMethodCardOnline:
+		return true
+	case PaymentMethodCardPos:
+		return true
+	case PaymentMethodCash:
+		return true
+	case PaymentMethodCheque:
+		return true
+	case PaymentMethodCreditNote:
+		return true
+	case PaymentMethodOther:
+		return true
+	case PaymentMethodSepaDebit:
+		return true
+	case PaymentMethodWallet:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for PaymentPolicyRoundingUnitCents.
 const (
 	PaymentPolicyRoundingUnitCentsN1    PaymentPolicyRoundingUnitCents = 1
@@ -2975,6 +3800,129 @@ func (e PaymentPolicyRoundingUnitCents) Valid() bool {
 	}
 }
 
+// Defines values for PaymentProviderInfoMode.
+const (
+	PaymentProviderInfoModeLive PaymentProviderInfoMode = "live"
+	PaymentProviderInfoModeTest PaymentProviderInfoMode = "test"
+)
+
+// Valid indicates whether the value is a known member of the PaymentProviderInfoMode enum.
+func (e PaymentProviderInfoMode) Valid() bool {
+	switch e {
+	case PaymentProviderInfoModeLive:
+		return true
+	case PaymentProviderInfoModeTest:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentProviderSettingsMode.
+const (
+	PaymentProviderSettingsModeLive PaymentProviderSettingsMode = "live"
+	PaymentProviderSettingsModeTest PaymentProviderSettingsMode = "test"
+)
+
+// Valid indicates whether the value is a known member of the PaymentProviderSettingsMode enum.
+func (e PaymentProviderSettingsMode) Valid() bool {
+	switch e {
+	case PaymentProviderSettingsModeLive:
+		return true
+	case PaymentProviderSettingsModeTest:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentProviderSettingsInputMethods.
+const (
+	PaymentProviderSettingsInputMethodsCard      PaymentProviderSettingsInputMethods = "card"
+	PaymentProviderSettingsInputMethodsSepaDebit PaymentProviderSettingsInputMethods = "sepa_debit"
+	PaymentProviderSettingsInputMethodsWallet    PaymentProviderSettingsInputMethods = "wallet"
+)
+
+// Valid indicates whether the value is a known member of the PaymentProviderSettingsInputMethods enum.
+func (e PaymentProviderSettingsInputMethods) Valid() bool {
+	switch e {
+	case PaymentProviderSettingsInputMethodsCard:
+		return true
+	case PaymentProviderSettingsInputMethodsSepaDebit:
+		return true
+	case PaymentProviderSettingsInputMethodsWallet:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentProviderSettingsInputMode.
+const (
+	PaymentProviderSettingsInputModeLive PaymentProviderSettingsInputMode = "live"
+	PaymentProviderSettingsInputModeTest PaymentProviderSettingsInputMode = "test"
+)
+
+// Valid indicates whether the value is a known member of the PaymentProviderSettingsInputMode enum.
+func (e PaymentProviderSettingsInputMode) Valid() bool {
+	switch e {
+	case PaymentProviderSettingsInputModeLive:
+		return true
+	case PaymentProviderSettingsInputModeTest:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentRequestSource.
+const (
+	PaymentRequestSourceAuto     PaymentRequestSource = "auto"
+	PaymentRequestSourceManual   PaymentRequestSource = "manual"
+	PaymentRequestSourceReminder PaymentRequestSource = "reminder"
+	PaymentRequestSourceTransit  PaymentRequestSource = "transit"
+)
+
+// Valid indicates whether the value is a known member of the PaymentRequestSource enum.
+func (e PaymentRequestSource) Valid() bool {
+	switch e {
+	case PaymentRequestSourceAuto:
+		return true
+	case PaymentRequestSourceManual:
+		return true
+	case PaymentRequestSourceReminder:
+		return true
+	case PaymentRequestSourceTransit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentRequestStatus.
+const (
+	PaymentRequestStatusCancelled PaymentRequestStatus = "cancelled"
+	PaymentRequestStatusExpired   PaymentRequestStatus = "expired"
+	PaymentRequestStatusOpen      PaymentRequestStatus = "open"
+	PaymentRequestStatusPaid      PaymentRequestStatus = "paid"
+)
+
+// Valid indicates whether the value is a known member of the PaymentRequestStatus enum.
+func (e PaymentRequestStatus) Valid() bool {
+	switch e {
+	case PaymentRequestStatusCancelled:
+		return true
+	case PaymentRequestStatusExpired:
+		return true
+	case PaymentRequestStatusOpen:
+		return true
+	case PaymentRequestStatusPaid:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for PaymentScheduleMode.
 const (
 	PaymentScheduleModeFixedDates PaymentScheduleMode = "fixed_dates"
@@ -2990,6 +3938,42 @@ func (e PaymentScheduleMode) Valid() bool {
 	case PaymentScheduleModeInterval:
 		return true
 	case PaymentScheduleModeSingle:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentSource.
+const (
+	PaymentSourceAdjustment     PaymentSource = "adjustment"
+	PaymentSourceBackfill       PaymentSource = "backfill"
+	PaymentSourceGoodwill       PaymentSource = "goodwill"
+	PaymentSourceMandate        PaymentSource = "mandate"
+	PaymentSourceManual         PaymentSource = "manual"
+	PaymentSourceOpeningBalance PaymentSource = "opening_balance"
+	PaymentSourceProvider       PaymentSource = "provider"
+	PaymentSourceRelease        PaymentSource = "release"
+)
+
+// Valid indicates whether the value is a known member of the PaymentSource enum.
+func (e PaymentSource) Valid() bool {
+	switch e {
+	case PaymentSourceAdjustment:
+		return true
+	case PaymentSourceBackfill:
+		return true
+	case PaymentSourceGoodwill:
+		return true
+	case PaymentSourceMandate:
+		return true
+	case PaymentSourceManual:
+		return true
+	case PaymentSourceOpeningBalance:
+		return true
+	case PaymentSourceProvider:
+		return true
+	case PaymentSourceRelease:
 		return true
 	default:
 		return false
@@ -3520,88 +4504,113 @@ func (e PricingStage) Valid() bool {
 
 // Defines values for ProblemType.
 const (
-	ProblemTypeAlreadyMember         ProblemType = "already_member"
-	ProblemTypeBadRequest            ProblemType = "bad_request"
-	ProblemTypeClosureActive         ProblemType = "closure_active"
-	ProblemTypeCodeTaken             ProblemType = "code_taken"
-	ProblemTypeConflict              ProblemType = "conflict"
-	ProblemTypeCsrfFailed            ProblemType = "csrf_failed"
-	ProblemTypeCsvInvalid            ProblemType = "csv_invalid"
-	ProblemTypeCustomerAnonymized    ProblemType = "customer_anonymized"
-	ProblemTypeCustomerEmailMissing  ProblemType = "customer_email_missing"
-	ProblemTypeCustomerMerged        ProblemType = "customer_merged"
-	ProblemTypeCustomerRequired      ProblemType = "customer_required"
-	ProblemTypeDownloadLinkExpired   ProblemType = "download_link_expired"
-	ProblemTypeEndpointDisabled      ProblemType = "endpoint_disabled"
-	ProblemTypeFileTooLarge          ProblemType = "file_too_large"
-	ProblemTypeFitBlocked            ProblemType = "fit_blocked"
-	ProblemTypeForbidden             ProblemType = "forbidden"
-	ProblemTypeHoldExpired           ProblemType = "hold_expired"
-	ProblemTypeIdempotencyInProgress ProblemType = "idempotency_in_progress"
-	ProblemTypeIdempotencyKeyReused  ProblemType = "idempotency_key_reused"
-	ProblemTypeImportNotUndoable     ProblemType = "import_not_undoable"
-	ProblemTypeInUse                 ProblemType = "in_use"
-	ProblemTypeInsuranceRequired     ProblemType = "insurance_required"
-	ProblemTypeInternalError         ProblemType = "internal_error"
-	ProblemTypeInvalidCredentials    ProblemType = "invalid_credentials"
-	ProblemTypeInvalidFile           ProblemType = "invalid_file"
-	ProblemTypeInvalidResetToken     ProblemType = "invalid_reset_token"
-	ProblemTypeInvalidScope          ProblemType = "invalid_scope"
-	ProblemTypeInvalidSignature      ProblemType = "invalid_signature"
-	ProblemTypeInvalidTotp           ProblemType = "invalid_totp"
-	ProblemTypeInvalidTransition     ProblemType = "invalid_transition"
-	ProblemTypeInvalidWebhookUrl     ProblemType = "invalid_webhook_url"
-	ProblemTypeLastOwner             ProblemType = "last_owner"
-	ProblemTypeLinkInvalid           ProblemType = "link_invalid"
-	ProblemTypeMandateOverlap        ProblemType = "mandate_overlap"
-	ProblemTypeMapInvalid            ProblemType = "map_invalid"
-	ProblemTypeMapNotEmpty           ProblemType = "map_not_empty"
-	ProblemTypeMapNotGeoreferenced   ProblemType = "map_not_georeferenced"
-	ProblemTypeMethodNotAllowed      ProblemType = "method_not_allowed"
-	ProblemTypeNoPrice               ProblemType = "no_price"
-	ProblemTypeNotFound              ProblemType = "not_found"
-	ProblemTypeNotImplemented        ProblemType = "not_implemented"
-	ProblemTypeNotReady              ProblemType = "not_ready"
-	ProblemTypeOtpInvalid            ProblemType = "otp_invalid"
-	ProblemTypeOtpLocked             ProblemType = "otp_locked"
-	ProblemTypeOtpRateLimited        ProblemType = "otp_rate_limited"
-	ProblemTypePairingCodeInvalid    ProblemType = "pairing_code_invalid"
-	ProblemTypePaperScanRequired     ProblemType = "paper_scan_required"
-	ProblemTypePlacementInvalid      ProblemType = "placement_invalid"
-	ProblemTypePreconditionRequired  ProblemType = "precondition_required"
-	ProblemTypePriceListImmutable    ProblemType = "price_list_immutable"
-	ProblemTypePriceListInvalid      ProblemType = "price_list_invalid"
-	ProblemTypePriceListOverlap      ProblemType = "price_list_overlap"
-	ProblemTypePromoNotApplicable    ProblemType = "promo_not_applicable"
-	ProblemTypeProposalClosed        ProblemType = "proposal_closed"
-	ProblemTypeProviderUnknown       ProblemType = "provider_unknown"
-	ProblemTypeQuoteExpired          ProblemType = "quote_expired"
-	ProblemTypeRateLimited           ProblemType = "rate_limited"
-	ProblemTypeReleaseInvalid        ProblemType = "release_invalid"
-	ProblemTypeRenewalExists         ProblemType = "renewal_exists"
-	ProblemTypeResourceTaken         ProblemType = "resource_taken"
-	ProblemTypeSharesInvalid         ProblemType = "shares_invalid"
-	ProblemTypeSignatureOpen         ProblemType = "signature_open"
-	ProblemTypeSlugTaken             ProblemType = "slug_taken"
-	ProblemTypeTableActive           ProblemType = "table_active"
-	ProblemTypeTableIncomplete       ProblemType = "table_incomplete"
-	ProblemTypeTemplateInvalid       ProblemType = "template_invalid"
-	ProblemTypeTemplateLimits        ProblemType = "template_limits"
-	ProblemTypeTotpAlreadyEnabled    ProblemType = "totp_already_enabled"
-	ProblemTypeTotpEnrolmentRequired ProblemType = "totp_enrolment_required"
-	ProblemTypeTotpNotEnrolled       ProblemType = "totp_not_enrolled"
-	ProblemTypeTotpRequired          ProblemType = "totp_required"
-	ProblemTypeTotpRequiredByPolicy  ProblemType = "totp_required_by_policy"
-	ProblemTypeTransferRequirements  ProblemType = "transfer_requirements"
-	ProblemTypeUnauthorized          ProblemType = "unauthorized"
-	ProblemTypeUndoUnavailable       ProblemType = "undo_unavailable"
-	ProblemTypeUnknownEventType      ProblemType = "unknown_event_type"
-	ProblemTypeUnsupportedMediaType  ProblemType = "unsupported_media_type"
-	ProblemTypeValidationFailed      ProblemType = "validation_failed"
-	ProblemTypeVersionConflict       ProblemType = "version_conflict"
-	ProblemTypeVesselInOtherFleet    ProblemType = "vessel_in_other_fleet"
-	ProblemTypeVesselNotInFleet      ProblemType = "vessel_not_in_fleet"
-	ProblemTypeWeakPassword          ProblemType = "weak_password"
+	ProblemTypeAlreadyMember             ProblemType = "already_member"
+	ProblemTypeAlreadyReversed           ProblemType = "already_reversed"
+	ProblemTypeBadRequest                ProblemType = "bad_request"
+	ProblemTypeBillingItemMissing        ProblemType = "billing_item_missing"
+	ProblemTypeCashInsufficient          ProblemType = "cash_insufficient"
+	ProblemTypeCashSessionClosed         ProblemType = "cash_session_closed"
+	ProblemTypeCashSessionOpen           ProblemType = "cash_session_open"
+	ProblemTypeCashSessionRequired       ProblemType = "cash_session_required"
+	ProblemTypeChargeCancelled           ProblemType = "charge_cancelled"
+	ProblemTypeChargeExists              ProblemType = "charge_exists"
+	ProblemTypeChargeImmutable           ProblemType = "charge_immutable"
+	ProblemTypeChargesNotOpen            ProblemType = "charges_not_open"
+	ProblemTypeClosureActive             ProblemType = "closure_active"
+	ProblemTypeCodeTaken                 ProblemType = "code_taken"
+	ProblemTypeConflict                  ProblemType = "conflict"
+	ProblemTypeCreditInsufficient        ProblemType = "credit_insufficient"
+	ProblemTypeCsrfFailed                ProblemType = "csrf_failed"
+	ProblemTypeCsvInvalid                ProblemType = "csv_invalid"
+	ProblemTypeCustomerAnonymized        ProblemType = "customer_anonymized"
+	ProblemTypeCustomerEmailMissing      ProblemType = "customer_email_missing"
+	ProblemTypeCustomerMerged            ProblemType = "customer_merged"
+	ProblemTypeCustomerRequired          ProblemType = "customer_required"
+	ProblemTypeDownloadLinkExpired       ProblemType = "download_link_expired"
+	ProblemTypeEndpointDisabled          ProblemType = "endpoint_disabled"
+	ProblemTypeExportEmpty               ProblemType = "export_empty"
+	ProblemTypeExportTooLarge            ProblemType = "export_too_large"
+	ProblemTypeFileTooLarge              ProblemType = "file_too_large"
+	ProblemTypeFitBlocked                ProblemType = "fit_blocked"
+	ProblemTypeForbidden                 ProblemType = "forbidden"
+	ProblemTypeHoldExpired               ProblemType = "hold_expired"
+	ProblemTypeIdempotencyInProgress     ProblemType = "idempotency_in_progress"
+	ProblemTypeIdempotencyKeyReused      ProblemType = "idempotency_key_reused"
+	ProblemTypeImportNotUndoable         ProblemType = "import_not_undoable"
+	ProblemTypeInUse                     ProblemType = "in_use"
+	ProblemTypeInsuranceRequired         ProblemType = "insurance_required"
+	ProblemTypeInternalError             ProblemType = "internal_error"
+	ProblemTypeInvalidCredentials        ProblemType = "invalid_credentials"
+	ProblemTypeInvalidFile               ProblemType = "invalid_file"
+	ProblemTypeInvalidResetToken         ProblemType = "invalid_reset_token"
+	ProblemTypeInvalidScope              ProblemType = "invalid_scope"
+	ProblemTypeInvalidSignature          ProblemType = "invalid_signature"
+	ProblemTypeInvalidTotp               ProblemType = "invalid_totp"
+	ProblemTypeInvalidTransition         ProblemType = "invalid_transition"
+	ProblemTypeInvalidWebhookUrl         ProblemType = "invalid_webhook_url"
+	ProblemTypeLastOwner                 ProblemType = "last_owner"
+	ProblemTypeLinkInvalid               ProblemType = "link_invalid"
+	ProblemTypeMandateOverlap            ProblemType = "mandate_overlap"
+	ProblemTypeMapInvalid                ProblemType = "map_invalid"
+	ProblemTypeMapNotEmpty               ProblemType = "map_not_empty"
+	ProblemTypeMapNotGeoreferenced       ProblemType = "map_not_georeferenced"
+	ProblemTypeMatchExceeds              ProblemType = "match_exceeds"
+	ProblemTypeMethodNotAllowed          ProblemType = "method_not_allowed"
+	ProblemTypeNoPrice                   ProblemType = "no_price"
+	ProblemTypeNoTerminationAmount       ProblemType = "no_termination_amount"
+	ProblemTypeNotDeposit                ProblemType = "not_deposit"
+	ProblemTypeNotExported               ProblemType = "not_exported"
+	ProblemTypeNotFound                  ProblemType = "not_found"
+	ProblemTypeNotImplemented            ProblemType = "not_implemented"
+	ProblemTypeNotReady                  ProblemType = "not_ready"
+	ProblemTypeNothingToSettle           ProblemType = "nothing_to_settle"
+	ProblemTypeOtpInvalid                ProblemType = "otp_invalid"
+	ProblemTypeOtpLocked                 ProblemType = "otp_locked"
+	ProblemTypeOtpRateLimited            ProblemType = "otp_rate_limited"
+	ProblemTypePairingCodeInvalid        ProblemType = "pairing_code_invalid"
+	ProblemTypePaperScanRequired         ProblemType = "paper_scan_required"
+	ProblemTypePlacementInvalid          ProblemType = "placement_invalid"
+	ProblemTypePreconditionRequired      ProblemType = "precondition_required"
+	ProblemTypePriceListImmutable        ProblemType = "price_list_immutable"
+	ProblemTypePriceListInvalid          ProblemType = "price_list_invalid"
+	ProblemTypePriceListOverlap          ProblemType = "price_list_overlap"
+	ProblemTypePromoNotApplicable        ProblemType = "promo_not_applicable"
+	ProblemTypeProposalClosed            ProblemType = "proposal_closed"
+	ProblemTypeProviderDisabled          ProblemType = "provider_disabled"
+	ProblemTypeProviderError             ProblemType = "provider_error"
+	ProblemTypeProviderRefundUnsupported ProblemType = "provider_refund_unsupported"
+	ProblemTypeProviderUnknown           ProblemType = "provider_unknown"
+	ProblemTypeQuoteExpired              ProblemType = "quote_expired"
+	ProblemTypeRateLimited               ProblemType = "rate_limited"
+	ProblemTypeRefundExceeds             ProblemType = "refund_exceeds"
+	ProblemTypeRegisterInUse             ProblemType = "register_in_use"
+	ProblemTypeReleaseInvalid            ProblemType = "release_invalid"
+	ProblemTypeReleaseNotResold          ProblemType = "release_not_resold"
+	ProblemTypeRenewalExists             ProblemType = "renewal_exists"
+	ProblemTypeResourceTaken             ProblemType = "resource_taken"
+	ProblemTypeSharesInvalid             ProblemType = "shares_invalid"
+	ProblemTypeSignatureOpen             ProblemType = "signature_open"
+	ProblemTypeSlugTaken                 ProblemType = "slug_taken"
+	ProblemTypeTableActive               ProblemType = "table_active"
+	ProblemTypeTableIncomplete           ProblemType = "table_incomplete"
+	ProblemTypeTemplateInvalid           ProblemType = "template_invalid"
+	ProblemTypeTemplateLimits            ProblemType = "template_limits"
+	ProblemTypeTotpAlreadyEnabled        ProblemType = "totp_already_enabled"
+	ProblemTypeTotpEnrolmentRequired     ProblemType = "totp_enrolment_required"
+	ProblemTypeTotpNotEnrolled           ProblemType = "totp_not_enrolled"
+	ProblemTypeTotpRequired              ProblemType = "totp_required"
+	ProblemTypeTotpRequiredByPolicy      ProblemType = "totp_required_by_policy"
+	ProblemTypeTransferRequirements      ProblemType = "transfer_requirements"
+	ProblemTypeUnauthorized              ProblemType = "unauthorized"
+	ProblemTypeUndoUnavailable           ProblemType = "undo_unavailable"
+	ProblemTypeUnknownEventType          ProblemType = "unknown_event_type"
+	ProblemTypeUnsupportedMediaType      ProblemType = "unsupported_media_type"
+	ProblemTypeUseEdit                   ProblemType = "use_edit"
+	ProblemTypeValidationFailed          ProblemType = "validation_failed"
+	ProblemTypeVersionConflict           ProblemType = "version_conflict"
+	ProblemTypeVesselInOtherFleet        ProblemType = "vessel_in_other_fleet"
+	ProblemTypeVesselNotInFleet          ProblemType = "vessel_not_in_fleet"
+	ProblemTypeWeakPassword              ProblemType = "weak_password"
 )
 
 // Valid indicates whether the value is a known member of the ProblemType enum.
@@ -3609,13 +4618,35 @@ func (e ProblemType) Valid() bool {
 	switch e {
 	case ProblemTypeAlreadyMember:
 		return true
+	case ProblemTypeAlreadyReversed:
+		return true
 	case ProblemTypeBadRequest:
+		return true
+	case ProblemTypeBillingItemMissing:
+		return true
+	case ProblemTypeCashInsufficient:
+		return true
+	case ProblemTypeCashSessionClosed:
+		return true
+	case ProblemTypeCashSessionOpen:
+		return true
+	case ProblemTypeCashSessionRequired:
+		return true
+	case ProblemTypeChargeCancelled:
+		return true
+	case ProblemTypeChargeExists:
+		return true
+	case ProblemTypeChargeImmutable:
+		return true
+	case ProblemTypeChargesNotOpen:
 		return true
 	case ProblemTypeClosureActive:
 		return true
 	case ProblemTypeCodeTaken:
 		return true
 	case ProblemTypeConflict:
+		return true
+	case ProblemTypeCreditInsufficient:
 		return true
 	case ProblemTypeCsrfFailed:
 		return true
@@ -3632,6 +4663,10 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeDownloadLinkExpired:
 		return true
 	case ProblemTypeEndpointDisabled:
+		return true
+	case ProblemTypeExportEmpty:
+		return true
+	case ProblemTypeExportTooLarge:
 		return true
 	case ProblemTypeFileTooLarge:
 		return true
@@ -3681,15 +4716,25 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeMapNotGeoreferenced:
 		return true
+	case ProblemTypeMatchExceeds:
+		return true
 	case ProblemTypeMethodNotAllowed:
 		return true
 	case ProblemTypeNoPrice:
+		return true
+	case ProblemTypeNoTerminationAmount:
+		return true
+	case ProblemTypeNotDeposit:
+		return true
+	case ProblemTypeNotExported:
 		return true
 	case ProblemTypeNotFound:
 		return true
 	case ProblemTypeNotImplemented:
 		return true
 	case ProblemTypeNotReady:
+		return true
+	case ProblemTypeNothingToSettle:
 		return true
 	case ProblemTypeOtpInvalid:
 		return true
@@ -3715,13 +4760,25 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeProposalClosed:
 		return true
+	case ProblemTypeProviderDisabled:
+		return true
+	case ProblemTypeProviderError:
+		return true
+	case ProblemTypeProviderRefundUnsupported:
+		return true
 	case ProblemTypeProviderUnknown:
 		return true
 	case ProblemTypeQuoteExpired:
 		return true
 	case ProblemTypeRateLimited:
 		return true
+	case ProblemTypeRefundExceeds:
+		return true
+	case ProblemTypeRegisterInUse:
+		return true
 	case ProblemTypeReleaseInvalid:
+		return true
+	case ProblemTypeReleaseNotResold:
 		return true
 	case ProblemTypeRenewalExists:
 		return true
@@ -3760,6 +4817,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeUnknownEventType:
 		return true
 	case ProblemTypeUnsupportedMediaType:
+		return true
+	case ProblemTypeUseEdit:
 		return true
 	case ProblemTypeValidationFailed:
 		return true
@@ -3917,6 +4976,168 @@ func (e ReadyStatusStatus) Valid() bool {
 	}
 }
 
+// Defines values for ReceivableKind.
+const (
+	ReceivableKindCharge               ReceivableKind = "charge"
+	ReceivableKindScheduledInstallment ReceivableKind = "scheduled_installment"
+)
+
+// Valid indicates whether the value is a known member of the ReceivableKind enum.
+func (e ReceivableKind) Valid() bool {
+	switch e {
+	case ReceivableKindCharge:
+		return true
+	case ReceivableKindScheduledInstallment:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RecordPaymentAutoMatch.
+const (
+	OldestDueFirst RecordPaymentAutoMatch = "oldest_due_first"
+)
+
+// Valid indicates whether the value is a known member of the RecordPaymentAutoMatch enum.
+func (e RecordPaymentAutoMatch) Valid() bool {
+	switch e {
+	case OldestDueFirst:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RecordPaymentKind.
+const (
+	RecordPaymentKindDeposit RecordPaymentKind = "deposit"
+	RecordPaymentKindPayment RecordPaymentKind = "payment"
+)
+
+// Valid indicates whether the value is a known member of the RecordPaymentKind enum.
+func (e RecordPaymentKind) Valid() bool {
+	switch e {
+	case RecordPaymentKindDeposit:
+		return true
+	case RecordPaymentKindPayment:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RecordPaymentMethod.
+const (
+	RecordPaymentMethodBankTransfer RecordPaymentMethod = "bank_transfer"
+	RecordPaymentMethodCardPos      RecordPaymentMethod = "card_pos"
+	RecordPaymentMethodCash         RecordPaymentMethod = "cash"
+	RecordPaymentMethodCheque       RecordPaymentMethod = "cheque"
+	RecordPaymentMethodOther        RecordPaymentMethod = "other"
+)
+
+// Valid indicates whether the value is a known member of the RecordPaymentMethod enum.
+func (e RecordPaymentMethod) Valid() bool {
+	switch e {
+	case RecordPaymentMethodBankTransfer:
+		return true
+	case RecordPaymentMethodCardPos:
+		return true
+	case RecordPaymentMethodCash:
+		return true
+	case RecordPaymentMethodCheque:
+		return true
+	case RecordPaymentMethodOther:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RefundKind.
+const (
+	RefundKindPayout RefundKind = "payout"
+	RefundKindRefund RefundKind = "refund"
+)
+
+// Valid indicates whether the value is a known member of the RefundKind enum.
+func (e RefundKind) Valid() bool {
+	switch e {
+	case RefundKindPayout:
+		return true
+	case RefundKindRefund:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RefundSource.
+const (
+	RefundSourceManual   RefundSource = "manual"
+	RefundSourceProvider RefundSource = "provider"
+)
+
+// Valid indicates whether the value is a known member of the RefundSource enum.
+func (e RefundSource) Valid() bool {
+	switch e {
+	case RefundSourceManual:
+		return true
+	case RefundSourceProvider:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RefundInputMethod.
+const (
+	RefundInputMethodBankTransfer RefundInputMethod = "bank_transfer"
+	RefundInputMethodCardPos      RefundInputMethod = "card_pos"
+	RefundInputMethodCash         RefundInputMethod = "cash"
+	RefundInputMethodCheque       RefundInputMethod = "cheque"
+	RefundInputMethodOther        RefundInputMethod = "other"
+)
+
+// Valid indicates whether the value is a known member of the RefundInputMethod enum.
+func (e RefundInputMethod) Valid() bool {
+	switch e {
+	case RefundInputMethodBankTransfer:
+		return true
+	case RefundInputMethodCardPos:
+		return true
+	case RefundInputMethodCash:
+		return true
+	case RefundInputMethodCheque:
+		return true
+	case RefundInputMethodOther:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RefundStatus.
+const (
+	RefundStatusFailed    RefundStatus = "failed"
+	RefundStatusPending   RefundStatus = "pending"
+	RefundStatusSucceeded RefundStatus = "succeeded"
+)
+
+// Valid indicates whether the value is a known member of the RefundStatus enum.
+func (e RefundStatus) Valid() bool {
+	switch e {
+	case RefundStatusFailed:
+		return true
+	case RefundStatusPending:
+		return true
+	case RefundStatusSucceeded:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ReleasePolicy.
 const (
 	Never       ReleasePolicy = "never"
@@ -3977,6 +5198,87 @@ func (e ReleaseStatus) Valid() bool {
 	case ReleaseStatusActive:
 		return true
 	case ReleaseStatusRevoked:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReminderItemStatus.
+const (
+	ReminderItemStatusAwaitingApproval ReminderItemStatus = "awaiting_approval"
+	ReminderItemStatusDismissed        ReminderItemStatus = "dismissed"
+	ReminderItemStatusQueued           ReminderItemStatus = "queued"
+	ReminderItemStatusSent             ReminderItemStatus = "sent"
+	ReminderItemStatusSkippedExcluded  ReminderItemStatus = "skipped_excluded"
+	ReminderItemStatusSkippedNoEmail   ReminderItemStatus = "skipped_no_email"
+	ReminderItemStatusSkippedPaid      ReminderItemStatus = "skipped_paid"
+)
+
+// Valid indicates whether the value is a known member of the ReminderItemStatus enum.
+func (e ReminderItemStatus) Valid() bool {
+	switch e {
+	case ReminderItemStatusAwaitingApproval:
+		return true
+	case ReminderItemStatusDismissed:
+		return true
+	case ReminderItemStatusQueued:
+		return true
+	case ReminderItemStatusSent:
+		return true
+	case ReminderItemStatusSkippedExcluded:
+		return true
+	case ReminderItemStatusSkippedNoEmail:
+		return true
+	case ReminderItemStatusSkippedPaid:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReminderLevel.
+const (
+	Courteous   ReminderLevel = "courteous"
+	Due         ReminderLevel = "due"
+	FinalNotice ReminderLevel = "final_notice"
+	Formal      ReminderLevel = "formal"
+	PreDue      ReminderLevel = "pre_due"
+)
+
+// Valid indicates whether the value is a known member of the ReminderLevel enum.
+func (e ReminderLevel) Valid() bool {
+	switch e {
+	case Courteous:
+		return true
+	case Due:
+		return true
+	case FinalNotice:
+		return true
+	case Formal:
+		return true
+	case PreDue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReminderRunStatus.
+const (
+	ReminderRunStatusDone    ReminderRunStatus = "done"
+	ReminderRunStatusFailed  ReminderRunStatus = "failed"
+	ReminderRunStatusRunning ReminderRunStatus = "running"
+)
+
+// Valid indicates whether the value is a known member of the ReminderRunStatus enum.
+func (e ReminderRunStatus) Valid() bool {
+	switch e {
+	case ReminderRunStatusDone:
+		return true
+	case ReminderRunStatusFailed:
+		return true
+	case ReminderRunStatusRunning:
 		return true
 	default:
 		return false
@@ -4364,6 +5666,48 @@ func (e SearchPurpose) Valid() bool {
 	}
 }
 
+// Defines values for SepaMandateStatus.
+const (
+	SepaMandateStatusActive  SepaMandateStatus = "active"
+	SepaMandateStatusFailed  SepaMandateStatus = "failed"
+	SepaMandateStatusPending SepaMandateStatus = "pending"
+	SepaMandateStatusRevoked SepaMandateStatus = "revoked"
+)
+
+// Valid indicates whether the value is a known member of the SepaMandateStatus enum.
+func (e SepaMandateStatus) Valid() bool {
+	switch e {
+	case SepaMandateStatusActive:
+		return true
+	case SepaMandateStatusFailed:
+		return true
+	case SepaMandateStatusPending:
+		return true
+	case SepaMandateStatusRevoked:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SettleMandateInputMode.
+const (
+	SettleMandateInputModeCredit SettleMandateInputMode = "credit"
+	SettleMandateInputModePayout SettleMandateInputMode = "payout"
+)
+
+// Valid indicates whether the value is a known member of the SettleMandateInputMode enum.
+func (e SettleMandateInputMode) Valid() bool {
+	switch e {
+	case SettleMandateInputModeCredit:
+		return true
+	case SettleMandateInputModePayout:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SettlementMethod.
 const (
 	SettlementMethodBankTransfer SettlementMethod = "bank_transfer"
@@ -4595,6 +5939,30 @@ func (e SplitRule) Valid() bool {
 	case ProRataDaily:
 		return true
 	case WholeMonths:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StatementRowKind.
+const (
+	StatementRowKindCharge  StatementRowKind = "charge"
+	StatementRowKindCredit  StatementRowKind = "credit"
+	StatementRowKindPayment StatementRowKind = "payment"
+	StatementRowKindRefund  StatementRowKind = "refund"
+)
+
+// Valid indicates whether the value is a known member of the StatementRowKind enum.
+func (e StatementRowKind) Valid() bool {
+	switch e {
+	case StatementRowKindCharge:
+		return true
+	case StatementRowKindCredit:
+		return true
+	case StatementRowKindPayment:
+		return true
+	case StatementRowKindRefund:
 		return true
 	default:
 		return false
@@ -4916,6 +6284,33 @@ func (e TransitCreateChannel) Valid() bool {
 	}
 }
 
+// Defines values for TransitPaymentInputMethod.
+const (
+	TransitPaymentInputMethodBankTransfer TransitPaymentInputMethod = "bank_transfer"
+	TransitPaymentInputMethodCardPos      TransitPaymentInputMethod = "card_pos"
+	TransitPaymentInputMethodCash         TransitPaymentInputMethod = "cash"
+	TransitPaymentInputMethodCheque       TransitPaymentInputMethod = "cheque"
+	TransitPaymentInputMethodOther        TransitPaymentInputMethod = "other"
+)
+
+// Valid indicates whether the value is a known member of the TransitPaymentInputMethod enum.
+func (e TransitPaymentInputMethod) Valid() bool {
+	switch e {
+	case TransitPaymentInputMethodBankTransfer:
+		return true
+	case TransitPaymentInputMethodCardPos:
+		return true
+	case TransitPaymentInputMethodCash:
+		return true
+	case TransitPaymentInputMethodCheque:
+		return true
+	case TransitPaymentInputMethodOther:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for UnitClass.
 const (
 	Imbarcazione UnitClass = "imbarcazione"
@@ -5159,6 +6554,75 @@ func (e WebhookDeliveryStatus) Valid() bool {
 	}
 }
 
+// Defines values for WorkItemKind.
+const (
+	WorkItemKindArrearsPaid           WorkItemKind = "arrears_paid"
+	WorkItemKindBillingItemMissing    WorkItemKind = "billing_item_missing"
+	WorkItemKindBillingTargetMismatch WorkItemKind = "billing_target_mismatch"
+	WorkItemKindChargesToExport       WorkItemKind = "charges_to_export"
+	WorkItemKindDeadline              WorkItemKind = "deadline"
+	WorkItemKindDispute               WorkItemKind = "dispute"
+	WorkItemKindLatePayment           WorkItemKind = "late_payment"
+	WorkItemKindOverpayment           WorkItemKind = "overpayment"
+	WorkItemKindPaymentFailed         WorkItemKind = "payment_failed"
+	WorkItemKindReminderApproval      WorkItemKind = "reminder_approval"
+	WorkItemKindSepaFailed            WorkItemKind = "sepa_failed"
+)
+
+// Valid indicates whether the value is a known member of the WorkItemKind enum.
+func (e WorkItemKind) Valid() bool {
+	switch e {
+	case WorkItemKindArrearsPaid:
+		return true
+	case WorkItemKindBillingItemMissing:
+		return true
+	case WorkItemKindBillingTargetMismatch:
+		return true
+	case WorkItemKindChargesToExport:
+		return true
+	case WorkItemKindDeadline:
+		return true
+	case WorkItemKindDispute:
+		return true
+	case WorkItemKindLatePayment:
+		return true
+	case WorkItemKindOverpayment:
+		return true
+	case WorkItemKindPaymentFailed:
+		return true
+	case WorkItemKindReminderApproval:
+		return true
+	case WorkItemKindSepaFailed:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WorkItemStatus.
+const (
+	WorkItemStatusDismissed  WorkItemStatus = "dismissed"
+	WorkItemStatusDone       WorkItemStatus = "done"
+	WorkItemStatusInProgress WorkItemStatus = "in_progress"
+	WorkItemStatusOpen       WorkItemStatus = "open"
+)
+
+// Valid indicates whether the value is a known member of the WorkItemStatus enum.
+func (e WorkItemStatus) Valid() bool {
+	switch e {
+	case WorkItemStatusDismissed:
+		return true
+	case WorkItemStatusDone:
+		return true
+	case WorkItemStatusInProgress:
+		return true
+	case WorkItemStatusOpen:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for WriteWarning.
 const (
 	WriteWarningBerthUnavailable     WriteWarning = "berth_unavailable"
@@ -5195,6 +6659,84 @@ func (e GetRightHistoryParamsFormat) Valid() bool {
 	case GetRightHistoryParamsFormatJson:
 		return true
 	case GetRightHistoryParamsFormatPdf:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListCashSessionsParamsStatus.
+const (
+	ListCashSessionsParamsStatusClosed ListCashSessionsParamsStatus = "closed"
+	ListCashSessionsParamsStatusOpen   ListCashSessionsParamsStatus = "open"
+)
+
+// Valid indicates whether the value is a known member of the ListCashSessionsParamsStatus enum.
+func (e ListCashSessionsParamsStatus) Valid() bool {
+	switch e {
+	case ListCashSessionsParamsStatusClosed:
+		return true
+	case ListCashSessionsParamsStatusOpen:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetZReportParamsFormat.
+const (
+	GetZReportParamsFormatHtml GetZReportParamsFormat = "html"
+	GetZReportParamsFormatPdf  GetZReportParamsFormat = "pdf"
+)
+
+// Valid indicates whether the value is a known member of the GetZReportParamsFormat enum.
+func (e GetZReportParamsFormat) Valid() bool {
+	switch e {
+	case GetZReportParamsFormatHtml:
+		return true
+	case GetZReportParamsFormatPdf:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DownloadChargeExportParamsFormat.
+const (
+	DownloadChargeExportParamsFormatCsv  DownloadChargeExportParamsFormat = "csv"
+	DownloadChargeExportParamsFormatPdf  DownloadChargeExportParamsFormat = "pdf"
+	DownloadChargeExportParamsFormatXlsx DownloadChargeExportParamsFormat = "xlsx"
+)
+
+// Valid indicates whether the value is a known member of the DownloadChargeExportParamsFormat enum.
+func (e DownloadChargeExportParamsFormat) Valid() bool {
+	switch e {
+	case DownloadChargeExportParamsFormatCsv:
+		return true
+	case DownloadChargeExportParamsFormatPdf:
+		return true
+	case DownloadChargeExportParamsFormatXlsx:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListChargesParamsFormat.
+const (
+	ListChargesParamsFormatCsv  ListChargesParamsFormat = "csv"
+	ListChargesParamsFormatJson ListChargesParamsFormat = "json"
+	ListChargesParamsFormatXlsx ListChargesParamsFormat = "xlsx"
+)
+
+// Valid indicates whether the value is a known member of the ListChargesParamsFormat enum.
+func (e ListChargesParamsFormat) Valid() bool {
+	switch e {
+	case ListChargesParamsFormatCsv:
+		return true
+	case ListChargesParamsFormatJson:
+		return true
+	case ListChargesParamsFormatXlsx:
 		return true
 	default:
 		return false
@@ -5273,6 +6815,27 @@ func (e ListCommunicationRecipientsParamsFormat) Valid() bool {
 	}
 }
 
+// Defines values for GetCustomerStatementParamsFormat.
+const (
+	GetCustomerStatementParamsFormatCsv  GetCustomerStatementParamsFormat = "csv"
+	GetCustomerStatementParamsFormatJson GetCustomerStatementParamsFormat = "json"
+	GetCustomerStatementParamsFormatPdf  GetCustomerStatementParamsFormat = "pdf"
+)
+
+// Valid indicates whether the value is a known member of the GetCustomerStatementParamsFormat enum.
+func (e GetCustomerStatementParamsFormat) Valid() bool {
+	switch e {
+	case GetCustomerStatementParamsFormatCsv:
+		return true
+	case GetCustomerStatementParamsFormatJson:
+		return true
+	case GetCustomerStatementParamsFormatPdf:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListFeeRunLinesParamsFormat.
 const (
 	ListFeeRunLinesParamsFormatCsv  ListFeeRunLinesParamsFormat = "csv"
@@ -5285,6 +6848,45 @@ func (e ListFeeRunLinesParamsFormat) Valid() bool {
 	case ListFeeRunLinesParamsFormatCsv:
 		return true
 	case ListFeeRunLinesParamsFormatJson:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetFiscalDailyTotalsParamsGroup.
+const (
+	GetFiscalDailyTotalsParamsGroupDay   GetFiscalDailyTotalsParamsGroup = "day"
+	GetFiscalDailyTotalsParamsGroupMonth GetFiscalDailyTotalsParamsGroup = "month"
+)
+
+// Valid indicates whether the value is a known member of the GetFiscalDailyTotalsParamsGroup enum.
+func (e GetFiscalDailyTotalsParamsGroup) Valid() bool {
+	switch e {
+	case GetFiscalDailyTotalsParamsGroupDay:
+		return true
+	case GetFiscalDailyTotalsParamsGroupMonth:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetFiscalDailyTotalsParamsFormat.
+const (
+	GetFiscalDailyTotalsParamsFormatCsv  GetFiscalDailyTotalsParamsFormat = "csv"
+	GetFiscalDailyTotalsParamsFormatJson GetFiscalDailyTotalsParamsFormat = "json"
+	GetFiscalDailyTotalsParamsFormatXlsx GetFiscalDailyTotalsParamsFormat = "xlsx"
+)
+
+// Valid indicates whether the value is a known member of the GetFiscalDailyTotalsParamsFormat enum.
+func (e GetFiscalDailyTotalsParamsFormat) Valid() bool {
+	switch e {
+	case GetFiscalDailyTotalsParamsFormatCsv:
+		return true
+	case GetFiscalDailyTotalsParamsFormatJson:
+		return true
+	case GetFiscalDailyTotalsParamsFormatXlsx:
 		return true
 	default:
 		return false
@@ -5384,6 +6986,45 @@ func (e GetMillesimalEntriesParamsFormat) Valid() bool {
 	}
 }
 
+// Defines values for ExportPaymentsParamsFormat.
+const (
+	ExportPaymentsParamsFormatCsv  ExportPaymentsParamsFormat = "csv"
+	ExportPaymentsParamsFormatXlsx ExportPaymentsParamsFormat = "xlsx"
+)
+
+// Valid indicates whether the value is a known member of the ExportPaymentsParamsFormat enum.
+func (e ExportPaymentsParamsFormat) Valid() bool {
+	switch e {
+	case ExportPaymentsParamsFormatCsv:
+		return true
+	case ExportPaymentsParamsFormatXlsx:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetPaymentReceiptParamsFormat.
+const (
+	A4  GetPaymentReceiptParamsFormat = "a4"
+	N58 GetPaymentReceiptParamsFormat = "58"
+	N80 GetPaymentReceiptParamsFormat = "80"
+)
+
+// Valid indicates whether the value is a known member of the GetPaymentReceiptParamsFormat enum.
+func (e GetPaymentReceiptParamsFormat) Valid() bool {
+	switch e {
+	case A4:
+		return true
+	case N58:
+		return true
+	case N80:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetPriceMatrixParamsRows.
 const (
 	Bands      GetPriceMatrixParamsRows = "bands"
@@ -5396,6 +7037,69 @@ func (e GetPriceMatrixParamsRows) Valid() bool {
 	case Bands:
 		return true
 	case Categories:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListReceivablesParamsStatus.
+const (
+	ListReceivablesParamsStatusOpen      ListReceivablesParamsStatus = "open"
+	ListReceivablesParamsStatusOverdue   ListReceivablesParamsStatus = "overdue"
+	ListReceivablesParamsStatusScheduled ListReceivablesParamsStatus = "scheduled"
+)
+
+// Valid indicates whether the value is a known member of the ListReceivablesParamsStatus enum.
+func (e ListReceivablesParamsStatus) Valid() bool {
+	switch e {
+	case ListReceivablesParamsStatusOpen:
+		return true
+	case ListReceivablesParamsStatusOverdue:
+		return true
+	case ListReceivablesParamsStatusScheduled:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListReceivablesParamsFormat.
+const (
+	ListReceivablesParamsFormatCsv  ListReceivablesParamsFormat = "csv"
+	ListReceivablesParamsFormatJson ListReceivablesParamsFormat = "json"
+	ListReceivablesParamsFormatXlsx ListReceivablesParamsFormat = "xlsx"
+)
+
+// Valid indicates whether the value is a known member of the ListReceivablesParamsFormat enum.
+func (e ListReceivablesParamsFormat) Valid() bool {
+	switch e {
+	case ListReceivablesParamsFormatCsv:
+		return true
+	case ListReceivablesParamsFormatJson:
+		return true
+	case ListReceivablesParamsFormatXlsx:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetReceivablesAgeingParamsFormat.
+const (
+	GetReceivablesAgeingParamsFormatCsv  GetReceivablesAgeingParamsFormat = "csv"
+	GetReceivablesAgeingParamsFormatJson GetReceivablesAgeingParamsFormat = "json"
+	GetReceivablesAgeingParamsFormatXlsx GetReceivablesAgeingParamsFormat = "xlsx"
+)
+
+// Valid indicates whether the value is a known member of the GetReceivablesAgeingParamsFormat enum.
+func (e GetReceivablesAgeingParamsFormat) Valid() bool {
+	switch e {
+	case GetReceivablesAgeingParamsFormatCsv:
+		return true
+	case GetReceivablesAgeingParamsFormatJson:
+		return true
+	case GetReceivablesAgeingParamsFormatXlsx:
 		return true
 	default:
 		return false
@@ -5517,6 +7221,69 @@ type Address struct {
 	Line2      *string `json:"line2,omitempty"`
 	PostalCode *string `json:"postal_code,omitempty"`
 	Province   *string `json:"province,omitempty"`
+}
+
+// AdjustLineInput A line of an adjustment; quantities or prices may be negative in delta mode
+type AdjustLineInput struct {
+	Description *string `json:"description,omitempty"`
+	ItemId      string  `json:"item_id"`
+	QtyMilli    int64   `json:"qty_milli"`
+
+	// ServiceFrom Calendar date YYYY-MM-DD in the marina timezone
+	ServiceFrom *IsoDate `json:"service_from,omitempty"`
+
+	// ServiceTo Calendar date YYYY-MM-DD in the marina timezone
+	ServiceTo *IsoDate `json:"service_to,omitempty"`
+	UnitCents *int64   `json:"unit_cents,omitempty"`
+}
+
+// AdjustResult defines model for AdjustResult.
+type AdjustResult struct {
+	Adjustments []Charge `json:"adjustments"`
+}
+
+// AgeingAmounts Residuals of open charges by age bucket (AgeingBucket)
+type AgeingAmounts struct {
+	// D030Cents Amount in integer cents of the marina currency
+	D030Cents Cents `json:"d0_30_cents"`
+
+	// D3160Cents Amount in integer cents of the marina currency
+	D3160Cents Cents `json:"d31_60_cents"`
+
+	// D6190Cents Amount in integer cents of the marina currency
+	D6190Cents Cents `json:"d61_90_cents"`
+
+	// D90PlusCents Amount in integer cents of the marina currency
+	D90PlusCents Cents `json:"d90_plus_cents"`
+
+	// NotDueCents Amount in integer cents of the marina currency
+	NotDueCents Cents `json:"not_due_cents"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents `json:"total_cents"`
+}
+
+// AgeingBucket defines model for AgeingBucket.
+type AgeingBucket string
+
+// AgeingReport defines model for AgeingReport.
+type AgeingReport struct {
+	Rows []AgeingRow `json:"rows"`
+
+	// Totals Residuals of open charges by age bucket (AgeingBucket)
+	Totals AgeingAmounts `json:"totals"`
+}
+
+// AgeingRow defines model for AgeingRow.
+type AgeingRow struct {
+	// Amounts Residuals of open charges by age bucket (AgeingBucket)
+	Amounts AgeingAmounts `json:"amounts"`
+
+	// CreditCents Amount in integer cents of the marina currency
+	CreditCents Cents `json:"credit_cents"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer CustomerBrief `json:"customer"`
 }
 
 // Allocation defines model for Allocation.
@@ -5649,6 +7416,17 @@ type ApiKeyList struct {
 	Items []ApiKey `json:"items"`
 }
 
+// ApplyCreditInput defines model for ApplyCreditInput.
+type ApplyCreditInput struct {
+	ChargeIds *[]string `json:"charge_ids,omitempty"`
+}
+
+// ApplyCreditResult defines model for ApplyCreditResult.
+type ApplyCreditResult struct {
+	// MatchedCents Amount in integer cents of the marina currency
+	MatchedCents Cents `json:"matched_cents"`
+}
+
 // AreaKind defines model for AreaKind.
 type AreaKind string
 
@@ -5697,6 +7475,15 @@ type AreaPlacement struct {
 
 	// YCm Length in integer centimetres
 	YCm *Cm `json:"y_cm,omitempty"`
+}
+
+// ArrearsPolicy defines model for ArrearsPolicy.
+type ArrearsPolicy struct {
+	DaysOverdue int  `json:"days_overdue"`
+	Enabled     bool `json:"enabled"`
+
+	// MinAmountCents Amount in integer cents of the marina currency
+	MinAmountCents Cents `json:"min_amount_cents"`
 }
 
 // AuditActor defines model for AuditActor.
@@ -6009,6 +7796,38 @@ type BerthSummary struct {
 	WidthCm Cm `json:"width_cm"`
 }
 
+// BillingSettings defines model for BillingSettings.
+type BillingSettings struct {
+	ArrearsPolicy      ArrearsPolicy `json:"arrears_policy"`
+	AutoPaymentRequest bool          `json:"auto_payment_request"`
+	DefaultDueDays     int           `json:"default_due_days"`
+	ExportReminderDays int           `json:"export_reminder_days"`
+	FiscalDriver       string        `json:"fiscal_driver"`
+
+	// FiscalDrivers Available fiscal driver codes (none
+	FiscalDrivers  []string       `json:"fiscal_drivers"`
+	OriginItems    []OriginItem   `json:"origin_items"`
+	ReceiptFooter  string         `json:"receipt_footer"`
+	ReminderHour   int            `json:"reminder_hour"`
+	ReminderPolicy ReminderPolicy `json:"reminder_policy"`
+	SepaLeadDays   int            `json:"sepa_lead_days"`
+	Version        int            `json:"version"`
+}
+
+// BillingSettingsInput defines model for BillingSettingsInput.
+type BillingSettingsInput struct {
+	ArrearsPolicy      ArrearsPolicy  `json:"arrears_policy"`
+	AutoPaymentRequest bool           `json:"auto_payment_request"`
+	DefaultDueDays     int            `json:"default_due_days"`
+	ExportReminderDays int            `json:"export_reminder_days"`
+	FiscalDriver       string         `json:"fiscal_driver"`
+	OriginItems        []OriginItem   `json:"origin_items"`
+	ReceiptFooter      string         `json:"receipt_footer"`
+	ReminderHour       int            `json:"reminder_hour"`
+	ReminderPolicy     ReminderPolicy `json:"reminder_policy"`
+	SepaLeadDays       int            `json:"sepa_lead_days"`
+}
+
 // BlockCreate For dynamic areas loa_cm and beam_cm give the blocked footprint
 type BlockCreate struct {
 	// BeamCm Strictly positive length in integer centimetres
@@ -6157,6 +7976,111 @@ type CancellationPolicy struct {
 // CancellationPolicyRefund defines model for CancellationPolicy.Refund.
 type CancellationPolicyRefund string
 
+// CashMovement defines model for CashMovement.
+type CashMovement struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents     Cents            `json:"amount_cents"`
+	CreatedAt       time.Time        `json:"created_at"`
+	CreatedByUserId *string          `json:"created_by_user_id,omitempty"`
+	Id              string           `json:"id"`
+	Kind            CashMovementKind `json:"kind"`
+	Reason          string           `json:"reason"`
+}
+
+// CashMovementKind defines model for CashMovement.Kind.
+type CashMovementKind string
+
+// CashMovementInput defines model for CashMovementInput.
+type CashMovementInput struct {
+	AmountCents int64                 `json:"amount_cents"`
+	Kind        CashMovementInputKind `json:"kind"`
+	Reason      string                `json:"reason"`
+}
+
+// CashMovementInputKind defines model for CashMovementInput.Kind.
+type CashMovementInputKind string
+
+// CashRegister defines model for CashRegister.
+type CashRegister struct {
+	Active        bool    `json:"active"`
+	Code          string  `json:"code"`
+	Id            string  `json:"id"`
+	IsDefault     bool    `json:"is_default"`
+	Name          string  `json:"name"`
+	OpenSessionId *string `json:"open_session_id,omitempty"`
+	Version       int     `json:"version"`
+}
+
+// CashRegisterInput defines model for CashRegisterInput.
+type CashRegisterInput struct {
+	Active *bool  `json:"active,omitempty"`
+	Code   string `json:"code"`
+	Name   string `json:"name"`
+}
+
+// CashRegisterList defines model for CashRegisterList.
+type CashRegisterList struct {
+	Items []CashRegister `json:"items"`
+}
+
+// CashRegisterPatch defines model for CashRegisterPatch.
+type CashRegisterPatch struct {
+	Active    *bool   `json:"active,omitempty"`
+	IsDefault *bool   `json:"is_default,omitempty"`
+	Name      *string `json:"name,omitempty"`
+}
+
+// CashSession defines model for CashSession.
+type CashSession struct {
+	// BusinessDate Calendar date YYYY-MM-DD in the marina timezone
+	BusinessDate   IsoDate    `json:"business_date"`
+	ClosedAt       *time.Time `json:"closed_at,omitempty"`
+	ClosedByUserId *string    `json:"closed_by_user_id,omitempty"`
+
+	// FloatCents Amount in integer cents of the marina currency
+	FloatCents     Cents             `json:"float_cents"`
+	Id             string            `json:"id"`
+	Movements      *[]CashMovement   `json:"movements,omitempty"`
+	Notes          *string           `json:"notes,omitempty"`
+	OpenedAt       time.Time         `json:"opened_at"`
+	OpenedByUserId *string           `json:"opened_by_user_id,omitempty"`
+	RegisterCode   *string           `json:"register_code,omitempty"`
+	RegisterId     string            `json:"register_id"`
+	Status         CashSessionStatus `json:"status"`
+	Summary        CashSummary       `json:"summary"`
+	Version        int               `json:"version"`
+}
+
+// CashSessionStatus defines model for CashSession.Status.
+type CashSessionStatus string
+
+// CashSessionPage defines model for CashSessionPage.
+type CashSessionPage struct {
+	Items      []CashSession `json:"items"`
+	NextCursor *string       `json:"next_cursor"`
+}
+
+// CashSummary defines model for CashSummary.
+type CashSummary struct {
+	Counted []MethodAmount `json:"counted"`
+
+	// DifferenceCents Amount in integer cents of the marina currency
+	DifferenceCents Cents          `json:"difference_cents"`
+	Expected        []MethodAmount `json:"expected"`
+
+	// MovementsInCents Amount in integer cents of the marina currency
+	MovementsInCents Cents `json:"movements_in_cents"`
+
+	// MovementsOutCents Amount in integer cents of the marina currency
+	MovementsOutCents Cents `json:"movements_out_cents"`
+
+	// PaymentsCents Amount in integer cents of the marina currency
+	PaymentsCents Cents `json:"payments_cents"`
+
+	// RefundsCents Amount in integer cents of the marina currency
+	RefundsCents Cents `json:"refunds_cents"`
+}
+
 // CategoryTarget defines model for CategoryTarget.
 type CategoryTarget string
 
@@ -6178,6 +8102,339 @@ type ChangePasswordRequest struct {
 
 // Channel defines model for Channel.
 type Channel string
+
+// Charge defines model for Charge.
+type Charge struct {
+	CancelReason   *string         `json:"cancel_reason,omitempty"`
+	CancelledAt    *time.Time      `json:"cancelled_at,omitempty"`
+	ContractCode   *string         `json:"contract_code,omitempty"`
+	ContractId     *string         `json:"contract_id,omitempty"`
+	CorrectionKind *CorrectionKind `json:"correction_kind,omitempty"`
+
+	// Corrections Linked adjustments of this charge
+	Corrections    *[]ChargeRef `json:"corrections,omitempty"`
+	CorrectsCharge *ChargeRef   `json:"corrects_charge,omitempty"`
+	CreatedAt      *time.Time   `json:"created_at,omitempty"`
+
+	// CreditedCents Amount in integer cents of the marina currency
+	CreditedCents Cents `json:"credited_cents"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer    *CustomerBrief `json:"customer,omitempty"`
+	Description string         `json:"description"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn      IsoDate            `json:"due_on"`
+	ExportedAt *time.Time         `json:"exported_at,omitempty"`
+	Exports    *[]ChargeExportRef `json:"exports,omitempty"`
+
+	// ExternalInvoiceDate Calendar date YYYY-MM-DD in the marina timezone
+	ExternalInvoiceDate   *IsoDate              `json:"external_invoice_date,omitempty"`
+	ExternalInvoiceNumber *string               `json:"external_invoice_number,omitempty"`
+	FiscalMode            FiscalMode            `json:"fiscal_mode"`
+	Id                    string                `json:"id"`
+	InvoicingStatus       ChargeInvoicingStatus `json:"invoicing_status"`
+
+	// IssuedOn Calendar date YYYY-MM-DD in the marina timezone
+	IssuedOn IsoDate           `json:"issued_on"`
+	Lines    *[]ChargeLine     `json:"lines,omitempty"`
+	Matches  *[]ChargeMatchRef `json:"matches,omitempty"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents Cents `json:"net_cents"`
+
+	// Number A{yyyy}-{n:06}, an internal reference (not a fiscal number)
+	Number     string             `json:"number"`
+	Offsets    *[]ChargeOffsetRef `json:"offsets,omitempty"`
+	OriginId   string             `json:"origin_id"`
+	OriginType ChargeOriginType   `json:"origin_type"`
+	Overdue    *bool              `json:"overdue,omitempty"`
+
+	// PaidAmountCents Amount in integer cents of the marina currency
+	PaidAmountCents Cents                `json:"paid_amount_cents"`
+	PaymentStatus   ChargePaymentStatus  `json:"payment_status"`
+	Reminders       *[]ChargeReminderRef `json:"reminders,omitempty"`
+
+	// ResidualCents Amount in integer cents of the marina currency
+	ResidualCents Cents   `json:"residual_cents"`
+	RightId       *string `json:"right_id,omitempty"`
+
+	// ServiceFrom Calendar date YYYY-MM-DD in the marina timezone
+	ServiceFrom *IsoDate `json:"service_from,omitempty"`
+
+	// ServiceTo Calendar date YYYY-MM-DD in the marina timezone
+	ServiceTo *IsoDate `json:"service_to,omitempty"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents `json:"total_cents"`
+
+	// VatCents Amount in integer cents of the marina currency
+	VatCents   Cents        `json:"vat_cents"`
+	VatSummary *[]VatBucket `json:"vat_summary,omitempty"`
+	Version    int          `json:"version"`
+	VesselId   *string      `json:"vessel_id,omitempty"`
+}
+
+// ChargeAdjust defines model for ChargeAdjust.
+type ChargeAdjust struct {
+	Lines  []AdjustLineInput `json:"lines"`
+	Mode   CorrectionKind    `json:"mode"`
+	Reason string            `json:"reason"`
+}
+
+// ChargeCancel defines model for ChargeCancel.
+type ChargeCancel struct {
+	Reason string `json:"reason"`
+}
+
+// ChargeCreate defines model for ChargeCreate.
+type ChargeCreate struct {
+	ContractId  *string `json:"contract_id,omitempty"`
+	CustomerId  *string `json:"customer_id,omitempty"`
+	Description *string `json:"description,omitempty"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn      *IsoDate               `json:"due_on,omitempty"`
+	Lines      []ChargeLineInput      `json:"lines"`
+	OriginType ChargeCreateOriginType `json:"origin_type"`
+	VesselId   *string                `json:"vessel_id,omitempty"`
+}
+
+// ChargeCreateOriginType defines model for ChargeCreate.OriginType.
+type ChargeCreateOriginType string
+
+// ChargeExport defines model for ChargeExport.
+type ChargeExport struct {
+	ChargeCount    int                        `json:"charge_count"`
+	CreatedAt      time.Time                  `json:"created_at"`
+	Delivery       ChargeExportDelivery       `json:"delivery"`
+	DeliveryError  *string                    `json:"delivery_error,omitempty"`
+	DeliveryStatus ChargeExportDeliveryStatus `json:"delivery_status"`
+	ExporterCode   *string                    `json:"exporter_code,omitempty"`
+	Files          *[]ChargeExportFiles       `json:"files,omitempty"`
+	Filters        *ExportFilter              `json:"filters,omitempty"`
+	Id             string                     `json:"id"`
+	Kind           ChargeExportKind           `json:"kind"`
+	LineCount      int                        `json:"line_count"`
+	Number         string                     `json:"number"`
+
+	// PeriodFrom Calendar date YYYY-MM-DD in the marina timezone
+	PeriodFrom *IsoDate `json:"period_from,omitempty"`
+
+	// PeriodTo Calendar date YYYY-MM-DD in the marina timezone
+	PeriodTo   *IsoDate `json:"period_to,omitempty"`
+	ReexportOf *string  `json:"reexport_of,omitempty"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents  Cents        `json:"total_cents"`
+	TotalsByVat *[]VatBucket `json:"totals_by_vat,omitempty"`
+	Version     int          `json:"version"`
+}
+
+// ChargeExportDelivery defines model for ChargeExport.Delivery.
+type ChargeExportDelivery string
+
+// ChargeExportDeliveryStatus defines model for ChargeExport.DeliveryStatus.
+type ChargeExportDeliveryStatus string
+
+// ChargeExportFiles defines model for ChargeExport.Files.
+type ChargeExportFiles string
+
+// ChargeExportKind defines model for ChargeExport.Kind.
+type ChargeExportKind string
+
+// ChargeExportDetail defines model for ChargeExportDetail.
+type ChargeExportDetail struct {
+	Export     ChargeExport       `json:"export"`
+	Items      []ChargeExportItem `json:"items"`
+	NextCursor *string            `json:"next_cursor"`
+}
+
+// ChargeExportItem defines model for ChargeExportItem.
+type ChargeExportItem struct {
+	ChargeId string `json:"charge_id"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer *CustomerBrief `json:"customer,omitempty"`
+	First    bool           `json:"first"`
+	Number   string         `json:"number"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents `json:"total_cents"`
+}
+
+// ChargeExportPage defines model for ChargeExportPage.
+type ChargeExportPage struct {
+	Items      []ChargeExport `json:"items"`
+	NextCursor *string        `json:"next_cursor"`
+}
+
+// ChargeExportRef defines model for ChargeExportRef.
+type ChargeExportRef struct {
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	ExportId  string     `json:"export_id"`
+	First     bool       `json:"first"`
+	Number    string     `json:"number"`
+}
+
+// ChargeImport defines model for ChargeImport.
+type ChargeImport struct {
+	ChargeCount int                    `json:"charge_count"`
+	CreatedAt   time.Time              `json:"created_at"`
+	Format      ChargeImportFormat     `json:"format"`
+	Id          string                 `json:"id"`
+	Issues      []ChargeImportRowIssue `json:"issues"`
+	Status      ChargeImportStatus     `json:"status"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents *Cents `json:"total_cents,omitempty"`
+	ValidRows  int    `json:"valid_rows"`
+	Version    int    `json:"version"`
+}
+
+// ChargeImportFormat defines model for ChargeImport.Format.
+type ChargeImportFormat string
+
+// ChargeImportStatus defines model for ChargeImport.Status.
+type ChargeImportStatus string
+
+// ChargeImportPage defines model for ChargeImportPage.
+type ChargeImportPage struct {
+	Items      []ChargeImport `json:"items"`
+	NextCursor *string        `json:"next_cursor"`
+}
+
+// ChargeImportRowIssue defines model for ChargeImportRowIssue.
+type ChargeImportRowIssue struct {
+	Code ChargeImportRowIssueCode `json:"code"`
+	Row  int                      `json:"row"`
+}
+
+// ChargeImportRowIssueCode defines model for ChargeImportRowIssue.Code.
+type ChargeImportRowIssueCode string
+
+// ChargeInvoicingStatus defines model for ChargeInvoicingStatus.
+type ChargeInvoicingStatus string
+
+// ChargeLine defines model for ChargeLine.
+type ChargeLine struct {
+	Description string `json:"description"`
+
+	// DiscountCents Amount in integer cents of the marina currency
+	DiscountCents Cents   `json:"discount_cents"`
+	ExternalCode  *string `json:"external_code,omitempty"`
+
+	// GrossCents Amount in integer cents of the marina currency
+	GrossCents Cents   `json:"gross_cents"`
+	ItemCode   string  `json:"item_code"`
+	ItemId     *string `json:"item_id,omitempty"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents         Cents `json:"net_cents"`
+	PriceIncludesVat bool  `json:"price_includes_vat"`
+
+	// QtyMilli Quantity in thousandths (1.5 = 1500)
+	QtyMilli     QtyMilli `json:"qty_milli"`
+	RevenueClass *string  `json:"revenue_class,omitempty"`
+	Seq          int      `json:"seq"`
+
+	// ServiceFrom Calendar date YYYY-MM-DD in the marina timezone
+	ServiceFrom *IsoDate `json:"service_from,omitempty"`
+
+	// ServiceTo Calendar date YYYY-MM-DD in the marina timezone
+	ServiceTo *IsoDate `json:"service_to,omitempty"`
+
+	// UnitCents Amount in integer cents of the marina currency
+	UnitCents Cents `json:"unit_cents"`
+
+	// VatCents Amount in integer cents of the marina currency
+	VatCents Cents `json:"vat_cents"`
+
+	// VatNature FatturaPA nature of a 0 % VAT line (m2-plan §12 D9)
+	VatNature *VatNature `json:"vat_nature,omitempty"`
+
+	// VatRateBp Percentage in integer basis points (1 % = 100)
+	VatRateBp BasisPoints `json:"vat_rate_bp"`
+}
+
+// ChargeLineInput defines model for ChargeLineInput.
+type ChargeLineInput struct {
+	Description *string `json:"description,omitempty"`
+
+	// DiscountCents Amount in integer cents of the marina currency
+	DiscountCents *Cents `json:"discount_cents,omitempty"`
+	ItemId        string `json:"item_id"`
+
+	// QtyMilli Quantity in thousandths (1.5 = 1500)
+	QtyMilli QtyMilli `json:"qty_milli"`
+
+	// ServiceFrom Calendar date YYYY-MM-DD in the marina timezone
+	ServiceFrom *IsoDate `json:"service_from,omitempty"`
+
+	// ServiceTo Calendar date YYYY-MM-DD in the marina timezone
+	ServiceTo *IsoDate `json:"service_to,omitempty"`
+
+	// UnitCents Staff unit price (charges.manage); default from the active price list
+	UnitCents *Cents `json:"unit_cents,omitempty"`
+}
+
+// ChargeMatchRef defines model for ChargeMatchRef.
+type ChargeMatchRef struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents     Cents     `json:"amount_cents"`
+	CreatedAt       time.Time `json:"created_at"`
+	Id              string    `json:"id"`
+	PaymentId       string    `json:"payment_id"`
+	PaymentNumber   string    `json:"payment_number"`
+	ReversesMatchId *string   `json:"reverses_match_id,omitempty"`
+}
+
+// ChargeOffsetRef defines model for ChargeOffsetRef.
+type ChargeOffsetRef struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents      Cents  `json:"amount_cents"`
+	NegativeChargeId string `json:"negative_charge_id"`
+	TargetChargeId   string `json:"target_charge_id"`
+}
+
+// ChargeOriginType defines model for ChargeOriginType.
+type ChargeOriginType string
+
+// ChargePage defines model for ChargePage.
+type ChargePage struct {
+	Items      []Charge `json:"items"`
+	NextCursor *string  `json:"next_cursor"`
+}
+
+// ChargePatch defines model for ChargePatch.
+type ChargePatch struct {
+	CustomerId  *string `json:"customer_id,omitempty"`
+	Description *string `json:"description,omitempty"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn *IsoDate           `json:"due_on,omitempty"`
+	Lines *[]ChargeLineInput `json:"lines,omitempty"`
+}
+
+// ChargePaymentStatus defines model for ChargePaymentStatus.
+type ChargePaymentStatus string
+
+// ChargeRef defines model for ChargeRef.
+type ChargeRef struct {
+	Id            string               `json:"id"`
+	Number        string               `json:"number"`
+	PaymentStatus *ChargePaymentStatus `json:"payment_status,omitempty"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents *Cents `json:"total_cents,omitempty"`
+}
+
+// ChargeReminderRef defines model for ChargeReminderRef.
+type ChargeReminderRef struct {
+	CreatedAt time.Time          `json:"created_at"`
+	Level     ReminderLevel      `json:"level"`
+	Status    ReminderItemStatus `json:"status"`
+}
 
 // CharterAssignment defines model for CharterAssignment.
 type CharterAssignment struct {
@@ -6278,6 +8535,12 @@ type CharterRotate struct {
 
 	// FromNight Calendar date YYYY-MM-DD in the marina timezone
 	FromNight IsoDate `json:"from_night"`
+}
+
+// CloseCashSessionInput defines model for CloseCashSessionInput.
+type CloseCashSessionInput struct {
+	Counted []CountedInput `json:"counted"`
+	Notes   *string        `json:"notes,omitempty"`
 }
 
 // Closure defines model for Closure.
@@ -7004,6 +9267,91 @@ type ControlPoint struct {
 	Y     int64 `json:"y"`
 }
 
+// CorrectionKind defines model for CorrectionKind.
+type CorrectionKind string
+
+// CountedInput defines model for CountedInput.
+type CountedInput struct {
+	AmountCents int64              `json:"amount_cents"`
+	Method      CountedInputMethod `json:"method"`
+}
+
+// CountedInputMethod defines model for CountedInput.Method.
+type CountedInputMethod string
+
+// CounterSaleInput defines model for CounterSaleInput.
+type CounterSaleInput struct {
+	CustomerId     *string                 `json:"customer_id,omitempty"`
+	FiscalDocument bool                    `json:"fiscal_document"`
+	Lines          []CounterSaleLineInput  `json:"lines"`
+	Payment        CounterSalePayment      `json:"payment"`
+	Receipt        CounterSaleInputReceipt `json:"receipt"`
+	VesselId       *string                 `json:"vessel_id,omitempty"`
+}
+
+// CounterSaleInputReceipt defines model for CounterSaleInput.Receipt.
+type CounterSaleInputReceipt string
+
+// CounterSaleLineInput defines model for CounterSaleLineInput.
+type CounterSaleLineInput struct {
+	// DiscountCents Amount in integer cents of the marina currency
+	DiscountCents *Cents `json:"discount_cents,omitempty"`
+	ItemId        string `json:"item_id"`
+
+	// QtyMilli Quantity in thousandths (1.5 = 1500)
+	QtyMilli QtyMilli `json:"qty_milli"`
+
+	// UnitCents Staff unit price (charges.manage)
+	UnitCents *Cents `json:"unit_cents,omitempty"`
+}
+
+// CounterSalePayment defines model for CounterSalePayment.
+type CounterSalePayment struct {
+	AmountCents *int64                   `json:"amount_cents,omitempty"`
+	Method      CounterSalePaymentMethod `json:"method"`
+	RegisterId  *string                  `json:"register_id,omitempty"`
+}
+
+// CounterSalePaymentMethod defines model for CounterSalePayment.Method.
+type CounterSalePaymentMethod string
+
+// CounterSaleResult defines model for CounterSaleResult.
+type CounterSaleResult struct {
+	Charge         Charge          `json:"charge"`
+	FiscalDocument *FiscalDocument `json:"fiscal_document,omitempty"`
+	Payment        Payment         `json:"payment"`
+	ReceiptUrl     string          `json:"receipt_url"`
+}
+
+// CreditGrantInput defines model for CreditGrantInput.
+type CreditGrantInput struct {
+	AmountCents int64                  `json:"amount_cents"`
+	Reason      string                 `json:"reason"`
+	ReleaseId   *string                `json:"release_id,omitempty"`
+	Source      CreditGrantInputSource `json:"source"`
+}
+
+// CreditGrantInputSource defines model for CreditGrantInput.Source.
+type CreditGrantInputSource string
+
+// CreditPage defines model for CreditPage.
+type CreditPage struct {
+	Items      []CreditRow `json:"items"`
+	NextCursor *string     `json:"next_cursor"`
+}
+
+// CreditRow defines model for CreditRow.
+type CreditRow struct {
+	// CreditCents Amount in integer cents of the marina currency
+	CreditCents Cents `json:"credit_cents"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer CustomerBrief `json:"customer"`
+
+	// DepositsCents Amount in integer cents of the marina currency
+	DepositsCents Cents `json:"deposits_cents"`
+}
+
 // CsvText CSV text (UTF-8, `;` or `,`), at most 5 000 rows
 type CsvText = string
 
@@ -7071,6 +9419,46 @@ type CustomerCategoryCountList struct {
 type CustomerCreated struct {
 	Customer           Customer          `json:"customer"`
 	PossibleDuplicates []CustomerSummary `json:"possible_duplicates"`
+}
+
+// CustomerCredit defines model for CustomerCredit.
+type CustomerCredit struct {
+	// CreditCents Amount in integer cents of the marina currency
+	CreditCents Cents `json:"credit_cents"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer CustomerBrief `json:"customer"`
+
+	// DepositsCents Amount in integer cents of the marina currency
+	DepositsCents Cents `json:"deposits_cents"`
+
+	// Payments Payments with unallocated money
+	Payments []Payment `json:"payments"`
+}
+
+// CustomerDashboard Customer dashboard (spec 11.4); billing sections only with charges.manage, work orders and rentals are empty until M10/M11
+type CustomerDashboard struct {
+	// Arrears Residuals of open charges by age bucket (AgeingBucket)
+	Arrears *AgeingAmounts `json:"arrears,omitempty"`
+
+	// BalanceCents Amount in integer cents of the marina currency
+	BalanceCents   *Cents              `json:"balance_cents,omitempty"`
+	BerthsToday    []ResourceRef       `json:"berths_today"`
+	Communications []DashboardMessage  `json:"communications"`
+	Contracts      []DashboardContract `json:"contracts"`
+
+	// CreditCents Amount in integer cents of the marina currency
+	CreditCents *Cents `json:"credit_cents,omitempty"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer           CustomerBrief            `json:"customer"`
+	DocumentsExpiring  []DashboardDocument      `json:"documents_expiring"`
+	FutureInstallments *[]Receivable            `json:"future_installments,omitempty"`
+	Notes              string                   `json:"notes"`
+	RecentPayments     *[]Payment               `json:"recent_payments,omitempty"`
+	Rentals            []map[string]interface{} `json:"rentals"`
+	Vessels            []VesselRef              `json:"vessels"`
+	WorkOrders         []map[string]interface{} `json:"work_orders"`
 }
 
 // CustomerExport defines model for CustomerExport.
@@ -7209,6 +9597,39 @@ type CustomerVesselLink struct {
 	Roles       []VesselPartyRole `json:"roles"`
 	ShareMillis *int64            `json:"share_millis"`
 	Vessel      VesselSummary     `json:"vessel"`
+}
+
+// DashboardContract defines model for DashboardContract.
+type DashboardContract struct {
+	Code string `json:"code"`
+
+	// EndsOn Calendar date YYYY-MM-DD in the marina timezone
+	EndsOn IsoDate `json:"ends_on"`
+	Id     string  `json:"id"`
+	Kind   string  `json:"kind"`
+
+	// StartsOn Calendar date YYYY-MM-DD in the marina timezone
+	StartsOn IsoDate `json:"starts_on"`
+	Status   string  `json:"status"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents *Cents `json:"total_cents,omitempty"`
+}
+
+// DashboardDocument defines model for DashboardDocument.
+type DashboardDocument struct {
+	// ExpiresOn Calendar date YYYY-MM-DD in the marina timezone
+	ExpiresOn IsoDate `json:"expires_on"`
+	Id        string  `json:"id"`
+	Type      string  `json:"type"`
+}
+
+// DashboardMessage defines model for DashboardMessage.
+type DashboardMessage struct {
+	CreatedAt time.Time `json:"created_at"`
+	Id        string    `json:"id"`
+	Status    string    `json:"status"`
+	Template  string    `json:"template"`
 }
 
 // DateRange Inclusive range of nights
@@ -7548,6 +9969,43 @@ type DocumentSubjectType string
 // DocumentType defines model for DocumentType.
 type DocumentType string
 
+// DunningExclusion defines model for DunningExclusion.
+type DunningExclusion struct {
+	Active    bool      `json:"active"`
+	ChargeId  *string   `json:"charge_id,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer  *CustomerBrief       `json:"customer,omitempty"`
+	Id        string               `json:"id"`
+	Kind      DunningExclusionKind `json:"kind"`
+	Note      string               `json:"note"`
+	RemovedAt *time.Time           `json:"removed_at,omitempty"`
+
+	// Until Calendar date YYYY-MM-DD in the marina timezone
+	Until *IsoDate `json:"until,omitempty"`
+}
+
+// DunningExclusionInput defines model for DunningExclusionInput.
+type DunningExclusionInput struct {
+	ChargeId   *string              `json:"charge_id,omitempty"`
+	CustomerId *string              `json:"customer_id,omitempty"`
+	Kind       DunningExclusionKind `json:"kind"`
+	Note       *string              `json:"note,omitempty"`
+
+	// Until Calendar date YYYY-MM-DD in the marina timezone
+	Until *IsoDate `json:"until,omitempty"`
+}
+
+// DunningExclusionKind defines model for DunningExclusionKind.
+type DunningExclusionKind string
+
+// DunningExclusionPage defines model for DunningExclusionPage.
+type DunningExclusionPage struct {
+	Items      []DunningExclusion `json:"items"`
+	NextCursor *string            `json:"next_cursor"`
+}
+
 // DynamicArea defines model for DynamicArea.
 type DynamicArea struct {
 	Active       bool   `json:"active"`
@@ -7637,6 +10095,56 @@ type EventType struct {
 type EventTypeList struct {
 	Items []EventType `json:"items"`
 }
+
+// ExportCreate defines model for ExportCreate.
+type ExportCreate struct {
+	CustomerId *string `json:"customer_id,omitempty"`
+
+	// ExporterCode A registered ChargeExporter (none ships with Porto)
+	ExporterCode *string             `json:"exporter_code,omitempty"`
+	OriginTypes  *[]ChargeOriginType `json:"origin_types,omitempty"`
+
+	// PeriodFrom Calendar date YYYY-MM-DD in the marina timezone
+	PeriodFrom IsoDate `json:"period_from"`
+
+	// PeriodTo Calendar date YYYY-MM-DD in the marina timezone
+	PeriodTo     IsoDate `json:"period_to"`
+	RevenueClass *string `json:"revenue_class,omitempty"`
+}
+
+// ExportFilter defines model for ExportFilter.
+type ExportFilter struct {
+	CustomerId  *string             `json:"customer_id,omitempty"`
+	OriginTypes *[]ChargeOriginType `json:"origin_types,omitempty"`
+
+	// PeriodFrom Calendar date YYYY-MM-DD in the marina timezone
+	PeriodFrom IsoDate `json:"period_from"`
+
+	// PeriodTo Calendar date YYYY-MM-DD in the marina timezone
+	PeriodTo     IsoDate `json:"period_to"`
+	RevenueClass *string `json:"revenue_class,omitempty"`
+}
+
+// ExportPreview defines model for ExportPreview.
+type ExportPreview struct {
+	Count int `json:"count"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents     Cents           `json:"total_cents"`
+	TotalsByOrigin []OriginTotal   `json:"totals_by_origin"`
+	TotalsByVat    []VatBucket     `json:"totals_by_vat"`
+	Warnings       []ExportWarning `json:"warnings"`
+}
+
+// ExportWarning defines model for ExportWarning.
+type ExportWarning struct {
+	ChargeIds  []string          `json:"charge_ids"`
+	Code       ExportWarningCode `json:"code"`
+	CustomerId *string           `json:"customer_id,omitempty"`
+}
+
+// ExportWarningCode defines model for ExportWarning.Code.
+type ExportWarningCode string
 
 // ExtraResource defines model for ExtraResource.
 type ExtraResource struct {
@@ -7808,6 +10316,83 @@ type FileLink struct {
 	Url       string    `json:"url"`
 }
 
+// FiscalDailyTotals defines model for FiscalDailyTotals.
+type FiscalDailyTotals struct {
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From  IsoDate                `json:"from"`
+	Group FiscalDailyTotalsGroup `json:"group"`
+	Rows  []FiscalTotalRow       `json:"rows"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To IsoDate `json:"to"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents `json:"total_cents"`
+}
+
+// FiscalDailyTotalsGroup defines model for FiscalDailyTotals.Group.
+type FiscalDailyTotalsGroup string
+
+// FiscalDocument defines model for FiscalDocument.
+type FiscalDocument struct {
+	// BusinessDate Calendar date YYYY-MM-DD in the marina timezone
+	BusinessDate IsoDate    `json:"business_date"`
+	ChargeId     string     `json:"charge_id"`
+	CreatedAt    time.Time  `json:"created_at"`
+	Driver       string     `json:"driver"`
+	ErrorCode    *string    `json:"error_code,omitempty"`
+	ExternalRef  *string    `json:"external_ref,omitempty"`
+	Id           string     `json:"id"`
+	IssuedAt     *time.Time `json:"issued_at,omitempty"`
+
+	// Number Internal daily number YYYYMMDD-NNNN
+	Number    string               `json:"number"`
+	PaymentId string               `json:"payment_id"`
+	Status    FiscalDocumentStatus `json:"status"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents       `json:"total_cents"`
+	Vat        []VatBucket `json:"vat"`
+	Version    int         `json:"version"`
+	VoidedAt   *time.Time  `json:"voided_at,omitempty"`
+}
+
+// FiscalDocumentPage defines model for FiscalDocumentPage.
+type FiscalDocumentPage struct {
+	Items      []FiscalDocument `json:"items"`
+	NextCursor *string          `json:"next_cursor"`
+}
+
+// FiscalDocumentStatus defines model for FiscalDocumentStatus.
+type FiscalDocumentStatus string
+
+// FiscalMode defines model for FiscalMode.
+type FiscalMode string
+
+// FiscalTotalRow defines model for FiscalTotalRow.
+type FiscalTotalRow struct {
+	Documents int `json:"documents"`
+
+	// GrossCents Amount in integer cents of the marina currency
+	GrossCents Cents         `json:"gross_cents"`
+	Method     PaymentMethod `json:"method"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents Cents `json:"net_cents"`
+
+	// Period YYYY-MM-DD or YYYY-MM
+	Period string `json:"period"`
+
+	// VatCents Amount in integer cents of the marina currency
+	VatCents Cents `json:"vat_cents"`
+
+	// VatNature FatturaPA nature of a 0 % VAT line (m2-plan §12 D9)
+	VatNature *VatNature `json:"vat_nature,omitempty"`
+
+	// VatRateBp Percentage in integer basis points (1 % = 100)
+	VatRateBp BasisPoints `json:"vat_rate_bp"`
+}
+
 // FitCode defines model for FitCode.
 type FitCode string
 
@@ -7966,6 +10551,9 @@ type HolderInstallment struct {
 	AmountCents Cents        `json:"amount_cents"`
 	Berth       *ResourceRef `json:"berth,omitempty"`
 
+	// ChargeId The instalment's charge (M5)
+	ChargeId *string `json:"charge_id,omitempty"`
+
 	// Customer The customer embedded in views; display_name only with customers.read
 	Customer CustomerBrief `json:"customer"`
 
@@ -7977,9 +10565,12 @@ type HolderInstallment struct {
 	IssueOn IsoDate               `json:"issue_on"`
 	Kind    HolderInstallmentKind `json:"kind"`
 	Overdue bool                  `json:"overdue"`
-	RightId *string               `json:"right_id,omitempty"`
-	RunId   *string               `json:"run_id,omitempty"`
-	Seq     int                   `json:"seq"`
+
+	// PaymentId The payment of the settlement (M5)
+	PaymentId *string `json:"payment_id,omitempty"`
+	RightId   *string `json:"right_id,omitempty"`
+	RunId     *string `json:"run_id,omitempty"`
+	Seq       int     `json:"seq"`
 
 	// SettledOn Calendar date YYYY-MM-DD in the marina timezone
 	SettledOn        *IsoDate                `json:"settled_on,omitempty"`
@@ -8200,13 +10791,16 @@ type Installment struct {
 	Id    string  `json:"id"`
 
 	// IssueOn Calendar date YYYY-MM-DD in the marina timezone
-	IssueOn     IsoDate         `json:"issue_on"`
-	IssuedAt    *time.Time      `json:"issued_at,omitempty"`
-	Kind        InstallmentKind `json:"kind"`
-	Overdue     bool            `json:"overdue"`
-	PlanVersion int             `json:"plan_version"`
-	Seq         int             `json:"seq"`
-	SettledAt   *time.Time      `json:"settled_at,omitempty"`
+	IssueOn  IsoDate         `json:"issue_on"`
+	IssuedAt *time.Time      `json:"issued_at,omitempty"`
+	Kind     InstallmentKind `json:"kind"`
+	Overdue  bool            `json:"overdue"`
+
+	// PaymentId The payment of the settlement (M5)
+	PaymentId   *string    `json:"payment_id,omitempty"`
+	PlanVersion int        `json:"plan_version"`
+	Seq         int        `json:"seq"`
+	SettledAt   *time.Time `json:"settled_at,omitempty"`
 
 	// SettledOn Calendar date YYYY-MM-DD in the marina timezone
 	SettledOn        *IsoDate          `json:"settled_on,omitempty"`
@@ -8264,6 +10858,61 @@ type InstallmentStatus string
 
 // InsurancePolicy defines model for InsurancePolicy.
 type InsurancePolicy string
+
+// InvoiceReconciliation defines model for InvoiceReconciliation.
+type InvoiceReconciliation struct {
+	CreatedAt    time.Time                   `json:"created_at"`
+	DryRun       bool                        `json:"dry_run"`
+	Id           string                      `json:"id"`
+	MatchedCount int                         `json:"matched_count"`
+	Report       []InvoiceReconciliationRow  `json:"report"`
+	RowCount     int                         `json:"row_count"`
+	Source       InvoiceReconciliationSource `json:"source"`
+}
+
+// InvoiceReconciliationSource defines model for InvoiceReconciliation.Source.
+type InvoiceReconciliationSource string
+
+// InvoiceReconciliationInput defines model for InvoiceReconciliationInput.
+type InvoiceReconciliationInput struct {
+	// Csv CSV text (UTF-8, `;` or `,`), at most 5 000 rows
+	Csv    *CsvText                         `json:"csv,omitempty"`
+	DryRun bool                             `json:"dry_run"`
+	Rows   *[]InvoiceReconciliationRowInput `json:"rows,omitempty"`
+}
+
+// InvoiceReconciliationPage defines model for InvoiceReconciliationPage.
+type InvoiceReconciliationPage struct {
+	Items      []InvoiceReconciliation `json:"items"`
+	NextCursor *string                 `json:"next_cursor"`
+}
+
+// InvoiceReconciliationRow defines model for InvoiceReconciliationRow.
+type InvoiceReconciliationRow struct {
+	ChargeNumber *string                         `json:"charge_number,omitempty"`
+	Outcome      InvoiceReconciliationRowOutcome `json:"outcome"`
+	Row          int                             `json:"row"`
+}
+
+// InvoiceReconciliationRowOutcome defines model for InvoiceReconciliationRow.Outcome.
+type InvoiceReconciliationRowOutcome string
+
+// InvoiceReconciliationRowInput defines model for InvoiceReconciliationRowInput.
+type InvoiceReconciliationRowInput struct {
+	ChargeId     *string `json:"charge_id,omitempty"`
+	ChargeNumber *string `json:"charge_number,omitempty"`
+
+	// InvoiceDate GG/MM/AAAA or YYYY-MM-DD
+	InvoiceDate   string `json:"invoice_date"`
+	InvoiceNumber string `json:"invoice_number"`
+}
+
+// InvoiceRefInput defines model for InvoiceRefInput.
+type InvoiceRefInput struct {
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date   IsoDate `json:"date"`
+	Number string  `json:"number"`
+}
 
 // IsoDate Calendar date YYYY-MM-DD in the marina timezone
 type IsoDate = string
@@ -8439,6 +11088,9 @@ type LengthRoundingMode string
 // LengthRoundingStepCm defines model for LengthRounding.StepCm.
 type LengthRoundingStepCm int64
 
+// LensState defines model for LensState.
+type LensState string
+
 // LinearAreaGenerator defines model for LinearAreaGenerator.
 type LinearAreaGenerator struct {
 	// CellCm Length in integer centimetres
@@ -8611,8 +11263,13 @@ type MandateStatus string
 
 // ManualConfirmation Manual driver confirmation (M3); the reference is free text, stored and never logged
 type ManualConfirmation struct {
-	PayAtDeparture *bool   `json:"pay_at_departure,omitempty"`
-	Reference      *string `json:"reference,omitempty"`
+	// FiscalDocument Issue a commercial document for the desk payment (M5)
+	FiscalDocument *bool `json:"fiscal_document,omitempty"`
+	PayAtDeparture *bool `json:"pay_at_departure,omitempty"`
+
+	// Payment Payment collected at the desk with the confirmation (M5, payments.collect; payments.collect_cash for cash)
+	Payment   *TransitPaymentInput `json:"payment,omitempty"`
+	Reference *string              `json:"reference,omitempty"`
 }
 
 // MapAllocation defines model for MapAllocation.
@@ -8806,6 +11463,25 @@ type MapOccupancy struct {
 	To IsoDate `json:"to"`
 }
 
+// MapPaymentResource defines model for MapPaymentResource.
+type MapPaymentResource struct {
+	ContractId *string `json:"contract_id,omitempty"`
+
+	// ResidualCents Only with charges.manage
+	ResidualCents *Cents       `json:"residual_cents,omitempty"`
+	ResourceId    string       `json:"resource_id"`
+	ResourceType  ResourceType `json:"resource_type"`
+	State         LensState    `json:"state"`
+	Suspended     bool         `json:"suspended"`
+}
+
+// MapPaymentStatus defines model for MapPaymentStatus.
+type MapPaymentStatus struct {
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date      IsoDate              `json:"date"`
+	Resources []MapPaymentResource `json:"resources"`
+}
+
 // MapReorder defines model for MapReorder.
 type MapReorder struct {
 	MapIds []string `json:"map_ids"`
@@ -8969,6 +11645,17 @@ type MarinaRef struct {
 	Slug string `json:"slug"`
 }
 
+// MatchInput defines model for MatchInput.
+type MatchInput struct {
+	AmountCents int64  `json:"amount_cents"`
+	ChargeId    string `json:"charge_id"`
+}
+
+// MatchPaymentInput defines model for MatchPaymentInput.
+type MatchPaymentInput struct {
+	Matches []MatchInput `json:"matches"`
+}
+
 // Me defines model for Me.
 type Me struct {
 	AuthMethod            MeAuthMethod     `json:"auth_method"`
@@ -9061,6 +11748,13 @@ type Meta struct {
 
 // MetaEdition defines model for Meta.Edition.
 type MetaEdition string
+
+// MethodAmount defines model for MethodAmount.
+type MethodAmount struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents Cents         `json:"amount_cents"`
+	Method      PaymentMethod `json:"method"`
+}
 
 // MillesimalEntries defines model for MillesimalEntries.
 type MillesimalEntries struct {
@@ -9322,6 +12016,46 @@ type OccupancySolution struct {
 	Segments []SolutionSegment `json:"segments"`
 }
 
+// OpenCashSessionInput defines model for OpenCashSessionInput.
+type OpenCashSessionInput struct {
+	FloatCents int64   `json:"float_cents"`
+	RegisterId *string `json:"register_id,omitempty"`
+}
+
+// OpeningBalanceImportInput defines model for OpeningBalanceImportInput.
+type OpeningBalanceImportInput struct {
+	Delimiter *OpeningBalanceImportInputDelimiter `json:"delimiter,omitempty"`
+	DryRun    bool                                `json:"dry_run"`
+
+	// FileBase64 The file
+	FileBase64 string                          `json:"file_base64"`
+	Format     OpeningBalanceImportInputFormat `json:"format"`
+	HasHeader  bool                            `json:"has_header"`
+
+	// Mapping Column indexes (0-based) of the file
+	Mapping OpeningBalanceMapping `json:"mapping"`
+}
+
+// OpeningBalanceImportInputDelimiter defines model for OpeningBalanceImportInput.Delimiter.
+type OpeningBalanceImportInputDelimiter string
+
+// OpeningBalanceImportInputFormat defines model for OpeningBalanceImportInput.Format.
+type OpeningBalanceImportInputFormat string
+
+// OpeningBalanceMapping Column indexes (0-based) of the file
+type OpeningBalanceMapping struct {
+	// AmountColumn Amount in euros with a decimal comma or point (negative = credit)
+	AmountColumn      int                                `json:"amount_column"`
+	CustomerColumn    int                                `json:"customer_column"`
+	CustomerMatch     OpeningBalanceMappingCustomerMatch `json:"customer_match"`
+	DescriptionColumn *int                               `json:"description_column,omitempty"`
+	DueOnColumn       int                                `json:"due_on_column"`
+	ReferenceColumn   *int                               `json:"reference_column,omitempty"`
+}
+
+// OpeningBalanceMappingCustomerMatch defines model for OpeningBalanceMapping.CustomerMatch.
+type OpeningBalanceMappingCustomerMatch string
+
 // Organization defines model for Organization.
 type Organization struct {
 	BillingAddress Address   `json:"billing_address"`
@@ -9349,6 +12083,24 @@ type OrganizationPatch struct {
 	Pec            *string  `json:"pec,omitempty"`
 	SdiCode        *string  `json:"sdi_code,omitempty"`
 	VatNumber      *string  `json:"vat_number,omitempty"`
+}
+
+// OriginItem defines model for OriginItem.
+type OriginItem struct {
+	ItemId    string        `json:"item_id"`
+	OriginKey OriginItemKey `json:"origin_key"`
+}
+
+// OriginItemKey defines model for OriginItemKey.
+type OriginItemKey string
+
+// OriginTotal defines model for OriginTotal.
+type OriginTotal struct {
+	Count      int              `json:"count"`
+	OriginType ChargeOriginType `json:"origin_type"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents `json:"total_cents"`
 }
 
 // OutNights defines model for OutNights.
@@ -9420,10 +12172,145 @@ type PasswordResetRequest struct {
 	Email string `json:"email"`
 }
 
+// PayBank defines model for PayBank.
+type PayBank struct {
+	Bank   *string `json:"bank,omitempty"`
+	Bic    *string `json:"bic,omitempty"`
+	Holder string  `json:"holder"`
+	Iban   string  `json:"iban"`
+
+	// Reference Causale (charge numbers)
+	Reference string `json:"reference"`
+}
+
+// PayCharge defines model for PayCharge.
+type PayCharge struct {
+	Description string `json:"description"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn  IsoDate `json:"due_on"`
+	Number string  `json:"number"`
+
+	// ResidualCents Amount in integer cents of the marina currency
+	ResidualCents Cents `json:"residual_cents"`
+}
+
+// PayCheckoutInput defines model for PayCheckoutInput.
+type PayCheckoutInput struct {
+	Method PayCheckoutInputMethod `json:"method"`
+}
+
+// PayCheckoutInputMethod defines model for PayCheckoutInput.Method.
+type PayCheckoutInputMethod string
+
+// PayCheckoutResult defines model for PayCheckoutResult.
+type PayCheckoutResult struct {
+	RedirectUrl string `json:"redirect_url"`
+}
+
+// PayPage defines model for PayPage.
+type PayPage struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents Cents       `json:"amount_cents"`
+	Bank        *PayBank    `json:"bank,omitempty"`
+	Charges     []PayCharge `json:"charges"`
+	Currency    string      `json:"currency"`
+	ExpiresAt   *time.Time  `json:"expires_at,omitempty"`
+	Marina      struct {
+		DefaultLocale Locale   `json:"default_locale"`
+		Locales       []Locale `json:"locales"`
+		Name          string   `json:"name"`
+	} `json:"marina"`
+	Methods []PayPageMethods `json:"methods"`
+
+	// Online An enabled provider can take the payment online
+	Online bool                 `json:"online"`
+	Status PaymentRequestStatus `json:"status"`
+}
+
+// PayPageMethods defines model for PayPage.Methods.
+type PayPageMethods string
+
+// PayStatus defines model for PayStatus.
+type PayStatus struct {
+	Status PaymentRequestStatus `json:"status"`
+
+	// Verifying An online payment is in progress (pagamento in verifica)
+	Verifying bool `json:"verifying"`
+}
+
+// Payment defines model for Payment.
+type Payment struct {
+	// AllocatedCents Amount in integer cents of the marina currency
+	AllocatedCents Cents `json:"allocated_cents"`
+
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents   Cents      `json:"amount_cents"`
+	CashSessionId *string    `json:"cash_session_id,omitempty"`
+	CreatedAt     *time.Time `json:"created_at,omitempty"`
+	Currency      string     `json:"currency"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer *CustomerBrief `json:"customer,omitempty"`
+
+	// FeeCents Amount in integer cents of the marina currency
+	FeeCents        Cents             `json:"fee_cents"`
+	FiscalDocuments *[]FiscalDocument `json:"fiscal_documents,omitempty"`
+
+	// HasReference The staff reference is stored encrypted and never returned in lists
+	HasReference *bool           `json:"has_reference,omitempty"`
+	Id           string          `json:"id"`
+	Kind         PaymentKind     `json:"kind"`
+	Matches      *[]PaymentMatch `json:"matches,omitempty"`
+	Method       PaymentMethod   `json:"method"`
+	Notes        *string         `json:"notes,omitempty"`
+
+	// Number P{yyyy}-{n:06}, an internal reference
+	Number       string  `json:"number"`
+	ProviderCode *string `json:"provider_code,omitempty"`
+
+	// ReceivedOn Calendar date YYYY-MM-DD in the marina timezone
+	ReceivedOn IsoDate `json:"received_on"`
+
+	// RefundedCents Amount in integer cents of the marina currency
+	RefundedCents Cents         `json:"refunded_cents"`
+	Refunds       *[]Refund     `json:"refunds,omitempty"`
+	Source        PaymentSource `json:"source"`
+
+	// UnallocatedCents Amount in integer cents of the marina currency
+	UnallocatedCents Cents        `json:"unallocated_cents"`
+	VatSplit         *[]VatBucket `json:"vat_split,omitempty"`
+	Version          int          `json:"version"`
+}
+
 // PaymentDeposit Deposit at signature, a share (bp, half-even) or a fixed amount (at most the total)
 type PaymentDeposit struct {
 	Bp    *int64 `json:"bp,omitempty"`
 	Cents *int64 `json:"cents,omitempty"`
+}
+
+// PaymentKind defines model for PaymentKind.
+type PaymentKind string
+
+// PaymentMatch defines model for PaymentMatch.
+type PaymentMatch struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents     Cents     `json:"amount_cents"`
+	ChargeId        string    `json:"charge_id"`
+	ChargeNumber    string    `json:"charge_number"`
+	CreatedAt       time.Time `json:"created_at"`
+	Id              string    `json:"id"`
+	Reversed        *bool     `json:"reversed,omitempty"`
+	ReversesMatchId *string   `json:"reverses_match_id,omitempty"`
+}
+
+// PaymentMethod defines model for PaymentMethod.
+type PaymentMethod string
+
+// PaymentPage defines model for PaymentPage.
+type PaymentPage struct {
+	Items      []Payment `json:"items"`
+	NextCursor *string   `json:"next_cursor"`
 }
 
 // PaymentPolicy defines model for PaymentPolicy.
@@ -9440,6 +12327,151 @@ type PaymentPolicy struct {
 // PaymentPolicyRoundingUnitCents defines model for PaymentPolicy.RoundingUnitCents.
 type PaymentPolicyRoundingUnitCents int64
 
+// PaymentProviderCapabilities defines model for PaymentProviderCapabilities.
+type PaymentProviderCapabilities struct {
+	Checkout      bool     `json:"checkout"`
+	MandateCharge bool     `json:"mandate_charge"`
+	MandateSetup  bool     `json:"mandate_setup"`
+	Methods       []string `json:"methods"`
+	Refund        bool     `json:"refund"`
+	StatusCheck   bool     `json:"status_check"`
+}
+
+// PaymentProviderInfo defines model for PaymentProviderInfo.
+type PaymentProviderInfo struct {
+	Capabilities PaymentProviderCapabilities `json:"capabilities"`
+	Code         string                      `json:"code"`
+	Enabled      bool                        `json:"enabled"`
+	Mode         *PaymentProviderInfoMode    `json:"mode,omitempty"`
+}
+
+// PaymentProviderInfoMode defines model for PaymentProviderInfo.Mode.
+type PaymentProviderInfoMode string
+
+// PaymentProviderList defines model for PaymentProviderList.
+type PaymentProviderList struct {
+	Items []PaymentProviderInfo `json:"items"`
+}
+
+// PaymentProviderSettings Secrets are never returned, only whether they are set
+type PaymentProviderSettings struct {
+	Enabled             bool                        `json:"enabled"`
+	HasSecretKey        bool                        `json:"has_secret_key"`
+	HasWebhookSecret    bool                        `json:"has_webhook_secret"`
+	Methods             []string                    `json:"methods"`
+	Mode                PaymentProviderSettingsMode `json:"mode"`
+	ProviderCode        string                      `json:"provider_code"`
+	PublishableKeyLast4 *string                     `json:"publishable_key_last4,omitempty"`
+	SepaEnabled         bool                        `json:"sepa_enabled"`
+	StatementDescriptor string                      `json:"statement_descriptor"`
+	Version             int                         `json:"version"`
+	WebhookUrl          string                      `json:"webhook_url"`
+}
+
+// PaymentProviderSettingsMode defines model for PaymentProviderSettings.Mode.
+type PaymentProviderSettingsMode string
+
+// PaymentProviderSettingsInput Secrets are write-only; omitted secrets keep their stored value
+type PaymentProviderSettingsInput struct {
+	Enabled             bool                                  `json:"enabled"`
+	Methods             []PaymentProviderSettingsInputMethods `json:"methods"`
+	Mode                PaymentProviderSettingsInputMode      `json:"mode"`
+	PublishableKey      *string                               `json:"publishable_key,omitempty"`
+	SecretKey           *string                               `json:"secret_key,omitempty"`
+	SepaEnabled         bool                                  `json:"sepa_enabled"`
+	StatementDescriptor *string                               `json:"statement_descriptor,omitempty"`
+	WebhookSecret       *string                               `json:"webhook_secret,omitempty"`
+}
+
+// PaymentProviderSettingsInputMethods defines model for PaymentProviderSettingsInput.Methods.
+type PaymentProviderSettingsInputMethods string
+
+// PaymentProviderSettingsInputMode defines model for PaymentProviderSettingsInput.Mode.
+type PaymentProviderSettingsInputMode string
+
+// PaymentRequest defines model for PaymentRequest.
+type PaymentRequest struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents Cents                  `json:"amount_cents"`
+	Charges     []PaymentRequestCharge `json:"charges"`
+	CreatedAt   time.Time              `json:"created_at"`
+	Currency    string                 `json:"currency"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer  CustomerBrief        `json:"customer"`
+	ExpiresAt *time.Time           `json:"expires_at,omitempty"`
+	Id        string               `json:"id"`
+	SentAt    *time.Time           `json:"sent_at,omitempty"`
+	SentCount int                  `json:"sent_count"`
+	Source    PaymentRequestSource `json:"source"`
+	Status    PaymentRequestStatus `json:"status"`
+	Version   int                  `json:"version"`
+}
+
+// PaymentRequestSource defines model for PaymentRequest.Source.
+type PaymentRequestSource string
+
+// PaymentRequestBulk defines model for PaymentRequestBulk.
+type PaymentRequestBulk struct {
+	ChargeIds []string `json:"charge_ids"`
+	Send      bool     `json:"send"`
+}
+
+// PaymentRequestBulkResult defines model for PaymentRequestBulkResult.
+type PaymentRequestBulkResult struct {
+	Created    int       `json:"created"`
+	RequestIds *[]string `json:"request_ids,omitempty"`
+	Skipped    int       `json:"skipped"`
+}
+
+// PaymentRequestCharge defines model for PaymentRequestCharge.
+type PaymentRequestCharge struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents Cents   `json:"amount_cents"`
+	ChargeId    string  `json:"charge_id"`
+	Description *string `json:"description,omitempty"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn  IsoDate `json:"due_on"`
+	Number string  `json:"number"`
+
+	// ResidualCents Amount in integer cents of the marina currency
+	ResidualCents Cents `json:"residual_cents"`
+}
+
+// PaymentRequestCreate defines model for PaymentRequestCreate.
+type PaymentRequestCreate struct {
+	ChargeIds  []string `json:"charge_ids"`
+	CustomerId string   `json:"customer_id"`
+
+	// ExpiresOn Calendar date YYYY-MM-DD in the marina timezone
+	ExpiresOn *IsoDate `json:"expires_on,omitempty"`
+	Send      *bool    `json:"send,omitempty"`
+}
+
+// PaymentRequestCreated The request and, only in this response, its payment link
+type PaymentRequestCreated struct {
+	Request PaymentRequest `json:"request"`
+
+	// Url Shown once to staff (copy link); stored only as a hash
+	Url *string `json:"url,omitempty"`
+}
+
+// PaymentRequestPage defines model for PaymentRequestPage.
+type PaymentRequestPage struct {
+	Items      []PaymentRequest `json:"items"`
+	NextCursor *string          `json:"next_cursor"`
+}
+
+// PaymentRequestSend defines model for PaymentRequestSend.
+type PaymentRequestSend struct {
+	// Rotate Issue a new link (the old one stops working)
+	Rotate *bool `json:"rotate,omitempty"`
+}
+
+// PaymentRequestStatus defines model for PaymentRequestStatus.
+type PaymentRequestStatus string
+
 // PaymentSchedule defines model for PaymentSchedule.
 type PaymentSchedule struct {
 	Count                *int                `json:"count,omitempty"`
@@ -9452,6 +12484,9 @@ type PaymentSchedule struct {
 
 // PaymentScheduleMode defines model for PaymentSchedule.Mode.
 type PaymentScheduleMode string
+
+// PaymentSource defines model for PaymentSource.
+type PaymentSource string
 
 // PaymentTerms defines model for PaymentTerms.
 type PaymentTerms struct {
@@ -10226,6 +13261,12 @@ type Problem struct {
 // ProblemType defines model for ProblemType.
 type ProblemType string
 
+// ProviderTestResult defines model for ProviderTestResult.
+type ProviderTestResult struct {
+	Code *string `json:"code,omitempty"`
+	Ok   bool    `json:"ok"`
+}
+
 // PublicAcceptResult defines model for PublicAcceptResult.
 type PublicAcceptResult struct {
 	ContractCode string         `json:"contract_code"`
@@ -10693,6 +13734,71 @@ type ReasonRequired struct {
 	Reason string `json:"reason"`
 }
 
+// Receivable defines model for Receivable.
+type Receivable struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents  Cents        `json:"amount_cents"`
+	Bucket       AgeingBucket `json:"bucket"`
+	ContractCode *string      `json:"contract_code,omitempty"`
+	ContractId   *string      `json:"contract_id,omitempty"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer    *CustomerBrief `json:"customer,omitempty"`
+	Description *string        `json:"description,omitempty"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn             IsoDate           `json:"due_on"`
+	Excluded          *bool             `json:"excluded,omitempty"`
+	Id                string            `json:"id"`
+	Kind              ReceivableKind    `json:"kind"`
+	LastReminderLevel *ReminderLevel    `json:"last_reminder_level,omitempty"`
+	Number            *string           `json:"number,omitempty"`
+	OriginType        *ChargeOriginType `json:"origin_type,omitempty"`
+
+	// ResidualCents Amount in integer cents of the marina currency
+	ResidualCents Cents `json:"residual_cents"`
+}
+
+// ReceivableKind defines model for Receivable.Kind.
+type ReceivableKind string
+
+// ReceivablePage defines model for ReceivablePage.
+type ReceivablePage struct {
+	Items      []Receivable `json:"items"`
+	NextCursor *string      `json:"next_cursor"`
+
+	// Totals Residuals of open charges by age bucket (AgeingBucket)
+	Totals AgeingAmounts `json:"totals"`
+}
+
+// RecordPayment defines model for RecordPayment.
+type RecordPayment struct {
+	AmountCents    int64                   `json:"amount_cents"`
+	AutoMatch      *RecordPaymentAutoMatch `json:"auto_match,omitempty"`
+	CashRegisterId *string                 `json:"cash_register_id,omitempty"`
+	CustomerId     *string                 `json:"customer_id,omitempty"`
+	Kind           RecordPaymentKind       `json:"kind"`
+	Matches        *[]MatchInput           `json:"matches,omitempty"`
+	Method         RecordPaymentMethod     `json:"method"`
+	Notes          *string                 `json:"notes,omitempty"`
+
+	// ReceivedOn Calendar date YYYY-MM-DD in the marina timezone
+	ReceivedOn *IsoDate `json:"received_on,omitempty"`
+
+	// Reference Stored encrypted
+	Reference   *string `json:"reference,omitempty"`
+	SendReceipt *bool   `json:"send_receipt,omitempty"`
+}
+
+// RecordPaymentAutoMatch defines model for RecordPayment.AutoMatch.
+type RecordPaymentAutoMatch string
+
+// RecordPaymentKind defines model for RecordPayment.Kind.
+type RecordPaymentKind string
+
+// RecordPaymentMethod defines model for RecordPayment.Method.
+type RecordPaymentMethod string
+
 // RecoveryCodes defines model for RecoveryCodes.
 type RecoveryCodes struct {
 	Codes []string `json:"codes"`
@@ -10714,6 +13820,60 @@ type Rect struct {
 
 // RectSideCm Side of a berth or land resource rectangle in integer centimetres, at least 2 (layout.MinRectSide)
 type RectSideCm = int64
+
+// ReexportInput defines model for ReexportInput.
+type ReexportInput struct {
+	ChargeIds *[]string `json:"charge_ids,omitempty"`
+	ExportId  *string   `json:"export_id,omitempty"`
+}
+
+// Refund defines model for Refund.
+type Refund struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents Cents `json:"amount_cents"`
+
+	// BusinessDate Calendar date YYYY-MM-DD in the marina timezone
+	BusinessDate IsoDate       `json:"business_date"`
+	CreatedAt    time.Time     `json:"created_at"`
+	FailureCode  *string       `json:"failure_code,omitempty"`
+	Id           string        `json:"id"`
+	Kind         RefundKind    `json:"kind"`
+	Method       PaymentMethod `json:"method"`
+	Number       string        `json:"number"`
+	PaymentId    *string       `json:"payment_id,omitempty"`
+	ProviderCode *string       `json:"provider_code,omitempty"`
+	Reason       string        `json:"reason"`
+	Source       RefundSource  `json:"source"`
+	Status       RefundStatus  `json:"status"`
+}
+
+// RefundKind defines model for Refund.Kind.
+type RefundKind string
+
+// RefundSource defines model for Refund.Source.
+type RefundSource string
+
+// RefundInput defines model for RefundInput.
+type RefundInput struct {
+	AmountCents    int64              `json:"amount_cents"`
+	CashRegisterId *string            `json:"cash_register_id,omitempty"`
+	Method         *RefundInputMethod `json:"method,omitempty"`
+	Reason         string             `json:"reason"`
+	Unmatch        *[]UnmatchInput    `json:"unmatch,omitempty"`
+	ViaProvider    *bool              `json:"via_provider,omitempty"`
+}
+
+// RefundInputMethod defines model for RefundInput.Method.
+type RefundInputMethod string
+
+// RefundPage defines model for RefundPage.
+type RefundPage struct {
+	Items      []Refund `json:"items"`
+	NextCursor *string  `json:"next_cursor"`
+}
+
+// RefundStatus defines model for RefundStatus.
+type RefundStatus string
 
 // Release defines model for Release.
 type Release struct {
@@ -10776,6 +13936,72 @@ type ReleaseStatus string
 type RemindResult struct {
 	Queued         int `json:"queued"`
 	SkippedNoEmail int `json:"skipped_no_email"`
+}
+
+// ReminderItem defines model for ReminderItem.
+type ReminderItem struct {
+	ChargeId     string    `json:"charge_id"`
+	ChargeNumber *string   `json:"charge_number,omitempty"`
+	CreatedAt    time.Time `json:"created_at"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer  CustomerBrief `json:"customer"`
+	Id        string        `json:"id"`
+	Level     ReminderLevel `json:"level"`
+	RequestId *string       `json:"request_id,omitempty"`
+
+	// ResidualCents Amount in integer cents of the marina currency
+	ResidualCents *Cents             `json:"residual_cents,omitempty"`
+	RunId         *string            `json:"run_id,omitempty"`
+	Status        ReminderItemStatus `json:"status"`
+	Version       int                `json:"version"`
+}
+
+// ReminderItemStatus defines model for ReminderItemStatus.
+type ReminderItemStatus string
+
+// ReminderLevel defines model for ReminderLevel.
+type ReminderLevel string
+
+// ReminderLevelPolicy defines model for ReminderLevelPolicy.
+type ReminderLevelPolicy struct {
+	// Days Days after the due date (negative = before)
+	Days    int           `json:"days"`
+	Enabled bool          `json:"enabled"`
+	Level   ReminderLevel `json:"level"`
+}
+
+// ReminderPolicy defines model for ReminderPolicy.
+type ReminderPolicy struct {
+	Levels []ReminderLevelPolicy `json:"levels"`
+}
+
+// ReminderRun defines model for ReminderRun.
+type ReminderRun struct {
+	Counts     map[string]int `json:"counts"`
+	FinishedAt *time.Time     `json:"finished_at,omitempty"`
+	Id         string         `json:"id"`
+
+	// RunOn Calendar date YYYY-MM-DD in the marina timezone
+	RunOn     IsoDate           `json:"run_on"`
+	StartedAt time.Time         `json:"started_at"`
+	Status    ReminderRunStatus `json:"status"`
+}
+
+// ReminderRunStatus defines model for ReminderRun.Status.
+type ReminderRunStatus string
+
+// ReminderRunDetail defines model for ReminderRunDetail.
+type ReminderRunDetail struct {
+	Items      []ReminderItem `json:"items"`
+	NextCursor *string        `json:"next_cursor"`
+	Run        ReminderRun    `json:"run"`
+}
+
+// ReminderRunPage defines model for ReminderRunPage.
+type ReminderRunPage struct {
+	Items      []ReminderRun `json:"items"`
+	NextCursor *string       `json:"next_cursor"`
 }
 
 // RenewInput defines model for RenewInput.
@@ -11040,6 +14266,13 @@ type ResourceRef struct {
 // ResourceType defines model for ResourceType.
 type ResourceType string
 
+// RetainInput defines model for RetainInput.
+type RetainInput struct {
+	AmountCents int64   `json:"amount_cents"`
+	ItemId      *string `json:"item_id,omitempty"`
+	Reason      string  `json:"reason"`
+}
+
 // RevenueClass defines model for RevenueClass.
 type RevenueClass struct {
 	Archived  bool     `json:"archived"`
@@ -11095,8 +14328,11 @@ type Right struct {
 	ActiveMandateId *string       `json:"active_mandate_id,omitempty"`
 	Allocations     *[]Allocation `json:"allocations,omitempty"`
 	Berth           ResourceRef   `json:"berth"`
-	CreatedAt       time.Time     `json:"created_at"`
-	EndReason       *string       `json:"end_reason,omitempty"`
+
+	// BerthCode Code of the berth of the right
+	BerthCode *string   `json:"berth_code,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+	EndReason *string   `json:"end_reason,omitempty"`
 
 	// FromOn Calendar date YYYY-MM-DD in the marina timezone
 	FromOn  IsoDate       `json:"from_on"`
@@ -11333,6 +14569,50 @@ type SegmentInput struct {
 	YCm *Cm `json:"y_cm,omitempty"`
 }
 
+// SendRemindersInput defines model for SendRemindersInput.
+type SendRemindersInput struct {
+	ChargeIds []string       `json:"charge_ids"`
+	Level     *ReminderLevel `json:"level,omitempty"`
+}
+
+// SendRemindersResult defines model for SendRemindersResult.
+type SendRemindersResult struct {
+	Queued  int `json:"queued"`
+	Skipped int `json:"skipped"`
+}
+
+// SepaMandate defines model for SepaMandate.
+type SepaMandate struct {
+	ActivatedAt  *time.Time        `json:"activated_at,omitempty"`
+	CreatedAt    time.Time         `json:"created_at"`
+	IbanLast4    string            `json:"iban_last4"`
+	Id           string            `json:"id"`
+	MandateRef   *string           `json:"mandate_ref,omitempty"`
+	ProviderCode string            `json:"provider_code"`
+	RevokedAt    *time.Time        `json:"revoked_at,omitempty"`
+	Status       SepaMandateStatus `json:"status"`
+}
+
+// SepaMandateStatus defines model for SepaMandate.Status.
+type SepaMandateStatus string
+
+// SepaMandateCreate defines model for SepaMandateCreate.
+type SepaMandateCreate struct {
+	ProviderCode *string `json:"provider_code,omitempty"`
+	Send         *bool   `json:"send,omitempty"`
+}
+
+// SepaMandateCreated defines model for SepaMandateCreated.
+type SepaMandateCreated struct {
+	Mandate  SepaMandate `json:"mandate"`
+	SetupUrl string      `json:"setup_url"`
+}
+
+// SepaMandateList defines model for SepaMandateList.
+type SepaMandateList struct {
+	Items []SepaMandate `json:"items"`
+}
+
 // SettleInput defines model for SettleInput.
 type SettleInput struct {
 	Method SettlementMethod `json:"method"`
@@ -11342,6 +14622,26 @@ type SettleInput struct {
 
 	// SettledOn Calendar date YYYY-MM-DD in the marina timezone
 	SettledOn *IsoDate `json:"settled_on,omitempty"`
+}
+
+// SettleMandateInput defines model for SettleMandateInput.
+type SettleMandateInput struct {
+	Mode SettleMandateInputMode `json:"mode"`
+
+	// Through Calendar date YYYY-MM-DD in the marina timezone
+	Through IsoDate `json:"through"`
+}
+
+// SettleMandateInputMode defines model for SettleMandateInput.Mode.
+type SettleMandateInputMode string
+
+// SettleMandateResult defines model for SettleMandateResult.
+type SettleMandateResult struct {
+	// CreditedCents Amount in integer cents of the marina currency
+	CreditedCents Cents `json:"credited_cents"`
+
+	// PaidOutCents Amount in integer cents of the marina currency
+	PaidOutCents Cents `json:"paid_out_cents"`
 }
 
 // SettlementMethod defines model for SettlementMethod.
@@ -11496,6 +14796,50 @@ type SolutionSegment struct {
 
 // SplitRule defines model for SplitRule.
 type SplitRule string
+
+// Statement defines model for Statement.
+type Statement struct {
+	// ClosingCents Amount in integer cents of the marina currency
+	ClosingCents Cents `json:"closing_cents"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer CustomerBrief `json:"customer"`
+
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From IsoDate `json:"from"`
+
+	// OpeningCents Amount in integer cents of the marina currency
+	OpeningCents Cents          `json:"opening_cents"`
+	Rows         []StatementRow `json:"rows"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To IsoDate `json:"to"`
+}
+
+// StatementRow defines model for StatementRow.
+type StatementRow struct {
+	// BalanceCents Amount in integer cents of the marina currency
+	BalanceCents Cents `json:"balance_cents"`
+
+	// CreditCents Amount in integer cents of the marina currency
+	CreditCents Cents `json:"credit_cents"`
+
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date IsoDate `json:"date"`
+
+	// DebitCents Amount in integer cents of the marina currency
+	DebitCents  Cents  `json:"debit_cents"`
+	Description string `json:"description"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn  *IsoDate         `json:"due_on,omitempty"`
+	Id     *string          `json:"id,omitempty"`
+	Kind   StatementRowKind `json:"kind"`
+	Number string           `json:"number"`
+}
+
+// StatementRowKind defines model for StatementRow.Kind.
+type StatementRowKind string
 
 // StayChange defines model for StayChange.
 type StayChange struct {
@@ -11827,6 +15171,29 @@ type TransitPatch struct {
 	Notes                 *string `json:"notes,omitempty"`
 }
 
+// TransitPaymentInput Payment collected at the desk with the confirmation (M5, payments.collect; payments.collect_cash for cash)
+type TransitPaymentInput struct {
+	// AmountCents Default the transit charge total
+	AmountCents *int64                    `json:"amount_cents,omitempty"`
+	Method      TransitPaymentInputMethod `json:"method"`
+	RegisterId  *string                   `json:"register_id,omitempty"`
+}
+
+// TransitPaymentInputMethod defines model for TransitPaymentInput.Method.
+type TransitPaymentInputMethod string
+
+// TransitPaymentLink defines model for TransitPaymentLink.
+type TransitPaymentLink struct {
+	Request PaymentRequest `json:"request"`
+	Url     string         `json:"url"`
+}
+
+// TransitPaymentLinkInput defines model for TransitPaymentLinkInput.
+type TransitPaymentLinkInput struct {
+	ExpiresInHours *int  `json:"expires_in_hours,omitempty"`
+	Send           *bool `json:"send,omitempty"`
+}
+
 // UnexpectedArrival vessel_id or new_vessel; departure defaults to the next day
 type UnexpectedArrival struct {
 	// Departure Calendar date YYYY-MM-DD in the marina timezone
@@ -11846,6 +15213,12 @@ type UnexpectedArrival struct {
 
 // UnitClass Legal unit class from the effective LOA (natante, imbarcazione, nave)
 type UnitClass string
+
+// UnmatchInput defines model for UnmatchInput.
+type UnmatchInput struct {
+	AmountCents int64  `json:"amount_cents"`
+	MatchId     string `json:"match_id"`
+}
 
 // UnplacedVessel defines model for UnplacedVessel.
 type UnplacedVessel struct {
@@ -12274,6 +15647,43 @@ type WebhookTestResult struct {
 	DeliveryId string `json:"delivery_id"`
 }
 
+// WorkItem defines model for WorkItem.
+type WorkItem struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents    *Cents    `json:"amount_cents,omitempty"`
+	AssigneeUserId *string   `json:"assignee_user_id,omitempty"`
+	CreatedAt      time.Time `json:"created_at"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer *CustomerBrief `json:"customer,omitempty"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn      *IsoDate       `json:"due_on,omitempty"`
+	Kind       WorkItemKind   `json:"kind"`
+	SourceId   string         `json:"source_id"`
+	SourceType string         `json:"source_type"`
+	Status     WorkItemStatus `json:"status"`
+}
+
+// WorkItemKind defines model for WorkItemKind.
+type WorkItemKind string
+
+// WorkItemPage defines model for WorkItemPage.
+type WorkItemPage struct {
+	Items      []WorkItem `json:"items"`
+	NextCursor *string    `json:"next_cursor"`
+}
+
+// WorkItemPatch defines model for WorkItemPatch.
+type WorkItemPatch struct {
+	AssigneeUserId *string        `json:"assignee_user_id,omitempty"`
+	Note           *string        `json:"note,omitempty"`
+	Status         WorkItemStatus `json:"status"`
+}
+
+// WorkItemStatus defines model for WorkItemStatus.
+type WorkItemStatus string
+
 // WriteWarning Non-blocking warning of a write (insurance_missing, transfer_requirements, ...)
 type WriteWarning string
 
@@ -12301,8 +15711,23 @@ type CSRFToken = string
 // CampaignId defines model for CampaignId.
 type CampaignId = string
 
+// CashRegisterId defines model for CashRegisterId.
+type CashRegisterId = string
+
+// CashSessionId defines model for CashSessionId.
+type CashSessionId = string
+
 // CategoryId defines model for CategoryId.
 type CategoryId = string
+
+// ChargeExportId defines model for ChargeExportId.
+type ChargeExportId = string
+
+// ChargeId defines model for ChargeId.
+type ChargeId = string
+
+// ChargeImportId defines model for ChargeImportId.
+type ChargeImportId = string
 
 // ClosureId defines model for ClosureId.
 type ClosureId = string
@@ -12328,6 +15753,9 @@ type DeadlineId = string
 // DocumentId defines model for DocumentId.
 type DocumentId = string
 
+// DunningExclusionId defines model for DunningExclusionId.
+type DunningExclusionId = string
+
 // EndpointId defines model for EndpointId.
 type EndpointId = string
 
@@ -12339,6 +15767,9 @@ type FeeTableId = string
 
 // FileId defines model for FileId.
 type FileId = string
+
+// FiscalDocumentId defines model for FiscalDocumentId.
+type FiscalDocumentId = string
 
 // FleetId defines model for FleetId.
 type FleetId = string
@@ -12391,6 +15822,21 @@ type ObligationId = string
 // OrganizationId defines model for OrganizationId.
 type OrganizationId = string
 
+// PayToken defines model for PayToken.
+type PayToken = string
+
+// PaymentId defines model for PaymentId.
+type PaymentId = string
+
+// PaymentMatchId defines model for PaymentMatchId.
+type PaymentMatchId = string
+
+// PaymentProviderCode defines model for PaymentProviderCode.
+type PaymentProviderCode = string
+
+// PaymentRequestId defines model for PaymentRequestId.
+type PaymentRequestId = string
+
 // PresenceId defines model for PresenceId.
 type PresenceId = string
 
@@ -12409,11 +15855,20 @@ type QuoteId = string
 // ReleaseId defines model for ReleaseId.
 type ReleaseId = string
 
+// ReminderItemId defines model for ReminderItemId.
+type ReminderItemId = string
+
+// ReminderRunId defines model for ReminderRunId.
+type ReminderRunId = string
+
 // RevenueClassId defines model for RevenueClassId.
 type RevenueClassId = string
 
 // RightId defines model for RightId.
 type RightId = string
+
+// SepaMandateId defines model for SepaMandateId.
+type SepaMandateId = string
 
 // SignatureRequestId defines model for SignatureRequestId.
 type SignatureRequestId = string
@@ -12445,6 +15900,15 @@ type VesselId = string
 // WaitlistId defines model for WaitlistId.
 type WaitlistId = string
 
+// WorkSourceId defines model for WorkSourceId.
+type WorkSourceId = string
+
+// WorkSourceType defines model for WorkSourceType.
+type WorkSourceType = string
+
+// BadGateway defines model for BadGateway.
+type BadGateway = Problem
+
 // BadRequest defines model for BadRequest.
 type BadRequest = Problem
 
@@ -12456,6 +15920,9 @@ type Forbidden = Problem
 
 // M4Unprocessable defines model for M4Unprocessable.
 type M4Unprocessable = Problem
+
+// M5Unprocessable defines model for M5Unprocessable.
+type M5Unprocessable = Problem
 
 // MapInvalid defines model for MapInvalid.
 type MapInvalid = Problem
@@ -12586,6 +16053,12 @@ type GetRightHistoryParams struct {
 // GetRightHistoryParamsFormat defines parameters for GetRightHistory.
 type GetRightHistoryParamsFormat string
 
+// UpdateBillingSettingsParams defines parameters for UpdateBillingSettings.
+type UpdateBillingSettingsParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
 // CreateBlockParams defines parameters for CreateBlock.
 type CreateBlockParams struct {
 	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
@@ -12594,6 +16067,141 @@ type CreateBlockParams struct {
 
 // DeleteBlockParams defines parameters for DeleteBlock.
 type DeleteBlockParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// CreateCashRegisterParams defines parameters for CreateCashRegister.
+type CreateCashRegisterParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateCashRegisterParams defines parameters for UpdateCashRegister.
+type UpdateCashRegisterParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListCashSessionsParams defines parameters for ListCashSessions.
+type ListCashSessionsParams struct {
+	RegisterId *string                       `form:"register_id,omitempty" json:"register_id,omitempty"`
+	Status     *ListCashSessionsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Cursor     *Cursor                       `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit      *Limit                        `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ListCashSessionsParamsStatus defines parameters for ListCashSessions.
+type ListCashSessionsParamsStatus string
+
+// OpenCashSessionParams defines parameters for OpenCashSession.
+type OpenCashSessionParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// GetCurrentCashSessionParams defines parameters for GetCurrentCashSession.
+type GetCurrentCashSessionParams struct {
+	RegisterId *string `form:"register_id,omitempty" json:"register_id,omitempty"`
+}
+
+// CloseCashSessionParams defines parameters for CloseCashSession.
+type CloseCashSessionParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// AddCashMovementParams defines parameters for AddCashMovement.
+type AddCashMovementParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// GetZReportParams defines parameters for GetZReport.
+type GetZReportParams struct {
+	Format *GetZReportParamsFormat `form:"format,omitempty" json:"format,omitempty"`
+}
+
+// GetZReportParamsFormat defines parameters for GetZReport.
+type GetZReportParamsFormat string
+
+// ListChargeExportsParams defines parameters for ListChargeExports.
+type ListChargeExportsParams struct {
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// CreateChargeExportParams defines parameters for CreateChargeExport.
+type CreateChargeExportParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ReexportChargesParams defines parameters for ReexportCharges.
+type ReexportChargesParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// GetChargeExportParams defines parameters for GetChargeExport.
+type GetChargeExportParams struct {
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// DownloadChargeExportParams defines parameters for DownloadChargeExport.
+type DownloadChargeExportParams struct {
+	Format *DownloadChargeExportParamsFormat `form:"format,omitempty" json:"format,omitempty"`
+}
+
+// DownloadChargeExportParamsFormat defines parameters for DownloadChargeExport.
+type DownloadChargeExportParamsFormat string
+
+// ListChargesParams defines parameters for ListCharges.
+type ListChargesParams struct {
+	PaymentStatus   *ChargePaymentStatus     `form:"payment_status,omitempty" json:"payment_status,omitempty"`
+	InvoicingStatus *ChargeInvoicingStatus   `form:"invoicing_status,omitempty" json:"invoicing_status,omitempty"`
+	OriginType      *ChargeOriginType        `form:"origin_type,omitempty" json:"origin_type,omitempty"`
+	CustomerId      *string                  `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+	ContractId      *string                  `form:"contract_id,omitempty" json:"contract_id,omitempty"`
+	IssuedFrom      *IsoDate                 `form:"issued_from,omitempty" json:"issued_from,omitempty"`
+	IssuedTo        *IsoDate                 `form:"issued_to,omitempty" json:"issued_to,omitempty"`
+	DueFrom         *IsoDate                 `form:"due_from,omitempty" json:"due_from,omitempty"`
+	DueTo           *IsoDate                 `form:"due_to,omitempty" json:"due_to,omitempty"`
+	Overdue         *bool                    `form:"overdue,omitempty" json:"overdue,omitempty"`
+	RevenueClass    *string                  `form:"revenue_class,omitempty" json:"revenue_class,omitempty"`
+	Q               *string                  `form:"q,omitempty" json:"q,omitempty"`
+	Format          *ListChargesParamsFormat `form:"format,omitempty" json:"format,omitempty"`
+	Cursor          *Cursor                  `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit           *Limit                   `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ListChargesParamsFormat defines parameters for ListCharges.
+type ListChargesParamsFormat string
+
+// CreateChargeParams defines parameters for CreateCharge.
+type CreateChargeParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateChargeParams defines parameters for UpdateCharge.
+type UpdateChargeParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// AdjustChargeParams defines parameters for AdjustCharge.
+type AdjustChargeParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// CancelChargeParams defines parameters for CancelCharge.
+type CancelChargeParams struct {
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
@@ -12985,6 +16593,27 @@ type TerminateContractParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// CreateTerminationChargeParams defines parameters for CreateTerminationCharge.
+type CreateTerminationChargeParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// CreateCounterSaleParams defines parameters for CreateCounterSale.
+type CreateCounterSaleParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ListCreditsParams defines parameters for ListCredits.
+type ListCreditsParams struct {
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
 // ListCustomersParams defines parameters for ListCustomers.
 type ListCustomersParams struct {
 	Cursor   *Cursor           `form:"cursor,omitempty" json:"cursor,omitempty"`
@@ -13015,6 +16644,18 @@ type RecordConsentParams struct {
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
+// GrantCustomerCreditParams defines parameters for GrantCustomerCredit.
+type GrantCustomerCreditParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ApplyCustomerCreditParams defines parameters for ApplyCustomerCredit.
+type ApplyCustomerCreditParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
 // MergeCustomersParams defines parameters for MergeCustomers.
 type MergeCustomersParams struct {
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -13026,6 +16667,22 @@ type ListCustomerMessagesParams struct {
 	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
 	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
 }
+
+// CreateSepaMandateParams defines parameters for CreateSepaMandate.
+type CreateSepaMandateParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// GetCustomerStatementParams defines parameters for GetCustomerStatement.
+type GetCustomerStatementParams struct {
+	From   *IsoDate                          `form:"from,omitempty" json:"from,omitempty"`
+	To     *IsoDate                          `form:"to,omitempty" json:"to,omitempty"`
+	Format *GetCustomerStatementParamsFormat `form:"format,omitempty" json:"format,omitempty"`
+}
+
+// GetCustomerStatementParamsFormat defines parameters for GetCustomerStatement.
+type GetCustomerStatementParamsFormat string
 
 // ListDeadlinesParams defines parameters for ListDeadlines.
 type ListDeadlinesParams struct {
@@ -13098,6 +16755,21 @@ type GetDocumentFileParams struct {
 type UploadDocumentFileParams struct {
 	// XFileName Original file name (sanitised, at most 120 characters kept)
 	XFileName *string `json:"X-File-Name,omitempty"`
+}
+
+// ListDunningExclusionsParams defines parameters for ListDunningExclusions.
+type ListDunningExclusionsParams struct {
+	CustomerId *string `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+	ChargeId   *string `form:"charge_id,omitempty" json:"charge_id,omitempty"`
+	Active     *bool   `form:"active,omitempty" json:"active,omitempty"`
+	Cursor     *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit      *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// CreateDunningExclusionParams defines parameters for CreateDunningExclusion.
+type CreateDunningExclusionParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // SaveAreaLayoutParams defines parameters for SaveAreaLayout.
@@ -13184,6 +16856,29 @@ type ActivateFeeTableParams struct {
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// GetFiscalDailyTotalsParams defines parameters for GetFiscalDailyTotals.
+type GetFiscalDailyTotalsParams struct {
+	From   *IsoDate                          `form:"from,omitempty" json:"from,omitempty"`
+	To     *IsoDate                          `form:"to,omitempty" json:"to,omitempty"`
+	Group  *GetFiscalDailyTotalsParamsGroup  `form:"group,omitempty" json:"group,omitempty"`
+	Format *GetFiscalDailyTotalsParamsFormat `form:"format,omitempty" json:"format,omitempty"`
+}
+
+// GetFiscalDailyTotalsParamsGroup defines parameters for GetFiscalDailyTotals.
+type GetFiscalDailyTotalsParamsGroup string
+
+// GetFiscalDailyTotalsParamsFormat defines parameters for GetFiscalDailyTotals.
+type GetFiscalDailyTotalsParamsFormat string
+
+// ListFiscalDocumentsParams defines parameters for ListFiscalDocuments.
+type ListFiscalDocumentsParams struct {
+	From   *IsoDate              `form:"from,omitempty" json:"from,omitempty"`
+	To     *IsoDate              `form:"to,omitempty" json:"to,omitempty"`
+	Status *FiscalDocumentStatus `form:"status,omitempty" json:"status,omitempty"`
+	Cursor *Cursor               `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit                `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
 // ListGeneratedDocumentsParams defines parameters for ListGeneratedDocuments.
@@ -13330,6 +17025,18 @@ type SettleInstallmentParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// ListInvoiceReconciliationsParams defines parameters for ListInvoiceReconciliations.
+type ListInvoiceReconciliationsParams struct {
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// CreateInvoiceReconciliationParams defines parameters for CreateInvoiceReconciliation.
+type CreateInvoiceReconciliationParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
 // ListItemsParams defines parameters for ListItems.
 type ListItemsParams struct {
 	Cursor *Cursor   `form:"cursor,omitempty" json:"cursor,omitempty"`
@@ -13397,6 +17104,12 @@ type EndMandateParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// SettleMandateParams defines parameters for SettleMandate.
+type SettleMandateParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
 // GetMandateStatementParams defines parameters for GetMandateStatement.
 type GetMandateStatementParams struct {
 	From   *IsoDate                         `form:"from,omitempty" json:"from,omitempty"`
@@ -13458,6 +17171,11 @@ type GetMapOccupancyParams struct {
 
 	// ResourceIds Comma-separated resource ids
 	ResourceIds *string `form:"resource_ids,omitempty" json:"resource_ids,omitempty"`
+}
+
+// GetMapPaymentStatusParams defines parameters for GetMapPaymentStatus.
+type GetMapPaymentStatusParams struct {
+	Date *IsoDate `form:"date,omitempty" json:"date,omitempty"`
 }
 
 // PrintMapParams defines parameters for PrintMap.
@@ -13548,6 +17266,125 @@ type SwapAllocationsParams struct {
 type UpdateOccupancySettingsParams struct {
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ImportOpeningBalancesParams defines parameters for ImportOpeningBalances.
+type ImportOpeningBalancesParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ListOpeningBalanceImportsParams defines parameters for ListOpeningBalanceImports.
+type ListOpeningBalanceImportsParams struct {
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// UndoOpeningBalanceImportParams defines parameters for UndoOpeningBalanceImport.
+type UndoOpeningBalanceImportParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdatePaymentProviderSettingsParams defines parameters for UpdatePaymentProviderSettings.
+type UpdatePaymentProviderSettingsParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListPaymentRequestsParams defines parameters for ListPaymentRequests.
+type ListPaymentRequestsParams struct {
+	Status     *PaymentRequestStatus `form:"status,omitempty" json:"status,omitempty"`
+	CustomerId *string               `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+	Cursor     *Cursor               `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit      *Limit                `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// CreatePaymentRequestParams defines parameters for CreatePaymentRequest.
+type CreatePaymentRequestParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// CreatePaymentRequestsBulkParams defines parameters for CreatePaymentRequestsBulk.
+type CreatePaymentRequestsBulkParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// CancelPaymentRequestParams defines parameters for CancelPaymentRequest.
+type CancelPaymentRequestParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// SendPaymentRequestParams defines parameters for SendPaymentRequest.
+type SendPaymentRequestParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListPaymentsParams defines parameters for ListPayments.
+type ListPaymentsParams struct {
+	Method      *PaymentMethod `form:"method,omitempty" json:"method,omitempty"`
+	Kind        *PaymentKind   `form:"kind,omitempty" json:"kind,omitempty"`
+	Source      *PaymentSource `form:"source,omitempty" json:"source,omitempty"`
+	CustomerId  *string        `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+	From        *IsoDate       `form:"from,omitempty" json:"from,omitempty"`
+	To          *IsoDate       `form:"to,omitempty" json:"to,omitempty"`
+	Unallocated *bool          `form:"unallocated,omitempty" json:"unallocated,omitempty"`
+	SessionId   *string        `form:"session_id,omitempty" json:"session_id,omitempty"`
+	Cursor      *Cursor        `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit       *Limit         `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// RecordPaymentParams defines parameters for RecordPayment.
+type RecordPaymentParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ExportPaymentsParams defines parameters for ExportPayments.
+type ExportPaymentsParams struct {
+	From   *IsoDate                    `form:"from,omitempty" json:"from,omitempty"`
+	To     *IsoDate                    `form:"to,omitempty" json:"to,omitempty"`
+	Method *PaymentMethod              `form:"method,omitempty" json:"method,omitempty"`
+	Format *ExportPaymentsParamsFormat `form:"format,omitempty" json:"format,omitempty"`
+}
+
+// ExportPaymentsParamsFormat defines parameters for ExportPayments.
+type ExportPaymentsParamsFormat string
+
+// MatchPaymentParams defines parameters for MatchPayment.
+type MatchPaymentParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ReverseMatchParams defines parameters for ReverseMatch.
+type ReverseMatchParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// GetPaymentReceiptParams defines parameters for GetPaymentReceipt.
+type GetPaymentReceiptParams struct {
+	Format *GetPaymentReceiptParamsFormat `form:"format,omitempty" json:"format,omitempty"`
+}
+
+// GetPaymentReceiptParamsFormat defines parameters for GetPaymentReceipt.
+type GetPaymentReceiptParamsFormat string
+
+// RefundPaymentParams defines parameters for RefundPayment.
+type RefundPaymentParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// RetainDepositParams defines parameters for RetainDeposit.
+type RetainDepositParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // ListPresencesParams defines parameters for ListPresences.
@@ -13702,6 +17539,45 @@ type SendQuoteParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// ListReceivablesParams defines parameters for ListReceivables.
+type ListReceivablesParams struct {
+	DueFrom    *IsoDate                     `form:"due_from,omitempty" json:"due_from,omitempty"`
+	DueTo      *IsoDate                     `form:"due_to,omitempty" json:"due_to,omitempty"`
+	Bucket     *AgeingBucket                `form:"bucket,omitempty" json:"bucket,omitempty"`
+	Status     *ListReceivablesParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	CustomerId *string                      `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+	ContractId *string                      `form:"contract_id,omitempty" json:"contract_id,omitempty"`
+	GroupId    *string                      `form:"group_id,omitempty" json:"group_id,omitempty"`
+	OriginType *ChargeOriginType            `form:"origin_type,omitempty" json:"origin_type,omitempty"`
+	Format     *ListReceivablesParamsFormat `form:"format,omitempty" json:"format,omitempty"`
+	Cursor     *Cursor                      `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit      *Limit                       `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ListReceivablesParamsStatus defines parameters for ListReceivables.
+type ListReceivablesParamsStatus string
+
+// ListReceivablesParamsFormat defines parameters for ListReceivables.
+type ListReceivablesParamsFormat string
+
+// GetReceivablesAgeingParams defines parameters for GetReceivablesAgeing.
+type GetReceivablesAgeingParams struct {
+	Format *GetReceivablesAgeingParamsFormat `form:"format,omitempty" json:"format,omitempty"`
+}
+
+// GetReceivablesAgeingParamsFormat defines parameters for GetReceivablesAgeing.
+type GetReceivablesAgeingParamsFormat string
+
+// ListRefundsParams defines parameters for ListRefunds.
+type ListRefundsParams struct {
+	PaymentId *string       `form:"payment_id,omitempty" json:"payment_id,omitempty"`
+	Status    *RefundStatus `form:"status,omitempty" json:"status,omitempty"`
+	From      *IsoDate      `form:"from,omitempty" json:"from,omitempty"`
+	To        *IsoDate      `form:"to,omitempty" json:"to,omitempty"`
+	Cursor    *Cursor       `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit     *Limit        `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
 // ListReleasesParams defines parameters for ListReleases.
 type ListReleasesParams struct {
 	From       *IsoDate       `form:"from,omitempty" json:"from,omitempty"`
@@ -13725,6 +17601,30 @@ type RevokeReleaseParams struct {
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListReminderRunsParams defines parameters for ListReminderRuns.
+type ListReminderRunsParams struct {
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// CreateReminderRunParams defines parameters for CreateReminderRun.
+type CreateReminderRunParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// GetReminderRunParams defines parameters for GetReminderRun.
+type GetReminderRunParams struct {
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// SendRemindersParams defines parameters for SendReminders.
+type SendRemindersParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // ListRenewalCampaignsParams defines parameters for ListRenewalCampaigns.
@@ -14078,6 +17978,15 @@ type MarkTransitNoShowParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// CreateTransitPaymentLinkParams defines parameters for CreateTransitPaymentLink.
+type CreateTransitPaymentLinkParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
 // ChangeTransitStayParams defines parameters for ChangeTransitStay.
 type ChangeTransitStayParams struct {
 	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
@@ -14172,6 +18081,15 @@ type TestWebhookEndpointParams struct {
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
+// ListWorklistParams defines parameters for ListWorklist.
+type ListWorklistParams struct {
+	Kind           *WorkItemKind   `form:"kind,omitempty" json:"kind,omitempty"`
+	Status         *WorkItemStatus `form:"status,omitempty" json:"status,omitempty"`
+	AssigneeUserId *string         `form:"assignee_user_id,omitempty" json:"assignee_user_id,omitempty"`
+	Cursor         *Cursor         `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit          *Limit          `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
 // UpdateOrganizationParams defines parameters for UpdateOrganization.
 type UpdateOrganizationParams struct {
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -14257,8 +18175,50 @@ type CreateBerthGroupJSONRequestBody = BerthGroupCreate
 // UpdateBerthGroupJSONRequestBody defines body for UpdateBerthGroup for application/json ContentType.
 type UpdateBerthGroupJSONRequestBody = BerthGroupPatch
 
+// UpdateBillingSettingsJSONRequestBody defines body for UpdateBillingSettings for application/json ContentType.
+type UpdateBillingSettingsJSONRequestBody = BillingSettingsInput
+
 // CreateBlockJSONRequestBody defines body for CreateBlock for application/json ContentType.
 type CreateBlockJSONRequestBody = BlockCreate
+
+// CreateCashRegisterJSONRequestBody defines body for CreateCashRegister for application/json ContentType.
+type CreateCashRegisterJSONRequestBody = CashRegisterInput
+
+// UpdateCashRegisterJSONRequestBody defines body for UpdateCashRegister for application/json ContentType.
+type UpdateCashRegisterJSONRequestBody = CashRegisterPatch
+
+// OpenCashSessionJSONRequestBody defines body for OpenCashSession for application/json ContentType.
+type OpenCashSessionJSONRequestBody = OpenCashSessionInput
+
+// CloseCashSessionJSONRequestBody defines body for CloseCashSession for application/json ContentType.
+type CloseCashSessionJSONRequestBody = CloseCashSessionInput
+
+// AddCashMovementJSONRequestBody defines body for AddCashMovement for application/json ContentType.
+type AddCashMovementJSONRequestBody = CashMovementInput
+
+// CreateChargeExportJSONRequestBody defines body for CreateChargeExport for application/json ContentType.
+type CreateChargeExportJSONRequestBody = ExportCreate
+
+// PreviewChargeExportJSONRequestBody defines body for PreviewChargeExport for application/json ContentType.
+type PreviewChargeExportJSONRequestBody = ExportFilter
+
+// ReexportChargesJSONRequestBody defines body for ReexportCharges for application/json ContentType.
+type ReexportChargesJSONRequestBody = ReexportInput
+
+// CreateChargeJSONRequestBody defines body for CreateCharge for application/json ContentType.
+type CreateChargeJSONRequestBody = ChargeCreate
+
+// UpdateChargeJSONRequestBody defines body for UpdateCharge for application/json ContentType.
+type UpdateChargeJSONRequestBody = ChargePatch
+
+// AdjustChargeJSONRequestBody defines body for AdjustCharge for application/json ContentType.
+type AdjustChargeJSONRequestBody = ChargeAdjust
+
+// CancelChargeJSONRequestBody defines body for CancelCharge for application/json ContentType.
+type CancelChargeJSONRequestBody = ChargeCancel
+
+// SetChargeInvoiceJSONRequestBody defines body for SetChargeInvoice for application/json ContentType.
+type SetChargeInvoiceJSONRequestBody = InvoiceRefInput
 
 // CreateCharterFleetJSONRequestBody defines body for CreateCharterFleet for application/json ContentType.
 type CreateCharterFleetJSONRequestBody = CharterFleetInput
@@ -14356,6 +18316,9 @@ type SuspendContractJSONRequestBody = ReasonRequired
 // TerminateContractJSONRequestBody defines body for TerminateContract for application/json ContentType.
 type TerminateContractJSONRequestBody = TerminateInput
 
+// CreateCounterSaleJSONRequestBody defines body for CreateCounterSale for application/json ContentType.
+type CreateCounterSaleJSONRequestBody = CounterSaleInput
+
 // CreateCustomerJSONRequestBody defines body for CreateCustomer for application/json ContentType.
 type CreateCustomerJSONRequestBody = CustomerInput
 
@@ -14368,8 +18331,17 @@ type AnonymizeCustomerJSONRequestBody = CustomerAnonymizeRequest
 // RecordConsentJSONRequestBody defines body for RecordConsent for application/json ContentType.
 type RecordConsentJSONRequestBody = ConsentInput
 
+// GrantCustomerCreditJSONRequestBody defines body for GrantCustomerCredit for application/json ContentType.
+type GrantCustomerCreditJSONRequestBody = CreditGrantInput
+
+// ApplyCustomerCreditJSONRequestBody defines body for ApplyCustomerCredit for application/json ContentType.
+type ApplyCustomerCreditJSONRequestBody = ApplyCreditInput
+
 // MergeCustomersJSONRequestBody defines body for MergeCustomers for application/json ContentType.
 type MergeCustomersJSONRequestBody = CustomerMergeRequest
+
+// CreateSepaMandateJSONRequestBody defines body for CreateSepaMandate for application/json ContentType.
+type CreateSepaMandateJSONRequestBody = SepaMandateCreate
 
 // ReplaceDeadlinePoliciesJSONRequestBody defines body for ReplaceDeadlinePolicies for application/json ContentType.
 type ReplaceDeadlinePoliciesJSONRequestBody = DeadlinePolicyList
@@ -14385,6 +18357,9 @@ type CreateDocumentJSONRequestBody = DocumentInput
 
 // UpdateDocumentJSONRequestBody defines body for UpdateDocument for application/json ContentType.
 type UpdateDocumentJSONRequestBody = DocumentPatch
+
+// CreateDunningExclusionJSONRequestBody defines body for CreateDunningExclusion for application/json ContentType.
+type CreateDunningExclusionJSONRequestBody = DunningExclusionInput
 
 // ProposeCompactionJSONRequestBody defines body for ProposeCompaction for application/json ContentType.
 type ProposeCompactionJSONRequestBody = CompactionRequest
@@ -14431,6 +18406,9 @@ type SettleInstallmentsJSONRequestBody = BulkSettleInput
 // SettleInstallmentJSONRequestBody defines body for SettleInstallment for application/json ContentType.
 type SettleInstallmentJSONRequestBody = SettleInput
 
+// CreateInvoiceReconciliationJSONRequestBody defines body for CreateInvoiceReconciliation for application/json ContentType.
+type CreateInvoiceReconciliationJSONRequestBody = InvoiceReconciliationInput
+
 // CreateItemJSONRequestBody defines body for CreateItem for application/json ContentType.
 type CreateItemJSONRequestBody = ItemCreate
 
@@ -14445,6 +18423,9 @@ type CancelMandateJSONRequestBody = ReasonInput
 
 // EndMandateJSONRequestBody defines body for EndMandate for application/json ContentType.
 type EndMandateJSONRequestBody = MandateEndInput
+
+// SettleMandateJSONRequestBody defines body for SettleMandate for application/json ContentType.
+type SettleMandateJSONRequestBody = SettleMandateInput
 
 // CreateMapJSONRequestBody defines body for CreateMap for application/json ContentType.
 type CreateMapJSONRequestBody = MapCreate
@@ -14500,6 +18481,33 @@ type SwapAllocationsJSONRequestBody = SwapRequest
 // UpdateOccupancySettingsJSONRequestBody defines body for UpdateOccupancySettings for application/json ContentType.
 type UpdateOccupancySettingsJSONRequestBody = OccupancySettingsUpdate
 
+// ImportOpeningBalancesJSONRequestBody defines body for ImportOpeningBalances for application/json ContentType.
+type ImportOpeningBalancesJSONRequestBody = OpeningBalanceImportInput
+
+// UpdatePaymentProviderSettingsJSONRequestBody defines body for UpdatePaymentProviderSettings for application/json ContentType.
+type UpdatePaymentProviderSettingsJSONRequestBody = PaymentProviderSettingsInput
+
+// CreatePaymentRequestJSONRequestBody defines body for CreatePaymentRequest for application/json ContentType.
+type CreatePaymentRequestJSONRequestBody = PaymentRequestCreate
+
+// CreatePaymentRequestsBulkJSONRequestBody defines body for CreatePaymentRequestsBulk for application/json ContentType.
+type CreatePaymentRequestsBulkJSONRequestBody = PaymentRequestBulk
+
+// SendPaymentRequestJSONRequestBody defines body for SendPaymentRequest for application/json ContentType.
+type SendPaymentRequestJSONRequestBody = PaymentRequestSend
+
+// RecordPaymentJSONRequestBody defines body for RecordPayment for application/json ContentType.
+type RecordPaymentJSONRequestBody = RecordPayment
+
+// MatchPaymentJSONRequestBody defines body for MatchPayment for application/json ContentType.
+type MatchPaymentJSONRequestBody = MatchPaymentInput
+
+// RefundPaymentJSONRequestBody defines body for RefundPayment for application/json ContentType.
+type RefundPaymentJSONRequestBody = RefundInput
+
+// RetainDepositJSONRequestBody defines body for RetainDeposit for application/json ContentType.
+type RetainDepositJSONRequestBody = RetainInput
+
 // RecordPresenceJSONRequestBody defines body for RecordPresence for application/json ContentType.
 type RecordPresenceJSONRequestBody = PresenceCreate
 
@@ -14544,6 +18552,9 @@ type CreateReleaseJSONRequestBody = ReleaseCreate
 
 // RevokeReleaseJSONRequestBody defines body for RevokeRelease for application/json ContentType.
 type RevokeReleaseJSONRequestBody = RevokeRequest
+
+// SendRemindersJSONRequestBody defines body for SendReminders for application/json ContentType.
+type SendRemindersJSONRequestBody = SendRemindersInput
 
 // CreateRenewalCampaignJSONRequestBody defines body for CreateRenewalCampaign for application/json ContentType.
 type CreateRenewalCampaignJSONRequestBody = RenewalCampaignInput
@@ -14626,6 +18637,9 @@ type CancelTransitJSONRequestBody = ReasonInput
 // ConfirmTransitJSONRequestBody defines body for ConfirmTransit for application/json ContentType.
 type ConfirmTransitJSONRequestBody = ManualConfirmation
 
+// CreateTransitPaymentLinkJSONRequestBody defines body for CreateTransitPaymentLink for application/json ContentType.
+type CreateTransitPaymentLinkJSONRequestBody = TransitPaymentLinkInput
+
 // ChangeTransitStayJSONRequestBody defines body for ChangeTransitStay for application/json ContentType.
 type ChangeTransitStayJSONRequestBody = StayChange
 
@@ -14655,6 +18669,9 @@ type CreateWebhookEndpointJSONRequestBody = WebhookEndpointCreate
 
 // UpdateWebhookEndpointJSONRequestBody defines body for UpdateWebhookEndpoint for application/json ContentType.
 type UpdateWebhookEndpointJSONRequestBody = WebhookEndpointPatch
+
+// UpdateWorkItemJSONRequestBody defines body for UpdateWorkItem for application/json ContentType.
+type UpdateWorkItemJSONRequestBody = WorkItemPatch
 
 // UpdateOrganizationJSONRequestBody defines body for UpdateOrganization for application/json ContentType.
 type UpdateOrganizationJSONRequestBody = OrganizationPatch
@@ -14691,6 +18708,9 @@ type VerifyPublicSignatureJSONRequestBody = PublicOtpVerify
 
 // PublicUnsubscribeFormdataRequestBody defines body for PublicUnsubscribe for application/x-www-form-urlencoded ContentType.
 type PublicUnsubscribeFormdataRequestBody = PublicUnsubscribeFormdataBody
+
+// StartPayCheckoutJSONRequestBody defines body for StartPayCheckout for application/json ContentType.
+type StartPayCheckoutJSONRequestBody = PayCheckoutInput
 
 // AsPierGenerator returns the union data inside the GeneratorParams as a PierGenerator
 func (t GeneratorParams) AsPierGenerator() (PierGenerator, error) {
@@ -15094,12 +19114,87 @@ type ServerInterface interface {
 	// GetRightHistory Holder chain of a berth; PDF with format=pdf (rights.manage)
 	// (GET /api/admin/v1/marinas/{marinaId}/berths/{berthId}/right-history)
 	GetRightHistory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, berthId BerthId, params GetRightHistoryParams)
+	// GetBillingSettings Billing settings and origin items (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/billing-settings)
+	GetBillingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// UpdateBillingSettings Change the billing settings and origin items (marina.configure)
+	// (PUT /api/admin/v1/marinas/{marinaId}/billing-settings)
+	UpdateBillingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateBillingSettingsParams)
 	// CreateBlock Block a berth, cells of an area or a land resource for a period with a reason (occupancy.move)
 	// (POST /api/admin/v1/marinas/{marinaId}/blocks)
 	CreateBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateBlockParams)
 	// DeleteBlock Remove a block from today; past nights are kept (occupancy.move)
 	// (DELETE /api/admin/v1/marinas/{marinaId}/blocks/{allocationId})
 	DeleteBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, allocationId AllocationId, params DeleteBlockParams)
+	// ListCashRegisters Cash registers (payments.collect or payments.collect_cash)
+	// (GET /api/admin/v1/marinas/{marinaId}/cash-registers)
+	ListCashRegisters(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// CreateCashRegister Create a cash register (marina.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/cash-registers)
+	CreateCashRegister(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateCashRegisterParams)
+	// UpdateCashRegister Change a cash register (marina.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/cash-registers/{registerId})
+	UpdateCashRegister(w http.ResponseWriter, r *http.Request, marinaId MarinaId, registerId CashRegisterId, params UpdateCashRegisterParams)
+	// ListCashSessions Cash sessions (payments.collect or payments.collect_cash)
+	// (GET /api/admin/v1/marinas/{marinaId}/cash-sessions)
+	ListCashSessions(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListCashSessionsParams)
+	// OpenCashSession Open a session with its float; one open session per register (INV-55) (payments.collect or payments.collect_cash)
+	// (POST /api/admin/v1/marinas/{marinaId}/cash-sessions)
+	OpenCashSession(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params OpenCashSessionParams)
+	// GetCurrentCashSession The open session of a register, default when omitted (payments.collect or payments.collect_cash)
+	// (GET /api/admin/v1/marinas/{marinaId}/cash-sessions/current)
+	GetCurrentCashSession(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetCurrentCashSessionParams)
+	// GetCashSession A session with its live summary (payments.collect or payments.collect_cash)
+	// (GET /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId})
+	GetCashSession(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sessionId CashSessionId)
+	// CloseCashSession Close a session with the counted amounts per method (payments.collect or payments.collect_cash)
+	// (POST /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/close)
+	CloseCashSession(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sessionId CashSessionId, params CloseCashSessionParams)
+	// AddCashMovement Cash in or out of an open session (payments.collect or payments.collect_cash)
+	// (POST /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/movements)
+	AddCashMovement(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sessionId CashSessionId, params AddCashMovementParams)
+	// GetZReport Z report of a session as print-ready HTML or PDF (payments.collect or payments.collect_cash)
+	// (GET /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/z-report)
+	GetZReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sessionId CashSessionId, params GetZReportParams)
+	// ListChargeExports Exports to invoicing (charges.export)
+	// (GET /api/admin/v1/marinas/{marinaId}/charge-exports)
+	ListChargeExports(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListChargeExportsParams)
+	// CreateChargeExport Export the to_invoice charges of a period; each charge is in exactly one first export (INV-53) (charges.export)
+	// (POST /api/admin/v1/marinas/{marinaId}/charge-exports)
+	CreateChargeExport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateChargeExportParams)
+	// PreviewChargeExport Preview a "da fatturare" export: counts, totals per VAT and origin, warnings (charges.export)
+	// (POST /api/admin/v1/marinas/{marinaId}/charge-exports/preview)
+	PreviewChargeExport(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// ReexportCharges Explicit re-export of an export or of charges; statuses unchanged (charges.export)
+	// (POST /api/admin/v1/marinas/{marinaId}/charge-exports/reexport)
+	ReexportCharges(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ReexportChargesParams)
+	// GetChargeExport An export with a page of its items (charges.export)
+	// (GET /api/admin/v1/marinas/{marinaId}/charge-exports/{exportId})
+	GetChargeExport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, exportId ChargeExportId, params GetChargeExportParams)
+	// DownloadChargeExport Download the export file: CSV, Excel or the summary PDF (charges.export)
+	// (GET /api/admin/v1/marinas/{marinaId}/charge-exports/{exportId}/file)
+	DownloadChargeExport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, exportId ChargeExportId, params DownloadChargeExportParams)
+	// ListCharges Charges with filters; CSV or Excel with format (charges.manage or payments.collect)
+	// (GET /api/admin/v1/marinas/{marinaId}/charges)
+	ListCharges(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListChargesParams)
+	// CreateCharge Create a manual charge or a counter sale on account (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/charges)
+	CreateCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateChargeParams)
+	// GetCharge A charge with lines, matches, offsets, corrections, exports and reminders (charges.manage or payments.collect)
+	// (GET /api/admin/v1/marinas/{marinaId}/charges/{chargeId})
+	GetCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, chargeId ChargeId)
+	// UpdateCharge Edit a charge: lines, due date, customer and description while to_invoice and unpaid; due date and description when exported (charges.manage)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/charges/{chargeId})
+	UpdateCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, chargeId ChargeId, params UpdateChargeParams)
+	// AdjustCharge Correct a charge with a linked adjustment (delta) or a reversal and replacement (charges.manage; refunds.issue when negative)
+	// (POST /api/admin/v1/marinas/{marinaId}/charges/{chargeId}/adjust)
+	AdjustCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, chargeId ChargeId, params AdjustChargeParams)
+	// CancelCharge Cancel a charge while to_invoice, unpaid and not offset (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/charges/{chargeId}/cancel)
+	CancelCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, chargeId ChargeId, params CancelChargeParams)
+	// SetChargeInvoice Record the external invoice number and date of an exported charge; information only (charges.export)
+	// (PUT /api/admin/v1/marinas/{marinaId}/charges/{chargeId}/invoice)
+	SetChargeInvoice(w http.ResponseWriter, r *http.Request, marinaId MarinaId, chargeId ChargeId)
 	// ListCharterFleets Charter fleets (contracts.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/charter-fleets)
 	ListCharterFleets(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListCharterFleetsParams)
@@ -15292,6 +19387,15 @@ type ServerInterface interface {
 	// TerminateContract Terminate an active contract from effective_on: later nights are freed (contracts.write)
 	// (POST /api/admin/v1/marinas/{marinaId}/contracts/{contractId}/terminate)
 	TerminateContract(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params TerminateContractParams)
+	// CreateTerminationCharge Charge the stored termination amount of a terminated contract once (charges.manage; refunds.issue when negative)
+	// (POST /api/admin/v1/marinas/{marinaId}/contracts/{contractId}/termination-charge)
+	CreateTerminationCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params CreateTerminationChargeParams)
+	// CreateCounterSale Counter sale: charge, payment, match and optional fiscal document in one transaction (payments.collect; payments.collect_cash for cash)
+	// (POST /api/admin/v1/marinas/{marinaId}/counter-sales)
+	CreateCounterSale(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateCounterSaleParams)
+	// ListCredits Customers with credit (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/credits)
+	ListCredits(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListCreditsParams)
 	// ListCustomerCategoryCounts Customer categories (fixed enum, spec 11.1) with the number of non-archived customers in each, for the classifications page; counts only, no customer data (pricing.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/customer-categories)
 	ListCustomerCategoryCounts(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -15319,6 +19423,18 @@ type ServerInterface interface {
 	// RecordConsent Record a new consent version (insert-only) (customers.write)
 	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/consents)
 	RecordConsent(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params RecordConsentParams)
+	// GetCustomerCredit Credit, deposits and the unallocated payments of a customer (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits)
+	GetCustomerCredit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// GrantCustomerCredit Grant a goodwill or release credit (refunds.issue)
+	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits)
+	GrantCustomerCredit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params GrantCustomerCreditParams)
+	// ApplyCustomerCredit Apply customer credit to open charges, oldest first (payments.collect)
+	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits/apply)
+	ApplyCustomerCredit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params ApplyCustomerCreditParams)
+	// GetCustomerDashboard Customer dashboard (customers.read; billing sections with charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/dashboard)
+	GetCustomerDashboard(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
 	// ExportCustomer GDPR export of a customer's data as JSON (Content-Disposition attachment) (customers.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/export)
 	ExportCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
@@ -15331,6 +19447,18 @@ type ServerInterface interface {
 	// GetCustomerOverview Customer page data (M1 subset of spec 11.4) (customers.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/overview)
 	GetCustomerOverview(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// ListSepaMandates SEPA mandates of a customer (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates)
+	ListSepaMandates(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// CreateSepaMandate Request a SEPA mandate: a setup link for the customer (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates)
+	CreateSepaMandate(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params CreateSepaMandateParams)
+	// RevokeSepaMandate Revoke a SEPA mandate (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates/{sepaMandateId}/revoke)
+	RevokeSepaMandate(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, sepaMandateId SepaMandateId)
+	// GetCustomerStatement Statement of account with running balance; PDF or CSV with format (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/statement)
+	GetCustomerStatement(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params GetCustomerStatementParams)
 	// UnarchiveCustomer Restore an archived customer (customers.write)
 	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/unarchive)
 	UnarchiveCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
@@ -15385,6 +19513,15 @@ type ServerInterface interface {
 	// CreateDocumentFileURL A short-lived (5 minutes) signed download link bound to the calling user (customers.read)
 	// (POST /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file-url)
 	CreateDocumentFileURL(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId)
+	// ListDunningExclusions Dunning exclusions (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/dunning-exclusions)
+	ListDunningExclusions(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListDunningExclusionsParams)
+	// CreateDunningExclusion Exclude a customer or a charge from reminders (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/dunning-exclusions)
+	CreateDunningExclusion(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateDunningExclusionParams)
+	// DeleteDunningExclusion Remove a dunning exclusion (charges.manage)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/dunning-exclusions/{exclusionId})
+	DeleteDunningExclusion(w http.ResponseWriter, r *http.Request, marinaId MarinaId, exclusionId DunningExclusionId)
 	// ProposeCompaction Propose compacted placements of a linear area for [from, to]; nothing is written (occupancy.move)
 	// (POST /api/admin/v1/marinas/{marinaId}/dynamic-areas/{areaId}/compact)
 	ProposeCompaction(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId)
@@ -15430,6 +19567,18 @@ type ServerInterface interface {
 	// ActivateFeeTable Activate a fee table (rights.manage)
 	// (POST /api/admin/v1/marinas/{marinaId}/fee-tables/{feeTableId}/activate)
 	ActivateFeeTable(w http.ResponseWriter, r *http.Request, marinaId MarinaId, feeTableId FeeTableId, params ActivateFeeTableParams)
+	// GetFiscalDailyTotals Corrispettivi per day or month, VAT rate and method; CSV or Excel with format (charges.export)
+	// (GET /api/admin/v1/marinas/{marinaId}/fiscal/daily-totals)
+	GetFiscalDailyTotals(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetFiscalDailyTotalsParams)
+	// ListFiscalDocuments Fiscal documents (charges.export)
+	// (GET /api/admin/v1/marinas/{marinaId}/fiscal/documents)
+	ListFiscalDocuments(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListFiscalDocumentsParams)
+	// RetryFiscalDocument Retry a pending or failed fiscal document (charges.export)
+	// (POST /api/admin/v1/marinas/{marinaId}/fiscal/documents/{fiscalDocumentId}/retry)
+	RetryFiscalDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, fiscalDocumentId FiscalDocumentId)
+	// VoidFiscalDocument Void an issued fiscal document through its driver (refunds.issue)
+	// (POST /api/admin/v1/marinas/{marinaId}/fiscal/documents/{fiscalDocumentId}/void)
+	VoidFiscalDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, fiscalDocumentId FiscalDocumentId)
 	// ListGeneratedDocuments Generated documents (contracts.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/generated-documents)
 	ListGeneratedDocuments(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListGeneratedDocumentsParams)
@@ -15496,6 +19645,12 @@ type ServerInterface interface {
 	// SettleInstallment Record a manual settlement: the only way an instalment becomes paid (INV-32) (payments.collect)
 	// (POST /api/admin/v1/marinas/{marinaId}/installments/{installmentId}/settle)
 	SettleInstallment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, installmentId InstallmentId, params SettleInstallmentParams)
+	// ListInvoiceReconciliations Invoice reconciliations (charges.export)
+	// (GET /api/admin/v1/marinas/{marinaId}/invoice-reconciliations)
+	ListInvoiceReconciliations(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListInvoiceReconciliationsParams)
+	// CreateInvoiceReconciliation Reconcile invoice numbers and dates from a CSV or rows, with dry run (charges.export)
+	// (POST /api/admin/v1/marinas/{marinaId}/invoice-reconciliations)
+	CreateInvoiceReconciliation(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateInvoiceReconciliationParams)
 	// ListItems Items and services by sort order and code (pricing.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/items)
 	ListItems(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListItemsParams)
@@ -15529,6 +19684,9 @@ type ServerInterface interface {
 	// EndMandate End a mandate early; free nights go back to the owner (rights.manage)
 	// (POST /api/admin/v1/marinas/{marinaId}/mandates/{mandateId}/end)
 	EndMandate(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mandateId MandateId, params EndMandateParams)
+	// SettleMandate Settle the owner compensation of a management mandate as credit or payout (refunds.issue)
+	// (POST /api/admin/v1/marinas/{marinaId}/mandates/{mandateId}/settle)
+	SettleMandate(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mandateId MandateId, params SettleMandateParams)
 	// GetMandateStatement Revenue statement of a mandate; CSV or PDF with format (rights.manage)
 	// (GET /api/admin/v1/marinas/{marinaId}/mandates/{mandateId}/statement)
 	GetMandateStatement(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mandateId MandateId, params GetMandateStatementParams)
@@ -15577,6 +19735,9 @@ type ServerInterface interface {
 	// GetMapOccupancy Allocations of a map intersecting [from, to] (default today..today+30, at most 400 nights), for the planner and the drag preview (map.view)
 	// (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId}/occupancy)
 	GetMapOccupancy(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params GetMapOccupancyParams)
+	// GetMapPaymentStatus Payment lens of a map on a night: states for everyone with map.view, amounts with charges.manage
+	// (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId}/payment-status)
+	GetMapPaymentStatus(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params GetMapPaymentStatusParams)
 	// PrintMap PDF of a map on a date with berth outlines, codes and vessel silhouettes (map.view)
 	// (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId}/print)
 	PrintMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params PrintMapParams)
@@ -15649,6 +19810,72 @@ type ServerInterface interface {
 	// UpdateOccupancySettings Replace the occupancy settings (harbor.configure)
 	// (PUT /api/admin/v1/marinas/{marinaId}/occupancy-settings)
 	UpdateOccupancySettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateOccupancySettingsParams)
+	// ImportOpeningBalances Import opening balances from CSV or Excel, with dry run; charges are born invoiced (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/opening-balances/import)
+	ImportOpeningBalances(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ImportOpeningBalancesParams)
+	// ListOpeningBalanceImports Opening balance imports (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/opening-balances/imports)
+	ListOpeningBalanceImports(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListOpeningBalanceImportsParams)
+	// UndoOpeningBalanceImport Undo an opening balance import while none of its charges has matches or offsets (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/opening-balances/imports/{importId}/undo)
+	UndoOpeningBalanceImport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, importId ChargeImportId, params UndoOpeningBalanceImportParams)
+	// ListPaymentProviders Payment drivers with capabilities and the marina's enabled state (payments.collect)
+	// (GET /api/admin/v1/marinas/{marinaId}/payment-providers)
+	ListPaymentProviders(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// GetPaymentProviderSettings Provider settings; secrets are never returned (providers.configure)
+	// (GET /api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/settings)
+	GetPaymentProviderSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, providerCode PaymentProviderCode)
+	// UpdatePaymentProviderSettings Configure a provider; secrets are write-only (providers.configure)
+	// (PUT /api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/settings)
+	UpdatePaymentProviderSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, providerCode PaymentProviderCode, params UpdatePaymentProviderSettingsParams)
+	// TestPaymentProvider Test the provider credentials (providers.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/test)
+	TestPaymentProvider(w http.ResponseWriter, r *http.Request, marinaId MarinaId, providerCode PaymentProviderCode)
+	// ListPaymentRequests Payment requests (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/payment-requests)
+	ListPaymentRequests(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListPaymentRequestsParams)
+	// CreatePaymentRequest Request payment of open charges of a customer, optionally by email (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/payment-requests)
+	CreatePaymentRequest(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreatePaymentRequestParams)
+	// CreatePaymentRequestsBulk One payment request per customer for up to 500 charges (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/payment-requests/bulk)
+	CreatePaymentRequestsBulk(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreatePaymentRequestsBulkParams)
+	// GetPaymentRequest A payment request with its charges (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/payment-requests/{requestId})
+	GetPaymentRequest(w http.ResponseWriter, r *http.Request, marinaId MarinaId, requestId PaymentRequestId)
+	// CancelPaymentRequest Cancel a payment request (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}/cancel)
+	CancelPaymentRequest(w http.ResponseWriter, r *http.Request, marinaId MarinaId, requestId PaymentRequestId, params CancelPaymentRequestParams)
+	// SendPaymentRequest Send (again) a payment request; rotate makes a new link (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}/send)
+	SendPaymentRequest(w http.ResponseWriter, r *http.Request, marinaId MarinaId, requestId PaymentRequestId, params SendPaymentRequestParams)
+	// ListPayments Payments (payments.collect or charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/payments)
+	ListPayments(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListPaymentsParams)
+	// RecordPayment Record a payment with matches or automatic matching; the rest stays as customer credit (payments.collect; payments.collect_cash for cash)
+	// (POST /api/admin/v1/marinas/{marinaId}/payments)
+	RecordPayment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params RecordPaymentParams)
+	// ExportPayments Payments and refunds of a period by method, for reconciliation outside Porto (charges.export)
+	// (GET /api/admin/v1/marinas/{marinaId}/payments/export)
+	ExportPayments(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ExportPaymentsParams)
+	// GetPayment A payment with matches, refunds and fiscal documents (payments.collect or charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/payments/{paymentId})
+	GetPayment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId)
+	// MatchPayment Match unallocated money of a payment to charges (payments.collect)
+	// (POST /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches)
+	MatchPayment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, params MatchPaymentParams)
+	// ReverseMatch Reverse a match (refunds.issue)
+	// (POST /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches/{matchId}/reverse)
+	ReverseMatch(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, matchId PaymentMatchId, params ReverseMatchParams)
+	// GetPaymentReceipt Courtesy receipt (not valid for tax purposes): 80/58 mm HTML or A4 PDF (payments.collect, charges.manage or payments.collect_cash)
+	// (GET /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/receipt)
+	GetPaymentReceipt(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, params GetPaymentReceiptParams)
+	// RefundPayment Refund unallocated money, optionally reversing matches first; through the provider when possible (refunds.issue)
+	// (POST /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/refunds)
+	RefundPayment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, params RefundPaymentParams)
+	// RetainDeposit Retain (part of) a deposit: a deposit_retention charge matched to it (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/retain)
+	RetainDeposit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, params RetainDepositParams)
 	// ListPresences Presence events of a night (default today) or of a vessel; notes only with customers.read (map.view)
 	// (GET /api/admin/v1/marinas/{marinaId}/presences)
 	ListPresences(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListPresencesParams)
@@ -15730,6 +19957,15 @@ type ServerInterface interface {
 	// SendQuote Send a draft (or resend a sent) quote by email with its PDF and a magic link; re-sending rotates the link. manual=true only marks it sent (M3 behaviour) (contracts.write)
 	// (POST /api/admin/v1/marinas/{marinaId}/quotes/{quoteId}/send)
 	SendQuote(w http.ResponseWriter, r *http.Request, marinaId MarinaId, quoteId QuoteId, params SendQuoteParams)
+	// ListReceivables Scadenzario: open charges and scheduled instalments by due date and age (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/receivables)
+	ListReceivables(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListReceivablesParams)
+	// GetReceivablesAgeing Receivables overview by customer and age (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/receivables/ageing)
+	GetReceivablesAgeing(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetReceivablesAgeingParams)
+	// ListRefunds Refunds and payouts (payments.collect or charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/refunds)
+	ListRefunds(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRefundsParams)
 	// ListReleases Releases of contract allocations (contracts.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/releases)
 	ListReleases(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListReleasesParams)
@@ -15739,6 +19975,24 @@ type ServerInterface interface {
 	// RevokeRelease Revoke a release (early return): free nights are occupied again, resold nights are 409 resource_taken with alternatives (occupancy.move)
 	// (POST /api/admin/v1/marinas/{marinaId}/releases/{releaseId}/revoke)
 	RevokeRelease(w http.ResponseWriter, r *http.Request, marinaId MarinaId, releaseId ReleaseId, params RevokeReleaseParams)
+	// ApproveReminderItem Approve a final notice awaiting approval (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/reminder-items/{reminderItemId}/approve)
+	ApproveReminderItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, reminderItemId ReminderItemId)
+	// DismissReminderItem Dismiss a reminder item awaiting approval (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/reminder-items/{reminderItemId}/dismiss)
+	DismissReminderItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, reminderItemId ReminderItemId)
+	// ListReminderRuns Reminder runs (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/reminder-runs)
+	ListReminderRuns(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListReminderRunsParams)
+	// CreateReminderRun Run today's reminders now (the existing run of the day when it already ran) (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/reminder-runs)
+	CreateReminderRun(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateReminderRunParams)
+	// GetReminderRun A reminder run with its items (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/reminder-runs/{runId})
+	GetReminderRun(w http.ResponseWriter, r *http.Request, marinaId MarinaId, runId ReminderRunId, params GetReminderRunParams)
+	// SendReminders Remind up to 500 charges at their next due level (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/reminders/send)
+	SendReminders(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params SendRemindersParams)
 	// ListRenewalCampaigns Renewal campaigns (contracts.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/renewal-campaigns)
 	ListRenewalCampaigns(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRenewalCampaignsParams)
@@ -15901,6 +20155,9 @@ type ServerInterface interface {
 	// MarkTransitNoShow Mark a confirmed transit as no-show from its arrival date (transits.desk)
 	// (POST /api/admin/v1/marinas/{marinaId}/transits/{contractId}/no-show)
 	MarkTransitNoShow(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params MarkTransitNoShowParams)
+	// CreateTransitPaymentLink Payment link for a held transit: pending_payment until the provider webhook confirms it (transits.desk)
+	// (POST /api/admin/v1/marinas/{marinaId}/transits/{contractId}/payment-link)
+	CreateTransitPaymentLink(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params CreateTransitPaymentLinkParams)
 	// ChangeTransitStay Change arrival and/or departure; added nights must be free (409 with alternatives) and the price is recomputed (transits.desk)
 	// (POST /api/admin/v1/marinas/{marinaId}/transits/{contractId}/stay)
 	ChangeTransitStay(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params ChangeTransitStayParams)
@@ -15967,6 +20224,12 @@ type ServerInterface interface {
 	// TestWebhookEndpoint Queue a webhook.test delivery (users.manage)
 	// (POST /api/admin/v1/marinas/{marinaId}/webhook-endpoints/{endpointId}/test)
 	TestWebhookEndpoint(w http.ResponseWriter, r *http.Request, marinaId MarinaId, endpointId EndpointId, params TestWebhookEndpointParams)
+	// ListWorklist Office worklist (items visible by the permission of their source)
+	// (GET /api/admin/v1/marinas/{marinaId}/worklist)
+	ListWorklist(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListWorklistParams)
+	// UpdateWorkItem Assign a worklist item or change its status
+	// (PATCH /api/admin/v1/marinas/{marinaId}/worklist/{sourceType}/{sourceId})
+	UpdateWorkItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sourceType WorkSourceType, sourceId WorkSourceId)
 	// GetMeta Version, edition and capabilities of this instance
 	// (GET /api/admin/v1/meta)
 	GetMeta(w http.ResponseWriter, r *http.Request)
@@ -16039,12 +20302,24 @@ type ServerInterface interface {
 	// PublicUnsubscribe One-click unsubscribe from promotional emails (also the List-Unsubscribe-Post form body)
 	// (POST /api/public/v1/{slug}/links/{token}/unsubscribe)
 	PublicUnsubscribe(w http.ResponseWriter, r *http.Request, slug Slug, token Token)
+	// GetPayPage Public payment page of a payment request: amount, charges, bank details, online availability
+	// (GET /api/public/v1/{slug}/pay/{payToken})
+	GetPayPage(w http.ResponseWriter, r *http.Request, slug Slug, payToken PayToken)
+	// StartPayCheckout Start an online payment of the request (provider hosted page)
+	// (POST /api/public/v1/{slug}/pay/{payToken}/checkout)
+	StartPayCheckout(w http.ResponseWriter, r *http.Request, slug Slug, payToken PayToken)
+	// GetPayStatus Status of the request for the return page (the browser return never confirms, INV-09)
+	// (GET /api/public/v1/{slug}/pay/{payToken}/status)
+	GetPayStatus(w http.ResponseWriter, r *http.Request, slug Slug, payToken PayToken)
 	// Healthz Liveness probe
 	// (GET /healthz)
 	Healthz(w http.ResponseWriter, r *http.Request)
 	// Readyz Readiness probe (database reachable, migrations applied)
 	// (GET /readyz)
 	Readyz(w http.ResponseWriter, r *http.Request)
+	// PaymentWebhook Payment provider callback, verified with the marina's webhook secret; duplicates are no-ops (INV-56); unknown provider or marina is 404
+	// (POST /webhooks/payments/{provider}/{marinaId})
+	PaymentWebhook(w http.ResponseWriter, r *http.Request, provider ProviderCode, marinaId MarinaId)
 	// SignatureWebhook Signature provider callback, verified by the registered provider with the stored secret; unknown provider or marina is 404
 	// (POST /webhooks/signature/{provider}/{marinaId})
 	SignatureWebhook(w http.ResponseWriter, r *http.Request, provider ProviderCode, marinaId MarinaId)
@@ -16240,6 +20515,18 @@ func (_ Unimplemented) GetRightHistory(w http.ResponseWriter, r *http.Request, m
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// GetBillingSettings Billing settings and origin items (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/billing-settings)
+func (_ Unimplemented) GetBillingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateBillingSettings Change the billing settings and origin items (marina.configure)
+// (PUT /api/admin/v1/marinas/{marinaId}/billing-settings)
+func (_ Unimplemented) UpdateBillingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateBillingSettingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // CreateBlock Block a berth, cells of an area or a land resource for a period with a reason (occupancy.move)
 // (POST /api/admin/v1/marinas/{marinaId}/blocks)
 func (_ Unimplemented) CreateBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateBlockParams) {
@@ -16249,6 +20536,144 @@ func (_ Unimplemented) CreateBlock(w http.ResponseWriter, r *http.Request, marin
 // DeleteBlock Remove a block from today; past nights are kept (occupancy.move)
 // (DELETE /api/admin/v1/marinas/{marinaId}/blocks/{allocationId})
 func (_ Unimplemented) DeleteBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, allocationId AllocationId, params DeleteBlockParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListCashRegisters Cash registers (payments.collect or payments.collect_cash)
+// (GET /api/admin/v1/marinas/{marinaId}/cash-registers)
+func (_ Unimplemented) ListCashRegisters(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateCashRegister Create a cash register (marina.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/cash-registers)
+func (_ Unimplemented) CreateCashRegister(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateCashRegisterParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateCashRegister Change a cash register (marina.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/cash-registers/{registerId})
+func (_ Unimplemented) UpdateCashRegister(w http.ResponseWriter, r *http.Request, marinaId MarinaId, registerId CashRegisterId, params UpdateCashRegisterParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListCashSessions Cash sessions (payments.collect or payments.collect_cash)
+// (GET /api/admin/v1/marinas/{marinaId}/cash-sessions)
+func (_ Unimplemented) ListCashSessions(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListCashSessionsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// OpenCashSession Open a session with its float; one open session per register (INV-55) (payments.collect or payments.collect_cash)
+// (POST /api/admin/v1/marinas/{marinaId}/cash-sessions)
+func (_ Unimplemented) OpenCashSession(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params OpenCashSessionParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetCurrentCashSession The open session of a register, default when omitted (payments.collect or payments.collect_cash)
+// (GET /api/admin/v1/marinas/{marinaId}/cash-sessions/current)
+func (_ Unimplemented) GetCurrentCashSession(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetCurrentCashSessionParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetCashSession A session with its live summary (payments.collect or payments.collect_cash)
+// (GET /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId})
+func (_ Unimplemented) GetCashSession(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sessionId CashSessionId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CloseCashSession Close a session with the counted amounts per method (payments.collect or payments.collect_cash)
+// (POST /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/close)
+func (_ Unimplemented) CloseCashSession(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sessionId CashSessionId, params CloseCashSessionParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// AddCashMovement Cash in or out of an open session (payments.collect or payments.collect_cash)
+// (POST /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/movements)
+func (_ Unimplemented) AddCashMovement(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sessionId CashSessionId, params AddCashMovementParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetZReport Z report of a session as print-ready HTML or PDF (payments.collect or payments.collect_cash)
+// (GET /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/z-report)
+func (_ Unimplemented) GetZReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sessionId CashSessionId, params GetZReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListChargeExports Exports to invoicing (charges.export)
+// (GET /api/admin/v1/marinas/{marinaId}/charge-exports)
+func (_ Unimplemented) ListChargeExports(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListChargeExportsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateChargeExport Export the to_invoice charges of a period; each charge is in exactly one first export (INV-53) (charges.export)
+// (POST /api/admin/v1/marinas/{marinaId}/charge-exports)
+func (_ Unimplemented) CreateChargeExport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateChargeExportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PreviewChargeExport Preview a "da fatturare" export: counts, totals per VAT and origin, warnings (charges.export)
+// (POST /api/admin/v1/marinas/{marinaId}/charge-exports/preview)
+func (_ Unimplemented) PreviewChargeExport(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ReexportCharges Explicit re-export of an export or of charges; statuses unchanged (charges.export)
+// (POST /api/admin/v1/marinas/{marinaId}/charge-exports/reexport)
+func (_ Unimplemented) ReexportCharges(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ReexportChargesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetChargeExport An export with a page of its items (charges.export)
+// (GET /api/admin/v1/marinas/{marinaId}/charge-exports/{exportId})
+func (_ Unimplemented) GetChargeExport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, exportId ChargeExportId, params GetChargeExportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DownloadChargeExport Download the export file: CSV, Excel or the summary PDF (charges.export)
+// (GET /api/admin/v1/marinas/{marinaId}/charge-exports/{exportId}/file)
+func (_ Unimplemented) DownloadChargeExport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, exportId ChargeExportId, params DownloadChargeExportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListCharges Charges with filters; CSV or Excel with format (charges.manage or payments.collect)
+// (GET /api/admin/v1/marinas/{marinaId}/charges)
+func (_ Unimplemented) ListCharges(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListChargesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateCharge Create a manual charge or a counter sale on account (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/charges)
+func (_ Unimplemented) CreateCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateChargeParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetCharge A charge with lines, matches, offsets, corrections, exports and reminders (charges.manage or payments.collect)
+// (GET /api/admin/v1/marinas/{marinaId}/charges/{chargeId})
+func (_ Unimplemented) GetCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, chargeId ChargeId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateCharge Edit a charge: lines, due date, customer and description while to_invoice and unpaid; due date and description when exported (charges.manage)
+// (PATCH /api/admin/v1/marinas/{marinaId}/charges/{chargeId})
+func (_ Unimplemented) UpdateCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, chargeId ChargeId, params UpdateChargeParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// AdjustCharge Correct a charge with a linked adjustment (delta) or a reversal and replacement (charges.manage; refunds.issue when negative)
+// (POST /api/admin/v1/marinas/{marinaId}/charges/{chargeId}/adjust)
+func (_ Unimplemented) AdjustCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, chargeId ChargeId, params AdjustChargeParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CancelCharge Cancel a charge while to_invoice, unpaid and not offset (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/charges/{chargeId}/cancel)
+func (_ Unimplemented) CancelCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, chargeId ChargeId, params CancelChargeParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SetChargeInvoice Record the external invoice number and date of an exported charge; information only (charges.export)
+// (PUT /api/admin/v1/marinas/{marinaId}/charges/{chargeId}/invoice)
+func (_ Unimplemented) SetChargeInvoice(w http.ResponseWriter, r *http.Request, marinaId MarinaId, chargeId ChargeId) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -16636,6 +21061,24 @@ func (_ Unimplemented) TerminateContract(w http.ResponseWriter, r *http.Request,
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// CreateTerminationCharge Charge the stored termination amount of a terminated contract once (charges.manage; refunds.issue when negative)
+// (POST /api/admin/v1/marinas/{marinaId}/contracts/{contractId}/termination-charge)
+func (_ Unimplemented) CreateTerminationCharge(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params CreateTerminationChargeParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateCounterSale Counter sale: charge, payment, match and optional fiscal document in one transaction (payments.collect; payments.collect_cash for cash)
+// (POST /api/admin/v1/marinas/{marinaId}/counter-sales)
+func (_ Unimplemented) CreateCounterSale(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateCounterSaleParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListCredits Customers with credit (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/credits)
+func (_ Unimplemented) ListCredits(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListCreditsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListCustomerCategoryCounts Customer categories (fixed enum, spec 11.1) with the number of non-archived customers in each, for the classifications page; counts only, no customer data (pricing.read)
 // (GET /api/admin/v1/marinas/{marinaId}/customer-categories)
 func (_ Unimplemented) ListCustomerCategoryCounts(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
@@ -16690,6 +21133,30 @@ func (_ Unimplemented) RecordConsent(w http.ResponseWriter, r *http.Request, mar
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// GetCustomerCredit Credit, deposits and the unallocated payments of a customer (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits)
+func (_ Unimplemented) GetCustomerCredit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GrantCustomerCredit Grant a goodwill or release credit (refunds.issue)
+// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits)
+func (_ Unimplemented) GrantCustomerCredit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params GrantCustomerCreditParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ApplyCustomerCredit Apply customer credit to open charges, oldest first (payments.collect)
+// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits/apply)
+func (_ Unimplemented) ApplyCustomerCredit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params ApplyCustomerCreditParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetCustomerDashboard Customer dashboard (customers.read; billing sections with charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/dashboard)
+func (_ Unimplemented) GetCustomerDashboard(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ExportCustomer GDPR export of a customer's data as JSON (Content-Disposition attachment) (customers.read)
 // (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/export)
 func (_ Unimplemented) ExportCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
@@ -16711,6 +21178,30 @@ func (_ Unimplemented) ListCustomerMessages(w http.ResponseWriter, r *http.Reque
 // GetCustomerOverview Customer page data (M1 subset of spec 11.4) (customers.read)
 // (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/overview)
 func (_ Unimplemented) GetCustomerOverview(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListSepaMandates SEPA mandates of a customer (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates)
+func (_ Unimplemented) ListSepaMandates(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateSepaMandate Request a SEPA mandate: a setup link for the customer (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates)
+func (_ Unimplemented) CreateSepaMandate(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params CreateSepaMandateParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RevokeSepaMandate Revoke a SEPA mandate (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates/{sepaMandateId}/revoke)
+func (_ Unimplemented) RevokeSepaMandate(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, sepaMandateId SepaMandateId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetCustomerStatement Statement of account with running balance; PDF or CSV with format (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/customers/{customerId}/statement)
+func (_ Unimplemented) GetCustomerStatement(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId, params GetCustomerStatementParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -16822,6 +21313,24 @@ func (_ Unimplemented) CreateDocumentFileURL(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ListDunningExclusions Dunning exclusions (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/dunning-exclusions)
+func (_ Unimplemented) ListDunningExclusions(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListDunningExclusionsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateDunningExclusion Exclude a customer or a charge from reminders (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/dunning-exclusions)
+func (_ Unimplemented) CreateDunningExclusion(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateDunningExclusionParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteDunningExclusion Remove a dunning exclusion (charges.manage)
+// (DELETE /api/admin/v1/marinas/{marinaId}/dunning-exclusions/{exclusionId})
+func (_ Unimplemented) DeleteDunningExclusion(w http.ResponseWriter, r *http.Request, marinaId MarinaId, exclusionId DunningExclusionId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ProposeCompaction Propose compacted placements of a linear area for [from, to]; nothing is written (occupancy.move)
 // (POST /api/admin/v1/marinas/{marinaId}/dynamic-areas/{areaId}/compact)
 func (_ Unimplemented) ProposeCompaction(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId) {
@@ -16909,6 +21418,30 @@ func (_ Unimplemented) UpdateFeeTable(w http.ResponseWriter, r *http.Request, ma
 // ActivateFeeTable Activate a fee table (rights.manage)
 // (POST /api/admin/v1/marinas/{marinaId}/fee-tables/{feeTableId}/activate)
 func (_ Unimplemented) ActivateFeeTable(w http.ResponseWriter, r *http.Request, marinaId MarinaId, feeTableId FeeTableId, params ActivateFeeTableParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetFiscalDailyTotals Corrispettivi per day or month, VAT rate and method; CSV or Excel with format (charges.export)
+// (GET /api/admin/v1/marinas/{marinaId}/fiscal/daily-totals)
+func (_ Unimplemented) GetFiscalDailyTotals(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetFiscalDailyTotalsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListFiscalDocuments Fiscal documents (charges.export)
+// (GET /api/admin/v1/marinas/{marinaId}/fiscal/documents)
+func (_ Unimplemented) ListFiscalDocuments(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListFiscalDocumentsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RetryFiscalDocument Retry a pending or failed fiscal document (charges.export)
+// (POST /api/admin/v1/marinas/{marinaId}/fiscal/documents/{fiscalDocumentId}/retry)
+func (_ Unimplemented) RetryFiscalDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, fiscalDocumentId FiscalDocumentId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// VoidFiscalDocument Void an issued fiscal document through its driver (refunds.issue)
+// (POST /api/admin/v1/marinas/{marinaId}/fiscal/documents/{fiscalDocumentId}/void)
+func (_ Unimplemented) VoidFiscalDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, fiscalDocumentId FiscalDocumentId) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -17044,6 +21577,18 @@ func (_ Unimplemented) SettleInstallment(w http.ResponseWriter, r *http.Request,
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ListInvoiceReconciliations Invoice reconciliations (charges.export)
+// (GET /api/admin/v1/marinas/{marinaId}/invoice-reconciliations)
+func (_ Unimplemented) ListInvoiceReconciliations(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListInvoiceReconciliationsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateInvoiceReconciliation Reconcile invoice numbers and dates from a CSV or rows, with dry run (charges.export)
+// (POST /api/admin/v1/marinas/{marinaId}/invoice-reconciliations)
+func (_ Unimplemented) CreateInvoiceReconciliation(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateInvoiceReconciliationParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListItems Items and services by sort order and code (pricing.read)
 // (GET /api/admin/v1/marinas/{marinaId}/items)
 func (_ Unimplemented) ListItems(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListItemsParams) {
@@ -17107,6 +21652,12 @@ func (_ Unimplemented) CancelMandate(w http.ResponseWriter, r *http.Request, mar
 // EndMandate End a mandate early; free nights go back to the owner (rights.manage)
 // (POST /api/admin/v1/marinas/{marinaId}/mandates/{mandateId}/end)
 func (_ Unimplemented) EndMandate(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mandateId MandateId, params EndMandateParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SettleMandate Settle the owner compensation of a management mandate as credit or payout (refunds.issue)
+// (POST /api/admin/v1/marinas/{marinaId}/mandates/{mandateId}/settle)
+func (_ Unimplemented) SettleMandate(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mandateId MandateId, params SettleMandateParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -17203,6 +21754,12 @@ func (_ Unimplemented) GenerateMapElements(w http.ResponseWriter, r *http.Reques
 // GetMapOccupancy Allocations of a map intersecting [from, to] (default today..today+30, at most 400 nights), for the planner and the drag preview (map.view)
 // (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId}/occupancy)
 func (_ Unimplemented) GetMapOccupancy(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params GetMapOccupancyParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetMapPaymentStatus Payment lens of a map on a night: states for everyone with map.view, amounts with charges.manage
+// (GET /api/admin/v1/marinas/{marinaId}/maps/{mapId}/payment-status)
+func (_ Unimplemented) GetMapPaymentStatus(w http.ResponseWriter, r *http.Request, marinaId MarinaId, mapId MapId, params GetMapPaymentStatusParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -17347,6 +21904,138 @@ func (_ Unimplemented) GetOccupancySettings(w http.ResponseWriter, r *http.Reque
 // UpdateOccupancySettings Replace the occupancy settings (harbor.configure)
 // (PUT /api/admin/v1/marinas/{marinaId}/occupancy-settings)
 func (_ Unimplemented) UpdateOccupancySettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateOccupancySettingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ImportOpeningBalances Import opening balances from CSV or Excel, with dry run; charges are born invoiced (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/opening-balances/import)
+func (_ Unimplemented) ImportOpeningBalances(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ImportOpeningBalancesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListOpeningBalanceImports Opening balance imports (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/opening-balances/imports)
+func (_ Unimplemented) ListOpeningBalanceImports(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListOpeningBalanceImportsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UndoOpeningBalanceImport Undo an opening balance import while none of its charges has matches or offsets (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/opening-balances/imports/{importId}/undo)
+func (_ Unimplemented) UndoOpeningBalanceImport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, importId ChargeImportId, params UndoOpeningBalanceImportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListPaymentProviders Payment drivers with capabilities and the marina's enabled state (payments.collect)
+// (GET /api/admin/v1/marinas/{marinaId}/payment-providers)
+func (_ Unimplemented) ListPaymentProviders(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPaymentProviderSettings Provider settings; secrets are never returned (providers.configure)
+// (GET /api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/settings)
+func (_ Unimplemented) GetPaymentProviderSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, providerCode PaymentProviderCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdatePaymentProviderSettings Configure a provider; secrets are write-only (providers.configure)
+// (PUT /api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/settings)
+func (_ Unimplemented) UpdatePaymentProviderSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, providerCode PaymentProviderCode, params UpdatePaymentProviderSettingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// TestPaymentProvider Test the provider credentials (providers.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/test)
+func (_ Unimplemented) TestPaymentProvider(w http.ResponseWriter, r *http.Request, marinaId MarinaId, providerCode PaymentProviderCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListPaymentRequests Payment requests (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/payment-requests)
+func (_ Unimplemented) ListPaymentRequests(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListPaymentRequestsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreatePaymentRequest Request payment of open charges of a customer, optionally by email (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/payment-requests)
+func (_ Unimplemented) CreatePaymentRequest(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreatePaymentRequestParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreatePaymentRequestsBulk One payment request per customer for up to 500 charges (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/payment-requests/bulk)
+func (_ Unimplemented) CreatePaymentRequestsBulk(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreatePaymentRequestsBulkParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPaymentRequest A payment request with its charges (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/payment-requests/{requestId})
+func (_ Unimplemented) GetPaymentRequest(w http.ResponseWriter, r *http.Request, marinaId MarinaId, requestId PaymentRequestId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CancelPaymentRequest Cancel a payment request (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}/cancel)
+func (_ Unimplemented) CancelPaymentRequest(w http.ResponseWriter, r *http.Request, marinaId MarinaId, requestId PaymentRequestId, params CancelPaymentRequestParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SendPaymentRequest Send (again) a payment request; rotate makes a new link (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}/send)
+func (_ Unimplemented) SendPaymentRequest(w http.ResponseWriter, r *http.Request, marinaId MarinaId, requestId PaymentRequestId, params SendPaymentRequestParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListPayments Payments (payments.collect or charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/payments)
+func (_ Unimplemented) ListPayments(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListPaymentsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RecordPayment Record a payment with matches or automatic matching; the rest stays as customer credit (payments.collect; payments.collect_cash for cash)
+// (POST /api/admin/v1/marinas/{marinaId}/payments)
+func (_ Unimplemented) RecordPayment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params RecordPaymentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ExportPayments Payments and refunds of a period by method, for reconciliation outside Porto (charges.export)
+// (GET /api/admin/v1/marinas/{marinaId}/payments/export)
+func (_ Unimplemented) ExportPayments(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ExportPaymentsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPayment A payment with matches, refunds and fiscal documents (payments.collect or charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/payments/{paymentId})
+func (_ Unimplemented) GetPayment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// MatchPayment Match unallocated money of a payment to charges (payments.collect)
+// (POST /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches)
+func (_ Unimplemented) MatchPayment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, params MatchPaymentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ReverseMatch Reverse a match (refunds.issue)
+// (POST /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches/{matchId}/reverse)
+func (_ Unimplemented) ReverseMatch(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, matchId PaymentMatchId, params ReverseMatchParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPaymentReceipt Courtesy receipt (not valid for tax purposes): 80/58 mm HTML or A4 PDF (payments.collect, charges.manage or payments.collect_cash)
+// (GET /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/receipt)
+func (_ Unimplemented) GetPaymentReceipt(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, params GetPaymentReceiptParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RefundPayment Refund unallocated money, optionally reversing matches first; through the provider when possible (refunds.issue)
+// (POST /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/refunds)
+func (_ Unimplemented) RefundPayment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, params RefundPaymentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RetainDeposit Retain (part of) a deposit: a deposit_retention charge matched to it (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/retain)
+func (_ Unimplemented) RetainDeposit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, params RetainDepositParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -17512,6 +22201,24 @@ func (_ Unimplemented) SendQuote(w http.ResponseWriter, r *http.Request, marinaI
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ListReceivables Scadenzario: open charges and scheduled instalments by due date and age (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/receivables)
+func (_ Unimplemented) ListReceivables(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListReceivablesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetReceivablesAgeing Receivables overview by customer and age (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/receivables/ageing)
+func (_ Unimplemented) GetReceivablesAgeing(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetReceivablesAgeingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListRefunds Refunds and payouts (payments.collect or charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/refunds)
+func (_ Unimplemented) ListRefunds(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRefundsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListReleases Releases of contract allocations (contracts.read)
 // (GET /api/admin/v1/marinas/{marinaId}/releases)
 func (_ Unimplemented) ListReleases(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListReleasesParams) {
@@ -17527,6 +22234,42 @@ func (_ Unimplemented) CreateRelease(w http.ResponseWriter, r *http.Request, mar
 // RevokeRelease Revoke a release (early return): free nights are occupied again, resold nights are 409 resource_taken with alternatives (occupancy.move)
 // (POST /api/admin/v1/marinas/{marinaId}/releases/{releaseId}/revoke)
 func (_ Unimplemented) RevokeRelease(w http.ResponseWriter, r *http.Request, marinaId MarinaId, releaseId ReleaseId, params RevokeReleaseParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ApproveReminderItem Approve a final notice awaiting approval (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/reminder-items/{reminderItemId}/approve)
+func (_ Unimplemented) ApproveReminderItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, reminderItemId ReminderItemId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DismissReminderItem Dismiss a reminder item awaiting approval (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/reminder-items/{reminderItemId}/dismiss)
+func (_ Unimplemented) DismissReminderItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, reminderItemId ReminderItemId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListReminderRuns Reminder runs (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/reminder-runs)
+func (_ Unimplemented) ListReminderRuns(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListReminderRunsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateReminderRun Run today's reminders now (the existing run of the day when it already ran) (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/reminder-runs)
+func (_ Unimplemented) CreateReminderRun(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateReminderRunParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetReminderRun A reminder run with its items (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/reminder-runs/{runId})
+func (_ Unimplemented) GetReminderRun(w http.ResponseWriter, r *http.Request, marinaId MarinaId, runId ReminderRunId, params GetReminderRunParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SendReminders Remind up to 500 charges at their next due level (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/reminders/send)
+func (_ Unimplemented) SendReminders(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params SendRemindersParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -17854,6 +22597,12 @@ func (_ Unimplemented) MarkTransitNoShow(w http.ResponseWriter, r *http.Request,
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// CreateTransitPaymentLink Payment link for a held transit: pending_payment until the provider webhook confirms it (transits.desk)
+// (POST /api/admin/v1/marinas/{marinaId}/transits/{contractId}/payment-link)
+func (_ Unimplemented) CreateTransitPaymentLink(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params CreateTransitPaymentLinkParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ChangeTransitStay Change arrival and/or departure; added nights must be free (409 with alternatives) and the price is recomputed (transits.desk)
 // (POST /api/admin/v1/marinas/{marinaId}/transits/{contractId}/stay)
 func (_ Unimplemented) ChangeTransitStay(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params ChangeTransitStayParams) {
@@ -17983,6 +22732,18 @@ func (_ Unimplemented) RotateWebhookSecret(w http.ResponseWriter, r *http.Reques
 // TestWebhookEndpoint Queue a webhook.test delivery (users.manage)
 // (POST /api/admin/v1/marinas/{marinaId}/webhook-endpoints/{endpointId}/test)
 func (_ Unimplemented) TestWebhookEndpoint(w http.ResponseWriter, r *http.Request, marinaId MarinaId, endpointId EndpointId, params TestWebhookEndpointParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListWorklist Office worklist (items visible by the permission of their source)
+// (GET /api/admin/v1/marinas/{marinaId}/worklist)
+func (_ Unimplemented) ListWorklist(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListWorklistParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateWorkItem Assign a worklist item or change its status
+// (PATCH /api/admin/v1/marinas/{marinaId}/worklist/{sourceType}/{sourceId})
+func (_ Unimplemented) UpdateWorkItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sourceType WorkSourceType, sourceId WorkSourceId) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -18130,6 +22891,24 @@ func (_ Unimplemented) PublicUnsubscribe(w http.ResponseWriter, r *http.Request,
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// GetPayPage Public payment page of a payment request: amount, charges, bank details, online availability
+// (GET /api/public/v1/{slug}/pay/{payToken})
+func (_ Unimplemented) GetPayPage(w http.ResponseWriter, r *http.Request, slug Slug, payToken PayToken) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// StartPayCheckout Start an online payment of the request (provider hosted page)
+// (POST /api/public/v1/{slug}/pay/{payToken}/checkout)
+func (_ Unimplemented) StartPayCheckout(w http.ResponseWriter, r *http.Request, slug Slug, payToken PayToken) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPayStatus Status of the request for the return page (the browser return never confirms, INV-09)
+// (GET /api/public/v1/{slug}/pay/{payToken}/status)
+func (_ Unimplemented) GetPayStatus(w http.ResponseWriter, r *http.Request, slug Slug, payToken PayToken) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // Healthz Liveness probe
 // (GET /healthz)
 func (_ Unimplemented) Healthz(w http.ResponseWriter, r *http.Request) {
@@ -18139,6 +22918,12 @@ func (_ Unimplemented) Healthz(w http.ResponseWriter, r *http.Request) {
 // Readyz Readiness probe (database reachable, migrations applied)
 // (GET /readyz)
 func (_ Unimplemented) Readyz(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PaymentWebhook Payment provider callback, verified with the marina's webhook secret; duplicates are no-ops (INV-56); unknown provider or marina is 404
+// (POST /webhooks/payments/{provider}/{marinaId})
+func (_ Unimplemented) PaymentWebhook(w http.ResponseWriter, r *http.Request, provider ProviderCode, marinaId MarinaId) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -19292,6 +24077,82 @@ func (siw *ServerInterfaceWrapper) GetRightHistory(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
+// GetBillingSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetBillingSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetBillingSettings(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateBillingSettings operation middleware
+func (siw *ServerInterfaceWrapper) UpdateBillingSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateBillingSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateBillingSettings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // CreateBlock operation middleware
 func (siw *ServerInterfaceWrapper) CreateBlock(w http.ResponseWriter, r *http.Request) {
 
@@ -19392,6 +24253,1354 @@ func (siw *ServerInterfaceWrapper) DeleteBlock(w http.ResponseWriter, r *http.Re
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteBlock(w, r, marinaId, allocationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCashRegisters operation middleware
+func (siw *ServerInterfaceWrapper) ListCashRegisters(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCashRegisters(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateCashRegister operation middleware
+func (siw *ServerInterfaceWrapper) CreateCashRegister(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateCashRegisterParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateCashRegister(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateCashRegister operation middleware
+func (siw *ServerInterfaceWrapper) UpdateCashRegister(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "registerId" -------------
+	var registerId CashRegisterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "registerId", chi.URLParam(r, "registerId"), &registerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "registerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateCashRegisterParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateCashRegister(w, r, marinaId, registerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCashSessions operation middleware
+func (siw *ServerInterfaceWrapper) ListCashSessions(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListCashSessionsParams
+
+	// ------------- Optional query parameter "register_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "register_id", r.URL.Query(), &params.RegisterId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "register_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "register_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCashSessions(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// OpenCashSession operation middleware
+func (siw *ServerInterfaceWrapper) OpenCashSession(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params OpenCashSessionParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.OpenCashSession(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCurrentCashSession operation middleware
+func (siw *ServerInterfaceWrapper) GetCurrentCashSession(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetCurrentCashSessionParams
+
+	// ------------- Optional query parameter "register_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "register_id", r.URL.Query(), &params.RegisterId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "register_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "register_id", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCurrentCashSession(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCashSession operation middleware
+func (siw *ServerInterfaceWrapper) GetCashSession(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sessionId" -------------
+	var sessionId CashSessionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sessionId", chi.URLParam(r, "sessionId"), &sessionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sessionId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCashSession(w, r, marinaId, sessionId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CloseCashSession operation middleware
+func (siw *ServerInterfaceWrapper) CloseCashSession(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sessionId" -------------
+	var sessionId CashSessionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sessionId", chi.URLParam(r, "sessionId"), &sessionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sessionId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CloseCashSessionParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CloseCashSession(w, r, marinaId, sessionId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AddCashMovement operation middleware
+func (siw *ServerInterfaceWrapper) AddCashMovement(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sessionId" -------------
+	var sessionId CashSessionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sessionId", chi.URLParam(r, "sessionId"), &sessionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sessionId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AddCashMovementParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AddCashMovement(w, r, marinaId, sessionId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetZReport operation middleware
+func (siw *ServerInterfaceWrapper) GetZReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sessionId" -------------
+	var sessionId CashSessionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sessionId", chi.URLParam(r, "sessionId"), &sessionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sessionId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetZReportParams
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetZReport(w, r, marinaId, sessionId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListChargeExports operation middleware
+func (siw *ServerInterfaceWrapper) ListChargeExports(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListChargeExportsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListChargeExports(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateChargeExport operation middleware
+func (siw *ServerInterfaceWrapper) CreateChargeExport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateChargeExportParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateChargeExport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PreviewChargeExport operation middleware
+func (siw *ServerInterfaceWrapper) PreviewChargeExport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PreviewChargeExport(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReexportCharges operation middleware
+func (siw *ServerInterfaceWrapper) ReexportCharges(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ReexportChargesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReexportCharges(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetChargeExport operation middleware
+func (siw *ServerInterfaceWrapper) GetChargeExport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "exportId" -------------
+	var exportId ChargeExportId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "exportId", chi.URLParam(r, "exportId"), &exportId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "exportId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetChargeExportParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetChargeExport(w, r, marinaId, exportId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DownloadChargeExport operation middleware
+func (siw *ServerInterfaceWrapper) DownloadChargeExport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "exportId" -------------
+	var exportId ChargeExportId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "exportId", chi.URLParam(r, "exportId"), &exportId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "exportId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DownloadChargeExportParams
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DownloadChargeExport(w, r, marinaId, exportId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCharges operation middleware
+func (siw *ServerInterfaceWrapper) ListCharges(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListChargesParams
+
+	// ------------- Optional query parameter "payment_status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "payment_status", r.URL.Query(), &params.PaymentStatus, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "payment_status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "payment_status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "invoicing_status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "invoicing_status", r.URL.Query(), &params.InvoicingStatus, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "invoicing_status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "invoicing_status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "origin_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "origin_type", r.URL.Query(), &params.OriginType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "origin_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "origin_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "contract_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "contract_id", r.URL.Query(), &params.ContractId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "contract_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contract_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "issued_from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "issued_from", r.URL.Query(), &params.IssuedFrom, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "issued_from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "issued_from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "issued_to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "issued_to", r.URL.Query(), &params.IssuedTo, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "issued_to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "issued_to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "due_from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "due_from", r.URL.Query(), &params.DueFrom, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "due_from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "due_from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "due_to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "due_to", r.URL.Query(), &params.DueTo, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "due_to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "due_to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "overdue" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "overdue", r.URL.Query(), &params.Overdue, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "overdue"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "overdue", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "revenue_class" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "revenue_class", r.URL.Query(), &params.RevenueClass, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "revenue_class"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "revenue_class", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "q"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "q", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCharges(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateCharge operation middleware
+func (siw *ServerInterfaceWrapper) CreateCharge(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateChargeParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateCharge(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCharge operation middleware
+func (siw *ServerInterfaceWrapper) GetCharge(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "chargeId" -------------
+	var chargeId ChargeId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "chargeId", chi.URLParam(r, "chargeId"), &chargeId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "chargeId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCharge(w, r, marinaId, chargeId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateCharge operation middleware
+func (siw *ServerInterfaceWrapper) UpdateCharge(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "chargeId" -------------
+	var chargeId ChargeId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "chargeId", chi.URLParam(r, "chargeId"), &chargeId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "chargeId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateChargeParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateCharge(w, r, marinaId, chargeId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdjustCharge operation middleware
+func (siw *ServerInterfaceWrapper) AdjustCharge(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "chargeId" -------------
+	var chargeId ChargeId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "chargeId", chi.URLParam(r, "chargeId"), &chargeId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "chargeId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AdjustChargeParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdjustCharge(w, r, marinaId, chargeId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CancelCharge operation middleware
+func (siw *ServerInterfaceWrapper) CancelCharge(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "chargeId" -------------
+	var chargeId ChargeId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "chargeId", chi.URLParam(r, "chargeId"), &chargeId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "chargeId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CancelChargeParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CancelCharge(w, r, marinaId, chargeId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetChargeInvoice operation middleware
+func (siw *ServerInterfaceWrapper) SetChargeInvoice(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "chargeId" -------------
+	var chargeId ChargeId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "chargeId", chi.URLParam(r, "chargeId"), &chargeId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "chargeId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetChargeInvoice(w, r, marinaId, chargeId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -23317,6 +29526,189 @@ func (siw *ServerInterfaceWrapper) TerminateContract(w http.ResponseWriter, r *h
 	handler.ServeHTTP(w, r)
 }
 
+// CreateTerminationCharge operation middleware
+func (siw *ServerInterfaceWrapper) CreateTerminationCharge(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateTerminationChargeParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateTerminationCharge(w, r, marinaId, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateCounterSale operation middleware
+func (siw *ServerInterfaceWrapper) CreateCounterSale(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateCounterSaleParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateCounterSale(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCredits operation middleware
+func (siw *ServerInterfaceWrapper) ListCredits(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListCreditsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCredits(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListCustomerCategoryCounts operation middleware
 func (siw *ServerInterfaceWrapper) ListCustomerCategoryCounts(w http.ResponseWriter, r *http.Request) {
 
@@ -23758,6 +30150,194 @@ func (siw *ServerInterfaceWrapper) RecordConsent(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r)
 }
 
+// GetCustomerCredit operation middleware
+func (siw *ServerInterfaceWrapper) GetCustomerCredit(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCustomerCredit(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GrantCustomerCredit operation middleware
+func (siw *ServerInterfaceWrapper) GrantCustomerCredit(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GrantCustomerCreditParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GrantCustomerCredit(w, r, marinaId, customerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ApplyCustomerCredit operation middleware
+func (siw *ServerInterfaceWrapper) ApplyCustomerCredit(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ApplyCustomerCreditParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ApplyCustomerCredit(w, r, marinaId, customerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCustomerDashboard operation middleware
+func (siw *ServerInterfaceWrapper) GetCustomerDashboard(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCustomerDashboard(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ExportCustomer operation middleware
 func (siw *ServerInterfaceWrapper) ExportCustomer(w http.ResponseWriter, r *http.Request) {
 
@@ -23942,6 +30522,221 @@ func (siw *ServerInterfaceWrapper) GetCustomerOverview(w http.ResponseWriter, r 
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetCustomerOverview(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListSepaMandates operation middleware
+func (siw *ServerInterfaceWrapper) ListSepaMandates(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListSepaMandates(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateSepaMandate operation middleware
+func (siw *ServerInterfaceWrapper) CreateSepaMandate(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateSepaMandateParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateSepaMandate(w, r, marinaId, customerId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RevokeSepaMandate operation middleware
+func (siw *ServerInterfaceWrapper) RevokeSepaMandate(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sepaMandateId" -------------
+	var sepaMandateId SepaMandateId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sepaMandateId", chi.URLParam(r, "sepaMandateId"), &sepaMandateId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sepaMandateId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RevokeSepaMandate(w, r, marinaId, customerId, sepaMandateId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCustomerStatement operation middleware
+func (siw *ServerInterfaceWrapper) GetCustomerStatement(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "customerId" -------------
+	var customerId CustomerId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "customerId", chi.URLParam(r, "customerId"), &customerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customerId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetCustomerStatementParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCustomerStatement(w, r, marinaId, customerId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -24907,6 +31702,185 @@ func (siw *ServerInterfaceWrapper) CreateDocumentFileURL(w http.ResponseWriter, 
 	handler.ServeHTTP(w, r)
 }
 
+// ListDunningExclusions operation middleware
+func (siw *ServerInterfaceWrapper) ListDunningExclusions(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListDunningExclusionsParams
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "charge_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "charge_id", r.URL.Query(), &params.ChargeId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "charge_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "charge_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "active" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "active", r.URL.Query(), &params.Active, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "active"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "active", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListDunningExclusions(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateDunningExclusion operation middleware
+func (siw *ServerInterfaceWrapper) CreateDunningExclusion(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateDunningExclusionParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateDunningExclusion(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteDunningExclusion operation middleware
+func (siw *ServerInterfaceWrapper) DeleteDunningExclusion(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "exclusionId" -------------
+	var exclusionId DunningExclusionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "exclusionId", chi.URLParam(r, "exclusionId"), &exclusionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "exclusionId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteDunningExclusion(w, r, marinaId, exclusionId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ProposeCompaction operation middleware
 func (siw *ServerInterfaceWrapper) ProposeCompaction(w http.ResponseWriter, r *http.Request) {
 
@@ -25753,6 +32727,251 @@ func (siw *ServerInterfaceWrapper) ActivateFeeTable(w http.ResponseWriter, r *ht
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ActivateFeeTable(w, r, marinaId, feeTableId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetFiscalDailyTotals operation middleware
+func (siw *ServerInterfaceWrapper) GetFiscalDailyTotals(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetFiscalDailyTotalsParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group", r.URL.Query(), &params.Group, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetFiscalDailyTotals(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListFiscalDocuments operation middleware
+func (siw *ServerInterfaceWrapper) ListFiscalDocuments(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListFiscalDocumentsParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListFiscalDocuments(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RetryFiscalDocument operation middleware
+func (siw *ServerInterfaceWrapper) RetryFiscalDocument(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "fiscalDocumentId" -------------
+	var fiscalDocumentId FiscalDocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "fiscalDocumentId", chi.URLParam(r, "fiscalDocumentId"), &fiscalDocumentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fiscalDocumentId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RetryFiscalDocument(w, r, marinaId, fiscalDocumentId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// VoidFiscalDocument operation middleware
+func (siw *ServerInterfaceWrapper) VoidFiscalDocument(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "fiscalDocumentId" -------------
+	var fiscalDocumentId FiscalDocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "fiscalDocumentId", chi.URLParam(r, "fiscalDocumentId"), &fiscalDocumentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fiscalDocumentId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.VoidFiscalDocument(w, r, marinaId, fiscalDocumentId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -27207,6 +34426,111 @@ func (siw *ServerInterfaceWrapper) SettleInstallment(w http.ResponseWriter, r *h
 	handler.ServeHTTP(w, r)
 }
 
+// ListInvoiceReconciliations operation middleware
+func (siw *ServerInterfaceWrapper) ListInvoiceReconciliations(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListInvoiceReconciliationsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListInvoiceReconciliations(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateInvoiceReconciliation operation middleware
+func (siw *ServerInterfaceWrapper) CreateInvoiceReconciliation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateInvoiceReconciliationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateInvoiceReconciliation(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListItems operation middleware
 func (siw *ServerInterfaceWrapper) ListItems(w http.ResponseWriter, r *http.Request) {
 
@@ -27867,6 +35191,65 @@ func (siw *ServerInterfaceWrapper) EndMandate(w http.ResponseWriter, r *http.Req
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.EndMandate(w, r, marinaId, mandateId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SettleMandate operation middleware
+func (siw *ServerInterfaceWrapper) SettleMandate(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mandateId" -------------
+	var mandateId MandateId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mandateId", chi.URLParam(r, "mandateId"), &mandateId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mandateId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SettleMandateParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SettleMandate(w, r, marinaId, mandateId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -28636,6 +36019,57 @@ func (siw *ServerInterfaceWrapper) GetMapOccupancy(w http.ResponseWriter, r *htt
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetMapOccupancy(w, r, marinaId, mapId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMapPaymentStatus operation middleware
+func (siw *ServerInterfaceWrapper) GetMapPaymentStatus(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "mapId" -------------
+	var mapId MapId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "mapId", chi.URLParam(r, "mapId"), &mapId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mapId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMapPaymentStatusParams
+
+	// ------------- Optional query parameter "date" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "date", r.URL.Query(), &params.Date, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "date"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "date", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMapPaymentStatus(w, r, marinaId, mapId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -29726,6 +37160,1280 @@ func (siw *ServerInterfaceWrapper) UpdateOccupancySettings(w http.ResponseWriter
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UpdateOccupancySettings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ImportOpeningBalances operation middleware
+func (siw *ServerInterfaceWrapper) ImportOpeningBalances(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ImportOpeningBalancesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ImportOpeningBalances(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListOpeningBalanceImports operation middleware
+func (siw *ServerInterfaceWrapper) ListOpeningBalanceImports(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListOpeningBalanceImportsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListOpeningBalanceImports(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UndoOpeningBalanceImport operation middleware
+func (siw *ServerInterfaceWrapper) UndoOpeningBalanceImport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "importId" -------------
+	var importId ChargeImportId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "importId", chi.URLParam(r, "importId"), &importId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "importId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UndoOpeningBalanceImportParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UndoOpeningBalanceImport(w, r, marinaId, importId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListPaymentProviders operation middleware
+func (siw *ServerInterfaceWrapper) ListPaymentProviders(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPaymentProviders(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPaymentProviderSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetPaymentProviderSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "providerCode" -------------
+	var providerCode PaymentProviderCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "providerCode", chi.URLParam(r, "providerCode"), &providerCode, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "providerCode", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPaymentProviderSettings(w, r, marinaId, providerCode)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdatePaymentProviderSettings operation middleware
+func (siw *ServerInterfaceWrapper) UpdatePaymentProviderSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "providerCode" -------------
+	var providerCode PaymentProviderCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "providerCode", chi.URLParam(r, "providerCode"), &providerCode, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "providerCode", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdatePaymentProviderSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdatePaymentProviderSettings(w, r, marinaId, providerCode, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// TestPaymentProvider operation middleware
+func (siw *ServerInterfaceWrapper) TestPaymentProvider(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "providerCode" -------------
+	var providerCode PaymentProviderCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "providerCode", chi.URLParam(r, "providerCode"), &providerCode, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "providerCode", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.TestPaymentProvider(w, r, marinaId, providerCode)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListPaymentRequests operation middleware
+func (siw *ServerInterfaceWrapper) ListPaymentRequests(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListPaymentRequestsParams
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPaymentRequests(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreatePaymentRequest operation middleware
+func (siw *ServerInterfaceWrapper) CreatePaymentRequest(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreatePaymentRequestParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreatePaymentRequest(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreatePaymentRequestsBulk operation middleware
+func (siw *ServerInterfaceWrapper) CreatePaymentRequestsBulk(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreatePaymentRequestsBulkParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreatePaymentRequestsBulk(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPaymentRequest operation middleware
+func (siw *ServerInterfaceWrapper) GetPaymentRequest(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "requestId" -------------
+	var requestId PaymentRequestId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "requestId", chi.URLParam(r, "requestId"), &requestId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "requestId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPaymentRequest(w, r, marinaId, requestId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CancelPaymentRequest operation middleware
+func (siw *ServerInterfaceWrapper) CancelPaymentRequest(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "requestId" -------------
+	var requestId PaymentRequestId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "requestId", chi.URLParam(r, "requestId"), &requestId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "requestId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CancelPaymentRequestParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CancelPaymentRequest(w, r, marinaId, requestId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SendPaymentRequest operation middleware
+func (siw *ServerInterfaceWrapper) SendPaymentRequest(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "requestId" -------------
+	var requestId PaymentRequestId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "requestId", chi.URLParam(r, "requestId"), &requestId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "requestId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SendPaymentRequestParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SendPaymentRequest(w, r, marinaId, requestId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListPayments operation middleware
+func (siw *ServerInterfaceWrapper) ListPayments(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListPaymentsParams
+
+	// ------------- Optional query parameter "method" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "method", r.URL.Query(), &params.Method, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "method"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "method", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "source" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "source", r.URL.Query(), &params.Source, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "source"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "source", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "unallocated" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "unallocated", r.URL.Query(), &params.Unallocated, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "unallocated"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "unallocated", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "session_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "session_id", r.URL.Query(), &params.SessionId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "session_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "session_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPayments(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RecordPayment operation middleware
+func (siw *ServerInterfaceWrapper) RecordPayment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RecordPaymentParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RecordPayment(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ExportPayments operation middleware
+func (siw *ServerInterfaceWrapper) ExportPayments(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ExportPaymentsParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "method" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "method", r.URL.Query(), &params.Method, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "method"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "method", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ExportPayments(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPayment operation middleware
+func (siw *ServerInterfaceWrapper) GetPayment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "paymentId" -------------
+	var paymentId PaymentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "paymentId", chi.URLParam(r, "paymentId"), &paymentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "paymentId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPayment(w, r, marinaId, paymentId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// MatchPayment operation middleware
+func (siw *ServerInterfaceWrapper) MatchPayment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "paymentId" -------------
+	var paymentId PaymentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "paymentId", chi.URLParam(r, "paymentId"), &paymentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "paymentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params MatchPaymentParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.MatchPayment(w, r, marinaId, paymentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReverseMatch operation middleware
+func (siw *ServerInterfaceWrapper) ReverseMatch(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "paymentId" -------------
+	var paymentId PaymentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "paymentId", chi.URLParam(r, "paymentId"), &paymentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "paymentId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "matchId" -------------
+	var matchId PaymentMatchId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "matchId", chi.URLParam(r, "matchId"), &matchId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "matchId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ReverseMatchParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReverseMatch(w, r, marinaId, paymentId, matchId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPaymentReceipt operation middleware
+func (siw *ServerInterfaceWrapper) GetPaymentReceipt(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "paymentId" -------------
+	var paymentId PaymentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "paymentId", chi.URLParam(r, "paymentId"), &paymentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "paymentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPaymentReceiptParams
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPaymentReceipt(w, r, marinaId, paymentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RefundPayment operation middleware
+func (siw *ServerInterfaceWrapper) RefundPayment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "paymentId" -------------
+	var paymentId PaymentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "paymentId", chi.URLParam(r, "paymentId"), &paymentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "paymentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RefundPaymentParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RefundPayment(w, r, marinaId, paymentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RetainDeposit operation middleware
+func (siw *ServerInterfaceWrapper) RetainDeposit(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "paymentId" -------------
+	var paymentId PaymentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "paymentId", chi.URLParam(r, "paymentId"), &paymentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "paymentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RetainDepositParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RetainDeposit(w, r, marinaId, paymentId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -31300,6 +40008,327 @@ func (siw *ServerInterfaceWrapper) SendQuote(w http.ResponseWriter, r *http.Requ
 	handler.ServeHTTP(w, r)
 }
 
+// ListReceivables operation middleware
+func (siw *ServerInterfaceWrapper) ListReceivables(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListReceivablesParams
+
+	// ------------- Optional query parameter "due_from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "due_from", r.URL.Query(), &params.DueFrom, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "due_from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "due_from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "due_to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "due_to", r.URL.Query(), &params.DueTo, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "due_to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "due_to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "bucket" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "bucket", r.URL.Query(), &params.Bucket, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "bucket"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "bucket", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "contract_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "contract_id", r.URL.Query(), &params.ContractId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "contract_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contract_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_id", r.URL.Query(), &params.GroupId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "origin_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "origin_type", r.URL.Query(), &params.OriginType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "origin_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "origin_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListReceivables(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetReceivablesAgeing operation middleware
+func (siw *ServerInterfaceWrapper) GetReceivablesAgeing(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetReceivablesAgeingParams
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetReceivablesAgeing(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListRefunds operation middleware
+func (siw *ServerInterfaceWrapper) ListRefunds(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListRefundsParams
+
+	// ------------- Optional query parameter "payment_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "payment_id", r.URL.Query(), &params.PaymentId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "payment_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "payment_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListRefunds(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListReleases operation middleware
 func (siw *ServerInterfaceWrapper) ListReleases(w http.ResponseWriter, r *http.Request) {
 
@@ -31526,6 +40555,295 @@ func (siw *ServerInterfaceWrapper) RevokeRelease(w http.ResponseWriter, r *http.
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.RevokeRelease(w, r, marinaId, releaseId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ApproveReminderItem operation middleware
+func (siw *ServerInterfaceWrapper) ApproveReminderItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "reminderItemId" -------------
+	var reminderItemId ReminderItemId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "reminderItemId", chi.URLParam(r, "reminderItemId"), &reminderItemId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "reminderItemId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ApproveReminderItem(w, r, marinaId, reminderItemId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DismissReminderItem operation middleware
+func (siw *ServerInterfaceWrapper) DismissReminderItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "reminderItemId" -------------
+	var reminderItemId ReminderItemId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "reminderItemId", chi.URLParam(r, "reminderItemId"), &reminderItemId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "reminderItemId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DismissReminderItem(w, r, marinaId, reminderItemId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListReminderRuns operation middleware
+func (siw *ServerInterfaceWrapper) ListReminderRuns(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListReminderRunsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListReminderRuns(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateReminderRun operation middleware
+func (siw *ServerInterfaceWrapper) CreateReminderRun(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateReminderRunParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateReminderRun(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetReminderRun operation middleware
+func (siw *ServerInterfaceWrapper) GetReminderRun(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "runId" -------------
+	var runId ReminderRunId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "runId", chi.URLParam(r, "runId"), &runId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "runId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetReminderRunParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetReminderRun(w, r, marinaId, runId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SendReminders operation middleware
+func (siw *ServerInterfaceWrapper) SendReminders(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SendRemindersParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SendReminders(w, r, marinaId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -34977,6 +44295,84 @@ func (siw *ServerInterfaceWrapper) MarkTransitNoShow(w http.ResponseWriter, r *h
 	handler.ServeHTTP(w, r)
 }
 
+// CreateTransitPaymentLink operation middleware
+func (siw *ServerInterfaceWrapper) CreateTransitPaymentLink(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateTransitPaymentLinkParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateTransitPaymentLink(w, r, marinaId, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ChangeTransitStay operation middleware
 func (siw *ServerInterfaceWrapper) ChangeTransitStay(w http.ResponseWriter, r *http.Request) {
 
@@ -36163,6 +45559,144 @@ func (siw *ServerInterfaceWrapper) TestWebhookEndpoint(w http.ResponseWriter, r 
 	handler.ServeHTTP(w, r)
 }
 
+// ListWorklist operation middleware
+func (siw *ServerInterfaceWrapper) ListWorklist(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListWorklistParams
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "assignee_user_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "assignee_user_id", r.URL.Query(), &params.AssigneeUserId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "assignee_user_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "assignee_user_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListWorklist(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateWorkItem operation middleware
+func (siw *ServerInterfaceWrapper) UpdateWorkItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sourceType" -------------
+	var sourceType WorkSourceType
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sourceType", chi.URLParam(r, "sourceType"), &sourceType, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sourceType", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sourceId" -------------
+	var sourceId WorkSourceId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sourceId", chi.URLParam(r, "sourceId"), &sourceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sourceId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateWorkItem(w, r, marinaId, sourceType, sourceId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetMeta operation middleware
 func (siw *ServerInterfaceWrapper) GetMeta(w http.ResponseWriter, r *http.Request) {
 
@@ -36991,6 +46525,111 @@ func (siw *ServerInterfaceWrapper) PublicUnsubscribe(w http.ResponseWriter, r *h
 	handler.ServeHTTP(w, r)
 }
 
+// GetPayPage operation middleware
+func (siw *ServerInterfaceWrapper) GetPayPage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "payToken" -------------
+	var payToken PayToken
+
+	err = runtime.BindStyledParameterWithOptions("simple", "payToken", chi.URLParam(r, "payToken"), &payToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "payToken", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPayPage(w, r, slug, payToken)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// StartPayCheckout operation middleware
+func (siw *ServerInterfaceWrapper) StartPayCheckout(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "payToken" -------------
+	var payToken PayToken
+
+	err = runtime.BindStyledParameterWithOptions("simple", "payToken", chi.URLParam(r, "payToken"), &payToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "payToken", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.StartPayCheckout(w, r, slug, payToken)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPayStatus operation middleware
+func (siw *ServerInterfaceWrapper) GetPayStatus(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "payToken" -------------
+	var payToken PayToken
+
+	err = runtime.BindStyledParameterWithOptions("simple", "payToken", chi.URLParam(r, "payToken"), &payToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "payToken", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPayStatus(w, r, slug, payToken)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // Healthz operation middleware
 func (siw *ServerInterfaceWrapper) Healthz(w http.ResponseWriter, r *http.Request) {
 
@@ -37010,6 +46649,41 @@ func (siw *ServerInterfaceWrapper) Readyz(w http.ResponseWriter, r *http.Request
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.Readyz(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PaymentWebhook operation middleware
+func (siw *ServerInterfaceWrapper) PaymentWebhook(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "provider" -------------
+	var provider ProviderCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "provider", chi.URLParam(r, "provider"), &provider, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "provider", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PaymentWebhook(w, r, provider, marinaId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -38213,6 +47887,261 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/api/public/v1/{slug}/links/{token}/unsubscribe", wrapper.PublicUnsubscribe)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charges", wrapper.ListCharges)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charges", wrapper.CreateCharge)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charges/{chargeId}", wrapper.GetCharge)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charges/{chargeId}", wrapper.UpdateCharge)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charges/{chargeId}/cancel", wrapper.CancelCharge)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charges/{chargeId}/adjust", wrapper.AdjustCharge)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charges/{chargeId}/invoice", wrapper.SetChargeInvoice)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/contracts/{contractId}/termination-charge", wrapper.CreateTerminationCharge)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charge-exports", wrapper.ListChargeExports)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charge-exports", wrapper.CreateChargeExport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charge-exports/preview", wrapper.PreviewChargeExport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charge-exports/reexport", wrapper.ReexportCharges)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charge-exports/{exportId}", wrapper.GetChargeExport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charge-exports/{exportId}/file", wrapper.DownloadChargeExport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/invoice-reconciliations", wrapper.ListInvoiceReconciliations)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/invoice-reconciliations", wrapper.CreateInvoiceReconciliation)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/billing-settings", wrapper.GetBillingSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/billing-settings", wrapper.UpdateBillingSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/opening-balances/import", wrapper.ImportOpeningBalances)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/opening-balances/imports", wrapper.ListOpeningBalanceImports)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/opening-balances/imports/{importId}/undo", wrapper.UndoOpeningBalanceImport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payments/export", wrapper.ExportPayments)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payments", wrapper.ListPayments)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payments", wrapper.RecordPayment)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payments/{paymentId}", wrapper.GetPayment)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches", wrapper.MatchPayment)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches/{matchId}/reverse", wrapper.ReverseMatch)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payments/{paymentId}/refunds", wrapper.RefundPayment)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payments/{paymentId}/retain", wrapper.RetainDeposit)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/refunds", wrapper.ListRefunds)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/credits", wrapper.ListCredits)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits", wrapper.GetCustomerCredit)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits", wrapper.GrantCustomerCredit)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits/apply", wrapper.ApplyCustomerCredit)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/statement", wrapper.GetCustomerStatement)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/dashboard", wrapper.GetCustomerDashboard)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/receivables", wrapper.ListReceivables)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/receivables/ageing", wrapper.GetReceivablesAgeing)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maps/{mapId}/payment-status", wrapper.GetMapPaymentStatus)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/mandates/{mandateId}/settle", wrapper.SettleMandate)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/worklist", wrapper.ListWorklist)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/worklist/{sourceType}/{sourceId}", wrapper.UpdateWorkItem)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/cash-registers", wrapper.ListCashRegisters)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/cash-registers", wrapper.CreateCashRegister)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/cash-registers/{registerId}", wrapper.UpdateCashRegister)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/cash-sessions", wrapper.ListCashSessions)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/cash-sessions", wrapper.OpenCashSession)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/cash-sessions/current", wrapper.GetCurrentCashSession)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}", wrapper.GetCashSession)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/movements", wrapper.AddCashMovement)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/close", wrapper.CloseCashSession)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/z-report", wrapper.GetZReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/counter-sales", wrapper.CreateCounterSale)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payments/{paymentId}/receipt", wrapper.GetPaymentReceipt)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/fiscal/daily-totals", wrapper.GetFiscalDailyTotals)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/fiscal/documents", wrapper.ListFiscalDocuments)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/fiscal/documents/{fiscalDocumentId}/retry", wrapper.RetryFiscalDocument)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/fiscal/documents/{fiscalDocumentId}/void", wrapper.VoidFiscalDocument)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payment-requests", wrapper.ListPaymentRequests)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payment-requests", wrapper.CreatePaymentRequest)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payment-requests/bulk", wrapper.CreatePaymentRequestsBulk)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}", wrapper.GetPaymentRequest)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}/send", wrapper.SendPaymentRequest)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}/cancel", wrapper.CancelPaymentRequest)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/transits/{contractId}/payment-link", wrapper.CreateTransitPaymentLink)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reminder-runs", wrapper.ListReminderRuns)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reminder-runs", wrapper.CreateReminderRun)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reminder-runs/{runId}", wrapper.GetReminderRun)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reminders/send", wrapper.SendReminders)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reminder-items/{reminderItemId}/approve", wrapper.ApproveReminderItem)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reminder-items/{reminderItemId}/dismiss", wrapper.DismissReminderItem)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/dunning-exclusions", wrapper.ListDunningExclusions)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/dunning-exclusions", wrapper.CreateDunningExclusion)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/dunning-exclusions/{exclusionId}", wrapper.DeleteDunningExclusion)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payment-providers", wrapper.ListPaymentProviders)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/settings", wrapper.GetPaymentProviderSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/settings", wrapper.UpdatePaymentProviderSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/test", wrapper.TestPaymentProvider)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates", wrapper.ListSepaMandates)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates", wrapper.CreateSepaMandate)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates/{sepaMandateId}/revoke", wrapper.RevokeSepaMandate)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/webhooks/payments/{provider}/{marinaId}", wrapper.PaymentWebhook)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/pay/{payToken}", wrapper.GetPayPage)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/pay/{payToken}/checkout", wrapper.StartPayCheckout)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/pay/{payToken}/status", wrapper.GetPayStatus)
 	})
 
 	return r

@@ -5252,12 +5252,1422 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/marinas/{marinaId}/charges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Charges with filters; CSV or Excel with format (charges.manage or payments.collect) */
+        get: operations["listCharges"];
+        put?: never;
+        /** Create a manual charge or a counter sale on account (charges.manage) */
+        post: operations["createCharge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/charges/{chargeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                chargeId: components["parameters"]["ChargeId"];
+            };
+            cookie?: never;
+        };
+        /** A charge with lines, matches, offsets, corrections, exports and reminders (charges.manage or payments.collect) */
+        get: operations["getCharge"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Edit a charge: lines, due date, customer and description while to_invoice and unpaid; due date and description when exported (charges.manage) */
+        patch: operations["updateCharge"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/charges/{chargeId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                chargeId: components["parameters"]["ChargeId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a charge while to_invoice, unpaid and not offset (charges.manage) */
+        post: operations["cancelCharge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/charges/{chargeId}/adjust": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                chargeId: components["parameters"]["ChargeId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Correct a charge with a linked adjustment (delta) or a reversal and replacement (charges.manage; refunds.issue when negative) */
+        post: operations["adjustCharge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/charges/{chargeId}/invoice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                chargeId: components["parameters"]["ChargeId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Record the external invoice number and date of an exported charge; information only (charges.export) */
+        put: operations["setChargeInvoice"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/contracts/{contractId}/termination-charge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Charge the stored termination amount of a terminated contract once (charges.manage; refunds.issue when negative) */
+        post: operations["createTerminationCharge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/charge-exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Exports to invoicing (charges.export) */
+        get: operations["listChargeExports"];
+        put?: never;
+        /** Export the to_invoice charges of a period; each charge is in exactly one first export (INV-53) (charges.export) */
+        post: operations["createChargeExport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/charge-exports/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview a "da fatturare" export: counts, totals per VAT and origin, warnings (charges.export) */
+        post: operations["previewChargeExport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/charge-exports/reexport": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Explicit re-export of an export or of charges; statuses unchanged (charges.export) */
+        post: operations["reexportCharges"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/charge-exports/{exportId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                exportId: components["parameters"]["ChargeExportId"];
+            };
+            cookie?: never;
+        };
+        /** An export with a page of its items (charges.export) */
+        get: operations["getChargeExport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/charge-exports/{exportId}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                exportId: components["parameters"]["ChargeExportId"];
+            };
+            cookie?: never;
+        };
+        /** Download the export file: CSV, Excel or the summary PDF (charges.export) */
+        get: operations["downloadChargeExport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/invoice-reconciliations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Invoice reconciliations (charges.export) */
+        get: operations["listInvoiceReconciliations"];
+        put?: never;
+        /** Reconcile invoice numbers and dates from a CSV or rows, with dry run (charges.export) */
+        post: operations["createInvoiceReconciliation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/billing-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Billing settings and origin items (charges.manage) */
+        get: operations["getBillingSettings"];
+        /** Change the billing settings and origin items (marina.configure) */
+        put: operations["updateBillingSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/opening-balances/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Import opening balances from CSV or Excel, with dry run; charges are born invoiced (charges.manage) */
+        post: operations["importOpeningBalances"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/opening-balances/imports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Opening balance imports (charges.manage) */
+        get: operations["listOpeningBalanceImports"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/opening-balances/imports/{importId}/undo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                importId: components["parameters"]["ChargeImportId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Undo an opening balance import while none of its charges has matches or offsets (charges.manage) */
+        post: operations["undoOpeningBalanceImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payments/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Payments and refunds of a period by method, for reconciliation outside Porto (charges.export) */
+        get: operations["exportPayments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Payments (payments.collect or charges.manage) */
+        get: operations["listPayments"];
+        put?: never;
+        /** Record a payment with matches or automatic matching; the rest stays as customer credit (payments.collect; payments.collect_cash for cash) */
+        post: operations["recordPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payments/{paymentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+            };
+            cookie?: never;
+        };
+        /** A payment with matches, refunds and fiscal documents (payments.collect or charges.manage) */
+        get: operations["getPayment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Match unallocated money of a payment to charges (payments.collect) */
+        post: operations["matchPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches/{matchId}/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+                matchId: components["parameters"]["PaymentMatchId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reverse a match (refunds.issue) */
+        post: operations["reverseMatch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payments/{paymentId}/refunds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refund unallocated money, optionally reversing matches first; through the provider when possible (refunds.issue) */
+        post: operations["refundPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payments/{paymentId}/retain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retain (part of) a deposit: a deposit_retention charge matched to it (charges.manage) */
+        post: operations["retainDeposit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/refunds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Refunds and payouts (payments.collect or charges.manage) */
+        get: operations["listRefunds"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/credits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Customers with credit (charges.manage) */
+        get: operations["listCredits"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        /** Credit, deposits and the unallocated payments of a customer (charges.manage) */
+        get: operations["getCustomerCredit"];
+        put?: never;
+        /** Grant a goodwill or release credit (refunds.issue) */
+        post: operations["grantCustomerCredit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/credits/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Apply customer credit to open charges, oldest first (payments.collect) */
+        post: operations["applyCustomerCredit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/statement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        /** Statement of account with running balance; PDF or CSV with format (charges.manage) */
+        get: operations["getCustomerStatement"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        /** Customer dashboard (customers.read; billing sections with charges.manage) */
+        get: operations["getCustomerDashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/receivables": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Scadenzario: open charges and scheduled instalments by due date and age (charges.manage) */
+        get: operations["listReceivables"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/receivables/ageing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Receivables overview by customer and age (charges.manage) */
+        get: operations["getReceivablesAgeing"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maps/{mapId}/payment-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        /** Payment lens of a map on a night: states for everyone with map.view, amounts with charges.manage */
+        get: operations["getMapPaymentStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/mandates/{mandateId}/settle": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mandateId: components["parameters"]["MandateId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Settle the owner compensation of a management mandate as credit or payout (refunds.issue) */
+        post: operations["settleMandate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/worklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Office worklist (items visible by the permission of their source) */
+        get: operations["listWorklist"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/worklist/{sourceType}/{sourceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sourceType: components["parameters"]["WorkSourceType"];
+                sourceId: components["parameters"]["WorkSourceId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Assign a worklist item or change its status */
+        patch: operations["updateWorkItem"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/cash-registers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Cash registers (payments.collect or payments.collect_cash) */
+        get: operations["listCashRegisters"];
+        put?: never;
+        /** Create a cash register (marina.configure) */
+        post: operations["createCashRegister"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/cash-registers/{registerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                registerId: components["parameters"]["CashRegisterId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a cash register (marina.configure) */
+        patch: operations["updateCashRegister"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/cash-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Cash sessions (payments.collect or payments.collect_cash) */
+        get: operations["listCashSessions"];
+        put?: never;
+        /** Open a session with its float; one open session per register (INV-55) (payments.collect or payments.collect_cash) */
+        post: operations["openCashSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/cash-sessions/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** The open session of a register, default when omitted (payments.collect or payments.collect_cash) */
+        get: operations["getCurrentCashSession"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sessionId: components["parameters"]["CashSessionId"];
+            };
+            cookie?: never;
+        };
+        /** A session with its live summary (payments.collect or payments.collect_cash) */
+        get: operations["getCashSession"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/movements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sessionId: components["parameters"]["CashSessionId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cash in or out of an open session (payments.collect or payments.collect_cash) */
+        post: operations["addCashMovement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sessionId: components["parameters"]["CashSessionId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Close a session with the counted amounts per method (payments.collect or payments.collect_cash) */
+        post: operations["closeCashSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/z-report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sessionId: components["parameters"]["CashSessionId"];
+            };
+            cookie?: never;
+        };
+        /** Z report of a session as print-ready HTML or PDF (payments.collect or payments.collect_cash) */
+        get: operations["getZReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/counter-sales": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Counter sale: charge, payment, match and optional fiscal document in one transaction (payments.collect; payments.collect_cash for cash) */
+        post: operations["createCounterSale"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payments/{paymentId}/receipt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+            };
+            cookie?: never;
+        };
+        /** Courtesy receipt (not valid for tax purposes): 80/58 mm HTML or A4 PDF (payments.collect, charges.manage or payments.collect_cash) */
+        get: operations["getPaymentReceipt"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/fiscal/daily-totals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Corrispettivi per day or month, VAT rate and method; CSV or Excel with format (charges.export) */
+        get: operations["getFiscalDailyTotals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/fiscal/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Fiscal documents (charges.export) */
+        get: operations["listFiscalDocuments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/fiscal/documents/{fiscalDocumentId}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                fiscalDocumentId: components["parameters"]["FiscalDocumentId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retry a pending or failed fiscal document (charges.export) */
+        post: operations["retryFiscalDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/fiscal/documents/{fiscalDocumentId}/void": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                fiscalDocumentId: components["parameters"]["FiscalDocumentId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Void an issued fiscal document through its driver (refunds.issue) */
+        post: operations["voidFiscalDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payment-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Payment requests (charges.manage) */
+        get: operations["listPaymentRequests"];
+        put?: never;
+        /** Request payment of open charges of a customer, optionally by email (charges.manage) */
+        post: operations["createPaymentRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payment-requests/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** One payment request per customer for up to 500 charges (charges.manage) */
+        post: operations["createPaymentRequestsBulk"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                requestId: components["parameters"]["PaymentRequestId"];
+            };
+            cookie?: never;
+        };
+        /** A payment request with its charges (charges.manage) */
+        get: operations["getPaymentRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                requestId: components["parameters"]["PaymentRequestId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send (again) a payment request; rotate makes a new link (charges.manage) */
+        post: operations["sendPaymentRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payment-requests/{requestId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                requestId: components["parameters"]["PaymentRequestId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a payment request (charges.manage) */
+        post: operations["cancelPaymentRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/transits/{contractId}/payment-link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Payment link for a held transit: pending_payment until the provider webhook confirms it (transits.desk) */
+        post: operations["createTransitPaymentLink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reminder-runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Reminder runs (charges.manage) */
+        get: operations["listReminderRuns"];
+        put?: never;
+        /** Run today's reminders now (the existing run of the day when it already ran) (charges.manage) */
+        post: operations["createReminderRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reminder-runs/{runId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                runId: components["parameters"]["ReminderRunId"];
+            };
+            cookie?: never;
+        };
+        /** A reminder run with its items (charges.manage) */
+        get: operations["getReminderRun"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reminders/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Remind up to 500 charges at their next due level (charges.manage) */
+        post: operations["sendReminders"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reminder-items/{reminderItemId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                reminderItemId: components["parameters"]["ReminderItemId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve a final notice awaiting approval (charges.manage) */
+        post: operations["approveReminderItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reminder-items/{reminderItemId}/dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                reminderItemId: components["parameters"]["ReminderItemId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Dismiss a reminder item awaiting approval (charges.manage) */
+        post: operations["dismissReminderItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/dunning-exclusions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Dunning exclusions (charges.manage) */
+        get: operations["listDunningExclusions"];
+        put?: never;
+        /** Exclude a customer or a charge from reminders (charges.manage) */
+        post: operations["createDunningExclusion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/dunning-exclusions/{exclusionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                exclusionId: components["parameters"]["DunningExclusionId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a dunning exclusion (charges.manage) */
+        delete: operations["deleteDunningExclusion"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payment-providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Payment drivers with capabilities and the marina's enabled state (payments.collect) */
+        get: operations["listPaymentProviders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                providerCode: components["parameters"]["PaymentProviderCode"];
+            };
+            cookie?: never;
+        };
+        /** Provider settings; secrets are never returned (providers.configure) */
+        get: operations["getPaymentProviderSettings"];
+        /** Configure a provider; secrets are write-only (providers.configure) */
+        put: operations["updatePaymentProviderSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/payment-providers/{providerCode}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                providerCode: components["parameters"]["PaymentProviderCode"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Test the provider credentials (providers.configure) */
+        post: operations["testPaymentProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        /** SEPA mandates of a customer (charges.manage) */
+        get: operations["listSepaMandates"];
+        put?: never;
+        /** Request a SEPA mandate: a setup link for the customer (charges.manage) */
+        post: operations["createSepaMandate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/customers/{customerId}/sepa-mandates/{sepaMandateId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+                sepaMandateId: components["parameters"]["SepaMandateId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke a SEPA mandate (charges.manage) */
+        post: operations["revokeSepaMandate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/webhooks/payments/{provider}/{marinaId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: components["parameters"]["ProviderCode"];
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Payment provider callback, verified with the marina's webhook secret; duplicates are no-ops (INV-56); unknown provider or marina is 404 */
+        post: operations["paymentWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/pay/{payToken}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                payToken: components["parameters"]["PayToken"];
+            };
+            cookie?: never;
+        };
+        /** Public payment page of a payment request: amount, charges, bank details, online availability */
+        get: operations["getPayPage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/pay/{payToken}/checkout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                payToken: components["parameters"]["PayToken"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start an online payment of the request (provider hosted page) */
+        post: operations["startPayCheckout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/pay/{payToken}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                payToken: components["parameters"]["PayToken"];
+            };
+            cookie?: never;
+        };
+        /** Status of the request for the return page (the browser return never confirms, INV-09) */
+        get: operations["getPayStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing";
         FieldError: {
             field: string;
             code: string;
@@ -8212,6 +9622,9 @@ export interface components {
         ManualConfirmation: {
             reference?: string;
             pay_at_departure?: boolean;
+            payment?: components["schemas"]["TransitPaymentInput"];
+            /** @description Issue a commercial document for the desk payment (M5) */
+            fiscal_document?: boolean;
         };
         QuoteAccept: {
             option_id: string;
@@ -8724,6 +10137,8 @@ export interface components {
             settled_at?: string;
             /** @description M5 */
             charge_id?: string;
+            /** @description The payment of the settlement (M5) */
+            payment_id?: string;
             version: number;
         };
         PlannedInstallment: {
@@ -9092,6 +10507,8 @@ export interface components {
         Right: {
             id: string;
             berth: components["schemas"]["ResourceRef"];
+            /** @description Code of the berth of the right */
+            berth_code?: string;
             kind: components["schemas"]["RightKind"];
             from_on: components["schemas"]["IsoDate"];
             to_on: components["schemas"]["IsoDate"];
@@ -9548,6 +10965,10 @@ export interface components {
             overdue: boolean;
             settlement_method?: components["schemas"]["SettlementMethod"];
             settled_on?: components["schemas"]["IsoDate"];
+            /** @description The instalment's charge (M5) */
+            charge_id?: string;
+            /** @description The payment of the settlement (M5) */
+            payment_id?: string;
             version: number;
         };
         HolderInstallmentPage: {
@@ -10126,6 +11547,1105 @@ export interface components {
             attempts_left?: number;
             deposit?: components["schemas"]["PublicDeposit"];
         };
+        /** @enum {string} */
+        ChargeOriginType: "installment" | "holder_installment" | "transit" | "contract_trueup" | "counter_sale" | "termination" | "deposit_retention" | "manual" | "adjustment" | "opening_balance" | "utility" | "work_order" | "rental";
+        /** @enum {string} */
+        ChargePaymentStatus: "open" | "partially_paid" | "paid" | "cancelled";
+        /** @enum {string} */
+        ChargeInvoicingStatus: "to_invoice" | "exported" | "invoiced";
+        /** @enum {string} */
+        FiscalMode: "invoice" | "receipt";
+        /** @enum {string} */
+        CorrectionKind: "delta" | "replace";
+        ChargeLine: {
+            seq: number;
+            item_id?: string;
+            item_code: string;
+            description: string;
+            qty_milli: components["schemas"]["QtyMilli"];
+            unit_cents: components["schemas"]["Cents"];
+            discount_cents: components["schemas"]["Cents"];
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+            vat_rate_bp: components["schemas"]["BasisPoints"];
+            vat_nature?: components["schemas"]["VatNature"];
+            price_includes_vat: boolean;
+            revenue_class?: string;
+            external_code?: string;
+            service_from?: components["schemas"]["IsoDate"];
+            service_to?: components["schemas"]["IsoDate"];
+        };
+        ChargeLineInput: {
+            item_id: string;
+            qty_milli: components["schemas"]["QtyMilli"];
+            /** @description Staff unit price (charges.manage); default from the active price list */
+            unit_cents?: components["schemas"]["Cents"];
+            discount_cents?: components["schemas"]["Cents"];
+            description?: string;
+            service_from?: components["schemas"]["IsoDate"];
+            service_to?: components["schemas"]["IsoDate"];
+        };
+        ChargeMatchRef: {
+            id: string;
+            payment_id: string;
+            payment_number: string;
+            amount_cents: components["schemas"]["Cents"];
+            reverses_match_id?: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        ChargeOffsetRef: {
+            negative_charge_id: string;
+            target_charge_id: string;
+            amount_cents: components["schemas"]["Cents"];
+        };
+        ChargeRef: {
+            id: string;
+            number: string;
+            total_cents?: components["schemas"]["Cents"];
+            payment_status?: components["schemas"]["ChargePaymentStatus"];
+        };
+        ChargeExportRef: {
+            export_id: string;
+            number: string;
+            first: boolean;
+            /** Format: date-time */
+            created_at?: string;
+        };
+        ChargeReminderRef: {
+            level: components["schemas"]["ReminderLevel"];
+            status: components["schemas"]["ReminderItemStatus"];
+            /** Format: date-time */
+            created_at: string;
+        };
+        Charge: {
+            id: string;
+            /** @description A{yyyy}-{n:06}, an internal reference (not a fiscal number) */
+            number: string;
+            customer?: components["schemas"]["CustomerBrief"];
+            origin_type: components["schemas"]["ChargeOriginType"];
+            origin_id: string;
+            contract_id?: string;
+            contract_code?: string;
+            vessel_id?: string;
+            right_id?: string;
+            issued_on: components["schemas"]["IsoDate"];
+            due_on: components["schemas"]["IsoDate"];
+            service_from?: components["schemas"]["IsoDate"];
+            service_to?: components["schemas"]["IsoDate"];
+            total_cents: components["schemas"]["Cents"];
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            paid_amount_cents: components["schemas"]["Cents"];
+            credited_cents: components["schemas"]["Cents"];
+            residual_cents: components["schemas"]["Cents"];
+            payment_status: components["schemas"]["ChargePaymentStatus"];
+            invoicing_status: components["schemas"]["ChargeInvoicingStatus"];
+            fiscal_mode: components["schemas"]["FiscalMode"];
+            overdue?: boolean;
+            corrects_charge?: components["schemas"]["ChargeRef"];
+            correction_kind?: components["schemas"]["CorrectionKind"];
+            description: string;
+            external_invoice_number?: string;
+            external_invoice_date?: components["schemas"]["IsoDate"];
+            cancel_reason?: string;
+            /** Format: date-time */
+            exported_at?: string;
+            /** Format: date-time */
+            cancelled_at?: string;
+            /** Format: date-time */
+            created_at?: string;
+            vat_summary?: components["schemas"]["VatBucket"][];
+            lines?: components["schemas"]["ChargeLine"][];
+            matches?: components["schemas"]["ChargeMatchRef"][];
+            offsets?: components["schemas"]["ChargeOffsetRef"][];
+            /** @description Linked adjustments of this charge */
+            corrections?: components["schemas"]["ChargeRef"][];
+            exports?: components["schemas"]["ChargeExportRef"][];
+            reminders?: components["schemas"]["ChargeReminderRef"][];
+            version: number;
+        };
+        ChargePage: {
+            items: components["schemas"]["Charge"][];
+            next_cursor: string | null;
+        };
+        ChargeCreate: {
+            /** @enum {string} */
+            origin_type: "manual" | "counter_sale";
+            customer_id?: string;
+            contract_id?: string;
+            vessel_id?: string;
+            due_on?: components["schemas"]["IsoDate"];
+            description?: string;
+            lines: components["schemas"]["ChargeLineInput"][];
+        };
+        ChargePatch: {
+            customer_id?: string;
+            due_on?: components["schemas"]["IsoDate"];
+            description?: string;
+            lines?: components["schemas"]["ChargeLineInput"][];
+        };
+        ChargeCancel: {
+            reason: string;
+        };
+        /** @description A line of an adjustment; quantities or prices may be negative in delta mode */
+        AdjustLineInput: {
+            item_id: string;
+            /** Format: int64 */
+            qty_milli: number;
+            /** Format: int64 */
+            unit_cents?: number;
+            description?: string;
+            service_from?: components["schemas"]["IsoDate"];
+            service_to?: components["schemas"]["IsoDate"];
+        };
+        ChargeAdjust: {
+            mode: components["schemas"]["CorrectionKind"];
+            lines: components["schemas"]["AdjustLineInput"][];
+            reason: string;
+        };
+        AdjustResult: {
+            adjustments: components["schemas"]["Charge"][];
+        };
+        InvoiceRefInput: {
+            number: string;
+            date: components["schemas"]["IsoDate"];
+        };
+        ExportFilter: {
+            period_from: components["schemas"]["IsoDate"];
+            period_to: components["schemas"]["IsoDate"];
+            customer_id?: string;
+            origin_types?: components["schemas"]["ChargeOriginType"][];
+            revenue_class?: string;
+        };
+        ExportCreate: {
+            period_from: components["schemas"]["IsoDate"];
+            period_to: components["schemas"]["IsoDate"];
+            customer_id?: string;
+            origin_types?: components["schemas"]["ChargeOriginType"][];
+            revenue_class?: string;
+            /** @description A registered ChargeExporter (none ships with Porto) */
+            exporter_code?: string;
+        };
+        OriginTotal: {
+            origin_type: components["schemas"]["ChargeOriginType"];
+            count: number;
+            total_cents: components["schemas"]["Cents"];
+        };
+        ExportWarning: {
+            /** @enum {string} */
+            code: "customer_fiscal_incomplete";
+            customer_id?: string;
+            charge_ids: string[];
+        };
+        ExportPreview: {
+            count: number;
+            total_cents: components["schemas"]["Cents"];
+            totals_by_vat: components["schemas"]["VatBucket"][];
+            totals_by_origin: components["schemas"]["OriginTotal"][];
+            warnings: components["schemas"]["ExportWarning"][];
+        };
+        ChargeExport: {
+            id: string;
+            number: string;
+            /** @enum {string} */
+            kind: "export" | "reexport";
+            reexport_of?: string;
+            period_from?: components["schemas"]["IsoDate"];
+            period_to?: components["schemas"]["IsoDate"];
+            filters?: components["schemas"]["ExportFilter"];
+            /** @enum {string} */
+            delivery: "file" | "exporter";
+            exporter_code?: string;
+            /** @enum {string} */
+            delivery_status: "none" | "pending" | "sent" | "failed";
+            delivery_error?: string;
+            charge_count: number;
+            line_count: number;
+            total_cents: components["schemas"]["Cents"];
+            totals_by_vat?: components["schemas"]["VatBucket"][];
+            files?: ("csv" | "xlsx" | "pdf")[];
+            /** Format: date-time */
+            created_at: string;
+            version: number;
+        };
+        ChargeExportPage: {
+            items: components["schemas"]["ChargeExport"][];
+            next_cursor: string | null;
+        };
+        ChargeExportItem: {
+            charge_id: string;
+            number: string;
+            first: boolean;
+            total_cents: components["schemas"]["Cents"];
+            customer?: components["schemas"]["CustomerBrief"];
+        };
+        ChargeExportDetail: {
+            export: components["schemas"]["ChargeExport"];
+            items: components["schemas"]["ChargeExportItem"][];
+            next_cursor: string | null;
+        };
+        ReexportInput: {
+            export_id?: string;
+            charge_ids?: string[];
+        };
+        InvoiceReconciliationRowInput: {
+            charge_id?: string;
+            charge_number?: string;
+            invoice_number: string;
+            /** @description GG/MM/AAAA or YYYY-MM-DD */
+            invoice_date: string;
+        };
+        InvoiceReconciliationInput: {
+            csv?: components["schemas"]["CsvText"];
+            rows?: components["schemas"]["InvoiceReconciliationRowInput"][];
+            dry_run: boolean;
+        };
+        InvoiceReconciliationRow: {
+            row: number;
+            charge_number?: string;
+            /** @enum {string} */
+            outcome: "ok" | "unknown_charge" | "not_exported" | "cancelled" | "invalid_date" | "duplicate_row";
+        };
+        InvoiceReconciliation: {
+            id: string;
+            /** @enum {string} */
+            source: "csv" | "manual" | "exporter";
+            dry_run: boolean;
+            row_count: number;
+            matched_count: number;
+            report: components["schemas"]["InvoiceReconciliationRow"][];
+            /** Format: date-time */
+            created_at: string;
+        };
+        InvoiceReconciliationPage: {
+            items: components["schemas"]["InvoiceReconciliation"][];
+            next_cursor: string | null;
+        };
+        /** @enum {string} */
+        OriginItemKey: "management_fee" | "common_advance" | "common_balance" | "transfer_fee" | "termination_penalty" | "termination_refund" | "deposit_retention" | "opening_balance" | "contract_trueup_fallback";
+        OriginItem: {
+            origin_key: components["schemas"]["OriginItemKey"];
+            item_id: string;
+        };
+        ReminderLevelPolicy: {
+            level: components["schemas"]["ReminderLevel"];
+            /** @description Days after the due date (negative = before) */
+            days: number;
+            enabled: boolean;
+        };
+        ReminderPolicy: {
+            levels: components["schemas"]["ReminderLevelPolicy"][];
+        };
+        ArrearsPolicy: {
+            enabled: boolean;
+            days_overdue: number;
+            min_amount_cents: components["schemas"]["Cents"];
+        };
+        BillingSettingsInput: {
+            default_due_days: number;
+            auto_payment_request: boolean;
+            reminder_policy: components["schemas"]["ReminderPolicy"];
+            reminder_hour: number;
+            arrears_policy: components["schemas"]["ArrearsPolicy"];
+            export_reminder_days: number;
+            fiscal_driver: string;
+            receipt_footer: string;
+            sepa_lead_days: number;
+            origin_items: components["schemas"]["OriginItem"][];
+        };
+        BillingSettings: {
+            default_due_days: number;
+            auto_payment_request: boolean;
+            reminder_policy: components["schemas"]["ReminderPolicy"];
+            reminder_hour: number;
+            arrears_policy: components["schemas"]["ArrearsPolicy"];
+            export_reminder_days: number;
+            fiscal_driver: string;
+            receipt_footer: string;
+            sepa_lead_days: number;
+            origin_items: components["schemas"]["OriginItem"][];
+            /** @description Available fiscal driver codes (none */
+            fiscal_drivers: string[];
+            version: number;
+        };
+        /** @description Column indexes (0-based) of the file */
+        OpeningBalanceMapping: {
+            /** @enum {string} */
+            customer_match: "fiscal_code" | "vat_number" | "customer_code";
+            customer_column: number;
+            /** @description Amount in euros with a decimal comma or point (negative = credit) */
+            amount_column: number;
+            due_on_column: number;
+            description_column?: number;
+            reference_column?: number;
+        };
+        OpeningBalanceImportInput: {
+            /** @enum {string} */
+            format: "csv" | "xlsx";
+            /** @description The file */
+            file_base64: string;
+            /** @enum {string} */
+            delimiter?: "semicolon" | "comma" | "tab";
+            has_header: boolean;
+            mapping: components["schemas"]["OpeningBalanceMapping"];
+            dry_run: boolean;
+        };
+        ChargeImportRowIssue: {
+            row: number;
+            /** @enum {string} */
+            code: "unknown_customer" | "ambiguous_customer" | "invalid_amount" | "invalid_date" | "zero_amount";
+        };
+        ChargeImport: {
+            id: string;
+            /** @enum {string} */
+            status: "dry_run" | "applied" | "undone" | "failed";
+            /** @enum {string} */
+            format: "csv" | "xlsx";
+            charge_count: number;
+            valid_rows: number;
+            total_cents?: components["schemas"]["Cents"];
+            issues: components["schemas"]["ChargeImportRowIssue"][];
+            /** Format: date-time */
+            created_at: string;
+            version: number;
+        };
+        ChargeImportPage: {
+            items: components["schemas"]["ChargeImport"][];
+            next_cursor: string | null;
+        };
+        /** @enum {string} */
+        PaymentKind: "payment" | "deposit" | "credit";
+        /** @enum {string} */
+        PaymentMethod: "cash" | "card_pos" | "bank_transfer" | "cheque" | "other" | "card_online" | "wallet" | "sepa_debit" | "credit_note";
+        /** @enum {string} */
+        PaymentSource: "manual" | "provider" | "backfill" | "adjustment" | "goodwill" | "release" | "mandate" | "opening_balance";
+        /** @enum {string} */
+        RefundStatus: "pending" | "succeeded" | "failed";
+        PaymentMatch: {
+            id: string;
+            charge_id: string;
+            charge_number: string;
+            amount_cents: components["schemas"]["Cents"];
+            reverses_match_id?: string;
+            reversed?: boolean;
+            /** Format: date-time */
+            created_at: string;
+        };
+        Payment: {
+            id: string;
+            /** @description P{yyyy}-{n:06}, an internal reference */
+            number: string;
+            customer?: components["schemas"]["CustomerBrief"];
+            kind: components["schemas"]["PaymentKind"];
+            method: components["schemas"]["PaymentMethod"];
+            source: components["schemas"]["PaymentSource"];
+            provider_code?: string;
+            amount_cents: components["schemas"]["Cents"];
+            allocated_cents: components["schemas"]["Cents"];
+            refunded_cents: components["schemas"]["Cents"];
+            unallocated_cents: components["schemas"]["Cents"];
+            fee_cents: components["schemas"]["Cents"];
+            currency: string;
+            received_on: components["schemas"]["IsoDate"];
+            cash_session_id?: string;
+            /** @description The staff reference is stored encrypted and never returned in lists */
+            has_reference?: boolean;
+            notes?: string;
+            vat_split?: components["schemas"]["VatBucket"][];
+            matches?: components["schemas"]["PaymentMatch"][];
+            refunds?: components["schemas"]["Refund"][];
+            fiscal_documents?: components["schemas"]["FiscalDocument"][];
+            /** Format: date-time */
+            created_at?: string;
+            version: number;
+        };
+        PaymentPage: {
+            items: components["schemas"]["Payment"][];
+            next_cursor: string | null;
+        };
+        MatchInput: {
+            charge_id: string;
+            /** Format: int64 */
+            amount_cents: number;
+        };
+        RecordPayment: {
+            customer_id?: string;
+            /** @enum {string} */
+            kind: "payment" | "deposit";
+            /** @enum {string} */
+            method: "cash" | "card_pos" | "bank_transfer" | "cheque" | "other";
+            /** Format: int64 */
+            amount_cents: number;
+            received_on?: components["schemas"]["IsoDate"];
+            /** @description Stored encrypted */
+            reference?: string;
+            notes?: string;
+            matches?: components["schemas"]["MatchInput"][];
+            /** @enum {string} */
+            auto_match?: "oldest_due_first";
+            cash_register_id?: string;
+            send_receipt?: boolean;
+        };
+        MatchPaymentInput: {
+            matches: components["schemas"]["MatchInput"][];
+        };
+        UnmatchInput: {
+            match_id: string;
+            /** Format: int64 */
+            amount_cents: number;
+        };
+        RefundInput: {
+            /** Format: int64 */
+            amount_cents: number;
+            via_provider?: boolean;
+            /** @enum {string} */
+            method?: "cash" | "card_pos" | "bank_transfer" | "cheque" | "other";
+            reason: string;
+            unmatch?: components["schemas"]["UnmatchInput"][];
+            cash_register_id?: string;
+        };
+        Refund: {
+            id: string;
+            number: string;
+            payment_id?: string;
+            /** @enum {string} */
+            kind: "refund" | "payout";
+            method: components["schemas"]["PaymentMethod"];
+            /** @enum {string} */
+            source: "manual" | "provider";
+            provider_code?: string;
+            status: components["schemas"]["RefundStatus"];
+            amount_cents: components["schemas"]["Cents"];
+            reason: string;
+            business_date: components["schemas"]["IsoDate"];
+            failure_code?: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        RefundPage: {
+            items: components["schemas"]["Refund"][];
+            next_cursor: string | null;
+        };
+        RetainInput: {
+            /** Format: int64 */
+            amount_cents: number;
+            item_id?: string;
+            reason: string;
+        };
+        CreditRow: {
+            customer: components["schemas"]["CustomerBrief"];
+            credit_cents: components["schemas"]["Cents"];
+            deposits_cents: components["schemas"]["Cents"];
+        };
+        CreditPage: {
+            items: components["schemas"]["CreditRow"][];
+            next_cursor: string | null;
+        };
+        CustomerCredit: {
+            customer: components["schemas"]["CustomerBrief"];
+            credit_cents: components["schemas"]["Cents"];
+            deposits_cents: components["schemas"]["Cents"];
+            /** @description Payments with unallocated money */
+            payments: components["schemas"]["Payment"][];
+        };
+        CreditGrantInput: {
+            /** Format: int64 */
+            amount_cents: number;
+            reason: string;
+            /** @enum {string} */
+            source: "goodwill" | "release";
+            release_id?: string;
+        };
+        ApplyCreditInput: {
+            charge_ids?: string[];
+        };
+        ApplyCreditResult: {
+            matched_cents: components["schemas"]["Cents"];
+        };
+        StatementRow: {
+            date: components["schemas"]["IsoDate"];
+            /** @enum {string} */
+            kind: "charge" | "payment" | "refund" | "credit";
+            id?: string;
+            number: string;
+            description: string;
+            due_on?: components["schemas"]["IsoDate"];
+            debit_cents: components["schemas"]["Cents"];
+            credit_cents: components["schemas"]["Cents"];
+            balance_cents: components["schemas"]["Cents"];
+        };
+        Statement: {
+            customer: components["schemas"]["CustomerBrief"];
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            opening_cents: components["schemas"]["Cents"];
+            closing_cents: components["schemas"]["Cents"];
+            rows: components["schemas"]["StatementRow"][];
+        };
+        /** @enum {string} */
+        AgeingBucket: "not_due" | "d0_30" | "d31_60" | "d61_90" | "d90_plus";
+        /** @description Residuals of open charges by age bucket (AgeingBucket) */
+        AgeingAmounts: {
+            not_due_cents: components["schemas"]["Cents"];
+            d0_30_cents: components["schemas"]["Cents"];
+            d31_60_cents: components["schemas"]["Cents"];
+            d61_90_cents: components["schemas"]["Cents"];
+            d90_plus_cents: components["schemas"]["Cents"];
+            total_cents: components["schemas"]["Cents"];
+        };
+        AgeingRow: {
+            customer: components["schemas"]["CustomerBrief"];
+            amounts: components["schemas"]["AgeingAmounts"];
+            credit_cents: components["schemas"]["Cents"];
+        };
+        AgeingReport: {
+            rows: components["schemas"]["AgeingRow"][];
+            totals: components["schemas"]["AgeingAmounts"];
+        };
+        Receivable: {
+            /** @enum {string} */
+            kind: "charge" | "scheduled_installment";
+            id: string;
+            number?: string;
+            customer?: components["schemas"]["CustomerBrief"];
+            contract_id?: string;
+            contract_code?: string;
+            origin_type?: components["schemas"]["ChargeOriginType"];
+            description?: string;
+            due_on: components["schemas"]["IsoDate"];
+            amount_cents: components["schemas"]["Cents"];
+            residual_cents: components["schemas"]["Cents"];
+            bucket: components["schemas"]["AgeingBucket"];
+            last_reminder_level?: components["schemas"]["ReminderLevel"];
+            excluded?: boolean;
+        };
+        ReceivablePage: {
+            items: components["schemas"]["Receivable"][];
+            next_cursor: string | null;
+            totals: components["schemas"]["AgeingAmounts"];
+        };
+        /** @description Customer dashboard (spec 11.4); billing sections only with charges.manage, work orders and rentals are empty until M10/M11 */
+        CustomerDashboard: {
+            customer: components["schemas"]["CustomerBrief"];
+            vessels: components["schemas"]["VesselRef"][];
+            contracts: components["schemas"]["DashboardContract"][];
+            berths_today: components["schemas"]["ResourceRef"][];
+            arrears?: components["schemas"]["AgeingAmounts"];
+            balance_cents?: components["schemas"]["Cents"];
+            credit_cents?: components["schemas"]["Cents"];
+            future_installments?: components["schemas"]["Receivable"][];
+            recent_payments?: components["schemas"]["Payment"][];
+            documents_expiring: components["schemas"]["DashboardDocument"][];
+            communications: components["schemas"]["DashboardMessage"][];
+            notes: string;
+            work_orders: Record<string, never>[];
+            rentals: Record<string, never>[];
+        };
+        DashboardContract: {
+            id: string;
+            code: string;
+            kind: string;
+            status: string;
+            starts_on: components["schemas"]["IsoDate"];
+            ends_on: components["schemas"]["IsoDate"];
+            total_cents?: components["schemas"]["Cents"];
+        };
+        DashboardDocument: {
+            id: string;
+            type: string;
+            expires_on: components["schemas"]["IsoDate"];
+        };
+        DashboardMessage: {
+            id: string;
+            template: string;
+            status: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        /** @enum {string} */
+        LensState: "ok" | "due_soon" | "overdue" | "overdue_60" | "disputed";
+        MapPaymentResource: {
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            contract_id?: string;
+            state: components["schemas"]["LensState"];
+            suspended: boolean;
+            /** @description Only with charges.manage */
+            residual_cents?: components["schemas"]["Cents"];
+        };
+        MapPaymentStatus: {
+            date: components["schemas"]["IsoDate"];
+            resources: components["schemas"]["MapPaymentResource"][];
+        };
+        SettleMandateInput: {
+            through: components["schemas"]["IsoDate"];
+            /** @enum {string} */
+            mode: "credit" | "payout";
+        };
+        SettleMandateResult: {
+            credited_cents: components["schemas"]["Cents"];
+            paid_out_cents: components["schemas"]["Cents"];
+        };
+        /** @enum {string} */
+        WorkItemKind: "reminder_approval" | "charges_to_export" | "payment_failed" | "late_payment" | "overpayment" | "sepa_failed" | "billing_item_missing" | "billing_target_mismatch" | "arrears_paid" | "deadline" | "dispute";
+        /** @enum {string} */
+        WorkItemStatus: "open" | "in_progress" | "done" | "dismissed";
+        WorkItem: {
+            kind: components["schemas"]["WorkItemKind"];
+            source_type: string;
+            source_id: string;
+            status: components["schemas"]["WorkItemStatus"];
+            assignee_user_id?: string;
+            customer?: components["schemas"]["CustomerBrief"];
+            amount_cents?: components["schemas"]["Cents"];
+            due_on?: components["schemas"]["IsoDate"];
+            /** Format: date-time */
+            created_at: string;
+        };
+        WorkItemPage: {
+            items: components["schemas"]["WorkItem"][];
+            next_cursor: string | null;
+        };
+        WorkItemPatch: {
+            assignee_user_id?: string | null;
+            status: components["schemas"]["WorkItemStatus"];
+            note?: string;
+        };
+        /** @description Payment collected at the desk with the confirmation (M5, payments.collect; payments.collect_cash for cash) */
+        TransitPaymentInput: {
+            /** @enum {string} */
+            method: "cash" | "card_pos" | "bank_transfer" | "cheque" | "other";
+            /**
+             * Format: int64
+             * @description Default the transit charge total
+             */
+            amount_cents?: number;
+            register_id?: string;
+        };
+        CashRegister: {
+            id: string;
+            code: string;
+            name: string;
+            active: boolean;
+            is_default: boolean;
+            open_session_id?: string;
+            version: number;
+        };
+        CashRegisterList: {
+            items: components["schemas"]["CashRegister"][];
+        };
+        CashRegisterInput: {
+            code: string;
+            name: string;
+            active?: boolean;
+        };
+        CashRegisterPatch: {
+            name?: string;
+            active?: boolean;
+            is_default?: boolean;
+        };
+        MethodAmount: {
+            method: components["schemas"]["PaymentMethod"];
+            amount_cents: components["schemas"]["Cents"];
+        };
+        CashSummary: {
+            expected: components["schemas"]["MethodAmount"][];
+            counted: components["schemas"]["MethodAmount"][];
+            difference_cents: components["schemas"]["Cents"];
+            payments_cents: components["schemas"]["Cents"];
+            refunds_cents: components["schemas"]["Cents"];
+            movements_in_cents: components["schemas"]["Cents"];
+            movements_out_cents: components["schemas"]["Cents"];
+        };
+        CashMovement: {
+            id: string;
+            /** @enum {string} */
+            kind: "in" | "out";
+            amount_cents: components["schemas"]["Cents"];
+            reason: string;
+            created_by_user_id?: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        CashSession: {
+            id: string;
+            register_id: string;
+            register_code?: string;
+            /** @enum {string} */
+            status: "open" | "closed";
+            opened_by_user_id?: string;
+            /** Format: date-time */
+            opened_at: string;
+            business_date: components["schemas"]["IsoDate"];
+            float_cents: components["schemas"]["Cents"];
+            closed_by_user_id?: string;
+            /** Format: date-time */
+            closed_at?: string;
+            notes?: string;
+            summary: components["schemas"]["CashSummary"];
+            movements?: components["schemas"]["CashMovement"][];
+            version: number;
+        };
+        CashSessionPage: {
+            items: components["schemas"]["CashSession"][];
+            next_cursor: string | null;
+        };
+        OpenCashSessionInput: {
+            register_id?: string;
+            /** Format: int64 */
+            float_cents: number;
+        };
+        CashMovementInput: {
+            /** @enum {string} */
+            kind: "in" | "out";
+            /** Format: int64 */
+            amount_cents: number;
+            reason: string;
+        };
+        CountedInput: {
+            /** @enum {string} */
+            method: "cash" | "card_pos" | "bank_transfer" | "cheque" | "other";
+            /** Format: int64 */
+            amount_cents: number;
+        };
+        CloseCashSessionInput: {
+            counted: components["schemas"]["CountedInput"][];
+            notes?: string;
+        };
+        CounterSaleLineInput: {
+            item_id: string;
+            qty_milli: components["schemas"]["QtyMilli"];
+            /** @description Staff unit price (charges.manage) */
+            unit_cents?: components["schemas"]["Cents"];
+            discount_cents?: components["schemas"]["Cents"];
+        };
+        CounterSalePayment: {
+            /** @enum {string} */
+            method: "cash" | "card_pos" | "bank_transfer" | "cheque" | "other";
+            /** Format: int64 */
+            amount_cents?: number;
+            register_id?: string;
+        };
+        CounterSaleInput: {
+            customer_id?: string;
+            vessel_id?: string;
+            lines: components["schemas"]["CounterSaleLineInput"][];
+            payment: components["schemas"]["CounterSalePayment"];
+            fiscal_document: boolean;
+            /** @enum {string} */
+            receipt: "none" | "print" | "email";
+        };
+        CounterSaleResult: {
+            charge: components["schemas"]["Charge"];
+            payment: components["schemas"]["Payment"];
+            fiscal_document?: components["schemas"]["FiscalDocument"];
+            receipt_url: string;
+        };
+        /** @enum {string} */
+        FiscalDocumentStatus: "pending" | "issued" | "failed" | "void";
+        FiscalDocument: {
+            id: string;
+            payment_id: string;
+            charge_id: string;
+            driver: string;
+            /** @description Internal daily number YYYYMMDD-NNNN */
+            number: string;
+            business_date: components["schemas"]["IsoDate"];
+            status: components["schemas"]["FiscalDocumentStatus"];
+            total_cents: components["schemas"]["Cents"];
+            vat: components["schemas"]["VatBucket"][];
+            external_ref?: string;
+            error_code?: string;
+            /** Format: date-time */
+            issued_at?: string;
+            /** Format: date-time */
+            voided_at?: string;
+            /** Format: date-time */
+            created_at: string;
+            version: number;
+        };
+        FiscalDocumentPage: {
+            items: components["schemas"]["FiscalDocument"][];
+            next_cursor: string | null;
+        };
+        FiscalTotalRow: {
+            /** @description YYYY-MM-DD or YYYY-MM */
+            period: string;
+            vat_rate_bp: components["schemas"]["BasisPoints"];
+            vat_nature?: components["schemas"]["VatNature"];
+            method: components["schemas"]["PaymentMethod"];
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+            documents: number;
+        };
+        FiscalDailyTotals: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            /** @enum {string} */
+            group: "day" | "month";
+            rows: components["schemas"]["FiscalTotalRow"][];
+            total_cents: components["schemas"]["Cents"];
+        };
+        /** @enum {string} */
+        PaymentRequestStatus: "open" | "paid" | "cancelled" | "expired";
+        PaymentRequestCharge: {
+            charge_id: string;
+            number: string;
+            description?: string;
+            due_on: components["schemas"]["IsoDate"];
+            amount_cents: components["schemas"]["Cents"];
+            residual_cents: components["schemas"]["Cents"];
+        };
+        PaymentRequest: {
+            id: string;
+            customer: components["schemas"]["CustomerBrief"];
+            amount_cents: components["schemas"]["Cents"];
+            currency: string;
+            status: components["schemas"]["PaymentRequestStatus"];
+            /** @enum {string} */
+            source: "manual" | "auto" | "reminder" | "transit";
+            /** Format: date-time */
+            expires_at?: string;
+            /** Format: date-time */
+            sent_at?: string;
+            sent_count: number;
+            charges: components["schemas"]["PaymentRequestCharge"][];
+            /** Format: date-time */
+            created_at: string;
+            version: number;
+        };
+        PaymentRequestPage: {
+            items: components["schemas"]["PaymentRequest"][];
+            next_cursor: string | null;
+        };
+        /** @description The request and, only in this response, its payment link */
+        PaymentRequestCreated: {
+            request: components["schemas"]["PaymentRequest"];
+            /** @description Shown once to staff (copy link); stored only as a hash */
+            url?: string;
+        };
+        PaymentRequestCreate: {
+            customer_id: string;
+            charge_ids: string[];
+            expires_on?: components["schemas"]["IsoDate"];
+            send?: boolean;
+        };
+        PaymentRequestBulk: {
+            charge_ids: string[];
+            send: boolean;
+        };
+        PaymentRequestBulkResult: {
+            created: number;
+            skipped: number;
+            request_ids?: string[];
+        };
+        PaymentRequestSend: {
+            /** @description Issue a new link (the old one stops working) */
+            rotate?: boolean;
+        };
+        TransitPaymentLinkInput: {
+            /** @default 24 */
+            expires_in_hours: number;
+            send?: boolean;
+        };
+        TransitPaymentLink: {
+            request: components["schemas"]["PaymentRequest"];
+            url: string;
+        };
+        /** @enum {string} */
+        ReminderLevel: "pre_due" | "due" | "courteous" | "formal" | "final_notice";
+        /** @enum {string} */
+        ReminderItemStatus: "queued" | "awaiting_approval" | "skipped_excluded" | "skipped_paid" | "skipped_no_email" | "sent" | "dismissed";
+        ReminderRun: {
+            id: string;
+            run_on: components["schemas"]["IsoDate"];
+            /** @enum {string} */
+            status: "running" | "done" | "failed";
+            counts: {
+                [key: string]: number;
+            };
+            /** Format: date-time */
+            started_at: string;
+            /** Format: date-time */
+            finished_at?: string;
+        };
+        ReminderRunPage: {
+            items: components["schemas"]["ReminderRun"][];
+            next_cursor: string | null;
+        };
+        ReminderItem: {
+            id: string;
+            run_id?: string;
+            charge_id: string;
+            charge_number?: string;
+            customer: components["schemas"]["CustomerBrief"];
+            level: components["schemas"]["ReminderLevel"];
+            status: components["schemas"]["ReminderItemStatus"];
+            request_id?: string;
+            residual_cents?: components["schemas"]["Cents"];
+            /** Format: date-time */
+            created_at: string;
+            version: number;
+        };
+        ReminderRunDetail: {
+            run: components["schemas"]["ReminderRun"];
+            items: components["schemas"]["ReminderItem"][];
+            next_cursor: string | null;
+        };
+        SendRemindersInput: {
+            charge_ids: string[];
+            level?: components["schemas"]["ReminderLevel"];
+        };
+        SendRemindersResult: {
+            queued: number;
+            skipped: number;
+        };
+        /** @enum {string} */
+        DunningExclusionKind: "payment_plan" | "disputed" | "other";
+        DunningExclusion: {
+            id: string;
+            customer?: components["schemas"]["CustomerBrief"];
+            charge_id?: string;
+            kind: components["schemas"]["DunningExclusionKind"];
+            until?: components["schemas"]["IsoDate"];
+            note: string;
+            active: boolean;
+            /** Format: date-time */
+            removed_at?: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        DunningExclusionPage: {
+            items: components["schemas"]["DunningExclusion"][];
+            next_cursor: string | null;
+        };
+        DunningExclusionInput: {
+            customer_id?: string;
+            charge_id?: string;
+            kind: components["schemas"]["DunningExclusionKind"];
+            until?: components["schemas"]["IsoDate"];
+            note?: string;
+        };
+        PaymentProviderCapabilities: {
+            checkout: boolean;
+            mandate_setup: boolean;
+            mandate_charge: boolean;
+            refund: boolean;
+            status_check: boolean;
+            methods: string[];
+        };
+        PaymentProviderInfo: {
+            code: string;
+            capabilities: components["schemas"]["PaymentProviderCapabilities"];
+            enabled: boolean;
+            /** @enum {string} */
+            mode?: "test" | "live";
+        };
+        PaymentProviderList: {
+            items: components["schemas"]["PaymentProviderInfo"][];
+        };
+        /** @description Secrets are never returned, only whether they are set */
+        PaymentProviderSettings: {
+            provider_code: string;
+            enabled: boolean;
+            /** @enum {string} */
+            mode: "test" | "live";
+            has_secret_key: boolean;
+            has_webhook_secret: boolean;
+            publishable_key_last4?: string;
+            sepa_enabled: boolean;
+            methods: string[];
+            statement_descriptor: string;
+            webhook_url: string;
+            version: number;
+        };
+        /** @description Secrets are write-only; omitted secrets keep their stored value */
+        PaymentProviderSettingsInput: {
+            enabled: boolean;
+            /** @enum {string} */
+            mode: "test" | "live";
+            secret_key?: string;
+            publishable_key?: string;
+            webhook_secret?: string;
+            sepa_enabled: boolean;
+            methods: ("card" | "wallet" | "sepa_debit")[];
+            statement_descriptor?: string;
+        };
+        ProviderTestResult: {
+            ok: boolean;
+            code?: string;
+        };
+        SepaMandate: {
+            id: string;
+            provider_code: string;
+            /** @enum {string} */
+            status: "pending" | "active" | "revoked" | "failed";
+            mandate_ref?: string;
+            iban_last4: string;
+            /** Format: date-time */
+            activated_at?: string;
+            /** Format: date-time */
+            revoked_at?: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        SepaMandateList: {
+            items: components["schemas"]["SepaMandate"][];
+        };
+        SepaMandateCreate: {
+            provider_code?: string;
+            send?: boolean;
+        };
+        SepaMandateCreated: {
+            mandate: components["schemas"]["SepaMandate"];
+            setup_url: string;
+        };
+        PayBank: {
+            iban: string;
+            holder: string;
+            bank?: string;
+            bic?: string;
+            /** @description Causale (charge numbers) */
+            reference: string;
+        };
+        PayCharge: {
+            number: string;
+            description: string;
+            due_on: components["schemas"]["IsoDate"];
+            residual_cents: components["schemas"]["Cents"];
+        };
+        PayPage: {
+            marina: {
+                name: string;
+                default_locale: components["schemas"]["Locale"];
+                locales: components["schemas"]["Locale"][];
+            };
+            amount_cents: components["schemas"]["Cents"];
+            currency: string;
+            status: components["schemas"]["PaymentRequestStatus"];
+            charges: components["schemas"]["PayCharge"][];
+            bank?: components["schemas"]["PayBank"];
+            /** @description An enabled provider can take the payment online */
+            online: boolean;
+            methods: ("card" | "sepa_debit")[];
+            /** Format: date-time */
+            expires_at?: string;
+        };
+        PayCheckoutInput: {
+            /** @enum {string} */
+            method: "card" | "sepa_debit";
+        };
+        PayCheckoutResult: {
+            redirect_url: string;
+        };
+        PayStatus: {
+            status: components["schemas"]["PaymentRequestStatus"];
+            /** @description An online payment is in progress (pagamento in verifica) */
+            verifying: boolean;
+        };
     };
     responses: {
         /** @description A domain rule refused the request (m4-plan §7.4: insurance_required, customer_email_missing, paper_scan_required, shares_invalid, table_incomplete, transfer_requirements, template_invalid, template_limits, otp_invalid, vessel_not_in_fleet, provider_unknown, fit_blocked, no_price, ...), a validation failure, or an idempotency key was reused */
@@ -10273,8 +12793,43 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description The payment provider failed (provider_error, details.code) */
+        BadGateway: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
+        /** @description A domain rule refused the request (m5-plan §7.4: customer_required, no_price, export_empty, export_too_large, charges_not_open, release_not_resold, provider_disabled, provider_refund_unsupported, provider_unknown, billing_item_missing, customer_email_missing, ...), a validation failure, or an idempotency key was reused */
+        M5Unprocessable: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
     };
     parameters: {
+        ChargeId: string;
+        ChargeExportId: string;
+        PaymentId: string;
+        PaymentMatchId: string;
+        CashRegisterId: string;
+        CashSessionId: string;
+        FiscalDocumentId: string;
+        PaymentRequestId: string;
+        ReminderRunId: string;
+        ReminderItemId: string;
+        DunningExclusionId: string;
+        SepaMandateId: string;
+        ChargeImportId: string;
+        PayToken: string;
+        PaymentProviderCode: string;
+        WorkSourceType: string;
+        WorkSourceId: string;
         BerthId: string;
         InstallmentId: string;
         CampaignId: string;
@@ -21594,6 +24149,2722 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    listCharges: {
+        parameters: {
+            query?: {
+                payment_status?: components["schemas"]["ChargePaymentStatus"];
+                invoicing_status?: components["schemas"]["ChargeInvoicingStatus"];
+                origin_type?: components["schemas"]["ChargeOriginType"];
+                customer_id?: string;
+                contract_id?: string;
+                issued_from?: components["schemas"]["IsoDate"];
+                issued_to?: components["schemas"]["IsoDate"];
+                due_from?: components["schemas"]["IsoDate"];
+                due_to?: components["schemas"]["IsoDate"];
+                overdue?: boolean;
+                revenue_class?: string;
+                q?: string;
+                format?: "json" | "csv" | "xlsx";
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChargePage"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createCharge: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChargeCreate"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Charge"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    getCharge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                chargeId: components["parameters"]["ChargeId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Charge"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateCharge: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                chargeId: components["parameters"]["ChargeId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChargePatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Charge"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["M5Unprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    cancelCharge: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                chargeId: components["parameters"]["ChargeId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChargeCancel"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Charge"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    adjustCharge: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                chargeId: components["parameters"]["ChargeId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChargeAdjust"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdjustResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["M5Unprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    setChargeInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                chargeId: components["parameters"]["ChargeId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvoiceRefInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Charge"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    createTerminationCharge: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Charge"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["M5Unprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listChargeExports: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChargeExportPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createChargeExport: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExportCreate"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChargeExport"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    previewChargeExport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExportFilter"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportPreview"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    reexportCharges: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReexportInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChargeExport"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    getChargeExport: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                exportId: components["parameters"]["ChargeExportId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChargeExportDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    downloadChargeExport: {
+        parameters: {
+            query?: {
+                format?: "csv" | "xlsx" | "pdf";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                exportId: components["parameters"]["ChargeExportId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                    "application/pdf": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listInvoiceReconciliations: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceReconciliationPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createInvoiceReconciliation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvoiceReconciliationInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceReconciliation"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    getBillingSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BillingSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateBillingSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BillingSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BillingSettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["M5Unprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    importOpeningBalances: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OpeningBalanceImportInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChargeImport"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    listOpeningBalanceImports: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChargeImportPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    undoOpeningBalanceImport: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                importId: components["parameters"]["ChargeImportId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChargeImport"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    exportPayments: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                method?: components["schemas"]["PaymentMethod"];
+                format?: "csv" | "xlsx";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listPayments: {
+        parameters: {
+            query?: {
+                method?: components["schemas"]["PaymentMethod"];
+                kind?: components["schemas"]["PaymentKind"];
+                source?: components["schemas"]["PaymentSource"];
+                customer_id?: string;
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                unallocated?: boolean;
+                session_id?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    recordPayment: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordPayment"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Payment"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    getPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Payment"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    matchPayment: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MatchPaymentInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Payment"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    reverseMatch: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+                matchId: components["parameters"]["PaymentMatchId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Payment"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    refundPayment: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefundInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Refund"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["M5Unprocessable"];
+            502: components["responses"]["BadGateway"];
+        };
+    };
+    retainDeposit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RetainInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Charge"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    listRefunds: {
+        parameters: {
+            query?: {
+                payment_id?: string;
+                status?: components["schemas"]["RefundStatus"];
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listCredits: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreditPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getCustomerCredit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerCredit"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    grantCustomerCredit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreditGrantInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Payment"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    applyCustomerCredit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplyCreditInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplyCreditResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    getCustomerStatement: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                format?: "json" | "pdf" | "csv";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Statement"];
+                    "application/pdf": string;
+                    "text/csv": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getCustomerDashboard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerDashboard"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listReceivables: {
+        parameters: {
+            query?: {
+                due_from?: components["schemas"]["IsoDate"];
+                due_to?: components["schemas"]["IsoDate"];
+                bucket?: components["schemas"]["AgeingBucket"];
+                status?: "open" | "overdue" | "scheduled";
+                customer_id?: string;
+                contract_id?: string;
+                group_id?: string;
+                origin_type?: components["schemas"]["ChargeOriginType"];
+                format?: "json" | "csv" | "xlsx";
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceivablePage"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getReceivablesAgeing: {
+        parameters: {
+            query?: {
+                format?: "json" | "csv" | "xlsx";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgeingReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getMapPaymentStatus: {
+        parameters: {
+            query?: {
+                date?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mapId: components["parameters"]["MapId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapPaymentStatus"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    settleMandate: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                mandateId: components["parameters"]["MandateId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SettleMandateInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettleMandateResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    listWorklist: {
+        parameters: {
+            query?: {
+                kind?: components["schemas"]["WorkItemKind"];
+                status?: components["schemas"]["WorkItemStatus"];
+                assignee_user_id?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkItemPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateWorkItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sourceType: components["parameters"]["WorkSourceType"];
+                sourceId: components["parameters"]["WorkSourceId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkItemPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkItem"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listCashRegisters: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashRegisterList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createCashRegister: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CashRegisterInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashRegister"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    updateCashRegister: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                registerId: components["parameters"]["CashRegisterId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CashRegisterPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashRegister"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listCashSessions: {
+        parameters: {
+            query?: {
+                register_id?: string;
+                status?: "open" | "closed";
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashSessionPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    openCashSession: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OpenCashSessionInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashSession"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    getCurrentCashSession: {
+        parameters: {
+            query?: {
+                register_id?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashSession"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getCashSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sessionId: components["parameters"]["CashSessionId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashSession"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    addCashMovement: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sessionId: components["parameters"]["CashSessionId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CashMovementInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashMovement"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    closeCashSession: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sessionId: components["parameters"]["CashSessionId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CloseCashSessionInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashSession"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getZReport: {
+        parameters: {
+            query?: {
+                format?: "html" | "pdf";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sessionId: components["parameters"]["CashSessionId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
+                    "application/pdf": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createCounterSale: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CounterSaleInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CounterSaleResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    getPaymentReceipt: {
+        parameters: {
+            query?: {
+                format?: "80" | "58" | "a4";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                paymentId: components["parameters"]["PaymentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
+                    "application/pdf": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getFiscalDailyTotals: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                group?: "day" | "month";
+                format?: "json" | "csv" | "xlsx";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FiscalDailyTotals"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listFiscalDocuments: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                status?: components["schemas"]["FiscalDocumentStatus"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FiscalDocumentPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    retryFiscalDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                fiscalDocumentId: components["parameters"]["FiscalDocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FiscalDocument"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    voidFiscalDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                fiscalDocumentId: components["parameters"]["FiscalDocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FiscalDocument"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    listPaymentRequests: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["PaymentRequestStatus"];
+                customer_id?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentRequestPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createPaymentRequest: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PaymentRequestCreate"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentRequestCreated"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    createPaymentRequestsBulk: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PaymentRequestBulk"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentRequestBulkResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    getPaymentRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                requestId: components["parameters"]["PaymentRequestId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentRequest"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    sendPaymentRequest: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                requestId: components["parameters"]["PaymentRequestId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PaymentRequestSend"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentRequestCreated"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["M5Unprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    cancelPaymentRequest: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                requestId: components["parameters"]["PaymentRequestId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentRequest"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    createTransitPaymentLink: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransitPaymentLinkInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransitPaymentLink"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["M5Unprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listReminderRuns: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReminderRunPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createReminderRun: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReminderRun"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getReminderRun: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                runId: components["parameters"]["ReminderRunId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReminderRunDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    sendReminders: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendRemindersInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SendRemindersResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    approveReminderItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                reminderItemId: components["parameters"]["ReminderItemId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReminderItem"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    dismissReminderItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                reminderItemId: components["parameters"]["ReminderItemId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReminderItem"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    listDunningExclusions: {
+        parameters: {
+            query?: {
+                customer_id?: string;
+                charge_id?: string;
+                active?: boolean;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DunningExclusionPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createDunningExclusion: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DunningExclusionInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DunningExclusion"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    deleteDunningExclusion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                exclusionId: components["parameters"]["DunningExclusionId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listPaymentProviders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentProviderList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getPaymentProviderSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                providerCode: components["parameters"]["PaymentProviderCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentProviderSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    updatePaymentProviderSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                providerCode: components["parameters"]["PaymentProviderCode"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PaymentProviderSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentProviderSettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["M5Unprocessable"];
+        };
+    };
+    testPaymentProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                providerCode: components["parameters"]["PaymentProviderCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderTestResult"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+            502: components["responses"]["BadGateway"];
+        };
+    };
+    listSepaMandates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SepaMandateList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createSepaMandate: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SepaMandateCreate"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SepaMandateCreated"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+            502: components["responses"]["BadGateway"];
+        };
+    };
+    revokeSepaMandate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                customerId: components["parameters"]["CustomerId"];
+                sepaMandateId: components["parameters"]["SepaMandateId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SepaMandate"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    paymentWebhook: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: components["parameters"]["ProviderCode"];
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/octet-stream": string;
+            };
+        };
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    getPayPage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                payToken: components["parameters"]["PayToken"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayPage"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    startPayCheckout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                payToken: components["parameters"]["PayToken"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PayCheckoutInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayCheckoutResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["M5Unprocessable"];
+            429: components["responses"]["TooManyRequests"];
+            502: components["responses"]["BadGateway"];
+        };
+    };
+    getPayStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                payToken: components["parameters"]["PayToken"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayStatus"];
+                };
             };
             404: components["responses"]["NotFound"];
             429: components["responses"]["TooManyRequests"];

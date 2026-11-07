@@ -40,6 +40,7 @@ import { registryRoutes } from './features/registry/routes';
 import { contractsM4Routes } from './features/contracts-m4/routes';
 import { documentsRoutes } from './features/documents/routes';
 import { rightsRoutes } from './features/rights/routes';
+import { billingRoutes } from './features/billing/routes';
 
 export type RouterContext = { queryClient: QueryClient; api: ApiClient };
 
@@ -194,6 +195,7 @@ export const routeTree = rootRoute.addChildren([
       ...contractsM4Routes(marinaRoute),
       ...rightsRoutes(marinaRoute),
       ...documentsRoutes(marinaRoute),
+      ...billingRoutes(marinaRoute),
     ]),
   ]),
 ]);

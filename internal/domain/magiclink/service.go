@@ -6,6 +6,7 @@ package magiclink
 import (
 	"context"
 	"crypto/subtle"
+	"errors"
 	"fmt"
 	"log/slog"
 	"strings"
@@ -118,8 +119,12 @@ func (s *Service) Resolve(ctx context.Context, slug, token string) (*Link, error
 		return nil, ErrInvalid
 	}
 	row, mslug, err := store.AccessLinkByHash(ctx, s.d.DB.DB, HashToken(token))
-	if err != nil {
+	if errors.Is(err, store.ErrNotFound) {
 		return nil, ErrInvalid
+	}
+	if err != nil {
+		// A database failure (busy, cancelled) is not an invalid link: report it so the caller can retry.
+		return nil, fmt.Errorf("magiclink: resolving link: %w", err)
 	}
 	now := s.d.Clock.Now()
 	ok := subtle.ConstantTimeCompare([]byte(mslug), []byte(slug)) == 1

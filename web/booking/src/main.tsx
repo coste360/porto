@@ -11,6 +11,7 @@ import { ThemeProvider } from '@porto/shared/theme';
 import { BookingPage } from './BookingPage';
 import { initBookingI18n } from './i18n';
 import { LinkPage } from './links';
+import { PayPage } from './pay';
 import { routeFromPath } from './routes';
 import { slugFromPath } from './slug';
 
@@ -30,6 +31,8 @@ if (root) {
             <ApiProvider client={api}>
               {route.page === 'link' ? (
                 <LinkPage slug={route.slug} purpose={route.purpose} token={route.token} />
+              ) : route.page === 'pay' ? (
+                <PayPage slug={route.slug} token={route.token} ret={route.ret} />
               ) : (
                 <BookingPage slug={route.slug} />
               )}

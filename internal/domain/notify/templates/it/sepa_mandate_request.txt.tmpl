@@ -1,0 +1,8 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+per pagare le rate con addebito diretto SEPA ti chiediamo di autorizzare il mandato dal link seguente.
+{{with v . "link"}}
+Autorizza il mandato: {{.}}
+{{end}}
+--
+{{v . "marina_name"}}

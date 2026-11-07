@@ -123,6 +123,7 @@ func TestConfig_Invalid(t *testing.T) {
 		{"sensor retention", "PORTO_SENSOR_RAW_RETENTION", "0d", "PORTO_SENSOR_RAW_RETENTION"},
 		{"demo pairing half", "PORTO_DEMO_PAIRING_USER", "a@b.c", "PORTO_DEMO_PAIRING_MARINA"},
 		{"dev", "PORTO_DEV", "sometimes", "PORTO_DEV"},
+		{"stripe base without dev", "PORTO_STRIPE_API_BASE", "http://127.0.0.1:9999", "PORTO_STRIPE_API_BASE"},
 		{"allow private", "PORTO_WEBHOOKS_ALLOW_PRIVATE", "2", "PORTO_WEBHOOKS_ALLOW_PRIVATE"},
 		{"public reads", "PORTO_PUBLIC_READS_PER_MINUTE", "0", "PORTO_PUBLIC_READS_PER_MINUTE"},
 		{"bootstrap half", "PORTO_BOOTSTRAP_OWNER_EMAIL", "a@b.c", "PORTO_BOOTSTRAP_OWNER_NAME"},
@@ -173,5 +174,19 @@ func TestConfig_SecretNotEchoed(t *testing.T) {
 		if strings.Contains(err.Error(), needle) {
 			t.Fatalf("error echoes a secret: %v", err)
 		}
+	}
+}
+
+func TestConfig_StripeAPIBaseDevOnly(t *testing.T) {
+	c, err := Load(envOf(map[string]string{
+		"PORTO_SECRET_KEY": validKey(t), "PORTO_DEV": "true", "PORTO_STRIPE_API_BASE": "http://127.0.0.1:9999/",
+	}))
+	if err != nil || c.StripeAPIBase != "http://127.0.0.1:9999" {
+		t.Fatalf("dev base: %q %v", c.StripeAPIBase, err)
+	}
+	if _, err := Load(envOf(map[string]string{
+		"PORTO_SECRET_KEY": validKey(t), "PORTO_DEV": "true", "PORTO_STRIPE_API_BASE": "ftp://x",
+	})); err == nil || !strings.Contains(err.Error(), "PORTO_STRIPE_API_BASE") {
+		t.Fatalf("bad scheme: %v", err)
 	}
 }

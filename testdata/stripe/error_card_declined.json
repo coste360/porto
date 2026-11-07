@@ -1,0 +1,2 @@
+{"error": {"type": "card_error", "code": "card_declined", "decline_code": "generic_decline",
+ "message": "Your card was declined for mario@example.test", "param": "customer_email"}}

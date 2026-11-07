@@ -51,6 +51,7 @@ import {
   ReasonDialog,
   Section,
 } from '../contracts-m4/components/kit';
+import { MandateSettleButton } from '../billing/public';
 import { openBlob, saveBlob } from '../contracts-m4/lib/files';
 import { useMarinaToday } from '../registry/lib/today';
 import { mandateBody, type MandateForm } from './lib/mandate';
@@ -325,6 +326,7 @@ function MandateDetail({ mandate }: { mandate: Mandate }) {
             >
               {t('rights:mandate.pdf')}
             </Button>
+            <MandateSettleButton mandateId={mandate.id} />
             {mandate.status === 'active' ? (
               <>
                 <Button variant="outline" onClick={() => setDialog('end')}>

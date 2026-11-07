@@ -56,6 +56,11 @@ type Service struct {
 	// hourly and accrues once per marina day after 02:00; a restart runs it again, which is idempotent).
 	mu      sync.Mutex
 	accrued map[string]calendar.Date
+
+	// billing creates the charges of issued holder instalments (M5, billing.go); nil = M4 behaviour.
+	billing BillingHooks
+	// settler records the payment of a holder instalment's charge (M5, payments.go); set once at wiring.
+	settler ChargeSettler
 }
 
 // NewService returns the service.
@@ -180,6 +185,12 @@ func (s *Service) IssueDueTx(ctx context.Context, tx bun.IDB, scope store.Marina
 			map[string]any{"source_type": h.SourceType, "due_on": h.DueOn, "amount_cents": h.AmountCents},
 			changed("holder_installment", h.ID, event.ChangeIssued)); err != nil {
 			return n, err
+		}
+		if s.billing != nil {
+			if err := s.billing.OnHolderInstallmentIssuedTx(ctx, tx, scope, audit.System, h); err != nil {
+				return n, err
+			}
+			continue
 		}
 		if err := s.queuePaymentRequest(ctx, tx, scope, h); err != nil {
 			return n, err

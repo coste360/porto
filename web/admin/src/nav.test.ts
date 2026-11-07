@@ -22,6 +22,9 @@ describe('nav', () => {
       'templates.configure',
       'communications.send',
       'providers.configure',
+      'charges.manage',
+      'charges.export',
+      'payments.collect',
     ]).map((i) => i.id);
     expect(ids).toEqual(NAV_ITEMS.map((i) => i.id));
   });
@@ -57,9 +60,23 @@ describe('nav', () => {
     expect(visibleNavItems(['pricing.configure']).map((i) => i.id)).toEqual(['pricing-settings']);
   });
 
-  it('keeps charges upcoming and lists contracts from M3', () => {
+  it('lists contracts from M3 and charges from M5', () => {
     expect(UPCOMING_MODULES).not.toContain('common:nav.modules.contracts');
-    expect(UPCOMING_MODULES).toContain('common:nav.modules.charges');
+    expect(UPCOMING_MODULES).not.toContain('common:nav.modules.charges');
+  });
+
+  it('shows the M5 billing pages by permission', () => {
+    expect(visibleNavItems(['charges.manage']).map((i) => i.id)).toEqual([
+      'charges',
+      'payments',
+      'receivables',
+      'payment-requests',
+      'reminders',
+      'opening-balances',
+      'worklist',
+    ]);
+    expect(visibleNavItems(['charges.export']).map((i) => i.id)).toEqual(['exports', 'fiscal']);
+    expect(visibleNavItems(['payments.collect_cash']).map((i) => i.id)).toEqual(['cash']);
   });
 
   it('shows the M3 desk pages by permission', () => {
@@ -73,6 +90,7 @@ describe('nav', () => {
       'charters',
       'waitlist',
       'signatures',
+      'worklist',
     ]);
     expect(visibleNavItems(['presence.write']).map((i) => i.id)).toEqual(['dock']);
   });
@@ -98,6 +116,7 @@ describe('nav', () => {
     expect(visibleNavItems(['communications.send']).map((i) => i.id)).toEqual(['communications']);
     expect(visibleNavItems(['providers.configure']).map((i) => i.id)).toEqual([
       'signature-settings',
+      'payment-settings',
     ]);
     expect(visibleNavItems(['contracts.write']).map((i) => i.id)).toEqual([
       'imports',

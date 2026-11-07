@@ -1,0 +1,52 @@
+{
+  "title": "Charges and payments",
+  "description": "Due dates, items for automatic charges, reminders, arrears, receipts and registers.",
+  "saved": "Settings saved",
+  "charges": {
+    "title": "Charges",
+    "dueDays": "Default due days",
+    "exportReminderDays": "Export reminder after (days)",
+    "sepaLeadDays": "SEPA collection lead (days)",
+    "autoRequest": "Automatically send the payment request when a charge is created"
+  },
+  "originItems": {
+    "title": "Items by origin",
+    "description": "Charges without a price list (fees, common charges, transfers, terminations, deposits, opening balances) use these items for VAT and codes.",
+    "none": "No item"
+  },
+  "reminders": {
+    "title": "Reminders",
+    "description": "Days from the due date (negative = before) and enabled levels.",
+    "hour": "Sending hour",
+    "level": "Level",
+    "days": "Days",
+    "enabled": "Enabled",
+    "daysOf": "Days for {{level}}",
+    "enabledOf": "{{level}} enabled",
+    "finalHint": "The final notice always requires an operator's approval."
+  },
+  "arrears": {
+    "title": "Arrears",
+    "description": "When enabled, suspends contracts with overdue amounts above the threshold; resuming is manual and departures are never blocked.",
+    "enabled": "Suspend contracts in arrears",
+    "days": "Days overdue",
+    "min": "Minimum amount"
+  },
+  "fiscal": {
+    "title": "Receipts and fiscal module",
+    "driver": "Fiscal driver",
+    "footer": "Receipt footer"
+  },
+  "registers": {
+    "title": "Registers",
+    "code": "Code",
+    "name": "Name",
+    "active": "Active",
+    "activeOf": "{{name}} active",
+    "default": "Default",
+    "isDefault": "Default",
+    "makeDefault": "Make default",
+    "add": "Add register",
+    "empty": "No registers."
+  }
+}

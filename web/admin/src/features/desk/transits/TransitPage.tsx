@@ -27,6 +27,13 @@ import { DatePicker, PageHeader } from '@porto/shared/ui/patterns';
 
 import { useCurrentMarina } from '../../../auth/hooks';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../../components/PageStates';
+import {
+  ContractChargesCard,
+  DeskPaymentFields,
+  TransitPaymentLinkButton,
+  defaultDeskPayment,
+  deskPaymentBody,
+} from '../../billing/public';
 import { useMarinaToday } from '../../registry/lib/today';
 import {
   AllocationsCard,
@@ -76,6 +83,7 @@ function TransitDetail({ transit }: { transit: Contract }) {
         actions={
           <>
             <ShowOnMapButton contract={transit} date={today} />
+            <TransitPaymentLinkButton transit={transit} />
             {desk && actions.confirm ? (
               <Button onClick={() => setDialog('confirm')}>{t('desk:transit.confirm')}</Button>
             ) : null}
@@ -140,6 +148,9 @@ function TransitDetail({ transit }: { transit: Contract }) {
         <AllocationsCard contract={transit} />
         <PresencesCard contract={transit} />
       </div>
+      <div className="mt-4">
+        <ContractChargesCard contractId={transit.id} customer={transit.customer ?? null} />
+      </div>
       {dialog === 'confirm' ? (
         <ConfirmDialog transit={transit} onClose={() => setDialog(null)} />
       ) : null}
@@ -166,6 +177,7 @@ function ConfirmDialog({ transit, onClose }: { transit: Contract; onClose: () =>
   const { marinaId } = useCurrentMarina();
   const confirm = useConfirmTransit(marinaId);
   const [value, setValue] = useState({ reference: '', payAtDeparture: false });
+  const [payment, setPayment] = useState(() => defaultDeskPayment(transit.total_cents));
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent data-testid="desk-confirm-dialog">
@@ -177,6 +189,7 @@ function ConfirmDialog({ transit, onClose }: { transit: Contract; onClose: () =>
           <p className="text-destructive text-sm">{t('errors:customer_required')}</p>
         ) : null}
         <ManualConfirmFields idPrefix="confirm" value={value} onChange={setValue} />
+        <DeskPaymentFields idPrefix="confirm" value={payment} onChange={setPayment} />
         <DeskProblemAlert error={confirm.error} />
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
@@ -192,6 +205,7 @@ function ConfirmDialog({ transit, onClose }: { transit: Contract; onClose: () =>
                   body: {
                     pay_at_departure: value.payAtDeparture,
                     ...(value.reference.trim() ? { reference: value.reference.trim() } : {}),
+                    ...deskPaymentBody(payment),
                   },
                 },
                 { onSuccess: onClose },

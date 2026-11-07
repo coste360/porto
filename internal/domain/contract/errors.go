@@ -49,8 +49,13 @@ var (
 	// ErrSettleConflict means a bulk settlement found an instalment not settleable (status or version); the error
 	// is a *SettleError naming the first failing id. 409 conflict.
 	ErrSettleConflict = errors.New("contract: settle conflict")
+	// ErrNotInArrears means the arrears suspension found, under the contract lock, no overdue amount reaching the
+	// policy minimum (or an active customer exclusion): the contract is left as it is. Internal (job only).
+	ErrNotInArrears = errors.New("contract: not in arrears")
 	// ErrNotImplementedM4 is returned by the CONTRACT skeleton (m4_skeleton.go) until CONTRACTS lands M4.
 	ErrNotImplementedM4 = errors.New("contract: not implemented (M4)")
+	// ErrNotImplementedM5 is returned by the M5 entry points of payments.go until PAYMENTS lands them.
+	ErrNotImplementedM5 = errors.New("contract: not implemented (M5)")
 )
 
 // InsuranceError names the vessel without a valid insurance (details.vessel_id).

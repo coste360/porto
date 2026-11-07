@@ -63,10 +63,12 @@ Verificata da: `TestContract_HoldTransitHasAllocation` (banco e API, M3), `TestI
 `TestCheckout_HoldHasAllocation` (online, M8). Stato: partial.
 
 **INV-09 — Conferma solo dal pagamento.** Un transito online passa a `confirmed` solo dal webhook del provider o dal
-driver manuale. Verificata da: `TestContract_TransitConfirmOnlyManualDriver`,
-`TestContract_ConfirmedOnlyInConfirmTransit` (M3, driver manuale: la tabella degli stati entra in `confirmed` solo
-da `held` con `confirm`); `TestCheckout_BrowserReturnDoesNotConfirm`
-(webhook, M5/M8). Stato: partial.
+driver manuale. Da M5 un transito con link di pagamento è `pending_payment` e arriva a `confirmed` solo tramite
+`confirmTx`, chiamato dal webhook del provider (`ConfirmTransitPaidTx(source=provider)`) o dal driver manuale; il
+ritorno del browser non conferma mai. Verificata da: `TestContract_TransitConfirmOnlyManualDriver`,
+`TestContract_ConfirmedOnlyInConfirmTransit` (la tabella degli stati entra in `confirmed` solo da `held` o
+`pending_payment` con `confirm`); `TestPaymentWebhook_ConfirmsTransit` (che verifica
+anche che il ritorno del browser non conferma; webhook, M5; checkout online M8). Stato: partial (checkout online M8).
 
 **INV-10 — Le allocazioni di una riga di contratto non si sovrappongono e coprono il periodo.** Per ogni riga di
 risorsa di un contratto o transito vivo ogni notte del periodo è coperta da esattamente un'allocazione attiva
@@ -137,7 +139,9 @@ che porterebbe il totale sotto zero è rifiutato (`409 conflict`). Verificata da
 `internal/domain/contract/states.go`); le righe M4 da `TestContract_M4StateChangesWriteAuditAndOutbox` (resume,
 request_signature, signature_failed, addendum, change_vessel), `TestContract_SuspendTerminateAmounts` (suspend),
 `TestQuote_AcceptRunsAllSteps` (sign), `TestContract_ExpireMarksRenewed` (expire, expire_renewed) e
-`TestContract_TacitRenewal` (tacit_renew). Stato: implemented.
+`TestContract_TacitRenewal` (tacit_renew); le righe M5 da `TestContract_M5StateChangesWriteAuditAndOutbox`
+(request_payment, payment_expired, pending_payment → confirmed/cancelled/expired, suspend per morosità con
+`SuspendForArrearsTx`). Stato: implemented.
 
 **INV-31 — Le rate sommano il totale.** Per ogni piano rate `Σ rate = totale del contratto` al centesimo (sulle
 rate vive, `status <> 'cancelled'`; con rate già emesse o pagate, il ripiano copre `totale − Σ emesse/pagate`); lo
@@ -155,10 +159,14 @@ saldo delle rate dei titolari prendono il lock del titolo (ordine titolo → rat
 programmata. Stato: implemented.
 
 **INV-32 — Rate pagate solo dal saldo.** Una rata (di contratto o di titolare) diventa `paid` solo tramite
-`contract.SettleInstallment` / `rights.SettleHolderInstallment` (driver manuale in M4, abbinamento dei pagamenti in
-M5); il CHECK `installments_paid_check` / `holder_installments_paid_check` richiede la fonte del saldo. Verificata
-da: `TestInstallment_SettleOnlyManualDriver`, `TestConcurrency_InstallmentSettle`, `TestMigrations_M4Constraints`.
-Stato: partial (pagamenti in M5).
+l'abbinamento di un pagamento al suo addebito (`ApplyChargeSettlementTx` → `settleTx(source=payment)`, M5) o, per
+le rate storiche saldate a mano in M4, tramite il backfill che crea addebito e pagamento (`source = backfill`,
+`settlement_source = manual`), oppure quando una rettifica negativa compensa per intero il suo addebito (offset di
+`applyNegativeTx` → `FollowChargeOriginTx`, `settlement_source = payment` senza pagamento: il denaro è la nota di
+rettifica, non un incasso); il CHECK `installments_paid_check` / `holder_installments_paid_check` richiede la
+fonte del saldo. Verificata da: `TestInstallment_SettleOnlyManualDriver` (aggiornato in M5: pagata ⇔ pagamento o
+backfill), `TestConcurrency_InstallmentSettle`, `TestCharge_BackfillM4Idempotent`, `TestMigrations_M4Constraints`.
+Stato: implemented.
 
 **INV-33 — Una sola proposta di rinnovo aperta per contratto.** Vincolo del database: indice univoco parziale
 `renewal_proposals_open_uidx` su `source_contract_id` per gli stati aperti. Verificata da:
@@ -208,20 +216,71 @@ da: `TestMillesimal_ActiveImmutable`, `TestMigrations_M4Constraints`. Stato: imp
 
 ## Addebiti e incassi (spec 16)
 
-**INV-50 — Saldo coerente.** Per ogni addebito `paid_amount = Σ abbinamenti dei pagamenti riusciti − Σ rimborsi`,
-aggiornato nella stessa transazione del pagamento. Verificata da: `TestCharge_PaidAmountMatchesLedger` (property
-test, tag `integration`). Stato: planned.
+**INV-50 — Saldo coerente.** Per ogni addebito `paid_amount_cents = Σ payment_matches.amount_cents` dell'addebito
+(gli storni sono righe negative) e per ogni pagamento `allocated_cents = Σ` dei suoi abbinamenti, aggiornati nella
+stessa transazione (solo `internal/domain/payment`; gli abbinamenti accettano solo inserimenti, trigger su entrambi
+i dialetti). I rimborsi escono solo dal denaro non abbinato, quindi "Σ incassi − Σ rimborsi" di un addebito è il suo
+abbinato (m5-plan §4.1). Verificata da: `TestCharge_PaidAmountMatchesLedger` (property test, tag `integration`),
+query B50 di `store.CheckBillingInvariants`. Stato: implemented.
 
-**INV-51 — Addebiti esportati immutabili.** Un addebito `exported` o `invoiced` non cambia importi né righe; si
-corregge con un addebito di rettifica collegato. Verificata da: `TestCharge_ExportedIsImmutable`. Stato: planned.
+**INV-51 — Addebiti esportati immutabili.** Un addebito `exported` o `invoiced` non cambia cliente, origine, importi,
+date di emissione e competenza, modalità fiscale né righe; lo stato di fatturazione non torna mai `to_invoice` e un
+addebito annullato non cambia più (trigger `charges_immutable*`, `charge_lines_immutable*` su entrambi i dialetti;
+scadenza e descrizione restano modificabili; le righe di un addebito annullato, anche `to_invoice`, non si
+inseriscono, modificano o cancellano più). Si corregge con un addebito di rettifica collegato
+(`corrects_charge_id`, delta o storno e sostituzione) che va nella prossima esportazione. Verificata da:
+`TestCharge_ExportedIsImmutable`, `TestMigrations_M5Constraints`. Stato: implemented.
 
-**INV-52 — Abbinamenti entro i limiti.** Per ogni pagamento `Σ abbinamenti ≤ importo` e per ogni addebito
-`Σ abbinamenti ≤ totale`, anche con abbinamenti concorrenti. Verificata da: `TestConcurrency_PaymentMatching`.
-Stato: planned.
+**INV-52 — Abbinamenti entro i limiti.** Per ogni pagamento `allocated + refunded ≤ amount` (CHECK
+`payments_allocation_check`) e per ogni addebito `paid + credited ≤ total` (CHECK `charges_positive_check`), anche
+con abbinamenti e rimborsi concorrenti: UPDATE condizionali con il numero di righe controllato, lock in ordine
+contratto/titolo → pagamento → addebiti per id, anche dal webhook del provider. Verificata da:
+`TestConcurrency_PaymentMatching`, `TestConcurrency_RefundVsMatch`, `TestConcurrency_WebhookVsDeskSettle`,
+`TestMigrations_M5Constraints`, query B52. Stato: implemented.
 
-**INV-53 — Esportazione completa e senza doppioni.** Ogni addebito non annullato compare in un'esportazione
-`to_invoice → exported` una sola volta, salvo riesportazione esplicita. Verificata da:
-`TestChargeExport_EachChargeOnce`. Stato: planned.
+**INV-53 — Esportazione completa e senza doppioni.** Ogni addebito non annullato compare in una sola prima
+esportazione `to_invoice → exported` (indice unico parziale `charge_export_items_first_uidx`), salvo riesportazione
+esplicita (`is_first = false`); gli addebiti annullati non sono mai esportati; i saldi di apertura nascono
+`invoiced` (fatturati dal software precedente) e non entrano nel "da fatturare" né si riesportano (la riesportazione
+per id accetta solo addebiti con una prima esportazione e non annullati). I file CSV ed Excel di un'esportazione sono
+sempre gli stessi byte della prima generazione (dati delle righe congelati su `charge_export_items`). Verificata da:
+`TestChargeExport_EachChargeOnce`, `TestChargeExport_ReexportRefusesNeverExported`,
+`TestChargeExport_FilesFrozenAfterPayment`, `TestConcurrency_ChargeExportParallel`, `TestAcceptance_M5_SimulatedYear`,
+`TestMigrations_M5Constraints`. Stato: implemented.
+
+**INV-54 — Un solo addebito primario vivo per origine.** Per rate, rate dei titolari, transiti, recessi e trattenute
+di cauzione al più un addebito non annullato senza `corrects_charge_id` per origine (indice unico parziale
+`charges_origin_primary_uidx`); un'emissione concorrente restituisce l'addebito esistente. Verificata da:
+`TestCharge_OneLivePrimaryPerOrigin`, `TestConcurrency_IssueSameInstallment`, `TestMigrations_M5Constraints`.
+Stato: implemented.
+
+**INV-55 — Una sola sessione di cassa aperta per cassa; chiusura coerente.** Indice unico parziale
+`cash_sessions_open_uidx`; la differenza di una sessione chiusa è `Σ contato − (fondo + incassi − rimborsi ±
+movimenti)` e non cambia più (trigger `cash_sessions_closed*`). Verificata da: `TestCash_OneOpenSessionPerRegister`,
+`TestConcurrency_OpenSession`, `TestConcurrency_CashCloseVsPayment`, `TestCashSummary_Reconciles`, query B55.
+Stato: implemented.
+
+**INV-56 — Eventi dei provider applicati una sola volta.** Ogni id di evento del provider (e ogni id sintetico della
+riconciliazione) produce effetti al più una volta (indice unico `payment_provider_events_uidx`); i pagamenti e i
+rimborsi sono unici per riferimento del provider. Verificata da: `TestConcurrency_WebhookDuplicate`,
+`TestPaymentWebhook_Deduplicated`, `TestReconcile_FixesMissedWebhook`. Stato: implemented.
+
+**INV-57 — Gli addebiti di un'origine sommano il suo obiettivo.** Per ogni contratto senza rate programmate residue e
+ogni transito confermato, la somma dei suoi addebiti per chiave di riga e per (aliquota, natura) è uguale
+all'obiettivo di `chargeplan` (snapshot più rettifiche); per gli snapshot senza rettifiche è uguale a
+`Breakdown.VATSummary`. Verificata da: `TestChargePlan_SplitSumsToTarget`, `TestAcceptance_M5_SimulatedYear`, query
+B57. Stato: implemented.
+
+**INV-58 — Promemoria al più una volta per livello.** Ogni (addebito, livello) è sollecitato al più una volta (indice
+unico `reminder_items_level_uidx`); un solo giro di solleciti per porto e giorno (`reminder_runs_day_uidx`); gli
+addebiti pagati non sono mai sollecitati. Verificata da: `TestConcurrency_ReminderRunOnce`,
+`TestReminders_StopWhenPaidAndExclusions`, `TestMigrations_M5Constraints`. Stato: implemented.
+
+**INV-59 — L'estratto conto chiude al saldo del cliente.** Il saldo di chiusura dell'estratto conto di un cliente
+(addebiti, incassi, crediti non legati a un addebito negativo, rimborsi, cauzioni trattenute) è uguale al saldo di
+`BalanceTx` (residui degli addebiti aperti − credito); il credito di un addebito negativo (rettifica, saldo di
+apertura negativo) non è una seconda riga. Verificata da: `TestStatement_ClosingEqualsBalance` (con saldi di
+apertura positivi e negativi). Stato: implemented.
 
 ## Report (spec 21)
 
@@ -237,8 +296,11 @@ mandati. Verificata da: `TestAccrual_SumsToAmount` (property test). Stato: imple
 **INV-70 — Nessun dato personale negli eventi SSE e nei log.** Verificata da:
 `TestEvents_DataHasNoPII` (con i campioni degli eventi M1 di mappa e anagrafiche, di `config.pricing_changed` M2 e
 degli eventi M3 di occupazione, presenze, preventivi, contratti e transiti e degli eventi M4 di firme, rate,
-rinnovi, diritti, mandati, ripartizioni, documenti e comunicazioni), `TestSSE_PayloadHasNoPII` (con `map_id`,
-`resource_ids`, `nights` di M3), `TestSSE_M4Topics`, `TestLogs_NoPII`. Stato: partial.
+rinnovi, diritti, mandati, ripartizioni, documenti e comunicazioni e degli eventi M5 di addebiti, esportazioni,
+pagamenti, rimborsi, cassa, documenti commerciali, richieste di pagamento, solleciti e impostazioni: solo id, enum,
+date, importi e conteggi), `TestSSE_PayloadHasNoPII` (con `map_id`, `resource_ids`, `nights` di M3),
+`TestSSE_M4Topics`, `TestSSE_M5Topics`, `TestLogs_NoPII` (anche webhook di pagamento ed esportazioni, M5).
+Stato: partial.
 
 **INV-71 — Offline senza effetti sulle risorse.** Nessuna operazione accodata offline crea o sposta allocazioni né
 emette documenti numerati. Verificata da: test Vitest della allowlist della coda. Stato: planned.

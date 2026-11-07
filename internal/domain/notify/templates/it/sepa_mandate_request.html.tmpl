@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>per pagare le rate con addebito diretto SEPA ti chiediamo di autorizzare il mandato dal link seguente.</p>
+{{with v . "link"}}<p><a href="{{.}}">Autorizza il mandato</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

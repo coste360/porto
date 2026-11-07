@@ -160,3 +160,24 @@ func (h *Handler) AccrueMandates(w http.ResponseWriter, r *http.Request, marinaI
 	}
 	respond.JSON(w, http.StatusOK, api.AccrueResult{Rows: n})
 }
+
+// SettleMandate implements api.ServerInterface (POST .../mandates/{mandateId}/settle, M5): the owner compensation
+// as credit or payout (refunds.issue).
+func (h *Handler) SettleMandate(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, mandateID api.MandateId, _ api.SettleMandateParams) {
+	var in api.SettleMandateInput
+	if !respond.DecodeOrFail(w, r, &in, false) {
+		return
+	}
+	d := newCtrDates()
+	through := d.parse(in.Through)
+	if !d.ok {
+		h.ctrBadBody(w, r, marinaID)
+		return
+	}
+	res, err := h.Payments.SettleMandate(r.Context(), principal(r), marinaID, mandateID, through, string(in.Mode))
+	if err != nil {
+		respond.Error(w, r, err)
+		return
+	}
+	respond.JSON(w, http.StatusOK, view.SettleMandateResult(res))
+}

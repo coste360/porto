@@ -284,7 +284,14 @@ func (s *Service) endTransit(ctx context.Context, p *auth.Principal, marinaID, i
 		}); err != nil {
 			return err
 		}
-		return s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: change})
+		if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: change}); err != nil {
+			return err
+		}
+		closeChange := CloseCancelled
+		if action == ActionNoShow {
+			closeChange = CloseNoShow
+		}
+		return s.closedTx(ctx, tx, scope, a, c, closeChange)
 	})
 	if err != nil {
 		return nil, err
@@ -424,7 +431,10 @@ func (s *Service) ChangeStay(ctx context.Context, p *auth.Principal, marinaID, i
 		if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: event.ChangeStay}); err != nil {
 			return err
 		}
-		return s.emitAllocated(ctx, tx, scope, changed, c.ID)
+		if err := s.emitAllocated(ctx, tx, scope, changed, c.ID); err != nil {
+			return err
+		}
+		return s.repricedTx(ctx, tx, scope, a, c, RepriceChangeStay)
 	})
 	if err != nil {
 		return nil, PriceEffect{}, s.withAlternatives(ctx, p, marinaID, c.VesselID, err)

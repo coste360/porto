@@ -30,10 +30,10 @@ password="porto-test"
 cleanup() { docker rm -f "$name" >/dev/null 2>&1 || true; }
 trap cleanup EXIT INT TERM
 
-docker run -d --rm --name "$name" \
+docker run -d --rm --name "$name" --shm-size=1g \
 	-e POSTGRES_USER=porto -e POSTGRES_PASSWORD="$password" -e POSTGRES_DB=porto_test \
 	-p 127.0.0.1::5432 "$image" \
-	-c fsync=off -c synchronous_commit=off -c full_page_writes=off -c max_connections=200 >/dev/null
+	-c fsync=off -c synchronous_commit=off -c full_page_writes=off -c max_connections=300 -c max_locks_per_transaction=512 >/dev/null
 
 port="$(docker port "$name" 5432/tcp | head -n1 | sed 's/.*://')"
 if [ -z "$port" ]; then

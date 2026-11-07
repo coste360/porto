@@ -11,7 +11,8 @@ describe('AppShell', () => {
     expect(screen.queryByRole('link', { name: 'Team' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Registro attività' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Mappe' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Addebiti e pagamenti' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Rimessaggio' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: 'Addebiti e pagamenti' })).not.toBeInTheDocument();
   });
 
   it('shows the M1 sections by permission', async () => {

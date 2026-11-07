@@ -112,7 +112,19 @@
     "imports": "Importazioni",
     "templates": "Modelli di stampa",
     "contractSettings": "Impostazioni contratti",
-    "signatureSettings": "Impostazioni firma"
+    "signatureSettings": "Impostazioni firma",
+    "charges": "Addebiti",
+    "payments": "Pagamenti",
+    "cash": "Cassa",
+    "fiscal": "Corrispettivi",
+    "receivables": "Sospesi e scadenze",
+    "reminders": "Solleciti",
+    "paymentRequests": "Richieste di pagamento",
+    "exports": "Esportazioni",
+    "openingBalances": "Saldi di apertura",
+    "worklist": "Attività ufficio",
+    "billingSettings": "Impostazioni addebiti",
+    "paymentSettings": "Pagamenti online"
   },
   "user": {
     "menu": "Menu utente",
@@ -152,7 +164,8 @@
   "page": {
     "forbidden": "Non hai accesso a questa sezione.",
     "notFound": "Pagina non trovata.",
-    "goHome": "Torna alla home"
+    "goHome": "Torna alla home",
+    "inProgress": "Questa sezione è in preparazione."
   },
   "pagination": {
     "next": "Successivi"

@@ -439,6 +439,155 @@ type CommunicationChangedData struct {
 	Change     string `json:"change"` // created, updated, scheduled, sent, cancelled
 }
 
+// M5 payloads (m5-plan §7.5). Amounts are signed cents; customer_id is an id, never a name or fiscal data.
+
+// ChargeCreatedData is the data of charge.created.
+type ChargeCreatedData struct {
+	ChargeID         string        `json:"charge_id"`
+	OriginType       string        `json:"origin_type"`
+	OriginID         string        `json:"origin_id"`
+	ContractID       string        `json:"contract_id,omitempty"`
+	CustomerID       string        `json:"customer_id,omitempty"`
+	TotalCents       int64         `json:"total_cents"`
+	IssuedOn         calendar.Date `json:"issued_on"`
+	DueOn            calendar.Date `json:"due_on"`
+	CorrectsChargeID string        `json:"corrects_charge_id,omitempty"`
+}
+
+// ChargePaidData is the data of charge.paid.
+type ChargePaidData struct {
+	ChargeID        string `json:"charge_id"`
+	TotalCents      int64  `json:"total_cents"`
+	PaidAmountCents int64  `json:"paid_amount_cents"`
+}
+
+// ChargeCancelledData is the data of charge.cancelled.
+type ChargeCancelledData struct {
+	ChargeID   string `json:"charge_id"`
+	OriginType string `json:"origin_type"`
+}
+
+// ChargeExportedData is the data of charge.exported.
+type ChargeExportedData struct {
+	ExportID    string         `json:"export_id"`
+	Kind        string         `json:"kind"` // export, reexport
+	ChargeCount int            `json:"charge_count"`
+	PeriodFrom  *calendar.Date `json:"period_from,omitempty"`
+	PeriodTo    *calendar.Date `json:"period_to,omitempty"`
+}
+
+// ChargeInvoicedData is the data of charge.invoiced (never the invoice number).
+type ChargeInvoicedData struct {
+	ChargeID    string        `json:"charge_id"`
+	InvoiceDate calendar.Date `json:"invoice_date"`
+	Source      string        `json:"source"` // csv, manual, exporter
+}
+
+// ChargeChangedData is the data of charge.changed (internal).
+type ChargeChangedData struct {
+	ChargeID string `json:"charge_id"`
+	Change   string `json:"change"` // updated, offset, due_changed
+}
+
+// InstallmentChargedData is the data of installment.charged. Holder is true for holder instalments (then RightID
+// is set instead of ContractID).
+type InstallmentChargedData struct {
+	InstallmentID string `json:"installment_id"`
+	Holder        bool   `json:"holder"`
+	ContractID    string `json:"contract_id,omitempty"`
+	RightID       string `json:"right_id,omitempty"`
+	ChargeID      string `json:"charge_id"`
+}
+
+// PaymentSucceededData is the data of payment.succeeded.
+type PaymentSucceededData struct {
+	PaymentID      string `json:"payment_id"`
+	CustomerID     string `json:"customer_id,omitempty"`
+	Kind           string `json:"kind"`
+	Method         string `json:"method"`
+	Source         string `json:"source"`
+	ProviderCode   string `json:"provider_code,omitempty"`
+	AmountCents    int64  `json:"amount_cents"`
+	AllocatedCents int64  `json:"allocated_cents"`
+}
+
+// PaymentFailedData is the data of payment.failed.
+type PaymentFailedData struct {
+	IntentID     string `json:"intent_id"`
+	ProviderCode string `json:"provider_code"`
+	Purpose      string `json:"purpose"`
+	FailureCode  string `json:"failure_code,omitempty"`
+}
+
+// PaymentRefundedData is the data of payment.refunded.
+type PaymentRefundedData struct {
+	RefundID    string `json:"refund_id"`
+	PaymentID   string `json:"payment_id,omitempty"`
+	Kind        string `json:"kind"` // refund, payout
+	AmountCents int64  `json:"amount_cents"`
+	Status      string `json:"status"`
+}
+
+// PaymentChangedData is the data of payment.changed (internal).
+type PaymentChangedData struct {
+	PaymentID string   `json:"payment_id"`
+	Change    string   `json:"change"` // matched, reversed, credit_applied
+	ChargeIDs []string `json:"charge_ids"`
+}
+
+// CashChangedData is the data of cash.changed (internal).
+type CashChangedData struct {
+	RegisterID string `json:"register_id"`
+	SessionID  string `json:"session_id,omitempty"`
+	Change     string `json:"change"` // opened, movement, closed, register
+}
+
+// FiscalDocumentChangedData is the data of fiscal_document.changed (internal).
+type FiscalDocumentChangedData struct {
+	FiscalDocumentID string `json:"fiscal_document_id"`
+	Status           string `json:"status"`
+}
+
+// PaymentRequestChangedData is the data of payment_request.changed (internal).
+type PaymentRequestChangedData struct {
+	RequestID   string `json:"request_id"`
+	Status      string `json:"status"` // created, sent, paid, cancelled, expired
+	ChargeCount int    `json:"charge_count"`
+}
+
+// ReminderChangedData is the data of reminder.changed (internal).
+type ReminderChangedData struct {
+	RunID  string         `json:"run_id,omitempty"`
+	ItemID string         `json:"item_id,omitempty"`
+	Level  string         `json:"level,omitempty"`
+	Change string         `json:"change"` // run, queued, approved, dismissed
+	Counts map[string]int `json:"counts,omitempty"`
+}
+
+// BillingChangedData is the data of billing.changed (internal): settings, exclusions, worklist, providers,
+// mandates.
+type BillingChangedData struct {
+	Entity string `json:"entity"` // settings, origin_items, exclusion, work_item, provider, sepa_mandate, import
+	ID     string `json:"entity_id,omitempty"`
+	Change string `json:"change"`
+}
+
+// Change values of M5 events.
+const (
+	ChangeOffset        = "offset"
+	ChangeDueChanged    = "due_changed"
+	ChangeMatched       = "matched"
+	ChangeReversed      = "reversed"
+	ChangeCreditApplied = "credit_applied"
+	ChangeOpened        = "opened"
+	ChangeMovement      = "movement"
+	ChangeQueued        = "queued"
+	ChangeApproved      = "approved"
+	ChangeDismissed     = "dismissed"
+	ChangeRun           = "run"
+	ChangePaid          = "paid"
+)
+
 const sampleID = "01900000-0000-7000-8000-000000000000"
 
 // Samples returns one example payload per event type.
@@ -547,5 +696,30 @@ func Samples() map[string]any {
 		SignatureFailed:      SignatureData{SignatureRequestID: sampleID, SubjectType: "addendum", SubjectID: sampleID, Status: "expired", Driver: "paper"},
 		TemplateChanged:      TemplateChangedData{TemplateID: sampleID, Change: ChangePublished},
 		CommunicationChanged: CommunicationChangedData{CampaignID: sampleID, Change: ChangeScheduled},
+		// M5
+		ChargeCreated: ChargeCreatedData{
+			ChargeID: sampleID, OriginType: "installment", OriginID: sampleID, ContractID: sampleID, CustomerID: sampleID,
+			TotalCents: 120000, IssuedOn: night, DueOn: night.AddDays(30),
+		},
+		ChargePaid:      ChargePaidData{ChargeID: sampleID, TotalCents: 120000, PaidAmountCents: 120000},
+		ChargeCancelled: ChargeCancelledData{ChargeID: sampleID, OriginType: "manual"},
+		ChargeExported:  ChargeExportedData{ExportID: sampleID, Kind: "export", ChargeCount: 412, PeriodFrom: &night, PeriodTo: &night},
+		ChargeInvoiced:  ChargeInvoicedData{ChargeID: sampleID, InvoiceDate: night, Source: "csv"},
+		ChargeChanged:   ChargeChangedData{ChargeID: sampleID, Change: ChangeOffset},
+		InstallmentCharged: InstallmentChargedData{
+			InstallmentID: sampleID, Holder: false, ContractID: sampleID, ChargeID: sampleID,
+		},
+		PaymentSucceeded: PaymentSucceededData{
+			PaymentID: sampleID, CustomerID: sampleID, Kind: "payment", Method: "card_online", Source: "provider",
+			ProviderCode: "stripe", AmountCents: 50000, AllocatedCents: 45000,
+		},
+		PaymentFailed:         PaymentFailedData{IntentID: sampleID, ProviderCode: "stripe", Purpose: "sepa_collect", FailureCode: "insufficient_funds"},
+		PaymentRefunded:       PaymentRefundedData{RefundID: sampleID, PaymentID: sampleID, Kind: "refund", AmountCents: 2000, Status: "succeeded"},
+		PaymentChanged:        PaymentChangedData{PaymentID: sampleID, Change: ChangeMatched, ChargeIDs: ids},
+		CashChanged:           CashChangedData{RegisterID: sampleID, SessionID: sampleID, Change: ChangeClosed},
+		FiscalDocumentChanged: FiscalDocumentChangedData{FiscalDocumentID: sampleID, Status: "issued"},
+		PaymentRequestChanged: PaymentRequestChangedData{RequestID: sampleID, Status: "sent", ChargeCount: 3},
+		ReminderChanged:       ReminderChangedData{RunID: sampleID, Change: ChangeRun, Counts: map[string]int{"sent": 12, "awaiting_approval": 1}},
+		BillingChanged:        BillingChangedData{Entity: "settings", ID: sampleID, Change: ChangeUpdated},
 	}
 }

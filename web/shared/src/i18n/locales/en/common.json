@@ -112,7 +112,19 @@
     "imports": "Imports",
     "templates": "Print templates",
     "contractSettings": "Contract settings",
-    "signatureSettings": "Signature settings"
+    "signatureSettings": "Signature settings",
+    "charges": "Charges",
+    "payments": "Payments",
+    "cash": "Cash register",
+    "fiscal": "Daily takings",
+    "receivables": "Receivables",
+    "reminders": "Reminders",
+    "paymentRequests": "Payment requests",
+    "exports": "Exports",
+    "openingBalances": "Opening balances",
+    "worklist": "Office worklist",
+    "billingSettings": "Billing settings",
+    "paymentSettings": "Online payments"
   },
   "user": {
     "menu": "User menu",
@@ -152,7 +164,8 @@
   "page": {
     "forbidden": "You do not have access to this section.",
     "notFound": "Page not found.",
-    "goHome": "Back to home"
+    "goHome": "Back to home",
+    "inProgress": "This section is being prepared."
   },
   "pagination": {
     "next": "Next"

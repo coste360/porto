@@ -1,9 +1,25 @@
 import { Link } from '@tanstack/react-router';
-import { AnchorIcon, CalendarCheckIcon, MapIcon, ShipIcon, UnlockIcon } from 'lucide-react';
+import {
+  AnchorIcon,
+  CalendarCheckIcon,
+  CircleAlertIcon,
+  MapIcon,
+  ShipIcon,
+  UnlockIcon,
+} from 'lucide-react';
 import { useDeferredValue, useState } from 'react';
 
-import { useContract, useContracts, type PlacementInput } from '@porto/shared/api';
+import {
+  useContract,
+  useContracts,
+  useMapPaymentStatus,
+  useMaps,
+  useMovements,
+  type PlacementInput,
+} from '@porto/shared/api';
 import { useT } from '@porto/shared/i18n';
+import { hasPaymentWarning } from '@porto/shared/map';
+import { Alert, AlertDescription, AlertTitle } from '@porto/shared/ui/alert';
 import { Button } from '@porto/shared/ui/button';
 import { Drawer, DrawerContent } from '@porto/shared/ui/drawer';
 import { Field, FieldLabel } from '@porto/shared/ui/field';
@@ -44,7 +60,8 @@ export function DockPage() {
           <AnchorIcon />
           {t('dock:title')}
         </h1>
-        <TabsContent value="today">
+        <TabsContent value="today" className="flex flex-col gap-3">
+          {can('map.view') ? <DeparturePaymentWarnings marinaId={marinaId} date={today} /> : null}
           <TodayMovementsPanel marinaId={marinaId} date={today} compact />
         </TabsContent>
         <TabsContent value="map" className="flex flex-col gap-3">
@@ -96,6 +113,45 @@ export function DockPage() {
         </TabsList>
       </Tabs>
     </RequirePermission>
+  );
+}
+
+/**
+ * Departure warning of the dock (m5-plan §9.1, §16 D15): today's expected departures whose berth has an overdue,
+ * disputed or suspended balance. It only informs: the exit is never blocked. States come from the payments lens of
+ * the first map (enum states for every map.view user, amounts never shown here).
+ */
+function DeparturePaymentWarnings({ marinaId, date }: { marinaId: string; date: string }) {
+  const { t } = useT();
+  const maps = useMaps(marinaId);
+  const mapId = maps.data?.[0]?.id ?? '';
+  const status = useMapPaymentStatus(marinaId, mapId, date, !!mapId);
+  const movements = useMovements(marinaId, date);
+  const warned = new Set(
+    (status.data?.resources ?? [])
+      .filter((r) => hasPaymentWarning(r))
+      .map((r) => `${r.resource_type}:${r.resource_id}`),
+  );
+  if (warned.size === 0) return null;
+  const departures = (movements.data?.departures_expected ?? []).filter(
+    (m) => !!m.resource && warned.has(`${m.resource.type}:${m.resource.id}`),
+  );
+  if (departures.length === 0) return null;
+  return (
+    <Alert data-testid="dock-payment-warning">
+      <CircleAlertIcon />
+      <AlertTitle>{t('dock:paymentWarning.title')}</AlertTitle>
+      <AlertDescription>
+        <p>{t('dock:paymentWarning.description')}</p>
+        <ul className="list-disc pl-4">
+          {departures.map((m) => (
+            <li key={`${m.allocation_id ?? m.vessel.name}:${m.resource?.id ?? ''}`}>
+              {m.vessel.name} · {m.resource?.code}
+            </li>
+          ))}
+        </ul>
+      </AlertDescription>
+    </Alert>
   );
 }
 

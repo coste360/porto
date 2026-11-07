@@ -22,5 +22,9 @@
     "title": "Dock panel",
     "description": "Arrivals, departures, unexpected arrivals and releases from the phone.",
     "open": "Open the panel"
+  },
+  "paymentWarning": {
+    "title": "Balance to check",
+    "description": "These departures today have an overdue or disputed balance. The exit is not blocked: let the office know."
   }
 }
