@@ -41,10 +41,10 @@ export function AppShell() {
       <Sidebar collapsible="icon">
         <SidebarHeader>
           <div className="flex items-center px-1 group-data-[collapsible=icon]:hidden">
-            <BrandLogo variant="horizontal" tone="onDark" size="sm" />
+            <BrandLogo variant="horizontal" size="sm" />
           </div>
           <div className="hidden group-data-[collapsible=icon]:flex">
-            <BrandLogo variant="symbol" tone="onDark" size="sm" />
+            <BrandLogo variant="symbol" size="sm" />
           </div>
           <MarinaSwitcher />
         </SidebarHeader>
