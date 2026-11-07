@@ -11,3 +11,9 @@ export { MoneyInput, type MoneyInputProps } from './MoneyInput';
 export { PercentInput, type PercentInputProps } from './PercentInput';
 export { DatePicker, fromIsoDate, toIsoDate, type DatePickerProps } from './DatePicker';
 export { ElementCombobox, type ComboboxOption, type ElementComboboxProps } from './ElementCombobox';
+export {
+  MadeByCoste360,
+  COSTE360_FILES,
+  COSTE360_URL,
+  type MadeByCoste360Props,
+} from './MadeByCoste360';

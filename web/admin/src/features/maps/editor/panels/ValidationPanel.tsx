@@ -2,6 +2,7 @@ import { CircleAlertIcon, CircleCheckIcon, TriangleAlertIcon } from 'lucide-reac
 
 import type { MapValidationReport } from '@porto/shared/api';
 import { useT } from '@porto/shared/i18n';
+import { MIN_BERTH_LENGTH_CM, MIN_BERTH_WIDTH_CM, formatCm } from '@porto/shared/map';
 import { Badge } from '@porto/shared/ui/badge';
 import { Button } from '@porto/shared/ui/button';
 import { Spinner } from '@porto/shared/ui/spinner';
@@ -20,7 +21,12 @@ export function ValidationPanel({
   codeOf: (ref: string) => string;
   onPick: (refs: string[]) => void;
 }) {
-  const { t } = useT();
+  const { t, i18n } = useT();
+  // Thresholds named by some labels (berth_below_min_size); the other labels ignore them.
+  const limits = {
+    min_width: formatCm(MIN_BERTH_WIDTH_CM, i18n.language),
+    min_length: formatCm(MIN_BERTH_LENGTH_CM, i18n.language),
+  };
   const groups = groupIssues(report);
   const errors = report?.errors.length ?? 0;
   const warnings = report?.warnings.length ?? 0;
@@ -56,7 +62,7 @@ export function ValidationPanel({
                 <TriangleAlertIcon className="text-chart-4 size-4" aria-hidden="true" />
               )}
               <span data-issue-code={g.code}>
-                {t(`editor:issues.${g.code}`, { defaultValue: g.code })}
+                {t(`editor:issues.${g.code}`, { defaultValue: g.code, ...limits })}
               </span>
               <Badge variant={g.severity === 'error' ? 'destructive' : 'secondary'}>
                 {g.issues.length}

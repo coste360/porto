@@ -11,6 +11,14 @@ export type RectGeom = { anchor: Pt; width_cm: number; length_cm: number; rotati
 /** Smallest side of a berth or land resource rectangle in cm (layout.MinRectSide, OpenAPI RectSideCm). */
 export const MIN_RECT_SIDE_CM = 2;
 
+/**
+ * Smallest usual berth in cm (layout.MinBerthWidth / MinBerthLength): below either side a non-buoy berth gets the
+ * non-blocking `berth_below_min_size` warning of the server validation. geometry.parity.test.ts checks the values
+ * against internal/domain/layout/model.go.
+ */
+export const MIN_BERTH_WIDTH_CM = 150;
+export const MIN_BERTH_LENGTH_CM = 300;
+
 /** Nearest integer, ties to even (the only rounding used for values the client stores or sends). */
 export function roundHalfEven(value: number): number {
   if (!Number.isFinite(value)) return 0;

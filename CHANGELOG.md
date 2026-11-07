@@ -14,6 +14,25 @@ Brand (ADR 0007, decision D13):
   wordmark of the editable kit sources with Titillium Web 700 (OFL-1.1) into `assets/brand/porto/outlined/`
   (horizontal and stacked, every colour variant of the kit); the horizontal logos in `web/shared/src/brand/` now
   use these files instead of the Inter Bold outlines, and the brand copy test checks them against `outlined/`.
+- The outlined wordmark is enlarged to match the Inter x-height of the kit's standard files (176 px horizontal,
+  150 px stacked instead of 137/118, approved on 2026-11-07): per-layout `WORDMARK_SIZE` in the build script,
+  checked against the Inter wordmark measured from `01_Loghi_SVG/`; the kit's editable sources are unchanged.
+- Coste360 signature (decision D1: "Porto" is a Coste360 product, credited like Arenile): shared component
+  `MadeByCoste360` ("un prodotto di" / "a product by" + official Coste360 logo, light and dark, link to
+  coste360.it in a new tab) in the admin sidebar footer (hidden when collapsed to icons), under the sign-in card
+  and in the footer of the pages outside a marina; the logo copies in `web/shared/src/brand/` are checked
+  byte-identical to `assets/brand/coste360/`.
+
+Map editor (M1 decision D30):
+
+- Validation warning `berth_below_min_size` for non-buoy berths narrower than 150 cm or shorter than 300 cm
+  (`layout.MinBerthWidth`/`MinBerthLength`, mirrored in `web/shared/src/map/geometry.ts` with a parity test); it
+  never blocks saving, the hard limit stays `MinRectSide` = 2 cm.
+
+Docs:
+
+- Spec 29.3 records the sign-in locale rule (first browser language only, Italian fallback); D1 is removed from
+  the open decisions and recorded in ADR 0007.
 
 M4 — Contrattualistica completa (spec 32.3), contract phase:
 

@@ -8,6 +8,10 @@
 //   01_Loghi_SVG/porto_logo_{horizontal,stacked}_*.svg
 //     -> one output per standard variant; header, background, symbol and colours are kept
 //        byte for byte, only the outlined Inter wordmark group is replaced.
+//   WORDMARK_SIZE (below)
+//     -> per-layout font size and letter-spacing that override the editable sources: the
+//        wordmark is enlarged so its x-height matches the Inter wordmark of 01_Loghi_SVG
+//        (approved by the owner on 2026-11-07). Position, baseline and anchor stay the same.
 //
 // The output is deterministic: fixed font file, fixed rounding, files written in sorted order.
 // Usage: npm --prefix scripts/brand ci && npm --prefix scripts/brand run build   (or `make brand`)
@@ -32,6 +36,19 @@ const fontFile = require.resolve(
 const font = opentype.loadSync(fontFile);
 
 const LAYOUTS = ['horizontal', 'stacked'];
+
+/**
+ * Wordmark size per layout, in user units. The editable sources set 137/118 px, which makes the
+ * Titillium wordmark visibly smaller than the Inter one of the standard files; these sizes bring
+ * the height of the "o" (x-height plus overshoot) to the Inter one, and letter-spacing scales
+ * with the size. `checkSize` verifies them against the Inter wordmark measured from 01_Loghi_SVG.
+ */
+const WORDMARK_SIZE = {
+  horizontal: { size: 176, letterSpacing: -5 },
+  stacked: { size: 150, letterSpacing: -4 },
+};
+/** Largest accepted gap between the configured size and the Inter-matching one. */
+const SIZE_TOLERANCE = 0.02;
 
 /** Formats a number with at most `digits` decimals and no trailing zeros ("-0" becomes "0"). */
 function num(value, digits = 3) {
@@ -127,6 +144,26 @@ function inkBounds(glyphs, pens, scale, x0, y0) {
   return { x1, y1, x2, y2 };
 }
 
+/** Height in user units of the "o" (second glyph) of the outlined Inter wordmark of a standard file. */
+function interOHeight(standard, name) {
+  const group = standard.match(
+    /<g transform="translate\([^)]*\) scale\(([\d.]+) -[\d.]+\)" fill="#[0-9a-fA-F]{3,8}">((?:<path [^>]*\/>)+)<\/g>/,
+  );
+  const paths = group ? [...group[2].matchAll(/ d="([^"]*)"/g)].map((m) => m[1]) : [];
+  if (paths.length !== 5) throw new Error(`${name}: expected the five glyphs of "porto"`);
+  const ys = [...paths[1].matchAll(/-?[\d.]+ (-?[\d.]+)/g)].map((m) => Number(m[1]));
+  return (Math.max(...ys) - Math.min(...ys)) * Number(group[1]);
+}
+
+/** Fails when the configured size drifts from the one matching the Inter "o" height. */
+function checkSize(mark, standard, name) {
+  const o = font.charToGlyph('o').getBoundingBox();
+  const matching = (interOHeight(standard, name) / (o.y2 - o.y1)) * font.unitsPerEm;
+  if (Math.abs(mark.size - matching) / matching > SIZE_TOLERANCE) {
+    throw new Error(`${name}: wordmark size ${mark.size} is far from the Inter-matching ${num(matching, 1)}`);
+  }
+}
+
 const INTER_WORDMARK =
   /<g transform="translate\([^)]*\) scale\([^)]*\)" fill="(#[0-9a-fA-F]{3,8})">(?:<path [^>]*\/>)+<\/g>/;
 
@@ -136,7 +173,7 @@ const written = [];
 for (const layout of LAYOUTS) {
   const editableName = `porto_logo_${layout}_editable.svg`;
   const editable = readFileSync(join(editableDir, editableName), 'utf8');
-  const mark = readWordmark(editable, editableName);
+  const mark = { ...readWordmark(editable, editableName), ...WORDMARK_SIZE[layout] };
   const geometry = symbolGeometry(editable);
 
   const variants = readdirSync(standardDir)
@@ -148,6 +185,7 @@ for (const layout of LAYOUTS) {
     if (symbolGeometry(standard) !== geometry) {
       throw new Error(`${name}: symbol differs from ${editableName}`);
     }
+    checkSize(mark, standard, name);
     const found = standard.match(INTER_WORDMARK);
     if (!found) throw new Error(`${name}: outlined wordmark group not found`);
 
@@ -162,5 +200,9 @@ for (const layout of LAYOUTS) {
   }
 }
 
+for (const layout of LAYOUTS) {
+  const { size, letterSpacing } = WORDMARK_SIZE[layout];
+  console.log(`${layout}: font-size ${size}, letter-spacing ${letterSpacing}`);
+}
 console.log(`Titillium Web 700 from ${fontFile.split('node_modules/')[1]}`);
 for (const line of written) console.log(`outlined/${line}`);

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 import { subscribeMarinaStream } from '@porto/shared/api';
 import { useT } from '@porto/shared/i18n';
-import { BrandLogo } from '@porto/shared/ui/patterns';
+import { BrandLogo, MadeByCoste360 } from '@porto/shared/ui/patterns';
 import { Separator } from '@porto/shared/ui/separator';
 import {
   Sidebar,
@@ -87,6 +87,7 @@ export function AppShell() {
         </SidebarContent>
         <SidebarFooter>
           <UserMenu variant="sidebar" />
+          <MadeByCoste360 className="mx-auto group-data-[collapsible=icon]:hidden" />
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>

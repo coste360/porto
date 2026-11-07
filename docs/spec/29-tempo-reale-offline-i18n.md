@@ -23,3 +23,10 @@ commerciali tramite il registratore remoto. Richiedono la garanzia del server (I
 Come Arenile (spec Arenile 20): italiano lingua sorgente, inglese, tedesco e francese per pannello, pagina pubblica,
 email e modelli; nomi i18n per mappe, gruppi, articoli, periodi; unità mostrate in metri con due decimali, piedi
 facoltativi sulla pagina pubblica (solo visualizzazione, i dati restano in cm).
+
+**Lingua all'accesso** (confermata dall'utente il 2026-11-07): prima di conoscere la preferenza dell'utente
+(apertura del pannello e pagina di accesso, pagina pubblica senza `?lang=`) conta solo la **prima** lingua del
+browser; se non è tra quelle supportate si usa l'italiano, anche quando lingue successive lo sarebbero (un browser
+tedesco che elenca anche l'inglese riceve l'italiano). Prevalgono un valore esplicito (`?lang=` sulla pagina
+pubblica) e la lingua scelta nel pannello (menu utente, profilo). Implementazione: `detectLocale` in
+`web/shared/src/i18n/init.ts`.

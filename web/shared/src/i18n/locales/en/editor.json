@@ -399,7 +399,8 @@
     "price_class_missing": "Berth without price class",
     "buoy_swing_overlap": "Overlapping buoy swing circles",
     "buoy_berth_overlap": "Buoy overlapping a berth",
-    "pedestal_unlinked": "Pedestal without linked berths"
+    "pedestal_unlinked": "Pedestal without linked berths",
+    "berth_below_min_size": "Berth smaller than the minimum size ({{min_width}} × {{min_length}})"
   },
   "background": {
     "title": "Background and georeference",

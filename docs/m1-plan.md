@@ -293,6 +293,7 @@ element bounds, so 3 000 elements validate in under 50 ms. A benchmark (`Benchma
 | `buoy_swing_overlap` | warning | two buoy circles overlap (`geo.CirclesOverlap`) |
 | `buoy_berth_overlap` | warning | a buoy circle intersects a non-buoy berth rect |
 | `pedestal_unlinked` | warning | pedestal not referenced by any berth |
+| `berth_below_min_size` | warning | non-buoy berth narrower than `MinBerthWidth` (150 cm) or shorter than `MinBerthLength` (300 cm); params `width_cm`, `length_cm`, `min_width_cm`, `min_length_cm` (D30) |
 
 The linear area band is the rectangle along the support segment `[From,To]`, on its side, with depth
 `MaxBeam` for `stern_to` or `MaxBeam + Margin` for `alongside`. It is built from `PointAt`.
@@ -1796,3 +1797,4 @@ Rules for the parallel phase:
 | D27 | **Cross-marina sweep compatibility:** M1 operations under `{marinaId}` have no required query parameters, and binary-body operations authorise in the service before checking the content type, so the bare sweep keeps returning 404. |
 | D28 | **Map deletion** is allowed only for maps without berths, dynamic areas or land resources (409 `map_not_empty`). Structures and decorations are deleted with the map. |
 | D29 | **Read-only map viewer** for `map.view` roles in M1 (geometry and layers only). Lenses and day views are M3. |
+| D30 | **Minimum berth size** (decided by the owner on 2026-11-07): a non-buoy berth below 150 cm wide or 300 cm long gets the non-blocking warning `berth_below_min_size`; saving is allowed. The hard limit stays `layout.MinRectSide` = 2 cm. The thresholds are `layout.MinBerthWidth`/`MinBerthLength`, mirrored as `MIN_BERTH_WIDTH_CM`/`MIN_BERTH_LENGTH_CM` in `web/shared/src/map/geometry.ts` and checked by `geometry.parity.test.ts`. |

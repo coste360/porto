@@ -28,6 +28,7 @@ const (
 	CodeBuoySwingOverlap      = "buoy_swing_overlap"
 	CodeBuoyBerthOverlap      = "buoy_berth_overlap"
 	CodePedestalUnlinked      = "pedestal_unlinked"
+	CodeBerthBelowMinSize     = "berth_below_min_size"
 )
 
 // validator accumulates issues.
@@ -301,6 +302,12 @@ func (v *validator) checkBerths() []bool {
 func (v *validator) berthWarnings(b *Berth) {
 	if b.PriceClass == "" {
 		v.warn(CodePriceClassMissing, KindBerth, b.Ref)
+	}
+	if !b.IsBuoy() && (b.Rect.Width < MinBerthWidth || b.Rect.Length < MinBerthLength) {
+		v.add(SeverityWarning, CodeBerthBelowMinSize, KindBerth, "rect", map[string]int64{
+			"width_cm": int64(b.Rect.Width), "length_cm": int64(b.Rect.Length),
+			"min_width_cm": int64(MinBerthWidth), "min_length_cm": int64(MinBerthLength),
+		}, b.Ref)
 	}
 	if len(v.m.Water) > 0 {
 		pts := []geo.Point{b.Rect.Anchor}

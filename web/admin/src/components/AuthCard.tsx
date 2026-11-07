@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { BrandLogo } from '@porto/shared/ui/patterns';
+import { BrandLogo, MadeByCoste360 } from '@porto/shared/ui/patterns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@porto/shared/ui/card';
 
 /** Centered card used by the sign-in, recovery and enrolment pages. */
@@ -23,6 +23,7 @@ export function AuthCard({
         </CardHeader>
         <CardContent>{children}</CardContent>
       </Card>
+      <MadeByCoste360 />
     </main>
   );
 }

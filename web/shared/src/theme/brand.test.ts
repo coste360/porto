@@ -4,20 +4,27 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const brandDir = join(__dirname, '..', 'brand');
-const kit = join(__dirname, '..', '..', '..', '..', 'assets', 'brand', 'porto');
+const brandRoot = join(__dirname, '..', '..', '..', '..', 'assets', 'brand');
+const kit = join(brandRoot, 'porto');
 // Logotypes come from outlined/ (wordmark in Titillium Web 700, scripts/brand/build-brand.mjs);
-// symbols and app icons from the kit folders.
-const ORIGIN_DIRS = ['outlined', '02_Simbolo_SVG', '03_Icone_App_SVG'];
+// symbols and app icons from the kit folders; the Coste360 logos (MadeByCoste360) from
+// assets/brand/coste360/.
+const ORIGIN_DIRS = [
+  join(kit, 'outlined'),
+  join(kit, '02_Simbolo_SVG'),
+  join(kit, '03_Icone_App_SVG'),
+  join(brandRoot, 'coste360'),
+];
 
 function original(name: string): Buffer {
   for (const dir of ORIGIN_DIRS) {
     try {
-      return readFileSync(join(kit, dir, name));
+      return readFileSync(join(dir, name));
     } catch {
       // try the next folder
     }
   }
-  throw new Error(`${name} has no original in assets/brand/porto`);
+  throw new Error(`${name} has no original in assets/brand`);
 }
 
 describe('brand files', () => {
@@ -26,6 +33,8 @@ describe('brand files', () => {
   it('ships the expected copies', () => {
     expect(copies.sort()).toEqual(
       [
+        'logo-primary.svg',
+        'logo-white.svg',
         'porto_app_maskable.svg',
         'porto_logo_horizontal_inverted_2color.svg',
         'porto_logo_horizontal_navy.svg',

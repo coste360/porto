@@ -1,6 +1,6 @@
 import { Link, Outlet } from '@tanstack/react-router';
 
-import { BrandLogo } from '@porto/shared/ui/patterns';
+import { BrandLogo, MadeByCoste360 } from '@porto/shared/ui/patterns';
 
 import { UserMenu } from './UserMenu';
 
@@ -17,6 +17,9 @@ export function PlainLayout() {
       <main className="mx-auto w-full max-w-5xl flex-1 p-6">
         <Outlet />
       </main>
+      <footer className="flex justify-center border-t px-4 py-2">
+        <MadeByCoste360 />
+      </footer>
     </div>
   );
 }

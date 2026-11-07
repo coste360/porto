@@ -399,7 +399,8 @@
     "price_class_missing": "Posto senza categoria di prezzo",
     "buoy_swing_overlap": "Cerchi di rotazione delle boe sovrapposti",
     "buoy_berth_overlap": "Boa sovrapposta a un posto",
-    "pedestal_unlinked": "Colonnina senza posti collegati"
+    "pedestal_unlinked": "Colonnina senza posti collegati",
+    "berth_below_min_size": "Posto più piccolo della misura minima ({{min_width}} × {{min_length}})"
   },
   "background": {
     "title": "Sfondo e georeferenziazione",

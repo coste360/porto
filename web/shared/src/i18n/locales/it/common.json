@@ -2,7 +2,9 @@
   "product": {
     "name": "Porto",
     "tagline": "Il gestionale portuale di Coste360",
-    "poweredBy": "powered by Porto"
+    "poweredBy": "powered by Porto",
+    "madeBy": "un prodotto di",
+    "madeByLink": "Un prodotto di Coste360 (si apre in una nuova scheda)"
   },
   "actions": {
     "save": "Salva",

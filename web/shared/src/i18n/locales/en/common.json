@@ -2,7 +2,9 @@
   "product": {
     "name": "Porto",
     "tagline": "The marina management system by Coste360",
-    "poweredBy": "powered by Porto"
+    "poweredBy": "powered by Porto",
+    "madeBy": "a product by",
+    "madeByLink": "A product by Coste360 (opens in a new tab)"
   },
   "actions": {
     "save": "Save",

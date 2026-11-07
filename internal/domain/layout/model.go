@@ -244,6 +244,14 @@ const (
 // overlap test of spec 8.4 is undefined, so a thinner rectangle could never be checked (INV-04).
 const MinRectSide geo.Cm = 2
 
+// MinBerthWidth and MinBerthLength are the smallest usual berth: a non-buoy berth below either one gets the
+// non-blocking berth_below_min_size warning (the hard limit stays MinRectSide). The web mirrors them in
+// web/shared/src/map/geometry.ts (MIN_BERTH_WIDTH_CM, MIN_BERTH_LENGTH_CM), checked by geometry.parity.test.ts.
+const (
+	MinBerthWidth  geo.Cm = 150
+	MinBerthLength geo.Cm = 300
+)
+
 // DefaultSettings returns the settings with the default LOA tolerance.
 func DefaultSettings() Settings {
 	return Settings{LOATolerance: DefaultLOATol, OverlapTolerance: 1, MaxElements: MaxElementsPerMap}

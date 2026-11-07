@@ -118,6 +118,10 @@ func TestValidateMap_Scenario(t *testing.T) {
 			m.Berths = append(m.Berths, b)
 		}},
 		{CodeBuoyBerthOverlap, SeverityWarning, func(m *Map, _ *Settings) { m.Berths[2].Rect.Anchor = pt(5800, 1700) }},
+		{CodeBerthBelowMinSize, SeverityWarning, func(m *Map, _ *Settings) { m.Berths[0].Rect.Width = MinBerthWidth - 1 }},
+		{CodeBerthBelowMinSize, SeverityWarning, func(m *Map, _ *Settings) {
+			m.Berths[0].Rect.Length, m.Berths[0].MaxLOA = MinBerthLength-1, MinBerthLength-1
+		}},
 		{CodePedestalUnlinked, SeverityWarning, func(m *Map, _ *Settings) {
 			for i := range m.Berths {
 				m.Berths[i].Pedestal, m.Berths[i].PedestalSocket = "", ""
@@ -147,7 +151,7 @@ func TestValidateMap_Scenario(t *testing.T) {
 		CodeTooManyElements, CodeInvalidGeometry, CodeElementOutsideMap, CodeDuplicateCode, CodeBerthOverlap,
 		CodeOccupiableOverlap, CodeAreaCellsOutside, CodeLOAExceedsLength, CodeDanglingReference, CodePedestalSocketUnknown,
 		CodeAssetUnknown, CodeBerthOutsideWater, CodeBerthUnattached, CodeDepthMissing, CodePriceClassMissing,
-		CodeBuoySwingOverlap, CodeBuoyBerthOverlap, CodePedestalUnlinked,
+		CodeBuoySwingOverlap, CodeBuoyBerthOverlap, CodePedestalUnlinked, CodeBerthBelowMinSize,
 	}
 	for _, c := range all {
 		if !seen[c] {
@@ -161,6 +165,51 @@ func TestValidateMap_Scenario(t *testing.T) {
 	m.Areas[0].To = 5000
 	if rep := ValidateMap(m, DefaultSettings()); !rep.OK() || len(rep.Warnings) != 0 {
 		t.Fatalf("near misses: errors %v warnings %v", codes(rep.Errors), codes(rep.Warnings))
+	}
+}
+
+// A berth below 150 × 300 cm is only a warning (it never blocks the save), the minimum itself is clean, buoys are
+// exempt, and the issue carries the sizes as numeric params.
+func TestValidateMap_BerthBelowMinSize(t *testing.T) {
+	cases := []struct {
+		name          string
+		width, length geo.Cm
+		want          bool
+	}{
+		{"at the minimum", MinBerthWidth, MinBerthLength, false},
+		{"narrow", MinBerthWidth - 1, MinBerthLength, true},
+		{"short", MinBerthWidth, MinBerthLength - 1, true},
+		{"tiny but valid geometry", MinRectSide, MinRectSide, true},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			b := axisBerth("b", 1000, 1000, c.width, c.length, 0)
+			rep := ValidateMap(Map{Width: 10000, Height: 10000, Berths: []Berth{b}}, DefaultSettings())
+			if !rep.OK() {
+				t.Fatalf("errors %v", codes(rep.Errors))
+			}
+			if got := hasIssue(rep.Warnings, CodeBerthBelowMinSize); got != c.want {
+				t.Fatalf("warning %v, want %v (%v)", got, c.want, codes(rep.Warnings))
+			}
+			if !c.want {
+				return
+			}
+			for _, is := range rep.Warnings {
+				if is.Code != CodeBerthBelowMinSize {
+					continue
+				}
+				want := map[string]int64{"width_cm": int64(c.width), "length_cm": int64(c.length), "min_width_cm": 150, "min_length_cm": 300}
+				if fmt.Sprint(is.Params) != fmt.Sprint(want) || is.Severity != SeverityWarning || is.Field != "rect" {
+					t.Fatalf("issue %+v", is)
+				}
+			}
+		})
+	}
+	buoy := axisBerth("buoy", 1000, 1000, 100, 200, 0)
+	buoy.Mooring, buoy.SwingRadius = MooringBuoy, 300
+	rep := ValidateMap(Map{Width: 10000, Height: 10000, Berths: []Berth{buoy}}, DefaultSettings())
+	if hasIssue(rep.Warnings, CodeBerthBelowMinSize) {
+		t.Fatalf("buoy warned: %v", codes(rep.Warnings))
 	}
 }
 
