@@ -19,3 +19,6 @@ web/shared/api/generated/** linguist-generated=true
 *.ttf binary
 *.otf binary
 *.porto-backup binary
+
+# Golden files compared byte for byte (CSV exports use CRLF line endings, RFC 4180).
+*.golden -text
