@@ -5,7 +5,9 @@ import { describe, expect, it } from 'vitest';
 
 const brandDir = join(__dirname, '..', 'brand');
 const kit = join(__dirname, '..', '..', '..', '..', 'assets', 'brand', 'porto');
-const ORIGIN_DIRS = ['01_Loghi_SVG', '02_Simbolo_SVG', '03_Icone_App_SVG'];
+// Logotypes come from outlined/ (wordmark in Titillium Web 700, scripts/brand/build-brand.mjs);
+// symbols and app icons from the kit folders.
+const ORIGIN_DIRS = ['outlined', '02_Simbolo_SVG', '03_Icone_App_SVG'];
 
 function original(name: string): Buffer {
   for (const dir of ORIGIN_DIRS) {

@@ -35,9 +35,20 @@ carattere di Arenile (ADR Arenile 0018) e del design system Coste360.
 
 ## Conseguenze
 
-- Il wordmark negli SVG standard è convertito in tracciati da **Inter Bold**, non da Titillium Web (lo dice
-  `08_Developer_Tokens/porto-usage.md`). Prima del rilascio va riconvertito da
-  `09_Sorgenti_Modificabili/*_editable.svg` con Titillium Web, così logo e interfaccia usano lo stesso carattere,
-  oppure va accettato l'Inter con una decisione esplicita.
+- **Carattere del logotipo (D13, deciso dall'utente il 2026-11-07):** il wordmark "porto" è in **Titillium Web
+  700**, lo stesso carattere dell'interfaccia e di Arenile, non in Inter Bold. Gli SVG standard del kit
+  (`01_Loghi_SVG/`) hanno il wordmark in tracciati da Inter Bold (lo dice `08_Developer_Tokens/porto-usage.md`) e
+  restano come originali del kit. `scripts/brand/build-brand.mjs` (`make brand`, progetto Node a sé con
+  opentype.js, MIT, e il font di `@fontsource/titillium-web`, OFL-1.1) converte in tracciati il testo di
+  `09_Sorgenti_Modificabili/*_editable.svg` con la stessa posizione, dimensione, spaziatura e allineamento, e
+  scrive in `assets/brand/porto/outlined/` le stesse varianti orizzontali e verticali del kit (stessi nomi file,
+  intestazione, sfondo, simbolo e colori del file standard corrispondente; cambia solo il wordmark). L'output è
+  deterministico e versionato: build e CI non eseguono lo script. Le copie in `web/shared/src/brand/` dei loghi
+  orizzontali vengono da `outlined/` e il test delle copie le confronta con quei file; simbolo e icone restano
+  quelli del kit. Nessuna app carica Titillium Web per il logo.
+- Con la dimensione dei sorgenti modificabili (137 px orizzontale, 118 px verticale) il wordmark in Titillium è
+  più piccolo e più stretto di quello in Inter: il `viewBox` dei file standard resta invariato, quindi a destra
+  del logo orizzontale resta più spazio vuoto. Un eventuale ritocco di dimensione si fa nei sorgenti modificabili
+  e si rigenera con `make brand`.
 - Il `site.webmanifest` del kit ha descrizione "Il gestionale portuale di Coste360" e percorsi assoluti dalla radice:
   nel binario i percorsi diventano quelli serviti da `internal/http/static`.
