@@ -1,4 +1,6 @@
 node_modules/
 dist/
-coverage/
+# Vitest coverage reports only (anchored, so source folders named "coverage" stay tracked).
+/coverage/
+/*/coverage/
 *.tsbuildinfo
