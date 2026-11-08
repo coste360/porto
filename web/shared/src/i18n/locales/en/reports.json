@@ -265,7 +265,32 @@
     "unassigned_milli": "Unassigned",
     "pending_value_cents": "Value to charge",
     "element_code": "Element",
-    "element_type": "Element type"
+    "element_type": "Element type",
+    "records": "Rows",
+    "hours_milli": "Hours",
+    "cost_cents": "Cost",
+    "capacity_milli": "Capacity (hours)",
+    "assigned_milli": "Assigned (hours)",
+    "actual_milli": "Actual (hours)",
+    "load_bp": "Load",
+    "overload": "Overload",
+    "employee_code": "Employee",
+    "employee_name": "Name",
+    "department": "Department",
+    "bay": "Bay",
+    "work_order_number": "Work order",
+    "work_order_status": "Order status",
+    "work_type_code": "Work type",
+    "margin_cents": "Margin",
+    "margin_bp": "Margin %",
+    "quote_net_cents": "Quote net",
+    "delta_net_cents": "Delta",
+    "booked_slots": "Booked slots",
+    "window_slots": "Window slots",
+    "equipment_code": "Equipment",
+    "from_slot": "From slot",
+    "to_slot": "To slot",
+    "booking_status": "Booking status"
   },
   "descriptions": {
     "occupancy": "Occupied over available nights, physical or contractual, for berths, land and dynamic areas.",
@@ -287,7 +312,8 @@
     "berth-revenue": "Berth revenue per linear metre.",
     "storage": "Boats ashore in yards and sheds: occupied surface, blocked exits and storage contract production.",
     "maintenance": "Maintenance tasks by status, delays, internal minutes and external costs.",
-    "utilities": "Power, water and counter consumption: to charge, charged and unassigned."
+    "utilities": "Power, water and counter consumption: to charge, charged and unassigned.",
+    "yard": "Hours worked, employee workload, work order margins and lifting equipment of the yard."
   },
   "groupBy": {
     "resource": "Resource",
@@ -333,7 +359,14 @@
     "element_type": "Element type",
     "intervention": "Intervention",
     "meter": "Meter",
-    "contract": "Contract"
+    "contract": "Contract",
+    "employee": "Employee",
+    "department": "Department",
+    "order": "Work order",
+    "work_type": "Work type",
+    "qualification": "Qualification",
+    "bay": "Bay",
+    "equipment": "Equipment"
   },
   "sections": {
     "presences": {
@@ -368,6 +401,13 @@
     "cash": {
       "sessions": "Sessions",
       "fiscal": "Fiscal receipts"
+    },
+    "yard": {
+      "hours": "Hours",
+      "load": "Workload",
+      "margins": "Margins",
+      "margins_by_work_type": "Margins by work type",
+      "lifting": "Lifting"
     }
   },
   "filters": {
@@ -602,6 +642,27 @@
       "unassigned": "Unassigned",
       "charged": "Charged",
       "excluded": "Excluded"
+    },
+    "workOrderStatus": {
+      "planned": "Planned",
+      "in_progress": "In progress",
+      "on_hold": "On hold",
+      "completed": "Completed",
+      "delivered": "Delivered",
+      "invoiced": "Charged",
+      "cancelled": "Cancelled"
+    },
+    "bookingPurpose": {
+      "haul_out": "Haul-out",
+      "launch": "Launch",
+      "move": "Move",
+      "other": "Other"
+    },
+    "bookingStatus": {
+      "requested": "Requested",
+      "booked": "Booked",
+      "done": "Done",
+      "cancelled": "Cancelled"
     }
   },
   "suggestions": {

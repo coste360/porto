@@ -203,5 +203,20 @@ func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) er
 	if err := a.seedUtilities(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: utilities: %w", err)
 	}
+	// M10 (m10-plan §16.2): the yard catalogue with the ANTIVEG package and three quotes (QUOTE), employees,
+	// calendars, lifting operators and bookings (PLANNER), then work orders with hours, materials and costs (ORDERS,
+	// after the planner: orders use its employees), then the auto-plan of their open tasks (PLANNER). Each part is a no-op when the demo marina already has its data.
+	if err := a.seedYardCatalog(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: yard catalogue: %w", err)
+	}
+	if err := a.seedYardPlanner(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: yard planner: %w", err)
+	}
+	if err := a.seedYardOrders(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: yard orders: %w", err)
+	}
+	if err := a.seedYardPlannerAssignments(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: yard assignments: %w", err)
+	}
 	return nil
 }

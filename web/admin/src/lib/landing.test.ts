@@ -7,6 +7,7 @@ import {
   canUseDock,
   canUseMaintenancePhone,
   canUseStoragePhone,
+  canUseYardPhone,
   landingFor,
 } from './landing';
 
@@ -46,8 +47,8 @@ const PHONE: Record<Role, string> = {
   office: `/m/${M}/dock`,
   accounting: `/m/${M}/direction`,
   dock: `/m/${M}/dock`,
-  yard_mgr: `/m/${M}/storage-phone`,
-  yard: `/m/${M}/maintenance-phone`,
+  yard_mgr: `/m/${M}/yard-phone`,
+  yard: `/m/${M}/yard-phone`,
   rental: `/m/${M}/maintenance-phone`,
   viewer: `/m/${M}/direction`,
 };
@@ -66,6 +67,7 @@ describe('landingFor', () => {
     ['map and desk', ['map.view', 'transits.desk'], `/m/${M}/dock`],
     ['map only', ['map.view'], `/m/${M}`],
     ['configure only', ['marina.configure'], `/m/${M}/direction`],
+    ['storage manager without yard', ['storage.manage', 'storage.read'], `/m/${M}/storage-phone`],
     ['no permissions', [], `/m/${M}`],
   ];
   it.each(cases)('phone: %s', (_name, permissions, expected) => {
@@ -87,5 +89,8 @@ describe('landingFor', () => {
     expect(canUseStoragePhone(ROLE_PERMISSIONS.yard)).toBe(false);
     expect(canUseMaintenancePhone(ROLE_PERMISSIONS.yard)).toBe(true);
     expect(canUseMaintenancePhone(ROLE_PERMISSIONS.accounting)).toBe(false);
+    expect(canUseYardPhone(ROLE_PERMISSIONS.yard)).toBe(true);
+    expect(canUseYardPhone(ROLE_PERMISSIONS.yard_mgr)).toBe(true);
+    expect(canUseYardPhone(ROLE_PERMISSIONS.dock)).toBe(false);
   });
 });

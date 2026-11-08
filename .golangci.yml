@@ -310,6 +310,13 @@ linters:
             # M9 (m9-plan §0.4); the optimizer is listed above
             - "**/internal/domain/maintenance/due/**"
             - "**/internal/domain/utility/consume/**"
+            # M10 (m10-plan §0.4); formula is listed above
+            - "**/internal/domain/yardquote/price/**"
+            - "**/internal/domain/workorder/account/**"
+            - "**/internal/domain/workorder/states.go"
+            - "**/internal/domain/yardplan/load/**"
+            - "**/internal/domain/yardplan/auto/**"
+            - "**/internal/domain/lifting/slots/**"
           deny:
             - pkg: github.com/coste360/porto/internal/store
               desc: pure engines must not touch the database (INV-21)
@@ -424,6 +431,13 @@ linters:
             - "**/internal/domain/optimizer/**"
             - "**/internal/domain/maintenance/due/**"
             - "**/internal/domain/utility/consume/**"
+            # M10 (m10-plan §0.4); formula is listed above
+            - "**/internal/domain/yardquote/price/**"
+            - "**/internal/domain/workorder/account/**"
+            - "**/internal/domain/workorder/states.go"
+            - "**/internal/domain/yardplan/load/**"
+            - "**/internal/domain/yardplan/auto/**"
+            - "**/internal/domain/lifting/slots/**"
             # Seeded generators of the layout and fit parity vectors (test data, not the engines).
             - "!**/internal/domain/layout/internal/vectors/**"
             - "!**/internal/domain/fit/internal/genvectors/**"

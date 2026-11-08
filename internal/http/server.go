@@ -55,7 +55,7 @@ const paymentWebhooksPerMinute = 600
 var publicLinkOperations = []string{
 	"resolvePublicLink", "getPublicLinkDocument", "acceptPublicQuote", "uploadPublicDocument", "acceptPublicRenewal",
 	"declinePublicRenewal", "requestPublicSignatureOtp", "verifyPublicSignature", "declinePublicSignature",
-	"publicUnsubscribe",
+	"publicUnsubscribe", "acceptPublicYardQuote",
 }
 
 // bookingRateLimits are the per-IP-prefix limits of the M8 public booking, customer-area and channel operations

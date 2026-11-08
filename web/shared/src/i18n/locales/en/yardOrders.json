@@ -1,0 +1,239 @@
+{
+  "nav": {
+    "orders": "Boats in the yard",
+    "timesheets": "Time approval"
+  },
+  "title": "Boats in the yard",
+  "description": "Open work orders by status, progress and delivery.",
+  "orderTitle": "Work order",
+  "timesheetsTitle": "Time approval",
+  "timesheetsDescription": "Hours submitted by the employees waiting for approval: approving freezes the hourly cost and the cost.",
+  "pending": "This section will be available soon.",
+  "views": {
+    "board": "Board",
+    "list": "List"
+  },
+  "status": {
+    "planned": "Planned",
+    "in_progress": "In progress",
+    "on_hold": "On hold",
+    "completed": "Completed",
+    "delivered": "Delivered",
+    "invoiced": "Charged",
+    "cancelled": "Cancelled"
+  },
+  "actions": {
+    "label": "Actions",
+    "start": "Start",
+    "hold": "Put on hold",
+    "resume": "Resume",
+    "complete": "Complete",
+    "reopen": "Reopen",
+    "deliver": "Deliver",
+    "cancel": "Cancel order",
+    "confirmTitle": "Confirm the operation?",
+    "confirm": "Confirm",
+    "reason": "Reason"
+  },
+  "billingMode": {
+    "actual": "Time and materials",
+    "fixed": "Fixed price",
+    "progress": "Progress billing"
+  },
+  "taskStatus": {
+    "todo": "To do",
+    "in_progress": "In progress",
+    "done": "Done",
+    "cancelled": "Cancelled"
+  },
+  "entryStatus": {
+    "running": "Running",
+    "submitted": "To approve",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "voided": "Voided"
+  },
+  "card": {
+    "loa": "LOA {{value}}",
+    "delivery": "Delivery {{date}}",
+    "delay_one": "{{count}} day late",
+    "delay_other": "{{count}} days late",
+    "hours": "Hours {{approved}} / {{estimated}}",
+    "completion": "Progress"
+  },
+  "empty": {
+    "column": "No work orders",
+    "orders": "No work orders found.",
+    "tasks": "No tasks.",
+    "entries": "No hours recorded.",
+    "movements": "No materials issued.",
+    "costs": "No external costs.",
+    "billings": "No billings.",
+    "variations": "No approved variations.",
+    "submitted": "No hours to approve."
+  },
+  "filters": {
+    "status": "Status",
+    "all": "All",
+    "openOnly": "Open only",
+    "search": "Search number or boat"
+  },
+  "fields": {
+    "number": "Number",
+    "vessel": "Boat",
+    "status": "Status",
+    "billingMode": "Billing mode",
+    "plannedStart": "Planned start",
+    "plannedDelivery": "Planned delivery",
+    "position": "Position",
+    "completion": "Progress",
+    "hours": "Approved / estimated hours",
+    "deposit": "Advance",
+    "notes": "Notes",
+    "holdReason": "Hold reason",
+    "quote": "Quote",
+    "description": "Description",
+    "qty": "Quantity",
+    "unit": "Unit price",
+    "net": "Net",
+    "vat": "VAT",
+    "origin": "Origin",
+    "title": "Task",
+    "estimated": "Estimated hours",
+    "assigned": "Assigned hours",
+    "approved": "Approved hours",
+    "progress": "Progress",
+    "dependsOn": "After",
+    "checklist": "Checklist",
+    "date": "Date",
+    "employee": "Employee",
+    "task": "Task",
+    "cost": "Cost",
+    "source": "Source",
+    "kind": "Kind",
+    "item": "Item",
+    "unitCost": "Unit cost",
+    "unitPrice": "Unit price",
+    "late": "Late",
+    "supplier": "Supplier",
+    "reference": "Reference",
+    "billable": "Billable",
+    "price": "Price",
+    "revenue": "Revenue",
+    "margin": "Margin",
+    "marginPct": "Margin %",
+    "budgetQty": "Quote quantity",
+    "budgetNet": "Quote net",
+    "delta": "Delta",
+    "workType": "Work type",
+    "gross": "Gross",
+    "charge": "Charge",
+    "seq": "No.",
+    "reason": "Reason",
+    "amount": "Amount",
+    "percent": "Percent",
+    "hoursValue": "{{approved}} / {{estimated}}"
+  },
+  "tabs": {
+    "summary": "Summary",
+    "tasks": "Tasks",
+    "hours": "Hours",
+    "materials": "Materials",
+    "external": "External costs",
+    "account": "Final account",
+    "billings": "Billings",
+    "variations": "Variations"
+  },
+  "summary": {
+    "budget": "Planned work",
+    "lifting": "Lifting equipment"
+  },
+  "tasks": {
+    "add": "New task",
+    "addTitle": "New task",
+    "markDone": "Mark done",
+    "progressSet": "Set progress",
+    "delete": "Delete",
+    "deleteConfirm": "Delete the task?",
+    "photo": "Attach a photo or PDF",
+    "files": "Files",
+    "open": "Open"
+  },
+  "hours": {
+    "add": "Record hours",
+    "addTitle": "Record hours",
+    "hoursLabel": "Hours (steps of 0.25)",
+    "approve": "Approve",
+    "approveSelected": "Approve selected ({{count}})",
+    "reject": "Reject",
+    "rejectTitle": "Reject the hours",
+    "void": "Void",
+    "voidTitle": "Void the approved hours",
+    "selectAll": "Select all",
+    "select": "Select"
+  },
+  "materials": {
+    "issue": "Issue",
+    "return": "Return",
+    "addTitle": "Material",
+    "kindIssue": "Issue",
+    "kindReturn": "Return",
+    "stockNote": "Stock levels: available later."
+  },
+  "external": {
+    "add": "New external cost",
+    "addTitle": "External cost",
+    "priceHint": "Empty: cost plus the markup of the settings.",
+    "delete": "Delete"
+  },
+  "account": {
+    "title": "Final account",
+    "byWorkType": "By work type",
+    "totals": "Totals",
+    "quoteNet": "Quote net",
+    "delta": "Delta from the quote",
+    "charged": "Already charged",
+    "remaining": "To charge",
+    "hoursLabour": "Labour hours",
+    "csv": "CSV",
+    "xlsx": "Excel",
+    "source": {
+      "labour": "Labour",
+      "material": "Materials",
+      "service": "Services",
+      "external": "External costs"
+    }
+  },
+  "billings": {
+    "kind": {
+      "advance": "Advance",
+      "progress": "Progress",
+      "final": "Final",
+      "adjustment": "Adjustment"
+    },
+    "status": {
+      "charged": "Charged",
+      "skipped_zero": "Nothing to charge"
+    },
+    "new": "New billing",
+    "preview": "Preview",
+    "create": "Create billing",
+    "charged": "Charged so far",
+    "amountHint": "Empty for progress billing: progress × quote gross minus what was charged.",
+    "previewTotal": "Preview total",
+    "corrects": "Correction of charge {{number}}"
+  },
+  "variations": {
+    "description": "Variations (extra work) are quotes linked to the order: once approved they add lines and tasks.",
+    "lines": "Lines from variations"
+  },
+  "warnings": {
+    "tasks_incomplete": "Warning: not every task is complete.",
+    "dependencies_open": "Warning: previous tasks are not complete yet."
+  },
+  "dialog": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close"
+  }
+}

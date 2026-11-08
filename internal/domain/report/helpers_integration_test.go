@@ -225,6 +225,21 @@ func sumRecords(t *testing.T, d *demo, p *auth.Principal, key string, drill *cal
 			v += int64(x.PendingValue.Value)
 		}
 		return frac(v, 0)
+	case calc.KeyYard:
+		r, err := d.svc.Yard(ctx, p, d.marina, q)
+		must(t, err)
+		var v int64
+		for _, x := range r.Records {
+			switch key {
+			case calc.IndYardHours:
+				v += x.HoursMilli.Value
+			case calc.IndYardMargin:
+				v += int64(x.Margin.Value)
+			default:
+				v++
+			}
+		}
+		return frac(v, 0)
 	}
 	t.Fatalf("no drill for %s", drill.Report)
 	return calc.TileValue{}

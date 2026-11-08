@@ -175,6 +175,16 @@ tags:
     description: Equipment, maintenance plans, tasks, field reports and the maintenance lens (M9, spec 20.1–20.2)
   - name: utilities
     description: Utility meters, readings, consumptions and their charging (M9, spec 20.4)
+  - name: yard-catalog
+    description: Yard catalogue - work types, qualifications, item yard settings, formula variables, band tables, work packages (M10, spec 18.1-18.2)
+  - name: yard-quotes
+    description: Guided yard quotes, send, accept, decline, variations (M10, spec 18.3)
+  - name: work-orders
+    description: Work orders, tasks, time entries, materials, external costs, final account and billing (M10, spec 18.4-18.6)
+  - name: yard-planner
+    description: Employees, calendars, absences, planner, workload and auto-plan (M10, spec 18.5)
+  - name: lifting
+    description: Lifting equipment bookings on 15-minute slots and operators (M10, spec 18.7)
 
 paths:
   /healthz:
@@ -15508,6 +15518,2520 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "422": { $ref: "#/components/responses/ReportUnprocessable" }
 
+  /api/admin/v1/marinas/{marinaId}/yard/work-types:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-catalog]
+      operationId: listWorkTypes
+      summary: >-
+        Work types of the yard (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkTypeList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [yard-catalog]
+      operationId: createWorkType
+      summary: >-
+        Create a work type (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkTypeInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkType" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-types/{workTypeId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/WorkTypeId"
+    patch:
+      tags: [yard-catalog]
+      operationId: updateWorkType
+      summary: >-
+        Change a work type (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkTypePatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkType" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/qualifications:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-catalog]
+      operationId: listYardQualifications
+      summary: >-
+        Qualifications (trades) of the yard (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQualificationList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [yard-catalog]
+      operationId: createYardQualification
+      summary: >-
+        Create a qualification with its labour item (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardQualificationInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQualification" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/qualifications/{qualificationId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/QualificationId"
+    patch:
+      tags: [yard-catalog]
+      operationId: updateYardQualification
+      summary: >-
+        Change a qualification (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardQualificationPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQualification" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/items:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-catalog]
+      operationId: listYardItems
+      summary: >-
+        Catalogue items usable in the yard (service, labour, material, product, fee) with their yard settings (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: q, in: query, required: false, schema: { type: string, maxLength: 64 } }
+        - { name: category, in: query, required: false, schema: { type: string, maxLength: 40 } }
+        - { name: item_type, in: query, required: false, schema: { $ref: "#/components/schemas/ItemType" } }
+        - { name: yard_enabled, in: query, required: false, schema: { type: boolean } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardItemPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/items/{itemId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ItemId"
+    get:
+      tags: [yard-catalog]
+      operationId: getYardItemSettings
+      summary: >-
+        Yard settings of an item (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardItem" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [yard-catalog]
+      operationId: putYardItemSettings
+      summary: >-
+        Set the yard settings of an item: cost, qualification, default formulas (validated, 422 formula_invalid) (yard.manage)
+      description: >-
+        If-Match is optional: required only when the settings row already exists (428 otherwise).
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardItemSettingsInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardItem" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/formula-variables:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-catalog]
+      operationId: listFormulaVariables
+      summary: >-
+        Formula variables: built-in vessel variables (read only) and the marina's derived and job variables (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FormulaVariableList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [yard-catalog]
+      operationId: createFormulaVariable
+      summary: >-
+        Create a derived or job variable (validated on the test vessel, 422 formula_invalid) (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FormulaVariableInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FormulaVariable" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/formula-variables/{variableId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/VariableId"
+    patch:
+      tags: [yard-catalog]
+      operationId: updateFormulaVariable
+      summary: >-
+        Change a variable; dependent packages and item formulas are re-validated (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FormulaVariablePatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FormulaVariable" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+    delete:
+      tags: [yard-catalog]
+      operationId: deleteFormulaVariable
+      summary: >-
+        Delete a variable that no current package version or item formula references (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204":
+          description: No Content
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/formula-tables:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-catalog]
+      operationId: listFormulaTables
+      summary: >-
+        Band tables (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FormulaTableList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [yard-catalog]
+      operationId: createFormulaTable
+      summary: >-
+        Create a band table (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FormulaTableInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FormulaTable" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/formula-tables/{tableId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TableId"
+    patch:
+      tags: [yard-catalog]
+      operationId: updateFormulaTable
+      summary: >-
+        Change a band table; dependent formulas are re-validated (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FormulaTablePatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FormulaTable" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-packages:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-catalog]
+      operationId: listWorkPackages
+      summary: >-
+        Work packages with their current version (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+        - { name: work_type_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkPackagePage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [yard-catalog]
+      operationId: createWorkPackage
+      summary: >-
+        Create a work package with its version 1 (lines validated, 422 formula_invalid) (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkPackageInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkPackage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-packages/{packageId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PackageId"
+    get:
+      tags: [yard-catalog]
+      operationId: getWorkPackage
+      summary: >-
+        A work package with the requested version (default current) and its version history (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: version, in: query, required: false, schema: { type: integer, minimum: 1 } }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkPackage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-packages/{packageId}/versions:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PackageId"
+    post:
+      tags: [yard-catalog]
+      operationId: saveWorkPackageVersion
+      summary: >-
+        Save the lines as version N+1 (insert-only; old quotes keep their version) (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkPackageVersionInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkPackage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-packages/{packageId}/active:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PackageId"
+    put:
+      tags: [yard-catalog]
+      operationId: setWorkPackageActive
+      summary: >-
+        Activate or deactivate a package (hidden from the wizard; versions stay) (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ActiveFlag" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkPackage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/formulas/validate:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [yard-catalog]
+      operationId: validateFormula
+      summary: >-
+        Parse, check and evaluate a formula on the test vessel or a chosen vessel (no write) (yard.read)
+      security: *readSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FormulaValidateInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FormulaValidateResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/settings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-catalog]
+      operationId: getYardSettings
+      summary: >-
+        Yard settings (defaults when never saved) (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [yard-catalog]
+      operationId: putYardSettings
+      summary: >-
+        Change the yard settings (yard.manage)
+      description: >-
+        If-Match is optional for the first save and required once the settings were saved.
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardSettingsInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/quotes:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-quotes]
+      operationId: listYardQuotes
+      summary: >-
+        Yard quotes (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/YardQuoteStatus" } }
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/YardQuoteKind" } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: vessel_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: work_order_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQuotePage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [yard-quotes]
+      operationId: createYardQuote
+      summary: >-
+        Create a draft quote: lines priced by formulas and the price lists, snapshot stored (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardQuoteInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQuote" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/quotes/preview:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [yard-quotes]
+      operationId: previewYardQuote
+      summary: >-
+        Compute the lines, totals, estimated hours and issues of a quote input without writing (yard.read)
+      security: *readSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardQuoteInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQuotePreview" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/YardQuoteId"
+    get:
+      tags: [yard-quotes]
+      operationId: getYardQuote
+      summary: >-
+        A yard quote with lines and totals (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQuote" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [yard-quotes]
+      operationId: updateYardQuote
+      summary: >-
+        Change a draft quote (lines recomputed, new snapshot) (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardQuotePatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQuote" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}/recompute:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/YardQuoteId"
+    post:
+      tags: [yard-quotes]
+      operationId: recomputeYardQuote
+      summary: >-
+        Ricalcola: re-price a draft with the current catalogue, variables and price lists (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQuote" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}/send:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/YardQuoteId"
+    post:
+      tags: [yard-quotes]
+      operationId: sendYardQuote
+      summary: >-
+        Send the quote: PDF, magic link and email (manual: no email) (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardQuoteSendInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQuoteSendResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}/accept:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/YardQuoteId"
+    post:
+      tags: [yard-quotes]
+      operationId: acceptYardQuote
+      summary: >-
+        Accept from the panel: the work order (or the variation) and the advance are created in the same transaction (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQuoteAcceptResult" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}/decline:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/YardQuoteId"
+    post:
+      tags: [yard-quotes]
+      operationId: declineYardQuote
+      summary: >-
+        Decline the quote (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardQuoteDeclineInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQuote" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}/pdf:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/YardQuoteId"
+    get:
+      tags: [yard-quotes]
+      operationId: getYardQuotePdf
+      summary: >-
+        The PDF of the quote (template yard_quote) (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/public/v1/{slug}/links/{token}/yard-quote/accept:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/Token"
+    post:
+      tags: [customer-links]
+      operationId: acceptPublicYardQuote
+      summary: >-
+        Accept a yard quote from its link; the work order is created
+      security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PublicYardQuoteAccept" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PublicYardQuoteAcceptResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-orders:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [work-orders]
+      operationId: listWorkOrders
+      summary: >-
+        Work orders (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/WorkOrderStatus" } }
+        - { name: open_only, in: query, required: false, schema: { type: boolean } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: vessel_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: q, in: query, required: false, schema: { type: string, maxLength: 64 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkOrderPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [work-orders]
+      operationId: createWorkOrder
+      summary: >-
+        Create a work order without a quote; lines from the catalogue priced with the quote line engine (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkOrderInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkOrder" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/board:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [work-orders]
+      operationId: getYardBoard
+      summary: >-
+        Board "barche in lavorazione": open orders by status (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardBoard" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/WorkOrderId"
+    get:
+      tags: [work-orders]
+      operationId: getWorkOrder
+      summary: >-
+        A work order with budget lines (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkOrder" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [work-orders]
+      operationId: updateWorkOrder
+      summary: >-
+        Change responsible, planned dates, position and notes (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkOrderPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkOrder" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/transition:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/WorkOrderId"
+    post:
+      tags: [work-orders]
+      operationId: transitionWorkOrder
+      summary: >-
+        Change the state: start, hold, resume, complete, reopen, deliver, cancel (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkOrderTransition" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkOrder" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/variations:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/WorkOrderId"
+    post:
+      tags: [work-orders]
+      operationId: createVariationQuote
+      summary: >-
+        Create a variation quote (extra works) on the order (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardQuoteInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardQuote" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/tasks:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/WorkOrderId"
+    get:
+      tags: [work-orders]
+      operationId: listWorkTasks
+      summary: >-
+        Tasks of a work order with dependencies (yard.read, or yard.timesheets on assigned tasks)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkTaskList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [work-orders]
+      operationId: createWorkTask
+      summary: >-
+        Add a task (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkTaskInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    patch:
+      tags: [work-orders]
+      operationId: updateWorkTask
+      summary: >-
+        Change a task: title, qualification, estimate, checklist, status (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkTaskPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+    delete:
+      tags: [work-orders]
+      operationId: deleteWorkTask
+      summary: >-
+        Delete a task without time entries (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204":
+          description: No Content
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/dependencies:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    put:
+      tags: [work-orders]
+      operationId: setTaskDependencies
+      summary: >-
+        Replace the finish-to-start predecessors of a task (same order, acyclic) (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TaskDependenciesInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/progress:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    post:
+      tags: [work-orders]
+      operationId: updateTaskProgress
+      summary: >-
+        Progress, checklist and done of a task (yard.manage, or yard.timesheets on an assigned task)
+      description: >-
+        Offline (kind yard.activity_done): no If-Match; a replay with the same client_ref returns the task; progress never decreases through a replay (D25).
+      security: *writeSecurity
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TaskProgressInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/photos:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    post:
+      tags: [work-orders]
+      operationId: uploadTaskPhoto
+      summary: >-
+        Attach a photo or document to a task (JPEG, PNG, WebP or PDF, at most 8 MiB, raw body), encrypted at rest (yard.manage, or yard.timesheets on an assigned task)
+      description: >-
+        Offline (kind yard.activity_done, dependent through taskId). The same bytes as an existing file of the task return that file.
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema: { type: string, format: binary }
+          image/png:
+            schema: { type: string, format: binary }
+          image/webp:
+            schema: { type: string, format: binary }
+          application/pdf:
+            schema: { type: string, format: binary }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkTaskFile" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/files:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    get:
+      tags: [work-orders]
+      operationId: listTaskFiles
+      summary: >-
+        Photos and documents of a task (yard.read or yard.timesheets)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkTaskFileList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/files/{fileId}/link:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+      - $ref: "#/components/parameters/FileId"
+    get:
+      tags: [work-orders]
+      operationId: getTaskFileLink
+      summary: >-
+        A short-lived (5 minutes) signed link to a task file (yard.read or yard.timesheets)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FileLink" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/files/{fileId}/file:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+      - $ref: "#/components/parameters/FileId"
+    get:
+      tags: [work-orders]
+      operationId: getTaskFileFile
+      summary: >-
+        Download a task file through a signed link from getTaskFileLink (yard.read or yard.timesheets)
+      security: *readSecurity
+      parameters:
+        - { name: exp, in: query, required: false, schema: { type: integer, format: int64 } }
+        - { name: sig, in: query, required: false, schema: { type: string, maxLength: 128 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            image/jpeg:
+              schema: { type: string, format: binary }
+            image/png:
+              schema: { type: string, format: binary }
+            image/webp:
+              schema: { type: string, format: binary }
+            application/pdf:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/timesheets:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [work-orders]
+      operationId: listTimesheets
+      summary: >-
+        Time entries (yard.manage: all; yard.read: all; yard.timesheets: own)
+      security: *readSecurity
+      parameters:
+        - { name: employee_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: work_order_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/TimesheetStatus" } }
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TimesheetPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [work-orders]
+      operationId: createTimeEntry
+      summary: >-
+        Manual time entry (0.25..16 h in 0.25 h steps, or start and end) (yard.timesheets own, yard.manage anyone)
+      description: >-
+        Offline (kind yard.timesheet): deduped by client_ref; device times within 48 h before and 5 min after Porto-Offline-Queued-At.
+      security: *writeSecurity
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TimeEntryInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Timesheet" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/timesheets/timer:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [work-orders]
+      operationId: startTimer
+      summary: >-
+        Start a timer on a task or an order (one running timer per employee) (yard.timesheets own, yard.manage anyone)
+      description: >-
+        Offline (kind yard.timesheet): deduped by client_ref (a replay returns the first result).
+      security: *writeSecurity
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TimerStartInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Timesheet" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/timesheets/{timesheetId}/stop:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TimesheetId"
+    post:
+      tags: [work-orders]
+      operationId: stopTimer
+      summary: >-
+        Stop a running timer: hours rounded to 0.01 h, entry submitted (yard.timesheets own, yard.manage anyone)
+      description: >-
+        Offline (kind yard.timesheet, dependent on startTimer through timesheetId): no If-Match; a replay returns the stopped entry.
+      security: *writeSecurity
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TimerStopInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Timesheet" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/timesheets/{timesheetId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TimesheetId"
+    patch:
+      tags: [work-orders]
+      operationId: updateTimeEntry
+      summary: >-
+        Change a submitted or rejected entry (resubmits it) (owner with yard.timesheets, yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TimeEntryPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Timesheet" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/timesheets/approve:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [work-orders]
+      operationId: approveTimeEntries
+      summary: >-
+        Approve submitted entries in batch: cost rate and cost frozen (yard.manage)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TimesheetApproveInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TimesheetList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/timesheets/{timesheetId}/reject:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TimesheetId"
+    post:
+      tags: [work-orders]
+      operationId: rejectTimeEntry
+      summary: >-
+        Reject a submitted entry with a reason (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TimesheetRejectInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Timesheet" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/timesheets/{timesheetId}/void:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TimesheetId"
+    post:
+      tags: [work-orders]
+      operationId: voidTimeEntry
+      summary: >-
+        Void an approved entry while the order is not invoiced (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TimesheetVoidInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Timesheet" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/my-work:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [work-orders]
+      operationId: getMyYardWork
+      summary: >-
+        The caller's employee: assignments from 7 days ago to 7 days ahead and the running timer (yard.timesheets or yard.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MyYardWork" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/stock-movements:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [work-orders]
+      operationId: listStockMovements
+      summary: >-
+        Material issues and returns (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: work_order_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: item_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StockMovementPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [work-orders]
+      operationId: createStockMovement
+      summary: >-
+        Issue or return material on a work order with frozen cost and price (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StockMovementInput" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StockMovement" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/external-costs:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/WorkOrderId"
+    get:
+      tags: [work-orders]
+      operationId: listExternalCosts
+      summary: >-
+        External costs of a work order (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ExternalCostList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [work-orders]
+      operationId: createExternalCost
+      summary: >-
+        Add an external cost (supplier as text, billable with markup) (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ExternalCostInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ExternalCost" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/external-costs/{externalCostId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ExternalCostId"
+    patch:
+      tags: [work-orders]
+      operationId: updateExternalCost
+      summary: >-
+        Change an external cost (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ExternalCostPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ExternalCost" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+    delete:
+      tags: [work-orders]
+      operationId: deleteExternalCost
+      summary: >-
+        Delete an external cost not yet billed (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204":
+          description: No Content
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/account:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/WorkOrderId"
+    get:
+      tags: [work-orders]
+      operationId: getFinalAccount
+      summary: >-
+        Final account (consuntivo): lines, margins per order and work type, comparison with the quote (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: format, in: query, required: false, schema: { type: string, enum: [json, csv, xlsx] } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FinalAccount" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/billings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/WorkOrderId"
+    get:
+      tags: [work-orders]
+      operationId: listWorkOrderBillings
+      summary: >-
+        Billings of a work order with their charges (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkOrderBillingList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [work-orders]
+      operationId: createWorkOrderBilling
+      summary: >-
+        Bill progress, final or adjustment through the M5 charges (charges.manage; negative remainders refunds.issue)
+      description: >-
+        dry_run=true returns the preview (200) and writes nothing; otherwise 201 with the billing and its charge.
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - { name: dry_run, in: query, required: false, schema: { type: boolean } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/WorkOrderBillingInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkOrderBillingResult" }
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/WorkOrderBillingResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/employees:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-planner]
+      operationId: listEmployees
+      summary: >-
+        Yard employees (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+        - { name: department, in: query, required: false, schema: { type: string, maxLength: 40 } }
+        - { name: qualification_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EmployeePage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [yard-planner]
+      operationId: createEmployee
+      summary: >-
+        Create an employee (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EmployeeInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Employee" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/employees/{employeeId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EmployeeId"
+    get:
+      tags: [yard-planner]
+      operationId: getEmployee
+      summary: >-
+        An employee with calendar and qualifications (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Employee" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [yard-planner]
+      operationId: updateEmployee
+      summary: >-
+        Change an employee (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EmployeePatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Employee" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/employees/{employeeId}/calendar:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EmployeeId"
+    put:
+      tags: [yard-planner]
+      operationId: putEmployeeCalendar
+      summary: >-
+        Replace the weekly calendar (minutes per weekday) (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EmployeeCalendarInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Employee" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/employees/{employeeId}/absences:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EmployeeId"
+    get:
+      tags: [yard-planner]
+      operationId: listAbsences
+      summary: >-
+        Absences of an employee (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AbsenceList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [yard-planner]
+      operationId: createAbsence
+      summary: >-
+        Add an absence (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AbsenceInput" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Absence" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/employees/{employeeId}/absences/{absenceId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EmployeeId"
+      - $ref: "#/components/parameters/AbsenceId"
+    delete:
+      tags: [yard-planner]
+      operationId: deleteAbsence
+      summary: >-
+        Delete an absence (yard.manage)
+      security: *writeSecurity
+      responses:
+        "204":
+          description: No Content
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/planner:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-planner]
+      operationId: getPlanner
+      summary: >-
+        Planner grid: employees x days with capacity, assignments and unplanned tasks (default: this week) (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: department, in: query, required: false, schema: { type: string, maxLength: 40 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Planner" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/planner/assignments:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    put:
+      tags: [yard-planner]
+      operationId: putAssignments
+      summary: >-
+        Create or change assignments in batch with qualification, dependency and capacity checks (yard.manage)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AssignmentBatchInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AssignmentBatchResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/planner/assignments/{assignmentId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/AssignmentId"
+    delete:
+      tags: [yard-planner]
+      operationId: deleteAssignment
+      summary: >-
+        Delete an assignment (yard.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204":
+          description: No Content
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/load:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-planner]
+      operationId: getYardLoad
+      summary: >-
+        Workload: capacity, assigned and actual hours by employee, department, qualification or bay (yard.read)
+      security: *readSecurity
+      parameters:
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [employee, department, qualification, bay] } }
+        - { name: period, in: query, required: false, schema: { type: string, enum: [day, week, month] } }
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardLoad" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/at-risk:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [yard-planner]
+      operationId: getAtRiskOrders
+      summary: >-
+        Orders whose remaining hours exceed the free qualified capacity before delivery, or late (yard.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AtRiskOrderList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/yard/planner/proposal:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [yard-planner]
+      operationId: proposeYardPlan
+      summary: >-
+        Greedy auto-plan proposal (no write; confirm with putAssignments) (yard.manage)
+      security: *writeSecurity
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/YardPlanProposalInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardPlanProposal" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/equipment-bookings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [lifting]
+      operationId: listEquipmentBookings
+      summary: >-
+        Lifting bookings of a day (default today) and open requests (yard.read, storage.read or yard.timesheets)
+      security: *readSecurity
+      parameters:
+        - { name: date, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" }, description: Day of the calendar; default today in the marina time zone }
+        - { name: equipment_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/EquipmentBookingStatus" } }
+        - { name: work_order_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EquipmentBookingDay" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [lifting]
+      operationId: createEquipmentBooking
+      summary: >-
+        Request or book a lifting machine in 15-minute slots (yard.manage or storage.manage); a taken slot is 409 equipment_slot_taken,
+        a cancelled or invoiced work order 409 work_order_closed
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EquipmentBookingInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EquipmentBooking" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/equipment-bookings/{equipmentBookingId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EquipmentBookingId"
+    patch:
+      tags: [lifting]
+      operationId: updateEquipmentBooking
+      summary: >-
+        Book a request or reschedule a booking (slots rewritten in one transaction) (yard.manage or storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EquipmentBookingPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EquipmentBooking" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/equipment-bookings/{equipmentBookingId}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EquipmentBookingId"
+    post:
+      tags: [lifting]
+      operationId: cancelEquipmentBooking
+      summary: >-
+        Cancel a request or booking (slots released) (yard.manage or storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EquipmentBookingCancelInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EquipmentBooking" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/equipment-bookings/{equipmentBookingId}/complete:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EquipmentBookingId"
+    post:
+      tags: [lifting]
+      operationId: completeEquipmentBooking
+      summary: >-
+        Mark a booking done (yard.manage or storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EquipmentBooking" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/equipment/{equipmentId}/operators:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EquipmentId"
+    get:
+      tags: [lifting]
+      operationId: listEquipmentOperators
+      summary: >-
+        Employees enabled to operate a machine (yard.read or storage.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EquipmentOperators" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [lifting]
+      operationId: putEquipmentOperators
+      summary: >-
+        Replace the enabled operators (each with a lift-operator qualification) (yard.manage)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EquipmentOperatorsInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EquipmentOperators" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/YardUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/yard:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getYardReport
+      summary: >-
+        R-yard: hours, load, margins, margins by work type, lifting (reports.yard or reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: view, in: query, required: false, schema: { type: string, enum: [hours, load, margins, margins_by_work_type, lifting] }, description: Default hours }
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [employee, order, work_type, department, qualification, bay, week, month, equipment, status] } }
+        - { name: employee_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: work_order_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: work_type_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: equipment_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: open_only, in: query, required: false, schema: { type: boolean } }
+        - { name: invoiced_in_period, in: query, required: false, schema: { type: boolean } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/YardReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
 
 components:
   securitySchemes:
@@ -16110,6 +18634,71 @@ components:
       in: path
       required: true
       schema: { type: string }
+    WorkTypeId:
+      name: workTypeId
+      in: path
+      required: true
+      schema: { type: string }
+    QualificationId:
+      name: qualificationId
+      in: path
+      required: true
+      schema: { type: string }
+    VariableId:
+      name: variableId
+      in: path
+      required: true
+      schema: { type: string }
+    TableId:
+      name: tableId
+      in: path
+      required: true
+      schema: { type: string }
+    PackageId:
+      name: packageId
+      in: path
+      required: true
+      schema: { type: string }
+    YardQuoteId:
+      name: yardQuoteId
+      in: path
+      required: true
+      schema: { type: string }
+    WorkOrderId:
+      name: workOrderId
+      in: path
+      required: true
+      schema: { type: string }
+    TimesheetId:
+      name: timesheetId
+      in: path
+      required: true
+      schema: { type: string }
+    ExternalCostId:
+      name: externalCostId
+      in: path
+      required: true
+      schema: { type: string }
+    EmployeeId:
+      name: employeeId
+      in: path
+      required: true
+      schema: { type: string }
+    AbsenceId:
+      name: absenceId
+      in: path
+      required: true
+      schema: { type: string }
+    AssignmentId:
+      name: assignmentId
+      in: path
+      required: true
+      schema: { type: string }
+    EquipmentBookingId:
+      name: equipmentBookingId
+      in: path
+      required: true
+      schema: { type: string }
   responses:
     M4Unprocessable:
       description: >-
@@ -16239,6 +18828,15 @@ components:
         A storage, maintenance or utilities rule refused the request (m9-plan §3, §7, §8, §9: storage_target_invalid,
         area_exits_invalid, pinned_invalid, too_many_items, scenario_window_invalid, element_invalid, fit_blocked,
         no_price, ...), a validation failure, or an idempotency key was reused
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    YardUnprocessable:
+      description: >-
+        A yard rule refused the request (m10-plan §13: formula_invalid with issues, no_price, qualification_mismatch,
+        dependency_violation, duration_too_long, offline_time_out_of_range, return_exceeds_issued,
+        equipment_capacity_exceeded, operator_not_enabled, outside_lift_window, customer_email_missing, ...), a
+        validation failure, or an idempotency key was reused
       content:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
@@ -16396,6 +18994,23 @@ components:
         - task_already_done
         - reading_charged
         - consumption_frozen
+        - formula_invalid
+        - work_order_closed
+        - work_order_has_charges
+        - qualification_mismatch
+        - capacity_exceeded
+        - dependency_violation
+        - duration_too_long
+        - offline_time_out_of_range
+        - timer_already_running
+        - return_exceeds_issued
+        - nothing_to_bill
+        - equipment_slot_taken
+        - operator_busy
+        - equipment_out_of_service
+        - equipment_capacity_exceeded
+        - operator_not_enabled
+        - outside_lift_window
 
     FieldError:
       type: object
@@ -24163,6 +26778,7 @@ components:
         renewal: { $ref: "#/components/schemas/PublicRenewal" }
         signature: { $ref: "#/components/schemas/PublicSignature" }
         unsubscribe: { $ref: "#/components/schemas/PublicUnsubscribe" }
+        yard_quote: { $ref: "#/components/schemas/PublicYardQuote" }
 
     PublicDeposit:
       type: object
@@ -25688,12 +28304,12 @@ components:
 
     ReportKey:
       description: >-
-        Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are
-        reserved and not served yet.
+        Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11)
+        is reserved and not served yet.
       type: string
       enum: [occupancy, efficiency, allocation-waste, lost-demand, customers, production, accruals, charges, payments,
              revenue-classes, comparison, receivables, presences, rights, cash, vessels, berth-revenue, storage,
-             maintenance, utilities]
+             maintenance, utilities, yard]
 
     ReportFormat:
       description: json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
@@ -25737,7 +28353,8 @@ components:
           type: string
           enum: [contract, transit, charge, payment, refund, allocation, berth, area, land_resource, customer, vessel,
                  inquiry, release, presence, cash_session, fiscal_document, right, common_charge_run, mandate,
-                 installment, holder_installment, scenario, maintenance_task, utility_meter, utility_consumption]
+                 installment, holder_installment, scenario, maintenance_task, utility_meter, utility_consumption,
+                 work_order, yard_quote, employee, equipment_booking]
         id: { type: string }
         label: { type: string }
 
@@ -26684,7 +29301,8 @@ components:
 
     TileKey:
       description: >-
-        Manager dashboard tiles (m7-plan §4). yard_* (M10) and rental_* (M11) are returned with available=false.
+        Manager dashboard tiles (m7-plan §4). yard_* are available from M10 (m10-plan §12); rental_* (M11) are
+        returned with available=false.
       type: string
       enum: [production, charged, collected, receivables_open, receivables_overdue, occupancy, efficiency,
              berth_revenue_per_m, transit_avg_night, new_customers, renewal_rate, vessels_hosted, vessels_avg_loa,
@@ -28296,7 +30914,7 @@ components:
 
     Equipment:
       type: object
-      required: [id, code, name, kind, active, out_of_service, version, created_at, updated_at]
+      required: [id, code, name, kind, active, out_of_service, bookable, default_minutes, version, created_at, updated_at]
       properties:
         id: { type: string }
         code: { type: string }
@@ -28308,6 +30926,8 @@ components:
         capacity_kg: { type: integer, format: int64 }
         active: { type: boolean }
         out_of_service: { type: boolean }
+        bookable: { type: boolean, description: Bookable in lifting slots (M10) }
+        default_minutes: { type: integer, description: Default booking length in minutes (M10) }
         version: { type: integer, format: int64 }
         created_at: { type: string, format: date-time }
         updated_at: { type: string, format: date-time }
@@ -28324,6 +30944,8 @@ components:
         y_cm: { $ref: "#/components/schemas/Cm" }
         capacity_kg: { type: integer, format: int64, minimum: 1 }
         active: { type: boolean }
+        bookable: { type: boolean, description: Default true for travel_lift, crane, forklift and trailer }
+        default_minutes: { type: integer, minimum: 15, maximum: 1440, multipleOf: 15 }
 
     EquipmentPatch:
       type: object
@@ -28336,6 +30958,8 @@ components:
         y_cm: { type: [integer, "null"], format: int64 }
         capacity_kg: { type: [integer, "null"], format: int64, minimum: 1 }
         active: { type: boolean }
+        bookable: { type: boolean }
+        default_minutes: { type: integer, minimum: 15, maximum: 1440, multipleOf: 15 }
 
     EquipmentPage:
       type: object
@@ -29059,3 +31683,1827 @@ components:
             totals: { $ref: "#/components/schemas/UtilitiesReportTotals" }
             groups: { type: array, items: { $ref: "#/components/schemas/UtilitiesReportGroup" } }
             records: { type: array, items: { $ref: "#/components/schemas/UtilitiesReportRecord" } }
+
+    # ---- M10 yard (spec 18; m10-plan §3-§13) ----
+
+    FormulaIssue:
+      description: >-
+        A formula problem (codes: syntax, unknown_variable, unknown_function, unknown_table, arity, type_mismatch,
+        enum_value_unknown, formula_too_complex, derived_cycle, div_by_zero, missing_variable, overflow, band_no_row,
+        negative_quantity, negative_price, out_of_range, no_price). field names the formula (e.g. lines[2].qty_formula).
+      type: object
+      required: [code]
+      properties:
+        code: { type: string }
+        field: { type: string }
+        ref: { type: string, description: Package code or variable name for re-validation failures }
+        pos: { type: integer, description: Byte offset in the formula source }
+        params: { type: object, additionalProperties: { type: string } }
+
+    FormulaTestCase:
+      type: object
+      properties:
+        vars: { type: object, additionalProperties: { $ref: "#/components/schemas/FormulaValue" } }
+        expect_qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        expect_price_cents: { $ref: "#/components/schemas/Cents" }
+
+    FormulaValue:
+      description: A variable value; numbers in milli, booleans, enum strings
+      oneOf:
+        - { type: integer, format: int64 }
+        - { type: boolean }
+        - { type: string, maxLength: 32 }
+
+    ActiveFlag:
+      type: object
+      required: [active]
+      properties:
+        active: { type: boolean }
+
+    WorkType:
+      type: object
+      required: [id, code, name, active, sort_order, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        revenue_class_id: { type: string }
+        active: { type: boolean }
+        sort_order: { type: integer }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    WorkTypeInput:
+      type: object
+      required: [code, name]
+      properties:
+        code: { type: string, pattern: "^[A-Z0-9_-]{1,16}$" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        revenue_class_id: { type: string, maxLength: 36 }
+        active: { type: boolean }
+        sort_order: { type: integer }
+
+    WorkTypePatch:
+      type: object
+      properties:
+        code: { type: string, pattern: "^[A-Z0-9_-]{1,16}$" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        revenue_class_id: { type: [string, "null"], maxLength: 36 }
+        active: { type: boolean }
+        sort_order: { type: integer }
+
+    WorkTypeList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/WorkType" } }
+
+    YardQualification:
+      type: object
+      required: [id, code, name, labour_item_id, default_cost_cents, lift_operator, active, sort_order, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        labour_item_id: { type: string }
+        default_cost_cents: { $ref: "#/components/schemas/Cents" }
+        lift_operator: { type: boolean }
+        active: { type: boolean }
+        sort_order: { type: integer }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    YardQualificationInput:
+      type: object
+      required: [code, name, labour_item_id]
+      properties:
+        code: { type: string, pattern: "^[a-z0-9_-]{1,16}$" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        labour_item_id: { type: string, maxLength: 36 }
+        default_cost_cents: { type: integer, format: int64, minimum: 0 }
+        lift_operator: { type: boolean }
+        active: { type: boolean }
+        sort_order: { type: integer }
+
+    YardQualificationPatch:
+      type: object
+      properties:
+        code: { type: string, pattern: "^[a-z0-9_-]{1,16}$" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        labour_item_id: { type: string, maxLength: 36 }
+        default_cost_cents: { type: integer, format: int64, minimum: 0 }
+        lift_operator: { type: boolean }
+        active: { type: boolean }
+        sort_order: { type: integer }
+
+    YardQualificationList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/YardQualification" } }
+
+    YardItem:
+      description: An M2 item with its yard settings (settings absent = not configured; prices stay in the price lists)
+      type: object
+      required: [item_id, code, name, item_type, unit, vat_rate_bp, price_includes_vat, active, configured, yard_enabled,
+                 cost_cents, qty_formula, price_formula, category, version]
+      properties:
+        item_id: { type: string }
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        item_type: { $ref: "#/components/schemas/ItemType" }
+        unit: { $ref: "#/components/schemas/ItemUnit" }
+        vat_rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+        price_includes_vat: { type: boolean }
+        active: { type: boolean }
+        configured: { type: boolean, description: A yard_item_settings row exists }
+        yard_enabled: { type: boolean }
+        cost_cents: { $ref: "#/components/schemas/Cents" }
+        qualification_id: { type: string }
+        qty_formula: { type: string }
+        price_formula: { type: string }
+        category: { type: string }
+        test_case: { $ref: "#/components/schemas/FormulaTestCase" }
+        version: { type: integer, format: int64, description: 0 when not configured }
+
+    YardItemPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/YardItem" } }
+        next_cursor: { type: [string, "null"] }
+
+    YardItemSettingsInput:
+      type: object
+      properties:
+        yard_enabled: { type: boolean }
+        cost_cents: { type: integer, format: int64, minimum: 0 }
+        qualification_id: { type: [string, "null"], maxLength: 36 }
+        qty_formula: { type: string, maxLength: 500 }
+        price_formula: { type: string, maxLength: 500 }
+        category: { type: string, maxLength: 40 }
+        test_case: { $ref: "#/components/schemas/FormulaTestCase" }
+        clear_test_case: { type: boolean }
+
+    FormulaVariableSource:
+      type: string
+      enum: [vessel, derived, job, context]
+
+    FormulaVariableKind:
+      type: string
+      enum: [number, bool, enum]
+
+    FormulaUnit:
+      type: string
+      enum: [m, m2, t, kw, h, pcs, l, pct, years, none]
+
+    FormulaVariable:
+      description: A formula variable; vessel and context variables are built in (no id, read only)
+      type: object
+      required: [name, source, kind, unit, label, builtin]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        source: { $ref: "#/components/schemas/FormulaVariableSource" }
+        kind: { $ref: "#/components/schemas/FormulaVariableKind" }
+        unit: { $ref: "#/components/schemas/FormulaUnit" }
+        expression: { type: string }
+        min_milli: { $ref: "#/components/schemas/QtyMilli" }
+        max_milli: { $ref: "#/components/schemas/QtyMilli" }
+        default_milli: { $ref: "#/components/schemas/QtyMilli" }
+        default_enum: { type: string }
+        enum_values: { type: array, items: { type: string } }
+        label: { $ref: "#/components/schemas/I18nText" }
+        builtin: { type: boolean }
+        test_value: { $ref: "#/components/schemas/FormulaValue" }
+        version: { type: integer, format: int64 }
+
+    FormulaVariableList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/FormulaVariable" } }
+
+    FormulaVariableInput:
+      type: object
+      required: [name, source, kind]
+      properties:
+        name: { type: string, pattern: "^[a-z][a-z0-9_]{0,31}$" }
+        source: { type: string, enum: [derived, job] }
+        kind: { $ref: "#/components/schemas/FormulaVariableKind" }
+        unit: { $ref: "#/components/schemas/FormulaUnit" }
+        expression: { type: string, maxLength: 500 }
+        min_milli: { $ref: "#/components/schemas/QtyMilli" }
+        max_milli: { $ref: "#/components/schemas/QtyMilli" }
+        default_milli: { $ref: "#/components/schemas/QtyMilli" }
+        default_enum: { type: string, maxLength: 32 }
+        enum_values: { type: array, maxItems: 32, items: { type: string, pattern: "^[a-z0-9_]{1,32}$" } }
+        label: { $ref: "#/components/schemas/I18nText" }
+
+    FormulaVariablePatch:
+      type: object
+      properties:
+        unit: { $ref: "#/components/schemas/FormulaUnit" }
+        expression: { type: string, maxLength: 500 }
+        min_milli: { type: [integer, "null"], format: int64 }
+        max_milli: { type: [integer, "null"], format: int64 }
+        default_milli: { type: [integer, "null"], format: int64 }
+        default_enum: { type: [string, "null"], maxLength: 32 }
+        enum_values: { type: array, maxItems: 32, items: { type: string, pattern: "^[a-z0-9_]{1,32}$" } }
+        label: { $ref: "#/components/schemas/I18nText" }
+
+    FormulaTableRow:
+      type: object
+      required: [value_milli]
+      properties:
+        up_to_milli: { type: [integer, "null"], format: int64, description: null = open last row }
+        value_milli: { $ref: "#/components/schemas/QtyMilli" }
+
+    FormulaTable:
+      type: object
+      required: [id, name, label, rows, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        label: { $ref: "#/components/schemas/I18nText" }
+        rows: { type: array, items: { $ref: "#/components/schemas/FormulaTableRow" } }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    FormulaTableList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/FormulaTable" } }
+
+    FormulaTableInput:
+      type: object
+      required: [name, rows]
+      properties:
+        name: { type: string, pattern: "^[a-z][a-z0-9_]{0,31}$" }
+        label: { $ref: "#/components/schemas/I18nText" }
+        rows: { type: array, minItems: 1, maxItems: 50, items: { $ref: "#/components/schemas/FormulaTableRow" } }
+
+    FormulaTablePatch:
+      type: object
+      properties:
+        label: { $ref: "#/components/schemas/I18nText" }
+        rows: { type: array, minItems: 1, maxItems: 50, items: { $ref: "#/components/schemas/FormulaTableRow" } }
+
+    WorkPackageTask:
+      type: object
+      required: [title]
+      properties:
+        title: { $ref: "#/components/schemas/I18nText" }
+        checklist: { type: array, maxItems: 40, items: { type: string, maxLength: 200 } }
+
+    WorkPackageLine:
+      type: object
+      required: [seq, item_id, qty_formula]
+      properties:
+        seq: { type: integer, minimum: 1 }
+        item_id: { type: string, maxLength: 36 }
+        work_type_id: { type: string, maxLength: 36 }
+        qty_formula: { type: string, maxLength: 500 }
+        price_formula: { type: string, maxLength: 500 }
+        task: { $ref: "#/components/schemas/WorkPackageTask" }
+        notes: { type: string, maxLength: 500 }
+        test_case: { $ref: "#/components/schemas/FormulaTestCase" }
+
+    WorkPackageVersion:
+      type: object
+      required: [version, language_version, lines, job_vars, created_at]
+      properties:
+        version: { type: integer }
+        language_version: { type: integer }
+        lines: { type: array, items: { $ref: "#/components/schemas/WorkPackageLine" } }
+        job_vars: { type: array, items: { type: string } }
+        created_by_user_id: { type: string }
+        created_at: { type: string, format: date-time }
+
+    WorkPackageVersionBrief:
+      type: object
+      required: [version, created_at]
+      properties:
+        version: { type: integer }
+        created_at: { type: string, format: date-time }
+
+    WorkPackage:
+      type: object
+      required: [id, code, name, work_type_id, active, current_version, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        work_type_id: { type: string }
+        active: { type: boolean }
+        current_version: { type: integer }
+        content: { $ref: "#/components/schemas/WorkPackageVersion" }
+        versions: { type: array, items: { $ref: "#/components/schemas/WorkPackageVersionBrief" } }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    WorkPackagePage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/WorkPackage" } }
+        next_cursor: { type: [string, "null"] }
+
+    WorkPackageInput:
+      type: object
+      required: [code, name, work_type_id, lines]
+      properties:
+        code: { type: string, pattern: "^[A-Z0-9_-]{1,16}$" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        work_type_id: { type: string, maxLength: 36 }
+        active: { type: boolean }
+        lines: { type: array, minItems: 1, maxItems: 100, items: { $ref: "#/components/schemas/WorkPackageLine" } }
+        job_vars: { type: array, maxItems: 32, items: { type: string, maxLength: 32 } }
+
+    WorkPackageVersionInput:
+      type: object
+      required: [lines]
+      properties:
+        name: { $ref: "#/components/schemas/I18nText" }
+        work_type_id: { type: string, maxLength: 36 }
+        lines: { type: array, minItems: 1, maxItems: 100, items: { $ref: "#/components/schemas/WorkPackageLine" } }
+        job_vars: { type: array, maxItems: 32, items: { type: string, maxLength: 32 } }
+
+    FormulaValidateInput:
+      type: object
+      required: [formula]
+      properties:
+        formula: { type: string, maxLength: 500 }
+        purpose: { type: string, enum: [quantity, price, derived, boolean], description: Default quantity }
+        vessel_id: { type: string, maxLength: 36, description: Default the marina test vessel }
+        vars: { type: object, additionalProperties: { $ref: "#/components/schemas/FormulaValue" } }
+        item_id: { type: string, maxLength: 36, description: Price formulas - list_price of this item }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+
+    FormulaValidateResult:
+      type: object
+      required: [valid, issues, idents]
+      properties:
+        valid: { type: boolean }
+        issues: { type: array, items: { $ref: "#/components/schemas/FormulaIssue" } }
+        idents: { type: array, items: { type: string } }
+        value: { $ref: "#/components/schemas/FormulaValue" }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        price_cents: { $ref: "#/components/schemas/Cents" }
+
+    YardTestVessel:
+      type: object
+      required: [loa_cm, beam_cm, hull_type]
+      properties:
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        draft_cm: { $ref: "#/components/schemas/Cm" }
+        air_draft_cm: { $ref: "#/components/schemas/Cm" }
+        lwl_cm: { $ref: "#/components/schemas/Cm" }
+        displacement_kg: { type: integer, format: int64 }
+        hull_type: { type: string, enum: [monohull_motor, monohull_sail, catamaran, trimaran, rib, gozzo, other] }
+        hull_material: { type: string, maxLength: 40 }
+        engines_kw: { type: array, maxItems: 8, items: { type: integer, format: int64 } }
+        year_built: { type: integer }
+
+    YardSettings:
+      type: object
+      required: [test_vessel, quote_validity_days, deposit_bp, advance_on_accept, external_markup_bp, fixed_includes_external,
+                 workers_issue_materials, lift_from_slot, lift_to_slot, lift_request_on_move, version]
+      properties:
+        test_vessel: { $ref: "#/components/schemas/YardTestVessel" }
+        quote_validity_days: { type: integer }
+        deposit_bp: { $ref: "#/components/schemas/BasisPoints" }
+        advance_on_accept: { type: boolean }
+        external_markup_bp: { $ref: "#/components/schemas/BasisPoints" }
+        external_item_id: { type: string }
+        fixed_includes_external: { type: boolean }
+        workers_issue_materials: { type: boolean }
+        lift_from_slot: { type: integer }
+        lift_to_slot: { type: integer }
+        lift_request_on_move: { type: boolean }
+        version: { type: integer, format: int64, description: 0 = never saved (defaults) }
+
+    YardSettingsInput:
+      type: object
+      properties:
+        test_vessel: { $ref: "#/components/schemas/YardTestVessel" }
+        quote_validity_days: { type: integer, minimum: 1, maximum: 365 }
+        deposit_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        advance_on_accept: { type: boolean }
+        external_markup_bp: { type: integer, format: int64, minimum: 0, maximum: 100000 }
+        external_item_id: { type: [string, "null"], maxLength: 36 }
+        fixed_includes_external: { type: boolean }
+        workers_issue_materials: { type: boolean }
+        lift_from_slot: { type: integer, minimum: 0, maximum: 95 }
+        lift_to_slot: { type: integer, minimum: 1, maximum: 96 }
+        lift_request_on_move: { type: boolean }
+
+    # Yard quotes
+
+    YardQuoteStatus:
+      type: string
+      enum: [draft, sent, accepted, declined, expired]
+
+    YardQuoteKind:
+      type: string
+      enum: [job, variation]
+
+    YardBillingMode:
+      type: string
+      enum: [actual, fixed, progress]
+
+    YardLineSource:
+      type: string
+      enum: [package, item, manual]
+
+    YardQuoteSelection:
+      description: A package (current version) or a single item chosen in step 2
+      type: object
+      properties:
+        package_id: { type: string, maxLength: 36 }
+        item_id: { type: string, maxLength: 36 }
+
+    YardLineOverride:
+      description: A manual change of a computed line (marked qty_overridden / price_overridden)
+      type: object
+      required: [seq]
+      properties:
+        seq: { type: integer, minimum: 1 }
+        qty_milli: { type: integer, format: int64, minimum: 0 }
+        unit_cents: { type: integer, format: int64, minimum: 0 }
+        discount_cents: { type: integer, format: int64, minimum: 0 }
+        description: { type: string, maxLength: 500 }
+        remove: { type: boolean }
+
+    YardManualLine:
+      type: object
+      required: [item_id, qty_milli, unit_cents]
+      properties:
+        item_id: { type: string, maxLength: 36 }
+        work_type_id: { type: string, maxLength: 36 }
+        description: { type: string, maxLength: 500 }
+        qty_milli: { type: integer, format: int64, minimum: 0 }
+        unit_cents: { type: integer, format: int64, minimum: 0 }
+        discount_cents: { type: integer, format: int64, minimum: 0 }
+
+    YardQuoteInput:
+      type: object
+      required: [customer_id, vessel_id, selections]
+      properties:
+        customer_id: { type: string, maxLength: 36 }
+        vessel_id: { type: string, maxLength: 36 }
+        selections: { type: array, maxItems: 50, items: { $ref: "#/components/schemas/YardQuoteSelection" } }
+        job_inputs: { type: object, additionalProperties: { $ref: "#/components/schemas/FormulaValue" } }
+        vessel_overrides: { type: object, additionalProperties: { $ref: "#/components/schemas/FormulaValue" } }
+        overrides: { type: array, maxItems: 200, items: { $ref: "#/components/schemas/YardLineOverride" } }
+        manual_lines: { type: array, maxItems: 50, items: { $ref: "#/components/schemas/YardManualLine" } }
+        quoted_on: { $ref: "#/components/schemas/IsoDate" }
+        valid_until: { $ref: "#/components/schemas/IsoDate" }
+        billing_mode: { $ref: "#/components/schemas/YardBillingMode" }
+        deposit_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        deposit_cents: { type: integer, format: int64, minimum: 0 }
+        conditions: { type: string, maxLength: 4000 }
+        notes: { type: string, maxLength: 2000 }
+        planned_start_on: { $ref: "#/components/schemas/IsoDate" }
+        planned_delivery_on: { $ref: "#/components/schemas/IsoDate" }
+
+    YardQuotePatch:
+      description: Replaces the given fields of a draft; the lines are recomputed from the stored snapshot inputs
+      type: object
+      properties:
+        selections: { type: array, maxItems: 50, items: { $ref: "#/components/schemas/YardQuoteSelection" } }
+        job_inputs: { type: object, additionalProperties: { $ref: "#/components/schemas/FormulaValue" } }
+        vessel_overrides: { type: object, additionalProperties: { $ref: "#/components/schemas/FormulaValue" } }
+        overrides: { type: array, maxItems: 200, items: { $ref: "#/components/schemas/YardLineOverride" } }
+        manual_lines: { type: array, maxItems: 50, items: { $ref: "#/components/schemas/YardManualLine" } }
+        valid_until: { $ref: "#/components/schemas/IsoDate" }
+        billing_mode: { $ref: "#/components/schemas/YardBillingMode" }
+        deposit_bp: { type: [integer, "null"], format: int64, minimum: 0, maximum: 10000 }
+        deposit_cents: { type: [integer, "null"], format: int64, minimum: 0 }
+        conditions: { type: string, maxLength: 4000 }
+        notes: { type: string, maxLength: 2000 }
+        planned_start_on: { type: [string, "null"], format: date }
+        planned_delivery_on: { type: [string, "null"], format: date }
+
+    YardQuoteLine:
+      type: object
+      required: [seq, source, item_id, item_code, work_type_id, description, qty_milli, unit_cents, discount_cents,
+                 qty_overridden, price_overridden, manual, net_cents, vat_cents, gross_cents, vat_rate_bp,
+                 price_includes_vat, estimated_hours_milli, issues]
+      properties:
+        seq: { type: integer }
+        source: { $ref: "#/components/schemas/YardLineSource" }
+        package_id: { type: string }
+        package_version: { type: integer }
+        package_line_seq: { type: integer }
+        item_id: { type: string }
+        item_code: { type: string }
+        item_type: { $ref: "#/components/schemas/ItemType" }
+        unit: { $ref: "#/components/schemas/ItemUnit" }
+        work_type_id: { type: string }
+        qualification_id: { type: string }
+        description: { type: string }
+        qty_formula: { type: string }
+        price_formula: { type: string }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        unit_cents: { $ref: "#/components/schemas/Cents" }
+        discount_cents: { $ref: "#/components/schemas/Cents" }
+        qty_overridden: { type: boolean }
+        price_overridden: { type: boolean }
+        manual: { type: boolean, description: qty_overridden or price_overridden or source manual (badge "manuale") }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        vat_rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+        vat_nature: { $ref: "#/components/schemas/VatNature" }
+        price_includes_vat: { type: boolean }
+        estimated_hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        price_list_id: { type: string }
+        task: { $ref: "#/components/schemas/WorkPackageTask" }
+        issues: { type: array, items: { $ref: "#/components/schemas/FormulaIssue" } }
+
+    YardVatBucket:
+      type: object
+      required: [vat_rate_bp, net_cents, vat_cents, gross_cents]
+      properties:
+        vat_rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+        vat_nature: { $ref: "#/components/schemas/VatNature" }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+
+    YardQualificationHours:
+      type: object
+      required: [qualification_id, hours_milli]
+      properties:
+        qualification_id: { type: string }
+        hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        cost_cents: { $ref: "#/components/schemas/Cents", description: Estimate at the qualification default cost }
+
+    YardQuoteTotals:
+      type: object
+      required: [net_cents, vat_cents, gross_cents, deposit_amount_cents, vat]
+      properties:
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        deposit_amount_cents: { $ref: "#/components/schemas/Cents" }
+        vat: { type: array, items: { $ref: "#/components/schemas/YardVatBucket" } }
+
+    YardVariableInput:
+      description: A variable asked in step 3 (job variables and missing vessel data)
+      type: object
+      required: [name, source, kind, unit, label, required]
+      properties:
+        name: { type: string }
+        source: { $ref: "#/components/schemas/FormulaVariableSource" }
+        kind: { $ref: "#/components/schemas/FormulaVariableKind" }
+        unit: { $ref: "#/components/schemas/FormulaUnit" }
+        label: { $ref: "#/components/schemas/I18nText" }
+        min_milli: { $ref: "#/components/schemas/QtyMilli" }
+        max_milli: { $ref: "#/components/schemas/QtyMilli" }
+        default: { $ref: "#/components/schemas/FormulaValue" }
+        enum_values: { type: array, items: { type: string } }
+        required: { type: boolean }
+        value: { $ref: "#/components/schemas/FormulaValue" }
+
+    YardQuotePreview:
+      type: object
+      required: [lines, totals, estimated_hours, variables, issues, blocking]
+      properties:
+        lines: { type: array, items: { $ref: "#/components/schemas/YardQuoteLine" } }
+        totals: { $ref: "#/components/schemas/YardQuoteTotals" }
+        estimated_hours: { type: array, items: { $ref: "#/components/schemas/YardQualificationHours" } }
+        variables: { type: array, items: { $ref: "#/components/schemas/YardVariableInput" } }
+        issues: { type: array, items: { $ref: "#/components/schemas/FormulaIssue" } }
+        blocking: { type: boolean, description: Issues that block sending (no_price, missing_variable, ...) }
+
+    YardQuote:
+      type: object
+      required: [id, number, kind, customer_id, vessel_id, status, quoted_on, valid_until, expires_at, billing_mode,
+                 conditions, notes, lines, totals, estimated_hours, issues, blocking, language_version, version,
+                 created_at, updated_at]
+      properties:
+        id: { type: string }
+        number: { type: string, description: PC<year>-NNNNNN }
+        kind: { $ref: "#/components/schemas/YardQuoteKind" }
+        work_order_id: { type: string }
+        customer_id: { type: string }
+        vessel_id: { type: string }
+        status: { $ref: "#/components/schemas/YardQuoteStatus" }
+        quoted_on: { $ref: "#/components/schemas/IsoDate" }
+        valid_until: { $ref: "#/components/schemas/IsoDate" }
+        expires_at: { type: string, format: date-time }
+        billing_mode: { $ref: "#/components/schemas/YardBillingMode" }
+        deposit_bp: { $ref: "#/components/schemas/BasisPoints" }
+        deposit_cents: { $ref: "#/components/schemas/Cents" }
+        conditions: { type: string }
+        notes: { type: string }
+        planned_start_on: { $ref: "#/components/schemas/IsoDate" }
+        planned_delivery_on: { $ref: "#/components/schemas/IsoDate" }
+        job_inputs: { type: object, additionalProperties: { $ref: "#/components/schemas/FormulaValue" } }
+        vessel_overrides: { type: object, additionalProperties: { $ref: "#/components/schemas/FormulaValue" } }
+        lines: { type: array, items: { $ref: "#/components/schemas/YardQuoteLine" } }
+        totals: { $ref: "#/components/schemas/YardQuoteTotals" }
+        estimated_hours: { type: array, items: { $ref: "#/components/schemas/YardQualificationHours" } }
+        issues: { type: array, items: { $ref: "#/components/schemas/FormulaIssue" } }
+        blocking: { type: boolean }
+        language_version: { type: integer }
+        sent_at: { type: string, format: date-time }
+        decided_at: { type: string, format: date-time }
+        accepted_via: { type: string, enum: [panel, link] }
+        decline_reason: { type: string }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    YardQuotePage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/YardQuote" } }
+        next_cursor: { type: [string, "null"] }
+
+    YardQuoteSendInput:
+      type: object
+      properties:
+        manual: { type: boolean, description: Generate PDF and link without sending the email }
+        locale: { $ref: "#/components/schemas/Locale" }
+
+    YardQuoteSendResult:
+      type: object
+      required: [quote]
+      properties:
+        quote: { $ref: "#/components/schemas/YardQuote" }
+        document_id: { type: string }
+        link_url: { type: string, description: Returned once (the token is stored hashed) }
+        message_id: { type: string }
+
+    YardQuoteAcceptResult:
+      type: object
+      required: [quote, work_order_id]
+      properties:
+        quote: { $ref: "#/components/schemas/YardQuote" }
+        work_order_id: { type: string }
+        work_order_number: { type: string }
+        advance_charge_id: { type: string }
+
+    YardQuoteDeclineInput:
+      type: object
+      properties:
+        reason: { type: string, maxLength: 500 }
+
+    PublicYardQuoteLine:
+      type: object
+      required: [description, qty_milli, unit_cents, net_cents, vat_rate_bp]
+      properties:
+        description: { type: string }
+        unit: { $ref: "#/components/schemas/ItemUnit" }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        unit_cents: { $ref: "#/components/schemas/Cents" }
+        discount_cents: { $ref: "#/components/schemas/Cents" }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+
+    PublicYardQuote:
+      description: The yard quote of a link (subject_type yard_quote); customer-facing data only
+      type: object
+      required: [number, kind, status, valid_until, vessel_name, lines, net_cents, vat_cents, gross_cents,
+                 deposit_amount_cents, billing_mode, conditions, can_accept]
+      properties:
+        number: { type: string }
+        kind: { $ref: "#/components/schemas/YardQuoteKind" }
+        status: { $ref: "#/components/schemas/YardQuoteStatus" }
+        valid_until: { $ref: "#/components/schemas/IsoDate" }
+        vessel_name: { type: string }
+        work_order_number: { type: string, description: Variation quotes only }
+        lines: { type: array, items: { $ref: "#/components/schemas/PublicYardQuoteLine" } }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        deposit_amount_cents: { $ref: "#/components/schemas/Cents" }
+        billing_mode: { $ref: "#/components/schemas/YardBillingMode" }
+        conditions: { type: string }
+        planned_start_on: { $ref: "#/components/schemas/IsoDate" }
+        planned_delivery_on: { $ref: "#/components/schemas/IsoDate" }
+        can_accept: { type: boolean }
+
+    PublicYardQuoteAccept:
+      type: object
+      properties:
+        accept_conditions: { type: boolean }
+
+    PublicYardQuoteAcceptResult:
+      type: object
+      required: [quote_number]
+      properties:
+        quote_number: { type: string }
+        work_order_number: { type: string }
+
+    # Work orders
+
+    WorkOrderStatus:
+      type: string
+      enum: [planned, in_progress, on_hold, completed, delivered, invoiced, cancelled]
+
+    WorkOrderAction:
+      type: string
+      enum: [start, hold, resume, complete, reopen, deliver, cancel]
+
+    WorkOrderLine:
+      type: object
+      required: [id, seq, origin, item_id, work_type_id, description, qty_milli, unit_cents, discount_cents, net_cents,
+                 vat_cents, gross_cents, vat_rate_bp, price_includes_vat, unit_cost_cents, estimated_hours_milli]
+      properties:
+        id: { type: string }
+        seq: { type: integer }
+        origin: { type: string, enum: [quote, variation, manual] }
+        variation_id: { type: string }
+        item_id: { type: string }
+        item_code: { type: string }
+        item_type: { $ref: "#/components/schemas/ItemType" }
+        work_type_id: { type: string }
+        qualification_id: { type: string }
+        description: { type: string }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        unit_cents: { $ref: "#/components/schemas/Cents" }
+        discount_cents: { $ref: "#/components/schemas/Cents" }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        vat_rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+        vat_nature: { $ref: "#/components/schemas/VatNature" }
+        price_includes_vat: { type: boolean }
+        unit_cost_cents: { $ref: "#/components/schemas/Cents" }
+        estimated_hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        consumed_qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+
+    WorkOrder:
+      type: object
+      required: [id, number, customer_id, vessel_id, status, billing_mode, completion_bp, position_note, notes, lines,
+                 hours_estimated_milli, hours_approved_milli, warnings, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        number: { type: string, description: C<year>-NNNNNN }
+        quote_id: { type: string }
+        customer_id: { type: string }
+        vessel_id: { type: string }
+        vessel_name: { type: string }
+        work_type_id: { type: string }
+        responsible_user_id: { type: string }
+        planned_start_on: { $ref: "#/components/schemas/IsoDate" }
+        planned_delivery_on: { $ref: "#/components/schemas/IsoDate" }
+        allocation_id: { type: string }
+        position_note: { type: string }
+        status: { $ref: "#/components/schemas/WorkOrderStatus" }
+        billing_mode: { $ref: "#/components/schemas/YardBillingMode" }
+        deposit_cents: { $ref: "#/components/schemas/Cents" }
+        completion_bp: { $ref: "#/components/schemas/BasisPoints" }
+        notes: { type: string }
+        hold_reason: { type: string }
+        lines: { type: array, items: { $ref: "#/components/schemas/WorkOrderLine" } }
+        hours_estimated_milli: { $ref: "#/components/schemas/QtyMilli" }
+        hours_approved_milli: { $ref: "#/components/schemas/QtyMilli" }
+        warnings: { type: array, items: { type: string }, description: "e.g. tasks_incomplete after complete" }
+        started_at: { type: string, format: date-time }
+        completed_at: { type: string, format: date-time }
+        delivered_at: { type: string, format: date-time }
+        invoiced_at: { type: string, format: date-time }
+        cancelled_at: { type: string, format: date-time }
+        cancel_reason: { type: string }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    WorkOrderPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/WorkOrder" } }
+        next_cursor: { type: [string, "null"] }
+
+    WorkOrderInput:
+      type: object
+      required: [customer_id, vessel_id]
+      properties:
+        customer_id: { type: string, maxLength: 36 }
+        vessel_id: { type: string, maxLength: 36 }
+        work_type_id: { type: string, maxLength: 36 }
+        responsible_user_id: { type: string, maxLength: 36 }
+        planned_start_on: { $ref: "#/components/schemas/IsoDate" }
+        planned_delivery_on: { $ref: "#/components/schemas/IsoDate" }
+        allocation_id: { type: string, maxLength: 36 }
+        position_note: { type: string, maxLength: 200 }
+        billing_mode: { $ref: "#/components/schemas/YardBillingMode" }
+        notes: { type: string, maxLength: 2000 }
+        selections: { type: array, maxItems: 50, items: { $ref: "#/components/schemas/YardQuoteSelection" } }
+        job_inputs: { type: object, additionalProperties: { $ref: "#/components/schemas/FormulaValue" } }
+        manual_lines: { type: array, maxItems: 50, items: { $ref: "#/components/schemas/YardManualLine" } }
+
+    WorkOrderPatch:
+      type: object
+      properties:
+        work_type_id: { type: [string, "null"], maxLength: 36 }
+        responsible_user_id: { type: [string, "null"], maxLength: 36 }
+        planned_start_on: { type: [string, "null"], format: date }
+        planned_delivery_on: { type: [string, "null"], format: date }
+        allocation_id: { type: [string, "null"], maxLength: 36 }
+        position_note: { type: string, maxLength: 200 }
+        notes: { type: string, maxLength: 2000 }
+        consumed:
+          description: Actual quantity of service/product budget lines (default the budget quantity)
+          type: array
+          maxItems: 200
+          items:
+            type: object
+            required: [line_id, consumed_qty_milli]
+            properties:
+              line_id: { type: string, maxLength: 36 }
+              consumed_qty_milli: { type: [integer, "null"], format: int64, minimum: 0 }
+
+    WorkOrderTransition:
+      type: object
+      required: [action]
+      properties:
+        action: { $ref: "#/components/schemas/WorkOrderAction" }
+        reason: { type: string, maxLength: 500 }
+
+    YardBoardCard:
+      type: object
+      required: [work_order_id, number, status, vessel_id, completion_bp, hours_estimated_milli, hours_approved_milli]
+      properties:
+        work_order_id: { type: string }
+        number: { type: string }
+        status: { $ref: "#/components/schemas/WorkOrderStatus" }
+        vessel_id: { type: string }
+        vessel_name: { type: string }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        completion_bp: { $ref: "#/components/schemas/BasisPoints" }
+        planned_delivery_on: { $ref: "#/components/schemas/IsoDate" }
+        delay_days: { type: integer }
+        hours_estimated_milli: { $ref: "#/components/schemas/QtyMilli" }
+        hours_approved_milli: { $ref: "#/components/schemas/QtyMilli" }
+        at_risk: { type: boolean }
+
+    YardBoardColumn:
+      type: object
+      required: [status, cards]
+      properties:
+        status: { $ref: "#/components/schemas/WorkOrderStatus" }
+        cards: { type: array, items: { $ref: "#/components/schemas/YardBoardCard" } }
+
+    YardBoard:
+      type: object
+      required: [today, columns]
+      properties:
+        today: { $ref: "#/components/schemas/IsoDate" }
+        columns: { type: array, items: { $ref: "#/components/schemas/YardBoardColumn" } }
+
+    WorkTaskStatus:
+      type: string
+      enum: [todo, in_progress, done, cancelled]
+
+    WorkTaskChecklistItem:
+      type: object
+      required: [key, label, done]
+      properties:
+        key: { type: string, maxLength: 32 }
+        label: { type: string, maxLength: 200 }
+        done: { type: boolean }
+
+    WorkTask:
+      type: object
+      required: [id, work_order_id, seq, title, estimated_hours_milli, status, progress_bp, checklist, depends_on,
+                 hours_approved_milli, hours_assigned_milli, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        work_order_id: { type: string }
+        seq: { type: integer }
+        title: { type: string }
+        qualification_id: { type: string }
+        work_type_id: { type: string }
+        estimated_hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        status: { $ref: "#/components/schemas/WorkTaskStatus" }
+        progress_bp: { $ref: "#/components/schemas/BasisPoints" }
+        checklist: { type: array, items: { $ref: "#/components/schemas/WorkTaskChecklistItem" } }
+        depends_on: { type: array, items: { type: string } }
+        planned_from: { $ref: "#/components/schemas/IsoDate" }
+        planned_to: { $ref: "#/components/schemas/IsoDate" }
+        source_line_id: { type: string }
+        hours_approved_milli: { $ref: "#/components/schemas/QtyMilli" }
+        hours_assigned_milli: { $ref: "#/components/schemas/QtyMilli" }
+        warnings: { type: array, items: { type: string } }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    WorkTaskList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/WorkTask" } }
+
+    WorkTaskInput:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        qualification_id: { type: string, maxLength: 36 }
+        work_type_id: { type: string, maxLength: 36 }
+        estimated_hours_milli: { type: integer, format: int64, minimum: 0 }
+        checklist: { type: array, maxItems: 40, items: { type: string, maxLength: 200 } }
+        depends_on: { type: array, maxItems: 50, items: { type: string, maxLength: 36 } }
+
+    WorkTaskPatch:
+      type: object
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        qualification_id: { type: [string, "null"], maxLength: 36 }
+        work_type_id: { type: [string, "null"], maxLength: 36 }
+        estimated_hours_milli: { type: integer, format: int64, minimum: 0 }
+        status: { $ref: "#/components/schemas/WorkTaskStatus" }
+        checklist: { type: array, maxItems: 40, items: { $ref: "#/components/schemas/WorkTaskChecklistItem" } }
+
+    TaskDependenciesInput:
+      type: object
+      required: [depends_on]
+      properties:
+        depends_on: { type: array, maxItems: 50, items: { type: string, maxLength: 36 } }
+
+    TaskProgressInput:
+      type: object
+      required: [client_ref]
+      properties:
+        client_ref: { type: string, minLength: 8, maxLength: 64 }
+        progress_bp: { type: integer, format: int64, minimum: 0, maximum: 10000 }
+        done: { type: boolean }
+        checklist:
+          type: array
+          maxItems: 40
+          items:
+            type: object
+            required: [key, done]
+            properties:
+              key: { type: string, maxLength: 32 }
+              done: { type: boolean }
+        recorded_at: { type: string, format: date-time, description: Device instant (offline window of 29.2) }
+
+    WorkTaskFile:
+      type: object
+      required: [file_id, kind, content_type, created_at]
+      properties:
+        file_id: { type: string }
+        kind: { type: string, enum: [photo, document] }
+        content_type: { type: string }
+        created_at: { type: string, format: date-time }
+
+    WorkTaskFileList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/WorkTaskFile" } }
+
+    # Time entries
+
+    TimesheetStatus:
+      type: string
+      enum: [running, submitted, approved, rejected, voided]
+
+    Timesheet:
+      type: object
+      required: [id, employee_id, work_order_id, work_date, hours_milli, source, status, note, late, version, created_at,
+                 updated_at]
+      properties:
+        id: { type: string }
+        employee_id: { type: string }
+        work_order_id: { type: string }
+        work_order_number: { type: string }
+        task_id: { type: string }
+        work_date: { $ref: "#/components/schemas/IsoDate" }
+        started_at: { type: string, format: date-time }
+        ended_at: { type: string, format: date-time }
+        hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        source: { type: string, enum: [timer, manual] }
+        status: { $ref: "#/components/schemas/TimesheetStatus" }
+        cost_rate_cents: { $ref: "#/components/schemas/Cents" }
+        cost_cents: { $ref: "#/components/schemas/Cents" }
+        note: { type: string }
+        late: { type: boolean }
+        approved_at: { type: string, format: date-time }
+        reject_reason: { type: string }
+        voids_id: { type: string }
+        warnings: { type: array, items: { type: string }, description: "e.g. predecessors_not_done" }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    TimesheetPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Timesheet" } }
+        next_cursor: { type: [string, "null"] }
+
+    TimesheetList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Timesheet" } }
+
+    TimerStartInput:
+      type: object
+      required: [client_ref]
+      properties:
+        client_ref: { type: string, minLength: 8, maxLength: 64 }
+        task_id: { type: string, maxLength: 36 }
+        work_order_id: { type: string, maxLength: 36 }
+        employee_id: { type: string, maxLength: 36, description: yard.manage only; default the caller's employee }
+        started_at: { type: string, format: date-time }
+
+    TimerStopInput:
+      type: object
+      properties:
+        client_ref: { type: string, minLength: 8, maxLength: 64 }
+        ended_at: { type: string, format: date-time }
+        note: { type: string, maxLength: 500 }
+
+    TimeEntryInput:
+      type: object
+      required: [client_ref]
+      properties:
+        client_ref: { type: string, minLength: 8, maxLength: 64 }
+        task_id: { type: string, maxLength: 36 }
+        work_order_id: { type: string, maxLength: 36 }
+        employee_id: { type: string, maxLength: 36, description: yard.manage only; default the caller's employee }
+        work_date: { $ref: "#/components/schemas/IsoDate" }
+        hours_milli: { type: integer, format: int64, minimum: 250, maximum: 16000, multipleOf: 250 }
+        started_at: { type: string, format: date-time }
+        ended_at: { type: string, format: date-time }
+        note: { type: string, maxLength: 500 }
+
+    TimeEntryPatch:
+      type: object
+      properties:
+        task_id: { type: [string, "null"], maxLength: 36 }
+        work_date: { $ref: "#/components/schemas/IsoDate" }
+        hours_milli: { type: integer, format: int64, minimum: 250, maximum: 16000, multipleOf: 250 }
+        started_at: { type: string, format: date-time }
+        ended_at: { type: string, format: date-time }
+        note: { type: string, maxLength: 500 }
+
+    TimesheetApproveInput:
+      type: object
+      required: [entries]
+      properties:
+        entries:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            type: object
+            required: [id, version]
+            properties:
+              id: { type: string, maxLength: 36 }
+              version: { type: integer, format: int64 }
+
+    TimesheetRejectInput:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 500 }
+
+    TimesheetVoidInput:
+      type: object
+      properties:
+        reason: { type: string, maxLength: 500 }
+
+    MyYardAssignment:
+      type: object
+      required: [assignment_id, task_id, task_title, work_order_id, work_order_number, work_date, hours_milli, task_status,
+                 progress_bp]
+      properties:
+        assignment_id: { type: string }
+        task_id: { type: string }
+        task_title: { type: string }
+        work_order_id: { type: string }
+        work_order_number: { type: string }
+        vessel_name: { type: string }
+        position: { type: string }
+        work_date: { $ref: "#/components/schemas/IsoDate" }
+        hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        task_status: { $ref: "#/components/schemas/WorkTaskStatus" }
+        progress_bp: { $ref: "#/components/schemas/BasisPoints" }
+        checklist: { type: array, items: { $ref: "#/components/schemas/WorkTaskChecklistItem" } }
+        task_version: { type: integer, format: int64 }
+
+    MyYardWork:
+      type: object
+      required: [today, assignments]
+      properties:
+        employee_id: { type: string, description: Absent when the caller has no employee }
+        today: { $ref: "#/components/schemas/IsoDate" }
+        assignments: { type: array, items: { $ref: "#/components/schemas/MyYardAssignment" } }
+        running_timer: { $ref: "#/components/schemas/Timesheet" }
+
+    # Materials and external costs
+
+    StockMovement:
+      type: object
+      required: [id, work_order_id, item_id, kind, qty_milli, unit_cost_cents, unit_price_cents, price_overridden, moved_on,
+                 note, late, created_at]
+      properties:
+        id: { type: string }
+        work_order_id: { type: string }
+        task_id: { type: string }
+        item_id: { type: string }
+        item_code: { type: string }
+        kind: { type: string, enum: [issue, return] }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        unit_cost_cents: { $ref: "#/components/schemas/Cents" }
+        unit_price_cents: { $ref: "#/components/schemas/Cents" }
+        price_overridden: { type: boolean }
+        moved_on: { $ref: "#/components/schemas/IsoDate" }
+        note: { type: string }
+        late: { type: boolean }
+        created_at: { type: string, format: date-time }
+
+    StockMovementPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/StockMovement" } }
+        next_cursor: { type: [string, "null"] }
+
+    StockMovementInput:
+      type: object
+      required: [work_order_id, item_id, kind, qty_milli]
+      properties:
+        work_order_id: { type: string, maxLength: 36 }
+        task_id: { type: string, maxLength: 36 }
+        item_id: { type: string, maxLength: 36 }
+        kind: { type: string, enum: [issue, return] }
+        qty_milli: { type: integer, format: int64, minimum: 1 }
+        unit_cost_cents: { type: integer, format: int64, minimum: 0 }
+        unit_price_cents: { type: integer, format: int64, minimum: 0 }
+        moved_on: { $ref: "#/components/schemas/IsoDate" }
+        note: { type: string, maxLength: 500 }
+
+    ExternalCost:
+      type: object
+      required: [id, work_order_id, supplier_name, reference, incurred_on, description, cost_cents, billable, price_cents,
+                 late, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        work_order_id: { type: string }
+        supplier_name: { type: string }
+        reference: { type: string }
+        incurred_on: { $ref: "#/components/schemas/IsoDate" }
+        description: { type: string }
+        work_type_id: { type: string }
+        cost_cents: { $ref: "#/components/schemas/Cents" }
+        billable: { type: boolean }
+        price_cents: { $ref: "#/components/schemas/Cents" }
+        item_id: { type: string }
+        late: { type: boolean }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    ExternalCostList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/ExternalCost" } }
+
+    ExternalCostInput:
+      type: object
+      required: [supplier_name, cost_cents]
+      properties:
+        supplier_name: { type: string, minLength: 1, maxLength: 100 }
+        reference: { type: string, maxLength: 60 }
+        incurred_on: { $ref: "#/components/schemas/IsoDate" }
+        description: { type: string, maxLength: 500 }
+        work_type_id: { type: string, maxLength: 36 }
+        cost_cents: { type: integer, format: int64, minimum: 1 }
+        billable: { type: boolean }
+        price_cents: { type: integer, format: int64, minimum: 0, description: Default cost plus the markup }
+        item_id: { type: string, maxLength: 36 }
+
+    ExternalCostPatch:
+      type: object
+      properties:
+        supplier_name: { type: string, minLength: 1, maxLength: 100 }
+        reference: { type: string, maxLength: 60 }
+        incurred_on: { $ref: "#/components/schemas/IsoDate" }
+        description: { type: string, maxLength: 500 }
+        work_type_id: { type: [string, "null"], maxLength: 36 }
+        cost_cents: { type: integer, format: int64, minimum: 1 }
+        billable: { type: boolean }
+        price_cents: { type: integer, format: int64, minimum: 0 }
+        item_id: { type: [string, "null"], maxLength: 36 }
+
+    # Final account and billing
+
+    FinalAccountSource:
+      type: string
+      enum: [labour, material, service, external]
+
+    FinalAccountLine:
+      type: object
+      required: [key, source, work_type_id, qty_milli, revenue_cents, cost_cents, margin_cents, vat_rate_bp, vat_cents,
+                 gross_cents, budget_qty_milli, budget_net_cents, delta_net_cents]
+      properties:
+        key: { type: string, description: "item:<item_id>|wt:<work_type_id> (external: ext:<id>)" }
+        source: { $ref: "#/components/schemas/FinalAccountSource" }
+        item_id: { type: string }
+        item_code: { type: string }
+        qualification_id: { type: string }
+        work_type_id: { type: string }
+        description: { type: string }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        revenue_cents: { $ref: "#/components/schemas/Cents" }
+        cost_cents: { $ref: "#/components/schemas/Cents" }
+        margin_cents: { $ref: "#/components/schemas/Cents" }
+        margin_bp: { type: [integer, "null"], format: int64 }
+        vat_rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+        vat_nature: { $ref: "#/components/schemas/VatNature" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        budget_qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        budget_net_cents: { $ref: "#/components/schemas/Cents" }
+        delta_net_cents: { $ref: "#/components/schemas/Cents" }
+
+    FinalAccountTotals:
+      type: object
+      required: [revenue_cents, cost_cents, margin_cents, revenue_labour_cents, revenue_material_cents,
+                 revenue_service_cents, revenue_external_cents, cost_labour_cents, cost_material_cents, cost_service_cents,
+                 cost_external_cents, hours_labour_milli, vat_cents, gross_cents]
+      properties:
+        revenue_cents: { $ref: "#/components/schemas/Cents" }
+        cost_cents: { $ref: "#/components/schemas/Cents" }
+        margin_cents: { $ref: "#/components/schemas/Cents" }
+        margin_bp: { type: [integer, "null"], format: int64 }
+        revenue_labour_cents: { $ref: "#/components/schemas/Cents" }
+        revenue_material_cents: { $ref: "#/components/schemas/Cents" }
+        revenue_service_cents: { $ref: "#/components/schemas/Cents" }
+        revenue_external_cents: { $ref: "#/components/schemas/Cents" }
+        cost_labour_cents: { $ref: "#/components/schemas/Cents" }
+        cost_material_cents: { $ref: "#/components/schemas/Cents" }
+        cost_service_cents: { $ref: "#/components/schemas/Cents" }
+        cost_external_cents: { $ref: "#/components/schemas/Cents" }
+        hours_labour_milli: { $ref: "#/components/schemas/QtyMilli" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+
+    FinalAccountWorkType:
+      type: object
+      required: [work_type_id, revenue_cents, cost_cents, margin_cents]
+      properties:
+        work_type_id: { type: string }
+        revenue_cents: { $ref: "#/components/schemas/Cents" }
+        cost_cents: { $ref: "#/components/schemas/Cents" }
+        margin_cents: { $ref: "#/components/schemas/Cents" }
+        margin_bp: { type: [integer, "null"], format: int64 }
+
+    FinalAccount:
+      type: object
+      required: [work_order_id, billing_mode, lines, totals, by_work_type, vat, quote_net_cents, delta_net_cents,
+                 charged_gross_cents, remaining_gross_cents]
+      properties:
+        work_order_id: { type: string }
+        billing_mode: { $ref: "#/components/schemas/YardBillingMode" }
+        lines: { type: array, items: { $ref: "#/components/schemas/FinalAccountLine" } }
+        totals: { $ref: "#/components/schemas/FinalAccountTotals" }
+        by_work_type: { type: array, items: { $ref: "#/components/schemas/FinalAccountWorkType" } }
+        vat: { type: array, items: { $ref: "#/components/schemas/YardVatBucket" } }
+        quote_net_cents: { $ref: "#/components/schemas/Cents" }
+        delta_net_cents: { $ref: "#/components/schemas/Cents" }
+        charged_gross_cents: { $ref: "#/components/schemas/Cents" }
+        remaining_gross_cents: { $ref: "#/components/schemas/Cents" }
+
+    WorkOrderBillingKind:
+      type: string
+      enum: [advance, progress, final, adjustment]
+
+    WorkOrderBilling:
+      type: object
+      required: [id, work_order_id, seq, kind, status, gross_cents, created_at]
+      properties:
+        id: { type: string }
+        work_order_id: { type: string }
+        seq: { type: integer }
+        kind: { $ref: "#/components/schemas/WorkOrderBillingKind" }
+        status: { type: string, enum: [charged, skipped_zero] }
+        charge_id: { type: string }
+        charge_number: { type: string }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        percent_bp: { $ref: "#/components/schemas/BasisPoints" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        created_at: { type: string, format: date-time }
+
+    WorkOrderBillingList:
+      type: object
+      required: [items, charged_gross_cents]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/WorkOrderBilling" } }
+        charged_gross_cents: { $ref: "#/components/schemas/Cents" }
+
+    WorkOrderBillingInput:
+      type: object
+      required: [kind]
+      properties:
+        kind: { type: string, enum: [progress, final, adjustment] }
+        percent_bp: { type: integer, format: int64, minimum: 1, maximum: 10000 }
+        amount_cents: { type: integer, format: int64, minimum: 1 }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+
+    WorkOrderBillingPreviewLine:
+      type: object
+      required: [plan_key, description, net_cents, vat_cents, gross_cents, vat_rate_bp]
+      properties:
+        plan_key: { type: string }
+        description: { type: string }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        vat_rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+
+    WorkOrderBillingResult:
+      type: object
+      required: [kind, gross_cents, lines, dry_run]
+      properties:
+        dry_run: { type: boolean }
+        kind: { $ref: "#/components/schemas/WorkOrderBillingKind" }
+        gross_cents: { $ref: "#/components/schemas/Cents", description: Negative for a refund adjustment }
+        lines: { type: array, items: { $ref: "#/components/schemas/WorkOrderBillingPreviewLine" } }
+        billing: { $ref: "#/components/schemas/WorkOrderBilling" }
+        charge_id: { type: string }
+        corrects_charge_id: { type: string }
+
+    # Planner
+
+    EmployeeCalendarDay:
+      type: object
+      required: [weekday, minutes]
+      properties:
+        weekday: { type: integer, minimum: 1, maximum: 7, description: ISO weekday, 1 = Monday }
+        minutes: { type: integer, minimum: 0, maximum: 960 }
+
+    Employee:
+      type: object
+      required: [id, code, first_name, last_name, department, hourly_cost_cents, active, qualification_ids, calendar,
+                 version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        first_name: { type: string }
+        last_name: { type: string }
+        user_id: { type: string }
+        department: { type: string }
+        hourly_cost_cents: { $ref: "#/components/schemas/Cents" }
+        active: { type: boolean }
+        qualification_ids: { type: array, items: { type: string } }
+        calendar: { type: array, items: { $ref: "#/components/schemas/EmployeeCalendarDay" } }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    EmployeePage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Employee" } }
+        next_cursor: { type: [string, "null"] }
+
+    EmployeeInput:
+      type: object
+      required: [code, first_name, last_name]
+      properties:
+        code: { type: string, pattern: "^[A-Za-z0-9_-]{1,16}$" }
+        first_name: { type: string, minLength: 1, maxLength: 60 }
+        last_name: { type: string, minLength: 1, maxLength: 60 }
+        user_id: { type: string, maxLength: 36 }
+        department: { type: string, maxLength: 40 }
+        hourly_cost_cents: { type: integer, format: int64, minimum: 0 }
+        active: { type: boolean }
+        qualification_ids: { type: array, maxItems: 20, items: { type: string, maxLength: 36 } }
+        calendar: { type: array, maxItems: 7, items: { $ref: "#/components/schemas/EmployeeCalendarDay" } }
+
+    EmployeePatch:
+      type: object
+      properties:
+        code: { type: string, pattern: "^[A-Za-z0-9_-]{1,16}$" }
+        first_name: { type: string, minLength: 1, maxLength: 60 }
+        last_name: { type: string, minLength: 1, maxLength: 60 }
+        user_id: { type: [string, "null"], maxLength: 36 }
+        department: { type: string, maxLength: 40 }
+        hourly_cost_cents: { type: integer, format: int64, minimum: 0 }
+        active: { type: boolean }
+        qualification_ids: { type: array, maxItems: 20, items: { type: string, maxLength: 36 } }
+
+    EmployeeCalendarInput:
+      type: object
+      required: [days]
+      properties:
+        days: { type: array, maxItems: 7, items: { $ref: "#/components/schemas/EmployeeCalendarDay" } }
+
+    AbsenceKind:
+      type: string
+      enum: [vacation, sick, leave, other]
+
+    Absence:
+      type: object
+      required: [id, employee_id, from_on, to_on, kind, note, created_at]
+      properties:
+        id: { type: string }
+        employee_id: { type: string }
+        from_on: { $ref: "#/components/schemas/IsoDate" }
+        to_on: { $ref: "#/components/schemas/IsoDate" }
+        kind: { $ref: "#/components/schemas/AbsenceKind" }
+        minutes_per_day: { type: integer, description: Absent = whole day }
+        note: { type: string }
+        created_at: { type: string, format: date-time }
+
+    AbsenceList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Absence" } }
+
+    AbsenceInput:
+      type: object
+      required: [from_on, to_on, kind]
+      properties:
+        from_on: { $ref: "#/components/schemas/IsoDate" }
+        to_on: { $ref: "#/components/schemas/IsoDate" }
+        kind: { $ref: "#/components/schemas/AbsenceKind" }
+        minutes_per_day: { type: integer, minimum: 1, maximum: 960 }
+        note: { type: string, maxLength: 200 }
+
+    Assignment:
+      type: object
+      required: [id, task_id, work_order_id, employee_id, work_date, hours_milli, forced_qualification, overload, version]
+      properties:
+        id: { type: string }
+        task_id: { type: string }
+        work_order_id: { type: string }
+        employee_id: { type: string }
+        work_date: { $ref: "#/components/schemas/IsoDate" }
+        hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        forced_qualification: { type: boolean }
+        overload: { type: boolean }
+        version: { type: integer, format: int64 }
+
+    PlannerDay:
+      type: object
+      required: [date, capacity_milli, assigned_milli, overload]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        capacity_milli: { $ref: "#/components/schemas/QtyMilli" }
+        assigned_milli: { $ref: "#/components/schemas/QtyMilli" }
+        actual_milli: { $ref: "#/components/schemas/QtyMilli" }
+        load_bp: { type: [integer, "null"], format: int64 }
+        overload: { type: boolean }
+        absence: { $ref: "#/components/schemas/AbsenceKind" }
+
+    PlannerRow:
+      type: object
+      required: [employee_id, code, display_name, department, qualification_ids, days]
+      properties:
+        employee_id: { type: string }
+        code: { type: string }
+        display_name: { type: string }
+        department: { type: string }
+        qualification_ids: { type: array, items: { type: string } }
+        days: { type: array, items: { $ref: "#/components/schemas/PlannerDay" } }
+
+    PlannerTask:
+      type: object
+      required: [task_id, work_order_id, work_order_number, title, estimated_hours_milli, remaining_milli, assigned_milli,
+                 progress_bp, depends_on, version]
+      properties:
+        task_id: { type: string }
+        work_order_id: { type: string }
+        work_order_number: { type: string }
+        vessel_name: { type: string }
+        title: { type: string }
+        qualification_id: { type: string }
+        estimated_hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        remaining_milli: { $ref: "#/components/schemas/QtyMilli" }
+        assigned_milli: { $ref: "#/components/schemas/QtyMilli" }
+        progress_bp: { $ref: "#/components/schemas/BasisPoints" }
+        planned_delivery_on: { $ref: "#/components/schemas/IsoDate" }
+        depends_on: { type: array, items: { type: string } }
+        version: { type: integer, format: int64 }
+
+    Planner:
+      type: object
+      required: [from, to, today, rows, assignments, tasks]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        today: { $ref: "#/components/schemas/IsoDate" }
+        rows: { type: array, items: { $ref: "#/components/schemas/PlannerRow" } }
+        assignments: { type: array, items: { $ref: "#/components/schemas/Assignment" } }
+        tasks: { type: array, items: { $ref: "#/components/schemas/PlannerTask" }, description: Open tasks of open orders (tray "Da pianificare" = remaining > assigned) }
+
+    AssignmentChange:
+      type: object
+      required: [task_id, employee_id, work_date, hours_milli, task_version]
+      properties:
+        task_id: { type: string, maxLength: 36 }
+        employee_id: { type: string, maxLength: 36 }
+        work_date: { $ref: "#/components/schemas/IsoDate" }
+        hours_milli: { type: integer, format: int64, minimum: 0, description: 0 deletes the assignment }
+        task_version: { type: integer, format: int64 }
+
+    AssignmentBatchInput:
+      type: object
+      required: [changes]
+      properties:
+        changes: { type: array, minItems: 1, maxItems: 500, items: { $ref: "#/components/schemas/AssignmentChange" } }
+        force_qualification: { type: boolean }
+        allow_overload: { type: boolean }
+
+    AssignmentBatchResult:
+      type: object
+      required: [assignments, tasks]
+      properties:
+        assignments: { type: array, items: { $ref: "#/components/schemas/Assignment" } }
+        tasks:
+          type: array
+          items:
+            type: object
+            required: [task_id, version]
+            properties:
+              task_id: { type: string }
+              version: { type: integer, format: int64 }
+
+    YardLoadCell:
+      type: object
+      required: [period_start, capacity_milli, assigned_milli, actual_milli, overload]
+      properties:
+        period_start: { $ref: "#/components/schemas/IsoDate" }
+        capacity_milli: { $ref: "#/components/schemas/QtyMilli" }
+        assigned_milli: { $ref: "#/components/schemas/QtyMilli" }
+        actual_milli: { $ref: "#/components/schemas/QtyMilli" }
+        load_bp: { type: [integer, "null"], format: int64 }
+        overload: { type: boolean }
+
+    YardLoadRow:
+      type: object
+      required: [key, label, cells, capacity_milli, assigned_milli]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        cells: { type: array, items: { $ref: "#/components/schemas/YardLoadCell" } }
+        capacity_milli: { $ref: "#/components/schemas/QtyMilli" }
+        assigned_milli: { $ref: "#/components/schemas/QtyMilli" }
+        load_bp: { type: [integer, "null"], format: int64 }
+
+    YardLoad:
+      type: object
+      required: [from, to, group_by, period, rows]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        group_by: { type: string, enum: [employee, department, qualification, bay] }
+        period: { type: string, enum: [day, week, month] }
+        rows: { type: array, items: { $ref: "#/components/schemas/YardLoadRow" } }
+
+    AtRiskOrder:
+      type: object
+      required: [work_order_id, number, reasons]
+      properties:
+        work_order_id: { type: string }
+        number: { type: string }
+        vessel_name: { type: string }
+        planned_delivery_on: { $ref: "#/components/schemas/IsoDate" }
+        reasons:
+          type: array
+          items:
+            type: object
+            required: [code]
+            properties:
+              code: { type: string, enum: [late, capacity] }
+              qualification_id: { type: string }
+              remaining_milli: { $ref: "#/components/schemas/QtyMilli" }
+              free_milli: { $ref: "#/components/schemas/QtyMilli" }
+
+    AtRiskOrderList:
+      type: object
+      required: [today, items]
+      properties:
+        today: { $ref: "#/components/schemas/IsoDate" }
+        items: { type: array, items: { $ref: "#/components/schemas/AtRiskOrder" } }
+
+    YardPlanProposalInput:
+      type: object
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        horizon_days: { type: integer, minimum: 1, maximum: 90 }
+        work_order_ids: { type: array, maxItems: 100, items: { type: string, maxLength: 36 } }
+
+    YardPlanProposal:
+      type: object
+      required: [from, to, changes, unplaced]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        changes: { type: array, items: { $ref: "#/components/schemas/AssignmentChange" } }
+        unplaced:
+          type: array
+          items:
+            type: object
+            required: [task_id, remaining_milli]
+            properties:
+              task_id: { type: string }
+              remaining_milli: { $ref: "#/components/schemas/QtyMilli" }
+
+    # Lifting
+
+    EquipmentBookingStatus:
+      type: string
+      enum: [requested, booked, done, cancelled]
+
+    EquipmentBookingPurpose:
+      type: string
+      enum: [haul_out, launch, move, other]
+
+    EquipmentBooking:
+      type: object
+      required: [id, purpose, status, source, note, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        equipment_id: { type: string }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        from_slot: { type: integer, minimum: 0, maximum: 95 }
+        to_slot: { type: integer, minimum: 1, maximum: 96, description: Exclusive }
+        purpose: { $ref: "#/components/schemas/EquipmentBookingPurpose" }
+        vessel_id: { type: string }
+        vessel_name: { type: string }
+        work_order_id: { type: string }
+        contract_id: { type: string }
+        storage_movement_id: { type: string }
+        allocation_id: { type: string }
+        operator_employee_id: { type: string }
+        status: { $ref: "#/components/schemas/EquipmentBookingStatus" }
+        source: { type: string, enum: [office, work_order, storage, move] }
+        note: { type: string }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    EquipmentBookingDay:
+      type: object
+      required: [date, window_from_slot, window_to_slot, equipment, bookings, requests]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        window_from_slot: { type: integer }
+        window_to_slot: { type: integer }
+        equipment:
+          type: array
+          items:
+            type: object
+            required: [id, code, name, kind, out_of_service, default_minutes]
+            properties:
+              id: { type: string }
+              code: { type: string }
+              name: { type: string }
+              kind: { $ref: "#/components/schemas/EquipmentKind" }
+              capacity_kg: { type: integer, format: int64 }
+              out_of_service: { type: boolean }
+              default_minutes: { type: integer }
+        bookings: { type: array, items: { $ref: "#/components/schemas/EquipmentBooking" } }
+        requests: { type: array, items: { $ref: "#/components/schemas/EquipmentBooking" } }
+
+    EquipmentBookingInput:
+      type: object
+      required: [purpose]
+      properties:
+        equipment_id: { type: string, maxLength: 36 }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        from_slot: { type: integer, minimum: 0, maximum: 95 }
+        to_slot: { type: integer, minimum: 1, maximum: 96 }
+        purpose: { $ref: "#/components/schemas/EquipmentBookingPurpose" }
+        vessel_id: { type: string, maxLength: 36 }
+        work_order_id: { type: string, maxLength: 36 }
+        contract_id: { type: string, maxLength: 36 }
+        storage_movement_id: { type: string, maxLength: 36 }
+        operator_employee_id: { type: string, maxLength: 36 }
+        request_only: { type: boolean, description: Create a request without slots }
+        note: { type: string, maxLength: 500 }
+
+    EquipmentBookingPatch:
+      type: object
+      properties:
+        equipment_id: { type: string, maxLength: 36 }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        from_slot: { type: integer, minimum: 0, maximum: 95 }
+        to_slot: { type: integer, minimum: 1, maximum: 96 }
+        operator_employee_id: { type: [string, "null"], maxLength: 36 }
+        note: { type: string, maxLength: 500 }
+
+    EquipmentBookingCancelInput:
+      type: object
+      properties:
+        reason: { type: string, maxLength: 500 }
+
+    EquipmentOperators:
+      type: object
+      required: [equipment_id, employee_ids]
+      properties:
+        equipment_id: { type: string }
+        employee_ids: { type: array, items: { type: string } }
+
+    EquipmentOperatorsInput:
+      type: object
+      required: [employee_ids]
+      properties:
+        employee_ids: { type: array, maxItems: 50, items: { type: string, maxLength: 36 } }
+
+    # R-yard report
+
+    YardReportTotals:
+      type: object
+      required: [hours_milli, records]
+      properties:
+        records: { type: integer, format: int64 }
+        hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        cost_cents: { $ref: "#/components/schemas/Cents" }
+        capacity_milli: { $ref: "#/components/schemas/QtyMilli" }
+        assigned_milli: { $ref: "#/components/schemas/QtyMilli" }
+        load_bp: { type: [integer, "null"], format: int64 }
+        revenue_cents: { $ref: "#/components/schemas/Cents" }
+        margin_cents: { $ref: "#/components/schemas/Cents" }
+        margin_bp: { type: [integer, "null"], format: int64 }
+        quote_net_cents: { $ref: "#/components/schemas/Cents" }
+        booked_slots: { type: integer, format: int64 }
+        window_slots: { type: integer, format: int64 }
+
+    YardReportGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/YardReportTotals" }
+
+    YardReportRecord:
+      description: One record of the selected view; fields not meaningful for the view are absent
+      type: object
+      required: [ref]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        employee_id: { type: string }
+        employee_code: { type: string }
+        employee_name: { type: string }
+        department: { type: string }
+        work_order_id: { type: string }
+        work_order_number: { type: string }
+        work_order_status: { $ref: "#/components/schemas/WorkOrderStatus" }
+        billing_mode: { $ref: "#/components/schemas/YardBillingMode" }
+        work_type_id: { type: string }
+        work_type_code: { type: string }
+        qualification_id: { type: string }
+        bay: { type: string }
+        hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        cost_cents: { $ref: "#/components/schemas/Cents" }
+        capacity_milli: { $ref: "#/components/schemas/QtyMilli" }
+        assigned_milli: { $ref: "#/components/schemas/QtyMilli" }
+        actual_milli: { $ref: "#/components/schemas/QtyMilli" }
+        load_bp: { type: [integer, "null"], format: int64 }
+        overload: { type: boolean }
+        revenue_cents: { $ref: "#/components/schemas/Cents" }
+        cost_labour_cents: { $ref: "#/components/schemas/Cents" }
+        cost_material_cents: { $ref: "#/components/schemas/Cents" }
+        cost_service_cents: { $ref: "#/components/schemas/Cents" }
+        cost_external_cents: { $ref: "#/components/schemas/Cents" }
+        margin_cents: { $ref: "#/components/schemas/Cents" }
+        margin_bp: { type: [integer, "null"], format: int64 }
+        quote_net_cents: { $ref: "#/components/schemas/Cents" }
+        delta_net_cents: { $ref: "#/components/schemas/Cents" }
+        equipment_id: { type: string }
+        equipment_code: { type: string }
+        from_slot: { type: integer }
+        to_slot: { type: integer }
+        purpose: { $ref: "#/components/schemas/EquipmentBookingPurpose" }
+        booking_status: { $ref: "#/components/schemas/EquipmentBookingStatus" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    YardReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [view, totals, groups, records]
+          properties:
+            view: { type: string, enum: [hours, load, margins, margins_by_work_type, lifting] }
+            totals: { $ref: "#/components/schemas/YardReportTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/YardReportGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/YardReportRecord" } }

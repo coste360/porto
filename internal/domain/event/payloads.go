@@ -640,6 +640,81 @@ type MeterReadingRecordedData struct {
 	Status  string `json:"status,omitempty"`
 }
 
+// M10 payloads (m10-plan §13, D34): ids, enums, dates and order amounts only; employee, customer and supplier names
+// never leave the database.
+
+// YardCatalogChangedData is the data of yard_catalog.changed.
+type YardCatalogChangedData struct {
+	Entity string `json:"entity"` // work_type, qualification, item_settings, variable, table, package, settings
+	ID     string `json:"entity_id"`
+}
+
+// YardQuoteData is the data of yard_quote.changed, yard_quote.sent, yard_quote.accepted and yard_quote.expired.
+type YardQuoteData struct {
+	QuoteID     string `json:"quote_id"`
+	Kind        string `json:"kind"`
+	Status      string `json:"status"`
+	CustomerID  string `json:"customer_id"`
+	VesselID    string `json:"vessel_id"`
+	WorkOrderID string `json:"work_order_id,omitempty"`
+	GrossCents  int64  `json:"gross_cents"`
+}
+
+// WorkOrderStatusChangedData is the data of work_order.status_changed (public).
+type WorkOrderStatusChangedData struct {
+	WorkOrderID string `json:"work_order_id"`
+	From        string `json:"from,omitempty"`
+	To          string `json:"to"`
+}
+
+// WorkOrderChangedData is the data of work_order.changed (order data, lines, materials, external costs).
+type WorkOrderChangedData struct {
+	WorkOrderID string `json:"work_order_id"`
+	Entity      string `json:"entity"` // order, line, stock_movement, external_cost
+	ID          string `json:"entity_id"`
+}
+
+// WorkTaskChangedData is the data of work_task.changed.
+type WorkTaskChangedData struct {
+	WorkOrderID string `json:"work_order_id"`
+	TaskID      string `json:"task_id"`
+	Status      string `json:"status"`
+	ProgressBP  int    `json:"progress_bp"`
+}
+
+// TimesheetChangedData is the data of timesheet.changed.
+type TimesheetChangedData struct {
+	TimesheetID string `json:"timesheet_id"`
+	EmployeeID  string `json:"employee_id"`
+	WorkOrderID string `json:"work_order_id"`
+	TaskID      string `json:"task_id,omitempty"`
+	Status      string `json:"status"`
+}
+
+// WorkOrderBilledData is the data of work_order.billed.
+type WorkOrderBilledData struct {
+	WorkOrderID string `json:"work_order_id"`
+	BillingID   string `json:"billing_id"`
+	Kind        string `json:"kind"`
+	ChargeID    string `json:"charge_id,omitempty"`
+	GrossCents  int64  `json:"gross_cents"`
+}
+
+// YardPlanChangedData is the data of yard_plan.changed (employees, calendars, absences, assignments).
+type YardPlanChangedData struct {
+	Entity string   `json:"entity"` // employee, calendar, absence, assignments
+	ID     string   `json:"entity_id,omitempty"`
+	Dates  []string `json:"dates,omitempty"`
+}
+
+// EquipmentBookingChangedData is the data of equipment.booking_changed (public).
+type EquipmentBookingChangedData struct {
+	BookingID   string `json:"booking_id"`
+	EquipmentID string `json:"equipment_id,omitempty"`
+	Date        string `json:"date,omitempty"`
+	Status      string `json:"status"`
+}
+
 const sampleID = "01900000-0000-7000-8000-000000000000"
 
 // Samples returns one example payload per event type.
@@ -785,5 +860,21 @@ func Samples() map[string]any {
 			Entity: "task", ID: sampleID, ElementType: "pedestal", ElementID: sampleID, Status: "scheduled",
 		},
 		MeterReadingRecorded: MeterReadingRecordedData{Entity: "reading", ID: sampleID, MeterID: sampleID, Status: "valid"},
+		// M10
+		YardCatalogChanged: YardCatalogChangedData{Entity: "package", ID: sampleID},
+		YardQuoteChanged:   YardQuoteData{QuoteID: sampleID, Kind: "job", Status: "draft", CustomerID: sampleID, VesselID: sampleID, GrossCents: 207717},
+		YardQuoteSent:      YardQuoteData{QuoteID: sampleID, Kind: "job", Status: "sent", CustomerID: sampleID, VesselID: sampleID, GrossCents: 207717},
+		YardQuoteAccepted: YardQuoteData{
+			QuoteID: sampleID, Kind: "job", Status: "accepted", CustomerID: sampleID, VesselID: sampleID, WorkOrderID: sampleID,
+			GrossCents: 207717,
+		},
+		YardQuoteExpired:        YardQuoteData{QuoteID: sampleID, Kind: "job", Status: "expired", CustomerID: sampleID, VesselID: sampleID},
+		WorkOrderStatusChanged:  WorkOrderStatusChangedData{WorkOrderID: sampleID, From: "planned", To: "in_progress"},
+		WorkOrderChanged:        WorkOrderChangedData{WorkOrderID: sampleID, Entity: "external_cost", ID: sampleID},
+		WorkTaskChanged:         WorkTaskChangedData{WorkOrderID: sampleID, TaskID: sampleID, Status: "in_progress", ProgressBP: 5000},
+		TimesheetChanged:        TimesheetChangedData{TimesheetID: sampleID, EmployeeID: sampleID, WorkOrderID: sampleID, Status: "submitted"},
+		WorkOrderBilled:         WorkOrderBilledData{WorkOrderID: sampleID, BillingID: sampleID, Kind: "final", ChargeID: sampleID, GrossCents: 169595},
+		YardPlanChanged:         YardPlanChangedData{Entity: "assignments", Dates: []string{night.String()}},
+		EquipmentBookingChanged: EquipmentBookingChangedData{BookingID: sampleID, EquipmentID: sampleID, Date: night.String(), Status: "booked"},
 	}
 }

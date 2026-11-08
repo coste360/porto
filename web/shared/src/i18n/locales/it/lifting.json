@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "lifting": "Mezzi di sollevamento"
+  },
+  "title": "Mezzi di sollevamento",
+  "description": "Prenotazioni di travel lift e gru a fasce di 15 minuti.",
+  "pending": "Questa sezione sarà disponibile a breve.",
+  "fields": {
+    "equipment": "Mezzo",
+    "date": "Giorno",
+    "purpose": "Operazione",
+    "vessel": "Barca",
+    "from": "Inizio",
+    "minutes": "Durata (minuti)",
+    "operator": "Operatore",
+    "note": "Nota"
+  },
+  "purposes": {
+    "haul_out": "Alaggio",
+    "launch": "Varo",
+    "move": "Spostamento",
+    "other": "Altro"
+  },
+  "statuses": {
+    "requested": "Richiesta",
+    "booked": "Prenotato",
+    "done": "Fatto",
+    "cancelled": "Annullato"
+  },
+  "sources": {
+    "office": "Ufficio",
+    "work_order": "Commessa",
+    "storage": "Rimessaggio",
+    "move": "Spostamento"
+  },
+  "actions": {
+    "new": "Prenota mezzo",
+    "book": "Prenota",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "cancelBooking": "Annulla prenotazione",
+    "complete": "Segna fatto",
+    "plan": "Pianifica",
+    "reschedule": "Sposta"
+  },
+  "dialog": {
+    "new": "Prenota un mezzo",
+    "edit": "Pianifica o sposta",
+    "hint": "Lo slot è garantito solo alla conferma: se nel frattempo è stato preso, lo vedrai qui.",
+    "vesselSearch": "Cerca una barca",
+    "noVessel": "Nessuna barca",
+    "noOperator": "Nessun operatore",
+    "window": "Dalle {{from}} alle {{to}}"
+  },
+  "conflict": {
+    "equipment_slot_taken": "Il mezzo è già prenotato in {{slots}}.",
+    "operator_busy": "L'operatore è già impegnato in {{slots}}."
+  },
+  "booked": "Prenotazione salvata.",
+  "bookAt": "Prenota {{equipment}} alle {{time}}",
+  "noEquipment": "Nessun mezzo prenotabile.",
+  "outOfService": "Fuori servizio",
+  "requests": "Richieste da pianificare",
+  "noRequests": "Nessuna richiesta aperta.",
+  "orderBookings": "Mezzi di sollevamento",
+  "noOrderBookings": "Nessuna prenotazione per questa commessa."
+}

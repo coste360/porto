@@ -8,6 +8,52 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M10 "Cantiere" (spec 18, 20, 21, 29.2, m10-plan, ADR 0015):
+
+- Pure `formula` package (ADR 0006): parser, type checker and fixed-point evaluator on `qty.Milli` with half-even
+  rounding at every `*` and `/`, functions `if min max round ceil floor band`, limits, typed errors and never a
+  panic (INV-29, fuzzed). Quantities come from the vessel dimensions (length, beam, draft, waterline, derived
+  variables such as the hull area) and from job variables asked in the quote.
+- Yard catalogue: work types, qualifications with their labour item, yard settings of the catalogue items (cost,
+  category, quantity formula), variables and band tables, work packages with insert-only versions; formulas are
+  validated on save against the marina test vessel and dependent packages are re-checked.
+- Guided yard quote (`PC<year>-NNNNNN`) in five steps: lines priced from the M2 price lists through the pure
+  `pricing.UnitPrice` (`EngineVersion` unchanged), overrides marked manual, VAT and deposit; reproducible from its
+  snapshot (INV-28). Send with PDF and customer link, accept from the panel or the link, decline, hourly expiry.
+  The antifouling job for a 12 m boat is quoted without typing a price.
+- Work orders (`C<year>-NNNNNN`): accepting a quote creates the order, its tasks and the advance charge in the same
+  transaction (INV-96); orders without a quote from manual lines or catalogue selections; variations; states,
+  tasks with finish-to-start dependencies, checklist, progress, photos and files.
+- Time entries: timer and manual entries from the panel and the phone, offline with `client_ref` (kinds
+  `yard.timesheet` and `yard.activity_done`), one running timer per employee (INV-95), approval that freezes the
+  cost, void and late entries. Materials issued and returned with frozen cost and price; external costs with markup.
+- Final account with revenue, cost and margin per source, per order and per work type, reconciling hours,
+  materials and external costs (INV-93); billing through the M5 charges with origin `work_order`: advance,
+  progress, final and adjustments linked to the latest charge, exported charges never change (INV-94).
+- Planner: employees with weekly calendar, absences and qualifications, assignments with qualification,
+  dependency and capacity checks (explicit overrides), workload by employee, department, qualification and bay,
+  orders at risk, deterministic auto-plan proposal.
+- Lifting equipment (travel lift, crane, forklift, trailer): 15-minute slot bookings with an enabled operator, no
+  double booking of the machine or the operator enforced by the unique keys of `equipment_slots` and
+  `operator_slots` (INV-17, ADR 0003), requests from orders, lift window, capacity and out-of-service checks,
+  optional water/land move requests from `occupancy.moved`.
+- Yard phone screen (today's tasks, timer, hours, checklist, photo, lifting day, approvals) and the phone landing
+  for the yard roles.
+- Report `yard` (hours, load, margins per order and per work type, lifting) and dashboard tiles
+  `yard_open_orders`, `yard_hours`, `yard_margin` on the M7 machinery; document templates `yard_quote` and `yard_work_order`, e-mail
+  template `yard_quote` (it, en).
+- API: tags `yard-catalog`, `yard-quotes`, `work-orders`, `yard-planner`, `lifting` and the public yard quote link;
+  events `yard_catalog.changed`, `yard_quote.changed`, `yard_quote.sent`, `yard_quote.accepted`,
+  `yard_quote.expired`, `work_order.status_changed`, `work_order.changed`, `work_task.changed`,
+  `timesheet.changed`, `work_order.billed`, `yard_plan.changed`, `equipment.booking_changed`; SSE topic
+  `yard.changed`; jobs `yard.quotes_expire` and `yard.timers_guard`. Migrations `00020_yard_catalog_quotes`,
+  `00021_work_orders`, `00022_equipment_slots` (SQLite and PostgreSQL).
+- Demo seed: yard catalogue with the ANTIVEG package and its price list, three quotes, four employees with calendars
+  and lifting qualification, an order from an accepted quote with hours, materials, an external cost and planned
+  tasks, an invoiced order without a quote, travel lift and crane bookings.
+- Not in M10: warehouse and stock management beyond issued materials (levels, warehouses, loads, adjustments;
+  ADR 0015), payroll, rentals (M11), sensors (M12).
+
 M9 "Rimessaggio e manutenzioni" (spec 17, 20, 10, 29.2, m9-plan, ADR 0014):
 
 - Storage contracts (`RIM-YYYY-NNNN`) on the contract domain: indoor/outdoor areas, cradles and supports, launch

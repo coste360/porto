@@ -61,7 +61,15 @@ export type MarinaRoutePath =
   | '/m/$marinaId/settings/online'
   | '/m/$marinaId/storage'
   | '/m/$marinaId/maintenance'
-  | '/m/$marinaId/utilities';
+  | '/m/$marinaId/utilities'
+  | '/m/$marinaId/yard/orders'
+  | '/m/$marinaId/yard/quotes'
+  | '/m/$marinaId/yard/planner'
+  | '/m/$marinaId/yard/load'
+  | '/m/$marinaId/yard/lifting'
+  | '/m/$marinaId/yard/timesheets'
+  | '/m/$marinaId/yard/employees'
+  | '/m/$marinaId/yard/catalog';
 
 export type NavItem = {
   id: string;
@@ -129,6 +137,55 @@ export const NAV_ITEMS: NavItem[] = [
     to: '/m/$marinaId/utilities',
     labelKey: 'utilities:nav.utilities',
     anyOf: ['marina.configure', 'charges.manage'],
+  },
+  // M10 (m10-plan §14), group "Cantiere"
+  {
+    id: 'yard-orders',
+    to: '/m/$marinaId/yard/orders',
+    labelKey: 'yardOrders:nav.orders',
+    anyOf: ['yard.read', 'yard.manage'],
+  },
+  {
+    id: 'yard-quotes',
+    to: '/m/$marinaId/yard/quotes',
+    labelKey: 'yardQuotes:nav.quotes',
+    anyOf: ['yard.read', 'yard.manage'],
+  },
+  {
+    id: 'yard-planner',
+    to: '/m/$marinaId/yard/planner',
+    labelKey: 'yardPlanner:nav.planner',
+    anyOf: ['yard.read', 'yard.manage'],
+  },
+  {
+    id: 'yard-load',
+    to: '/m/$marinaId/yard/load',
+    labelKey: 'yardPlanner:nav.load',
+    anyOf: ['yard.read', 'yard.manage'],
+  },
+  {
+    id: 'yard-lifting',
+    to: '/m/$marinaId/yard/lifting',
+    labelKey: 'lifting:nav.lifting',
+    anyOf: ['yard.read', 'yard.manage', 'storage.read'],
+  },
+  {
+    id: 'yard-timesheets',
+    to: '/m/$marinaId/yard/timesheets',
+    labelKey: 'yardOrders:nav.timesheets',
+    anyOf: ['yard.manage'],
+  },
+  {
+    id: 'yard-employees',
+    to: '/m/$marinaId/yard/employees',
+    labelKey: 'yardPlanner:nav.employees',
+    anyOf: ['yard.manage'],
+  },
+  {
+    id: 'yard-catalog',
+    to: '/m/$marinaId/yard/catalog',
+    labelKey: 'yardCatalog:nav.catalog',
+    anyOf: ['yard.read', 'yard.manage'],
   },
   // M4 (m4-plan §8.1)
   {
@@ -412,7 +469,7 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 /** Modules of the next milestones, listed disabled in the sidebar. */
-export const UPCOMING_MODULES = ['common:nav.modules.yard', 'common:nav.modules.rental'] as const;
+export const UPCOMING_MODULES = ['common:nav.modules.rental'] as const;
 
 export function visibleNavItems(permissions: readonly Permission[]): NavItem[] {
   return NAV_ITEMS.filter((item) => item.anyOf.some((p) => permissions.includes(p)));

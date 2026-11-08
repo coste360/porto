@@ -1,0 +1,21 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Commessa C2026-000034
+Cliente Mario Rossi, unità Libeccio (RM 1234 D), lunghezza 11,34 m.
+Dal preventivo PC2026-000012. Stato: in_progress, avanzamento 60 %. Posizione: Piazzale P3.
+Inizio previsto il 1 febbraio 2027, consegna prevista il 12 febbraio 2027.
+Lavori previsti
+# | Descrizione | Q.tà | Prezzo | Imponibile
+1 | Alaggio | 12 | 18,00 € | 216,00 €
+2 | Lavaggio carena | 56,1 | 4,00 € | 224,40 €
+3 | Ora operaio | 8,4 | 38,00 € | 319,20 €
+4 | Ora verniciatore | 5,6 | 45,00 € | 252,00 €
+5 | Antivegetativa 2,5 l | 5 | 95,00 € | 475,00 €
+6 | Varo | 12 | 18,00 € | 216,00 €
+Imponibile previsto 1.702,60 €.
+Attività
+# | Attività | Ore stimate | Avanzamento | Stato
+1 | Carteggiatura | 8,4 | 100 % | done
+2 | Antivegetativa | 5,6 | 0 % | todo
+Già addebitato: 623,15 €.
+Porto Demo S.r.l. · P. IVA 01234567890 · Pagina 1 di 1

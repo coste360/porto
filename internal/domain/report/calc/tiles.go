@@ -58,6 +58,14 @@ func TileValueOf(key string, totals any) TileValue {
 		return f(t.Overdue, 0)
 	case UtilitiesTotals:
 		return f(int64(t.PendingValue.Value), 0)
+	case YardTotals:
+		switch key {
+		case IndYardHours:
+			return f(t.HoursMilli, 0)
+		case IndYardMargin:
+			return f(int64(t.Margin.Value), 0)
+		}
+		return f(t.Records, 0)
 	case LostDemandTotals:
 		if key == IndLostDemandValue {
 			return f(int64(t.Value.Value), 0)

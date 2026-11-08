@@ -24,8 +24,11 @@ test("dashboard tile opens its report with the same period and total", async ({
   const text = (await value.textContent())?.trim() ?? "";
   expect(text).toMatch(/€/);
 
-  // The seams of M10/M11 are listed as not available yet.
+  // The M11 seams are listed as not available yet; the yard tiles are live since M10.
   await expect(page.getByTestId("dashboard-seams")).toContainText(
+    "Disponibile con M11",
+  );
+  await expect(page.getByTestId("dashboard-seams")).not.toContainText(
     "Disponibile con M10",
   );
 

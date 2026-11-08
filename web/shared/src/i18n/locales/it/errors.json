@@ -148,5 +148,22 @@
   "maintenance_conflicts": "Ci sono barche sull'elemento nelle notti della manutenzione: spostale e riprova.",
   "task_already_done": "L'intervento è già stato completato.",
   "reading_charged": "La lettura è usata da un consumo già addebitato.",
-  "consumption_frozen": "Il consumo è già addebitato o escluso."
+  "consumption_frozen": "Il consumo è già addebitato o escluso.",
+  "formula_invalid": "Una formula non è valida: correggi i punti segnalati.",
+  "work_order_closed": "La commessa non accetta questa modifica nel suo stato attuale.",
+  "work_order_has_charges": "La commessa ha addebiti attivi: annullali prima di annullare la commessa.",
+  "qualification_mismatch": "Il dipendente non ha la qualifica richiesta dall'attività.",
+  "capacity_exceeded": "L'assegnazione supera la capacità del dipendente in quel giorno.",
+  "dependency_violation": "L'attività non può iniziare prima della fine di quelle da cui dipende.",
+  "duration_too_long": "La registrazione supera le 16 ore.",
+  "offline_time_out_of_range": "L'orario registrato sul dispositivo è fuori dalla finestra consentita.",
+  "timer_already_running": "Il dipendente ha già un cronometro attivo.",
+  "return_exceeds_issued": "Il reso supera la quantità prelevata per la commessa.",
+  "nothing_to_bill": "Non c'è nulla da addebitare per la commessa.",
+  "equipment_slot_taken": "Il mezzo è già prenotato in quella fascia oraria.",
+  "operator_busy": "L'operatore è già impegnato in quella fascia oraria.",
+  "equipment_out_of_service": "Il mezzo è fuori servizio in quel giorno.",
+  "equipment_capacity_exceeded": "L'imbarcazione supera la portata del mezzo.",
+  "operator_not_enabled": "Il dipendente non è abilitato all'uso di questo mezzo.",
+  "outside_lift_window": "La fascia oraria è fuori dall'orario dei sollevamenti."
 }

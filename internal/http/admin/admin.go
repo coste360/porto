@@ -15,6 +15,11 @@ import (
 	"github.com/coste360/porto/internal/domain/storage"
 	"github.com/coste360/porto/internal/domain/utility"
 
+	"github.com/coste360/porto/internal/domain/lifting"
+	"github.com/coste360/porto/internal/domain/workorder"
+	"github.com/coste360/porto/internal/domain/yardplan"
+	"github.com/coste360/porto/internal/domain/yardquote"
+
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/csvimport"
 	"github.com/coste360/porto/internal/domain/apikey"
@@ -116,6 +121,13 @@ type Handler struct {
 	Storage     *storage.Service
 	Maintenance *maintenance.Service
 	Utilities   *utility.Service
+
+	// M10 (m10-plan §16.1): yard catalogue and quotes (QUOTE), work orders, time entries, materials, account,
+	// billing and the yard report (ORDERS), planner and lifting (PLANNER).
+	YardQuotes *yardquote.Service
+	WorkOrders *workorder.Service
+	YardPlan   *yardplan.Service
+	Lifting    *lifting.Service
 }
 
 func principal(r *http.Request) *auth.Principal {

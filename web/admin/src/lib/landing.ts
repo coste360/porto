@@ -8,14 +8,14 @@ import type { Device, Permission } from '@porto/shared/api';
  * | Permissions (first match)                         | Roles today                      | Phone landing        |
  * |---------------------------------------------------|----------------------------------|----------------------|
  * | presence.write, or map.view with transits.desk    | owner, director, office, dock    | /m/<id>/dock         |
- * | storage.manage (M9)                               | yard_mgr                         | /m/<id>/storage-phone |
- * | maintenance.report (M9)                           | yard, rental                     | /m/<id>/maintenance-phone |
+ * | yard.timesheets or yard.manage (M10)              | yard_mgr, yard                   | /m/<id>/yard-phone   |
+ * | storage.manage (M9)                               | (none today)                     | /m/<id>/storage-phone |
+ * | maintenance.report (M9)                           | rental                           | /m/<id>/maintenance-phone |
  * | reports.all or marina.configure                   | accounting, viewer               | /m/<id>/direction    |
  * | anything else                                     | (none today)                     | /m/<id>              |
  *
  * Seam, filled by later milestones (each adds its row above the fallback, before the direction row when the
  * role also holds reports.all):
- * - M10 yard (yard.timesheets, yard.manage): /m/<id>/yard-phone.
  * - M11 rentals (rental.manage without presence.write): /m/<id>/rental-phone.
  * Owners and directors hold presence.write and land on the dock; the dock's "Altro" tab links the direction
  * screen for them.
@@ -30,6 +30,7 @@ export function landingFor(
   if (kind !== 'mobile') return base;
   const has = (p: Permission) => permissions.includes(p);
   if (has('presence.write') || (has('map.view') && has('transits.desk'))) return `${base}/dock`;
+  if (has('yard.timesheets') || has('yard.manage')) return `${base}/yard-phone`;
   if (has('storage.manage')) return `${base}/storage-phone`;
   if (has('maintenance.report')) return `${base}/maintenance-phone`;
   if (has('reports.all') || has('marina.configure')) return `${base}/direction`;
@@ -49,6 +50,11 @@ export function canUseStoragePhone(permissions: readonly Permission[]): boolean 
 /** Whether a user may open the maintenance phone screen (worklist, report, outcome; M9). */
 export function canUseMaintenancePhone(permissions: readonly Permission[]): boolean {
   return permissions.includes('maintenance.report') || permissions.includes('maintenance.manage');
+}
+
+/** Whether a user may open the yard phone screen (my tasks, timer, hours, lifting day; M10). */
+export function canUseYardPhone(permissions: readonly Permission[]): boolean {
+  return permissions.includes('yard.timesheets') || permissions.includes('yard.manage');
 }
 
 /** Whether a user may open the dock phone screen. */

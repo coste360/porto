@@ -32,8 +32,9 @@ func contractPolicies(t *testing.T) mw.Policies {
 func TestPolicies_OfflineSet(t *testing.T) {
 	got := contractPolicies(t).OfflineOperations()
 	want := []string{
-		"completeMaintenanceTask", "recordMeterReading", "recordPayment", "recordPresence", "reportMaintenance",
-		"uploadMaintenancePhoto", "uploadMeterReadingPhoto", "uploadPresencePhoto",
+		"completeMaintenanceTask", "createTimeEntry", "recordMeterReading", "recordPayment", "recordPresence",
+		"reportMaintenance", "startTimer", "stopTimer", "updateTaskProgress", "uploadMaintenancePhoto",
+		"uploadMeterReadingPhoto", "uploadPresencePhoto", "uploadTaskPhoto",
 	}
 	if !slices.Equal(got, want) {
 		t.Fatalf("x-porto-offline operations = %v, want %v", got, want)

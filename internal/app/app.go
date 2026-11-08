@@ -65,6 +65,11 @@ import (
 	"github.com/coste360/porto/internal/domain/maintenance"
 	"github.com/coste360/porto/internal/domain/storage"
 	"github.com/coste360/porto/internal/domain/utility"
+
+	"github.com/coste360/porto/internal/domain/lifting"
+	"github.com/coste360/porto/internal/domain/workorder"
+	"github.com/coste360/porto/internal/domain/yardplan"
+	"github.com/coste360/porto/internal/domain/yardquote"
 	httpserver "github.com/coste360/porto/internal/http"
 	"github.com/coste360/porto/internal/http/admin"
 	httpbridge "github.com/coste360/porto/internal/http/bridge"
@@ -192,6 +197,12 @@ type App struct {
 	Storage     *storage.Service
 	Maintenance *maintenance.Service
 	Utilities   *utility.Service
+
+	// M10 (m10-plan §2): yard catalogue and quotes, work orders, planner, lifting.
+	YardQuotes *yardquote.Service
+	WorkOrders *workorder.Service
+	YardPlan   *yardplan.Service
+	Lifting    *lifting.Service
 
 	ownDB     bool
 	restartMu sync.Mutex
@@ -334,6 +345,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	a.wireBilling(x)
 	a.wireBooking(x)
 	a.wireM9()
+	a.wireM10()
 	a.Reports = report.NewService(report.Deps{DB: db, Clock: clk, Prices: a.PriceLists, Log: log})
 	a.Presence = presence.NewService(presence.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
@@ -348,7 +360,8 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		inner = x.EventBus
 	}
 	a.Bus = sse.NewReplayBus(inner, sse.DefaultReplaySize)
-	sinks := append([]ext.EventSink{webhook.NewFanOutSink(db, clk, a.Webhooks), a.Channels}, x.EventSinks...)
+	// M10: the lifting service is the in-process sink of the water <-> land move requests (m10-plan §11, D30).
+	sinks := append([]ext.EventSink{webhook.NewFanOutSink(db, clk, a.Webhooks), a.Channels, a.Lifting}, x.EventSinks...)
 	a.Dispatcher = event.NewDispatcher(db, clk, sinks, a.Bus, log)
 
 	if err := a.registerJobs(); err != nil {
@@ -369,6 +382,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			PayDrivers: a.PayDrivers, Reports: a.Reports,
 			Booking: a.Booking, OnlineConf: a.OnlineConf, Channels: a.Channels,
 			Storage: a.Storage, Maintenance: a.Maintenance, Utilities: a.Utilities,
+			YardQuotes: a.YardQuotes, WorkOrders: a.WorkOrders, YardPlan: a.YardPlan, Lifting: a.Lifting,
 		},
 		Device: &httpdevice.Handler{
 			Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String(), SecureCookies: cfg.SecureCookies(),
@@ -376,7 +390,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		},
 		Public: &public.Handler{
 			Marinas: a.Marinas, Contracts: a.Contracts, Links: a.Links, Signatures: a.Signatures, Comms: a.Comms, Docs: a.Docs,
-			Collect: a.Collect, Booking: a.Booking, Portal: a.Portal,
+			Collect: a.Collect, Booking: a.Booking, Portal: a.Portal, YardQuotes: a.YardQuotes,
 		},
 		Webhooks: &webhooks.Handler{
 			Signatures: a.Signatures, Collect: a.Collect, Clock: clk, Channels: a.Channels,
@@ -471,6 +485,29 @@ func (a *App) wireM9() {
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Files: a.Files,
 		Charges: a.Charges, Contracts: a.Contracts, Prices: a.PriceLists,
 	})
+}
+
+// wireM10 builds the M10 yard services after M9 (m10-plan §2): yard quotes over the price lists, documents, links
+// and notifications; work orders over the charges and the quotes; the planner; lifting. Then the interfaces between
+// them: the work order side creates the order of an accepted quote (yardquote.OrderCreator) and the lifting side
+// cancels the bookings of a cancelled order (workorder.BookingCanceller), so yardquote never imports workorder and
+// workorder never imports lifting.
+func (a *App) wireM10() {
+	cfg, db, clk, log := a.Config, a.DB, a.Clock, a.Log
+	aw := audit.NewWriter(clk)
+	a.YardQuotes = yardquote.NewService(yardquote.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Prices: a.PriceLists, Docs: a.Docs,
+		Links: a.Links, Notify: a.Notify,
+	})
+	a.WorkOrders = workorder.NewService(workorder.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Files: a.Files, Charges: a.Charges,
+		Prices: a.PriceLists, Docs: a.Docs, Quotes: a.YardQuotes,
+	})
+	a.YardPlan = yardplan.NewService(yardplan.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log})
+	a.Lifting = lifting.NewService(lifting.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log})
+	a.YardQuotes.SetOrderCreator(a.WorkOrders)
+	a.WorkOrders.SetLinePricer(a.YardQuotes)
+	a.WorkOrders.SetBookingCanceller(a.Lifting)
 }
 
 // wireBooking builds the M8 services after billing (m8-plan §2): settings, booking (over occupancy, contracts,
@@ -585,6 +622,9 @@ func (a *App) registerJobs() error {
 		// is listed after installments.issue and charges the consumptions of the instalments issued that day.
 		{Name: maintenance.JobSchedule, Every: time.Hour, RunAtStart: true, Run: a.Maintenance.RunSchedule},
 		{Name: utility.JobCharge, Every: time.Hour, Run: a.Utilities.RunCharge},
+		// M10 (m10-plan §4.3, §7). The contract phase registers no-ops; QUOTE and ORDERS implement them.
+		{Name: yardquote.JobQuotesExpire, Every: time.Hour, RunAtStart: true, Run: a.YardQuotes.RunExpire},
+		{Name: workorder.JobTimersGuard, Every: 15 * time.Minute, Run: a.WorkOrders.RunTimersGuard},
 	}
 	for _, j := range defs {
 		if err := a.Jobs.Register(j); err != nil {

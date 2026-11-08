@@ -1,0 +1,14 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+here is our quote for the yard work. The document is attached.
+{{with v . "quote_code"}}Quote: {{.}}
+{{end}}{{with v . "vessel_name"}}Vessel: {{.}}
+{{end}}{{with v . "amount"}}Total: {{.}}
+{{end}}{{with v . "valid_until"}}Valid until: {{.}}
+{{end}}
+{{with v . "link"}}View and accept the quote:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

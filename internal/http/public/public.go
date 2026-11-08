@@ -16,6 +16,7 @@ import (
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/portal"
 	"github.com/coste360/porto/internal/domain/signature"
+	"github.com/coste360/porto/internal/domain/yardquote"
 	"github.com/coste360/porto/internal/http/api"
 	"github.com/coste360/porto/internal/http/respond"
 	"github.com/coste360/porto/internal/http/view"
@@ -39,6 +40,9 @@ type Handler struct {
 	// M8 public booking page (booking.go, ENGINE/PUBLIC) and customer area (account.go, ACCOUNT) (m8-plan §11).
 	Booking *booking.Service
 	Portal  *portal.Service
+
+	// M10 yard quote links (yard_quote_links.go, QUOTE; m10-plan §13).
+	YardQuotes *yardquote.Service
 }
 
 // GetPublicMarina implements api.ServerInterface.

@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "lifting": "Lifting equipment"
+  },
+  "title": "Lifting equipment",
+  "description": "Travel lift and crane bookings in 15-minute slots.",
+  "pending": "This section will be available soon.",
+  "fields": {
+    "equipment": "Machine",
+    "date": "Day",
+    "purpose": "Operation",
+    "vessel": "Vessel",
+    "from": "Start",
+    "minutes": "Duration (minutes)",
+    "operator": "Operator",
+    "note": "Note"
+  },
+  "purposes": {
+    "haul_out": "Haul-out",
+    "launch": "Launch",
+    "move": "Move",
+    "other": "Other"
+  },
+  "statuses": {
+    "requested": "Requested",
+    "booked": "Booked",
+    "done": "Done",
+    "cancelled": "Cancelled"
+  },
+  "sources": {
+    "office": "Office",
+    "work_order": "Work order",
+    "storage": "Storage",
+    "move": "Move"
+  },
+  "actions": {
+    "new": "Book a machine",
+    "book": "Book",
+    "save": "Save",
+    "cancel": "Cancel",
+    "cancelBooking": "Cancel booking",
+    "complete": "Mark done",
+    "plan": "Plan",
+    "reschedule": "Reschedule"
+  },
+  "dialog": {
+    "new": "Book a machine",
+    "edit": "Plan or reschedule",
+    "hint": "The slot is guaranteed only on confirmation: if someone took it meanwhile, you will see it here.",
+    "vesselSearch": "Search a vessel",
+    "noVessel": "No vessel",
+    "noOperator": "No operator",
+    "window": "From {{from}} to {{to}}"
+  },
+  "conflict": {
+    "equipment_slot_taken": "The machine is already booked at {{slots}}.",
+    "operator_busy": "The operator is already busy at {{slots}}."
+  },
+  "booked": "Booking saved.",
+  "bookAt": "Book {{equipment}} at {{time}}",
+  "noEquipment": "No bookable machine.",
+  "outOfService": "Out of service",
+  "requests": "Requests to plan",
+  "noRequests": "No open request.",
+  "orderBookings": "Lifting equipment",
+  "noOrderBookings": "No booking for this work order."
+}

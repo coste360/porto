@@ -82,6 +82,12 @@ const TemplateMaintenanceDue = "maintenance_due"
 // M9Templates lists the M9 templates.
 func M9Templates() []string { return []string{TemplateMaintenanceDue} }
 
+// M10 templates (m10-plan §4.3): the yard quote sent to the customer (QUOTE).
+const TemplateYardQuote = "yard_quote"
+
+// M10Templates lists the M10 templates.
+func M10Templates() []string { return []string{TemplateYardQuote} }
+
 // M4Templates lists the M4 templates.
 func M4Templates() []string {
 	return []string{
@@ -155,7 +161,7 @@ type templateSet struct {
 
 var templates = func() map[string]templateSet {
 	out := map[string]templateSet{}
-	names := append(append([]string{TemplatePasswordReset, TemplateInvitation}, M4Templates()...), M9Templates()...)
+	names := append(append(append([]string{TemplatePasswordReset, TemplateInvitation}, M4Templates()...), M9Templates()...), M10Templates()...)
 	optional := map[string]bool{}
 	for _, name := range append(M5Templates(), M8Templates()...) {
 		names, optional[name] = append(names, name), true

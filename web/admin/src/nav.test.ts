@@ -29,6 +29,8 @@ describe('nav', () => {
       'reports.all',
       'storage.read',
       'maintenance.manage',
+      'yard.read',
+      'yard.manage',
     ]).map((i) => i.id);
     expect(ids).toEqual(NAV_ITEMS.map((i) => i.id));
   });
@@ -107,10 +109,23 @@ describe('nav', () => {
   });
 
   it('shows the M9 storage, maintenance and utilities pages by permission', () => {
-    expect(visibleNavItems(['storage.read']).map((i) => i.id)).toEqual(['storage']);
+    expect(visibleNavItems(['storage.read']).map((i) => i.id)).toEqual(['storage', 'yard-lifting']);
     expect(visibleNavItems(['maintenance.manage']).map((i) => i.id)).toEqual(['maintenance']);
     expect(visibleNavItems(['maintenance.report']).map((i) => i.id)).toEqual([]);
     expect(UPCOMING_MODULES).not.toContain('common:nav.modules.storage');
+  });
+
+  it('shows the M10 yard pages by permission', () => {
+    expect(visibleNavItems(['yard.read']).map((i) => i.id)).toEqual([
+      'yard-orders',
+      'yard-quotes',
+      'yard-planner',
+      'yard-load',
+      'yard-lifting',
+      'yard-catalog',
+    ]);
+    expect(visibleNavItems(['yard.timesheets']).map((i) => i.id)).toEqual([]);
+    expect(UPCOMING_MODULES).not.toContain('common:nav.modules.yard');
   });
 
   it('lists the future modules without the M1 ones', () => {

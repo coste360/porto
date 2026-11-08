@@ -396,6 +396,67 @@ export const queryKeys = {
   utilityConsumptions: (marinaId: string, filters?: Record<string, string | undefined>) =>
     trim(['marina', marinaId, 'utilities', 'consumptions', filters]),
   utilitySettings: (marinaId: string) => ['marina', marinaId, 'utilities', 'settings'] as const,
+
+  // M10 yard (m10-plan §14) under ['marina', id, 'yard'] (yard.changed). Catalogue and quotes (QUOTE), work
+  // orders, tasks, time entries, materials, costs, account and billings (ORDERS), employees, planner, load and
+  // lifting (PLANNER). myYardWork and the lifting day of today/tomorrow are offline allowlist slots (PLANNER).
+  yard: (marinaId: string) => ['marina', marinaId, 'yard'] as const,
+  yardWorkTypes: (marinaId: string) => ['marina', marinaId, 'yard', 'work-types'] as const,
+  yardQualifications: (marinaId: string) => ['marina', marinaId, 'yard', 'qualifications'] as const,
+  yardItems: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'yard', 'items', filters]),
+  yardItem: (marinaId: string, itemId?: string) =>
+    trim(['marina', marinaId, 'yard', 'item', itemId]),
+  formulaVariables: (marinaId: string) =>
+    ['marina', marinaId, 'yard', 'formula-variables'] as const,
+  formulaTables: (marinaId: string) => ['marina', marinaId, 'yard', 'formula-tables'] as const,
+  workPackages: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'yard', 'work-packages', filters]),
+  workPackage: (marinaId: string, packageId?: string, version?: number) =>
+    trim(['marina', marinaId, 'yard', 'work-package', packageId, version]),
+  yardSettings: (marinaId: string) => ['marina', marinaId, 'yard', 'settings'] as const,
+  yardQuotes: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'yard', 'quotes', filters]),
+  yardQuote: (marinaId: string, quoteId?: string) =>
+    trim(['marina', marinaId, 'yard', 'quote', quoteId]),
+  workOrders: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'yard', 'work-orders', filters]),
+  workOrder: (marinaId: string, workOrderId?: string) =>
+    trim(['marina', marinaId, 'yard', 'work-order', workOrderId]),
+  yardBoard: (marinaId: string) => ['marina', marinaId, 'yard', 'board'] as const,
+  workTasks: (marinaId: string, workOrderId?: string) =>
+    trim(['marina', marinaId, 'yard', 'tasks', workOrderId]),
+  taskFiles: (marinaId: string, taskId?: string) =>
+    trim(['marina', marinaId, 'yard', 'task-files', taskId]),
+  timesheets: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'yard', 'timesheets', filters]),
+  myYardWork: (marinaId: string) => ['marina', marinaId, 'yard', 'my-work'] as const,
+  stockMovements: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'yard', 'stock-movements', filters]),
+  externalCosts: (marinaId: string, workOrderId?: string) =>
+    trim(['marina', marinaId, 'yard', 'external-costs', workOrderId]),
+  finalAccount: (marinaId: string, workOrderId?: string) =>
+    trim(['marina', marinaId, 'yard', 'account', workOrderId]),
+  workOrderBillings: (marinaId: string, workOrderId?: string) =>
+    trim(['marina', marinaId, 'yard', 'billings', workOrderId]),
+  employees: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'yard', 'employees', filters]),
+  employee: (marinaId: string, employeeId?: string) =>
+    trim(['marina', marinaId, 'yard', 'employee', employeeId]),
+  absences: (marinaId: string, employeeId?: string) =>
+    trim(['marina', marinaId, 'yard', 'absences', employeeId]),
+  planner: (marinaId: string, from?: string, to?: string, department?: string) =>
+    trim(['marina', marinaId, 'yard', 'planner', from, to, department]),
+  yardLoad: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'yard', 'load', filters]),
+  atRiskOrders: (marinaId: string) => ['marina', marinaId, 'yard', 'at-risk'] as const,
+  equipmentBookings: (
+    marinaId: string,
+    date?: string,
+    filters?: Record<string, string | undefined>,
+  ) => trim(['marina', marinaId, 'yard', 'lifting', date, filters]),
+  equipmentOperators: (marinaId: string, equipmentId?: string) =>
+    trim(['marina', marinaId, 'yard', 'operators', equipmentId]),
 };
 
 /** Drops the trailing undefined segments, so a key with fewer arguments is a prefix of the full one. */
@@ -523,6 +584,10 @@ export function keysForTopic(topic: string, marinaId: string): QueryKey[] {
     case 'utilities.changed':
       // Meters, readings, consumptions and utility settings (M9).
       return [queryKeys.utilities(marinaId)];
+    case 'yard.changed':
+      // Yard catalogue, quotes, work orders, tasks, time entries, materials, costs, billings, planner and lifting
+      // (M10); work order billings also arrive on billing.changed.
+      return [queryKeys.yard(marinaId)];
     default:
       return [];
   }

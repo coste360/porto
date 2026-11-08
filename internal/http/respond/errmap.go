@@ -49,6 +49,12 @@ import (
 	"github.com/coste360/porto/internal/domain/optimizer"
 	"github.com/coste360/porto/internal/domain/storage"
 	"github.com/coste360/porto/internal/domain/utility"
+
+	"github.com/coste360/porto/internal/domain/lifting"
+	"github.com/coste360/porto/internal/domain/workorder"
+	"github.com/coste360/porto/internal/domain/yardplan"
+	"github.com/coste360/porto/internal/domain/yardquote"
+	"github.com/coste360/porto/internal/domain/yardquote/price"
 	"github.com/coste360/porto/pkg/ext"
 )
 
@@ -291,6 +297,48 @@ var sentinels = []struct {
 	{maintenance.ErrNotImplemented, problem.NotImplemented},
 	{utility.ErrNotImplemented, problem.NotImplemented},
 	{contract.ErrNotImplementedM9, problem.NotImplemented},
+	// M10 (m10-plan §13); the typed errors with details (FormulaError, BlockingError, CapacityError,
+	// SlotTakenError, OperatorBusyError) are mapped in mapM10.
+	{yardquote.ErrVersionMismatch, problem.VersionConflict},
+	{yardquote.ErrInvalidTransition, problem.InvalidTransition},
+	{yardquote.ErrQuoteExpired, problem.QuoteExpired},
+	{yardquote.ErrCodeTaken, problem.CodeTaken},
+	{yardquote.ErrInUse, problem.Conflict},
+	{yardquote.ErrCustomerEmailMissing, problem.CustomerEmailMissing},
+	{yardquote.ErrNoPrice, problem.NoPrice},
+	{yardquote.ErrFormulaInvalid, problem.FormulaInvalid},
+	{workorder.ErrVersionMismatch, problem.VersionConflict},
+	{workorder.ErrInvalidTransition, problem.InvalidTransition},
+	{workorder.ErrClosed, problem.WorkOrderClosed},
+	{workorder.ErrHasCharges, problem.WorkOrderHasCharges},
+	{workorder.ErrHasEntries, problem.Conflict},
+	{workorder.ErrDependencyViolation, problem.DependencyViolation},
+	{workorder.ErrDurationTooLong, problem.DurationTooLong},
+	{workorder.ErrOfflineTimeOutOfRange, problem.OfflineTimeOutOfRange},
+	{workorder.ErrTimerAlreadyRunning, problem.TimerAlreadyRunning},
+	{workorder.ErrNoEmployee, problem.Forbidden},
+	{workorder.ErrReturnExceedsIssued, problem.ReturnExceedsIssued},
+	{workorder.ErrNothingToBill, problem.NothingToBill},
+	{workorder.ErrNoPrice, problem.NoPrice},
+	{yardplan.ErrVersionMismatch, problem.VersionConflict},
+	{yardplan.ErrCodeTaken, problem.CodeTaken},
+	{yardplan.ErrQualificationMismatch, problem.QualificationMismatch},
+	{yardplan.ErrDependencyViolation, problem.DependencyViolation},
+	{yardplan.ErrCapacityExceeded, problem.CapacityExceeded},
+	{yardplan.ErrClosed, problem.WorkOrderClosed},
+	{lifting.ErrVersionMismatch, problem.VersionConflict},
+	{lifting.ErrInvalidTransition, problem.InvalidTransition},
+	{lifting.ErrSlotTaken, problem.EquipmentSlotTaken},
+	{lifting.ErrOperatorBusy, problem.OperatorBusy},
+	{lifting.ErrOutOfService, problem.EquipmentOutOfService},
+	{lifting.ErrCapacityExceeded, problem.EquipmentCapacityExceeded},
+	{lifting.ErrOperatorNotEnabled, problem.OperatorNotEnabled},
+	{lifting.ErrOutsideWindow, problem.OutsideLiftWindow},
+	{lifting.ErrWorkOrderClosed, problem.WorkOrderClosed},
+	{yardquote.ErrNotImplemented, problem.NotImplemented},
+	{workorder.ErrNotImplemented, problem.NotImplemented},
+	{yardplan.ErrNotImplemented, problem.NotImplemented},
+	{lifting.ErrNotImplemented, problem.NotImplemented},
 	{ErrBadJSON, problem.BadRequest},
 	{errUnsupportedMedia, problem.UnsupportedMediaType},
 }
@@ -321,6 +369,9 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 		return t, opts, true
 	}
 	if t, opts, ok := mapM9(err); ok {
+		return t, opts, true
+	}
+	if t, opts, ok := mapM10(err); ok {
 		return t, opts, true
 	}
 	if fe, ok := errors.AsType[*report.FilterError](err); ok {
@@ -673,4 +724,56 @@ func mapOccupancy(err error) (problem.Type, []problem.Option, bool) {
 		return problem.InUse, []problem.Option{problem.WithDetails(map[string]any{"references": refs})}, true
 	}
 	return "", nil, false
+}
+
+// mapM10 maps the typed errors of M10 that carry details (m10-plan §13). Details hold ids, codes, dates and
+// integers only (no names, INV-70).
+func mapM10(err error) (problem.Type, []problem.Option, bool) {
+	if fe, ok := errors.AsType[*yardquote.FormulaError](err); ok {
+		issues := fe.Issues
+		if issues == nil {
+			issues = []yardquote.Issue{}
+		}
+		return problem.FormulaInvalid, []problem.Option{problem.WithDetails(map[string]any{"issues": issues})}, true
+	}
+	if be, ok := errors.AsType[*yardquote.BlockingError](err); ok {
+		issues := be.Issues
+		if issues == nil {
+			issues = []price.LineIssue{}
+		}
+		return problem.NoPrice, []problem.Option{problem.WithDetails(map[string]any{"issues": issues})}, true
+	}
+	if ce, ok := errors.AsType[*yardplan.CapacityError](err); ok {
+		return problem.CapacityExceeded, []problem.Option{problem.WithDetails(map[string]any{
+			"employee_id": ce.EmployeeID, "date": ce.Date.String(), "capacity_milli": int64(ce.Capacity),
+			"assigned_milli": int64(ce.Assigned),
+		})}, true
+	}
+	if se, ok := errors.AsType[*lifting.SlotTakenError](err); ok {
+		return problem.EquipmentSlotTaken, []problem.Option{problem.WithDetails(map[string]any{
+			"equipment_id": se.EquipmentID, "date": se.Date.String(), "slots": orEmptyInts(se.Slots),
+			"booking_ids": orEmptyStrings(se.BookingIDs),
+		})}, true
+	}
+	if oe, ok := errors.AsType[*lifting.OperatorBusyError](err); ok {
+		return problem.OperatorBusy, []problem.Option{problem.WithDetails(map[string]any{
+			"employee_id": oe.EmployeeID, "date": oe.Date.String(), "slots": orEmptyInts(oe.Slots),
+			"booking_ids": orEmptyStrings(oe.BookingIDs),
+		})}, true
+	}
+	return "", nil, false
+}
+
+func orEmptyInts(v []int) []int {
+	if v == nil {
+		return []int{}
+	}
+	return v
+}
+
+func orEmptyStrings(v []string) []string {
+	if v == nil {
+		return []string{}
+	}
+	return v
 }

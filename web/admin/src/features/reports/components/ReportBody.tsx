@@ -25,7 +25,7 @@ import {
 } from '@porto/shared/ui/table';
 import { cn } from '@porto/shared/lib/utils';
 
-import { fieldOf, type ColumnDef, type ReportDef, type TotalDef } from '../lib/catalog';
+import { fieldOf, type ColumnDef, type ReportDef, type TotalDef, totalsOf } from '../lib/catalog';
 import { formatCell, isNumeric, totalRow, unitOf, type Row } from '../lib/cells';
 import { RefLink } from './RefLink';
 
@@ -38,7 +38,9 @@ type BodyProps = {
 };
 
 /** A report result: summary cards, notes, chart and groups, suggestions (waste), records with the Totale row. */
-export function ReportBody({ def, data, section, marinaId, onPage }: BodyProps) {
+export function ReportBody({ def: base, data, section, marinaId, onPage }: BodyProps) {
+  // M10 yard: the summary totals depend on the view (section).
+  const def: ReportDef = { ...base, totals: totalsOf(base, section) };
   const totals = data.totals as unknown as Row;
   const unit = unitOf(totals);
   const groups = (data.groups ?? []) as unknown as Row[];

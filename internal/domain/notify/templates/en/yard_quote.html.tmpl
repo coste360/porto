@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},</p>
+<p>here is our quote for the yard work. The document is attached.</p>
+<table>
+{{with v . "quote_code"}}<tr><td>Quote</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "vessel_name"}}<tr><td>Vessel</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "amount"}}<tr><td>Total</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "valid_until"}}<tr><td>Valid until</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+{{with v . "link"}}<p><a href="{{.}}">View and accept the quote</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

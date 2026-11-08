@@ -31,9 +31,10 @@ cleanup() { docker rm -f -v "$name" >/dev/null 2>&1 || true; }
 trap cleanup EXIT INT TERM
 
 # The data directory lives in memory (tmpfs): no anonymous volume is left behind and the run does not
-# depend on free disk space in the docker VM.
+# depend on free disk space in the docker VM. The full integration run peaks at about 3 GB since M10 (one schema
+# per test plus the season simulations); PORTO_TEST_PG_TMPFS overrides the size.
 docker run -d --rm --name "$name" --shm-size=1g \
-	--tmpfs /var/lib/postgresql/data:rw,size=3g --tmpfs /var/run/postgresql:rw \
+	--tmpfs /var/lib/postgresql/data:rw,size="${PORTO_TEST_PG_TMPFS:-4g}" --tmpfs /var/run/postgresql:rw \
 	-e POSTGRES_USER=porto -e POSTGRES_PASSWORD="$password" -e POSTGRES_DB=porto_test \
 	-p 127.0.0.1::5432 "$image" \
 	-c fsync=off -c synchronous_commit=off -c full_page_writes=off -c max_connections=300 -c max_locks_per_transaction=512 >/dev/null

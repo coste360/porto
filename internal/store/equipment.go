@@ -16,6 +16,9 @@ func InsertEquipment(ctx context.Context, tx bun.IDB, s MarinaScope, e *Equipmen
 	if e.Version == 0 {
 		e.Version = 1
 	}
+	if e.DefaultMinutes == 0 {
+		e.DefaultMinutes = 30
+	}
 	e.CreatedAt, e.UpdatedAt = UTC(e.CreatedAt), UTC(e.UpdatedAt)
 	_, err := tx.NewInsert().Model(e).Exec(ctx)
 	return err
@@ -37,7 +40,7 @@ func GetEquipment(ctx context.Context, db bun.IDB, s MarinaScope, id string) (*E
 func UpdateEquipment(ctx context.Context, tx bun.IDB, s MarinaScope, e *Equipment, expected int, now time.Time) error {
 	e.UpdatedAt = UTC(now)
 	res, err := tx.NewUpdate().Model(e).
-		Column("code", "name", "kind", "map_id", "x_cm", "y_cm", "capacity_kg", "active", "updated_at").
+		Column("code", "name", "kind", "map_id", "x_cm", "y_cm", "capacity_kg", "active", "bookable", "default_minutes", "updated_at").
 		Set("version = version + 1").Where("marina_id = ?", s.ID()).Where("id = ?", e.ID).Where("version = ?", expected).Exec(ctx)
 	if err != nil {
 		return err

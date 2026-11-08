@@ -9349,12 +9349,1398 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Work types of the yard (yard.read) */
+        get: operations["listWorkTypes"];
+        put?: never;
+        /** Create a work type (yard.manage) */
+        post: operations["createWorkType"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-types/{workTypeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workTypeId: components["parameters"]["WorkTypeId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a work type (yard.manage) */
+        patch: operations["updateWorkType"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/qualifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Qualifications (trades) of the yard (yard.read) */
+        get: operations["listYardQualifications"];
+        put?: never;
+        /** Create a qualification with its labour item (yard.manage) */
+        post: operations["createYardQualification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/qualifications/{qualificationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                qualificationId: components["parameters"]["QualificationId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a qualification (yard.manage) */
+        patch: operations["updateYardQualification"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Catalogue items usable in the yard (service, labour, material, product, fee) with their yard settings (yard.read) */
+        get: operations["listYardItems"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/items/{itemId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                itemId: components["parameters"]["ItemId"];
+            };
+            cookie?: never;
+        };
+        /** Yard settings of an item (yard.read) */
+        get: operations["getYardItemSettings"];
+        /**
+         * Set the yard settings of an item: cost, qualification, default formulas (validated, 422 formula_invalid) (yard.manage)
+         * @description If-Match is optional: required only when the settings row already exists (428 otherwise).
+         */
+        put: operations["putYardItemSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/formula-variables": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Formula variables: built-in vessel variables (read only) and the marina's derived and job variables (yard.read) */
+        get: operations["listFormulaVariables"];
+        put?: never;
+        /** Create a derived or job variable (validated on the test vessel, 422 formula_invalid) (yard.manage) */
+        post: operations["createFormulaVariable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/formula-variables/{variableId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                variableId: components["parameters"]["VariableId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a variable that no current package version or item formula references (yard.manage) */
+        delete: operations["deleteFormulaVariable"];
+        options?: never;
+        head?: never;
+        /** Change a variable; dependent packages and item formulas are re-validated (yard.manage) */
+        patch: operations["updateFormulaVariable"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/formula-tables": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Band tables (yard.read) */
+        get: operations["listFormulaTables"];
+        put?: never;
+        /** Create a band table (yard.manage) */
+        post: operations["createFormulaTable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/formula-tables/{tableId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                tableId: components["parameters"]["TableId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a band table; dependent formulas are re-validated (yard.manage) */
+        patch: operations["updateFormulaTable"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Work packages with their current version (yard.read) */
+        get: operations["listWorkPackages"];
+        put?: never;
+        /** Create a work package with its version 1 (lines validated, 422 formula_invalid) (yard.manage) */
+        post: operations["createWorkPackage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-packages/{packageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                packageId: components["parameters"]["PackageId"];
+            };
+            cookie?: never;
+        };
+        /** A work package with the requested version (default current) and its version history (yard.read) */
+        get: operations["getWorkPackage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-packages/{packageId}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                packageId: components["parameters"]["PackageId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Save the lines as version N+1 (insert-only; old quotes keep their version) (yard.manage) */
+        post: operations["saveWorkPackageVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-packages/{packageId}/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                packageId: components["parameters"]["PackageId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Activate or deactivate a package (hidden from the wizard; versions stay) (yard.manage) */
+        put: operations["setWorkPackageActive"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/formulas/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Parse, check and evaluate a formula on the test vessel or a chosen vessel (no write) (yard.read) */
+        post: operations["validateFormula"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Yard settings (defaults when never saved) (yard.read) */
+        get: operations["getYardSettings"];
+        /**
+         * Change the yard settings (yard.manage)
+         * @description If-Match is optional for the first save and required once the settings were saved.
+         */
+        put: operations["putYardSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/quotes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Yard quotes (yard.read) */
+        get: operations["listYardQuotes"];
+        put?: never;
+        /** Create a draft quote: lines priced by formulas and the price lists, snapshot stored (yard.manage) */
+        post: operations["createYardQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/quotes/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Compute the lines, totals, estimated hours and issues of a quote input without writing (yard.read) */
+        post: operations["previewYardQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        /** A yard quote with lines and totals (yard.read) */
+        get: operations["getYardQuote"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a draft quote (lines recomputed, new snapshot) (yard.manage) */
+        patch: operations["updateYardQuote"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}/recompute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ricalcola: re-price a draft with the current catalogue, variables and price lists (yard.manage) */
+        post: operations["recomputeYardQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send the quote: PDF, magic link and email (manual: no email) (yard.manage) */
+        post: operations["sendYardQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accept from the panel: the work order (or the variation) and the advance are created in the same transaction (yard.manage) */
+        post: operations["acceptYardQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decline the quote (yard.manage) */
+        post: operations["declineYardQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/quotes/{yardQuoteId}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        /** The PDF of the quote (template yard_quote) (yard.read) */
+        get: operations["getYardQuotePdf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/links/{token}/yard-quote/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                token: components["parameters"]["Token"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accept a yard quote from its link; the work order is created */
+        post: operations["acceptPublicYardQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Work orders (yard.read) */
+        get: operations["listWorkOrders"];
+        put?: never;
+        /** Create a work order without a quote; lines from the catalogue priced with the quote line engine (yard.manage) */
+        post: operations["createWorkOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/board": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Board "barche in lavorazione": open orders by status (yard.read) */
+        get: operations["getYardBoard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        /** A work order with budget lines (yard.read) */
+        get: operations["getWorkOrder"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change responsible, planned dates, position and notes (yard.manage) */
+        patch: operations["updateWorkOrder"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/transition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Change the state: start, hold, resume, complete, reopen, deliver, cancel (yard.manage) */
+        post: operations["transitionWorkOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/variations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a variation quote (extra works) on the order (yard.manage) */
+        post: operations["createVariationQuote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        /** Tasks of a work order with dependencies (yard.read, or yard.timesheets on assigned tasks) */
+        get: operations["listWorkTasks"];
+        put?: never;
+        /** Add a task (yard.manage) */
+        post: operations["createWorkTask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a task without time entries (yard.manage) */
+        delete: operations["deleteWorkTask"];
+        options?: never;
+        head?: never;
+        /** Change a task: title, qualification, estimate, checklist, status (yard.manage) */
+        patch: operations["updateWorkTask"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/dependencies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace the finish-to-start predecessors of a task (same order, acyclic) (yard.manage) */
+        put: operations["setTaskDependencies"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Progress, checklist and done of a task (yard.manage, or yard.timesheets on an assigned task)
+         * @description Offline (kind yard.activity_done): no If-Match; a replay with the same client_ref returns the task; progress never decreases through a replay (D25).
+         */
+        post: operations["updateTaskProgress"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/photos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Attach a photo or document to a task (JPEG, PNG, WebP or PDF, at most 8 MiB, raw body), encrypted at rest (yard.manage, or yard.timesheets on an assigned task)
+         * @description Offline (kind yard.activity_done, dependent through taskId). The same bytes as an existing file of the task return that file.
+         */
+        post: operations["uploadTaskPhoto"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        /** Photos and documents of a task (yard.read or yard.timesheets) */
+        get: operations["listTaskFiles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/files/{fileId}/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        /** A short-lived (5 minutes) signed link to a task file (yard.read or yard.timesheets) */
+        get: operations["getTaskFileLink"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/tasks/{taskId}/files/{fileId}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        /** Download a task file through a signed link from getTaskFileLink (yard.read or yard.timesheets) */
+        get: operations["getTaskFileFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/timesheets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Time entries (yard.manage: all; yard.read: all; yard.timesheets: own) */
+        get: operations["listTimesheets"];
+        put?: never;
+        /**
+         * Manual time entry (0.25..16 h in 0.25 h steps, or start and end) (yard.timesheets own, yard.manage anyone)
+         * @description Offline (kind yard.timesheet): deduped by client_ref; device times within 48 h before and 5 min after Porto-Offline-Queued-At.
+         */
+        post: operations["createTimeEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/timesheets/timer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start a timer on a task or an order (one running timer per employee) (yard.timesheets own, yard.manage anyone)
+         * @description Offline (kind yard.timesheet): deduped by client_ref (a replay returns the first result).
+         */
+        post: operations["startTimer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/timesheets/{timesheetId}/stop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                timesheetId: components["parameters"]["TimesheetId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Stop a running timer: hours rounded to 0.01 h, entry submitted (yard.timesheets own, yard.manage anyone)
+         * @description Offline (kind yard.timesheet, dependent on startTimer through timesheetId): no If-Match; a replay returns the stopped entry.
+         */
+        post: operations["stopTimer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/timesheets/{timesheetId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                timesheetId: components["parameters"]["TimesheetId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a submitted or rejected entry (resubmits it) (owner with yard.timesheets, yard.manage) */
+        patch: operations["updateTimeEntry"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/timesheets/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve submitted entries in batch: cost rate and cost frozen (yard.manage) */
+        post: operations["approveTimeEntries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/timesheets/{timesheetId}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                timesheetId: components["parameters"]["TimesheetId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reject a submitted entry with a reason (yard.manage) */
+        post: operations["rejectTimeEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/timesheets/{timesheetId}/void": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                timesheetId: components["parameters"]["TimesheetId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Void an approved entry while the order is not invoiced (yard.manage) */
+        post: operations["voidTimeEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/my-work": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** The caller's employee: assignments from 7 days ago to 7 days ahead and the running timer (yard.timesheets or yard.manage) */
+        get: operations["getMyYardWork"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/stock-movements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Material issues and returns (yard.read) */
+        get: operations["listStockMovements"];
+        put?: never;
+        /** Issue or return material on a work order with frozen cost and price (yard.manage) */
+        post: operations["createStockMovement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/external-costs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        /** External costs of a work order (yard.read) */
+        get: operations["listExternalCosts"];
+        put?: never;
+        /** Add an external cost (supplier as text, billable with markup) (yard.manage) */
+        post: operations["createExternalCost"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/external-costs/{externalCostId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                externalCostId: components["parameters"]["ExternalCostId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an external cost not yet billed (yard.manage) */
+        delete: operations["deleteExternalCost"];
+        options?: never;
+        head?: never;
+        /** Change an external cost (yard.manage) */
+        patch: operations["updateExternalCost"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        /** Final account (consuntivo): lines, margins per order and work type, comparison with the quote (yard.read) */
+        get: operations["getFinalAccount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/work-orders/{workOrderId}/billings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        /** Billings of a work order with their charges (yard.read) */
+        get: operations["listWorkOrderBillings"];
+        put?: never;
+        /**
+         * Bill progress, final or adjustment through the M5 charges (charges.manage; negative remainders refunds.issue)
+         * @description dry_run=true returns the preview (200) and writes nothing; otherwise 201 with the billing and its charge.
+         */
+        post: operations["createWorkOrderBilling"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/employees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Yard employees (yard.read) */
+        get: operations["listEmployees"];
+        put?: never;
+        /** Create an employee (yard.manage) */
+        post: operations["createEmployee"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/employees/{employeeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                employeeId: components["parameters"]["EmployeeId"];
+            };
+            cookie?: never;
+        };
+        /** An employee with calendar and qualifications (yard.read) */
+        get: operations["getEmployee"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change an employee (yard.manage) */
+        patch: operations["updateEmployee"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/employees/{employeeId}/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                employeeId: components["parameters"]["EmployeeId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace the weekly calendar (minutes per weekday) (yard.manage) */
+        put: operations["putEmployeeCalendar"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/employees/{employeeId}/absences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                employeeId: components["parameters"]["EmployeeId"];
+            };
+            cookie?: never;
+        };
+        /** Absences of an employee (yard.read) */
+        get: operations["listAbsences"];
+        put?: never;
+        /** Add an absence (yard.manage) */
+        post: operations["createAbsence"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/employees/{employeeId}/absences/{absenceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                employeeId: components["parameters"]["EmployeeId"];
+                absenceId: components["parameters"]["AbsenceId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an absence (yard.manage) */
+        delete: operations["deleteAbsence"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/planner": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Planner grid: employees x days with capacity, assignments and unplanned tasks (default: this week) (yard.read) */
+        get: operations["getPlanner"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/planner/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Create or change assignments in batch with qualification, dependency and capacity checks (yard.manage) */
+        put: operations["putAssignments"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/planner/assignments/{assignmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                assignmentId: components["parameters"]["AssignmentId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an assignment (yard.manage) */
+        delete: operations["deleteAssignment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/load": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Workload: capacity, assigned and actual hours by employee, department, qualification or bay (yard.read) */
+        get: operations["getYardLoad"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/at-risk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Orders whose remaining hours exceed the free qualified capacity before delivery, or late (yard.read) */
+        get: operations["getAtRiskOrders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/yard/planner/proposal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Greedy auto-plan proposal (no write; confirm with putAssignments) (yard.manage) */
+        post: operations["proposeYardPlan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/equipment-bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Lifting bookings of a day (default today) and open requests (yard.read, storage.read or yard.timesheets) */
+        get: operations["listEquipmentBookings"];
+        put?: never;
+        /** Request or book a lifting machine in 15-minute slots (yard.manage or storage.manage); a taken slot is 409 equipment_slot_taken, a cancelled or invoiced work order 409 work_order_closed */
+        post: operations["createEquipmentBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/equipment-bookings/{equipmentBookingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentBookingId: components["parameters"]["EquipmentBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Book a request or reschedule a booking (slots rewritten in one transaction) (yard.manage or storage.manage) */
+        patch: operations["updateEquipmentBooking"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/equipment-bookings/{equipmentBookingId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentBookingId: components["parameters"]["EquipmentBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a request or booking (slots released) (yard.manage or storage.manage) */
+        post: operations["cancelEquipmentBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/equipment-bookings/{equipmentBookingId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentBookingId: components["parameters"]["EquipmentBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark a booking done (yard.manage or storage.manage) */
+        post: operations["completeEquipmentBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/equipment/{equipmentId}/operators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentId: components["parameters"]["EquipmentId"];
+            };
+            cookie?: never;
+        };
+        /** Employees enabled to operate a machine (yard.read or storage.read) */
+        get: operations["listEquipmentOperators"];
+        /** Replace the enabled operators (each with a lift-operator qualification) (yard.manage) */
+        put: operations["putEquipmentOperators"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/yard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R-yard: hours, load, margins, margins by work type, lifting (reports.yard or reports.all) */
+        get: operations["getYardReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid" | "invalid_period" | "invalid_report_filter" | "report_too_large" | "unknown_indicator" | "booking_unavailable" | "booking_rules" | "booking_busy" | "consent_required" | "text_outdated" | "refund_changed" | "price_changed" | "cancellation_not_allowed" | "nothing_due" | "idempotency_mismatch" | "storage_target_invalid" | "storage_no_space" | "area_exits_invalid" | "pinned_invalid" | "too_many_items" | "scenario_window_invalid" | "scenario_not_draft" | "scenario_conflicts" | "movement_not_pending" | "element_invalid" | "maintenance_conflicts" | "task_already_done" | "reading_charged" | "consumption_frozen";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid" | "invalid_period" | "invalid_report_filter" | "report_too_large" | "unknown_indicator" | "booking_unavailable" | "booking_rules" | "booking_busy" | "consent_required" | "text_outdated" | "refund_changed" | "price_changed" | "cancellation_not_allowed" | "nothing_due" | "idempotency_mismatch" | "storage_target_invalid" | "storage_no_space" | "area_exits_invalid" | "pinned_invalid" | "too_many_items" | "scenario_window_invalid" | "scenario_not_draft" | "scenario_conflicts" | "movement_not_pending" | "element_invalid" | "maintenance_conflicts" | "task_already_done" | "reading_charged" | "consumption_frozen" | "formula_invalid" | "work_order_closed" | "work_order_has_charges" | "qualification_mismatch" | "capacity_exceeded" | "dependency_violation" | "duration_too_long" | "offline_time_out_of_range" | "timer_already_running" | "return_exceeds_issued" | "nothing_to_bill" | "equipment_slot_taken" | "operator_busy" | "equipment_out_of_service" | "equipment_capacity_exceeded" | "operator_not_enabled" | "outside_lift_window";
         FieldError: {
             field: string;
             code: string;
@@ -14536,6 +15922,7 @@ export interface components {
             renewal?: components["schemas"]["PublicRenewal"];
             signature?: components["schemas"]["PublicSignature"];
             unsubscribe?: components["schemas"]["PublicUnsubscribe"];
+            yard_quote?: components["schemas"]["PublicYardQuote"];
         };
         PublicDeposit: {
             amount_cents: components["schemas"]["Cents"];
@@ -15691,10 +17078,10 @@ export interface components {
             verifying: boolean;
         };
         /**
-         * @description Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+         * @description Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
          * @enum {string}
          */
-        ReportKey: "occupancy" | "efficiency" | "allocation-waste" | "lost-demand" | "customers" | "production" | "accruals" | "charges" | "payments" | "revenue-classes" | "comparison" | "receivables" | "presences" | "rights" | "cash" | "vessels" | "berth-revenue" | "storage" | "maintenance" | "utilities";
+        ReportKey: "occupancy" | "efficiency" | "allocation-waste" | "lost-demand" | "customers" | "production" | "accruals" | "charges" | "payments" | "revenue-classes" | "comparison" | "receivables" | "presences" | "rights" | "cash" | "vessels" | "berth-revenue" | "storage" | "maintenance" | "utilities" | "yard";
         /**
          * @description json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
          * @enum {string}
@@ -15727,7 +17114,7 @@ export interface components {
         /** @description Link from a record to its entity page (ids and display codes only) */
         ReportRef: {
             /** @enum {string} */
-            type: "contract" | "transit" | "charge" | "payment" | "refund" | "allocation" | "berth" | "area" | "land_resource" | "customer" | "vessel" | "inquiry" | "release" | "presence" | "cash_session" | "fiscal_document" | "right" | "common_charge_run" | "mandate" | "installment" | "holder_installment" | "scenario" | "maintenance_task" | "utility_meter" | "utility_consumption";
+            type: "contract" | "transit" | "charge" | "payment" | "refund" | "allocation" | "berth" | "area" | "land_resource" | "customer" | "vessel" | "inquiry" | "release" | "presence" | "cash_session" | "fiscal_document" | "right" | "common_charge_run" | "mandate" | "installment" | "holder_installment" | "scenario" | "maintenance_task" | "utility_meter" | "utility_consumption" | "work_order" | "yard_quote" | "employee" | "equipment_booking";
             id: string;
             label?: string;
         };
@@ -16569,7 +17956,7 @@ export interface components {
             records: components["schemas"]["BerthRevenueRecord"][];
         };
         /**
-         * @description Manager dashboard tiles (m7-plan §4). yard_* (M10) and rental_* (M11) are returned with available=false.
+         * @description Manager dashboard tiles (m7-plan §4). yard_* are available from M10 (m10-plan §12); rental_* (M11) are returned with available=false.
          * @enum {string}
          */
         TileKey: "production" | "charged" | "collected" | "receivables_open" | "receivables_overdue" | "occupancy" | "efficiency" | "berth_revenue_per_m" | "transit_avg_night" | "new_customers" | "renewal_rate" | "vessels_hosted" | "vessels_avg_loa" | "yard_open_orders" | "yard_hours" | "yard_margin" | "rental_utilisation" | "rental_revenue" | "storage_occupancy" | "storage_exits_blocked" | "maintenance_overdue" | "utility_unbilled";
@@ -17856,6 +19243,10 @@ export interface components {
             capacity_kg?: number;
             active: boolean;
             out_of_service: boolean;
+            /** @description Bookable in lifting slots (M10) */
+            bookable: boolean;
+            /** @description Default booking length in minutes (M10) */
+            default_minutes: number;
             /** Format: int64 */
             version: number;
             /** Format: date-time */
@@ -17873,6 +19264,9 @@ export interface components {
             /** Format: int64 */
             capacity_kg?: number;
             active?: boolean;
+            /** @description Default true for travel_lift */
+            bookable?: boolean;
+            default_minutes?: number;
         };
         EquipmentPatch: {
             code?: components["schemas"]["Code"];
@@ -17886,6 +19280,8 @@ export interface components {
             /** Format: int64 */
             capacity_kg?: number | null;
             active?: boolean;
+            bookable?: boolean;
+            default_minutes?: number;
         };
         EquipmentPage: {
             items: components["schemas"]["Equipment"][];
@@ -18452,6 +19848,1530 @@ export interface components {
             groups: components["schemas"]["UtilitiesReportGroup"][];
             records: components["schemas"]["UtilitiesReportRecord"][];
         };
+        /** @description A formula problem (codes: syntax, unknown_variable, unknown_function, unknown_table, arity, type_mismatch, enum_value_unknown, formula_too_complex, derived_cycle, div_by_zero, missing_variable, overflow, band_no_row, negative_quantity, negative_price, out_of_range, no_price). field names the formula (e.g. lines[2].qty_formula). */
+        FormulaIssue: {
+            code: string;
+            field?: string;
+            /** @description Package code or variable name for re-validation failures */
+            ref?: string;
+            /** @description Byte offset in the formula source */
+            pos?: number;
+            params?: {
+                [key: string]: string;
+            };
+        };
+        FormulaTestCase: {
+            vars?: {
+                [key: string]: components["schemas"]["FormulaValue"];
+            };
+            expect_qty_milli?: components["schemas"]["QtyMilli"];
+            expect_price_cents?: components["schemas"]["Cents"];
+        };
+        /** @description A variable value; numbers in milli, booleans, enum strings */
+        FormulaValue: number | boolean | string;
+        ActiveFlag: {
+            active: boolean;
+        };
+        WorkType: {
+            id: string;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            revenue_class_id?: string;
+            active: boolean;
+            sort_order: number;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        WorkTypeInput: {
+            code: string;
+            name: components["schemas"]["I18nText"];
+            revenue_class_id?: string;
+            active?: boolean;
+            sort_order?: number;
+        };
+        WorkTypePatch: {
+            code?: string;
+            name?: components["schemas"]["I18nText"];
+            revenue_class_id?: string | null;
+            active?: boolean;
+            sort_order?: number;
+        };
+        WorkTypeList: {
+            items: components["schemas"]["WorkType"][];
+        };
+        YardQualification: {
+            id: string;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            labour_item_id: string;
+            default_cost_cents: components["schemas"]["Cents"];
+            lift_operator: boolean;
+            active: boolean;
+            sort_order: number;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        YardQualificationInput: {
+            code: string;
+            name: components["schemas"]["I18nText"];
+            labour_item_id: string;
+            /** Format: int64 */
+            default_cost_cents?: number;
+            lift_operator?: boolean;
+            active?: boolean;
+            sort_order?: number;
+        };
+        YardQualificationPatch: {
+            code?: string;
+            name?: components["schemas"]["I18nText"];
+            labour_item_id?: string;
+            /** Format: int64 */
+            default_cost_cents?: number;
+            lift_operator?: boolean;
+            active?: boolean;
+            sort_order?: number;
+        };
+        YardQualificationList: {
+            items: components["schemas"]["YardQualification"][];
+        };
+        /** @description An M2 item with its yard settings (settings absent = not configured; prices stay in the price lists) */
+        YardItem: {
+            item_id: string;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            item_type: components["schemas"]["ItemType"];
+            unit: components["schemas"]["ItemUnit"];
+            vat_rate_bp: components["schemas"]["BasisPoints"];
+            price_includes_vat: boolean;
+            active: boolean;
+            /** @description A yard_item_settings row exists */
+            configured: boolean;
+            yard_enabled: boolean;
+            cost_cents: components["schemas"]["Cents"];
+            qualification_id?: string;
+            qty_formula: string;
+            price_formula: string;
+            category: string;
+            test_case?: components["schemas"]["FormulaTestCase"];
+            /**
+             * Format: int64
+             * @description 0 when not configured
+             */
+            version: number;
+        };
+        YardItemPage: {
+            items: components["schemas"]["YardItem"][];
+            next_cursor: string | null;
+        };
+        YardItemSettingsInput: {
+            yard_enabled?: boolean;
+            /** Format: int64 */
+            cost_cents?: number;
+            qualification_id?: string | null;
+            qty_formula?: string;
+            price_formula?: string;
+            category?: string;
+            test_case?: components["schemas"]["FormulaTestCase"];
+            clear_test_case?: boolean;
+        };
+        /** @enum {string} */
+        FormulaVariableSource: "vessel" | "derived" | "job" | "context";
+        /** @enum {string} */
+        FormulaVariableKind: "number" | "bool" | "enum";
+        /** @enum {string} */
+        FormulaUnit: "m" | "m2" | "t" | "kw" | "h" | "pcs" | "l" | "pct" | "years" | "none";
+        /** @description A formula variable; vessel and context variables are built in (no id, read only) */
+        FormulaVariable: {
+            id?: string;
+            name: string;
+            source: components["schemas"]["FormulaVariableSource"];
+            kind: components["schemas"]["FormulaVariableKind"];
+            unit: components["schemas"]["FormulaUnit"];
+            expression?: string;
+            min_milli?: components["schemas"]["QtyMilli"];
+            max_milli?: components["schemas"]["QtyMilli"];
+            default_milli?: components["schemas"]["QtyMilli"];
+            default_enum?: string;
+            enum_values?: string[];
+            label: components["schemas"]["I18nText"];
+            builtin: boolean;
+            test_value?: components["schemas"]["FormulaValue"];
+            /** Format: int64 */
+            version?: number;
+        };
+        FormulaVariableList: {
+            items: components["schemas"]["FormulaVariable"][];
+        };
+        FormulaVariableInput: {
+            name: string;
+            /** @enum {string} */
+            source: "derived" | "job";
+            kind: components["schemas"]["FormulaVariableKind"];
+            unit?: components["schemas"]["FormulaUnit"];
+            expression?: string;
+            min_milli?: components["schemas"]["QtyMilli"];
+            max_milli?: components["schemas"]["QtyMilli"];
+            default_milli?: components["schemas"]["QtyMilli"];
+            default_enum?: string;
+            enum_values?: string[];
+            label?: components["schemas"]["I18nText"];
+        };
+        FormulaVariablePatch: {
+            unit?: components["schemas"]["FormulaUnit"];
+            expression?: string;
+            /** Format: int64 */
+            min_milli?: number | null;
+            /** Format: int64 */
+            max_milli?: number | null;
+            /** Format: int64 */
+            default_milli?: number | null;
+            default_enum?: string | null;
+            enum_values?: string[];
+            label?: components["schemas"]["I18nText"];
+        };
+        FormulaTableRow: {
+            /**
+             * Format: int64
+             * @description null = open last row
+             */
+            up_to_milli?: number | null;
+            value_milli: components["schemas"]["QtyMilli"];
+        };
+        FormulaTable: {
+            id: string;
+            name: string;
+            label: components["schemas"]["I18nText"];
+            rows: components["schemas"]["FormulaTableRow"][];
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        FormulaTableList: {
+            items: components["schemas"]["FormulaTable"][];
+        };
+        FormulaTableInput: {
+            name: string;
+            label?: components["schemas"]["I18nText"];
+            rows: components["schemas"]["FormulaTableRow"][];
+        };
+        FormulaTablePatch: {
+            label?: components["schemas"]["I18nText"];
+            rows?: components["schemas"]["FormulaTableRow"][];
+        };
+        WorkPackageTask: {
+            title: components["schemas"]["I18nText"];
+            checklist?: string[];
+        };
+        WorkPackageLine: {
+            seq: number;
+            item_id: string;
+            work_type_id?: string;
+            qty_formula: string;
+            price_formula?: string;
+            task?: components["schemas"]["WorkPackageTask"];
+            notes?: string;
+            test_case?: components["schemas"]["FormulaTestCase"];
+        };
+        WorkPackageVersion: {
+            version: number;
+            language_version: number;
+            lines: components["schemas"]["WorkPackageLine"][];
+            job_vars: string[];
+            created_by_user_id?: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        WorkPackageVersionBrief: {
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+        };
+        WorkPackage: {
+            id: string;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            work_type_id: string;
+            active: boolean;
+            current_version: number;
+            content?: components["schemas"]["WorkPackageVersion"];
+            versions?: components["schemas"]["WorkPackageVersionBrief"][];
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        WorkPackagePage: {
+            items: components["schemas"]["WorkPackage"][];
+            next_cursor: string | null;
+        };
+        WorkPackageInput: {
+            code: string;
+            name: components["schemas"]["I18nText"];
+            work_type_id: string;
+            active?: boolean;
+            lines: components["schemas"]["WorkPackageLine"][];
+            job_vars?: string[];
+        };
+        WorkPackageVersionInput: {
+            name?: components["schemas"]["I18nText"];
+            work_type_id?: string;
+            lines: components["schemas"]["WorkPackageLine"][];
+            job_vars?: string[];
+        };
+        FormulaValidateInput: {
+            formula: string;
+            /**
+             * @description Default quantity
+             * @enum {string}
+             */
+            purpose?: "quantity" | "price" | "derived" | "boolean";
+            /** @description Default the marina test vessel */
+            vessel_id?: string;
+            vars?: {
+                [key: string]: components["schemas"]["FormulaValue"];
+            };
+            /** @description Price formulas - list_price of this item */
+            item_id?: string;
+            qty_milli?: components["schemas"]["QtyMilli"];
+        };
+        FormulaValidateResult: {
+            valid: boolean;
+            issues: components["schemas"]["FormulaIssue"][];
+            idents: string[];
+            value?: components["schemas"]["FormulaValue"];
+            qty_milli?: components["schemas"]["QtyMilli"];
+            price_cents?: components["schemas"]["Cents"];
+        };
+        YardTestVessel: {
+            loa_cm: components["schemas"]["Cm"];
+            beam_cm: components["schemas"]["Cm"];
+            draft_cm?: components["schemas"]["Cm"];
+            air_draft_cm?: components["schemas"]["Cm"];
+            lwl_cm?: components["schemas"]["Cm"];
+            /** Format: int64 */
+            displacement_kg?: number;
+            /** @enum {string} */
+            hull_type: "monohull_motor" | "monohull_sail" | "catamaran" | "trimaran" | "rib" | "gozzo" | "other";
+            hull_material?: string;
+            engines_kw?: number[];
+            year_built?: number;
+        };
+        YardSettings: {
+            test_vessel: components["schemas"]["YardTestVessel"];
+            quote_validity_days: number;
+            deposit_bp: components["schemas"]["BasisPoints"];
+            advance_on_accept: boolean;
+            external_markup_bp: components["schemas"]["BasisPoints"];
+            external_item_id?: string;
+            fixed_includes_external: boolean;
+            workers_issue_materials: boolean;
+            lift_from_slot: number;
+            lift_to_slot: number;
+            lift_request_on_move: boolean;
+            /**
+             * Format: int64
+             * @description 0 = never saved (defaults)
+             */
+            version: number;
+        };
+        YardSettingsInput: {
+            test_vessel?: components["schemas"]["YardTestVessel"];
+            quote_validity_days?: number;
+            /** Format: int64 */
+            deposit_bp?: number;
+            advance_on_accept?: boolean;
+            /** Format: int64 */
+            external_markup_bp?: number;
+            external_item_id?: string | null;
+            fixed_includes_external?: boolean;
+            workers_issue_materials?: boolean;
+            lift_from_slot?: number;
+            lift_to_slot?: number;
+            lift_request_on_move?: boolean;
+        };
+        /** @enum {string} */
+        YardQuoteStatus: "draft" | "sent" | "accepted" | "declined" | "expired";
+        /** @enum {string} */
+        YardQuoteKind: "job" | "variation";
+        /** @enum {string} */
+        YardBillingMode: "actual" | "fixed" | "progress";
+        /** @enum {string} */
+        YardLineSource: "package" | "item" | "manual";
+        /** @description A package (current version) or a single item chosen in step 2 */
+        YardQuoteSelection: {
+            package_id?: string;
+            item_id?: string;
+        };
+        /** @description A manual change of a computed line (marked qty_overridden / price_overridden) */
+        YardLineOverride: {
+            seq: number;
+            /** Format: int64 */
+            qty_milli?: number;
+            /** Format: int64 */
+            unit_cents?: number;
+            /** Format: int64 */
+            discount_cents?: number;
+            description?: string;
+            remove?: boolean;
+        };
+        YardManualLine: {
+            item_id: string;
+            work_type_id?: string;
+            description?: string;
+            /** Format: int64 */
+            qty_milli: number;
+            /** Format: int64 */
+            unit_cents: number;
+            /** Format: int64 */
+            discount_cents?: number;
+        };
+        YardQuoteInput: {
+            customer_id: string;
+            vessel_id: string;
+            selections: components["schemas"]["YardQuoteSelection"][];
+            job_inputs?: {
+                [key: string]: components["schemas"]["FormulaValue"];
+            };
+            vessel_overrides?: {
+                [key: string]: components["schemas"]["FormulaValue"];
+            };
+            overrides?: components["schemas"]["YardLineOverride"][];
+            manual_lines?: components["schemas"]["YardManualLine"][];
+            quoted_on?: components["schemas"]["IsoDate"];
+            valid_until?: components["schemas"]["IsoDate"];
+            billing_mode?: components["schemas"]["YardBillingMode"];
+            /** Format: int64 */
+            deposit_bp?: number;
+            /** Format: int64 */
+            deposit_cents?: number;
+            conditions?: string;
+            notes?: string;
+            planned_start_on?: components["schemas"]["IsoDate"];
+            planned_delivery_on?: components["schemas"]["IsoDate"];
+        };
+        /** @description Replaces the given fields of a draft; the lines are recomputed from the stored snapshot inputs */
+        YardQuotePatch: {
+            selections?: components["schemas"]["YardQuoteSelection"][];
+            job_inputs?: {
+                [key: string]: components["schemas"]["FormulaValue"];
+            };
+            vessel_overrides?: {
+                [key: string]: components["schemas"]["FormulaValue"];
+            };
+            overrides?: components["schemas"]["YardLineOverride"][];
+            manual_lines?: components["schemas"]["YardManualLine"][];
+            valid_until?: components["schemas"]["IsoDate"];
+            billing_mode?: components["schemas"]["YardBillingMode"];
+            /** Format: int64 */
+            deposit_bp?: number | null;
+            /** Format: int64 */
+            deposit_cents?: number | null;
+            conditions?: string;
+            notes?: string;
+            /** Format: date */
+            planned_start_on?: string | null;
+            /** Format: date */
+            planned_delivery_on?: string | null;
+        };
+        YardQuoteLine: {
+            seq: number;
+            source: components["schemas"]["YardLineSource"];
+            package_id?: string;
+            package_version?: number;
+            package_line_seq?: number;
+            item_id: string;
+            item_code: string;
+            item_type?: components["schemas"]["ItemType"];
+            unit?: components["schemas"]["ItemUnit"];
+            work_type_id: string;
+            qualification_id?: string;
+            description: string;
+            qty_formula?: string;
+            price_formula?: string;
+            qty_milli: components["schemas"]["QtyMilli"];
+            unit_cents: components["schemas"]["Cents"];
+            discount_cents: components["schemas"]["Cents"];
+            qty_overridden: boolean;
+            price_overridden: boolean;
+            /** @description qty_overridden or price_overridden or source manual (badge "manuale") */
+            manual: boolean;
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+            vat_rate_bp: components["schemas"]["BasisPoints"];
+            vat_nature?: components["schemas"]["VatNature"];
+            price_includes_vat: boolean;
+            estimated_hours_milli: components["schemas"]["QtyMilli"];
+            price_list_id?: string;
+            task?: components["schemas"]["WorkPackageTask"];
+            issues: components["schemas"]["FormulaIssue"][];
+        };
+        YardVatBucket: {
+            vat_rate_bp: components["schemas"]["BasisPoints"];
+            vat_nature?: components["schemas"]["VatNature"];
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+        };
+        YardQualificationHours: {
+            qualification_id: string;
+            hours_milli: components["schemas"]["QtyMilli"];
+            /** @description Estimate at the qualification default cost */
+            cost_cents?: components["schemas"]["Cents"];
+        };
+        YardQuoteTotals: {
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+            deposit_amount_cents: components["schemas"]["Cents"];
+            vat: components["schemas"]["YardVatBucket"][];
+        };
+        /** @description A variable asked in step 3 (job variables and missing vessel data) */
+        YardVariableInput: {
+            name: string;
+            source: components["schemas"]["FormulaVariableSource"];
+            kind: components["schemas"]["FormulaVariableKind"];
+            unit: components["schemas"]["FormulaUnit"];
+            label: components["schemas"]["I18nText"];
+            min_milli?: components["schemas"]["QtyMilli"];
+            max_milli?: components["schemas"]["QtyMilli"];
+            default?: components["schemas"]["FormulaValue"];
+            enum_values?: string[];
+            required: boolean;
+            value?: components["schemas"]["FormulaValue"];
+        };
+        YardQuotePreview: {
+            lines: components["schemas"]["YardQuoteLine"][];
+            totals: components["schemas"]["YardQuoteTotals"];
+            estimated_hours: components["schemas"]["YardQualificationHours"][];
+            variables: components["schemas"]["YardVariableInput"][];
+            issues: components["schemas"]["FormulaIssue"][];
+            /** @description Issues that block sending (no_price */
+            blocking: boolean;
+        };
+        YardQuote: {
+            id: string;
+            /** @description PC<year>-NNNNNN */
+            number: string;
+            kind: components["schemas"]["YardQuoteKind"];
+            work_order_id?: string;
+            customer_id: string;
+            vessel_id: string;
+            status: components["schemas"]["YardQuoteStatus"];
+            quoted_on: components["schemas"]["IsoDate"];
+            valid_until: components["schemas"]["IsoDate"];
+            /** Format: date-time */
+            expires_at: string;
+            billing_mode: components["schemas"]["YardBillingMode"];
+            deposit_bp?: components["schemas"]["BasisPoints"];
+            deposit_cents?: components["schemas"]["Cents"];
+            conditions: string;
+            notes: string;
+            planned_start_on?: components["schemas"]["IsoDate"];
+            planned_delivery_on?: components["schemas"]["IsoDate"];
+            job_inputs?: {
+                [key: string]: components["schemas"]["FormulaValue"];
+            };
+            vessel_overrides?: {
+                [key: string]: components["schemas"]["FormulaValue"];
+            };
+            lines: components["schemas"]["YardQuoteLine"][];
+            totals: components["schemas"]["YardQuoteTotals"];
+            estimated_hours: components["schemas"]["YardQualificationHours"][];
+            issues: components["schemas"]["FormulaIssue"][];
+            blocking: boolean;
+            language_version: number;
+            /** Format: date-time */
+            sent_at?: string;
+            /** Format: date-time */
+            decided_at?: string;
+            /** @enum {string} */
+            accepted_via?: "panel" | "link";
+            decline_reason?: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        YardQuotePage: {
+            items: components["schemas"]["YardQuote"][];
+            next_cursor: string | null;
+        };
+        YardQuoteSendInput: {
+            /** @description Generate PDF and link without sending the email */
+            manual?: boolean;
+            locale?: components["schemas"]["Locale"];
+        };
+        YardQuoteSendResult: {
+            quote: components["schemas"]["YardQuote"];
+            document_id?: string;
+            /** @description Returned once (the token is stored hashed) */
+            link_url?: string;
+            message_id?: string;
+        };
+        YardQuoteAcceptResult: {
+            quote: components["schemas"]["YardQuote"];
+            work_order_id: string;
+            work_order_number?: string;
+            advance_charge_id?: string;
+        };
+        YardQuoteDeclineInput: {
+            reason?: string;
+        };
+        PublicYardQuoteLine: {
+            description: string;
+            unit?: components["schemas"]["ItemUnit"];
+            qty_milli: components["schemas"]["QtyMilli"];
+            unit_cents: components["schemas"]["Cents"];
+            discount_cents?: components["schemas"]["Cents"];
+            net_cents: components["schemas"]["Cents"];
+            vat_rate_bp: components["schemas"]["BasisPoints"];
+        };
+        /** @description The yard quote of a link (subject_type yard_quote); customer-facing data only */
+        PublicYardQuote: {
+            number: string;
+            kind: components["schemas"]["YardQuoteKind"];
+            status: components["schemas"]["YardQuoteStatus"];
+            valid_until: components["schemas"]["IsoDate"];
+            vessel_name: string;
+            /** @description Variation quotes only */
+            work_order_number?: string;
+            lines: components["schemas"]["PublicYardQuoteLine"][];
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+            deposit_amount_cents: components["schemas"]["Cents"];
+            billing_mode: components["schemas"]["YardBillingMode"];
+            conditions: string;
+            planned_start_on?: components["schemas"]["IsoDate"];
+            planned_delivery_on?: components["schemas"]["IsoDate"];
+            can_accept: boolean;
+        };
+        PublicYardQuoteAccept: {
+            accept_conditions?: boolean;
+        };
+        PublicYardQuoteAcceptResult: {
+            quote_number: string;
+            work_order_number?: string;
+        };
+        /** @enum {string} */
+        WorkOrderStatus: "planned" | "in_progress" | "on_hold" | "completed" | "delivered" | "invoiced" | "cancelled";
+        /** @enum {string} */
+        WorkOrderAction: "start" | "hold" | "resume" | "complete" | "reopen" | "deliver" | "cancel";
+        WorkOrderLine: {
+            id: string;
+            seq: number;
+            /** @enum {string} */
+            origin: "quote" | "variation" | "manual";
+            variation_id?: string;
+            item_id: string;
+            item_code?: string;
+            item_type?: components["schemas"]["ItemType"];
+            work_type_id: string;
+            qualification_id?: string;
+            description: string;
+            qty_milli: components["schemas"]["QtyMilli"];
+            unit_cents: components["schemas"]["Cents"];
+            discount_cents: components["schemas"]["Cents"];
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+            vat_rate_bp: components["schemas"]["BasisPoints"];
+            vat_nature?: components["schemas"]["VatNature"];
+            price_includes_vat: boolean;
+            unit_cost_cents: components["schemas"]["Cents"];
+            estimated_hours_milli: components["schemas"]["QtyMilli"];
+            consumed_qty_milli?: components["schemas"]["QtyMilli"];
+        };
+        WorkOrder: {
+            id: string;
+            /** @description C<year>-NNNNNN */
+            number: string;
+            quote_id?: string;
+            customer_id: string;
+            vessel_id: string;
+            vessel_name?: string;
+            work_type_id?: string;
+            responsible_user_id?: string;
+            planned_start_on?: components["schemas"]["IsoDate"];
+            planned_delivery_on?: components["schemas"]["IsoDate"];
+            allocation_id?: string;
+            position_note: string;
+            status: components["schemas"]["WorkOrderStatus"];
+            billing_mode: components["schemas"]["YardBillingMode"];
+            deposit_cents?: components["schemas"]["Cents"];
+            completion_bp: components["schemas"]["BasisPoints"];
+            notes: string;
+            hold_reason?: string;
+            lines: components["schemas"]["WorkOrderLine"][];
+            hours_estimated_milli: components["schemas"]["QtyMilli"];
+            hours_approved_milli: components["schemas"]["QtyMilli"];
+            /** @description e.g. tasks_incomplete after complete */
+            warnings: string[];
+            /** Format: date-time */
+            started_at?: string;
+            /** Format: date-time */
+            completed_at?: string;
+            /** Format: date-time */
+            delivered_at?: string;
+            /** Format: date-time */
+            invoiced_at?: string;
+            /** Format: date-time */
+            cancelled_at?: string;
+            cancel_reason?: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        WorkOrderPage: {
+            items: components["schemas"]["WorkOrder"][];
+            next_cursor: string | null;
+        };
+        WorkOrderInput: {
+            customer_id: string;
+            vessel_id: string;
+            work_type_id?: string;
+            responsible_user_id?: string;
+            planned_start_on?: components["schemas"]["IsoDate"];
+            planned_delivery_on?: components["schemas"]["IsoDate"];
+            allocation_id?: string;
+            position_note?: string;
+            billing_mode?: components["schemas"]["YardBillingMode"];
+            notes?: string;
+            selections?: components["schemas"]["YardQuoteSelection"][];
+            job_inputs?: {
+                [key: string]: components["schemas"]["FormulaValue"];
+            };
+            manual_lines?: components["schemas"]["YardManualLine"][];
+        };
+        WorkOrderPatch: {
+            work_type_id?: string | null;
+            responsible_user_id?: string | null;
+            /** Format: date */
+            planned_start_on?: string | null;
+            /** Format: date */
+            planned_delivery_on?: string | null;
+            allocation_id?: string | null;
+            position_note?: string;
+            notes?: string;
+            /** @description Actual quantity of service/product budget lines (default the budget quantity) */
+            consumed?: {
+                line_id: string;
+                /** Format: int64 */
+                consumed_qty_milli: number | null;
+            }[];
+        };
+        WorkOrderTransition: {
+            action: components["schemas"]["WorkOrderAction"];
+            reason?: string;
+        };
+        YardBoardCard: {
+            work_order_id: string;
+            number: string;
+            status: components["schemas"]["WorkOrderStatus"];
+            vessel_id: string;
+            vessel_name?: string;
+            loa_cm?: components["schemas"]["Cm"];
+            completion_bp: components["schemas"]["BasisPoints"];
+            planned_delivery_on?: components["schemas"]["IsoDate"];
+            delay_days?: number;
+            hours_estimated_milli: components["schemas"]["QtyMilli"];
+            hours_approved_milli: components["schemas"]["QtyMilli"];
+            at_risk?: boolean;
+        };
+        YardBoardColumn: {
+            status: components["schemas"]["WorkOrderStatus"];
+            cards: components["schemas"]["YardBoardCard"][];
+        };
+        YardBoard: {
+            today: components["schemas"]["IsoDate"];
+            columns: components["schemas"]["YardBoardColumn"][];
+        };
+        /** @enum {string} */
+        WorkTaskStatus: "todo" | "in_progress" | "done" | "cancelled";
+        WorkTaskChecklistItem: {
+            key: string;
+            label: string;
+            done: boolean;
+        };
+        WorkTask: {
+            id: string;
+            work_order_id: string;
+            seq: number;
+            title: string;
+            qualification_id?: string;
+            work_type_id?: string;
+            estimated_hours_milli: components["schemas"]["QtyMilli"];
+            status: components["schemas"]["WorkTaskStatus"];
+            progress_bp: components["schemas"]["BasisPoints"];
+            checklist: components["schemas"]["WorkTaskChecklistItem"][];
+            depends_on: string[];
+            planned_from?: components["schemas"]["IsoDate"];
+            planned_to?: components["schemas"]["IsoDate"];
+            source_line_id?: string;
+            hours_approved_milli: components["schemas"]["QtyMilli"];
+            hours_assigned_milli: components["schemas"]["QtyMilli"];
+            warnings?: string[];
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        WorkTaskList: {
+            items: components["schemas"]["WorkTask"][];
+        };
+        WorkTaskInput: {
+            title: string;
+            qualification_id?: string;
+            work_type_id?: string;
+            /** Format: int64 */
+            estimated_hours_milli?: number;
+            checklist?: string[];
+            depends_on?: string[];
+        };
+        WorkTaskPatch: {
+            title?: string;
+            qualification_id?: string | null;
+            work_type_id?: string | null;
+            /** Format: int64 */
+            estimated_hours_milli?: number;
+            status?: components["schemas"]["WorkTaskStatus"];
+            checklist?: components["schemas"]["WorkTaskChecklistItem"][];
+        };
+        TaskDependenciesInput: {
+            depends_on: string[];
+        };
+        TaskProgressInput: {
+            client_ref: string;
+            /** Format: int64 */
+            progress_bp?: number;
+            done?: boolean;
+            checklist?: {
+                key: string;
+                done: boolean;
+            }[];
+            /**
+             * Format: date-time
+             * @description Device instant (offline window of 29.2)
+             */
+            recorded_at?: string;
+        };
+        WorkTaskFile: {
+            file_id: string;
+            /** @enum {string} */
+            kind: "photo" | "document";
+            content_type: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        WorkTaskFileList: {
+            items: components["schemas"]["WorkTaskFile"][];
+        };
+        /** @enum {string} */
+        TimesheetStatus: "running" | "submitted" | "approved" | "rejected" | "voided";
+        Timesheet: {
+            id: string;
+            employee_id: string;
+            work_order_id: string;
+            work_order_number?: string;
+            task_id?: string;
+            work_date: components["schemas"]["IsoDate"];
+            /** Format: date-time */
+            started_at?: string;
+            /** Format: date-time */
+            ended_at?: string;
+            hours_milli: components["schemas"]["QtyMilli"];
+            /** @enum {string} */
+            source: "timer" | "manual";
+            status: components["schemas"]["TimesheetStatus"];
+            cost_rate_cents?: components["schemas"]["Cents"];
+            cost_cents?: components["schemas"]["Cents"];
+            note: string;
+            late: boolean;
+            /** Format: date-time */
+            approved_at?: string;
+            reject_reason?: string;
+            voids_id?: string;
+            /** @description e.g. predecessors_not_done */
+            warnings?: string[];
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        TimesheetPage: {
+            items: components["schemas"]["Timesheet"][];
+            next_cursor: string | null;
+        };
+        TimesheetList: {
+            items: components["schemas"]["Timesheet"][];
+        };
+        TimerStartInput: {
+            client_ref: string;
+            task_id?: string;
+            work_order_id?: string;
+            /** @description yard.manage only; default the caller's employee */
+            employee_id?: string;
+            /** Format: date-time */
+            started_at?: string;
+        };
+        TimerStopInput: {
+            client_ref?: string;
+            /** Format: date-time */
+            ended_at?: string;
+            note?: string;
+        };
+        TimeEntryInput: {
+            client_ref: string;
+            task_id?: string;
+            work_order_id?: string;
+            /** @description yard.manage only; default the caller's employee */
+            employee_id?: string;
+            work_date?: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            hours_milli?: number;
+            /** Format: date-time */
+            started_at?: string;
+            /** Format: date-time */
+            ended_at?: string;
+            note?: string;
+        };
+        TimeEntryPatch: {
+            task_id?: string | null;
+            work_date?: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            hours_milli?: number;
+            /** Format: date-time */
+            started_at?: string;
+            /** Format: date-time */
+            ended_at?: string;
+            note?: string;
+        };
+        TimesheetApproveInput: {
+            entries: {
+                id: string;
+                /** Format: int64 */
+                version: number;
+            }[];
+        };
+        TimesheetRejectInput: {
+            reason: string;
+        };
+        TimesheetVoidInput: {
+            reason?: string;
+        };
+        MyYardAssignment: {
+            assignment_id: string;
+            task_id: string;
+            task_title: string;
+            work_order_id: string;
+            work_order_number: string;
+            vessel_name?: string;
+            position?: string;
+            work_date: components["schemas"]["IsoDate"];
+            hours_milli: components["schemas"]["QtyMilli"];
+            task_status: components["schemas"]["WorkTaskStatus"];
+            progress_bp: components["schemas"]["BasisPoints"];
+            checklist?: components["schemas"]["WorkTaskChecklistItem"][];
+            /** Format: int64 */
+            task_version?: number;
+        };
+        MyYardWork: {
+            /** @description Absent when the caller has no employee */
+            employee_id?: string;
+            today: components["schemas"]["IsoDate"];
+            assignments: components["schemas"]["MyYardAssignment"][];
+            running_timer?: components["schemas"]["Timesheet"];
+        };
+        StockMovement: {
+            id: string;
+            work_order_id: string;
+            task_id?: string;
+            item_id: string;
+            item_code?: string;
+            /** @enum {string} */
+            kind: "issue" | "return";
+            qty_milli: components["schemas"]["QtyMilli"];
+            unit_cost_cents: components["schemas"]["Cents"];
+            unit_price_cents: components["schemas"]["Cents"];
+            price_overridden: boolean;
+            moved_on: components["schemas"]["IsoDate"];
+            note: string;
+            late: boolean;
+            /** Format: date-time */
+            created_at: string;
+        };
+        StockMovementPage: {
+            items: components["schemas"]["StockMovement"][];
+            next_cursor: string | null;
+        };
+        StockMovementInput: {
+            work_order_id: string;
+            task_id?: string;
+            item_id: string;
+            /** @enum {string} */
+            kind: "issue" | "return";
+            /** Format: int64 */
+            qty_milli: number;
+            /** Format: int64 */
+            unit_cost_cents?: number;
+            /** Format: int64 */
+            unit_price_cents?: number;
+            moved_on?: components["schemas"]["IsoDate"];
+            note?: string;
+        };
+        ExternalCost: {
+            id: string;
+            work_order_id: string;
+            supplier_name: string;
+            reference: string;
+            incurred_on: components["schemas"]["IsoDate"];
+            description: string;
+            work_type_id?: string;
+            cost_cents: components["schemas"]["Cents"];
+            billable: boolean;
+            price_cents: components["schemas"]["Cents"];
+            item_id?: string;
+            late: boolean;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        ExternalCostList: {
+            items: components["schemas"]["ExternalCost"][];
+        };
+        ExternalCostInput: {
+            supplier_name: string;
+            reference?: string;
+            incurred_on?: components["schemas"]["IsoDate"];
+            description?: string;
+            work_type_id?: string;
+            /** Format: int64 */
+            cost_cents: number;
+            billable?: boolean;
+            /**
+             * Format: int64
+             * @description Default cost plus the markup
+             */
+            price_cents?: number;
+            item_id?: string;
+        };
+        ExternalCostPatch: {
+            supplier_name?: string;
+            reference?: string;
+            incurred_on?: components["schemas"]["IsoDate"];
+            description?: string;
+            work_type_id?: string | null;
+            /** Format: int64 */
+            cost_cents?: number;
+            billable?: boolean;
+            /** Format: int64 */
+            price_cents?: number;
+            item_id?: string | null;
+        };
+        /** @enum {string} */
+        FinalAccountSource: "labour" | "material" | "service" | "external";
+        FinalAccountLine: {
+            /** @description item:<item_id>|wt:<work_type_id> (external: ext:<id>) */
+            key: string;
+            source: components["schemas"]["FinalAccountSource"];
+            item_id?: string;
+            item_code?: string;
+            qualification_id?: string;
+            work_type_id: string;
+            description?: string;
+            qty_milli: components["schemas"]["QtyMilli"];
+            revenue_cents: components["schemas"]["Cents"];
+            cost_cents: components["schemas"]["Cents"];
+            margin_cents: components["schemas"]["Cents"];
+            /** Format: int64 */
+            margin_bp?: number | null;
+            vat_rate_bp: components["schemas"]["BasisPoints"];
+            vat_nature?: components["schemas"]["VatNature"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+            budget_qty_milli: components["schemas"]["QtyMilli"];
+            budget_net_cents: components["schemas"]["Cents"];
+            delta_net_cents: components["schemas"]["Cents"];
+        };
+        FinalAccountTotals: {
+            revenue_cents: components["schemas"]["Cents"];
+            cost_cents: components["schemas"]["Cents"];
+            margin_cents: components["schemas"]["Cents"];
+            /** Format: int64 */
+            margin_bp?: number | null;
+            revenue_labour_cents: components["schemas"]["Cents"];
+            revenue_material_cents: components["schemas"]["Cents"];
+            revenue_service_cents: components["schemas"]["Cents"];
+            revenue_external_cents: components["schemas"]["Cents"];
+            cost_labour_cents: components["schemas"]["Cents"];
+            cost_material_cents: components["schemas"]["Cents"];
+            cost_service_cents: components["schemas"]["Cents"];
+            cost_external_cents: components["schemas"]["Cents"];
+            hours_labour_milli: components["schemas"]["QtyMilli"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+        };
+        FinalAccountWorkType: {
+            work_type_id: string;
+            revenue_cents: components["schemas"]["Cents"];
+            cost_cents: components["schemas"]["Cents"];
+            margin_cents: components["schemas"]["Cents"];
+            /** Format: int64 */
+            margin_bp?: number | null;
+        };
+        FinalAccount: {
+            work_order_id: string;
+            billing_mode: components["schemas"]["YardBillingMode"];
+            lines: components["schemas"]["FinalAccountLine"][];
+            totals: components["schemas"]["FinalAccountTotals"];
+            by_work_type: components["schemas"]["FinalAccountWorkType"][];
+            vat: components["schemas"]["YardVatBucket"][];
+            quote_net_cents: components["schemas"]["Cents"];
+            delta_net_cents: components["schemas"]["Cents"];
+            charged_gross_cents: components["schemas"]["Cents"];
+            remaining_gross_cents: components["schemas"]["Cents"];
+        };
+        /** @enum {string} */
+        WorkOrderBillingKind: "advance" | "progress" | "final" | "adjustment";
+        WorkOrderBilling: {
+            id: string;
+            work_order_id: string;
+            seq: number;
+            kind: components["schemas"]["WorkOrderBillingKind"];
+            /** @enum {string} */
+            status: "charged" | "skipped_zero";
+            charge_id?: string;
+            charge_number?: string;
+            gross_cents: components["schemas"]["Cents"];
+            percent_bp?: components["schemas"]["BasisPoints"];
+            amount_cents?: components["schemas"]["Cents"];
+            /** Format: date-time */
+            created_at: string;
+        };
+        WorkOrderBillingList: {
+            items: components["schemas"]["WorkOrderBilling"][];
+            charged_gross_cents: components["schemas"]["Cents"];
+        };
+        WorkOrderBillingInput: {
+            /** @enum {string} */
+            kind: "progress" | "final" | "adjustment";
+            /** Format: int64 */
+            percent_bp?: number;
+            /** Format: int64 */
+            amount_cents?: number;
+            due_on?: components["schemas"]["IsoDate"];
+        };
+        WorkOrderBillingPreviewLine: {
+            plan_key: string;
+            description: string;
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+            vat_rate_bp: components["schemas"]["BasisPoints"];
+        };
+        WorkOrderBillingResult: {
+            dry_run: boolean;
+            kind: components["schemas"]["WorkOrderBillingKind"];
+            /** @description Negative for a refund adjustment */
+            gross_cents: components["schemas"]["Cents"];
+            lines: components["schemas"]["WorkOrderBillingPreviewLine"][];
+            billing?: components["schemas"]["WorkOrderBilling"];
+            charge_id?: string;
+            corrects_charge_id?: string;
+        };
+        EmployeeCalendarDay: {
+            /** @description ISO weekday */
+            weekday: number;
+            minutes: number;
+        };
+        Employee: {
+            id: string;
+            code: string;
+            first_name: string;
+            last_name: string;
+            user_id?: string;
+            department: string;
+            hourly_cost_cents: components["schemas"]["Cents"];
+            active: boolean;
+            qualification_ids: string[];
+            calendar: components["schemas"]["EmployeeCalendarDay"][];
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        EmployeePage: {
+            items: components["schemas"]["Employee"][];
+            next_cursor: string | null;
+        };
+        EmployeeInput: {
+            code: string;
+            first_name: string;
+            last_name: string;
+            user_id?: string;
+            department?: string;
+            /** Format: int64 */
+            hourly_cost_cents?: number;
+            active?: boolean;
+            qualification_ids?: string[];
+            calendar?: components["schemas"]["EmployeeCalendarDay"][];
+        };
+        EmployeePatch: {
+            code?: string;
+            first_name?: string;
+            last_name?: string;
+            user_id?: string | null;
+            department?: string;
+            /** Format: int64 */
+            hourly_cost_cents?: number;
+            active?: boolean;
+            qualification_ids?: string[];
+        };
+        EmployeeCalendarInput: {
+            days: components["schemas"]["EmployeeCalendarDay"][];
+        };
+        /** @enum {string} */
+        AbsenceKind: "vacation" | "sick" | "leave" | "other";
+        Absence: {
+            id: string;
+            employee_id: string;
+            from_on: components["schemas"]["IsoDate"];
+            to_on: components["schemas"]["IsoDate"];
+            kind: components["schemas"]["AbsenceKind"];
+            /** @description Absent = whole day */
+            minutes_per_day?: number;
+            note: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        AbsenceList: {
+            items: components["schemas"]["Absence"][];
+        };
+        AbsenceInput: {
+            from_on: components["schemas"]["IsoDate"];
+            to_on: components["schemas"]["IsoDate"];
+            kind: components["schemas"]["AbsenceKind"];
+            minutes_per_day?: number;
+            note?: string;
+        };
+        Assignment: {
+            id: string;
+            task_id: string;
+            work_order_id: string;
+            employee_id: string;
+            work_date: components["schemas"]["IsoDate"];
+            hours_milli: components["schemas"]["QtyMilli"];
+            forced_qualification: boolean;
+            overload: boolean;
+            /** Format: int64 */
+            version: number;
+        };
+        PlannerDay: {
+            date: components["schemas"]["IsoDate"];
+            capacity_milli: components["schemas"]["QtyMilli"];
+            assigned_milli: components["schemas"]["QtyMilli"];
+            actual_milli?: components["schemas"]["QtyMilli"];
+            /** Format: int64 */
+            load_bp?: number | null;
+            overload: boolean;
+            absence?: components["schemas"]["AbsenceKind"];
+        };
+        PlannerRow: {
+            employee_id: string;
+            code: string;
+            display_name: string;
+            department: string;
+            qualification_ids: string[];
+            days: components["schemas"]["PlannerDay"][];
+        };
+        PlannerTask: {
+            task_id: string;
+            work_order_id: string;
+            work_order_number: string;
+            vessel_name?: string;
+            title: string;
+            qualification_id?: string;
+            estimated_hours_milli: components["schemas"]["QtyMilli"];
+            remaining_milli: components["schemas"]["QtyMilli"];
+            assigned_milli: components["schemas"]["QtyMilli"];
+            progress_bp: components["schemas"]["BasisPoints"];
+            planned_delivery_on?: components["schemas"]["IsoDate"];
+            depends_on: string[];
+            /** Format: int64 */
+            version: number;
+        };
+        Planner: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            today: components["schemas"]["IsoDate"];
+            rows: components["schemas"]["PlannerRow"][];
+            assignments: components["schemas"]["Assignment"][];
+            /** @description Open tasks of open orders (tray "Da pianificare" = remaining > assigned) */
+            tasks: components["schemas"]["PlannerTask"][];
+        };
+        AssignmentChange: {
+            task_id: string;
+            employee_id: string;
+            work_date: components["schemas"]["IsoDate"];
+            /**
+             * Format: int64
+             * @description 0 deletes the assignment
+             */
+            hours_milli: number;
+            /** Format: int64 */
+            task_version: number;
+        };
+        AssignmentBatchInput: {
+            changes: components["schemas"]["AssignmentChange"][];
+            force_qualification?: boolean;
+            allow_overload?: boolean;
+        };
+        AssignmentBatchResult: {
+            assignments: components["schemas"]["Assignment"][];
+            tasks: {
+                task_id: string;
+                /** Format: int64 */
+                version: number;
+            }[];
+        };
+        YardLoadCell: {
+            period_start: components["schemas"]["IsoDate"];
+            capacity_milli: components["schemas"]["QtyMilli"];
+            assigned_milli: components["schemas"]["QtyMilli"];
+            actual_milli: components["schemas"]["QtyMilli"];
+            /** Format: int64 */
+            load_bp?: number | null;
+            overload: boolean;
+        };
+        YardLoadRow: {
+            key: string;
+            label: string;
+            cells: components["schemas"]["YardLoadCell"][];
+            capacity_milli: components["schemas"]["QtyMilli"];
+            assigned_milli: components["schemas"]["QtyMilli"];
+            /** Format: int64 */
+            load_bp?: number | null;
+        };
+        YardLoad: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            /** @enum {string} */
+            group_by: "employee" | "department" | "qualification" | "bay";
+            /** @enum {string} */
+            period: "day" | "week" | "month";
+            rows: components["schemas"]["YardLoadRow"][];
+        };
+        AtRiskOrder: {
+            work_order_id: string;
+            number: string;
+            vessel_name?: string;
+            planned_delivery_on?: components["schemas"]["IsoDate"];
+            reasons: {
+                /** @enum {string} */
+                code: "late" | "capacity";
+                qualification_id?: string;
+                remaining_milli?: components["schemas"]["QtyMilli"];
+                free_milli?: components["schemas"]["QtyMilli"];
+            }[];
+        };
+        AtRiskOrderList: {
+            today: components["schemas"]["IsoDate"];
+            items: components["schemas"]["AtRiskOrder"][];
+        };
+        YardPlanProposalInput: {
+            from?: components["schemas"]["IsoDate"];
+            horizon_days?: number;
+            work_order_ids?: string[];
+        };
+        YardPlanProposal: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            changes: components["schemas"]["AssignmentChange"][];
+            unplaced: {
+                task_id: string;
+                remaining_milli: components["schemas"]["QtyMilli"];
+            }[];
+        };
+        /** @enum {string} */
+        EquipmentBookingStatus: "requested" | "booked" | "done" | "cancelled";
+        /** @enum {string} */
+        EquipmentBookingPurpose: "haul_out" | "launch" | "move" | "other";
+        EquipmentBooking: {
+            id: string;
+            equipment_id?: string;
+            date?: components["schemas"]["IsoDate"];
+            from_slot?: number;
+            /** @description Exclusive */
+            to_slot?: number;
+            purpose: components["schemas"]["EquipmentBookingPurpose"];
+            vessel_id?: string;
+            vessel_name?: string;
+            work_order_id?: string;
+            contract_id?: string;
+            storage_movement_id?: string;
+            allocation_id?: string;
+            operator_employee_id?: string;
+            status: components["schemas"]["EquipmentBookingStatus"];
+            /** @enum {string} */
+            source: "office" | "work_order" | "storage" | "move";
+            note: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        EquipmentBookingDay: {
+            date: components["schemas"]["IsoDate"];
+            window_from_slot: number;
+            window_to_slot: number;
+            equipment: {
+                id: string;
+                code: string;
+                name: string;
+                kind: components["schemas"]["EquipmentKind"];
+                /** Format: int64 */
+                capacity_kg?: number;
+                out_of_service: boolean;
+                default_minutes: number;
+            }[];
+            bookings: components["schemas"]["EquipmentBooking"][];
+            requests: components["schemas"]["EquipmentBooking"][];
+        };
+        EquipmentBookingInput: {
+            equipment_id?: string;
+            date?: components["schemas"]["IsoDate"];
+            from_slot?: number;
+            to_slot?: number;
+            purpose: components["schemas"]["EquipmentBookingPurpose"];
+            vessel_id?: string;
+            work_order_id?: string;
+            contract_id?: string;
+            storage_movement_id?: string;
+            operator_employee_id?: string;
+            /** @description Create a request without slots */
+            request_only?: boolean;
+            note?: string;
+        };
+        EquipmentBookingPatch: {
+            equipment_id?: string;
+            date?: components["schemas"]["IsoDate"];
+            from_slot?: number;
+            to_slot?: number;
+            operator_employee_id?: string | null;
+            note?: string;
+        };
+        EquipmentBookingCancelInput: {
+            reason?: string;
+        };
+        EquipmentOperators: {
+            equipment_id: string;
+            employee_ids: string[];
+        };
+        EquipmentOperatorsInput: {
+            employee_ids: string[];
+        };
+        YardReportTotals: {
+            /** Format: int64 */
+            records: number;
+            hours_milli: components["schemas"]["QtyMilli"];
+            cost_cents?: components["schemas"]["Cents"];
+            capacity_milli?: components["schemas"]["QtyMilli"];
+            assigned_milli?: components["schemas"]["QtyMilli"];
+            /** Format: int64 */
+            load_bp?: number | null;
+            revenue_cents?: components["schemas"]["Cents"];
+            margin_cents?: components["schemas"]["Cents"];
+            /** Format: int64 */
+            margin_bp?: number | null;
+            quote_net_cents?: components["schemas"]["Cents"];
+            /** Format: int64 */
+            booked_slots?: number;
+            /** Format: int64 */
+            window_slots?: number;
+        };
+        YardReportGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["YardReportTotals"];
+        };
+        /** @description One record of the selected view; fields not meaningful for the view are absent */
+        YardReportRecord: {
+            date?: components["schemas"]["IsoDate"];
+            employee_id?: string;
+            employee_code?: string;
+            employee_name?: string;
+            department?: string;
+            work_order_id?: string;
+            work_order_number?: string;
+            work_order_status?: components["schemas"]["WorkOrderStatus"];
+            billing_mode?: components["schemas"]["YardBillingMode"];
+            work_type_id?: string;
+            work_type_code?: string;
+            qualification_id?: string;
+            bay?: string;
+            hours_milli?: components["schemas"]["QtyMilli"];
+            cost_cents?: components["schemas"]["Cents"];
+            capacity_milli?: components["schemas"]["QtyMilli"];
+            assigned_milli?: components["schemas"]["QtyMilli"];
+            actual_milli?: components["schemas"]["QtyMilli"];
+            /** Format: int64 */
+            load_bp?: number | null;
+            overload?: boolean;
+            revenue_cents?: components["schemas"]["Cents"];
+            cost_labour_cents?: components["schemas"]["Cents"];
+            cost_material_cents?: components["schemas"]["Cents"];
+            cost_service_cents?: components["schemas"]["Cents"];
+            cost_external_cents?: components["schemas"]["Cents"];
+            margin_cents?: components["schemas"]["Cents"];
+            /** Format: int64 */
+            margin_bp?: number | null;
+            quote_net_cents?: components["schemas"]["Cents"];
+            delta_net_cents?: components["schemas"]["Cents"];
+            equipment_id?: string;
+            equipment_code?: string;
+            from_slot?: number;
+            to_slot?: number;
+            purpose?: components["schemas"]["EquipmentBookingPurpose"];
+            booking_status?: components["schemas"]["EquipmentBookingStatus"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        YardReport: components["schemas"]["ReportEnvelope"] & {
+            /** @enum {string} */
+            view: "hours" | "load" | "margins" | "margins_by_work_type" | "lifting";
+            totals: components["schemas"]["YardReportTotals"];
+            groups: components["schemas"]["YardReportGroup"][];
+            records: components["schemas"]["YardReportRecord"][];
+        };
     };
     responses: {
         /** @description A domain rule refused the request (m4-plan §7.4: insurance_required, customer_email_missing, paper_scan_required, shares_invalid, table_incomplete, transfer_requirements, template_invalid, template_limits, otp_invalid, vessel_not_in_fleet, provider_unknown, fit_blocked, no_price, ...), a validation failure, or an idempotency key was reused */
@@ -18644,6 +21564,15 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description A yard rule refused the request (m10-plan §13: formula_invalid with issues, no_price, qualification_mismatch, dependency_violation, duration_too_long, offline_time_out_of_range, return_exceeds_issued, equipment_capacity_exceeded, operator_not_enabled, outside_lift_window, customer_email_missing, ...), a validation failure, or an idempotency key was reused */
+        YardUnprocessable: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
     };
     parameters: {
         ChargeId: string;
@@ -18769,6 +21698,19 @@ export interface components {
         MeterId: string;
         ReadingId: string;
         ConsumptionId: string;
+        WorkTypeId: string;
+        QualificationId: string;
+        VariableId: string;
+        TableId: string;
+        PackageId: string;
+        YardQuoteId: string;
+        WorkOrderId: string;
+        TimesheetId: string;
+        ExternalCostId: string;
+        EmployeeId: string;
+        AbsenceId: string;
+        AssignmentId: string;
+        EquipmentBookingId: string;
     };
     requestBodies: never;
     headers: {
@@ -38022,6 +40964,3121 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UtilitiesReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    listWorkTypes: {
+        parameters: {
+            query?: {
+                active?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkTypeList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createWorkType: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkTypeInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkType"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    updateWorkType: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workTypeId: components["parameters"]["WorkTypeId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkTypePatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkType"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listYardQualifications: {
+        parameters: {
+            query?: {
+                active?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQualificationList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createYardQualification: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["YardQualificationInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQualification"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    updateYardQualification: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                qualificationId: components["parameters"]["QualificationId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["YardQualificationPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQualification"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listYardItems: {
+        parameters: {
+            query?: {
+                q?: string;
+                category?: string;
+                item_type?: components["schemas"]["ItemType"];
+                yard_enabled?: boolean;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardItemPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getYardItemSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                itemId: components["parameters"]["ItemId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardItem"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    putYardItemSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                itemId: components["parameters"]["ItemId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["YardItemSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardItem"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listFormulaVariables: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormulaVariableList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createFormulaVariable: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormulaVariableInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormulaVariable"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    deleteFormulaVariable: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                variableId: components["parameters"]["VariableId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateFormulaVariable: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                variableId: components["parameters"]["VariableId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormulaVariablePatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormulaVariable"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listFormulaTables: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormulaTableList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createFormulaTable: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormulaTableInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormulaTable"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    updateFormulaTable: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                tableId: components["parameters"]["TableId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormulaTablePatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormulaTable"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listWorkPackages: {
+        parameters: {
+            query?: {
+                active?: boolean;
+                work_type_id?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkPackagePage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createWorkPackage: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkPackageInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkPackage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    getWorkPackage: {
+        parameters: {
+            query?: {
+                version?: number;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                packageId: components["parameters"]["PackageId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkPackage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    saveWorkPackageVersion: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                packageId: components["parameters"]["PackageId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkPackageVersionInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkPackage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    setWorkPackageActive: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                packageId: components["parameters"]["PackageId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ActiveFlag"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkPackage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    validateFormula: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FormulaValidateInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormulaValidateResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    getYardSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    putYardSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["YardSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardSettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listYardQuotes: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["YardQuoteStatus"];
+                kind?: components["schemas"]["YardQuoteKind"];
+                customer_id?: string;
+                vessel_id?: string;
+                work_order_id?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQuotePage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createYardQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["YardQuoteInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQuote"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    previewYardQuote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["YardQuoteInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQuotePreview"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    getYardQuote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQuote"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateYardQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["YardQuotePatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQuote"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    recomputeYardQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQuote"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    sendYardQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["YardQuoteSendInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQuoteSendResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    acceptYardQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQuoteAcceptResult"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    declineYardQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["YardQuoteDeclineInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQuote"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getYardQuotePdf: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                yardQuoteId: components["parameters"]["YardQuoteId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    acceptPublicYardQuote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                token: components["parameters"]["Token"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PublicYardQuoteAccept"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicYardQuoteAcceptResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    listWorkOrders: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["WorkOrderStatus"];
+                open_only?: boolean;
+                customer_id?: string;
+                vessel_id?: string;
+                q?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkOrderPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createWorkOrder: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkOrderInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkOrder"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    getYardBoard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardBoard"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getWorkOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkOrder"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateWorkOrder: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkOrderPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkOrder"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    transitionWorkOrder: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkOrderTransition"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkOrder"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    createVariationQuote: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["YardQuoteInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardQuote"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    listWorkTasks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkTaskList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createWorkTask: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkTaskInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    deleteWorkTask: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateWorkTask: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkTaskPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    setTaskDependencies: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskDependenciesInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateTaskProgress: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskProgressInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    uploadTaskPhoto: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "image/jpeg": string;
+                "image/png": string;
+                "image/webp": string;
+                "application/pdf": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkTaskFile"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    listTaskFiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkTaskFileList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getTaskFileLink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileLink"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getTaskFileFile: {
+        parameters: {
+            query?: {
+                exp?: number;
+                sig?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "image/png": string;
+                    "image/webp": string;
+                    "application/pdf": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listTimesheets: {
+        parameters: {
+            query?: {
+                employee_id?: string;
+                work_order_id?: string;
+                status?: components["schemas"]["TimesheetStatus"];
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimesheetPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createTimeEntry: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TimeEntryInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Timesheet"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    startTimer: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TimerStartInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Timesheet"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    stopTimer: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                timesheetId: components["parameters"]["TimesheetId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["TimerStopInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Timesheet"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    updateTimeEntry: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                timesheetId: components["parameters"]["TimesheetId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TimeEntryPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Timesheet"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    approveTimeEntries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TimesheetApproveInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimesheetList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    rejectTimeEntry: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                timesheetId: components["parameters"]["TimesheetId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TimesheetRejectInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Timesheet"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    voidTimeEntry: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                timesheetId: components["parameters"]["TimesheetId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["TimesheetVoidInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Timesheet"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getMyYardWork: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyYardWork"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listStockMovements: {
+        parameters: {
+            query?: {
+                work_order_id?: string;
+                item_id?: string;
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockMovementPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createStockMovement: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockMovementInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockMovement"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    listExternalCosts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalCostList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createExternalCost: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExternalCostInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalCost"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    deleteExternalCost: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                externalCostId: components["parameters"]["ExternalCostId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateExternalCost: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                externalCostId: components["parameters"]["ExternalCostId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExternalCostPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalCost"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getFinalAccount: {
+        parameters: {
+            query?: {
+                format?: "json" | "csv" | "xlsx";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FinalAccount"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listWorkOrderBillings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkOrderBillingList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createWorkOrderBilling: {
+        parameters: {
+            query?: {
+                dry_run?: boolean;
+            };
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                workOrderId: components["parameters"]["WorkOrderId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkOrderBillingInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkOrderBillingResult"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkOrderBillingResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    listEmployees: {
+        parameters: {
+            query?: {
+                active?: boolean;
+                department?: string;
+                qualification_id?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeePage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createEmployee: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmployeeInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Employee"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    getEmployee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                employeeId: components["parameters"]["EmployeeId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Employee"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateEmployee: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                employeeId: components["parameters"]["EmployeeId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmployeePatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Employee"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    putEmployeeCalendar: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                employeeId: components["parameters"]["EmployeeId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmployeeCalendarInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Employee"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listAbsences: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                employeeId: components["parameters"]["EmployeeId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AbsenceList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createAbsence: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                employeeId: components["parameters"]["EmployeeId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AbsenceInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Absence"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    deleteAbsence: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                employeeId: components["parameters"]["EmployeeId"];
+                absenceId: components["parameters"]["AbsenceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    getPlanner: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                department?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Planner"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    putAssignments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignmentBatchInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentBatchResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    deleteAssignment: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                assignmentId: components["parameters"]["AssignmentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getYardLoad: {
+        parameters: {
+            query?: {
+                group_by?: "employee" | "department" | "qualification" | "bay";
+                period?: "day" | "week" | "month";
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardLoad"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getAtRiskOrders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AtRiskOrderList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    proposeYardPlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["YardPlanProposalInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardPlanProposal"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    listEquipmentBookings: {
+        parameters: {
+            query?: {
+                /** @description Day of the calendar; default today in the marina time zone */
+                date?: components["schemas"]["IsoDate"];
+                equipment_id?: string;
+                status?: components["schemas"]["EquipmentBookingStatus"];
+                work_order_id?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentBookingDay"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createEquipmentBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EquipmentBookingInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentBooking"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    updateEquipmentBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentBookingId: components["parameters"]["EquipmentBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EquipmentBookingPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentBooking"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    cancelEquipmentBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentBookingId: components["parameters"]["EquipmentBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["EquipmentBookingCancelInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentBooking"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    completeEquipmentBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentBookingId: components["parameters"]["EquipmentBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentBooking"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["YardUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listEquipmentOperators: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentId: components["parameters"]["EquipmentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentOperators"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    putEquipmentOperators: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentId: components["parameters"]["EquipmentId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EquipmentOperatorsInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentOperators"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["YardUnprocessable"];
+        };
+    };
+    getYardReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                /** @description Default hours */
+                view?: "hours" | "load" | "margins" | "margins_by_work_type" | "lifting";
+                group_by?: "employee" | "order" | "work_type" | "department" | "qualification" | "bay" | "week" | "month" | "equipment" | "status";
+                employee_id?: string;
+                work_order_id?: string;
+                work_type_id?: string;
+                equipment_id?: string;
+                open_only?: boolean;
+                invoiced_in_period?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["YardReport"];
                     "text/csv": string;
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
                 };

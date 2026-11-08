@@ -82,7 +82,7 @@ describe('TileCard', () => {
     expect(yard).toHaveAttribute('data-available', 'false');
     expect(yard).toHaveTextContent('Disponibile con M10');
     expect(within(yard).queryByRole('link')).not.toBeInTheDocument();
-    expect(screen.getByTestId('dashboard-seams')).toHaveTextContent('Cantiere e noleggio');
+    expect(screen.getByTestId('dashboard-seams')).toHaveTextContent('Noleggio');
   });
 
   it('opens the M9 blocked exits tile on its own 30-day period', async () => {

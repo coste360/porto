@@ -287,7 +287,7 @@ func TestTemplates_VersionsAndPublish(t *testing.T) {
 			t.Fatalf("duplicate code: %v", err)
 		}
 		if _, err := e.svc.CreateTemplate(ctx, e.Owner, e.MarinaID, docs.TemplateInput{
-			Kind: string(docs.KindYardWorkOrder), Code: "r", Name: "Ordine di lavoro",
+			Kind: string(docs.KindRentalContract), Code: "r", Name: "Contratto di noleggio",
 		}); !errors.Is(err, docs.ErrKindNotPublishable) {
 			t.Fatalf("future kind: %v", err)
 		}

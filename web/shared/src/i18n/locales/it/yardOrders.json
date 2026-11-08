@@ -1,0 +1,239 @@
+{
+  "nav": {
+    "orders": "Barche in lavorazione",
+    "timesheets": "Approvazione ore"
+  },
+  "title": "Barche in lavorazione",
+  "description": "Commesse aperte per stato, avanzamento e consegne.",
+  "orderTitle": "Commessa",
+  "timesheetsTitle": "Approvazione ore",
+  "timesheetsDescription": "Ore inviate dai dipendenti in attesa di approvazione: all'approvazione costo orario e costo vengono congelati.",
+  "pending": "Questa sezione sarà disponibile a breve.",
+  "views": {
+    "board": "Bacheca",
+    "list": "Elenco"
+  },
+  "status": {
+    "planned": "Pianificata",
+    "in_progress": "In lavorazione",
+    "on_hold": "Sospesa",
+    "completed": "Completata",
+    "delivered": "Consegnata",
+    "invoiced": "Addebitata",
+    "cancelled": "Annullata"
+  },
+  "actions": {
+    "label": "Azioni",
+    "start": "Avvia",
+    "hold": "Sospendi",
+    "resume": "Riprendi",
+    "complete": "Completa",
+    "reopen": "Riapri",
+    "deliver": "Consegna",
+    "cancel": "Annulla commessa",
+    "confirmTitle": "Confermi l'operazione?",
+    "confirm": "Conferma",
+    "reason": "Motivo"
+  },
+  "billingMode": {
+    "actual": "A consuntivo",
+    "fixed": "Prezzo chiuso",
+    "progress": "Stato avanzamento (SAL)"
+  },
+  "taskStatus": {
+    "todo": "Da fare",
+    "in_progress": "In corso",
+    "done": "Fatta",
+    "cancelled": "Annullata"
+  },
+  "entryStatus": {
+    "running": "In corso",
+    "submitted": "Da approvare",
+    "approved": "Approvata",
+    "rejected": "Respinta",
+    "voided": "Annullata"
+  },
+  "card": {
+    "loa": "LOA {{value}}",
+    "delivery": "Consegna {{date}}",
+    "delay_one": "{{count}} giorno di ritardo",
+    "delay_other": "{{count}} giorni di ritardo",
+    "hours": "Ore {{approved}} / {{estimated}}",
+    "completion": "Avanzamento"
+  },
+  "empty": {
+    "column": "Nessuna commessa",
+    "orders": "Nessuna commessa trovata.",
+    "tasks": "Nessuna attività.",
+    "entries": "Nessuna ora registrata.",
+    "movements": "Nessun materiale prelevato.",
+    "costs": "Nessun costo esterno.",
+    "billings": "Nessun addebito.",
+    "variations": "Nessuna variante approvata.",
+    "submitted": "Nessuna ora da approvare."
+  },
+  "filters": {
+    "status": "Stato",
+    "all": "Tutti",
+    "openOnly": "Solo aperte",
+    "search": "Cerca numero o barca"
+  },
+  "fields": {
+    "number": "Numero",
+    "vessel": "Barca",
+    "status": "Stato",
+    "billingMode": "Modalità di addebito",
+    "plannedStart": "Inizio previsto",
+    "plannedDelivery": "Consegna prevista",
+    "position": "Posizione",
+    "completion": "Avanzamento",
+    "hours": "Ore approvate / stimate",
+    "deposit": "Acconto",
+    "notes": "Note",
+    "holdReason": "Motivo della sospensione",
+    "quote": "Preventivo",
+    "description": "Descrizione",
+    "qty": "Quantità",
+    "unit": "Prezzo unitario",
+    "net": "Imponibile",
+    "vat": "IVA",
+    "origin": "Origine",
+    "title": "Attività",
+    "estimated": "Ore stimate",
+    "assigned": "Ore assegnate",
+    "approved": "Ore approvate",
+    "progress": "Avanzamento",
+    "dependsOn": "Dopo",
+    "checklist": "Checklist",
+    "date": "Data",
+    "employee": "Dipendente",
+    "task": "Attività",
+    "cost": "Costo",
+    "source": "Fonte",
+    "kind": "Tipo",
+    "item": "Articolo",
+    "unitCost": "Costo unitario",
+    "unitPrice": "Prezzo unitario",
+    "late": "Tardivo",
+    "supplier": "Fornitore",
+    "reference": "Riferimento",
+    "billable": "Da riaddebitare",
+    "price": "Prezzo",
+    "revenue": "Ricavo",
+    "margin": "Margine",
+    "marginPct": "Margine %",
+    "budgetQty": "Q.tà preventivo",
+    "budgetNet": "Imponibile preventivo",
+    "delta": "Scostamento",
+    "workType": "Lavorazione",
+    "gross": "Lordo",
+    "charge": "Addebito",
+    "seq": "N.",
+    "reason": "Motivo",
+    "amount": "Importo",
+    "percent": "Percentuale",
+    "hoursValue": "{{approved}} / {{estimated}}"
+  },
+  "tabs": {
+    "summary": "Riepilogo",
+    "tasks": "Attività",
+    "hours": "Ore",
+    "materials": "Materiali",
+    "external": "Costi esterni",
+    "account": "Consuntivo",
+    "billings": "Addebiti",
+    "variations": "Varianti"
+  },
+  "summary": {
+    "budget": "Lavori previsti",
+    "lifting": "Mezzi di sollevamento"
+  },
+  "tasks": {
+    "add": "Nuova attività",
+    "addTitle": "Nuova attività",
+    "markDone": "Segna fatta",
+    "progressSet": "Imposta avanzamento",
+    "delete": "Elimina",
+    "deleteConfirm": "Eliminare l'attività?",
+    "photo": "Allega foto o PDF",
+    "files": "File",
+    "open": "Apri"
+  },
+  "hours": {
+    "add": "Registra ore",
+    "addTitle": "Registra ore",
+    "hoursLabel": "Ore (passi di 0,25)",
+    "approve": "Approva",
+    "approveSelected": "Approva selezionate ({{count}})",
+    "reject": "Respingi",
+    "rejectTitle": "Respingi le ore",
+    "void": "Annulla",
+    "voidTitle": "Annulla le ore approvate",
+    "selectAll": "Seleziona tutte",
+    "select": "Seleziona"
+  },
+  "materials": {
+    "issue": "Preleva",
+    "return": "Rendi",
+    "addTitle": "Materiale",
+    "kindIssue": "Prelievo",
+    "kindReturn": "Reso",
+    "stockNote": "Giacenze: disponibili in seguito."
+  },
+  "external": {
+    "add": "Nuovo costo esterno",
+    "addTitle": "Costo esterno",
+    "priceHint": "Vuoto: costo più il ricarico delle impostazioni.",
+    "delete": "Elimina"
+  },
+  "account": {
+    "title": "Consuntivo",
+    "byWorkType": "Per lavorazione",
+    "totals": "Totali",
+    "quoteNet": "Imponibile del preventivo",
+    "delta": "Scostamento dal preventivo",
+    "charged": "Già addebitato",
+    "remaining": "Da addebitare",
+    "hoursLabour": "Ore di manodopera",
+    "csv": "CSV",
+    "xlsx": "Excel",
+    "source": {
+      "labour": "Manodopera",
+      "material": "Materiali",
+      "service": "Servizi",
+      "external": "Costi esterni"
+    }
+  },
+  "billings": {
+    "kind": {
+      "advance": "Acconto",
+      "progress": "Stato avanzamento",
+      "final": "Saldo",
+      "adjustment": "Conguaglio"
+    },
+    "status": {
+      "charged": "Addebitato",
+      "skipped_zero": "Nulla da addebitare"
+    },
+    "new": "Nuovo addebito",
+    "preview": "Anteprima",
+    "create": "Crea addebito",
+    "charged": "Addebitato finora",
+    "amountHint": "Vuoto per SAL: avanzamento × lordo del preventivo meno l'addebitato.",
+    "previewTotal": "Totale anteprima",
+    "corrects": "Rettifica dell'addebito {{number}}"
+  },
+  "variations": {
+    "description": "Le varianti (lavori extra) sono preventivi collegati alla commessa: approvate, aggiungono righe e attività.",
+    "lines": "Righe da varianti"
+  },
+  "warnings": {
+    "tasks_incomplete": "Attenzione: non tutte le attività sono completate.",
+    "dependencies_open": "Attenzione: attività precedenti non ancora completate."
+  },
+  "dialog": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "close": "Chiudi"
+  }
+}

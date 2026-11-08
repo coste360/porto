@@ -147,6 +147,14 @@ export type ReportDef = {
   columns: (section: string) => readonly ColumnDef[];
   /** Report-specific values of a filter (M9: kind = meter kinds, status = task or consumption states). */
   filterValues?: Partial<Record<FilterKey, { values: readonly string[]; group: string }>>;
+  /** Search key of the section (M10 yard: `view`); default `section`. */
+  sectionParam?: string;
+  /** group_by values of a section (M10 yard: per view); default `groupBy`. */
+  groupByOf?: (section: string) => readonly string[];
+  /** Summary totals of a section (M10 yard: per view); default `totals`. */
+  totalsOf?: (section: string) => readonly TotalDef[];
+  /** Permission besides reports.all (M10 yard: reports.yard, D32); default reports.operational unless needsAll. */
+  permission?: Permission;
 };
 
 const E = {
@@ -185,6 +193,9 @@ const E = {
   taskSource: vg('reports', 'values.taskSource'),
   meterKind: vg('reports', 'values.meterKind'),
   consumptionStatus: vg('reports', 'values.consumptionStatus'),
+  workOrderStatus: vg('reports', 'values.workOrderStatus'),
+  bookingPurpose: vg('reports', 'values.bookingPurpose'),
+  bookingStatus: vg('reports', 'values.bookingStatus'),
 } as const;
 
 const c = (key: string, kind: CellKind, extra: Partial<ColumnDef> = {}): ColumnDef => ({
@@ -856,6 +867,113 @@ export const REPORTS: readonly ReportDef[] = [
       c('charged_cents', 'cents', { total: 'charged_cents' }),
     ],
   },
+  // M10 (m10-plan §12): the yard report, one view per section (the `view` parameter); money visible with
+  // reports.yard as well as reports.all (D32).
+  {
+    key: 'yard',
+    group: 'operational',
+    needsAll: false,
+    permission: 'reports.yard',
+    sectionParam: 'view',
+    sections: ['hours', 'load', 'margins', 'margins_by_work_type', 'lifting'],
+    groupBy: [
+      'employee',
+      'department',
+      'order',
+      'work_type',
+      'qualification',
+      'bay',
+      'status',
+      'equipment',
+      'week',
+      'month',
+    ],
+    groupByOf: (view) =>
+      ({
+        hours: ['employee', 'order', 'work_type', 'qualification', 'month', 'week'],
+        load: ['employee', 'department', 'qualification', 'bay', 'week', 'month'],
+        margins: ['status', 'month'],
+        margins_by_work_type: ['work_type', 'order'],
+        lifting: ['equipment', 'status', 'month'],
+      })[view] ?? [],
+    filters: [],
+    totals: [t('records', 'int'), t('hours_milli', 'milli')],
+    totalsOf: (view) =>
+      ({
+        hours: [t('hours_milli', 'milli'), t('cost_cents', 'cents')],
+        load: [
+          t('capacity_milli', 'milli'),
+          t('assigned_milli', 'milli'),
+          t('hours_milli', 'milli'),
+          t('load_bp', 'bp'),
+        ],
+        margins: [
+          t('records', 'int'),
+          t('revenue_cents', 'cents'),
+          t('cost_cents', 'cents'),
+          t('margin_cents', 'cents'),
+          t('margin_bp', 'bp'),
+          t('quote_net_cents', 'cents'),
+        ],
+        margins_by_work_type: [
+          t('revenue_cents', 'cents'),
+          t('cost_cents', 'cents'),
+          t('margin_cents', 'cents'),
+          t('margin_bp', 'bp'),
+        ],
+        lifting: [t('booked_slots', 'int'), t('window_slots', 'int')],
+      })[view] ?? [],
+    chart: t('records', 'int'),
+    columns: (view) => {
+      switch (view) {
+        case 'load':
+          return [
+            c('date', 'date'),
+            c('employee_code', 'text'),
+            c('employee_name', 'text'),
+            c('department', 'text'),
+            c('bay', 'text'),
+            c('capacity_milli', 'milli', { total: 'capacity_milli' }),
+            c('assigned_milli', 'milli', { total: 'assigned_milli' }),
+            c('actual_milli', 'milli', { total: 'hours_milli' }),
+            c('load_bp', 'bp', { total: 'load_bp' }),
+            c('overload', 'bool'),
+          ];
+        case 'margins':
+        case 'margins_by_work_type':
+          return [
+            c('work_order_number', 'text'),
+            en('work_order_status', E.workOrderStatus),
+            c('work_type_code', 'text'),
+            c('revenue_cents', 'cents', { total: 'revenue_cents' }),
+            c('cost_cents', 'cents', { total: 'cost_cents' }),
+            c('margin_cents', 'cents', { total: 'margin_cents' }),
+            c('margin_bp', 'bp', { total: 'margin_bp' }),
+            c('quote_net_cents', 'cents', { total: 'quote_net_cents' }),
+            c('delta_net_cents', 'cents'),
+          ];
+        case 'lifting':
+          return [
+            c('date', 'date'),
+            c('equipment_code', 'text'),
+            c('from_slot', 'int'),
+            c('to_slot', 'int'),
+            en('purpose', E.bookingPurpose),
+            en('booking_status', E.bookingStatus),
+          ];
+        default:
+          return [
+            c('date', 'date'),
+            c('employee_code', 'text'),
+            c('employee_name', 'text'),
+            c('work_order_number', 'text'),
+            c('work_type_code', 'text'),
+            c('hours_milli', 'milli', { total: 'hours_milli' }),
+            c('cost_cents', 'cents', { total: 'cost_cents' }),
+          ];
+      }
+    },
+  },
 ];
 
 /** The values and their translation group of a filter in a report (report-specific values first). */
@@ -878,10 +996,7 @@ export function fieldOf(record: Record<string, unknown>, key: string): unknown {
 }
 
 /** Reports announced for later milestones (m7-plan §1.2). */
-export const UPCOMING_REPORTS = [
-  { key: 'yard', milestone: 'M10' },
-  { key: 'rental', milestone: 'M11' },
-] as const;
+export const UPCOMING_REPORTS = [{ key: 'rental', milestone: 'M11' }] as const;
 
 export function reportDef(key: string): ReportDef | undefined {
   return REPORTS.find((r) => r.key === key);
@@ -889,11 +1004,28 @@ export function reportDef(key: string): ReportDef | undefined {
 
 /** Whether the role may open the report (spec 26.1, m7-plan D17). */
 export function canOpen(def: ReportDef, can: (p: Permission) => boolean): boolean {
+  if (def.permission) return can('reports.all') || can(def.permission);
   return can('reports.all') || (!def.needsAll && can('reports.operational'));
 }
 
 /** The section the records belong to: the search one when valid, else the first. */
 export function sectionOf(def: ReportDef, section: string | undefined): string {
+  // (the search key of the section is def.sectionParam ?? 'section'; see sectionParamOf)
   if (!def.sections) return '';
   return section && def.sections.includes(section) ? section : (def.sections[0] ?? '');
+}
+
+/** The search key of the section of a report (M10 yard: view). */
+export function sectionParamOf(def: ReportDef): string {
+  return def.sectionParam ?? 'section';
+}
+
+/** group_by values of a report in a section. */
+export function groupByOf(def: ReportDef, section: string): readonly string[] {
+  return def.groupByOf ? def.groupByOf(section) : def.groupBy;
+}
+
+/** Summary totals of a report in a section. */
+export function totalsOf(def: ReportDef, section: string): readonly TotalDef[] {
+  return def.totalsOf ? def.totalsOf(section) : def.totals;
 }

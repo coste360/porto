@@ -1,0 +1,182 @@
+{
+  "nav": {
+    "catalog": "Catalogo cantiere"
+  },
+  "title": "Catalogo cantiere",
+  "description": "Tipi di lavorazione, qualifiche, articoli, variabili, tabelle a fasce e gruppi di lavorazioni.",
+  "pending": "Questa sezione sarà disponibile a breve.",
+  "edit": "Modifica",
+  "open": "Apri",
+  "inactive": "Non attivo",
+  "tabs": {
+    "workTypes": "Tipi di lavorazione",
+    "qualifications": "Qualifiche",
+    "items": "Articoli",
+    "variables": "Variabili",
+    "tables": "Tabelle a fasce",
+    "packages": "Gruppi di lavorazioni",
+    "settings": "Impostazioni"
+  },
+  "fields": {
+    "code": "Codice",
+    "name": "Nome",
+    "nameIt": "Nome (italiano)",
+    "nameEn": "Nome (inglese)",
+    "active": "Attivo",
+    "status": "Stato"
+  },
+  "workTypes": {
+    "new": "Nuovo tipo di lavorazione",
+    "edit": "Modifica tipo di lavorazione",
+    "empty": "Nessun tipo di lavorazione."
+  },
+  "qualifications": {
+    "new": "Nuova qualifica",
+    "edit": "Modifica qualifica",
+    "empty": "Nessuna qualifica.",
+    "labourItem": "Articolo manodopera",
+    "defaultCost": "Costo orario interno",
+    "liftOperator": "Operatore mezzi di sollevamento"
+  },
+  "items": {
+    "search": "Cerca articolo",
+    "empty": "Nessun articolo.",
+    "type": "Tipo",
+    "cost": "Costo interno",
+    "qtyFormula": "Formula quantità",
+    "priceFormula": "Formula prezzo",
+    "settings": "Impostazioni cantiere",
+    "settingsOf": "Impostazioni cantiere di {{code}}",
+    "enabled": "Utilizzabile in cantiere",
+    "category": "Categoria",
+    "pricesHint": "I prezzi di vendita restano nei listini: qui si impostano costo, qualifica e formule."
+  },
+  "itemTypes": {
+    "berth_fee": "Ormeggio",
+    "service": "Servizio",
+    "utility": "Utenza",
+    "product": "Prodotto",
+    "labour": "Manodopera",
+    "material": "Materiale",
+    "fee": "Onere",
+    "deposit": "Deposito"
+  },
+  "variables": {
+    "own": "Variabili del porto",
+    "builtin": "Variabili predefinite",
+    "builtinHint": "Dati dell'unità e del contesto, in sola lettura; tra parentesi il valore sull'unità di prova.",
+    "newDerived": "Nuova variabile derivata",
+    "newJob": "Nuovo dato del lavoro",
+    "empty": "Nessuna variabile.",
+    "name": "Nome",
+    "source": "Origine",
+    "unit": "Unità",
+    "kind": "Tipo",
+    "expression": "Espressione",
+    "testValue": "Valore di prova",
+    "min": "Minimo",
+    "max": "Massimo",
+    "default": "Predefinito",
+    "enumValues": "Valori ammessi",
+    "enumHint": "Valori separati da virgola, in minuscolo (es. epossidica, standard)."
+  },
+  "sources": {
+    "vessel": "Unità",
+    "derived": "Derivata",
+    "job": "Dato del lavoro",
+    "context": "Contesto"
+  },
+  "kinds": {
+    "number": "Numero",
+    "bool": "Sì/no",
+    "enum": "Scelta"
+  },
+  "units": {
+    "m": "m",
+    "m2": "m²",
+    "t": "t",
+    "kw": "kW",
+    "h": "ore",
+    "pcs": "pezzi",
+    "l": "litri",
+    "pct": "%",
+    "none": "—",
+    "years": "anni"
+  },
+  "hullTypes": {
+    "monohull_motor": "Monoscafo a motore",
+    "monohull_sail": "Monoscafo a vela",
+    "catamaran": "Catamarano",
+    "trimaran": "Trimarano",
+    "rib": "Gommone",
+    "gozzo": "Gozzo",
+    "other": "Altro"
+  },
+  "tables": {
+    "new": "Nuova tabella",
+    "edit": "Modifica tabella",
+    "empty": "Nessuna tabella.",
+    "name": "Nome",
+    "rows": "Fasce",
+    "rowsHint": "Una fascia per riga: \"fino a;valore\". Lascia vuoto \"fino a\" nell'ultima riga per la fascia aperta."
+  },
+  "packages": {
+    "new": "Nuovo gruppo di lavorazioni",
+    "editOf": "Gruppo {{code}}",
+    "empty": "Nessun gruppo di lavorazioni.",
+    "workType": "Tipo di lavorazione",
+    "version": "Versione",
+    "jobVars": "Dati del lavoro richiesti",
+    "lines": "Righe",
+    "item": "Articolo della riga {{n}}",
+    "task": "Attività",
+    "removeLine": "Elimina la riga {{n}}",
+    "addLine": "Aggiungi riga",
+    "saveVersion": "Salva nuova versione",
+    "history": "Versioni",
+    "versionAt": "Versione {{version}} del {{at}}",
+    "activate": "Attiva",
+    "deactivate": "Disattiva"
+  },
+  "settings": {
+    "quotes": "Preventivi",
+    "validity": "Validità predefinita (giorni)",
+    "deposit": "Acconto predefinito",
+    "testVessel": "Unità di prova",
+    "testVesselHint": "Le formule vengono provate su questa unità quando si salvano.",
+    "loa": "Lunghezza",
+    "beam": "Larghezza",
+    "draft": "Pescaggio",
+    "hull": "Tipo di scafo",
+    "defaults": "Valori predefiniti, mai salvati"
+  },
+  "formula": {
+    "test": "Prova",
+    "valid": "Formula valida",
+    "qtyResult": "Quantità: {{value}}",
+    "priceResult": "Prezzo: {{value}}",
+    "priceHint": "Nel prezzo si possono usare qty (quantità della riga) e list_price (prezzo di listino in euro)."
+  },
+  "issues": {
+    "at": "(colonna {{column}})",
+    "unknown": "Formula non valida.",
+    "syntax": "Errore di sintassi.",
+    "unknown_variable": "Variabile sconosciuta: {{ref}}.",
+    "unknown_function": "Funzione sconosciuta: {{ref}}.",
+    "unknown_table": "Tabella sconosciuta: {{ref}}.",
+    "arity": "Numero di argomenti errato per {{ref}}.",
+    "type_mismatch": "Tipi non compatibili.",
+    "enum_value_unknown": "Valore non ammesso per {{ref}}.",
+    "formula_too_complex": "Formula troppo complessa.",
+    "derived_cycle": "Le variabili derivate si richiamano a vicenda ({{ref}}).",
+    "div_by_zero": "Divisione per zero.",
+    "missing_variable": "Manca il valore di {{ref}}.",
+    "overflow": "Numero troppo grande.",
+    "band_no_row": "Nessuna fascia della tabella {{ref}} per questo valore.",
+    "negative_quantity": "La quantità è negativa.",
+    "negative_price": "Il prezzo è negativo.",
+    "out_of_range": "Valore fuori dall'intervallo ammesso ({{ref}}).",
+    "no_price": "Nessun prezzo di listino per l'articolo.",
+    "test_case_mismatch": "Il caso di prova non dà il risultato atteso."
+  }
+}

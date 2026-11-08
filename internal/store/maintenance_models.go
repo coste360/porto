@@ -42,19 +42,22 @@ const (
 type Equipment struct {
 	bun.BaseModel `bun:"table:equipment"`
 
-	ID         string    `bun:"id,pk"`
-	MarinaID   string    `bun:"marina_id"`
-	Code       string    `bun:"code"`
-	Name       string    `bun:"name"`
-	Kind       string    `bun:"kind"`
-	MapID      string    `bun:"map_id,nullzero"`
-	XCm        *int64    `bun:"x_cm"`
-	YCm        *int64    `bun:"y_cm"`
-	CapacityKg *int64    `bun:"capacity_kg"`
-	Active     bool      `bun:"active"`
-	Version    int       `bun:"version"`
-	CreatedAt  time.Time `bun:"created_at"`
-	UpdatedAt  time.Time `bun:"updated_at"`
+	ID         string `bun:"id,pk"`
+	MarinaID   string `bun:"marina_id"`
+	Code       string `bun:"code"`
+	Name       string `bun:"name"`
+	Kind       string `bun:"kind"`
+	MapID      string `bun:"map_id,nullzero"`
+	XCm        *int64 `bun:"x_cm"`
+	YCm        *int64 `bun:"y_cm"`
+	CapacityKg *int64 `bun:"capacity_kg"`
+	Active     bool   `bun:"active"`
+	// M10 (00022_equipment_slots): bookable in 15-minute slots, default booking length.
+	Bookable       bool      `bun:"bookable"`
+	DefaultMinutes int       `bun:"default_minutes"`
+	Version        int       `bun:"version"`
+	CreatedAt      time.Time `bun:"created_at"`
+	UpdatedAt      time.Time `bun:"updated_at"`
 }
 
 // MaintenancePlan is a row of maintenance_plans.

@@ -19,6 +19,7 @@ type tileSpec struct {
 	report    Key
 	drill     func() Params
 	needAll   bool
+	needYard  bool // reports.yard or reports.all (the yard tiles, D32)
 	dims      bool // the dashboard dimension filters apply
 	noPrev    bool // receivables: current residuals only (D13)
 	noSeries  bool // not additive by day
@@ -83,9 +84,17 @@ var tileSpecs = []tileSpec{
 		key: calc.IndUtilityUnbilled, report: calc.KeyUtilities, drill: func() Params { return Params{Status: "pending"} },
 		needAll: true, noPrev: true, noSeries: true,
 	},
-	{key: string(calc.TileYardOpenOrders), seam: calc.ReasonMilestoneM10},
-	{key: string(calc.TileYardHours), seam: calc.ReasonMilestoneM10},
-	{key: string(calc.TileYardMargin), seam: calc.ReasonMilestoneM10},
+	// M10 (m10-plan §12): the open work orders at the end of the period, the approved hours and the margin of the
+	// orders invoiced in the period; shown with reports.yard or reports.all (D32).
+	{
+		key: calc.IndYardOpenOrders, report: calc.KeyYard, drill: func() Params { return Params{View: calc.YardViewMargins, OpenOnly: true} },
+		needYard: true, noPrev: true, noSeries: true,
+	},
+	{key: calc.IndYardHours, report: calc.KeyYard, drill: func() Params { return Params{View: calc.YardViewHours} }, needYard: true},
+	{
+		key: calc.IndYardMargin, report: calc.KeyYard, drill: func() Params { return Params{View: calc.YardViewMargins, InvoicedInPeriod: true} },
+		needYard: true,
+	},
 	{key: string(calc.TileRentalUtilisation), seam: calc.ReasonMilestoneM11},
 	{key: string(calc.TileRentalRevenue), seam: calc.ReasonMilestoneM11},
 }
@@ -260,6 +269,12 @@ func (r *run) runReport(q Params, memo map[string]*tileRun) (*tileRun, error) {
 		if x != nil {
 			t.res, t.totals = x, x.Totals
 		}
+	case calc.KeyYard:
+		var x *YardResult
+		x, t.facts, err = r.runYard(q)
+		if x != nil {
+			t.res, t.totals = x, x.Totals
+		}
 	case calc.KeyLostDemand:
 		var x *LostDemandResult
 		x, t.facts, err = r.runLostDemand(q)
@@ -317,7 +332,7 @@ func (s *Service) Dashboard(ctx context.Context, p *auth.Principal, marinaID str
 				})
 				continue
 			}
-			if t.needAll && !acc.Full {
+			if (t.needAll && !acc.Full) || (t.needYard && !hasYard(p, acc)) {
 				continue
 			}
 			tile, err := r.tile(t, q.Dims, from, to, pf, pt, withPrev && !t.noPrev, out.Align, out.Granularity, memo)
@@ -414,6 +429,9 @@ func (s *Service) Compare(ctx context.Context, p *auth.Principal, marinaID strin
 	acc, err := s.authorize(ctx, p, marinaID, t.needAll)
 	if err != nil {
 		return nil, err
+	}
+	if t.needYard && !hasYard(p, acc) {
+		return nil, auth.ErrForbidden
 	}
 	if err := checkPeriod(q.From, q.To); err != nil {
 		return nil, err

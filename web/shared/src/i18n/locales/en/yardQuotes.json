@@ -1,0 +1,111 @@
+{
+  "nav": {
+    "quotes": "Yard quotes"
+  },
+  "title": "Yard quotes",
+  "description": "Guided job quotes with quantities and prices computed from the catalogue.",
+  "newTitle": "New yard quote",
+  "pending": "This section will be available soon.",
+  "new": "New quote",
+  "all": "All",
+  "empty": "No quotes.",
+  "variation": "Variation",
+  "quoteTitle": "Quote {{number}}",
+  "statuses": {
+    "draft": "Draft",
+    "sent": "Sent",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "expired": "Expired"
+  },
+  "billingModes": {
+    "actual": "Time and materials",
+    "fixed": "Fixed price",
+    "progress": "Progress billing"
+  },
+  "fields": {
+    "number": "Number",
+    "status": "Status",
+    "quotedOn": "Date",
+    "validUntil": "Valid until",
+    "billingMode": "Billing",
+    "deposit": "Deposit",
+    "plannedStart": "Planned start",
+    "plannedDelivery": "Planned delivery",
+    "conditions": "Conditions",
+    "notes": "Notes",
+    "workOrder": "Work order"
+  },
+  "lines": {
+    "title": "Lines",
+    "description": "Description",
+    "qty": "Quantity",
+    "unitPrice": "Unit price",
+    "discount": "Discount",
+    "net": "Net",
+    "vat": "VAT",
+    "manual": "manual",
+    "empty": "No lines.",
+    "qtyOf": "Quantity of line {{n}}",
+    "unitOf": "Unit price of line {{n}}",
+    "discountOf": "Discount of line {{n}}"
+  },
+  "units": {
+    "night": "nights",
+    "month": "months",
+    "season": "seasons",
+    "year": "years",
+    "m": "m",
+    "m2": "m²",
+    "kwh": "kWh",
+    "m3": "m³",
+    "hour": "h",
+    "piece": "pcs",
+    "lump": "lump sum"
+  },
+  "totals": {
+    "title": "Totals",
+    "net": "Net",
+    "vat": "VAT",
+    "gross": "Total",
+    "deposit": "Deposit",
+    "hours": "{{qualification}}: {{hours}} estimated hours"
+  },
+  "actions": {
+    "pdf": "PDF",
+    "recompute": "Recompute",
+    "recomputed": "Quote recomputed with the current catalogue.",
+    "send": "Send",
+    "sentToast": "Quote sent.",
+    "accept": "Accept",
+    "acceptedToast": "Quote accepted: work order created.",
+    "decline": "Decline",
+    "link": "Customer link:"
+  },
+  "wizard": {
+    "description": "Quantities and prices are computed from the formulas and the price lists.",
+    "steps": "Quote steps",
+    "step": {
+      "vessel": "Vessel and customer",
+      "catalog": "Work",
+      "variables": "Job inputs",
+      "summary": "Summary",
+      "conditions": "Conditions"
+    },
+    "customer": "Customer",
+    "vessel": "Vessel",
+    "searchCustomer": "Search customer",
+    "searchVessel": "Search vessel",
+    "packages": "Work packages",
+    "items": "Single items",
+    "searchItem": "Search item",
+    "noVariables": "No inputs needed for the chosen work.",
+    "required": "required",
+    "range": "From {{min}} to {{max}}",
+    "blocking": "Some lines have no price or data: the quote can be saved but not sent.",
+    "runningTotal": "{{lines}} lines, total",
+    "validityHint": "Empty: default validity.",
+    "depositHint": "Empty: default deposit.",
+    "create": "Create quote"
+  }
+}

@@ -165,6 +165,24 @@ export const PROBLEM_TYPES = [
   'task_already_done',
   'reading_charged',
   'consumption_frozen',
+  // M10 (m10-plan §13)
+  'formula_invalid',
+  'work_order_closed',
+  'work_order_has_charges',
+  'qualification_mismatch',
+  'capacity_exceeded',
+  'dependency_violation',
+  'duration_too_long',
+  'offline_time_out_of_range',
+  'timer_already_running',
+  'return_exceeds_issued',
+  'nothing_to_bill',
+  'equipment_slot_taken',
+  'operator_busy',
+  'equipment_out_of_service',
+  'equipment_capacity_exceeded',
+  'operator_not_enabled',
+  'outside_lift_window',
 ] as const;
 
 export type ProblemType = (typeof PROBLEM_TYPES)[number];

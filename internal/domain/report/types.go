@@ -126,6 +126,15 @@ type Params struct {
 	TaskOverdueOnly bool // overdue_only=true
 	MeterID         string
 	ContractID      string
+
+	// M10 yard (m10-plan §12)
+	View             string // hours (default), load, margins, margins_by_work_type, lifting
+	EmployeeID       string
+	WorkOrderID      string
+	WorkTypeID       string
+	EquipmentID      string
+	OpenOnly         bool // open_only=true
+	InvoicedInPeriod bool // invoiced_in_period=true
 }
 
 // DashboardParams is the request of GET .../dashboard (m7-plan §4).

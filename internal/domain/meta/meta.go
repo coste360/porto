@@ -75,6 +75,8 @@ func Get(cfg *config.Config, version, edition string) Meta {
 			"reports",
 			// M9 (m9-plan §15.1): storage planner and scenarios, maintenance, utility meters and charging.
 			"storage", "maintenance", "utilities",
+			// M10 (m10-plan §13): yard catalogue, quotes, work orders and planner; lifting equipment bookings.
+			"yard", "lifting",
 		},
 		DemoPairing:          cfg != nil && cfg.DemoPairingEnabled(),
 		PricingEngineVersion: pricing.EngineVersion,

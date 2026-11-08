@@ -1,0 +1,25 @@
+{
+  "title": "Yard quote",
+  "number": "Quote {{number}}",
+  "variationOf": "Variation of work order {{number}}",
+  "validUntil": "Valid until {{date}}",
+  "planned": "Work planned from {{start}} to {{end}}",
+  "lines": "Work",
+  "net": "Net",
+  "vat": "VAT",
+  "gross": "Total",
+  "deposit": "Deposit on acceptance",
+  "conditions": "Conditions",
+  "acceptConditions": "I have read and accept the conditions",
+  "accept": "Accept the quote",
+  "accepted": "Quote accepted. Thank you!",
+  "acceptedOrder": "We opened work order {{number}}.",
+  "pdf": "Quote PDF",
+  "status": {
+    "draft": "Quote being prepared.",
+    "sent": "Quote to accept.",
+    "accepted": "Quote already accepted.",
+    "declined": "Quote declined.",
+    "expired": "Quote expired."
+  }
+}

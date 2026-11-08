@@ -231,7 +231,9 @@ describe('ReportsIndexPage', () => {
     expect(screen.getByTestId('report-card-occupancy')).toBeInTheDocument();
     expect(screen.getByTestId('report-card-comparison')).toBeInTheDocument();
     expect(screen.queryByTestId('report-card-charges')).not.toBeInTheDocument();
-    expect(screen.getByTestId('report-card-yard')).toHaveTextContent('Disponibile con M10');
+    // M10: the yard report needs reports.yard or reports.all; rental is still announced.
+    expect(screen.queryByTestId('report-card-yard')).not.toBeInTheDocument();
+    expect(screen.getByTestId('report-card-rental')).toHaveTextContent('M11');
   });
 
   it('lists every report to reports.all', async () => {

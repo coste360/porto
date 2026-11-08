@@ -1,0 +1,111 @@
+{
+  "nav": {
+    "quotes": "Preventivi cantiere"
+  },
+  "title": "Preventivi cantiere",
+  "description": "Preventivi guidati dei lavori con quantità e prezzi calcolati dal catalogo.",
+  "newTitle": "Nuovo preventivo cantiere",
+  "pending": "Questa sezione sarà disponibile a breve.",
+  "new": "Nuovo preventivo",
+  "all": "Tutti",
+  "empty": "Nessun preventivo.",
+  "variation": "Variante",
+  "quoteTitle": "Preventivo {{number}}",
+  "statuses": {
+    "draft": "Bozza",
+    "sent": "Inviato",
+    "accepted": "Accettato",
+    "declined": "Rifiutato",
+    "expired": "Scaduto"
+  },
+  "billingModes": {
+    "actual": "A consuntivo",
+    "fixed": "Prezzo chiuso",
+    "progress": "A stato avanzamento"
+  },
+  "fields": {
+    "number": "Numero",
+    "status": "Stato",
+    "quotedOn": "Data",
+    "validUntil": "Valido fino al",
+    "billingMode": "Fatturazione",
+    "deposit": "Acconto",
+    "plannedStart": "Inizio previsto",
+    "plannedDelivery": "Consegna prevista",
+    "conditions": "Condizioni",
+    "notes": "Note",
+    "workOrder": "Commessa"
+  },
+  "lines": {
+    "title": "Righe",
+    "description": "Descrizione",
+    "qty": "Quantità",
+    "unitPrice": "Prezzo unitario",
+    "discount": "Sconto",
+    "net": "Imponibile",
+    "vat": "IVA",
+    "manual": "manuale",
+    "empty": "Nessuna riga.",
+    "qtyOf": "Quantità della riga {{n}}",
+    "unitOf": "Prezzo unitario della riga {{n}}",
+    "discountOf": "Sconto della riga {{n}}"
+  },
+  "units": {
+    "night": "notti",
+    "month": "mesi",
+    "season": "stagioni",
+    "year": "anni",
+    "m": "m",
+    "m2": "m²",
+    "kwh": "kWh",
+    "m3": "m³",
+    "hour": "ore",
+    "piece": "pz",
+    "lump": "a corpo"
+  },
+  "totals": {
+    "title": "Totali",
+    "net": "Imponibile",
+    "vat": "IVA",
+    "gross": "Totale",
+    "deposit": "Acconto",
+    "hours": "{{qualification}}: {{hours}} ore stimate"
+  },
+  "actions": {
+    "pdf": "PDF",
+    "recompute": "Ricalcola",
+    "recomputed": "Preventivo ricalcolato con il catalogo attuale.",
+    "send": "Invia",
+    "sentToast": "Preventivo inviato.",
+    "accept": "Accetta",
+    "acceptedToast": "Preventivo accettato: commessa creata.",
+    "decline": "Rifiuta",
+    "link": "Link per il cliente:"
+  },
+  "wizard": {
+    "description": "Quantità e prezzi sono calcolati dalle formule e dai listini.",
+    "steps": "Passi del preventivo",
+    "step": {
+      "vessel": "Unità e cliente",
+      "catalog": "Lavorazioni",
+      "variables": "Dati del lavoro",
+      "summary": "Riepilogo",
+      "conditions": "Condizioni"
+    },
+    "customer": "Cliente",
+    "vessel": "Unità",
+    "searchCustomer": "Cerca cliente",
+    "searchVessel": "Cerca unità",
+    "packages": "Gruppi di lavorazioni",
+    "items": "Articoli singoli",
+    "searchItem": "Cerca articolo",
+    "noVariables": "Nessun dato richiesto per le lavorazioni scelte.",
+    "required": "obbligatorio",
+    "range": "Da {{min}} a {{max}}",
+    "blocking": "Alcune righe non hanno prezzo o dati: il preventivo si può salvare ma non inviare.",
+    "runningTotal": "{{lines}} righe, totale",
+    "validityHint": "Vuoto: validità predefinita.",
+    "depositHint": "Vuoto: acconto predefinito.",
+    "create": "Crea preventivo"
+  }
+}

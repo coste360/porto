@@ -106,12 +106,13 @@
   "empty": "Nessun indicatore disponibile per il tuo ruolo.",
   "seriesLabel": "Andamento di {{tile}}",
   "breakdown": "Dettaglio",
-  "outOfScope": "Cantiere e noleggio",
+  "outOfScope": "Noleggio",
   "dims": {
     "map": "Mappa",
     "structure": "Pontile",
     "group": "Gruppo",
     "category": "Categoria",
     "all": "Tutti"
-  }
+  },
+  "hoursValue": "{{value}} h"
 }

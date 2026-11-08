@@ -44,6 +44,10 @@ func strp(s string) *string {
 // ResolvePublicLink implements api.ServerInterface (GET /api/public/v1/{slug}/links/{token}).
 func (h *Handler) ResolvePublicLink(w http.ResponseWriter, r *http.Request, slug api.Slug, token api.Token) {
 	linkHeaders(w)
+	if h.YardQuotes != nil && h.YardQuotes.IsYardQuoteLink(r.Context(), slug, token) { // yard_quote subject (M10, QUOTE)
+		h.resolveYardQuoteLink(w, r, slug, token)
+		return
+	}
 	v, err := h.Contracts.ResolvePublicLink(r.Context(), slug, token)
 	if err != nil {
 		respond.Error(w, r, err)
@@ -105,6 +109,8 @@ func (h *Handler) GetPublicLinkDocument(w http.ResponseWriter, r *http.Request, 
 	if l, lerr := h.Links.ResolvePurpose(r.Context(), slug, token, magiclink.PurposeSignature); lerr == nil {
 		// A signature link downloads the document to sign (or the signed one once complete).
 		b, err = h.Signatures.PublicDocument(r.Context(), l)
+	} else if h.YardQuotes != nil && h.YardQuotes.IsYardQuoteLink(r.Context(), slug, token) { // yard_quote subject (M10, QUOTE)
+		b, err = h.YardQuotes.PublicDocument(r.Context(), slug, token)
 	} else {
 		b, err = h.Contracts.PublicLinkDocument(r.Context(), slug, token)
 	}

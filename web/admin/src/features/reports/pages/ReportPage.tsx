@@ -15,7 +15,7 @@ import { presetPeriod, validPeriod, type Period } from '../../dashboard/lib/peri
 import { useMarinaToday } from '../../registry/lib/today';
 import { ReportBody } from '../components/ReportBody';
 import { ReportFilterBar } from '../components/ReportFilterBar';
-import { canOpen, reportDef, sectionOf, type ReportDef } from '../lib/catalog';
+import { canOpen, reportDef, sectionOf, sectionParamOf, type ReportDef } from '../lib/catalog';
 import { patchSearch, reportQuery } from '../lib/reportSearch';
 
 const route = getRouteApi('/auth/m/$marinaId/reports/$report');
@@ -65,7 +65,8 @@ function ReportView({ def }: { def: ReportDef }) {
   const period: Period = { from: search.from ?? ytd.from, to: search.to ?? ytd.to };
   const ready = validPeriod(period);
   const query = reportQuery(search, ytd);
-  const section = sectionOf(def, search.section);
+  const sectionKey = sectionParamOf(def);
+  const section = sectionOf(def, search[sectionKey]);
   const result = useReport(marinaId, def.key, query, ready);
   const file = useReportExport(marinaId);
 
@@ -124,7 +125,13 @@ function ReportView({ def }: { def: ReportDef }) {
           type="single"
           variant="outline"
           value={section}
-          onValueChange={(v) => v && onPatch({ section: v === def.sections?.[0] ? undefined : v })}
+          onValueChange={(v) =>
+            v &&
+            onPatch({
+              [sectionKey]: v === def.sections?.[0] ? undefined : v,
+              ...(def.groupByOf ? { group_by: undefined } : {}),
+            })
+          }
           aria-label={t('reports:filters.section')}
           className="flex-wrap justify-start"
         >

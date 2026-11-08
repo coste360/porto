@@ -217,6 +217,10 @@ func DemoView(kind Kind) any {
 			},
 			Net: 98783, VATTotal: 21733, Total: 120516,
 		}
+	case KindYardQuote:
+		return yardQuoteDemo()
+	case KindYardWorkOrder:
+		return yardWorkOrderDemo()
 	case KindMapPrint:
 		return views.MapPrintView{Marina: demoMarina, MapName: "Porto", Date: calendar.MustParse("2026-11-07"), Lens: "occupancy"}
 	}

@@ -145,6 +145,24 @@ const (
 	MeterReadingRecorded     = "meter.reading_recorded"
 )
 
+// M10 event types (version 1, m10-plan §13, D34). yard_quote.accepted, work_order.status_changed and
+// equipment.booking_changed are public (webhook catalogue); the others feed SSE and cache invalidation only. Data
+// carry ids, enums, dates and order amounts: never employee, customer or supplier names (INV-70).
+const (
+	YardCatalogChanged      = "yard_catalog.changed"
+	YardQuoteChanged        = "yard_quote.changed"
+	YardQuoteSent           = "yard_quote.sent"
+	YardQuoteAccepted       = "yard_quote.accepted"
+	YardQuoteExpired        = "yard_quote.expired"
+	WorkOrderStatusChanged  = "work_order.status_changed"
+	WorkOrderChanged        = "work_order.changed"
+	WorkTaskChanged         = "work_task.changed"
+	TimesheetChanged        = "timesheet.changed"
+	WorkOrderBilled         = "work_order.billed"
+	YardPlanChanged         = "yard_plan.changed"
+	EquipmentBookingChanged = "equipment.booking_changed"
+)
+
 // SSE topics.
 const (
 	TopicMarina = "marina.changed"
@@ -176,6 +194,9 @@ const (
 	TopicMaintenance = "maintenance.changed"
 	// TopicUtilities carries meters, readings, consumptions and utility settings (M9).
 	TopicUtilities = "utilities.changed"
+	// TopicYard carries the yard catalogue, yard quotes, work orders, tasks, time entries, materials, external
+	// costs, billings, employees, planner assignments and lifting bookings (M10).
+	TopicYard = "yard.changed"
 )
 
 // TypeInfo describes an event type. Public types can be subscribed by webhook endpoints; Topic is the SSE event
@@ -283,6 +304,19 @@ var catalogue = []TypeInfo{
 	{MaintenanceDue, TopicMaintenance, true},
 	{MaintenanceStatusChanged, TopicMaintenance, false},
 	{MeterReadingRecorded, TopicUtilities, false},
+	// M10
+	{YardCatalogChanged, TopicYard, false},
+	{YardQuoteChanged, TopicYard, false},
+	{YardQuoteSent, TopicYard, false},
+	{YardQuoteAccepted, TopicYard, true},
+	{YardQuoteExpired, TopicYard, false},
+	{WorkOrderStatusChanged, TopicYard, true},
+	{WorkOrderChanged, TopicYard, false},
+	{WorkTaskChanged, TopicYard, false},
+	{TimesheetChanged, TopicYard, false},
+	{WorkOrderBilled, TopicYard, false},
+	{YardPlanChanged, TopicYard, false},
+	{EquipmentBookingChanged, TopicYard, true},
 }
 
 // Types returns the catalogue of event types.

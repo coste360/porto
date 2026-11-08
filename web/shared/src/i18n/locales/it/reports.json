@@ -265,7 +265,32 @@
     "unassigned_milli": "Non assegnato",
     "pending_value_cents": "Valore da addebitare",
     "element_code": "Elemento",
-    "element_type": "Tipo elemento"
+    "element_type": "Tipo elemento",
+    "records": "Righe",
+    "hours_milli": "Ore",
+    "cost_cents": "Costo",
+    "capacity_milli": "Capacità (ore)",
+    "assigned_milli": "Assegnate (ore)",
+    "actual_milli": "Consuntivate (ore)",
+    "load_bp": "Carico",
+    "overload": "Sovraccarico",
+    "employee_code": "Dipendente",
+    "employee_name": "Nome",
+    "department": "Reparto",
+    "bay": "Postazione",
+    "work_order_number": "Commessa",
+    "work_order_status": "Stato commessa",
+    "work_type_code": "Lavorazione",
+    "margin_cents": "Margine",
+    "margin_bp": "Margine %",
+    "quote_net_cents": "Imponibile preventivo",
+    "delta_net_cents": "Scostamento",
+    "booked_slots": "Slot prenotati",
+    "window_slots": "Slot disponibili",
+    "equipment_code": "Mezzo",
+    "from_slot": "Dallo slot",
+    "to_slot": "Allo slot",
+    "booking_status": "Stato prenotazione"
   },
   "descriptions": {
     "occupancy": "Notti occupate su notti disponibili, fisica o contrattuale, per posti, terre e aree dinamiche.",
@@ -287,7 +312,8 @@
     "berth-revenue": "Ricavo dei posti per metro lineare.",
     "storage": "Barche a terra su piazzali e capannoni: superficie occupata, uscite bloccate e produzione dei contratti di rimessaggio.",
     "maintenance": "Interventi di manutenzione per stato, ritardi, minuti interni e costi esterni.",
-    "utilities": "Consumi di energia, acqua e contatori: da addebitare, addebitati e non assegnati."
+    "utilities": "Consumi di energia, acqua e contatori: da addebitare, addebitati e non assegnati.",
+    "yard": "Ore lavorate, carico dei dipendenti, margini delle commesse e mezzi di sollevamento del cantiere."
   },
   "groupBy": {
     "resource": "Risorsa",
@@ -333,7 +359,14 @@
     "element_type": "Tipo elemento",
     "intervention": "Intervento",
     "meter": "Contatore",
-    "contract": "Contratto"
+    "contract": "Contratto",
+    "employee": "Dipendente",
+    "department": "Reparto",
+    "order": "Commessa",
+    "work_type": "Lavorazione",
+    "qualification": "Qualifica",
+    "bay": "Postazione",
+    "equipment": "Mezzo"
   },
   "sections": {
     "presences": {
@@ -368,6 +401,13 @@
     "cash": {
       "sessions": "Sessioni",
       "fiscal": "Corrispettivi"
+    },
+    "yard": {
+      "hours": "Ore",
+      "load": "Carico",
+      "margins": "Margini",
+      "margins_by_work_type": "Margini per lavorazione",
+      "lifting": "Sollevamento"
     }
   },
   "filters": {
@@ -602,6 +642,27 @@
       "unassigned": "Non assegnato",
       "charged": "Addebitato",
       "excluded": "Escluso"
+    },
+    "workOrderStatus": {
+      "planned": "Pianificata",
+      "in_progress": "In lavorazione",
+      "on_hold": "Sospesa",
+      "completed": "Completata",
+      "delivered": "Consegnata",
+      "invoiced": "Addebitata",
+      "cancelled": "Annullata"
+    },
+    "bookingPurpose": {
+      "haul_out": "Alaggio",
+      "launch": "Varo",
+      "move": "Spostamento",
+      "other": "Altro"
+    },
+    "bookingStatus": {
+      "requested": "Richiesta",
+      "booked": "Prenotata",
+      "done": "Eseguita",
+      "cancelled": "Annullata"
     }
   },
   "suggestions": {

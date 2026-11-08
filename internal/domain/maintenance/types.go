@@ -34,6 +34,9 @@ type EquipmentInput struct {
 	X, Y             *int64
 	CapacityKg       *int64
 	Active           *bool
+	// M10: nil Bookable = default by kind (travel_lift, crane, forklift, trailer); nil DefaultMinutes = 30.
+	Bookable       *bool
+	DefaultMinutes *int
 }
 
 // EquipmentPatch changes equipment; Clear* set a field to null.
@@ -45,6 +48,8 @@ type EquipmentPatch struct {
 	CapacityKg       *int64
 	ClearCapacity    bool
 	Active           *bool
+	Bookable         *bool
+	DefaultMinutes   *int
 }
 
 // EquipmentView is equipment with its out-of-service flag (an active out-of-service task covers today).

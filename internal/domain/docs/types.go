@@ -118,8 +118,8 @@ func Catalogue() []KindInfo {
 		{Kind: KindReceipt, View: t(views.ReceiptView{})},
 		{Kind: KindStatementOfAccount, View: t(views.StatementView{})},
 		{Kind: KindChargeExportSummary, View: t(views.ChargeExportSummaryView{})},
-		{Kind: KindYardWorkOrder, AvailableFrom: "M10"},
-		{Kind: KindYardQuote, AvailableFrom: "M10"},
+		{Kind: KindYardWorkOrder, View: t(YardWorkOrderView{})},
+		{Kind: KindYardQuote, View: t(YardQuoteView{})},
 		{Kind: KindRentalContract, AvailableFrom: "M11"},
 		{Kind: KindRentalHandover, AvailableFrom: "M11"},
 	}

@@ -280,6 +280,19 @@ func TestTypes_Catalogue(t *testing.T) {
 			MaintenanceDue:           {MaintenanceDue, TopicMaintenance, true},
 			MaintenanceStatusChanged: {MaintenanceStatusChanged, TopicMaintenance, false},
 			MeterReadingRecorded:     {MeterReadingRecorded, TopicUtilities, false},
+			// M10 (m10-plan §13): quote accepted, order status and lifting bookings are public.
+			YardCatalogChanged:      {YardCatalogChanged, TopicYard, false},
+			YardQuoteChanged:        {YardQuoteChanged, TopicYard, false},
+			YardQuoteSent:           {YardQuoteSent, TopicYard, false},
+			YardQuoteAccepted:       {YardQuoteAccepted, TopicYard, true},
+			YardQuoteExpired:        {YardQuoteExpired, TopicYard, false},
+			WorkOrderStatusChanged:  {WorkOrderStatusChanged, TopicYard, true},
+			WorkOrderChanged:        {WorkOrderChanged, TopicYard, false},
+			WorkTaskChanged:         {WorkTaskChanged, TopicYard, false},
+			TimesheetChanged:        {TimesheetChanged, TopicYard, false},
+			WorkOrderBilled:         {WorkOrderBilled, TopicYard, false},
+			YardPlanChanged:         {YardPlanChanged, TopicYard, false},
+			EquipmentBookingChanged: {EquipmentBookingChanged, TopicYard, true},
 		}
 		if want, ok := m1[ti.Type]; ok {
 			if ti != want {

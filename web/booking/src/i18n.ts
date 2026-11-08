@@ -25,6 +25,8 @@ import enAccount from '../../shared/src/i18n/locales/en/account.json';
 import enCheckout from '../../shared/src/i18n/locales/en/checkout.json';
 import itAccount from '../../shared/src/i18n/locales/it/account.json';
 import itCheckout from '../../shared/src/i18n/locales/it/checkout.json';
+import enYardQuoteLink from '../../shared/src/i18n/locales/en/yardQuoteLink.json';
+import itYardQuoteLink from '../../shared/src/i18n/locales/it/yardQuoteLink.json';
 
 export const BOOKING_NAMESPACES = [
   'common',
@@ -38,6 +40,8 @@ export const BOOKING_NAMESPACES = [
   // M8 booking flow and customer area (m8-plan §12)
   'checkout',
   'account',
+  // M10 yard quote link (m10-plan §14.1)
+  'yardQuoteLink',
 ] as const;
 
 const resources = {
@@ -51,6 +55,7 @@ const resources = {
     billingEnums: itBillingEnums,
     checkout: itCheckout,
     account: itAccount,
+    yardQuoteLink: itYardQuoteLink,
   },
   en: {
     common: enCommon,
@@ -62,6 +67,7 @@ const resources = {
     billingEnums: enBillingEnums,
     checkout: enCheckout,
     account: enAccount,
+    yardQuoteLink: enYardQuoteLink,
   },
 };
 

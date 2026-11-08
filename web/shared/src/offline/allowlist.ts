@@ -2,14 +2,17 @@
 // `x-porto-offline: true` in api/openapi.yaml (the server pins the same set, TestPolicies_OfflineSet).
 
 /** Kinds of queued operations. M9 enables utility.reading, maintenance.report and maintenance.outcome
- * (m9-plan §10); reserved for M10–M11 (not enabled): yard.timesheet, yard.activity_done, rental.checklist. */
+ * (m9-plan §10); M10 enables yard.timesheet and yard.activity_done (m10-plan §7); reserved for M11 (not
+ * enabled): rental.checklist. */
 export type OfflineOpKind =
   | 'presence.record'
   | 'presence.photo'
   | 'payment.cash'
   | 'utility.reading'
   | 'maintenance.report'
-  | 'maintenance.outcome';
+  | 'maintenance.outcome'
+  | 'yard.timesheet'
+  | 'yard.activity_done';
 
 /** The only operations the queue may replay, with their kind. */
 export const OFFLINE_OPERATION_KINDS = {
@@ -22,6 +25,13 @@ export const OFFLINE_OPERATION_KINDS = {
   reportMaintenance: 'maintenance.report',
   uploadMaintenancePhoto: 'maintenance.report',
   completeMaintenanceTask: 'maintenance.outcome',
+  // M10 (m10-plan §7): stopTimer depends on startTimer (dependsOn binds timesheetId), uploadTaskPhoto on its task
+  // (taskId); none creates, moves or releases allocations or bookings (INV-71).
+  startTimer: 'yard.timesheet',
+  stopTimer: 'yard.timesheet',
+  createTimeEntry: 'yard.timesheet',
+  updateTaskProgress: 'yard.activity_done',
+  uploadTaskPhoto: 'yard.activity_done',
 } as const satisfies Record<string, OfflineOpKind>;
 
 export const OFFLINE_OPERATIONS: readonly string[] = Object.keys(OFFLINE_OPERATION_KINDS);
@@ -97,12 +107,25 @@ export const OFFLINE_QUERY_ALLOWLIST: readonly AllowlistEntry[] = [
     match: (k) => marinaArea('billing', 'cash-session')(k) && k[4] === 'current',
   },
   { name: 'deadlines', operationId: 'listDeadlines', match: marinaArea('registry', 'deadlines') },
-  // Assigned activities (M9: the maintenance worklist; M10–M11 add yard and rentals):
+  // Assigned activities (M9: the maintenance worklist; M10 the yard work list below; M11 adds rentals):
   // ['marina', id, 'maintenance', 'worklist']
   {
     name: 'activities.assigned',
     operationId: 'getMaintenanceWorklist',
     match: (k) => marinaArea('maintenance', 'worklist')(k) && k.length === 4,
+  },
+  // M10 (m10-plan §7, §14.3): the yard phone's work list (assignments ±7 days and the running timer) and the
+  // lifting day calendar of today and tomorrow (read only on the phone):
+  // ['marina', id, 'yard', 'my-work'] and ['marina', id, 'yard', 'lifting', date]
+  {
+    name: 'activities.yard',
+    operationId: 'getMyYardWork',
+    match: (k) => marinaArea('yard', 'my-work')(k) && k.length === 4,
+  },
+  {
+    name: 'activities.lifting',
+    operationId: 'listEquipmentBookings',
+    match: (k) => marinaArea('yard', 'lifting')(k) && k.length === 5 && inWindow(k[4], 2),
   },
   // The meters of the dock reading round (m9-plan §10): ['marina', id, 'utilities', 'meters', { route: 'dock' }]
   {

@@ -148,5 +148,22 @@
   "maintenance_conflicts": "Boats occupy the element on the maintenance nights: move them and retry.",
   "task_already_done": "The task was already completed.",
   "reading_charged": "The reading is used by a charged consumption.",
-  "consumption_frozen": "The consumption is already charged or excluded."
+  "consumption_frozen": "The consumption is already charged or excluded.",
+  "formula_invalid": "A formula is invalid: fix the reported positions.",
+  "work_order_closed": "The work order does not accept this change in its current state.",
+  "work_order_has_charges": "The work order has live charges: cancel them before cancelling the order.",
+  "qualification_mismatch": "The employee does not hold the qualification the task needs.",
+  "capacity_exceeded": "The assignment exceeds the employee's capacity on that day.",
+  "dependency_violation": "The task cannot start before the tasks it depends on are finished.",
+  "duration_too_long": "The time entry is longer than 16 hours.",
+  "offline_time_out_of_range": "The time recorded on the device is outside the allowed window.",
+  "timer_already_running": "The employee already has a running timer.",
+  "return_exceeds_issued": "The return exceeds the quantity issued to the work order.",
+  "nothing_to_bill": "There is nothing to bill on the work order.",
+  "equipment_slot_taken": "The equipment is already booked in that time window.",
+  "operator_busy": "The operator is already booked in that time window.",
+  "equipment_out_of_service": "The equipment is out of service on that day.",
+  "equipment_capacity_exceeded": "The vessel exceeds the equipment's lifting capacity.",
+  "operator_not_enabled": "The employee is not enabled to operate this equipment.",
+  "outside_lift_window": "The time window is outside the lifting hours."
 }

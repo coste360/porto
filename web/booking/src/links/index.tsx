@@ -11,6 +11,7 @@ import { QuoteLinkPage } from './QuoteLinkPage';
 import { RenewalLinkPage } from './RenewalLinkPage';
 import { SigningPage } from './SigningPage';
 import { UnsubscribePage } from './UnsubscribePage';
+import { YardQuoteLinkPage } from './YardQuoteLinkPage';
 
 // Customer magic-link pages (m4-plan §8.1): quote acceptance, renewal proposal, signing and unsubscribe. The page
 // resolves the token once; an unknown, expired or revoked link answers 404 and shows the same "invalid" page.
@@ -61,6 +62,8 @@ export function LinkPage({
             title={t('customerLinks:invalid')}
             description={t('customerLinks:invalidHint')}
           />
+        ) : purpose === 'quote' && link.data.yard_quote ? (
+          <YardQuoteLinkPage linkRef={ref} quote={link.data.yard_quote} />
         ) : purpose === 'quote' && link.data.quote ? (
           <QuoteLinkPage linkRef={ref} quote={link.data.quote} />
         ) : purpose === 'renewal' && link.data.renewal ? (

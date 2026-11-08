@@ -138,6 +138,27 @@ func (p *Principal) Authorize(ctx context.Context, db bun.IDB, marinaID string, 
 	return scope, nil
 }
 
+// AuthorizeAny is Authorize with the first of perms the principal holds in the marina (M10, m10-plan D31): another
+// marina (or a marina without grants) is ErrNotFound, a marina where none of perms is held is ErrForbidden. It
+// returns the permission that matched.
+func (p *Principal) AuthorizeAny(ctx context.Context, db bun.IDB, marinaID string, perms ...Permission) (store.MarinaScope, Permission, error) {
+	if len(perms) == 0 {
+		return store.MarinaScope{}, "", ErrForbidden
+	}
+	var last error
+	for _, perm := range perms {
+		scope, err := p.Authorize(ctx, db, marinaID, perm)
+		if err == nil {
+			return scope, perm, nil
+		}
+		if !errors.Is(err, ErrForbidden) {
+			return store.MarinaScope{}, "", err
+		}
+		last = err
+	}
+	return store.MarinaScope{}, "", last
+}
+
 // AuthorizeOrg resolves the organization and checks perm against organization-wide grants. Without any grant in
 // the organization the answer is ErrNotFound; with marina-level grants only, or a grant lacking perm, it is
 // ErrForbidden.

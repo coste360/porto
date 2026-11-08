@@ -106,12 +106,13 @@
   "empty": "No indicator available for your role.",
   "seriesLabel": "Trend of {{tile}}",
   "breakdown": "Breakdown",
-  "outOfScope": "Boatyard and rentals",
+  "outOfScope": "Rentals",
   "dims": {
     "map": "Map",
     "structure": "Pier",
     "group": "Group",
     "category": "Category",
     "all": "All"
-  }
+  },
+  "hoursValue": "{{value}} h"
 }

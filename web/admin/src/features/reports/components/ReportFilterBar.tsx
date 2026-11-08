@@ -32,7 +32,14 @@ import {
   type PeriodPreset,
 } from '../../dashboard/lib/period';
 import { localName } from '../../maps/lib';
-import { filterValuesOf, type FilterKey, type ReportDef } from '../lib/catalog';
+import {
+  filterValuesOf,
+  groupByOf,
+  sectionOf,
+  sectionParamOf,
+  type FilterKey,
+  type ReportDef,
+} from '../lib/catalog';
 
 const ALL = '__all';
 
@@ -45,6 +52,7 @@ function controlledKeys(def: ReportDef): string[] {
     'page_size',
     'group_by',
     'section',
+    sectionParamOf(def),
     'lang',
     'format',
     ...def.filters,
@@ -138,12 +146,12 @@ function FilterControls({
         }}
         onPeriod={(p) => onPatch({ from: p.from, to: p.to })}
       />
-      {def.groupBy.length > 0 ? (
+      {groupByOf(def, sectionOf(def, search[sectionParamOf(def)])).length > 0 ? (
         <SelectField
           id={`${idPrefix}-group-by`}
           label={t('reports:filters.groupBy')}
           value={search.group_by}
-          values={def.groupBy}
+          values={groupByOf(def, sectionOf(def, search[sectionParamOf(def)]))}
           labelOf={(v) => t(`reports:groupBy.${v}`, { defaultValue: v })}
           allLabel={t('reports:filters.noGrouping')}
           onChange={(v) => onPatch({ group_by: v })}

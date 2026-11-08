@@ -51,6 +51,11 @@ import { onlineRoutes, onlineSettingsRoutes } from './features/online/routes';
 import { storageRoutes } from './features/storage/routes';
 import { maintenanceRoutes } from './features/maintenance/routes';
 import { utilitiesRoutes } from './features/utilities/routes';
+import { yardCatalogRoutes } from './features/yard-catalog/routes';
+import { yardQuotesRoutes } from './features/yard-quotes/routes';
+import { yardOrdersRoutes } from './features/yard-orders/routes';
+import { yardPlannerRoutes } from './features/yard-planner/routes';
+import { liftingRoutes } from './features/lifting/routes';
 import { CertificateHelpPage } from './features/help/CertificateHelpPage';
 
 export type RouterContext = { queryClient: QueryClient; api: ApiClient };
@@ -250,6 +255,12 @@ export const routeTree = rootRoute.addChildren([
       ...storageRoutes(marinaRoute),
       ...maintenanceRoutes(marinaRoute),
       ...utilitiesRoutes(marinaRoute),
+      // M10 (m10-plan §14)
+      ...yardCatalogRoutes(marinaRoute),
+      ...yardQuotesRoutes(marinaRoute),
+      ...yardOrdersRoutes(marinaRoute),
+      ...yardPlannerRoutes(marinaRoute),
+      ...liftingRoutes(marinaRoute),
     ]),
   ]),
 ]);

@@ -15,7 +15,8 @@ func mntEquipment(e *maintenance.EquipmentView) api.Equipment {
 	r := e.Row
 	return api.Equipment{
 		Id: r.ID, Code: r.Code, Name: r.Name, Kind: api.EquipmentKind(r.Kind), MapId: view.String(r.MapID), XCm: r.XCm, YCm: r.YCm,
-		CapacityKg: r.CapacityKg, Active: r.Active, OutOfService: e.OutOfService, Version: int64(r.Version),
+		CapacityKg: r.CapacityKg, Active: r.Active, OutOfService: e.OutOfService, Bookable: r.Bookable,
+		DefaultMinutes: r.DefaultMinutes, Version: int64(r.Version),
 		CreatedAt: r.CreatedAt.UTC(), UpdatedAt: r.UpdatedAt.UTC(),
 	}
 }
@@ -60,7 +61,7 @@ func (h *Handler) CreateEquipment(w http.ResponseWriter, r *http.Request, marina
 	}
 	e, err := h.Maintenance.CreateEquipment(r.Context(), principal(r), marinaID, maintenance.EquipmentInput{
 		Code: in.Code, Name: in.Name, Kind: string(in.Kind), MapID: str(in.MapId), X: in.XCm, Y: in.YCm, CapacityKg: in.CapacityKg,
-		Active: in.Active,
+		Active: in.Active, Bookable: in.Bookable, DefaultMinutes: in.DefaultMinutes,
 	})
 	if err != nil {
 		respond.Error(w, r, err)
@@ -94,6 +95,7 @@ func (h *Handler) UpdateEquipment(w http.ResponseWriter, r *http.Request, marina
 	patch := maintenance.EquipmentPatch{
 		Name: in.Name, MapID: in.MapId, X: in.XCm, Y: in.YCm, CapacityKg: in.CapacityKg, Active: in.Active,
 		ClearPosition: respond.IsNull(fields, "x_cm") || respond.IsNull(fields, "y_cm"), ClearCapacity: respond.IsNull(fields, "capacity_kg"),
+		Bookable: in.Bookable, DefaultMinutes: in.DefaultMinutes,
 	}
 	if in.Code != nil {
 		c := *in.Code

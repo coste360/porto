@@ -178,6 +178,25 @@ const (
 	TaskAlreadyDone       Type = "task_already_done"
 	ReadingCharged        Type = "reading_charged"
 	ConsumptionFrozen     Type = "consumption_frozen"
+
+	// M10 (m10-plan §13).
+	FormulaInvalid            Type = "formula_invalid"
+	WorkOrderClosed           Type = "work_order_closed"
+	WorkOrderHasCharges       Type = "work_order_has_charges"
+	QualificationMismatch     Type = "qualification_mismatch"
+	CapacityExceeded          Type = "capacity_exceeded"
+	DependencyViolation       Type = "dependency_violation"
+	DurationTooLong           Type = "duration_too_long"
+	OfflineTimeOutOfRange     Type = "offline_time_out_of_range"
+	TimerAlreadyRunning       Type = "timer_already_running"
+	ReturnExceedsIssued       Type = "return_exceeds_issued"
+	NothingToBill             Type = "nothing_to_bill"
+	EquipmentSlotTaken        Type = "equipment_slot_taken"
+	OperatorBusy              Type = "operator_busy"
+	EquipmentOutOfService     Type = "equipment_out_of_service"
+	EquipmentCapacityExceeded Type = "equipment_capacity_exceeded"
+	OperatorNotEnabled        Type = "operator_not_enabled"
+	OutsideLiftWindow         Type = "outside_lift_window"
 )
 
 type typeInfo struct {
@@ -339,6 +358,24 @@ var registry = map[Type]typeInfo{
 	TaskAlreadyDone:       {http.StatusConflict, "The task was already completed"},
 	ReadingCharged:        {http.StatusConflict, "The reading is used by a charged consumption"},
 	ConsumptionFrozen:     {http.StatusConflict, "The consumption is charged or excluded"},
+	// M10
+	FormulaInvalid:            {http.StatusUnprocessableEntity, "A formula is invalid (issues in details)"},
+	WorkOrderClosed:           {http.StatusConflict, "The work order does not accept this change in its state"},
+	WorkOrderHasCharges:       {http.StatusConflict, "The work order has live charges"},
+	QualificationMismatch:     {http.StatusUnprocessableEntity, "The employee does not hold the task qualification"},
+	CapacityExceeded:          {http.StatusConflict, "The assignment exceeds the employee capacity of the day"},
+	DependencyViolation:       {http.StatusUnprocessableEntity, "The assignment is before the end of a predecessor task"},
+	DurationTooLong:           {http.StatusUnprocessableEntity, "The time entry is longer than 16 hours"},
+	OfflineTimeOutOfRange:     {http.StatusUnprocessableEntity, "The device time is outside the offline window"},
+	TimerAlreadyRunning:       {http.StatusConflict, "The employee already has a running timer"},
+	ReturnExceedsIssued:       {http.StatusUnprocessableEntity, "The return exceeds the quantity issued on the work order"},
+	NothingToBill:             {http.StatusConflict, "Nothing to bill on the work order"},
+	EquipmentSlotTaken:        {http.StatusConflict, "The lifting equipment is already booked in that window"},
+	OperatorBusy:              {http.StatusConflict, "The operator is already booked in that window"},
+	EquipmentOutOfService:     {http.StatusConflict, "The equipment is out of service that day"},
+	EquipmentCapacityExceeded: {http.StatusUnprocessableEntity, "The vessel is heavier than the equipment capacity"},
+	OperatorNotEnabled:        {http.StatusUnprocessableEntity, "The employee is not enabled on the equipment"},
+	OutsideLiftWindow:         {http.StatusUnprocessableEntity, "The window is outside the lifting hours"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

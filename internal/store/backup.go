@@ -66,6 +66,14 @@ var (
 		// M9 (00018_storage, 00019_maintenance_utilities)
 		"scenario_items.pinned", "storage_movements.temporary_position", "equipment.active", "utility_meters.active",
 		"maintenance_plans.requires_free", "maintenance_plans.active", "maintenance_tasks.out_of_service",
+		// M10 (00020_yard_catalog_quotes, 00021_work_orders, 00022_equipment_slots)
+		"yard_settings.advance_on_accept", "yard_settings.fixed_includes_external", "yard_settings.workers_issue_materials",
+		"yard_settings.lift_request_on_move", "work_types.active", "yard_qualifications.lift_operator",
+		"yard_qualifications.active", "yard_item_settings.yard_enabled", "work_packages.active",
+		"yard_quote_lines.qty_overridden", "yard_quote_lines.price_overridden", "yard_quote_lines.price_includes_vat",
+		"work_order_lines.price_includes_vat", "employees.active", "task_assignments.forced_qualification",
+		"task_assignments.overload", "timesheets.late", "stock_movements.price_overridden", "stock_movements.late",
+		"work_order_external_costs.billable", "work_order_external_costs.late", "equipment.bookable",
 	}
 	sqliteJSONColumns = []string{
 		"organizations.billing_address", "marinas.locales", "marinas.contacts", "marinas.address", "marinas.geo",
@@ -107,6 +115,12 @@ var (
 		// M9 (00018_storage, 00019_maintenance_utilities)
 		"storage_scenarios.score", "storage_scenarios.base", "maintenance_plans.checklist", "maintenance_tasks.checklist",
 		"maintenance_tasks.checklist_results", "maintenance_tasks.allocation_ids", "meter_readings.anomaly_codes",
+		// M10 (00020_yard_catalog_quotes, 00021_work_orders)
+		"yard_settings.test_vessel", "work_types.name", "yard_qualifications.name", "yard_item_settings.test_case",
+		"formula_variables.enum_values", "formula_variables.label", "formula_tables.label", "formula_tables.band_rows",
+		"work_packages.name", "work_package_versions.lines", "work_package_versions.job_vars", "yard_quotes.job_inputs",
+		"yard_quotes.vessel_overrides", "yard_quotes.snapshot", "yard_quotes.estimated_hours", "yard_quote_lines.task",
+		"yard_quote_lines.issues", "work_orders.rate_snapshot", "work_tasks.checklist", "work_order_billings.requested",
 	}
 )
 
@@ -243,6 +257,15 @@ var dumpOrder = map[string]string{
 	"scenario_moves":           "scenario_id, seq",
 	"maintenance_plan_targets": "plan_id, element_type, element_id",
 	"utility_settings":         "marina_id",
+	// M10
+	"yard_settings":           "marina_id",
+	"yard_item_settings":      "item_id",
+	"work_task_deps":          "task_id, depends_on_task_id",
+	"employee_qualifications": "employee_id, qualification_id",
+	"employee_calendars":      "employee_id, weekday",
+	"equipment_operators":     "equipment_id, employee_id",
+	"equipment_slots":         "equipment_id, date, slot",
+	"operator_slots":          "employee_id, date, slot",
 }
 
 // DumpTable calls fn with every row of table (ordered by id, or by its primary key when it has no id), converted

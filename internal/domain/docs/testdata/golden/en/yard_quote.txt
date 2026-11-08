@@ -1,0 +1,23 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Yard quote no. PC2026-000012
+Dear Mario Rossi, here is our quote for the yard work on Libeccio (RM 1234 D), length 11.34 m, beam
+3.80 m.
+# | Description | Qty | Price | Discount | Net | VAT
+1 | Alaggio | 12 m | €18.00 | €0.00 | €216.00 | 22%
+2 | Lavaggio carena | 56,1 m2 | €4.00 | €0.00 | €224.40 | 22%
+3 | Ora operaio | 8,4 hour | €38.00 | €0.00 | €319.20 | 22%
+4 | Ora verniciatore | 5,6 hour | €45.00 | €0.00 | €252.00 | 22%
+5 | Antivegetativa 2,5 l | 5 piece | €95.00 | €0.00 | €475.00 | 22%
+6 | Varo | 12 m | €18.00 | €0.00 | €216.00 | 22%
+Rate | Net | VAT | Total
+22% | €1,702.60 | €374.57 | €2,077.17
+Net €1,702.60, VAT €374.57, total €2,077.17, deposit on acceptance €623.15.
+Estimated hours: Operaio 8,4 h; Verniciatore 5,6 h;
+Planned start 1 February 2027, planned delivery 12 February 2027.
+This quote is valid until 7 December 2026.
+Conditions
+Acconto del 30% all'accettazione.
+Saldo alla consegna.
+You can accept it online: https://porto-demo.example/b/demo/m/quote/DEMO
+Porto Demo S.r.l. · VAT 01234567890 · Page 1 of 1

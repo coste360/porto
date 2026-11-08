@@ -1,0 +1,182 @@
+{
+  "nav": {
+    "catalog": "Yard catalogue"
+  },
+  "title": "Yard catalogue",
+  "description": "Work types, qualifications, items, variables, band tables and work packages.",
+  "pending": "This section will be available soon.",
+  "edit": "Edit",
+  "open": "Open",
+  "inactive": "Inactive",
+  "tabs": {
+    "workTypes": "Work types",
+    "qualifications": "Qualifications",
+    "items": "Items",
+    "variables": "Variables",
+    "tables": "Band tables",
+    "packages": "Work packages",
+    "settings": "Settings"
+  },
+  "fields": {
+    "code": "Code",
+    "name": "Name",
+    "nameIt": "Name (Italian)",
+    "nameEn": "Name (English)",
+    "active": "Active",
+    "status": "Status"
+  },
+  "workTypes": {
+    "new": "New work type",
+    "edit": "Edit work type",
+    "empty": "No work types."
+  },
+  "qualifications": {
+    "new": "New qualification",
+    "edit": "Edit qualification",
+    "empty": "No qualifications.",
+    "labourItem": "Labour item",
+    "defaultCost": "Internal hourly cost",
+    "liftOperator": "Lifting equipment operator"
+  },
+  "items": {
+    "search": "Search items",
+    "empty": "No items.",
+    "type": "Type",
+    "cost": "Internal cost",
+    "qtyFormula": "Quantity formula",
+    "priceFormula": "Price formula",
+    "settings": "Yard settings",
+    "settingsOf": "Yard settings of {{code}}",
+    "enabled": "Usable in the yard",
+    "category": "Category",
+    "pricesHint": "Sale prices stay in the price lists: here you set cost, qualification and formulas."
+  },
+  "itemTypes": {
+    "berth_fee": "Mooring",
+    "service": "Service",
+    "utility": "Utility",
+    "product": "Product",
+    "labour": "Labour",
+    "material": "Material",
+    "fee": "Fee",
+    "deposit": "Deposit"
+  },
+  "variables": {
+    "own": "Marina variables",
+    "builtin": "Built-in variables",
+    "builtinHint": "Vessel and context data, read only; the value on the test vessel is shown.",
+    "newDerived": "New derived variable",
+    "newJob": "New job input",
+    "empty": "No variables.",
+    "name": "Name",
+    "source": "Source",
+    "unit": "Unit",
+    "kind": "Type",
+    "expression": "Expression",
+    "testValue": "Test value",
+    "min": "Minimum",
+    "max": "Maximum",
+    "default": "Default",
+    "enumValues": "Allowed values",
+    "enumHint": "Comma-separated lower-case values (e.g. epoxy, standard)."
+  },
+  "sources": {
+    "vessel": "Vessel",
+    "derived": "Derived",
+    "job": "Job input",
+    "context": "Context"
+  },
+  "kinds": {
+    "number": "Number",
+    "bool": "Yes/no",
+    "enum": "Choice"
+  },
+  "units": {
+    "m": "m",
+    "m2": "m²",
+    "t": "t",
+    "kw": "kW",
+    "h": "hours",
+    "pcs": "pieces",
+    "l": "litres",
+    "pct": "%",
+    "none": "—",
+    "years": "years"
+  },
+  "hullTypes": {
+    "monohull_motor": "Motor monohull",
+    "monohull_sail": "Sailing monohull",
+    "catamaran": "Catamaran",
+    "trimaran": "Trimaran",
+    "rib": "RIB",
+    "gozzo": "Gozzo",
+    "other": "Other"
+  },
+  "tables": {
+    "new": "New table",
+    "edit": "Edit table",
+    "empty": "No tables.",
+    "name": "Name",
+    "rows": "Bands",
+    "rowsHint": "One band per line: \"up to;value\". Leave \"up to\" empty on the last line for the open band."
+  },
+  "packages": {
+    "new": "New work package",
+    "editOf": "Package {{code}}",
+    "empty": "No work packages.",
+    "workType": "Work type",
+    "version": "Version",
+    "jobVars": "Job inputs asked",
+    "lines": "Lines",
+    "item": "Item of line {{n}}",
+    "task": "Task",
+    "removeLine": "Remove line {{n}}",
+    "addLine": "Add line",
+    "saveVersion": "Save new version",
+    "history": "Versions",
+    "versionAt": "Version {{version}} of {{at}}",
+    "activate": "Activate",
+    "deactivate": "Deactivate"
+  },
+  "settings": {
+    "quotes": "Quotes",
+    "validity": "Default validity (days)",
+    "deposit": "Default deposit",
+    "testVessel": "Test vessel",
+    "testVesselHint": "Formulas are tried on this vessel when they are saved.",
+    "loa": "Length",
+    "beam": "Beam",
+    "draft": "Draft",
+    "hull": "Hull type",
+    "defaults": "Default values, never saved"
+  },
+  "formula": {
+    "test": "Try",
+    "valid": "Valid formula",
+    "qtyResult": "Quantity: {{value}}",
+    "priceResult": "Price: {{value}}",
+    "priceHint": "A price formula may use qty (line quantity) and list_price (list price in euro)."
+  },
+  "issues": {
+    "at": "(column {{column}})",
+    "unknown": "Invalid formula.",
+    "syntax": "Syntax error.",
+    "unknown_variable": "Unknown variable: {{ref}}.",
+    "unknown_function": "Unknown function: {{ref}}.",
+    "unknown_table": "Unknown table: {{ref}}.",
+    "arity": "Wrong number of arguments for {{ref}}.",
+    "type_mismatch": "Incompatible types.",
+    "enum_value_unknown": "Value not allowed for {{ref}}.",
+    "formula_too_complex": "Formula too complex.",
+    "derived_cycle": "Derived variables refer to each other ({{ref}}).",
+    "div_by_zero": "Division by zero.",
+    "missing_variable": "{{ref}} has no value.",
+    "overflow": "Number too large.",
+    "band_no_row": "No band of table {{ref}} for this value.",
+    "negative_quantity": "The quantity is negative.",
+    "negative_price": "The price is negative.",
+    "out_of_range": "Value out of the allowed range ({{ref}}).",
+    "no_price": "No list price for the item.",
+    "test_case_mismatch": "The test case does not give the expected result."
+  }
+}

@@ -5,6 +5,16 @@ import enOnline from './locales/en/online.json';
 import enStorage from './locales/en/storage.json';
 import enMaintenance from './locales/en/maintenance.json';
 import enUtilities from './locales/en/utilities.json';
+import enYardCatalog from './locales/en/yardCatalog.json';
+import enYardQuotes from './locales/en/yardQuotes.json';
+import enYardOrders from './locales/en/yardOrders.json';
+import enYardPlanner from './locales/en/yardPlanner.json';
+import enLifting from './locales/en/lifting.json';
+import itYardCatalog from './locales/it/yardCatalog.json';
+import itYardQuotes from './locales/it/yardQuotes.json';
+import itYardOrders from './locales/it/yardOrders.json';
+import itYardPlanner from './locales/it/yardPlanner.json';
+import itLifting from './locales/it/lifting.json';
 import enAuth from './locales/en/auth.json';
 import enBooking from './locales/en/booking.json';
 import enCommon from './locales/en/common.json';
@@ -184,6 +194,12 @@ export const NAMESPACES = [
   'storage',
   'maintenance',
   'utilities',
+  // M10 (m10-plan §14)
+  'yardCatalog',
+  'yardQuotes',
+  'yardOrders',
+  'yardPlanner',
+  'lifting',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -247,6 +263,11 @@ export const resources = {
     storage: itStorage,
     maintenance: itMaintenance,
     utilities: itUtilities,
+    yardCatalog: itYardCatalog,
+    yardQuotes: itYardQuotes,
+    yardOrders: itYardOrders,
+    yardPlanner: itYardPlanner,
+    lifting: itLifting,
   },
   en: {
     common: enCommon,
@@ -307,5 +328,10 @@ export const resources = {
     storage: enStorage,
     maintenance: enMaintenance,
     utilities: enUtilities,
+    yardCatalog: enYardCatalog,
+    yardQuotes: enYardQuotes,
+    yardOrders: enYardOrders,
+    yardPlanner: enYardPlanner,
+    lifting: enLifting,
   },
 } as const;

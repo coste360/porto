@@ -1,0 +1,25 @@
+{
+  "title": "Preventivo lavori",
+  "number": "Preventivo {{number}}",
+  "variationOf": "Variante della commessa {{number}}",
+  "validUntil": "Valido fino al {{date}}",
+  "planned": "Lavori previsti dal {{start}} al {{end}}",
+  "lines": "Lavori",
+  "net": "Imponibile",
+  "vat": "IVA",
+  "gross": "Totale",
+  "deposit": "Acconto all'accettazione",
+  "conditions": "Condizioni",
+  "acceptConditions": "Ho letto e accetto le condizioni",
+  "accept": "Accetta il preventivo",
+  "accepted": "Preventivo accettato. Grazie!",
+  "acceptedOrder": "Abbiamo aperto la commessa {{number}}.",
+  "pdf": "Preventivo in PDF",
+  "status": {
+    "draft": "Preventivo in preparazione.",
+    "sent": "Preventivo da accettare.",
+    "accepted": "Preventivo già accettato.",
+    "declined": "Preventivo rifiutato.",
+    "expired": "Preventivo scaduto."
+  }
+}

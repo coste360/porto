@@ -5,6 +5,7 @@ import { DirectionPage } from './DirectionPage';
 import { DockPage } from './dock/DockPage';
 import { MaintenancePhonePage } from './maintenance/MaintenancePhonePage';
 import { StoragePhonePage } from './storage/StoragePhonePage';
+import { YardPhonePage } from './yard/YardPhonePage';
 import { validateDirectionSearch, validateDockSearch } from './lib/tabs';
 
 // Phone screens (m6b-plan §6): children of the marina route rendered inside PhoneShell (staticData.shell). The
@@ -37,6 +38,13 @@ export function phoneRoutes(parent: MarinaRoute) {
       getParentRoute: () => parent,
       path: 'maintenance-phone',
       component: MaintenancePhonePage,
+      staticData: { shell: 'phone' },
+    }),
+    // M10 (m10-plan §14.3): yard phone screen (PLANNER) for yard and yard_mgr.
+    createRoute({
+      getParentRoute: () => parent,
+      path: 'yard-phone',
+      component: YardPhonePage,
       staticData: { shell: 'phone' },
     }),
   ] as const;

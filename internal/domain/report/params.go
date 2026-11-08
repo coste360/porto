@@ -102,6 +102,13 @@ var specs = map[Key]reportSpec{
 		params:  []string{"group_by", "kind", "status", "meter_id", "contract_id"},
 		groupBy: []string{"kind", "meter", "status", "contract", "month"},
 	},
+	// M10 (m10-plan §12): group_by is checked against the view by the runner.
+	calc.KeyYard: {
+		params: []string{
+			"view", "group_by", "employee_id", "work_order_id", "work_type_id", "equipment_id", "open_only", "invoiced_in_period",
+		},
+		groupBy: []string{"employee", "department", "order", "work_type", "qualification", "bay", "status", "equipment", "week", "month"},
+	},
 }
 
 func (sp reportSpec) accepts(name string) bool { return slices.Contains(sp.params, name) }
@@ -288,10 +295,27 @@ func ParseParams(key Key, q url.Values) (Params, error) {
 	out.Method = p.enum("method", paymentMethods)
 	out.AsOf = p.date("as_of")
 	out.OverdueOnly, _ = p.boolean("overdue")
+	out.View = p.enum("view", calc.YardViews)
+	out.EmployeeID = p.str("employee_id", 36)
+	out.WorkOrderID = p.str("work_order_id", 36)
+	out.WorkTypeID = p.str("work_type_id", 36)
+	out.EquipmentID = p.str("equipment_id", 36)
+	out.OpenOnly, _ = p.boolean("open_only")
+	out.InvoicedInPeriod, _ = p.boolean("invoiced_in_period")
+	if key == calc.KeyYard && !calc.YardGroupAllowed(orDefault(out.View, calc.YardViewHours), out.GroupBy) && p.err == nil {
+		p.err = filterErr("group_by")
+	}
 	if p.err != nil {
 		return Params{}, p.err
 	}
 	return out, nil
+}
+
+func orDefault(s, def string) string {
+	if s == "" {
+		return def
+	}
+	return s
 }
 
 // Values is the inverse of ParseParams: the canonical query string of p (from/to included when set, defaults
@@ -363,6 +387,13 @@ func (p Params) Values() url.Values {
 	setBool("overdue_only", p.TaskOverdueOnly)
 	set("meter_id", p.MeterID)
 	set("contract_id", p.ContractID)
+	set("view", p.View)
+	set("employee_id", p.EmployeeID)
+	set("work_order_id", p.WorkOrderID)
+	set("work_type_id", p.WorkTypeID)
+	set("equipment_id", p.EquipmentID)
+	setBool("open_only", p.OpenOnly)
+	setBool("invoiced_in_period", p.InvoicedInPeriod)
 	return v
 }
 

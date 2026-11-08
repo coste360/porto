@@ -2,7 +2,13 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { queryKeys } from '../api/queryKeys';
-import { OFFLINE_OPERATIONS, OFFLINE_QUERY_ALLOWLIST, isPersistable, localDate } from './allowlist';
+import {
+  OFFLINE_OPERATIONS,
+  OFFLINE_OPERATION_KINDS,
+  OFFLINE_QUERY_ALLOWLIST,
+  isPersistable,
+  localDate,
+} from './allowlist';
 
 const M = 'm-1';
 
@@ -25,13 +31,18 @@ describe('offline allowlists', () => {
     expect([...OFFLINE_OPERATIONS].sort()).toEqual(flaggedInContract());
     expect(flaggedInContract()).toEqual([
       'completeMaintenanceTask',
+      'createTimeEntry',
       'recordMeterReading',
       'recordPayment',
       'recordPresence',
       'reportMaintenance',
+      'startTimer',
+      'stopTimer',
+      'updateTaskProgress',
       'uploadMaintenancePhoto',
       'uploadMeterReadingPhoto',
       'uploadPresencePhoto',
+      'uploadTaskPhoto',
     ]);
   });
 
@@ -91,5 +102,35 @@ describe('offline allowlists', () => {
     const meters = OFFLINE_QUERY_ALLOWLIST.find((e) => e.name === 'meters.dock');
     expect(meters?.operationId).toBe('listUtilityMeters');
     expect(OFFLINE_QUERY_ALLOWLIST.every((e) => e.operationId !== null)).toBe(true);
+  });
+
+  it('caches the yard work list and the lifting day of today and tomorrow (M10), nothing else of the yard', () => {
+    const my = OFFLINE_QUERY_ALLOWLIST.find((e) => e.name === 'activities.yard');
+    expect(my?.operationId).toBe('getMyYardWork');
+    const lift = OFFLINE_QUERY_ALLOWLIST.find((e) => e.name === 'activities.lifting');
+    expect(lift?.operationId).toBe('listEquipmentBookings');
+    const yes = [
+      queryKeys.myYardWork(M),
+      queryKeys.equipmentBookings(M, 'today'),
+      queryKeys.equipmentBookings(M, localDate()),
+      queryKeys.equipmentBookings(M, localDate(1)),
+    ];
+    const no = [
+      queryKeys.equipmentBookings(M, localDate(2)),
+      queryKeys.equipmentBookings(M, 'today', { work_order_id: 'o1' }),
+      queryKeys.planner(M, '2027-06-01', '2027-06-07'),
+      queryKeys.employees(M),
+      queryKeys.yardLoad(M),
+      queryKeys.atRiskOrders(M),
+      queryKeys.myYardWork('other'),
+    ];
+    for (const k of yes) expect(isPersistable(k, M), JSON.stringify(k)).toBe(true);
+    for (const k of no) expect(isPersistable(k, M), JSON.stringify(k)).toBe(false);
+  });
+
+  it('enables both M10 offline kinds: no reserved kind is left for M10', () => {
+    const kinds = new Set(Object.values(OFFLINE_OPERATION_KINDS));
+    expect(kinds.has('yard.timesheet')).toBe(true);
+    expect(kinds.has('yard.activity_done')).toBe(true);
   });
 });

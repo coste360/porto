@@ -48,6 +48,9 @@ func NewService(d Deps) *Service {
 	return &Service{d: d}
 }
 
+// bookableKinds are bookable in lifting slots by default (M10, m10-plan §11).
+var bookableKinds = []string{"travel_lift", "crane", "forklift", "trailer"}
+
 // Equipment kinds (spec 6.8).
 var equipmentKinds = []string{"travel_lift", "crane", "forklift", "trailer", "vehicle", "plant", "other"}
 
@@ -210,6 +213,9 @@ func validateEquipment(e *store.Equipment, v *auth.ValidationError) {
 	if e.CapacityKg != nil && *e.CapacityKg <= 0 {
 		v.Add("capacity_kg", "invalid")
 	}
+	if e.DefaultMinutes < 15 || e.DefaultMinutes > 1440 || e.DefaultMinutes%15 != 0 {
+		v.Add("default_minutes", "invalid")
+	}
 }
 
 func (s *Service) checkEquipmentMap(ctx context.Context, db bun.IDB, scope store.MarinaScope, e *store.Equipment) error {
@@ -282,6 +288,13 @@ func (s *Service) CreateEquipment(ctx context.Context, p *auth.Principal, marina
 	e := &store.Equipment{
 		ID: store.NewID(), Code: in.Code, Name: in.Name, Kind: in.Kind, MapID: in.MapID, XCm: in.X, YCm: in.Y,
 		CapacityKg: in.CapacityKg, Active: in.Active == nil || *in.Active, CreatedAt: now, UpdatedAt: now,
+		Bookable: contains(bookableKinds, in.Kind), DefaultMinutes: 30,
+	}
+	if in.Bookable != nil {
+		e.Bookable = *in.Bookable
+	}
+	if in.DefaultMinutes != nil {
+		e.DefaultMinutes = *in.DefaultMinutes
 	}
 	v := &auth.ValidationError{}
 	validateEquipment(e, v)
@@ -353,6 +366,12 @@ func (s *Service) UpdateEquipment(ctx context.Context, p *auth.Principal, marina
 	}
 	if patch.Active != nil {
 		e.Active = *patch.Active
+	}
+	if patch.Bookable != nil {
+		e.Bookable = *patch.Bookable
+	}
+	if patch.DefaultMinutes != nil {
+		e.DefaultMinutes = *patch.DefaultMinutes
 	}
 	v := &auth.ValidationError{}
 	validateEquipment(e, v)

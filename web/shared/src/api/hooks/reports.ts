@@ -40,6 +40,7 @@ export type BerthRevenueReport = S['BerthRevenueReport'];
 export type StorageReport = S['StorageReport'];
 export type MaintenanceReport = S['MaintenanceReport'];
 export type UtilitiesReport = S['UtilitiesReport'];
+export type YardReportResponse = S['YardReport'];
 
 /** The JSON response of each report key (comparison has its own hook in dashboard.ts). */
 export type ReportResponses = {
@@ -63,9 +64,11 @@ export type ReportResponses = {
   storage: StorageReport;
   maintenance: MaintenanceReport;
   utilities: UtilitiesReport;
+  // M10 (m10-plan §12)
+  yard: YardReportResponse;
 };
 
-/** A report served by GET .../reports/{key} (every key but comparison and the reserved yard/rental). */
+/** A report served by GET .../reports/{key} (every key but comparison and the reserved rental). */
 export type ServedReportKey = keyof ReportResponses;
 
 /** Any report response (the page renders them through the catalog, field by field). */

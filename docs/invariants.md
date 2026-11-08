@@ -151,6 +151,15 @@ creazione (D4: senza posizione indicata la sceglie `PlaceOne`, senza spazio 409)
 `TestStorage_CreateContractAutoPlace` e `TestStorage_NoSpace409`. Verificata da: query Q20 di
 `store.CheckStorageInvariants` (M9). Stato: implemented.
 
+**INV-17 — Nessuna doppia prenotazione dei mezzi di sollevamento né dell'operatore.** Uno slot di 15 minuti di un
+mezzo (travel lift, gru, muletto, carrello) appartiene al più a una prenotazione, e lo stesso vale per l'operatore:
+le chiavi uniche di `equipment_slots (equipment_id, date, slot)` e `operator_slots (employee_id, date, slot)` sono
+l'unica garanzia (ADR 0003); una violazione annulla la transazione e risponde `409 equipment_slot_taken` (o
+`operator_busy`), mai un controllo preventivo. Le righe di slot di una prenotazione coincidono con la sua fascia; una
+richiesta o una prenotazione annullata non ha righe di slot. Verificata da: `TestConcurrency_EquipmentSlots`,
+`TestMigrations_M10Constraints`, `TestAcceptance_M10_Lifting`, query Q31 di `store.CheckLiftingInvariants` (M10).
+Stato: implemented.
+
 ## Prezzi (spec 12)
 
 **INV-20 — Snapshot riproducibile.** Ricalcolare un `price_snapshot` con la stessa `engine_version` e gli stessi
@@ -192,6 +201,19 @@ torna quello di prima dello spostamento; un cambio di soggiorno riprezza da capo
 che porterebbe il totale sotto zero è rifiutato (`409 conflict`). Verificata da: `TestContract_TotalMatchesSnapshot`
 (property test su sequenze di spostamenti, riprezzamenti, annullamenti e cambi di soggiorno, tag `integration`),
 `TestContract_MoveReprice`. Stato: implemented.
+
+**INV-28 — Un preventivo di cantiere è riproducibile dal suo snapshot.** `yardquote/price.Recompute(snapshot)`
+restituisce esattamente le righe e i totali salvati di ogni preventivo di cantiere: le versioni dei gruppi di
+lavorazioni sono solo in inserimento (trigger su entrambi i dialetti) e lo snapshot congela variabili, tabelle,
+formule, prezzi unitari e IVA; modificare in seguito gruppi, variabili, tabelle o listini non cambia un preventivo
+esistente ("Ricalcola" è esplicito e solo sulle bozze). Verificata da: `TestRapid_QuoteRecompute`,
+`TestYardQuote_OldQuoteKeepsFormula`, `TestMigrations_M10Constraints` (M10). Stato: implemented.
+
+**INV-29 — Le formule sono deterministiche e non vanno in panico.** `internal/domain/formula` è puro (niente store,
+orologio, casualità né float): la stessa formula sullo stesso ambiente dà sempre lo stesso valore, qualsiasi input
+produce un risultato o un errore tipizzato, mai un panic, e un programma che supera il controllo dei tipi non dà mai
+`type_mismatch` in valutazione. Verificata da: `FuzzParse`, `FuzzEval`, `TestFormula_Purity`, regole `pure-engines`
+di `.golangci.yml` (M10). Stato: implemented.
 
 ## Contratti (spec 13)
 
@@ -401,7 +423,11 @@ dispositivo assente da risposte e log del proxy remoto) e `TestFiscalAgent_LostO
 fiscale con soli id e stato, senza token né riferimenti del dispositivo); da M9 i campioni di
 `TestEvents_DataHasNoPII` comprendono gli eventi di rimessaggio (ipotesi applicate, spostamenti), manutenzione
 (`maintenance.status_changed`, `maintenance.due`) e utenze (`meter.reading_recorded`): solo id, enum e conteggi, mai
-valori di lettura né note. Stato: partial.
+valori di lettura né note; da M10 i campioni comprendono gli eventi di cantiere (`yard_catalog.changed`,
+`yard_quote.changed`, `yard_quote.sent`, `yard_quote.accepted`, `yard_quote.expired`, `work_order.status_changed`,
+`work_order.changed`, `work_task.changed`, `timesheet.changed`, `work_order.billed`, `yard_plan.changed`) e
+`equipment.booking_changed`: solo id, enum, date e importi della commessa, mai nomi di dipendenti, clienti o
+fornitori. Stato: partial.
 
 **INV-71 — Offline senza effetti sulle risorse.** Nessuna operazione accodata offline crea o sposta allocazioni né
 emette documenti numerati. La coda accetta solo le operazioni con `x-porto-offline: true` e il server rifiuta con 422
@@ -410,8 +436,11 @@ emette documenti numerati. La coda accetta solo le operazioni con `x-porto-offli
 `TestPayment_OfflineReceiptModeRefused`, `allowlist.test.ts` (Vitest, allowlist della coda). Da M9 vale anche per
 le letture dei contatori, le segnalazioni e gli esiti delle manutenzioni (`utility.reading`, `maintenance.report`,
 `maintenance.outcome`): nessuna crea, sposta o rilascia allocazioni; completare un intervento non rilascia le notti
-di manutenzione (`TestMaintenance_ReportNeverOccupies`, `TestAcceptance_M9_Offline`, `queue.m9.test.ts`). Stato:
-implemented (M6b, M9).
+di manutenzione (`TestMaintenance_ReportNeverOccupies`, `TestAcceptance_M9_Offline`, `queue.m9.test.ts`). Da M10 vale
+per le ore e il completamento delle attività di cantiere (`yard.timesheet`: `startTimer`, `stopTimer`,
+`createTimeEntry`; `yard.activity_done`: `updateTaskProgress`, `uploadTaskPhoto`): nessuna crea, sposta o rilascia
+allocazioni o prenotazioni dei mezzi (`TestAcceptance_M10_Offline`; stato M10: lato server implemented,
+`TestWorkOrder_Timers`, `TestWorkOrder_TasksAndDependencies`). Stato: implemented (M6b, M9).
 
 **INV-72 — Audit log solo in inserimento.** Le righe di `audit_log` non si modificano né si cancellano, su SQLite e
 PostgreSQL (trigger del database). Un ripristino desktop registra `desktop.restore` anche nel database ripristinato,
@@ -429,7 +458,11 @@ le rotte M2 con `{revenueClassId}`, `{itemId}`, `{categoryId}` e `{priceListId}`
 da M4 `TestSignature_SignerUserScopedToMarina` (un firmatario utente deve avere un accesso al marina); da M6a
 `TestDeviceSession_NarrowedToDeviceMarina` e `TestDeviceSession_OtherMarinaIs404` (vedi INV-81); da M9
 `TestAcceptance_CrossMarinaResourceIdsM9` (le rotte con `{scenarioId}`, `{movementId}`, `{meterId}`, `{readingId}`,
-`{consumptionId}`, `{equipmentId}`, `{planId}` e `{taskId}` con id reali di un altro marina). Stato: partial.
+`{consumptionId}`, `{equipmentId}`, `{planId}` e `{taskId}` con id reali di un altro marina); da M10
+`TestAcceptance_CrossMarinaResourceIdsM10` (le rotte con `{workOrderId}`, `{taskId}`, `{timesheetId}`,
+`{externalCostId}` e `{fileId}` con id reali di commessa, attività, ora, costo esterno e foto di un altro marina) e
+`TestAcceptance_CrossOrgUserLinksM10` (responsabile della commessa e utente collegato al dipendente devono avere un
+accesso al marina: un utente di un'altra organizzazione risponde come un id sconosciuto). Stato: partial.
 
 **INV-74 — Documenti cifrati a riposo e serviti solo con link firmati.** I file dei documenti (e gli sfondi delle
 mappe) sono salvati cifrati con il KeyRing sotto `PORTO_DATA_DIR/files`, legati a marina e id; il download di un
@@ -499,7 +532,11 @@ uguale a quella corrente, per SHA-256, risponde con lo stesso file), `queue.test
 `TestConcurrency_OfflineReplay_Reading`, `TestConcurrency_OfflineReplay_MaintenanceReport`,
 `TestConcurrency_OfflineReplay_MaintenanceOutcome` (100 repliche in parallelo con lo stesso `client_ref`: una riga,
 la stessa risposta, un audit e un evento), `TestUtility_ReadingReplaySameKey`, `TestMaintenance_CompleteOfflineReplay`,
-`TestAcceptance_M9_Offline`. Stato: implemented (M6b, M9).
+`TestAcceptance_M9_Offline`; da M10 per `yard.timesheet` e `yard.activity_done` (unique parziali `(marina_id,
+client_ref)` di `timesheets`, `work_tasks`, `work_task_files` e `stop_client_ref`; una ripetizione dell'avanzamento
+non lo fa mai diminuire): `TestAcceptance_M10_Offline`, `TestAcceptance_M10_FinalAccount`, `TestWorkOrder_Timers`,
+`TestConcurrency_TimerStart` (stato M10: lato server implemented).
+Stato: implemented (M6b, M9).
 
 **INV-84 — I dati offline appartengono a un utente e a un marina.** Cache e coda offline sono legate all'utente e al
 marina correnti, non contengono segreti né link firmati, si cancellano all'uscita; le operazioni di un altro utente
@@ -579,3 +616,32 @@ e la pianificazione non scavalca mai una barca (409 `maintenance_conflicts`). Ve
 `TestAcceptance_M9_MaintenanceCycle`, query Q23 di `store.CheckUtilityInvariants` (M9). `occupancy.AllocateTx`
 accetta un'allocazione `maintenance` senza barca (nessun controllo di compatibilità): le notti restano protette dai
 vincoli unique delle tabelle di occupazione (ADR 0003). Stato: implemented.
+
+## Cantiere (spec 18)
+
+**INV-93 — Il consuntivo riconcilia ore, materiali e costi esterni.** Per ogni commessa il consuntivo soddisfa le
+equazioni di `docs/m10-plan.md` §9.3: ricavi, costi e margini delle righe sommano i totali per fonte (manodopera,
+materiali, servizi, costi esterni) e per tipo di lavorazione; le ore di manodopera sono la somma esatta delle ore
+approvate non annullate e il loro costo la somma dei costi congelati all'approvazione; la quantità di un materiale
+è prelevato meno reso; costi e ricavi esterni sono le somme delle righe; lo scostamento dal preventivo somma la
+differenza tra ricavo effettivo e imponibile del preventivo. Verificata da: `TestRapid_AccountReconciles`,
+`TestAccount_Worked`, query Q30 di `store.CheckYardInvariants`, `TestWorkOrder_FinalAccountWorked`,
+`TestAcceptance_M10_FinalAccount` (M10). Stato: implemented.
+
+**INV-94 — Gli addebiti di una commessa sommano il suo obiettivo.** Ogni fatturazione di commessa
+(`work_order_billings`) ha al più un addebito primario vivo (`charges_origin_primary_uidx` include `work_order`,
+`00021`); dopo l'addebito finale la somma lordo degli addebiti vivi di origine `work_order` della commessa
+(rettifiche comprese) è uguale al lordo dell'obiettivo, e lo stesso per imponibile e IVA per aliquota (come INV-57).
+Gli addebiti esportati non cambiano mai: le correzioni sono rettifiche collegate (INV-51). Verificata da:
+`TestRapid_BillingSequenceSums`, `TestConcurrency_FinalBillingOnce`, `TestMigrations_M10Constraints` (M10). Stato:
+implemented.
+
+**INV-95 — Un solo cronometro attivo per dipendente.** Al più una riga di `timesheets` per dipendente è `running`
+(unique parziale `timesheets_running_uidx`); un secondo avvio risponde `409 timer_already_running`. Verificata da:
+`TestConcurrency_TimerStart`, `TestMigrations_M10Constraints` (M10). Stato: implemented.
+
+**INV-96 — Un preventivo accettato crea una sola commessa.** Un preventivo di cantiere `job` crea al più una
+commessa (`work_orders.quote_id` unico) e una variante al più una variazione (`work_order_variations.quote_id`
+unico), nella stessa transazione dell'accettazione; due accettazioni concorrenti danno un 200 e un `409
+invalid_transition`. Verificata da: `TestConcurrency_YardQuoteAccept`, `TestMigrations_M10Constraints` (M10). Stato:
+implemented.

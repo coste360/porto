@@ -1,0 +1,14 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+ti inviamo il preventivo dei lavori di cantiere. Trovi il documento in allegato.
+{{with v . "quote_code"}}Preventivo: {{.}}
+{{end}}{{with v . "vessel_name"}}Unità: {{.}}
+{{end}}{{with v . "amount"}}Totale: {{.}}
+{{end}}{{with v . "valid_until"}}Valido fino al: {{.}}
+{{end}}
+{{with v . "link"}}Vedi e accetta il preventivo:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

@@ -178,6 +178,39 @@ func BackupTables() []string {
 		"meter_readings",
 		"utility_billings",
 		"utility_consumptions",
+		// M10 yard (00020_yard_catalog_quotes, 00021_work_orders, 00022_equipment_slots). yard_quotes.work_order_id
+		// (variation) is a plain column validated in Go; work_order_billings.charge_id points to an older charge;
+		// timesheets.voids_id points to an older entry (UUIDv7 order). work_package_versions are insert-only (the
+		// restore only inserts).
+		"yard_settings",
+		"work_types",
+		"yard_qualifications",
+		"yard_item_settings",
+		"formula_variables",
+		"formula_tables",
+		"work_packages",
+		"work_package_versions",
+		"yard_quotes",
+		"yard_quote_lines",
+		"work_orders",
+		"work_order_variations",
+		"work_order_lines",
+		"work_tasks",
+		"work_task_deps",
+		"work_task_files",
+		"employees",
+		"employee_qualifications",
+		"employee_calendars",
+		"employee_absences",
+		"task_assignments",
+		"timesheets",
+		"stock_movements",
+		"work_order_external_costs",
+		"work_order_billings",
+		"equipment_operators",
+		"equipment_bookings",
+		"equipment_slots",
+		"operator_slots",
 	}
 }
 

@@ -9,7 +9,7 @@ import {
 
 import type { Tile } from '@porto/shared/api';
 import { useT } from '@porto/shared/i18n';
-import { formatBp, formatReportValue } from '@porto/shared/lib/format';
+import { formatBp, formatQtyMilli, formatReportValue } from '@porto/shared/lib/format';
 import { reportLink, type ReportPeriodSearch } from '@porto/shared/lib/reportLinks';
 import { Badge } from '@porto/shared/ui/badge';
 import { Button } from '@porto/shared/ui/button';
@@ -53,7 +53,11 @@ function signed(text: string, value: number): string {
 export function TileCard({ tile, marinaId, period, compact = false }: TileCardProps) {
   const { t, i18n } = useT();
   const title = t(`dashboard:tiles.${tile.key}`);
-  const fmt = (v: number | null | undefined) => formatReportValue(v, tile.unit, i18n.language);
+  // yard_hours counts thousandths of an hour (M10): shown as hours.
+  const fmt = (v: number | null | undefined) =>
+    tile.key === 'yard_hours' && v !== null && v !== undefined
+      ? t('dashboard:hoursValue', { value: formatQtyMilli(v, i18n.language) })
+      : formatReportValue(v, tile.unit, i18n.language);
 
   if (!tile.available) {
     return (
