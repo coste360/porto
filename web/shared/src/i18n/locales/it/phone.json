@@ -1,0 +1,163 @@
+{
+  "fullVersion": "Versione completa",
+  "dock": {
+    "title": "Banchina",
+    "tabs": {
+      "today": "Oggi",
+      "map": "Mappa",
+      "scan": "Scansiona",
+      "cash": "Cassa",
+      "more": "Altro"
+    },
+    "arrived": "Arrivato",
+    "departed": "Partito",
+    "collect": "Incassa",
+    "photo": "Foto",
+    "note": "Nota",
+    "unexpected": "Arrivo non previsto",
+    "measure": "Misura barca",
+    "releases": "Rilasci",
+    "blocks": "Blocchi",
+    "deviceInfo": "Dispositivo",
+    "logout": "Esci",
+    "sections": {
+      "arrivals_expected": "Arrivi previsti",
+      "departures_expected": "Partenze previste",
+      "in_port": "In porto",
+      "vessels_out": "Fuori",
+      "arrived_without_booking": "Arrivate senza prenotazione"
+    },
+    "none": "Nessuna barca",
+    "queued": "In coda",
+    "nextDeparture": "poi Partito",
+    "presenceSheet": {
+      "arrivedTitle": "Arrivo di {{name}}",
+      "departedTitle": "Partenza di {{name}}",
+      "notesHint": "Facoltativa, al massimo 1000 caratteri.",
+      "photoHint": "JPEG, PNG o WebP, al massimo 8 MB. La foto viene ridotta prima dell'invio.",
+      "submitArrived": "Registra l'arrivo",
+      "submitDeparted": "Registra la partenza",
+      "queuedToast": "Operazione in coda: verrà inviata appena possibile",
+      "noAllocation": "Senza prenotazione: registra l'arrivo da Altro, Arrivo non previsto."
+    },
+    "paymentWarning": "Saldo da verificare",
+    "map": {
+      "context": "Contesto",
+      "contexts": {
+        "presence": "Presenze",
+        "movements": "Arrivi e partenze",
+        "payments": "Pagamenti",
+        "contractType": "Tipo di contratto"
+      },
+      "legend": "Legenda",
+      "noMaps": "Nessuna mappa configurata.",
+      "elementTitle": "Posto {{code}}",
+      "free": "Libero",
+      "contract": "Contratto",
+      "customer": "Cliente",
+      "presence": "Presenza",
+      "payment": "Pagamento",
+      "arrivalToday": "Arrivo oggi",
+      "departureToday": "Partenza oggi",
+      "canvas": "Mappa del giorno",
+      "fit": "Adatta",
+      "zoomIn": "Ingrandisci",
+      "zoomOut": "Riduci"
+    },
+    "scanCard": {
+      "title": "Transito {{code}}",
+      "berth": "Posto",
+      "nights": "Notti",
+      "nightsValue": "{{first}} – {{last}} ({{count}})",
+      "payment": "Pagamento",
+      "status": "Stato",
+      "close": "Chiudi",
+      "searching": "Ricerca del transito…",
+      "notTransit": "Il QR non corrisponde a un transito di questo porto.",
+      "manualSearch": "Cerca"
+    },
+    "cash": {
+      "session": "Sessione di cassa",
+      "sessionOpen": "Cassa aperta dal {{date}}",
+      "sessionNone": "Nessuna cassa aperta: aprila dall'ufficio per incassare.",
+      "collectibles": "Da incassare oggi",
+      "none": "Niente da incassare oggi.",
+      "residual": "Residuo",
+      "due": "Scadenza {{date}}",
+      "amount": "Importo incassato in contanti",
+      "amountHint": "Al massimo il residuo.",
+      "submit": "Registra l'incasso",
+      "receiptMode": "Con scontrino: richiede la connessione (emette un documento).",
+      "receiptLink": "Ricevuta",
+      "notAllowed": "Il tuo ruolo non può incassare.",
+      "unavailable": "Elenco da incassare non disponibile.",
+      "queuedToast": "Incasso in coda: verrà inviato appena possibile",
+      "sheetTitle": "Incasso {{number}}"
+    },
+    "more": {
+      "title": "Altro",
+      "direction": "Schermata direzione",
+      "dock": "Schermata banchina",
+      "queue": "Operazioni in coda",
+      "device": "Dispositivo",
+      "user": "Utente",
+      "marina": "Porto",
+      "measureTitle": "Misura barca",
+      "measureVessel": "Barca",
+      "measureVesselHint": "Scegli la barca dalla lista di oggi.",
+      "measureSaved": "Misure registrate",
+      "releasesTitle": "Rilasci e blocchi",
+      "unexpectedTitle": "Arrivo non previsto",
+      "back": "Indietro",
+      "deviceSession": "Telefono collegato con QR",
+      "browserSession": "Sessione del browser"
+    }
+  },
+  "direction": {
+    "title": "Direzione",
+    "tabs": {
+      "dashboard": "Cruscotto",
+      "map": "Mappa",
+      "deadlines": "Scadenze"
+    },
+    "dashboardPlaceholder": "Cruscotto completo con M7",
+    "arrivals": "Arrivi",
+    "departures": "Partenze",
+    "inPort": "In porto",
+    "today": "Oggi",
+    "openFull": "Apri la pagina completa",
+    "deadlinesNone": "Nessuna scadenza nei prossimi 30 giorni.",
+    "week": "Settimana dal {{date}}",
+    "notAllowed": "Il tuo ruolo non vede le scadenze."
+  },
+  "scan": {
+    "start": "Inquadra il QR del transito",
+    "chooseImage": "Scegli una foto del QR",
+    "torch": "Torcia",
+    "notFoundOffline": "Non trovato nei dati del giorno",
+    "invalid": "QR non riconosciuto",
+    "manual": "Inserisci il codice del transito",
+    "cameraDenied": "Accesso alla fotocamera negato",
+    "cameraUnavailable": "Fotocamera non disponibile su questo dispositivo",
+    "noQrInImage": "Nessun QR trovato nella foto",
+    "notFound": "Transito non trovato",
+    "manualLabel": "Codice del transito",
+    "manualPlaceholder": "TRN-2026-0001"
+  },
+  "landingSeam": "Le funzioni da telefono per il tuo ruolo arriveranno con le prossime versioni.",
+  "shellLabel": "Pannello da telefono",
+  "tabsLabel": "Sezioni",
+  "status": {
+    "online": "Online",
+    "offline": "Offline",
+    "queue": "Coda"
+  },
+  "enqueueFailed": "Operazione non accodata: riprova.",
+  "yes": "Sì",
+  "transitQr": {
+    "button": "QR per l'ormeggiatore",
+    "title": "QR del transito {{code}}",
+    "description": "Stampalo o mostralo: l'ormeggiatore lo inquadra con il telefono. Non contiene dati personali.",
+    "alt": "QR del transito {{code}}"
+  }
+}

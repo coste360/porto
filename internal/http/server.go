@@ -17,6 +17,7 @@ import (
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/http/admin"
 	"github.com/coste360/porto/internal/http/api"
+	"github.com/coste360/porto/internal/http/bridge"
 	"github.com/coste360/porto/internal/http/desktop"
 	"github.com/coste360/porto/internal/http/device"
 	"github.com/coste360/porto/internal/http/middleware"
@@ -69,6 +70,8 @@ type Deps struct {
 	Webhooks *webhooks.Handler
 	// Desktop serves /api/desktop/v1 (M6a); nil or a nil Runtime (server edition) answers 404 everywhere.
 	Desktop *desktop.Handler
+	// Bridge serves /api/bridge/v1 (M6b, local peripherals); nil or a nil Runtime answers 404 everywhere.
+	Bridge *bridge.Handler
 
 	Authenticator middleware.Authenticator
 	Idempotency   middleware.IdempotencyStore
@@ -92,6 +95,7 @@ type server struct {
 	publicAPI
 	webhooksAPI
 	desktopAPI
+	bridgeAPI
 	ready func(ctx context.Context) (int64, error)
 }
 
@@ -101,10 +105,14 @@ type (
 	publicAPI   struct{ *public.Handler }
 	webhooksAPI struct{ *webhooks.Handler }
 	desktopAPI  struct{ *desktop.Handler }
+	bridgeAPI   struct{ *bridge.Handler }
 )
 
 // DesktopPrefix is the path prefix of the desktop API, served only on the desktop loopback listener (INV-80).
 const DesktopPrefix = "/api/desktop/v1/"
+
+// BridgePrefix is the path prefix of the bridge API (M6b), loopback only like the desktop API (INV-85).
+const BridgePrefix = bridge.Prefix
 
 var _ api.ServerInterface = (*server)(nil)
 
@@ -155,6 +163,8 @@ func NewRouter(d Deps) (http.Handler, error) {
 		middleware.BodyLimitExcept(MaxBodyBytes, policies.StreamedPaths()),
 		// M6a: the desktop API exists only on the loopback listener from a loopback peer (404 elsewhere).
 		middleware.LoopbackOnly(DesktopPrefix),
+		// M6b: the bridge to local peripherals, same rule (INV-85).
+		middleware.LoopbackOnly(BridgePrefix),
 	)
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, "/api/") {
@@ -201,6 +211,8 @@ func NewRouter(d Deps) (http.Handler, error) {
 			APIKey: middleware.NewLimiter(d.Clock, apiKeyPerMinute, time.Minute),
 		}),
 		middleware.RequireJSON(policies),
+		// M6b: replays of the offline queue only on x-porto-offline operations (INV-71).
+		middleware.OfflineGuard(policies, d.Clock),
 		middleware.Idempotency(middleware.IdempotencyOptions{Store: d.Idempotency, Clock: d.Clock}),
 	}
 	slices.Reverse(perOp)
@@ -211,7 +223,18 @@ func NewRouter(d Deps) (http.Handler, error) {
 	if d.Desktop == nil {
 		d.Desktop = &desktop.Handler{}
 	}
-	srv := &server{adminAPI{d.Admin}, deviceAPI{d.Device}, publicAPI{d.Public}, webhooksAPI{d.Webhooks}, desktopAPI{d.Desktop}, d.Ready}
+	if d.Bridge == nil {
+		d.Bridge = &bridge.Handler{}
+	}
+	srv := &server{
+		adminAPI{d.Admin},
+		deviceAPI{d.Device},
+		publicAPI{d.Public},
+		webhooksAPI{d.Webhooks},
+		desktopAPI{d.Desktop},
+		bridgeAPI{d.Bridge},
+		d.Ready,
+	}
 	api.HandlerWithOptions(srv, api.ChiServerOptions{
 		BaseRouter:  r,
 		Middlewares: toMiddlewares(perOp),

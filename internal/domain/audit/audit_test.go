@@ -3,6 +3,7 @@ package audit
 import (
 	"encoding/json"
 	"testing"
+	"time"
 )
 
 func TestRedact_DropsSensitiveKeys(t *testing.T) {
@@ -40,5 +41,25 @@ func TestRedact_Structs(t *testing.T) {
 	}
 	if Redact(func() {}) != nil {
 		t.Fatal("unmarshalable value must redact to nil")
+	}
+}
+
+func TestWithOfflineQueuedAt_StampsEveryReplayRow(t *testing.T) {
+	at := time.Date(2027, 6, 5, 9, 41, 0, 0, time.FixedZone("CEST", 2*3600))
+	const want = "2027-06-05T07:41:00Z"
+	if got := withOfflineQueuedAt(nil, at).(map[string]any)["offline_queued_at"]; got != want {
+		t.Fatalf("nil diff: got %v", got)
+	}
+	m := withOfflineQueuedAt(map[string]any{"state": "active"}, at).(map[string]any)
+	if m["offline_queued_at"] != want || m["state"] != "active" {
+		t.Fatalf("map diff: got %v", m)
+	}
+	kept := withOfflineQueuedAt(map[string]any{"offline_queued_at": "domain"}, at).(map[string]any)
+	if kept["offline_queued_at"] != "domain" {
+		t.Fatalf("domain value overwritten: %v", kept)
+	}
+	w := withOfflineQueuedAt([]any{"x"}, at).(map[string]any)
+	if w["offline_queued_at"] != want || w["diff"] == nil {
+		t.Fatalf("wrapped diff: %v", w)
 	}
 }

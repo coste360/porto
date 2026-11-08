@@ -65,6 +65,7 @@ import { Switch } from '@porto/shared/ui/switch';
 import { ForbiddenState, LoadingState, QueryErrorState } from '../../components/PageStates';
 import { toastProblem } from '../../lib/toast';
 import { formatBytes, useDesktopAccess } from './lib';
+import { KioskCard, LanCaDownload, PeripheralsCard, RemoteCard } from './M6bCards';
 import { RestartingNotice } from './RestartingNotice';
 
 const AUTO = 'auto';
@@ -86,6 +87,20 @@ export function DesktopSettingsPage() {
         <Alert>
           <AlertDescription>{t('desktop:settings.onlyInApp')}</AlertDescription>
         </Alert>
+      </div>
+    );
+  }
+  if (access.remote && access.status) {
+    // M6b remote mode: no local users, no database: the online instance, peripherals and kiosk (app PIN).
+    return (
+      <div data-testid="desktop-settings-page" className="flex flex-col gap-6">
+        <PageHeader
+          title={t('desktop:settings.title')}
+          description={t('desktop:peripherals.description')}
+        />
+        <RemoteCard status={access.status} />
+        <PeripheralsCard />
+        <KioskCard status={access.status} />
       </div>
     );
   }
@@ -116,6 +131,8 @@ function SettingsCards({
   return (
     <>
       <LanCard />
+      <PeripheralsCard />
+      <KioskCard status={status} />
       <BackupCard settings={settings.data} onRestart={onRestart} />
       <UpdatesCard settings={settings.data} status={status} />
       <SecretKeyCard status={status} />
@@ -215,6 +232,7 @@ function LanForm({ status }: { status: LanStatus }) {
           <TriangleAlertIcon />
           <AlertDescription>{t('desktop:settings.openWarning')}</AlertDescription>
         </Alert>
+        <LanCaDownload status={status} />
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2">
         {status.enabled ? (

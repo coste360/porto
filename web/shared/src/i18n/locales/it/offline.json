@@ -1,0 +1,65 @@
+{
+  "status": {
+    "online": "Online",
+    "offline": "Offline",
+    "pending_one": "{{count}} operazione in coda",
+    "pending_other": "{{count}} operazioni in coda",
+    "conflicts_one": "{{count}} conflitto",
+    "conflicts_other": "{{count}} conflitti",
+    "noOfflineStart": "Avvio offline non disponibile: installa il certificato del porto",
+    "swFailed": "Avvio offline non disponibile su questo dispositivo"
+  },
+  "staleSince": "Dati aggiornati alle {{time}}",
+  "queuedBadge": "In coda",
+  "forbidden": {
+    "allocation": "Non disponibile offline: richiede la garanzia di disponibilità del server.",
+    "document": "Non disponibile offline: emette un documento.",
+    "online_only": "Disponibile solo online."
+  },
+  "queue": {
+    "title": "Operazioni in coda",
+    "empty": "Nessuna operazione in coda.",
+    "sendNow": "Invia ora",
+    "discard": "Scarta",
+    "retryAsNew": "Riprova come nuova operazione",
+    "state": {
+      "pending": "In attesa",
+      "sending": "Invio in corso",
+      "retrying": "Nuovo tentativo",
+      "conflict": "Conflitto",
+      "blocked": "Bloccata",
+      "expired": "Scaduta",
+      "done": "Inviata"
+    },
+    "label": {
+      "arrived": "Arrivo di {{vessel}}",
+      "departed": "Partenza di {{vessel}}",
+      "photo": "Foto di {{vessel}}",
+      "cash": "Incasso di {{amount}}"
+    }
+  },
+  "logoutConfirm": {
+    "title": "Operazioni non inviate",
+    "description_one": "{{count}} operazione non inviata andrà persa.",
+    "description_other": "{{count}} operazioni non inviate andranno perse.",
+    "confirm": "Esci comunque"
+  },
+  "marinaSwitchBlocked": "Invia o scarta le operazioni in coda prima di cambiare porto.",
+  "signInAgain": "Accedi di nuovo per inviare le operazioni in coda.",
+  "otherUserOps": "Ci sono operazioni in coda di un altro utente: possono solo essere scartate.",
+  "quotaFull": "Spazio di archiviazione esaurito sul dispositivo: invia le operazioni in coda prima di aggiungerne altre.",
+  "schemaNewer": "I dati offline sono stati salvati da una versione più recente: aggiorna la pagina.",
+  "update": {
+    "available": "Nuova versione disponibile",
+    "action": "Aggiorna"
+  },
+  "certificate": {
+    "title": "Certificato del porto",
+    "intro": "Per usare Porto offline su questo telefono installa il certificato del porto.",
+    "android": "Android: Impostazioni, Sicurezza, Installa certificato CA.",
+    "ios": "iPhone: scarica il profilo, installalo, poi abilitalo in Impostazioni, Generali, Info, Impostazioni certificati.",
+    "fingerprint": "Impronta da confrontare",
+    "download": "Scarica il certificato",
+    "downloadProfile": "Scarica il profilo iOS"
+  }
+}

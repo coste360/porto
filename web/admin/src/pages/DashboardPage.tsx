@@ -10,15 +10,27 @@ import { EmptyState, PageHeader } from '@porto/shared/ui/patterns';
 import { useCurrentMarina } from '../auth/hooks';
 import { LocalModeCard } from '../features/desktop/LocalModeCard';
 import { DeadlinesCard } from '../features/registry/deadlines/DeadlinesCard';
+import { preferFullVersion } from '../features/phone/lib/fullVersion';
+import { landingFor } from '../lib/landing';
 
 export function DashboardPage() {
   const { t } = useT();
   const { marina, marinaId, can } = useCurrentMarina();
   const isMobile = useIsMobile();
-  // The dock staff land on the phone panel on small screens (m3-plan §8.1); other roles keep the overview.
-  const dockOnly = marina?.roles.length === 1 && marina.roles[0] === 'dock';
-  if (dockOnly && isMobile)
-    return <Navigate to="/m/$marinaId/dock" params={{ marinaId }} replace />;
+  // On a phone (< 768 px) each role lands on its phone screen (m6b-plan §6.1, landingFor), unless the user chose
+  // "Versione completa" in this browser session.
+  const landing = landingFor(marina?.permissions ?? [], 'mobile', marinaId);
+  const phoneTarget = landing.endsWith('/dock')
+    ? 'dock'
+    : landing.endsWith('/direction')
+      ? 'direction'
+      : null;
+  if (isMobile && marina && phoneTarget && !preferFullVersion())
+    return phoneTarget === 'dock' ? (
+      <Navigate to="/m/$marinaId/dock" params={{ marinaId }} replace />
+    ) : (
+      <Navigate to="/m/$marinaId/direction" params={{ marinaId }} replace />
+    );
   return (
     <>
       <PageHeader

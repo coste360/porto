@@ -38,6 +38,7 @@ import {
 } from '@porto/shared/ui/select';
 
 import { useCurrentMarina } from '../auth/hooks';
+import { CopyPairLinkButton } from '../features/desktop/CopyPairLinkButton';
 import { ownedOrganizations } from '../auth/me';
 import { LoadingState, QueryErrorState, RequirePermission } from '../components/PageStates';
 import { svgDataUrl } from '../lib/svg';
@@ -268,6 +269,7 @@ function PairDeviceForm() {
       {code ? (
         secondsLeft > 0 ? (
           <PairingCodePanel
+            kind={kind}
             code={code}
             secondsLeft={secondsLeft}
             onRenew={() => create.mutate()}
@@ -300,11 +302,13 @@ function PairDeviceForm() {
  * `data-pair-url` is for the end-to-end tests; the URL is never logged.
  */
 function PairingCodePanel({
+  kind,
   code,
   secondsLeft,
   onRenew,
   renewing,
 }: {
+  kind: (typeof DEVICE_KINDS)[number];
   code: PairingCode;
   secondsLeft: number;
   onRenew: () => void;
@@ -363,6 +367,7 @@ function PairingCodePanel({
           </code>
         </div>
       ) : null}
+      {kind === 'desktop' ? <CopyPairLinkButton payload={code.qr_payload} /> : null}
       <span className="text-muted-foreground text-sm" aria-live="polite">
         {t('devices:expiresIn', { seconds: secondsLeft })}
       </span>

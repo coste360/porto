@@ -8,6 +8,55 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M6b "Offline, telefono e desktop remoto" (spec 29.2, 31.2, 31.3, m6b-plan, ADR 0011):
+
+- PWA: installable admin panel with a hand-written service worker (`web/admin/src/sw/sw.ts`, precache list written
+  after the build by `scripts/sw-precache.mjs`) that caches only the shell and never intercepts `/api/*`; update
+  toast; `sw.js` served with `no-cache` and `Service-Worker-Allowed: /admin/`. Registration is skipped inside the
+  desktop window and in development.
+- Offline module `web/shared/src/offline`: IndexedDB cache of an allowlist of current-marina queries (maps, day view,
+  arrivals and departures, collectibles, cash session) for 48 hours, tagged with user and marina, without secrets or
+  signed links, deleted on logout (INV-84); operation queue with an `Idempotency-Key` generated at enqueue time,
+  a single runner per origin (Web Locks), ordering per vessel lane and dependencies (photo after its presence),
+  replay on reconnection (online event, page visible, SSE reconnect). Queue first (D2): arrivals and departures on
+  an existing allocation (with a note), presence photos and cash collection on invoice-mode charges always go through
+  the queue. Every other operation is refused offline with the reason shown inline (`OfflineReason`); online-only
+  hooks call `assertOnline`. `OfflineIndicator` and `QueueSheet` show the queue, conflicts and the explicit
+  "Scarta" / "Riprova come nuova operazione" actions; logout with unsent operations asks first and a marina switch
+  is refused. Yard, maintenance and rental operations wait for their domains (M9-M11).
+- Server: `OfflineGuard` (header `Porto-Offline-Queued-At`, operations flagged `x-porto-offline` only, 422
+  `offline_not_allowed` elsewhere, INV-71); offline idempotency keys kept 7 days, stale-claim takeover after 2 minutes,
+  `Retry-After` answers never stored; a domain unique key per presence (migration `00014_offline_bridge`, SQLite and
+  PostgreSQL) so a replay has one effect and the same answer (INV-83); 409 `allocation_changed` when the berth seen
+  by the worker changed, 409 `cash_session_required` when the cash session closed meanwhile; `offline_queued_at` in
+  every audit row of a replay; new `listCollectibles` read for the dock.
+- Phone screens (`web/admin/src/features/phone`, PhoneShell): `landingFor()` sends dock workers to the dock and
+  directors to direction on a phone. Dock: today (arrivals, departures, vessels out, one-tap Arrivato / Partito with
+  note and photo, "In coda" overlay), map of the day with four contexts, transit QR scan with the camera
+  (BarcodeDetector or jsQR, photo fallback, USB keyboard-wedge readers), cash collection, and online-only
+  unexpected arrival, vessel measure, releases and blocks. Direction: dashboard placeholder with today's counts,
+  read-only map, deadlines of the next 30 days. Transit QR `PT1:<id>` (`getTransitQr`, SVG) with the
+  "QR per l'ormeggiatore" button on the desk transit page.
+- Remote desktop mode (`internal/desktop/remote`): the desktop app paired with an online Porto runs a loopback proxy
+  that holds the device token (OS keychain) and never hands it to the page (INV-85), pins the server certificate
+  (leaf fingerprint from the pairing payload, then its CA), caches the panel shell for an offline start and answers
+  503 `remote_unreachable` while the server is down; app PIN for local administration; revocation brings the app back
+  to the first run. `getMe` accepts the device token. Kiosk mode for the front desk (macOS, Windows, Linux), exit
+  with Cmd/Ctrl+Shift+K and the PIN.
+- Peripheral bridge (`/api/bridge/v1`, loopback only): interfaces in `internal/desktopport` with fake drivers for
+  receipt printer, fiscal device, QR reader and label printer, a generic ESC/POS receipt printer (CP858, 80/58 mm)
+  and a generic ZPL label printer over TCP 9100, CUPS raw or file; "Stampa scontrino" on the payment page and the
+  dock cash tab. Fiscal driver `bridge` on the server: the desktop chosen in the billing settings claims documents
+  with 60-second leases, at most one claim per document (INV-86), idempotent outcomes. Real fiscal device models are
+  out of scope (listed in `docs/desktop-build.md`).
+- Local CA of new installations name-constrained to private addresses and `.local`; certificate and iOS profile
+  downloadable on the LAN, with a help page (`/admin/help/certificate`).
+- Tests: `TestOfflineGuard_RefusesNonOfflineOps`, `TestConcurrency_OfflineReplay_{Presence,CashPayment,Photo}`,
+  `TestConcurrency_IdempotencyTakeOver`, `TestConcurrency_FiscalBridgeClaim`, `TestAcceptance_M6bRemote`, remote
+  proxy, pinning, kiosk and peripheral unit tests, Vitest for the offline module, scanner and phone screens,
+  Playwright `offline-queue` (no duplicates on reconnection), `pwa`, `phone-dock`, `phone-scan`, `phone-direction`
+  (Pixel 7) and desktop `remote`, `kiosk`, `lan-ca`. The M3 `dock.spec.ts` is replaced by `phone-dock.spec.ts`.
+
 M6a "Edizione desktop locale e rete locale" (spec 31, m6a-plan):
 
 - Desktop launcher `cmd/porto-desktop` (ADR 0010): the server runs in-process on 127.0.0.1 and the panel opens in

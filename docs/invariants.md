@@ -302,10 +302,16 @@ date, importi e conteggi), `TestSSE_PayloadHasNoPII` (con `map_id`, `resource_id
 `TestSSE_M4Topics`, `TestSSE_M5Topics`, `TestLogs_NoPII` (anche webhook di pagamento ed esportazioni, M5);
 da M6a `TestAcceptance_M6aLanPairing` e `TestAcceptance_M6aPairTOTPRotatesSession` (codice di abbinamento, token
 della sessione del dispositivo e token di primo avvio assenti dai log) e `TestLauncher_StartStop` (log del
-launcher senza token, email o password). Stato: partial.
+launcher senza token, email o password); da M6b `TestConcurrency_OfflineReplay_Presence` (`assertNoPII` sui log e
+payload degli eventi `presence.arrived` senza note né nomi), `TestRemoteProxy_TokenNeverReachesPage` (token di
+dispositivo assente da risposte e log del proxy remoto) e `TestFiscalAgent_LostOutcomeNoReissue` (log dell'agente
+fiscale con soli id e stato, senza token né riferimenti del dispositivo). Stato: partial.
 
 **INV-71 — Offline senza effetti sulle risorse.** Nessuna operazione accodata offline crea o sposta allocazioni né
-emette documenti numerati. Verificata da: test Vitest della allowlist della coda. Stato: planned.
+emette documenti numerati. La coda accetta solo le operazioni con `x-porto-offline: true` e il server rifiuta con 422
+`offline_not_allowed` ogni richiesta marcata `Porto-Offline-Queued-At` su un'altra operazione (M6b). Verificata da:
+`TestOfflineGuard_RefusesNonOfflineOps`, `TestPolicies_OfflineSet`, `TestPresence_OfflineRequiresAllocation`,
+`TestPayment_OfflineReceiptModeRefused`, `allowlist.test.ts` (Vitest, allowlist della coda). Stato: implemented (M6b).
 
 **INV-72 — Audit log solo in inserimento.** Le righe di `audit_log` non si modificano né si cancellano, su SQLite e
 PostgreSQL (trigger del database). Un ripristino desktop registra `desktop.restore` anche nel database ripristinato,
@@ -379,3 +385,41 @@ creato da CLI o bootstrap) sia il primo avvio sia il ripristino dal primo avvio 
 un ripristino fallito non consuma il token. Verificata da: `TestFirstRunToken_SingleUse` (`internal/desktop`),
 `TestConcurrency_FirstRunSingleOwner`, `TestDesktopFirstRunRestore_TokenAndOwner`,
 `TestDesktopFirstRunRestore_SingleUse` (`internal/http/desktop`). Stato: implemented.
+
+**INV-83 — Un'operazione offline ripetuta ha un solo effetto.** Un'operazione della coda offline ripetuta un numero
+qualsiasi di volte, anche in parallelo o dopo una risposta persa, produce un solo effetto e la stessa risposta: chiave
+di idempotenza tenuta 7 giorni e chiave unica di dominio per effetto. Verificata da:
+`TestConcurrency_OfflineReplay_Presence`, `TestConcurrency_OfflineReplay_CashPayment`,
+`TestConcurrency_OfflineReplay_Photo`, `TestConcurrency_IdempotencyTakeOver`,
+`TestPresence_DomainKeyAfterLostMiddlewareRow`, `TestPresence_PhotoDomainKeyAfterLostMiddlewareRow` (la foto
+uguale a quella corrente, per SHA-256, risponde con lo stesso file), `queue.test.ts` e `runner.test.ts` (Vitest),
+`offline-queue.spec.ts`. Stato: implemented (M6b).
+
+**INV-84 — I dati offline appartengono a un utente e a un marina.** Cache e coda offline sono legate all'utente e al
+marina correnti, non contengono segreti né link firmati, si cancellano all'uscita; le operazioni di un altro utente
+non si inviano mai con la sessione corrente. Verificata da: `persist.test.ts`, `queue.test.ts`, `runner.test.ts`
+(Vitest), `hooks.test.tsx` (sessione scaduta o dispositivo revocato: `me` nullo cancella la cache anche a coda vuota,
+le operazioni restano ferme), `queue.test.ts` e `MarinaLayout.test.tsx` (ingresso in un altro marina rifiutato a
+livello di route con operazioni non inviate), `offline-queue.spec.ts` (cancellazione all'uscita). Stato: implemented
+(M6b).
+
+**INV-85 — Il bridge risponde solo su loopback e il token remoto non raggiunge la pagina.** `/api/bridge/v1` e
+`/api/desktop/v1` rispondono solo sul listener loopback dell'app (404 altrove e nell'edizione server); in modalità
+remota il token di dispositivo resta nel proxy e non compare in risposte, redirect, pagine di errore o log.
+Verificata da: `TestBridgeAPI_LoopbackOnly`, `TestRemoteProxy_TokenNeverReachesPage`. Stato: implemented (M6b).
+
+**INV-86 — Un documento fiscale è emesso da al massimo una presa in carico.** I documenti del driver `bridge` sono
+presi in carico con un lease condizionale: un documento ha al massimo una presa in carico valida alla volta ed è
+emesso una sola volta. Sul desktop l'agente prende in carico un documento alla volta, registra l'esito `issued` in un
+giornale locale prima di inviarlo e non chiama più il dispositivo per un documento registrato (esito perso, lease
+scaduto, riavvio): lo reinvia, anche con la nuova presa in carico. Resta solo la finestra di un arresto tra la stampa
+e la scrittura del giornale (il contratto `ext.FiscalDriver` chiede l'idempotenza su `DocumentID` dove il dispositivo
+la consente). Verificata da: `TestConcurrency_FiscalBridgeClaim`, `TestFiscalBridge_OutcomeIdempotent`,
+`TestFiscalAgent_LostOutcomeNoReissue`. Stato: implemented (M6b).
+
+**INV-87 — L'incasso offline è solo su documenti esistenti.** Un pagamento in contanti rigiocato dalla coda offline è
+abbinato per intero ad addebiti esistenti: somma degli abbinamenti uguale all'importo (nessun credito non abbinato),
+ogni abbinamento positivo e non oltre il residuo dell'addebito (INV-52), nessun addebito in modalità scontrino
+(422 `offline_not_allowed` altrimenti); il client lo rifiuta già all'accodamento. Verificata da:
+`TestPayment_OfflineAmountEqualsMatches`, `TestPayment_OfflineReceiptModeRefused`, `queue.test.ts` e
+`hooks.test.tsx` (Vitest). Stato: implemented (M6b).

@@ -29,6 +29,14 @@ type Policy struct {
 	// InstanceToken is true when the operation is authenticated by the Porto-Instance-Token header (desktop
 	// activation): the middleware treats it as public and the handler checks the token.
 	InstanceToken bool
+	// Offline is true when the operation may be replayed from the offline queue (x-porto-offline: true, M6b,
+	// m6b-plan §4.4): OfflineGuard refuses the Porto-Offline-Queued-At header on every other operation and the
+	// idempotency middleware keeps its keys 7 days.
+	Offline bool
+	// ProxyOnly is true when every security alternative of the operation is one answered by the desktop remote
+	// proxy (appPin, remoteCookie, M6b): this router treats it as public and its handler answers 404, because the
+	// operation exists only in remote mode where no Porto server runs in the app.
+	ProxyOnly bool
 }
 
 // BinaryBody reports whether the operation takes a raw (non-JSON) body: it declares request content types and
@@ -74,6 +82,7 @@ type specOperation struct {
 	Security       *[]map[string][]string `yaml:"security"`
 	MaxBodyBytes   int64                  `yaml:"x-porto-max-body-bytes"`
 	MaxStreamBytes int64                  `yaml:"x-porto-max-stream-bytes"`
+	Offline        bool                   `yaml:"x-porto-offline"`
 	RequestBody    *struct {
 		Content map[string]yaml.Node `yaml:"content"`
 	} `yaml:"requestBody"`
@@ -110,7 +119,10 @@ func ParsePolicies(spec []byte) (Policies, error) {
 			if op.MaxBodyBytes < 0 || op.MaxBodyBytes > MaxBodyCap {
 				return nil, fmt.Errorf("middleware: %s %s: x-porto-max-body-bytes out of range", name, path)
 			}
-			p := Policy{OperationID: op.OperationID, MaxBodyBytes: op.MaxBodyBytes, MaxStreamBytes: op.MaxStreamBytes}
+			p := Policy{
+				OperationID: op.OperationID, MaxBodyBytes: op.MaxBodyBytes, MaxStreamBytes: op.MaxStreamBytes,
+				Offline: op.Offline,
+			}
 			if op.RequestBody != nil {
 				for ct := range op.RequestBody.Content {
 					p.BodyTypes = append(p.BodyTypes, strings.ToLower(ct))
@@ -124,7 +136,15 @@ func ParsePolicies(spec []byte) (Policies, error) {
 						"at most %d, without x-porto-max-body-bytes", name, path, MaxStreamCap)
 				}
 			}
+			proxyAlternatives := 0
 			for _, alt := range reqs {
+				if proxyAlternative(alt) {
+					if len(alt) != 1 {
+						return nil, fmt.Errorf("middleware: %s %s: appPin and remoteCookie go alone", name, path)
+					}
+					proxyAlternatives++
+					continue
+				}
 				if _, ok := alt[instanceTokenScheme]; ok {
 					if len(alt) != 1 {
 						return nil, fmt.Errorf("middleware: %s %s: instanceToken goes alone", name, path)
@@ -156,6 +176,12 @@ func ParsePolicies(spec []byte) (Policies, error) {
 					p.CSRF = true
 				}
 			}
+			if proxyAlternatives > 0 && proxyAlternatives == len(reqs) {
+				p.ProxyOnly = true
+			}
+			if p.Offline && (p.Public() || p.ProxyOnly || p.InstanceToken) {
+				return nil, fmt.Errorf("middleware: %s %s: x-porto-offline needs an authenticated operation", name, path)
+			}
 			out[strings.ToUpper(name)+" "+path] = p
 		}
 	}
@@ -174,6 +200,31 @@ const (
 
 // instanceTokenScheme is the security scheme of the desktop activation (checked by the handler).
 const instanceTokenScheme = "instanceToken"
+
+// Security schemes of the desktop remote proxy (M6b, m6b-plan §7.4, §7.5): the app PIN header and the per-launch
+// proxy cookie. They are checked by internal/desktop/remote, never by this router, which ignores the alternatives.
+const (
+	appPinScheme       = "appPin"
+	remoteCookieScheme = "remoteCookie"
+)
+
+func proxyAlternative(alt map[string][]string) bool {
+	_, pin := alt[appPinScheme]
+	_, cookie := alt[remoteCookieScheme]
+	return pin || cookie
+}
+
+// OfflineOperations returns the operation ids flagged x-porto-offline, sorted.
+func (ps Policies) OfflineOperations() []string {
+	var out []string
+	for _, p := range ps {
+		if p.Offline {
+			out = append(out, p.OperationID)
+		}
+	}
+	slices.Sort(out)
+	return out
+}
 
 // StreamedPaths returns the fixed request paths ("METHOD /path") whose operation streams a large raw body
 // (x-porto-max-stream-bytes) with their limit: the global body limit lets them through, BodyLimitByPolicy applies

@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/coste360/porto/internal/app"
@@ -59,18 +60,31 @@ type Options struct {
 	Argon2 auth.Argon2Params
 	// OnReady is called with the panel URL once the server answers (tests).
 	OnReady func(url string)
+	// OnNavigate is called with every later URL shown after a restart or a mode switch (tests).
+	OnNavigate func(url string)
+	// DeviceTokens overrides the OS keychain store of the remote-mode device token (tests).
+	DeviceTokens TokenStore
+	// RemoteTransport overrides the transport to the online instance (tests).
+	RemoteTransport http.RoundTripper
 }
 
 // Launcher runs the desktop edition (m6a-plan §2.2).
 type Launcher struct {
-	o     Options
-	paths Paths
-	env   Env
-	log   *slog.Logger
-	rt    *Runtime
-	ui    UI
-	cfg   *config.Config
-	host  string // 127.0.0.1:<port>
+	o      Options
+	paths  Paths
+	env    Env
+	log    *slog.Logger
+	ui     UI
+	window bool // the UI is the webview window
+	cfg    *config.Config
+	host   string // 127.0.0.1:<port>
+
+	secret   *ResolvedSecret
+	instHash string
+	revoked  bool // the remote device was revoked: the next first run says so
+
+	rtMu sync.Mutex
+	rt   *Runtime
 }
 
 // Run executes the start sequence, shows the UI until it closes and stops in order: local network off, HTTP
@@ -157,32 +171,19 @@ func (l *Launcher) run(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	if env.UpdateCheckOff {
-		settings.UpdateCheck = false
-	}
 	if _, ok := o.LookupEnv("DATABASE_URL"); ok {
 		l.log.WarnContext(ctx, "desktop: DATABASE_URL is ignored, the desktop edition uses SQLite")
 	}
 	l.ui = l.chooseUI()
-
-	var kr SecretStore
-	if env.Keyring != KeyringFile {
-		kr = o.Keyring
-		if kr == nil {
-			kr = NewKeyringStore(l.paths.Root)
+	if settings.Mode != desktopport.ModeRemote {
+		// The remote mode has no database and needs no secret key; the local mode cannot start without it.
+		if err := l.prepareSecret(ctx); err != nil {
+			if errors.Is(err, ErrSecretMissing) || errors.Is(err, ErrSecretInvalid) {
+				l.log.ErrorContext(ctx, "desktop: secret key missing or invalid for the existing database")
+				return l.showMissingKey(ctx, err)
+			}
+			return err
 		}
-	}
-	envKey, _ := o.LookupEnv("PORTO_SECRET_KEY")
-	secret, err := ResolveSecretKey(envKey, kr, FileStore{Path: l.paths.SecretFile()}, fileExists(l.paths.DB()))
-	if errors.Is(err, ErrSecretMissing) || errors.Is(err, ErrSecretInvalid) {
-		l.log.ErrorContext(ctx, "desktop: secret key missing or invalid for the existing database")
-		return l.showMissingKey(ctx, err)
-	}
-	if err != nil {
-		return err
-	}
-	if secret.Kind == desktopport.SecretStoreFile {
-		l.log.WarnContext(ctx, "desktop: the secret key is in a file of the data folder (no OS keychain available)")
 	}
 
 	port := settings.Port
@@ -202,44 +203,19 @@ func (l *Launcher) run(ctx context.Context) error {
 		return err
 	}
 	l.host = "127.0.0.1:" + strconv.Itoa(port)
-
-	l.cfg, err = config.Load(ServerEnv(ServerEnvInput{
-		Port: port, DataDir: l.paths.Root, SecretKey: secret.Key, MailDir: l.paths.Mail(), Lookup: o.LookupEnv,
-	}))
-	if err != nil {
-		_ = ln.Close()
-		return err
-	}
-
-	updURL := DefaultUpdateURL
-	policy := event.EgressPolicy{}
-	if env.UpdateURL != "" {
-		updURL, policy = env.UpdateURL, event.EgressPolicy{AllowPrivate: true, AllowHTTP: true}
-	}
-	client := o.UpdateClient
-	if client == nil {
-		client = event.NewEgressClient(policy, updateTimeout)
-	}
-	upd := &Updater{URL: updURL, Client: client, Version: o.Version, GOOS: o.GOOS, GOARCH: o.GOARCH, Log: l.log}
-	l.rt = NewRuntime(RuntimeConfig{
-		Version: o.Version, Paths: l.paths, Env: env, Clock: o.Clock, Loc: o.Loc, Log: l.log, Settings: settings,
-		SecretKey: secret.Key, SecretKind: secret.Kind, Opener: o.Opener, CountUsers: o.CountUsers, Updater: upd,
-	})
 	hash, err := WriteInstance(l.paths, os.Getpid(), port)
 	if err != nil {
 		_ = ln.Close()
 		return err
 	}
 	defer RemoveInstance(l.paths)
-	l.rt.SetInstanceToken(hash)
+	l.instHash = hash
 
 	srvCtx, stopSrv := context.WithCancel(context.WithoutCancel(ctx))
 	defer stopSrv()
-	go upd.Run(srvCtx, l.rt.Recheck())
-
 	ready := make(chan string, 1)
 	done := make(chan error, 1)
-	go func() { done <- l.serve(srvCtx, ln, ready) }()
+	go func() { done <- l.loop(srvCtx, ln, ready) }()
 
 	var url string
 	select {
@@ -255,8 +231,10 @@ func (l *Launcher) run(ctx context.Context) error {
 	}
 	uiErr := l.ui.Run(ctx, url)
 	l.log.InfoContext(ctx, "desktop: stopping")
-	if _, lan := l.rt.current(); lan != nil {
-		_ = lan.Disable(context.WithoutCancel(ctx))
+	if rt := l.localRuntime(); rt != nil {
+		if _, lan := rt.current(); lan != nil {
+			_ = lan.Disable(context.WithoutCancel(ctx))
+		}
 	}
 	stopSrv()
 	err = <-done
@@ -264,6 +242,132 @@ func (l *Launcher) run(ctx context.Context) error {
 		err = uiErr
 	}
 	return err
+}
+
+// errSwitchMode makes loop serve the other mode (paired: remote; unpaired or revoked: local first run).
+var errSwitchMode = errors.New("desktop: switch mode")
+
+// loop serves the mode of desktop.json, switching between local and remote mode on the same loopback port.
+func (l *Launcher) loop(ctx context.Context, ln net.Listener, ready chan<- string) error {
+	first := true
+	for {
+		s, err := LoadSettings(l.paths.Settings())
+		if err != nil {
+			_ = ln.Close()
+			return err
+		}
+		if l.env.UpdateCheckOff {
+			s.UpdateCheck = false
+		}
+		if s.Mode == desktopport.ModeRemote {
+			err = l.serveRemote(ctx, ln, s, ready, &first)
+		} else if err = l.prepareLocal(ctx, s); err == nil {
+			err = l.serve(ctx, ln, ready, &first)
+		} else {
+			_ = ln.Close()
+		}
+		if !errors.Is(err, errSwitchMode) {
+			return err
+		}
+		l.log.InfoContext(ctx, "desktop: switching mode")
+		var lc net.ListenConfig
+		if ln, err = lc.Listen(ctx, "tcp", l.host); err != nil {
+			return fmt.Errorf("desktop: listen after a mode switch: %w", err)
+		}
+	}
+}
+
+// prepareSecret resolves the secret key of the local mode once.
+func (l *Launcher) prepareSecret(ctx context.Context) error {
+	if l.secret != nil {
+		return nil
+	}
+	var kr SecretStore
+	if l.env.Keyring != KeyringFile {
+		kr = l.o.Keyring
+		if kr == nil {
+			kr = NewKeyringStore(l.paths.Root)
+		}
+	}
+	envKey, _ := l.o.LookupEnv("PORTO_SECRET_KEY")
+	secret, err := ResolveSecretKey(envKey, kr, FileStore{Path: l.paths.SecretFile()}, fileExists(l.paths.DB()))
+	if err != nil {
+		return err
+	}
+	if secret.Kind == desktopport.SecretStoreFile {
+		l.log.WarnContext(ctx, "desktop: the secret key is in a file of the data folder (no OS keychain available)")
+	}
+	l.secret = &secret
+	return nil
+}
+
+// prepareLocal builds the configuration and the runtime of the local mode once; later calls (back from the remote
+// mode) give the runtime the current settings.
+func (l *Launcher) prepareLocal(ctx context.Context, settings FileSettings) error {
+	if err := l.prepareSecret(ctx); err != nil {
+		return err
+	}
+	if rt := l.localRuntime(); rt != nil {
+		rt.replaceSettings(settings)
+		return nil
+	}
+	o, env := l.o, l.env
+	port := l.port()
+	cfg, err := config.Load(ServerEnv(ServerEnvInput{
+		Port: port, DataDir: l.paths.Root, SecretKey: l.secret.Key, MailDir: l.paths.Mail(), Lookup: o.LookupEnv,
+	}))
+	if err != nil {
+		return err
+	}
+	l.cfg = cfg
+	updURL := DefaultUpdateURL
+	policy := event.EgressPolicy{}
+	if env.UpdateURL != "" {
+		updURL, policy = env.UpdateURL, event.EgressPolicy{AllowPrivate: true, AllowHTTP: true}
+	}
+	client := o.UpdateClient
+	if client == nil {
+		client = event.NewEgressClient(policy, updateTimeout)
+	}
+	upd := &Updater{URL: updURL, Client: client, Version: o.Version, GOOS: o.GOOS, GOARCH: o.GOARCH, Log: l.log}
+	rt := NewRuntime(RuntimeConfig{
+		Version: o.Version, Paths: l.paths, Env: env, Clock: o.Clock, Loc: o.Loc, Log: l.log, Settings: settings,
+		SecretKey: l.secret.Key, SecretKind: l.secret.Kind, Opener: o.Opener, CountUsers: o.CountUsers, Updater: upd,
+		GOOS: o.GOOS, Argon2: o.Argon2, Tokens: o.DeviceTokens,
+	})
+	rt.SetInstanceToken(l.instHash)
+	l.rtMu.Lock()
+	l.rt = rt
+	l.rtMu.Unlock()
+	go upd.Run(ctx, rt.Recheck())
+	return nil
+}
+
+func (l *Launcher) localRuntime() *Runtime {
+	l.rtMu.Lock()
+	defer l.rtMu.Unlock()
+	return l.rt
+}
+
+// show sends the first URL on ready and navigates the UI to later ones.
+func (l *Launcher) show(url string, ready chan<- string, first *bool) {
+	if *first {
+		ready <- url
+		*first = false
+		return
+	}
+	l.ui.Navigate(url)
+	if l.o.OnNavigate != nil {
+		l.o.OnNavigate(url)
+	}
+}
+
+// applyKiosk tells a kiosk-capable window the launch decision and records it in the runtime status.
+func (l *Launcher) applyKiosk(d KioskDecision, origin string, record func(bool)) {
+	if k, ok := l.ui.(KioskUI); ok {
+		k.SetKiosk(d.Kiosk, origin)
+	}
+	record(d.Kiosk)
 }
 
 func fileExists(path string) bool {
@@ -280,6 +384,7 @@ func (l *Launcher) chooseUI() UI {
 	case l.o.Browser || l.o.NewWindow == nil:
 		return NewBrowserUI(l.o.Opener, l.log)
 	default:
+		l.window = true
 		return l.o.NewWindow(l.log)
 	}
 }
@@ -299,8 +404,7 @@ func listenLoopback(ctx context.Context, port int, forced bool) (net.Listener, e
 
 // serve runs the App until ctx is done, restarting it after a restore. The first start sends the panel URL on
 // ready; later starts reload the UI.
-func (l *Launcher) serve(ctx context.Context, ln net.Listener, ready chan<- string) error {
-	first := true
+func (l *Launcher) serve(ctx context.Context, ln net.Listener, ready chan<- string, first *bool) error {
 	for {
 		a, err := app.NewWithOptions(ctx, l.cfg, l.o.Version, ext.Extensions{}, l.log, app.Options{
 			Clock: l.o.Clock, Argon2: l.o.Argon2, Desktop: l.rt, PairTarget: l.rt.PairTarget,
@@ -319,6 +423,7 @@ func (l *Launcher) serve(ctx context.Context, ln net.Listener, ready chan<- stri
 		l.rt.Attach(a, lan, l.ui, origin)
 
 		url := origin + "/admin/"
+		firstRun := false
 		if n, err := l.o.CountUsers(ctx, a); err == nil && n == 0 {
 			tok, err := l.rt.MintFirstRunToken()
 			if err != nil {
@@ -326,7 +431,12 @@ func (l *Launcher) serve(ctx context.Context, ln net.Listener, ready chan<- stri
 				_ = ln.Close()
 				return err
 			}
+			firstRun = true
 			url = origin + "/admin/desktop/first-run#t=" + tok
+			if l.revoked {
+				url += "&revoked=1"
+				l.revoked = false
+			}
 			if l.env.FirstRunFile {
 				_ = writeFileAtomic(l.paths.FirstRunURL(), []byte(url+"\n"), 0o600)
 			}
@@ -340,12 +450,10 @@ func (l *Launcher) serve(ctx context.Context, ln net.Listener, ready chan<- stri
 		bgCtx, stopBg := context.WithCancel(ctx)
 		go l.rt.BackupManager().RunScheduler(bgCtx, l.rt.Snapshot)
 		go refreshLAN(bgCtx, lan, l.o.Clock, LANRefreshEvery, lanRefreshPoll, l.log)
-		if first {
-			ready <- url
-			first = false
-		} else {
-			l.ui.Navigate(url)
-		}
+		l.applyKiosk(KioskPolicy(KioskInput{
+			Enabled: l.rt.currentSettings().Kiosk.Enabled, Window: l.window, FirstRun: firstRun,
+		}), origin, l.rt.SetKioskActive)
+		l.show(url, ready, first)
 
 		runErr := a.Run(ctx, app.Listener{
 			Listener: ln, Tag: reqctx.ListenerLoopback,
@@ -354,6 +462,13 @@ func (l *Launcher) serve(ctx context.Context, ln net.Listener, ready chan<- stri
 		stopBg()
 		_ = lan.Disable(context.WithoutCancel(ctx))
 
+		if errors.Is(runErr, app.ErrRestart) && l.rt.TakeModeSwitch() {
+			// Paired on the first run: the empty local database is closed and the remote mode starts.
+			if err := a.Close(); err != nil {
+				l.log.WarnContext(ctx, "desktop: close before the remote mode", "error", err)
+			}
+			return errSwitchMode
+		}
 		if errors.Is(runErr, app.ErrRestart) {
 			wctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), ExitBackupWait)
 			l.rt.BackupManager().WaitIdle(wctx)

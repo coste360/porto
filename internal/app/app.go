@@ -57,6 +57,7 @@ import (
 	"github.com/coste360/porto/internal/filestore"
 	httpserver "github.com/coste360/porto/internal/http"
 	"github.com/coste360/porto/internal/http/admin"
+	httpbridge "github.com/coste360/porto/internal/http/bridge"
 	httpdesktop "github.com/coste360/porto/internal/http/desktop"
 	httpdevice "github.com/coste360/porto/internal/http/device"
 	"github.com/coste360/porto/internal/http/middleware"
@@ -89,6 +90,10 @@ type Options struct {
 	Desktop desktopport.Runtime
 	// PairTarget tells where pairing QRs point (M6a). nil = the base URL (server edition).
 	PairTarget func() desktopport.PairTarget
+	// Peripherals returns the local peripherals of the desktop (M6b): the local fiscal device is registered as
+	// the fiscal driver "desktop" (DesktopFiscalDriverCode). nil = Desktop.Peripherals when Desktop is set, else
+	// no driver is registered (server edition).
+	Peripherals func() desktopport.Peripherals
 }
 
 // ErrRestart is returned by Run after RequestRestart (desktop restore, m6a-plan §2.6): the caller stops, swaps the
@@ -295,6 +300,13 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	a.Imports.Register(a.Rights.ImportHandler())
 	a.Imports.Register(a.Deadlines.ImportHandler())
 	a.Occupancy.SetMovePricer(a.Contracts)
+	if periph := o.Peripherals; periph != nil || o.Desktop != nil {
+		if periph == nil {
+			periph = o.Desktop.Peripherals
+		}
+		// M6b: the local fiscal device of the desktop, after the extensions' drivers (a copy: x is the caller's).
+		x.FiscalDrivers = append(append([]ext.FiscalDriver(nil), x.FiscalDrivers...), desktopFiscal{peripherals: periph})
+	}
 	a.wireBilling(x)
 	a.Presence = presence.NewService(presence.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
@@ -329,13 +341,17 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			Charges: a.Charges, Payments: a.Payments, Cash: a.Cash, Fiscal: a.Fiscal, Collect: a.Collect,
 			PayDrivers: a.PayDrivers,
 		},
-		Device: &httpdevice.Handler{Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String(), SecureCookies: cfg.SecureCookies()},
+		Device: &httpdevice.Handler{
+			Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String(), SecureCookies: cfg.SecureCookies(),
+			Fiscal: a.Fiscal,
+		},
 		Public: &public.Handler{
 			Marinas: a.Marinas, Contracts: a.Contracts, Links: a.Links, Signatures: a.Signatures, Comms: a.Comms, Docs: a.Docs,
 			Collect: a.Collect,
 		},
 		Webhooks:             &webhooks.Handler{Signatures: a.Signatures, Collect: a.Collect, Clock: clk},
 		Desktop:              &httpdesktop.Handler{Runtime: o.Desktop, SecureCookies: cfg.SecureCookies()},
+		Bridge:               &httpbridge.Handler{Runtime: o.Desktop},
 		Authenticator:        authSvc,
 		Idempotency:          middleware.StoreIdempotency{DB: db.DB},
 		Ready:                a.Ready,

@@ -126,6 +126,14 @@ export const PROBLEM_TYPES = [
   'backup_in_progress',
   'restore_failed',
   'restore_backup_newer',
+  // M6b (m6b-plan §9.1)
+  'allocation_changed',
+  'offline_not_allowed',
+  'remote_unreachable',
+  'remote_pin_mismatch',
+  'peripheral_unavailable',
+  'claim_expired',
+  'app_pin_invalid',
 ] as const;
 
 export type ProblemType = (typeof PROBLEM_TYPES)[number];

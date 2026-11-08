@@ -31,7 +31,6 @@ const (
 // created (Windows without the WebView2 runtime, Linux without WebKitGTK) it falls back to the default browser.
 // Closing the window quits the app (M6a, D17).
 type windowUI struct {
-	// desktop.WindowOptions (Kiosk) is the M6b seam; M6a always opens a normal window.
 	log  *slog.Logger
 	open desktop.Opener
 	dev  bool
@@ -41,6 +40,32 @@ type windowUI struct {
 	w        webview.WebView
 	url      string
 	fallback *desktop.BrowserUI
+	// opts is the kiosk decision of the launcher (M6b, m6b-plan §7.6), set before Run.
+	opts desktop.WindowOptions
+}
+
+var _ desktop.KioskUI = (*windowUI)(nil)
+
+// SetKiosk implements desktop.KioskUI: before Run it sets the launch state; afterwards SetKiosk(false) leaves kiosk
+// mode until the next launch (the init script stays until the next page load).
+func (u *windowUI) SetKiosk(on bool, origin string) {
+	u.mu.Lock()
+	was := u.opts.Kiosk
+	u.opts.Kiosk = on
+	if origin != "" {
+		u.opts.Origin = origin
+	}
+	w := u.w
+	u.mu.Unlock()
+	if w != nil && was != on {
+		w.Dispatch(func() { applyKiosk(w, on) })
+	}
+}
+
+func (u *windowUI) kiosk() (bool, string) {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	return u.opts.Kiosk, u.opts.Origin
 }
 
 func newWindowUI(log *slog.Logger) *windowUI {
@@ -51,7 +76,8 @@ func newWindowUI(log *slog.Logger) *windowUI {
 
 // Run implements desktop.UI. It must run on the main thread (webview_go locks it in its init).
 func (u *windowUI) Run(ctx context.Context, url string) error {
-	w := webview.New(u.dev)
+	kiosk, origin := u.kiosk()
+	w := webview.New(u.dev && !kiosk) // no developer tools in kiosk mode
 	if w == nil || w.Window() == nil {
 		u.log.WarnContext(ctx, "desktop: system webview unavailable, opening the browser")
 		fb := desktop.NewBrowserUI(u.open, u.log)
@@ -65,6 +91,10 @@ func (u *windowUI) Run(ctx context.Context, url string) error {
 	w.SetSize(windowMinWidth, windowMinHeight, webview.HintMin)
 	w.SetSize(windowWidth, windowHeight, webview.HintNone)
 	w.Init(desktop.BridgeScript(version))
+	if kiosk {
+		w.Init(desktop.KioskScript(origin, runtime.GOOS))
+		applyKiosk(w, true)
+	}
 	u.bind(ctx, w)
 	setupNativeMenus(w, u)
 	u.mu.Lock()
@@ -100,7 +130,7 @@ func (u *windowUI) bind(ctx context.Context, w webview.WebView) {
 		return path, nil
 	}))
 	must(w.Bind(desktop.BindOpenExternal, func(target string) error {
-		if !desktop.ExternalURLAllowed(target) {
+		if on, _ := u.kiosk(); on || !desktop.ExternalURLAllowed(target) { // kiosk: never leave the panel
 			return desktop.ErrSaveRefused
 		}
 		return u.open(context.Background(), target)

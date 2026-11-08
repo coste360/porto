@@ -22,7 +22,7 @@ func TestAdmin_NoStubsLeft(t *testing.T) {
 			t.Fatal(err)
 		}
 		src := string(b)
-		if strings.Contains(src, "STUB(M1)") || strings.Contains(src, "STUB(M2)") || strings.Contains(src, "STUB(M3)") || strings.Contains(src, "STUB(M4)") || strings.Contains(src, "STUB(M5)") || strings.Contains(src, "notImplemented") ||
+		if strings.Contains(src, "STUB(M1)") || strings.Contains(src, "STUB(M2)") || strings.Contains(src, "STUB(M3)") || strings.Contains(src, "STUB(M4)") || strings.Contains(src, "STUB(M5)") || strings.Contains(src, "STUB(M6") || strings.Contains(src, "notImplemented") ||
 			strings.Contains(src, "StatusNotImplemented") {
 			t.Errorf("%s still has stubs", f)
 		}

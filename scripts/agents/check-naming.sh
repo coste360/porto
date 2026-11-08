@@ -11,7 +11,8 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 pattern='arenile|establishment'
-paths=(cmd internal pkg api web/admin/src web/booking/src web/shared/src deploy compose.yaml scripts/desktop packaging/desktop .github/workflows/desktop.yml)
+# M6b: the desktop e2e specs and their support (remote mode, kiosk, local CA) are code too.
+paths=(cmd internal pkg api web/admin/src web/booking/src web/shared/src deploy compose.yaml scripts/desktop packaging/desktop .github/workflows/desktop.yml e2e/tests-desktop e2e/support/desktop.ts)
 
 existing=()
 for p in "${paths[@]}"; do

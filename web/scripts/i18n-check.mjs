@@ -2,7 +2,8 @@
 // i18n check, run by `npm run lint`:
 //   - it (source) and en have the same key set in every namespace;
 //   - no empty values;
-//   - every literal key `'<ns>:<key>'` used in admin/src, booking/src and shared/src exists.
+//   - every literal key `'<ns>:<key>'` used in admin/src, booking/src and shared/src exists (a plural base key
+//     such as `'ns:pending'` exists when `pending_one`/`pending_other` do).
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -60,6 +61,14 @@ export function findKeyLiterals(text, namespaces) {
   return found;
 }
 
+/** i18next plural suffixes (CLDR categories); `t('ns:key', { count })` resolves `key_<category>`. */
+export const PLURAL_SUFFIXES = ['zero', 'one', 'two', 'few', 'many', 'other'];
+
+/** True when `key` exists, or is the base of plural keys (`key_one`, `key_other`, ...). */
+export function hasKey(keys, key) {
+  return keys.has(key) || PLURAL_SUFFIXES.some((s) => keys.has(`${key}_${s}`));
+}
+
 /** Returns errors for literal keys missing from the source locale. */
 export function checkUsages(files, sourceLocale) {
   const namespaces = Object.keys(sourceLocale);
@@ -69,7 +78,7 @@ export function checkUsages(files, sourceLocale) {
     for (const { ns, key } of findKeyLiterals(text, namespaces)) {
       const keys = flat[ns];
       // A key may also be an object prefix used with returnObjects: not used in M0.
-      if (!keys.has(key)) errors.push(`${path}: unknown i18n key "${ns}:${key}"`);
+      if (!hasKey(keys, key)) errors.push(`${path}: unknown i18n key "${ns}:${key}"`);
     }
   }
   return errors;

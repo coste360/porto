@@ -197,9 +197,12 @@ export function EditorPage() {
   const { mapId } = route.useParams();
   const { marinaId, can } = useCurrentMarina();
   const query = useMap(marinaId, mapId);
+  // The workspace starts from the first data it gets and ignores later refetches: wait for the server's copy
+  // when a cached one (e.g. restored from the offline cache, M6b) is being refreshed.
+  const refreshing = query.isFetching && !query.isFetchedAfterMount;
   return (
     <RequirePermission allowed={can('harbor.configure')}>
-      {query.isPending ? (
+      {query.isPending || refreshing ? (
         <LoadingState />
       ) : query.isError ? (
         <QueryErrorState error={query.error} onRetry={() => void query.refetch()} />

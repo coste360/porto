@@ -2,9 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import type { Charge, ExportPreview } from '@porto/shared/api';
 
+import { offlineReasonOf } from './offline';
+
 import { closeMethods, countedBody, sessionDifference } from './cash';
 import { chargeActions, viewFilters } from './charges';
 import { canConfirm, formError, previousMonth, toFilter, vatTotalsMatch } from './exportWizard';
+import { toMatchRows } from './drafts';
 import { divHalfEven, parseQty, previewLine, previewTotals } from './lines';
 import {
   allocatedTotal,
@@ -218,5 +221,38 @@ describe('export wizard', () => {
     expect(canConfirm({ ...p, count: 0 })).toBe(false);
     expect(vatTotalsMatch(p)).toBe(true);
     expect(vatTotalsMatch({ ...p, total_cents: 301 })).toBe(false);
+  });
+});
+
+describe('offline reason of a payment (29.2)', () => {
+  const base = {
+    kind: 'payment',
+    method: 'cash',
+    cents: 1000,
+    allocated: 1000,
+    receiptMode: false,
+  };
+  it('only fully matched cash on charges not in receipt mode may be queued', () => {
+    expect(offlineReasonOf(base)).toBeNull();
+    expect(offlineReasonOf({ ...base, receiptMode: true })).toBe('document');
+    expect(offlineReasonOf({ ...base, receiptMode: undefined })).toBe('document');
+    expect(offlineReasonOf({ ...base, allocated: 600 })).toBe('document');
+    expect(offlineReasonOf({ ...base, method: 'card_pos' })).toBe('online_only');
+    expect(offlineReasonOf({ ...base, kind: 'deposit' })).toBe('online_only');
+  });
+
+  it('marks receipt-mode charges in the matching rows', () => {
+    const charge = (id: string, fiscal_mode: string) =>
+      ({
+        id,
+        number: id,
+        due_on: '2026-01-01',
+        residual_cents: 100,
+        payment_status: 'open',
+        fiscal_mode,
+      }) as unknown as Charge;
+    expect(
+      toMatchRows([charge('a', 'receipt'), charge('b', 'invoice')]).map((r) => r.receiptMode),
+    ).toEqual([true, false]);
   });
 });

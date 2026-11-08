@@ -55,7 +55,7 @@ LDFLAGS := -s -w -X main.version=$(VERSION)
 # Desktop edition (M6a, docs/desktop-build.md). DESKTOP_TAGS="" builds the browser launcher without CGO;
 # DESKTOP_TAGS=webview builds the window launcher (CGO, native toolchain of the host OS).
 DESKTOP_TAGS ?=
-DESKTOP_PKGS := ./internal/desktop/... ./internal/lan/... ./cmd/porto-desktop/...
+DESKTOP_PKGS := ./internal/desktop/... ./internal/lan/... ./internal/peripheral/... ./cmd/porto-desktop/...
 
 define skip
 	echo "make: $(1): skipped ($(2) not present yet)"
@@ -283,10 +283,10 @@ desktop-test: ## Run the desktop launcher and local-network unit tests (no windo
 	go test $(DESKTOP_PKGS)
 
 .PHONY: e2e-desktop
-e2e-desktop: ## Build the headless desktop launcher (no CGO) and run the desktop Playwright specs
+e2e-desktop: ## Build bin/porto (the online instance of the remote-mode specs) and the headless desktop launcher (no CGO), run the desktop Playwright specs
 	@set -euo pipefail; \
 	if [ -z "$(HAS_E2E)" ] || [ ! -f e2e/playwright.desktop.config.ts ]; then $(call skip,e2e-desktop,e2e/playwright.desktop.config.ts); exit 0; fi; \
-	$(MAKE) --no-print-directory web-build; \
+	$(MAKE) --no-print-directory build; \
 	CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -o bin/porto-desktop ./cmd/porto-desktop; \
 	cd e2e && npx playwright test -c playwright.desktop.config.ts
 

@@ -27,6 +27,12 @@ const (
 	IdempotentReplayedHeader = "Idempotent-Replayed"
 	idempotencyTTL           = 24 * time.Hour
 	maxStoredResponse        = 1 << 20
+	// offlineIdempotencyTTL keeps the keys of the operations flagged x-porto-offline 7 days: a phone may stay
+	// offline for days and its queue stops replaying an operation after 6 (m6b-plan §4.4, D3).
+	offlineIdempotencyTTL = 7 * 24 * time.Hour
+	// staleClaimAfter is how long an in-progress claim of an offline operation blocks its key: a crash between
+	// the handler commit and Complete must not hold the key for days (the domain dedupe answers the takeover).
+	staleClaimAfter = 2 * time.Minute
 )
 
 var idempotencyKeyPattern = regexp.MustCompile(`^[A-Za-z0-9_\-:.]{8,128}$`)
@@ -38,6 +44,7 @@ type IdempotencyRecord struct {
 	Status          int
 	ContentType     string
 	Body            []byte
+	UpdatedAt       time.Time
 }
 
 // IdempotencyStore persists idempotency keys. The unique (scope, key) constraint of the store makes exactly one
@@ -47,6 +54,9 @@ type IdempotencyStore interface {
 	Claim(ctx context.Context, scope, key, requestHash string, now, expiresAt time.Time) (IdempotencyRecord, bool, error)
 	Complete(ctx context.Context, id string, status int, contentType string, body []byte, at time.Time) error
 	Release(ctx context.Context, id string) error
+	// TakeOver claims an in-progress record whose updated_at is still prevUpdatedAt (conditional update); it
+	// reports whether this caller won.
+	TakeOver(ctx context.Context, id string, prevUpdatedAt, now time.Time) (bool, error)
 }
 
 // StoreIdempotency implements IdempotencyStore on the database.
@@ -60,8 +70,13 @@ func (s StoreIdempotency) Claim(ctx context.Context, scope, key, hash string, no
 	}
 	return IdempotencyRecord{
 		ID: row.ID, RequestHash: row.RequestHash, Completed: row.State == store.IdempotencyCompleted,
-		Status: row.ResponseStatus, ContentType: row.ResponseContentType, Body: row.ResponseBody,
+		Status: row.ResponseStatus, ContentType: row.ResponseContentType, Body: row.ResponseBody, UpdatedAt: row.UpdatedAt,
 	}, created, nil
+}
+
+// TakeOver implements IdempotencyStore.
+func (s StoreIdempotency) TakeOver(ctx context.Context, id string, prev, now time.Time) (bool, error) {
+	return store.TakeOverIdempotencyKey(ctx, s.DB, id, prev, now)
 }
 
 // Complete implements IdempotencyStore.
@@ -82,9 +97,11 @@ type IdempotencyOptions struct {
 
 // Idempotency makes POSTs carrying Idempotency-Key safe to retry. The scope is the principal (or, for anonymous
 // requests, the client IP prefix) plus method and route; the request hash covers method, route and body. The
-// first request runs and its response (up to 1 MiB, status < 500) is stored for 24 hours; a retry with the
-// same hash replays it (Idempotent-Replayed: true); a different hash is 422 idempotency_key_reused; a retry
-// while the first is still running is 409 idempotency_in_progress. /auth/* (cookies) and SSE are skipped.
+// first request runs and its response (up to 1 MiB, status < 500, no Retry-After) is stored for 24 hours, 7 days
+// on the operations flagged x-porto-offline; a retry with the same hash replays it (Idempotent-Replayed: true); a
+// different hash is 422 idempotency_key_reused; a retry while the first is still running is 409
+// idempotency_in_progress, except on offline operations whose claim is older than 2 minutes, which the retry takes
+// over. /auth/* (cookies) and SSE are skipped. Offline routes are marked by OfflineGuard, which runs first.
 func Idempotency(o IdempotencyOptions) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -117,10 +134,23 @@ func Idempotency(o IdempotencyOptions) func(http.Handler) http.Handler {
 			hash := hex.EncodeToString(sum.Sum(nil))
 
 			now := o.Clock.Now()
-			rec, created, err := o.Store.Claim(r.Context(), scope, key, hash, now, now.Add(idempotencyTTL))
+			offline := isOfflineRoute(r.Context())
+			ttl := idempotencyTTL
+			if offline {
+				ttl = offlineIdempotencyTTL
+			}
+			rec, created, err := o.Store.Claim(r.Context(), scope, key, hash, now, now.Add(ttl))
 			if err != nil {
 				respond.Error(w, r, err)
 				return
+			}
+			if !created && offline && !rec.Completed && rec.RequestHash == hash && !rec.UpdatedAt.After(now.Add(-staleClaimAfter)) {
+				won, err := o.Store.TakeOver(r.Context(), rec.ID, rec.UpdatedAt, now)
+				if err != nil {
+					respond.Error(w, r, err)
+					return
+				}
+				created = won
 			}
 			if !created {
 				switch {
@@ -161,8 +191,8 @@ func Idempotency(o IdempotencyOptions) func(http.Handler) http.Handler {
 			if status == 0 {
 				status = http.StatusOK
 			}
-			if status >= 500 || rw.overflow {
-				return
+			if status >= 500 || rw.overflow || rw.Header().Get("Retry-After") != "" {
+				return // not worth replaying: the client retries with the same key
 			}
 			ctx, cancel := context.WithTimeout(context.WithoutCancel(r.Context()), 5*time.Second)
 			defer cancel()

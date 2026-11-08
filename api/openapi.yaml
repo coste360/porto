@@ -13,18 +13,29 @@ info:
     credits, cash and corrispettivi, payment requests and reminders, optional online payments (Stripe with SEPA),
     the "da fatturare" export with invoice reconciliation, statements and the customer dashboard. M6a adds the
     desktop edition API (`/api/desktop/v1`, loopback only), browser pairing by QR with device sessions and the
-    local-mode metadata.
+    local-mode metadata. M6b adds the offline queue guarantees (`x-porto-offline`, `Porto-Offline-Queued-At`),
+    the dock collectibles and the transit QR, the fiscal bridge claims of paired desktops, the desktop remote mode
+    (pairing to an online instance, peripherals, kiosk) and the loopback bridge to local peripherals
+    (`/api/bridge/v1`).
 
     - `/api/admin/v1` — admin panel API (session cookie, API key or device token).
     - `/api/device/v1` — paired devices (device token, spec 29).
     - `/api/public/v1` — public marina pages (no authentication).
     - `/api/desktop/v1` — desktop edition launcher (M6a): answers only on the loopback listener of
       `porto-desktop`, 404 everywhere else.
+    - `/api/bridge/v1` — local peripherals of the desktop app (M6b): loopback only like `/api/desktop/v1`; in
+      remote mode it is served by the app's local proxy, never by the online instance.
 
     Conventions:
     - errors are `application/problem+json` (RFC 9457) with a stable `type` slug;
     - collections use cursor pagination (`?cursor=&limit=`, default 50, max 200);
-    - `Idempotency-Key` is accepted on creating `POST`s (24 h, per principal);
+    - `Idempotency-Key` is accepted on creating `POST`s (24 h, per principal; 7 days on `x-porto-offline`
+      operations);
+    - `x-porto-offline: true` marks the only operations the offline queue may replay (M6b, spec 29.2); a replay
+      carries `Porto-Offline-Queued-At` (the enqueue instant) and an `Idempotency-Key`; the header on any other
+      operation is refused with 422 `offline_not_allowed`;
+    - security schemes `appPin` and `remoteCookie` are checked by the desktop app's remote proxy only (M6b): an
+      operation whose alternatives are all of them answers 404 on a Porto server;
     - cookie-authenticated unsafe requests send `X-CSRF-Token`, equal to the `porto_csrf` cookie;
     - versioned resources return `ETag: "<version>"` and `PATCH` requires `If-Match`;
     - calendar dates are `YYYY-MM-DD`, instants RFC 3339 UTC, ids UUID strings; JSON names are snake_case;
@@ -143,6 +154,10 @@ tags:
     description: Payment provider callbacks (M5)
   - name: desktop
     description: Desktop edition launcher, loopback only (first run, local network, backups, secret key) (M6a)
+  - name: bridge
+    description: Local peripherals of the desktop app (receipt and label printers, QR reader, fiscal), loopback only (M6b)
+  - name: collectibles
+    description: Open charges to collect at the dock (M6b)
 
 paths:
   /healthz:
@@ -229,8 +244,12 @@ paths:
       tags: [auth]
       operationId: getMe
       summary: The current user, organizations and marinas with roles and permissions
+      description: >-
+        Also answers a device token (deviceAuth): a desktop in remote mode (M6b) starts the panel of the online
+        instance with it; grants are narrowed to the device's marina and auth_method is device.
       security:
         - cookieAuth: []
+        - deviceAuth: []
       responses:
         "200":
           description: Current user
@@ -1208,6 +1227,64 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "429": { $ref: "#/components/responses/TooManyRequests" }
 
+  /api/device/v1/fiscal/claim:
+    post:
+      tags: [device]
+      operationId: claimFiscalDocuments
+      summary: Claim pending documents of the bridge fiscal driver for issuing on the desktop's local device (M6b)
+      description: |
+        Only the device set as `fiscal_bridge_device_id` in the billing settings of its marina (a `kind: desktop`,
+        `access: token` device) may claim; any other device is 403. Each returned document carries a `claim_id`
+        valid for 60 seconds (`claim_until`); a document is claimed by at most one caller at a time (INV-86). No
+        `Idempotency-Key`: every call is a new claim.
+      security:
+        - deviceAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FiscalClaimRequest" }
+      responses:
+        "200":
+          description: Claimed documents (possibly none)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FiscalClaim" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+
+  /api/device/v1/fiscal/documents/{documentId}/outcome:
+    parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema: { type: string, maxLength: 36 }
+    post:
+      tags: [device]
+      operationId: reportFiscalOutcome
+      summary: Report the outcome of a claimed bridge document (issued, failed or deferred) (M6b)
+      description: |
+        `Idempotency-Key` = `<documentId>:<claim_id>`. A stale or foreign claim is 409 `claim_expired`; `issued`
+        follows the immutability of issued documents. `deferred` releases the claim and keeps the document pending.
+      security:
+        - deviceAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FiscalOutcome" }
+      responses:
+        "204": { description: Recorded }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
   /api/desktop/v1/status:
     get:
       tags: [desktop]
@@ -1507,6 +1584,244 @@ paths:
         - instanceToken: []
       responses:
         "204": { description: Activated }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/desktop/v1/remote/pair:
+    post:
+      tags: [desktop]
+      operationId: pairDesktopRemote
+      summary: Pair this app to an online Porto instance on the first run and restart in remote mode (M6b)
+      description: |
+        Local mode, first run only (first-run token in the body; 409 `first_run_done` once the local instance has
+        users or the app is already paired). The app calls `pairDevice` on the remote instance (`kind: desktop`)
+        with the TLS policy of the payload (`fp` = pinned leaf, then its CA; no `fp` = system roots; `http` only
+        in development), stores the device token in the OS secret store (never in the page or in desktop.json),
+        sets the app PIN and restarts in remote mode (202).
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DesktopRemotePairRequest" }
+      responses:
+        "202": { description: Paired; the app restarts in remote mode }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+        "502": { $ref: "#/components/responses/BadGateway" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+
+  /api/desktop/v1/remote:
+    delete:
+      tags: [desktop]
+      operationId: unpairDesktopRemote
+      summary: Unpair the app from the online instance and go back to the first run (remote mode, app PIN) (M6b)
+      description: |
+        Revokes the device on the remote instance (best effort), deletes the token, the shell cache and the remote
+        settings. Answered by the remote proxy only (404 on a Porto server).
+      security:
+        - appPin: []
+      responses:
+        "202": { description: Unpaired; the app restarts on the first run }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/desktop/v1/peripherals:
+    get:
+      tags: [desktop]
+      operationId: getDesktopPeripherals
+      summary: Peripheral settings of this app (local mode owner; remote mode any proxy user) (M6b)
+      security:
+        - cookieAuth: []
+        - remoteCookie: []
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PeripheralSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [desktop]
+      operationId: updateDesktopPeripherals
+      summary: Change the peripheral settings (local mode owner; remote mode app PIN) (M6b)
+      security:
+        - cookieAuth: []
+          csrfToken: []
+        - appPin: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PeripheralSettings" }
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PeripheralSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/desktop/v1/kiosk:
+    put:
+      tags: [desktop]
+      operationId: setDesktopKiosk
+      summary: Switch kiosk mode for the next launch (local mode owner; remote mode app PIN) (M6b)
+      security:
+        - cookieAuth: []
+          csrfToken: []
+        - appPin: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DesktopKioskUpdate" }
+      responses:
+        "200":
+          description: Kiosk setting
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DesktopKioskUpdate" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/desktop/v1/kiosk/exit:
+    post:
+      tags: [desktop]
+      operationId: exitDesktopKiosk
+      summary: Leave kiosk mode until the next launch (local mode owner credentials; remote mode app PIN) (M6b)
+      description: |
+        Local mode: any signed-in user of the window plus the email and password of an owner in the body (the
+        front desk user is usually not an owner); remote mode: `Porto-App-Pin`. 5 failures per 15 minutes, then
+        429; never logged.
+      security:
+        - cookieAuth: []
+          csrfToken: []
+        - appPin: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DesktopKioskExit" }
+      responses:
+        "204": { description: Kiosk left }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/desktop/v1/dev/remote-offline:
+    post:
+      tags: [desktop]
+      operationId: setDesktopRemoteOffline
+      summary: Make the remote proxy behave as if the online instance were unreachable (PORTO_DEV only, e2e) (M6b)
+      security:
+        - remoteCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DesktopRemoteOffline" }
+      responses:
+        "204": { description: Set }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/bridge/v1/status:
+    get:
+      tags: [bridge]
+      operationId: getBridgeStatus
+      summary: Status of the local peripherals (any authenticated user of the app window) (M6b)
+      description: |
+        Every `/api/bridge/v1` operation answers only on the desktop loopback listener (local mode, session
+        cookie, the user's permissions) or on the remote proxy (remote mode, `porto_remote` cookie, the device
+        user's permissions); elsewhere 404 (INV-85).
+      security:
+        - cookieAuth: []
+        - remoteCookie: []
+      responses:
+        "200":
+          description: Status
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BridgeStatus" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/bridge/v1/receipts:
+    post:
+      tags: [bridge]
+      operationId: printBridgeReceipt
+      summary: Print the courtesy receipt of a payment on the local receipt printer (payments.collect or payments.collect_cash) (M6b)
+      security:
+        - cookieAuth: []
+          csrfToken: []
+        - remoteCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BridgeReceiptRequest" }
+      responses:
+        "202": { description: Sent to the printer }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+
+  /api/bridge/v1/test:
+    post:
+      tags: [bridge]
+      operationId: testBridgePeripheral
+      summary: Print a test page or check the local fiscal device (local mode owner; remote mode app PIN) (M6b)
+      security:
+        - cookieAuth: []
+          csrfToken: []
+        - appPin: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BridgeTestRequest" }
+      responses:
+        "204": { description: Done }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+
+  /api/bridge/v1/scanner/next:
+    get:
+      tags: [bridge]
+      operationId: nextBridgeScan
+      summary: Wait for the next scan of a local QR reader driver (long poll, at most 25 seconds) (M6b)
+      security:
+        - cookieAuth: []
+        - remoteCookie: []
+      parameters:
+        - { name: timeout, in: query, required: false, schema: { type: integer, minimum: 1, maximum: 25 } }
+      responses:
+        "200":
+          description: A scan
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BridgeScan" }
+        "204": { description: No scan before the timeout }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "404": { $ref: "#/components/responses/NotFound" }
 
@@ -4684,6 +4999,28 @@ paths:
         "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
         "428": { $ref: "#/components/responses/PreconditionRequired" }
 
+  /api/admin/v1/marinas/{marinaId}/transits/{contractId}/qr:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    get:
+      tags: [contracts]
+      operationId: getTransitQr
+      summary: QR code of a transit for the dock worker's scanner, payload PT1:<contract_id> (contracts.read or transits.desk)
+      description: |
+        SVG image whose payload is `PT1:<contract_id>`: opaque, no personal data, no URL; resolved only by an
+        authenticated panel (M6b D10). 404 for contracts that are not transits and for other marinas.
+      security: *readSecurity
+      responses:
+        "200":
+          description: SVG image
+          content:
+            image/svg+xml:
+              schema: { type: string, format: binary }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
   /api/admin/v1/marinas/{marinaId}/transits/{contractId}:
     parameters:
       - $ref: "#/components/parameters/MarinaId"
@@ -4830,9 +5167,18 @@ paths:
       operationId: recordPresence
       summary: >-
         Record an arrival or departure (hauled_out and launched are accepted for M9) (presence.write)
+      description: |
+        Offline replay (M6b, `Porto-Offline-Queued-At`): only `arrived` / `departed` with `allocation_id` and
+        `expected_resource_id` (else 422 `offline_not_allowed`); `at` defaults to the queued instant. With
+        `expected_resource_id` the allocation must still be active, of the vessel and on that resource for the night, else 409
+        `allocation_changed` with `details.current_resource_id` / `details.current_resource_code` (null when the
+        allocation is gone). A key replayed with the same body returns the same presence, also after the
+        idempotency row is gone (domain dedupe).
       security: *writeSecurity
+      x-porto-offline: true
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
       requestBody:
         required: true
         content:
@@ -4849,6 +5195,7 @@ paths:
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
         "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
 
   /api/admin/v1/marinas/{marinaId}/presences/unexpected-arrival:
     parameters:
@@ -4888,8 +5235,15 @@ paths:
       operationId: uploadPresencePhoto
       summary: >-
         Attach a photo to a presence (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write)
+      description: >-
+        One photo per presence (a new upload replaces it). Queueable offline (M6b). The same bytes as the current
+        photo return the current file id without writing again (domain dedupe of replays).
       security: *writeSecurity
       x-porto-max-body-bytes: 8388608
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
       requestBody:
         required: true
         content:
@@ -4909,8 +5263,10 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
         "413": { $ref: "#/components/responses/PayloadTooLarge" }
         "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
     get:
       tags: [presences]
       operationId: getPresencePhotoLink
@@ -9349,6 +9705,33 @@ paths:
         "429": { $ref: "#/components/responses/TooManyRequests" }
 
 
+  /api/admin/v1/marinas/{marinaId}/collectibles:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [collectibles]
+      operationId: listCollectibles
+      summary: >-
+        Open charges to collect at the dock on a date: contracts with an allocation on the night or a movement on the date (payments.collect or payments.collect_cash)
+      description: |
+        Residual > 0, not cancelled. `customer_display_name` only with `customers.read`. Default date: today in
+        the marina time zone. Cached offline by the panel (M6b).
+      security: *readSecurity
+      parameters:
+        - { name: date, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CollectiblePage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
   /api/admin/v1/marinas/{marinaId}/charges:
     parameters:
       - $ref: "#/components/parameters/MarinaId"
@@ -9976,9 +10359,17 @@ paths:
       operationId: recordPayment
       summary: >-
         Record a payment with matches or automatic matching; the rest stays as customer credit (payments.collect; payments.collect_cash for cash)
+      description: |
+        Offline replay (M6b, `Porto-Offline-Queued-At`): only `method: cash`, `kind: payment`, at least one match,
+        every match positive and their sum equal to `amount_cents` (no unmatched credit), no `auto_match`, and no
+        matched charge with `fiscal_mode: receipt` (else 422 `offline_not_allowed`). The
+        open cash session is resolved at replay: none or closed is 409 `cash_session_required` /
+        `cash_session_closed`, never a silent move to another session.
       security: *writeSecurity
+      x-porto-offline: true
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
       requestBody:
         required: true
         content:
@@ -10773,10 +11164,10 @@ paths:
       tags: [cash]
       operationId: getPaymentReceipt
       summary: >-
-        Courtesy receipt (not valid for tax purposes): 80/58 mm HTML or A4 PDF (payments.collect, charges.manage or payments.collect_cash)
+        Courtesy receipt (not valid for tax purposes): 80/58 mm HTML, A4 PDF or the receipt data as JSON for the desktop bridge printers (M6b) (payments.collect, charges.manage or payments.collect_cash)
       security: *readSecurity
       parameters:
-        - { name: format, in: query, required: false, schema: { type: string, enum: ["80", "58", a4] } }
+        - { name: format, in: query, required: false, schema: { type: string, enum: ["80", "58", a4, json] } }
       responses:
         "200":
           description: OK
@@ -10785,6 +11176,8 @@ paths:
               schema: { type: string, format: binary }
             application/pdf:
               schema: { type: string, format: binary }
+            application/json:
+              schema: { $ref: "#/components/schemas/ReceiptData" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
@@ -11555,6 +11948,20 @@ components:
       description: >-
         Token of the running desktop process (M6a), read by a second launch from the data folder; checked by the
         handler, not by the session middleware.
+    appPin:
+      type: apiKey
+      in: header
+      name: Porto-App-Pin
+      description: >-
+        App PIN of a desktop in remote mode (M6b, 6 to 12 digits, Argon2id in desktop.json, 5 failures per 15
+        minutes): checked by the app's remote proxy together with the porto_remote cookie, never sent upstream.
+    remoteCookie:
+      type: apiKey
+      in: cookie
+      name: porto_remote
+      description: >-
+        Per-launch cookie of the desktop remote proxy (M6b, HttpOnly, SameSite=Strict), obtained by the app window
+        from a secret in the URL fragment; checked by the proxy only.
 
   headers:
     ETag:
@@ -11822,8 +12229,19 @@ components:
       name: Idempotency-Key
       in: header
       required: false
-      description: 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+      description: >-
+        8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline
+        operations (x-porto-offline).
       schema: { type: string, minLength: 8, maxLength: 128, pattern: "^[A-Za-z0-9_\\-:.]+$" }
+    OfflineQueuedAt:
+      name: Porto-Offline-Queued-At
+      in: header
+      required: false
+      description: >-
+        Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together
+        with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused
+        with 422 offline_not_allowed on operations without x-porto-offline.
+      schema: { type: string, format: date-time }
     IfMatch:
       name: If-Match
       in: header
@@ -12164,6 +12582,13 @@ components:
         - backup_in_progress
         - restore_failed
         - restore_backup_newer
+        - allocation_changed
+        - offline_not_allowed
+        - remote_unreachable
+        - remote_pin_mismatch
+        - peripheral_unavailable
+        - claim_expired
+        - app_pin_invalid
 
     FieldError:
       type: object
@@ -12201,7 +12626,9 @@ components:
             price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references};
             resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?};
             invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid
-            {reason}. Ids, codes, dates and integers only.
+            {reason}; allocation_changed {current_resource_id, current_resource_code} (null when the allocation
+            is gone); remote_pin_mismatch {expected_fingerprint, presented_fingerprint}. Ids, codes, dates and
+            integers only.
           type: object
           additionalProperties: true
 
@@ -12918,6 +13345,240 @@ components:
         user: { $ref: "#/components/schemas/UserRef" }
         base_url: { type: string }
 
+    # ---- M6b offline, phone, remote desktop and bridge (m6b-plan §9.1) ----
+
+    Collectible:
+      type: object
+      required: [charge_id, number, contract_id, contract_code, vessel, customer_id, description, due_on,
+        residual_cents, fiscal_mode]
+      properties:
+        charge_id: { type: string }
+        number: { type: string }
+        contract_id: { type: string }
+        contract_code: { type: string }
+        vessel: { $ref: "#/components/schemas/CollectibleVessel" }
+        customer_id: { type: string }
+        customer_display_name: { type: string, description: Only with customers.read }
+        description: { type: string }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        residual_cents: { $ref: "#/components/schemas/Cents" }
+        fiscal_mode: { $ref: "#/components/schemas/FiscalMode" }
+
+    CollectibleVessel:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: string }
+        name: { type: string }
+
+    CollectiblePage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Collectible" } }
+        next_cursor: { type: [string, "null"] }
+
+    ReceiptData:
+      description: >-
+        Courtesy receipt data for the desktop bridge printers ("Non valido ai fini fiscali"); no customer data.
+      type: object
+      required: [marina, number, date, method, amount_cents, lines, vat, fiscal_number, footer, not_fiscal]
+      properties:
+        marina: { $ref: "#/components/schemas/ReceiptMarina" }
+        number: { type: string }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        method: { type: string }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        lines: { type: array, items: { $ref: "#/components/schemas/ReceiptDataLine" } }
+        vat: { type: array, items: { $ref: "#/components/schemas/ReceiptDataVat" } }
+        fiscal_number: { type: string, description: Number of the fiscal document, empty when none }
+        footer: { type: string }
+        not_fiscal: { type: boolean, description: Always true (courtesy receipt) }
+
+    ReceiptMarina:
+      type: object
+      required: [name, legal_name, address, vat_number]
+      properties:
+        name: { type: string }
+        legal_name: { type: string }
+        address: { type: string }
+        vat_number: { type: string }
+
+    ReceiptDataLine:
+      type: object
+      required: [description, qty_milli, gross_cents, vat_rate_bp]
+      properties:
+        description: { type: string }
+        qty_milli: { type: integer, format: int64 }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        vat_rate_bp: { type: integer }
+
+    ReceiptDataVat:
+      type: object
+      required: [vat_rate_bp, vat_nature, net_cents, vat_cents, gross_cents]
+      properties:
+        vat_rate_bp: { type: integer }
+        vat_nature: { type: string }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+
+    FiscalClaimRequest:
+      type: object
+      required: [max]
+      properties:
+        max: { type: integer, minimum: 1, maximum: 10 }
+
+    FiscalClaim:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/FiscalClaimDocument" } }
+
+    FiscalClaimDocument:
+      description: A claimed document with what the local fiscal driver needs (no customer data).
+      type: object
+      required: [document_id, claim_id, claim_until, number, business_date, refund, total_cents, lines, vat, method]
+      properties:
+        document_id: { type: string }
+        claim_id: { type: string }
+        claim_until: { type: string, format: date-time }
+        number: { type: string }
+        business_date: { $ref: "#/components/schemas/IsoDate" }
+        refund: { type: boolean, description: A refund document (reso) }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        lines: { type: array, items: { $ref: "#/components/schemas/ReceiptDataLine" } }
+        vat: { type: array, items: { $ref: "#/components/schemas/ReceiptDataVat" } }
+        method: { type: string }
+
+    FiscalOutcome:
+      type: object
+      required: [claim_id, status]
+      properties:
+        claim_id: { type: string, maxLength: 64 }
+        status: { type: string, enum: [issued, failed, deferred] }
+        external_ref: { type: string, maxLength: 200, description: Number assigned by the fiscal device (issued) }
+        issued_at: { type: string, format: date-time }
+        error_code: { type: string, maxLength: 64, description: A driver code (failed), never free text }
+
+    PeripheralStatus:
+      type: object
+      required: [driver, ready, message]
+      properties:
+        driver: { type: string, description: "Driver code: none, fake, escpos, zpl, keyboard, or a fiscal driver code" }
+        ready: { type: boolean }
+        message: { type: string, description: A status code, never personal data }
+
+    BridgeStatus:
+      type: object
+      required: [receipt, label, reader, fiscal]
+      properties:
+        receipt: { $ref: "#/components/schemas/PeripheralStatus" }
+        label: { $ref: "#/components/schemas/PeripheralStatus" }
+        reader: { $ref: "#/components/schemas/PeripheralStatus" }
+        fiscal: { $ref: "#/components/schemas/PeripheralStatus" }
+
+    PeripheralSettings:
+      type: object
+      required: [receipt, label, reader, fiscal]
+      properties:
+        receipt: { $ref: "#/components/schemas/ReceiptPrinterSettings" }
+        label: { $ref: "#/components/schemas/LabelPrinterSettings" }
+        reader: { $ref: "#/components/schemas/QrReaderSettings" }
+        fiscal: { $ref: "#/components/schemas/LocalFiscalSettings" }
+
+    ReceiptPrinterSettings:
+      type: object
+      required: [driver]
+      properties:
+        driver: { type: string, enum: [none, fake, escpos] }
+        target:
+          type: string
+          maxLength: 256
+          description: "tcp://<private IP or .local name>:<port> (default 9100), cups://<queue> (macOS, Linux), file://<path> (development)"
+        width: { type: integer, enum: [80, 58] }
+
+    LabelPrinterSettings:
+      type: object
+      required: [driver]
+      properties:
+        driver: { type: string, enum: [none, fake, zpl] }
+        target: { type: string, maxLength: 256 }
+
+    QrReaderSettings:
+      type: object
+      required: [driver]
+      properties:
+        driver: { type: string, enum: [keyboard, fake], description: keyboard = USB HID reader typing into the page }
+
+    LocalFiscalSettings:
+      type: object
+      required: [driver]
+      properties:
+        driver: { type: string, enum: [none, fake], description: Real device models are extensions }
+        fake_mode: { type: string, enum: [ok, offline, fail], description: Behaviour of the fake driver (development) }
+
+    RemoteStatus:
+      type: object
+      required: [url, marina, reachable, paired_at, version_mismatch]
+      properties:
+        url: { type: string }
+        marina: { $ref: "#/components/schemas/MarinaRef" }
+        reachable: { type: boolean }
+        paired_at: { type: string, format: date-time }
+        version_mismatch: { type: boolean, description: The remote major version differs from the app's (update the app) }
+
+    DesktopRemotePairRequest:
+      description: The porto://pair link, or url + code (+ fp); pin is the new app PIN.
+      type: object
+      required: [first_run_token, pin]
+      properties:
+        first_run_token: { type: string, maxLength: 128 }
+        link: { type: string, maxLength: 2048, description: "porto://pair?v=1&url=…&code=…&fp=…" }
+        url: { type: string, maxLength: 512 }
+        code: { type: string, maxLength: 16 }
+        fp: { type: string, maxLength: 128, description: Leaf fingerprint (base64url) of a self-signed target }
+        pin: { type: string, minLength: 6, maxLength: 12, pattern: "^[0-9]+$" }
+        name: { type: string, maxLength: 100, description: Device name shown on the online instance }
+
+    DesktopKioskUpdate:
+      type: object
+      required: [enabled]
+      properties:
+        enabled: { type: boolean }
+
+    DesktopKioskExit:
+      description: Local mode only (remote mode uses Porto-App-Pin).
+      type: object
+      properties:
+        email: { type: string, maxLength: 254 }
+        password: { type: string, maxLength: 256 }
+
+    DesktopRemoteOffline:
+      type: object
+      required: [offline]
+      properties:
+        offline: { type: boolean }
+
+    BridgeReceiptRequest:
+      type: object
+      required: [payment_id]
+      properties:
+        payment_id: { type: string, maxLength: 36 }
+        width: { type: integer, enum: [80, 58] }
+
+    BridgeTestRequest:
+      type: object
+      required: [device]
+      properties:
+        device: { type: string, enum: [receipt, label, fiscal] }
+
+    BridgeScan:
+      type: object
+      required: [text]
+      properties:
+        text: { type: string }
+
     DeviceSelf:
       type: object
       required: [device, user, marina, permissions]
@@ -12968,8 +13629,8 @@ components:
 
     DesktopMode:
       type: string
-      description: local in M6a (remote is reserved for M6b)
-      enum: [local]
+      description: local = the app runs the server (M6a); remote = the app is a client of an online instance (M6b)
+      enum: [local, remote]
 
     DesktopUpdate:
       type: object
@@ -12980,7 +13641,7 @@ components:
 
     DesktopStatus:
       type: object
-      required: [version, mode, first_run_pending, update, secret_store]
+      required: [version, mode, first_run_pending, update, secret_store, kiosk]
       properties:
         version: { type: string }
         mode: { $ref: "#/components/schemas/DesktopMode" }
@@ -12993,6 +13654,10 @@ components:
         secret_store:
           type: string
           enum: [keyring, file]
+        kiosk: { type: boolean, description: The window runs in kiosk mode (M6b) }
+        remote:
+          description: Remote mode only (M6b)
+          $ref: "#/components/schemas/RemoteStatus"
 
     DesktopFirstRunRequest:
       type: object
@@ -13041,7 +13706,7 @@ components:
     LanStatus:
       type: object
       required: [enabled, listening, url, address, addresses, port, fingerprint, ca_fingerprint, cert_expires_at,
-        error]
+        error, ca_constrained, ca_download_url]
       properties:
         enabled: { type: boolean }
         listening: { type: boolean }
@@ -13057,6 +13722,14 @@ components:
         error:
           type: [string, "null"]
           description: Problem slug of the last failed enable (lan_port_unavailable, lan_no_address)
+        ca_constrained:
+          type: boolean
+          description: >-
+            The local CA carries name constraints (private addresses and .local only, M6b); a CA created by M6a
+            does not until "rotate all"; the CA download is offered only for constrained CAs.
+        ca_download_url:
+          type: string
+          description: URL of the CA certificate for phones on the local network (/lan/porto-ca.crt), empty when not offered
 
     LanUpdate:
       type: object
@@ -17240,6 +17913,12 @@ components:
         event: { $ref: "#/components/schemas/PresenceEvent" }
         at: { type: string, format: date-time }
         allocation_id: { type: string, maxLength: 36 }
+        expected_resource_id:
+          type: string
+          maxLength: 36
+          description: >-
+            The resource the operator saw for the allocation (M6b, with allocation_id): a different current
+            resource is 409 allocation_changed.
         notes: { type: string, maxLength: 1000 }
         expected_return_on: { $ref: "#/components/schemas/IsoDate" }
 
@@ -20146,6 +20825,12 @@ components:
         receipt_footer: { type: string, maxLength: 1000 }
         sepa_lead_days: { type: integer, minimum: 0, maximum: 30 }
         origin_items: { type: array, maxItems: 9, items: { $ref: "#/components/schemas/OriginItem" } }
+        fiscal_bridge_device_id:
+          type: [string, "null"]
+          maxLength: 36
+          description: >-
+            Desktop device (kind desktop, access token) of the marina that issues the documents of the fiscal
+            driver bridge (M6b); required when fiscal_driver is bridge, absent or null = none.
 
     BillingSettings:
       type: object
@@ -20161,7 +20846,8 @@ components:
         receipt_footer: { type: string }
         sepa_lead_days: { type: integer }
         origin_items: { type: array, items: { $ref: "#/components/schemas/OriginItem" } }
-        fiscal_drivers: { description: Available fiscal driver codes (none, export and extensions), type: array, items: { type: string } }
+        fiscal_drivers: { description: Available fiscal driver codes (none, export, bridge and extensions), type: array, items: { type: string } }
+        fiscal_bridge_device_id: { type: [string, "null"], description: Desktop device issuing the bridge documents (M6b) }
         version: { type: integer }
 
     OpeningBalanceMapping:

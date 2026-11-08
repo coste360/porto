@@ -7,6 +7,7 @@ package reqctx
 import (
 	"context"
 	"net/netip"
+	"time"
 	"unicode/utf8"
 )
 
@@ -33,6 +34,16 @@ type Info struct {
 	Route      string // chi route pattern, never the raw path (no ids or tokens in logs)
 	UserAgent  string // truncated to MaxUserAgent bytes
 	AuthMethod AuthMethod
+	// OfflineQueuedAt is the Porto-Offline-Queued-At instant of a replay from the offline queue (M6b), set by
+	// middleware.OfflineGuard only on operations flagged x-porto-offline; zero for every other request. Audit rows
+	// of the request record it (offline_queued_at).
+	OfflineQueuedAt time.Time
+}
+
+// OfflineReplay reports whether the request is a replay from the offline queue (M6b) and its queued instant.
+func OfflineReplay(ctx context.Context) (time.Time, bool) {
+	at := From(ctx).OfflineQueuedAt
+	return at, !at.IsZero()
 }
 
 type ctxKey struct{}

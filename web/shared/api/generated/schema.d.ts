@@ -99,7 +99,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** The current user, organizations and marinas with roles and permissions */
+        /**
+         * The current user, organizations and marinas with roles and permissions
+         * @description Also answers a device token (deviceAuth): a desktop in remote mode (M6b) starts the panel of the online instance with it; grants are narrowed to the device's marina and auth_method is device.
+         */
         get: operations["getMe"];
         put?: never;
         post?: never;
@@ -805,6 +808,52 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/device/v1/fiscal/claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Claim pending documents of the bridge fiscal driver for issuing on the desktop's local device (M6b)
+         * @description Only the device set as `fiscal_bridge_device_id` in the billing settings of its marina (a `kind: desktop`,
+         *     `access: token` device) may claim; any other device is 403. Each returned document carries a `claim_id`
+         *     valid for 60 seconds (`claim_until`); a document is claimed by at most one caller at a time (INV-86). No
+         *     `Idempotency-Key`: every call is a new claim.
+         */
+        post: operations["claimFiscalDocuments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/device/v1/fiscal/documents/{documentId}/outcome": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                documentId: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Report the outcome of a claimed bridge document (issued, failed or deferred) (M6b)
+         * @description `Idempotency-Key` = `<documentId>:<claim_id>`. A stale or foreign claim is 409 `claim_expired`; `issued`
+         *     follows the immutability of issued documents. `deferred` releases the claim and keeps the document pending.
+         */
+        post: operations["reportFiscalOutcome"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/desktop/v1/status": {
         parameters: {
             query?: never;
@@ -1028,6 +1077,198 @@ export interface paths {
          * @description Authenticated by the instance token of the running process (header `Porto-Instance-Token`).
          */
         post: operations["activateDesktop"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/remote/pair": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Pair this app to an online Porto instance on the first run and restart in remote mode (M6b)
+         * @description Local mode, first run only (first-run token in the body; 409 `first_run_done` once the local instance has
+         *     users or the app is already paired). The app calls `pairDevice` on the remote instance (`kind: desktop`)
+         *     with the TLS policy of the payload (`fp` = pinned leaf, then its CA; no `fp` = system roots; `http` only
+         *     in development), stores the device token in the OS secret store (never in the page or in desktop.json),
+         *     sets the app PIN and restarts in remote mode (202).
+         */
+        post: operations["pairDesktopRemote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/remote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Unpair the app from the online instance and go back to the first run (remote mode, app PIN) (M6b)
+         * @description Revokes the device on the remote instance (best effort), deletes the token, the shell cache and the remote
+         *     settings. Answered by the remote proxy only (404 on a Porto server).
+         */
+        delete: operations["unpairDesktopRemote"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/peripherals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Peripheral settings of this app (local mode owner; remote mode any proxy user) (M6b) */
+        get: operations["getDesktopPeripherals"];
+        /** Change the peripheral settings (local mode owner; remote mode app PIN) (M6b) */
+        put: operations["updateDesktopPeripherals"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/kiosk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Switch kiosk mode for the next launch (local mode owner; remote mode app PIN) (M6b) */
+        put: operations["setDesktopKiosk"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/kiosk/exit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Leave kiosk mode until the next launch (local mode owner credentials; remote mode app PIN) (M6b)
+         * @description Local mode: any signed-in user of the window plus the email and password of an owner in the body (the
+         *     front desk user is usually not an owner); remote mode: `Porto-App-Pin`. 5 failures per 15 minutes, then
+         *     429; never logged.
+         */
+        post: operations["exitDesktopKiosk"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/desktop/v1/dev/remote-offline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Make the remote proxy behave as if the online instance were unreachable (PORTO_DEV only, e2e) (M6b) */
+        post: operations["setDesktopRemoteOffline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bridge/v1/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Status of the local peripherals (any authenticated user of the app window) (M6b)
+         * @description Every `/api/bridge/v1` operation answers only on the desktop loopback listener (local mode, session
+         *     cookie, the user's permissions) or on the remote proxy (remote mode, `porto_remote` cookie, the device
+         *     user's permissions); elsewhere 404 (INV-85).
+         */
+        get: operations["getBridgeStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bridge/v1/receipts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Print the courtesy receipt of a payment on the local receipt printer (payments.collect or payments.collect_cash) (M6b) */
+        post: operations["printBridgeReceipt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bridge/v1/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Print a test page or check the local fiscal device (local mode owner; remote mode app PIN) (M6b) */
+        post: operations["testBridgePeripheral"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bridge/v1/scanner/next": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Wait for the next scan of a local QR reader driver (long poll, at most 25 seconds) (M6b) */
+        get: operations["nextBridgeScan"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2800,6 +3041,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/marinas/{marinaId}/transits/{contractId}/qr": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        /**
+         * QR code of a transit for the dock worker's scanner, payload PT1:<contract_id> (contracts.read or transits.desk)
+         * @description SVG image whose payload is `PT1:<contract_id>`: opaque, no personal data, no URL; resolved only by an
+         *     authenticated panel (M6b D10). 404 for contracts that are not transits and for other marinas.
+         */
+        get: operations["getTransitQr"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/v1/marinas/{marinaId}/transits/{contractId}": {
         parameters: {
             query?: never;
@@ -2872,7 +3137,15 @@ export interface paths {
         /** Presence events of a night (default today) or of a vessel; notes only with customers.read (map.view) */
         get: operations["listPresences"];
         put?: never;
-        /** Record an arrival or departure (hauled_out and launched are accepted for M9) (presence.write) */
+        /**
+         * Record an arrival or departure (hauled_out and launched are accepted for M9) (presence.write)
+         * @description Offline replay (M6b, `Porto-Offline-Queued-At`): only `arrived` / `departed` with `allocation_id` and
+         *     `expected_resource_id` (else 422 `offline_not_allowed`); `at` defaults to the queued instant. With
+         *     `expected_resource_id` the allocation must still be active, of the vessel and on that resource for the night, else 409
+         *     `allocation_changed` with `details.current_resource_id` / `details.current_resource_code` (null when the
+         *     allocation is gone). A key replayed with the same body returns the same presence, also after the
+         *     idempotency row is gone (domain dedupe).
+         */
         post: operations["recordPresence"];
         delete?: never;
         options?: never;
@@ -2912,7 +3185,10 @@ export interface paths {
         /** A short-lived (5 minutes) signed link to the photo (customers.read) */
         get: operations["getPresencePhotoLink"];
         put?: never;
-        /** Attach a photo to a presence (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write) */
+        /**
+         * Attach a photo to a presence (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write)
+         * @description One photo per presence (a new upload replaces it). Queueable offline (M6b). The same bytes as the current photo return the current file id without writing again (domain dedupe of replays).
+         */
         post: operations["uploadPresencePhoto"];
         delete?: never;
         options?: never;
@@ -5530,6 +5806,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/marinas/{marinaId}/collectibles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /**
+         * Open charges to collect at the dock on a date: contracts with an allocation on the night or a movement on the date (payments.collect or payments.collect_cash)
+         * @description Residual > 0, not cancelled. `customer_display_name` only with `customers.read`. Default date: today in
+         *     the marina time zone. Cached offline by the panel (M6b).
+         */
+        get: operations["listCollectibles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/v1/marinas/{marinaId}/charges": {
         parameters: {
             query?: never;
@@ -5878,7 +6177,14 @@ export interface paths {
         /** Payments (payments.collect or charges.manage) */
         get: operations["listPayments"];
         put?: never;
-        /** Record a payment with matches or automatic matching; the rest stays as customer credit (payments.collect; payments.collect_cash for cash) */
+        /**
+         * Record a payment with matches or automatic matching; the rest stays as customer credit (payments.collect; payments.collect_cash for cash)
+         * @description Offline replay (M6b, `Porto-Offline-Queued-At`): only `method: cash`, `kind: payment`, at least one match,
+         *     every match positive and their sum equal to `amount_cents` (no unmatched credit), no `auto_match`, and no
+         *     matched charge with `fiscal_mode: receipt` (else 422 `offline_not_allowed`). The
+         *     open cash session is resolved at replay: none or closed is 409 `cash_session_required` /
+         *     `cash_session_closed`, never a silent move to another session.
+         */
         post: operations["recordPayment"];
         delete?: never;
         options?: never;
@@ -6412,7 +6718,7 @@ export interface paths {
             };
             cookie?: never;
         };
-        /** Courtesy receipt (not valid for tax purposes): 80/58 mm HTML or A4 PDF (payments.collect, charges.manage or payments.collect_cash) */
+        /** Courtesy receipt (not valid for tax purposes): 80/58 mm HTML, A4 PDF or the receipt data as JSON for the desktop bridge printers (M6b) (payments.collect, charges.manage or payments.collect_cash) */
         get: operations["getPaymentReceipt"];
         put?: never;
         post?: never;
@@ -6945,7 +7251,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid";
         FieldError: {
             field: string;
             code: string;
@@ -6964,7 +7270,7 @@ export interface components {
             issues?: components["schemas"]["MapIssue"][];
             /** @description Price list validation issues (price_list_invalid) */
             price_list_issues?: components["schemas"]["PriceListIssue"][];
-            /** @description Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}; resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?}; invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid {reason}. Ids, codes, dates and integers only. */
+            /** @description Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}; resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?}; invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid {reason}; allocation_changed {current_resource_id, current_resource_code} (null when the allocation is gone); remote_pin_mismatch {expected_fingerprint, presented_fingerprint}. Ids, codes, dates and integers only. */
             details?: {
                 [key: string]: unknown;
             };
@@ -7404,6 +7710,191 @@ export interface components {
             user: components["schemas"]["UserRef"];
             base_url: string;
         };
+        Collectible: {
+            charge_id: string;
+            number: string;
+            contract_id: string;
+            contract_code: string;
+            vessel: components["schemas"]["CollectibleVessel"];
+            customer_id: string;
+            /** @description Only with customers.read */
+            customer_display_name?: string;
+            description: string;
+            due_on: components["schemas"]["IsoDate"];
+            residual_cents: components["schemas"]["Cents"];
+            fiscal_mode: components["schemas"]["FiscalMode"];
+        };
+        CollectibleVessel: {
+            id: string;
+            name: string;
+        };
+        CollectiblePage: {
+            items: components["schemas"]["Collectible"][];
+            next_cursor: string | null;
+        };
+        /** @description Courtesy receipt data for the desktop bridge printers ("Non valido ai fini fiscali"); no customer data. */
+        ReceiptData: {
+            marina: components["schemas"]["ReceiptMarina"];
+            number: string;
+            date: components["schemas"]["IsoDate"];
+            method: string;
+            amount_cents: components["schemas"]["Cents"];
+            lines: components["schemas"]["ReceiptDataLine"][];
+            vat: components["schemas"]["ReceiptDataVat"][];
+            /** @description Number of the fiscal document */
+            fiscal_number: string;
+            footer: string;
+            /** @description Always true (courtesy receipt) */
+            not_fiscal: boolean;
+        };
+        ReceiptMarina: {
+            name: string;
+            legal_name: string;
+            address: string;
+            vat_number: string;
+        };
+        ReceiptDataLine: {
+            description: string;
+            /** Format: int64 */
+            qty_milli: number;
+            gross_cents: components["schemas"]["Cents"];
+            vat_rate_bp: number;
+        };
+        ReceiptDataVat: {
+            vat_rate_bp: number;
+            vat_nature: string;
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+        };
+        FiscalClaimRequest: {
+            max: number;
+        };
+        FiscalClaim: {
+            items: components["schemas"]["FiscalClaimDocument"][];
+        };
+        /** @description A claimed document with what the local fiscal driver needs (no customer data). */
+        FiscalClaimDocument: {
+            document_id: string;
+            claim_id: string;
+            /** Format: date-time */
+            claim_until: string;
+            number: string;
+            business_date: components["schemas"]["IsoDate"];
+            /** @description A refund document (reso) */
+            refund: boolean;
+            total_cents: components["schemas"]["Cents"];
+            lines: components["schemas"]["ReceiptDataLine"][];
+            vat: components["schemas"]["ReceiptDataVat"][];
+            method: string;
+        };
+        FiscalOutcome: {
+            claim_id: string;
+            /** @enum {string} */
+            status: "issued" | "failed" | "deferred";
+            /** @description Number assigned by the fiscal device (issued) */
+            external_ref?: string;
+            /** Format: date-time */
+            issued_at?: string;
+            /** @description A driver code (failed) */
+            error_code?: string;
+        };
+        PeripheralStatus: {
+            /** @description Driver code: none, fake, escpos, zpl, keyboard, or a fiscal driver code */
+            driver: string;
+            ready: boolean;
+            /** @description A status code */
+            message: string;
+        };
+        BridgeStatus: {
+            receipt: components["schemas"]["PeripheralStatus"];
+            label: components["schemas"]["PeripheralStatus"];
+            reader: components["schemas"]["PeripheralStatus"];
+            fiscal: components["schemas"]["PeripheralStatus"];
+        };
+        PeripheralSettings: {
+            receipt: components["schemas"]["ReceiptPrinterSettings"];
+            label: components["schemas"]["LabelPrinterSettings"];
+            reader: components["schemas"]["QrReaderSettings"];
+            fiscal: components["schemas"]["LocalFiscalSettings"];
+        };
+        ReceiptPrinterSettings: {
+            /** @enum {string} */
+            driver: "none" | "fake" | "escpos";
+            /** @description tcp://<private IP or .local name>:<port> (default 9100), cups://<queue> (macOS, Linux), file://<path> (development) */
+            target?: string;
+            /** @enum {integer} */
+            width?: 80 | 58;
+        };
+        LabelPrinterSettings: {
+            /** @enum {string} */
+            driver: "none" | "fake" | "zpl";
+            target?: string;
+        };
+        QrReaderSettings: {
+            /**
+             * @description keyboard = USB HID reader typing into the page
+             * @enum {string}
+             */
+            driver: "keyboard" | "fake";
+        };
+        LocalFiscalSettings: {
+            /**
+             * @description Real device models are extensions
+             * @enum {string}
+             */
+            driver: "none" | "fake";
+            /**
+             * @description Behaviour of the fake driver (development)
+             * @enum {string}
+             */
+            fake_mode?: "ok" | "offline" | "fail";
+        };
+        RemoteStatus: {
+            url: string;
+            marina: components["schemas"]["MarinaRef"];
+            reachable: boolean;
+            /** Format: date-time */
+            paired_at: string;
+            /** @description The remote major version differs from the app's (update the app) */
+            version_mismatch: boolean;
+        };
+        /** @description The porto://pair link, or url + code (+ fp); pin is the new app PIN. */
+        DesktopRemotePairRequest: {
+            first_run_token: string;
+            /** @description porto://pair?v=1&url=…&code=…&fp=… */
+            link?: string;
+            url?: string;
+            code?: string;
+            /** @description Leaf fingerprint (base64url) of a self-signed target */
+            fp?: string;
+            pin: string;
+            /** @description Device name shown on the online instance */
+            name?: string;
+        };
+        DesktopKioskUpdate: {
+            enabled: boolean;
+        };
+        /** @description Local mode only (remote mode uses Porto-App-Pin). */
+        DesktopKioskExit: {
+            email?: string;
+            password?: string;
+        };
+        DesktopRemoteOffline: {
+            offline: boolean;
+        };
+        BridgeReceiptRequest: {
+            payment_id: string;
+            /** @enum {integer} */
+            width?: 80 | 58;
+        };
+        BridgeTestRequest: {
+            /** @enum {string} */
+            device: "receipt" | "label" | "fiscal";
+        };
+        BridgeScan: {
+            text: string;
+        };
         DeviceSelf: {
             device: components["schemas"]["Device"];
             user: components["schemas"]["UserRef"];
@@ -7435,10 +7926,10 @@ export interface components {
             recovery_code?: string;
         };
         /**
-         * @description local in M6a (remote is reserved for M6b)
+         * @description local = the app runs the server (M6a); remote = the app is a client of an online instance (M6b)
          * @enum {string}
          */
-        DesktopMode: "local";
+        DesktopMode: "local" | "remote";
         DesktopUpdate: {
             version: string;
             url: string;
@@ -7451,6 +7942,10 @@ export interface components {
             update: components["schemas"]["DesktopUpdate"] | null;
             /** @enum {string} */
             secret_store: "keyring" | "file";
+            /** @description The window runs in kiosk mode (M6b) */
+            kiosk: boolean;
+            /** @description Remote mode only (M6b) */
+            remote?: components["schemas"]["RemoteStatus"];
         };
         DesktopFirstRunRequest: {
             token: string;
@@ -7504,6 +7999,10 @@ export interface components {
             cert_expires_at: string | null;
             /** @description Problem slug of the last failed enable (lan_port_unavailable, lan_no_address) */
             error: string | null;
+            /** @description The local CA carries name constraints (private addresses and .local only, M6b); a CA created by M6a does not until "rotate all"; the CA download is offered only for constrained CAs. */
+            ca_constrained: boolean;
+            /** @description URL of the CA certificate for phones on the local network (/lan/porto-ca.crt), empty when not offered */
+            ca_download_url: string;
         };
         LanUpdate: {
             enabled: boolean;
@@ -10345,6 +10844,8 @@ export interface components {
             /** Format: date-time */
             at?: string;
             allocation_id?: string;
+            /** @description The resource the operator saw for the allocation (M6b, with allocation_id): a different current resource is 409 allocation_changed. */
+            expected_resource_id?: string;
             notes?: string;
             expected_return_on?: components["schemas"]["IsoDate"];
         };
@@ -12284,6 +12785,8 @@ export interface components {
             receipt_footer: string;
             sepa_lead_days: number;
             origin_items: components["schemas"]["OriginItem"][];
+            /** @description Desktop device (kind desktop, access token) of the marina that issues the documents of the fiscal driver bridge (M6b); required when fiscal_driver is bridge, absent or null = none. */
+            fiscal_bridge_device_id?: string | null;
         };
         BillingSettings: {
             default_due_days: number;
@@ -12298,6 +12801,8 @@ export interface components {
             origin_items: components["schemas"]["OriginItem"][];
             /** @description Available fiscal driver codes (none */
             fiscal_drivers: string[];
+            /** @description Desktop device issuing the bridge documents (M6b) */
+            fiscal_bridge_device_id?: string | null;
             version: number;
         };
         /** @description Column indexes (0-based) of the file */
@@ -13295,8 +13800,10 @@ export interface components {
         Limit: number;
         /** @description Single-use first-run token of the desktop window (never in the URL) */
         FirstRunToken: string;
-        /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+        /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
         IdempotencyKey: string;
+        /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+        OfflineQueuedAt: string;
         /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
         IfMatch: string;
         MapId: string;
@@ -13752,7 +14259,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -13813,7 +14320,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -13983,7 +14490,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -14124,7 +14631,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -14182,7 +14689,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -14311,7 +14818,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -14459,7 +14966,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -14521,7 +15028,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -14613,7 +15120,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path?: never;
@@ -14760,6 +15267,66 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             429: components["responses"]["TooManyRequests"];
+        };
+    };
+    claimFiscalDocuments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FiscalClaimRequest"];
+            };
+        };
+        responses: {
+            /** @description Claimed documents (possibly none) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FiscalClaim"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    reportFiscalOutcome: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                documentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FiscalOutcome"];
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
         };
     };
     getDesktopStatus: {
@@ -15003,7 +15570,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path?: never;
@@ -15157,6 +15724,294 @@ export interface operations {
             404: components["responses"]["NotFound"];
         };
     };
+    pairDesktopRemote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesktopRemotePairRequest"];
+            };
+        };
+        responses: {
+            /** @description Paired; the app restarts in remote mode */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+            502: components["responses"]["BadGateway"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    unpairDesktopRemote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unpaired; the app restarts on the first run */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getDesktopPeripherals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeripheralSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateDesktopPeripherals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PeripheralSettings"];
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeripheralSettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    setDesktopKiosk: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesktopKioskUpdate"];
+            };
+        };
+        responses: {
+            /** @description Kiosk setting */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesktopKioskUpdate"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    exitDesktopKiosk: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["DesktopKioskExit"];
+            };
+        };
+        responses: {
+            /** @description Kiosk left */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    setDesktopRemoteOffline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesktopRemoteOffline"];
+            };
+        };
+        responses: {
+            /** @description Set */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getBridgeStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BridgeStatus"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    printBridgeReceipt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BridgeReceiptRequest"];
+            };
+        };
+        responses: {
+            /** @description Sent to the printer */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    testBridgePeripheral: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BridgeTestRequest"];
+            };
+        };
+        responses: {
+            /** @description Done */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    nextBridgeScan: {
+        parameters: {
+            query?: {
+                timeout?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A scan */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BridgeScan"];
+                };
+            };
+            /** @description No scan before the timeout */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
     getPublicMarina: {
         parameters: {
             query?: never;
@@ -15210,7 +16065,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -15273,7 +16128,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -15694,7 +16549,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -15893,7 +16748,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -16189,7 +17044,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -16258,7 +17113,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -16509,7 +17364,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -16977,7 +17832,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -17114,7 +17969,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -17273,7 +18128,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -17334,7 +18189,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -17461,7 +18316,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -17697,7 +18552,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -18051,7 +18906,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -18087,7 +18942,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -18123,7 +18978,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -18192,7 +19047,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -18222,7 +19077,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -18321,7 +19176,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -18356,7 +19211,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -18424,7 +19279,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -18521,7 +19376,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -18625,7 +19480,7 @@ export interface operations {
                 manual?: boolean;
             };
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -18662,7 +19517,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -18702,7 +19557,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -18779,7 +19634,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -18880,7 +19735,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -18920,7 +19775,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -18960,7 +19815,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -19036,7 +19891,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -19072,7 +19927,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -19113,7 +19968,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -19153,7 +20008,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -19188,7 +20043,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -19222,6 +20077,32 @@ export interface operations {
             412: components["responses"]["PreconditionFailed"];
             422: components["responses"]["OccupancyUnprocessable"];
             428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getTransitQr: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SVG image */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/svg+xml": string;
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
         };
     };
     updateTransit: {
@@ -19298,7 +20179,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -19401,8 +20282,10 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
             };
             path: {
                 marinaId: components["parameters"]["MarinaId"];
@@ -19429,13 +20312,14 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
         };
     };
     recordUnexpectedArrival: {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -19495,7 +20379,12 @@ export interface operations {
     uploadPresencePhoto: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
             path: {
                 marinaId: components["parameters"]["MarinaId"];
                 presenceId: components["parameters"]["PresenceId"];
@@ -19523,8 +20412,10 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
             413: components["responses"]["PayloadTooLarge"];
             415: components["responses"]["UnsupportedMediaType"];
+            422: components["responses"]["UnprocessableEntity"];
         };
     };
     getPresencePhotoFile: {
@@ -19653,7 +20544,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -19694,7 +20585,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -19734,7 +20625,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -19769,7 +20660,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -19836,7 +20727,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -19914,7 +20805,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -19947,7 +20838,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -19980,7 +20871,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20020,7 +20911,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -20085,7 +20976,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -20184,7 +21075,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20219,7 +21110,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20254,7 +21145,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20289,7 +21180,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20384,7 +21275,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20420,7 +21311,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20461,7 +21352,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20501,7 +21392,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20570,7 +21461,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -20670,7 +21561,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -20706,7 +21597,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20773,7 +21664,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -20810,7 +21701,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20851,7 +21742,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20893,7 +21784,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -20960,7 +21851,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -21032,7 +21923,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -21102,7 +21993,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -21204,7 +22095,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -21244,7 +22135,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -21413,7 +22304,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -21476,7 +22367,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -21517,7 +22408,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -21558,7 +22449,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -21629,7 +22520,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -21692,7 +22583,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -21732,7 +22623,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -21805,7 +22696,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -21861,7 +22752,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -21992,7 +22883,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -22056,7 +22947,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -22151,7 +23042,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -22186,7 +23077,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -22221,7 +23112,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -22281,7 +23172,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -22480,7 +23371,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -22541,7 +23432,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -22697,7 +23588,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -22805,7 +23696,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -22841,7 +23732,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -22940,7 +23831,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -23038,7 +23929,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -23074,7 +23965,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -23178,7 +24069,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -23218,7 +24109,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -23340,7 +24231,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -23441,7 +24332,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -23534,7 +24425,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -23664,7 +24555,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -23700,7 +24591,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -23885,7 +24776,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -24003,7 +24894,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -24038,7 +24929,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -24073,7 +24964,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Original file name (sanitised) */
                 "X-File-Name"?: string;
@@ -24114,7 +25005,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -24276,7 +25167,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -24408,7 +25299,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -24443,7 +25334,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -24483,7 +25374,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -24580,7 +25471,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -24638,7 +25529,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -24699,7 +25590,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -25037,6 +25928,36 @@ export interface operations {
             429: components["responses"]["TooManyRequests"];
         };
     };
+    listCollectibles: {
+        parameters: {
+            query?: {
+                date?: components["schemas"]["IsoDate"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectiblePage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
     listCharges: {
         parameters: {
             query?: {
@@ -25085,7 +26006,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -25224,7 +26145,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -25296,7 +26217,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -25360,7 +26281,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -25425,7 +26346,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -25549,7 +26470,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -25646,7 +26567,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -25811,8 +26732,10 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
             };
             path: {
                 marinaId: components["parameters"]["MarinaId"];
@@ -25874,7 +26797,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -25910,7 +26833,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -25941,7 +26864,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -25978,7 +26901,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -26102,7 +27025,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -26137,7 +27060,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -26330,7 +27253,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -26454,7 +27377,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -26558,7 +27481,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -26648,7 +27571,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -26751,7 +27674,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -26785,7 +27708,7 @@ export interface operations {
     getPaymentReceipt: {
         parameters: {
             query?: {
-                format?: "80" | "58" | "a4";
+                format?: "80" | "58" | "a4" | "json";
             };
             header?: never;
             path: {
@@ -26804,6 +27727,7 @@ export interface operations {
                 content: {
                     "text/html": string;
                     "application/pdf": string;
+                    "application/json": components["schemas"]["ReceiptData"];
                 };
             };
             400: components["responses"]["BadRequest"];
@@ -26966,7 +27890,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -27001,7 +27925,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -27134,7 +28058,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
                 "If-Match"?: components["parameters"]["IfMatch"];
@@ -27203,7 +28127,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -27261,7 +28185,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -27380,7 +28304,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
@@ -27582,7 +28506,7 @@ export interface operations {
         parameters: {
             query?: never;
             header?: {
-                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours. */
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {

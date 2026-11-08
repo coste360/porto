@@ -1,0 +1,163 @@
+{
+  "fullVersion": "Full version",
+  "dock": {
+    "title": "Dock",
+    "tabs": {
+      "today": "Today",
+      "map": "Map",
+      "scan": "Scan",
+      "cash": "Cash",
+      "more": "More"
+    },
+    "arrived": "Arrived",
+    "departed": "Departed",
+    "collect": "Collect",
+    "photo": "Photo",
+    "note": "Note",
+    "unexpected": "Unexpected arrival",
+    "measure": "Measure vessel",
+    "releases": "Releases",
+    "blocks": "Blocks",
+    "deviceInfo": "Device",
+    "logout": "Sign out",
+    "sections": {
+      "arrivals_expected": "Expected arrivals",
+      "departures_expected": "Expected departures",
+      "in_port": "In port",
+      "vessels_out": "Out",
+      "arrived_without_booking": "Arrived without booking"
+    },
+    "none": "No vessels",
+    "queued": "Queued",
+    "nextDeparture": "then Departed",
+    "presenceSheet": {
+      "arrivedTitle": "Arrival of {{name}}",
+      "departedTitle": "Departure of {{name}}",
+      "notesHint": "Optional, at most 1000 characters.",
+      "photoHint": "JPEG, PNG or WebP, at most 8 MB. The photo is scaled down before sending.",
+      "submitArrived": "Record arrival",
+      "submitDeparted": "Record departure",
+      "queuedToast": "Operation queued: it will be sent as soon as possible",
+      "noAllocation": "No booking: record the arrival from More, Unexpected arrival."
+    },
+    "paymentWarning": "Balance to check",
+    "map": {
+      "context": "Context",
+      "contexts": {
+        "presence": "Presence",
+        "movements": "Arrivals and departures",
+        "payments": "Payments",
+        "contractType": "Contract type"
+      },
+      "legend": "Legend",
+      "noMaps": "No map configured.",
+      "elementTitle": "Berth {{code}}",
+      "free": "Free",
+      "contract": "Contract",
+      "customer": "Customer",
+      "presence": "Presence",
+      "payment": "Payment",
+      "arrivalToday": "Arrives today",
+      "departureToday": "Departs today",
+      "canvas": "Map of the day",
+      "fit": "Fit",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
+    },
+    "scanCard": {
+      "title": "Transit {{code}}",
+      "berth": "Berth",
+      "nights": "Nights",
+      "nightsValue": "{{first}} – {{last}} ({{count}})",
+      "payment": "Payment",
+      "status": "Status",
+      "close": "Close",
+      "searching": "Looking up the transit…",
+      "notTransit": "The QR does not match a transit of this marina.",
+      "manualSearch": "Search"
+    },
+    "cash": {
+      "session": "Cash session",
+      "sessionOpen": "Till open since {{date}}",
+      "sessionNone": "No open till: open it from the office to collect.",
+      "collectibles": "To collect today",
+      "none": "Nothing to collect today.",
+      "residual": "Residual",
+      "due": "Due {{date}}",
+      "amount": "Amount collected in cash",
+      "amountHint": "At most the residual.",
+      "submit": "Record collection",
+      "receiptMode": "With receipt: needs the connection (issues a document).",
+      "receiptLink": "Receipt",
+      "notAllowed": "Your role cannot collect payments.",
+      "unavailable": "List of amounts to collect not available.",
+      "queuedToast": "Collection queued: it will be sent as soon as possible",
+      "sheetTitle": "Collect {{number}}"
+    },
+    "more": {
+      "title": "More",
+      "direction": "Management screen",
+      "dock": "Dock screen",
+      "queue": "Queued operations",
+      "device": "Device",
+      "user": "User",
+      "marina": "Marina",
+      "measureTitle": "Measure vessel",
+      "measureVessel": "Vessel",
+      "measureVesselHint": "Pick the vessel from today's list.",
+      "measureSaved": "Measurements recorded",
+      "releasesTitle": "Releases and blocks",
+      "unexpectedTitle": "Unexpected arrival",
+      "back": "Back",
+      "deviceSession": "Phone paired with a QR",
+      "browserSession": "Browser session"
+    }
+  },
+  "direction": {
+    "title": "Management",
+    "tabs": {
+      "dashboard": "Dashboard",
+      "map": "Map",
+      "deadlines": "Deadlines"
+    },
+    "dashboardPlaceholder": "Full dashboard with M7",
+    "arrivals": "Arrivals",
+    "departures": "Departures",
+    "inPort": "In port",
+    "today": "Today",
+    "openFull": "Open the full page",
+    "deadlinesNone": "No deadlines in the next 30 days.",
+    "week": "Week of {{date}}",
+    "notAllowed": "Your role cannot see deadlines."
+  },
+  "scan": {
+    "start": "Frame the transit QR",
+    "chooseImage": "Choose a photo of the QR",
+    "torch": "Torch",
+    "notFoundOffline": "Not found in today's data",
+    "invalid": "QR not recognised",
+    "manual": "Enter the transit code",
+    "cameraDenied": "Camera access denied",
+    "cameraUnavailable": "Camera not available on this device",
+    "noQrInImage": "No QR found in the photo",
+    "notFound": "Transit not found",
+    "manualLabel": "Transit code",
+    "manualPlaceholder": "TRN-2026-0001"
+  },
+  "landingSeam": "Phone features for your role will come with the next versions.",
+  "shellLabel": "Phone panel",
+  "tabsLabel": "Sections",
+  "status": {
+    "online": "Online",
+    "offline": "Offline",
+    "queue": "Queue"
+  },
+  "enqueueFailed": "Operation not queued: try again.",
+  "yes": "Yes",
+  "transitQr": {
+    "button": "QR for the dock worker",
+    "title": "QR of transit {{code}}",
+    "description": "Print it or show it: the dock worker scans it with the phone. It holds no personal data.",
+    "alt": "QR of transit {{code}}"
+  }
+}

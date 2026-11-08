@@ -389,6 +389,45 @@ func (e BerthImportRequestUnits) Valid() bool {
 	}
 }
 
+// Defines values for BridgeReceiptRequestWidth.
+const (
+	BridgeReceiptRequestWidthN58 BridgeReceiptRequestWidth = 58
+	BridgeReceiptRequestWidthN80 BridgeReceiptRequestWidth = 80
+)
+
+// Valid indicates whether the value is a known member of the BridgeReceiptRequestWidth enum.
+func (e BridgeReceiptRequestWidth) Valid() bool {
+	switch e {
+	case BridgeReceiptRequestWidthN58:
+		return true
+	case BridgeReceiptRequestWidthN80:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BridgeTestRequestDevice.
+const (
+	BridgeTestRequestDeviceFiscal  BridgeTestRequestDevice = "fiscal"
+	BridgeTestRequestDeviceLabel   BridgeTestRequestDevice = "label"
+	BridgeTestRequestDeviceReceipt BridgeTestRequestDevice = "receipt"
+)
+
+// Valid indicates whether the value is a known member of the BridgeTestRequestDevice enum.
+func (e BridgeTestRequestDevice) Valid() bool {
+	switch e {
+	case BridgeTestRequestDeviceFiscal:
+		return true
+	case BridgeTestRequestDeviceLabel:
+		return true
+	case BridgeTestRequestDeviceReceipt:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for BudgetStatus.
 const (
 	BudgetStatusApproved BudgetStatus = "approved"
@@ -1882,13 +1921,16 @@ func (e DesktopBackupKind) Valid() bool {
 
 // Defines values for DesktopMode.
 const (
-	Local DesktopMode = "local"
+	Local  DesktopMode = "local"
+	Remote DesktopMode = "remote"
 )
 
 // Valid indicates whether the value is a known member of the DesktopMode enum.
 func (e DesktopMode) Valid() bool {
 	switch e {
 	case Local:
+		return true
+	case Remote:
 		return true
 	default:
 		return false
@@ -2453,6 +2495,27 @@ func (e FiscalMode) Valid() bool {
 	case FiscalModeInvoice:
 		return true
 	case FiscalModeReceipt:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for FiscalOutcomeStatus.
+const (
+	FiscalOutcomeStatusDeferred FiscalOutcomeStatus = "deferred"
+	FiscalOutcomeStatusFailed   FiscalOutcomeStatus = "failed"
+	FiscalOutcomeStatusIssued   FiscalOutcomeStatus = "issued"
+)
+
+// Valid indicates whether the value is a known member of the FiscalOutcomeStatus enum.
+func (e FiscalOutcomeStatus) Valid() bool {
+	switch e {
+	case FiscalOutcomeStatusDeferred:
+		return true
+	case FiscalOutcomeStatusFailed:
+		return true
+	case FiscalOutcomeStatusIssued:
 		return true
 	default:
 		return false
@@ -3062,6 +3125,27 @@ func (e ItemUnit) Valid() bool {
 	}
 }
 
+// Defines values for LabelPrinterSettingsDriver.
+const (
+	LabelPrinterSettingsDriverFake LabelPrinterSettingsDriver = "fake"
+	LabelPrinterSettingsDriverNone LabelPrinterSettingsDriver = "none"
+	LabelPrinterSettingsDriverZpl  LabelPrinterSettingsDriver = "zpl"
+)
+
+// Valid indicates whether the value is a known member of the LabelPrinterSettingsDriver enum.
+func (e LabelPrinterSettingsDriver) Valid() bool {
+	switch e {
+	case LabelPrinterSettingsDriverFake:
+		return true
+	case LabelPrinterSettingsDriverNone:
+		return true
+	case LabelPrinterSettingsDriverZpl:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for LandGridGeneratorType.
 const (
 	LandGridGeneratorTypeLandGrid LandGridGeneratorType = "land_grid"
@@ -3233,6 +3317,45 @@ func (e LinkPurpose) Valid() bool {
 	case LinkPurposeSignature:
 		return true
 	case LinkPurposeUnsubscribe:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LocalFiscalSettingsDriver.
+const (
+	LocalFiscalSettingsDriverFake LocalFiscalSettingsDriver = "fake"
+	LocalFiscalSettingsDriverNone LocalFiscalSettingsDriver = "none"
+)
+
+// Valid indicates whether the value is a known member of the LocalFiscalSettingsDriver enum.
+func (e LocalFiscalSettingsDriver) Valid() bool {
+	switch e {
+	case LocalFiscalSettingsDriverFake:
+		return true
+	case LocalFiscalSettingsDriverNone:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for LocalFiscalSettingsFakeMode.
+const (
+	LocalFiscalSettingsFakeModeFail    LocalFiscalSettingsFakeMode = "fail"
+	LocalFiscalSettingsFakeModeOffline LocalFiscalSettingsFakeMode = "offline"
+	LocalFiscalSettingsFakeModeOk      LocalFiscalSettingsFakeMode = "ok"
+)
+
+// Valid indicates whether the value is a known member of the LocalFiscalSettingsFakeMode enum.
+func (e LocalFiscalSettingsFakeMode) Valid() bool {
+	switch e {
+	case LocalFiscalSettingsFakeModeFail:
+		return true
+	case LocalFiscalSettingsFakeModeOffline:
+		return true
+	case LocalFiscalSettingsFakeModeOk:
 		return true
 	default:
 		return false
@@ -4603,8 +4726,10 @@ func (e PricingStage) Valid() bool {
 
 // Defines values for ProblemType.
 const (
+	ProblemTypeAllocationChanged         ProblemType = "allocation_changed"
 	ProblemTypeAlreadyMember             ProblemType = "already_member"
 	ProblemTypeAlreadyReversed           ProblemType = "already_reversed"
+	ProblemTypeAppPinInvalid             ProblemType = "app_pin_invalid"
 	ProblemTypeBackupInProgress          ProblemType = "backup_in_progress"
 	ProblemTypeBadRequest                ProblemType = "bad_request"
 	ProblemTypeBillingItemMissing        ProblemType = "billing_item_missing"
@@ -4616,6 +4741,7 @@ const (
 	ProblemTypeChargeExists              ProblemType = "charge_exists"
 	ProblemTypeChargeImmutable           ProblemType = "charge_immutable"
 	ProblemTypeChargesNotOpen            ProblemType = "charges_not_open"
+	ProblemTypeClaimExpired              ProblemType = "claim_expired"
 	ProblemTypeClosureActive             ProblemType = "closure_active"
 	ProblemTypeCodeTaken                 ProblemType = "code_taken"
 	ProblemTypeConflict                  ProblemType = "conflict"
@@ -4668,11 +4794,13 @@ const (
 	ProblemTypeNotImplemented            ProblemType = "not_implemented"
 	ProblemTypeNotReady                  ProblemType = "not_ready"
 	ProblemTypeNothingToSettle           ProblemType = "nothing_to_settle"
+	ProblemTypeOfflineNotAllowed         ProblemType = "offline_not_allowed"
 	ProblemTypeOtpInvalid                ProblemType = "otp_invalid"
 	ProblemTypeOtpLocked                 ProblemType = "otp_locked"
 	ProblemTypeOtpRateLimited            ProblemType = "otp_rate_limited"
 	ProblemTypePairingCodeInvalid        ProblemType = "pairing_code_invalid"
 	ProblemTypePaperScanRequired         ProblemType = "paper_scan_required"
+	ProblemTypePeripheralUnavailable     ProblemType = "peripheral_unavailable"
 	ProblemTypePlacementInvalid          ProblemType = "placement_invalid"
 	ProblemTypePreconditionRequired      ProblemType = "precondition_required"
 	ProblemTypePriceListImmutable        ProblemType = "price_list_immutable"
@@ -4690,6 +4818,8 @@ const (
 	ProblemTypeRegisterInUse             ProblemType = "register_in_use"
 	ProblemTypeReleaseInvalid            ProblemType = "release_invalid"
 	ProblemTypeReleaseNotResold          ProblemType = "release_not_resold"
+	ProblemTypeRemotePinMismatch         ProblemType = "remote_pin_mismatch"
+	ProblemTypeRemoteUnreachable         ProblemType = "remote_unreachable"
 	ProblemTypeRenewalExists             ProblemType = "renewal_exists"
 	ProblemTypeResourceTaken             ProblemType = "resource_taken"
 	ProblemTypeRestoreBackupNewer        ProblemType = "restore_backup_newer"
@@ -4722,9 +4852,13 @@ const (
 // Valid indicates whether the value is a known member of the ProblemType enum.
 func (e ProblemType) Valid() bool {
 	switch e {
+	case ProblemTypeAllocationChanged:
+		return true
 	case ProblemTypeAlreadyMember:
 		return true
 	case ProblemTypeAlreadyReversed:
+		return true
+	case ProblemTypeAppPinInvalid:
 		return true
 	case ProblemTypeBackupInProgress:
 		return true
@@ -4747,6 +4881,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeChargeImmutable:
 		return true
 	case ProblemTypeChargesNotOpen:
+		return true
+	case ProblemTypeClaimExpired:
 		return true
 	case ProblemTypeClosureActive:
 		return true
@@ -4852,6 +4988,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeNothingToSettle:
 		return true
+	case ProblemTypeOfflineNotAllowed:
+		return true
 	case ProblemTypeOtpInvalid:
 		return true
 	case ProblemTypeOtpLocked:
@@ -4861,6 +4999,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypePairingCodeInvalid:
 		return true
 	case ProblemTypePaperScanRequired:
+		return true
+	case ProblemTypePeripheralUnavailable:
 		return true
 	case ProblemTypePlacementInvalid:
 		return true
@@ -4895,6 +5035,10 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeReleaseInvalid:
 		return true
 	case ProblemTypeReleaseNotResold:
+		return true
+	case ProblemTypeRemotePinMismatch:
+		return true
+	case ProblemTypeRemoteUnreachable:
 		return true
 	case ProblemTypeRenewalExists:
 		return true
@@ -4979,6 +5123,24 @@ const (
 func (e PublicSignatureSignatureKind) Valid() bool {
 	switch e {
 	case FirmaElettronicaSemplice:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for QrReaderSettingsDriver.
+const (
+	QrReaderSettingsDriverFake     QrReaderSettingsDriver = "fake"
+	QrReaderSettingsDriverKeyboard QrReaderSettingsDriver = "keyboard"
+)
+
+// Valid indicates whether the value is a known member of the QrReaderSettingsDriver enum.
+func (e QrReaderSettingsDriver) Valid() bool {
+	switch e {
+	case QrReaderSettingsDriverFake:
+		return true
+	case QrReaderSettingsDriverKeyboard:
 		return true
 	default:
 		return false
@@ -5090,6 +5252,45 @@ const (
 func (e ReadyStatusStatus) Valid() bool {
 	switch e {
 	case ReadyStatusStatusOk:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReceiptPrinterSettingsDriver.
+const (
+	ReceiptPrinterSettingsDriverEscpos ReceiptPrinterSettingsDriver = "escpos"
+	ReceiptPrinterSettingsDriverFake   ReceiptPrinterSettingsDriver = "fake"
+	ReceiptPrinterSettingsDriverNone   ReceiptPrinterSettingsDriver = "none"
+)
+
+// Valid indicates whether the value is a known member of the ReceiptPrinterSettingsDriver enum.
+func (e ReceiptPrinterSettingsDriver) Valid() bool {
+	switch e {
+	case ReceiptPrinterSettingsDriverEscpos:
+		return true
+	case ReceiptPrinterSettingsDriverFake:
+		return true
+	case ReceiptPrinterSettingsDriverNone:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReceiptPrinterSettingsWidth.
+const (
+	ReceiptPrinterSettingsWidthN58 ReceiptPrinterSettingsWidth = 58
+	ReceiptPrinterSettingsWidthN80 ReceiptPrinterSettingsWidth = 80
+)
+
+// Valid indicates whether the value is a known member of the ReceiptPrinterSettingsWidth enum.
+func (e ReceiptPrinterSettingsWidth) Valid() bool {
+	switch e {
+	case ReceiptPrinterSettingsWidthN58:
+		return true
+	case ReceiptPrinterSettingsWidthN80:
 		return true
 	default:
 		return false
@@ -7126,19 +7327,22 @@ func (e ExportPaymentsParamsFormat) Valid() bool {
 
 // Defines values for GetPaymentReceiptParamsFormat.
 const (
-	A4  GetPaymentReceiptParamsFormat = "a4"
-	N58 GetPaymentReceiptParamsFormat = "58"
-	N80 GetPaymentReceiptParamsFormat = "80"
+	GetPaymentReceiptParamsFormatA4   GetPaymentReceiptParamsFormat = "a4"
+	GetPaymentReceiptParamsFormatJson GetPaymentReceiptParamsFormat = "json"
+	GetPaymentReceiptParamsFormatN58  GetPaymentReceiptParamsFormat = "58"
+	GetPaymentReceiptParamsFormatN80  GetPaymentReceiptParamsFormat = "80"
 )
 
 // Valid indicates whether the value is a known member of the GetPaymentReceiptParamsFormat enum.
 func (e GetPaymentReceiptParamsFormat) Valid() bool {
 	switch e {
-	case A4:
+	case GetPaymentReceiptParamsFormatA4:
 		return true
-	case N58:
+	case GetPaymentReceiptParamsFormatJson:
 		return true
-	case N80:
+	case GetPaymentReceiptParamsFormatN58:
+		return true
+	case GetPaymentReceiptParamsFormatN80:
 		return true
 	default:
 		return false
@@ -7922,7 +8126,10 @@ type BillingSettings struct {
 	AutoPaymentRequest bool          `json:"auto_payment_request"`
 	DefaultDueDays     int           `json:"default_due_days"`
 	ExportReminderDays int           `json:"export_reminder_days"`
-	FiscalDriver       string        `json:"fiscal_driver"`
+
+	// FiscalBridgeDeviceId Desktop device issuing the bridge documents (M6b)
+	FiscalBridgeDeviceId *string `json:"fiscal_bridge_device_id,omitempty"`
+	FiscalDriver         string  `json:"fiscal_driver"`
 
 	// FiscalDrivers Available fiscal driver codes (none
 	FiscalDrivers  []string       `json:"fiscal_drivers"`
@@ -7936,16 +8143,19 @@ type BillingSettings struct {
 
 // BillingSettingsInput defines model for BillingSettingsInput.
 type BillingSettingsInput struct {
-	ArrearsPolicy      ArrearsPolicy  `json:"arrears_policy"`
-	AutoPaymentRequest bool           `json:"auto_payment_request"`
-	DefaultDueDays     int            `json:"default_due_days"`
-	ExportReminderDays int            `json:"export_reminder_days"`
-	FiscalDriver       string         `json:"fiscal_driver"`
-	OriginItems        []OriginItem   `json:"origin_items"`
-	ReceiptFooter      string         `json:"receipt_footer"`
-	ReminderHour       int            `json:"reminder_hour"`
-	ReminderPolicy     ReminderPolicy `json:"reminder_policy"`
-	SepaLeadDays       int            `json:"sepa_lead_days"`
+	ArrearsPolicy      ArrearsPolicy `json:"arrears_policy"`
+	AutoPaymentRequest bool          `json:"auto_payment_request"`
+	DefaultDueDays     int           `json:"default_due_days"`
+	ExportReminderDays int           `json:"export_reminder_days"`
+
+	// FiscalBridgeDeviceId Desktop device (kind desktop, access token) of the marina that issues the documents of the fiscal driver bridge (M6b); required when fiscal_driver is bridge, absent or null = none.
+	FiscalBridgeDeviceId *string        `json:"fiscal_bridge_device_id,omitempty"`
+	FiscalDriver         string         `json:"fiscal_driver"`
+	OriginItems          []OriginItem   `json:"origin_items"`
+	ReceiptFooter        string         `json:"receipt_footer"`
+	ReminderHour         int            `json:"reminder_hour"`
+	ReminderPolicy       ReminderPolicy `json:"reminder_policy"`
+	SepaLeadDays         int            `json:"sepa_lead_days"`
 }
 
 // BlockCreate For dynamic areas loa_cm and beam_cm give the blocked footprint
@@ -7966,6 +8176,36 @@ type BlockCreate struct {
 	// To Calendar date YYYY-MM-DD in the marina timezone
 	To IsoDate `json:"to"`
 }
+
+// BridgeReceiptRequest defines model for BridgeReceiptRequest.
+type BridgeReceiptRequest struct {
+	PaymentId string                     `json:"payment_id"`
+	Width     *BridgeReceiptRequestWidth `json:"width,omitempty"`
+}
+
+// BridgeReceiptRequestWidth defines model for BridgeReceiptRequest.Width.
+type BridgeReceiptRequestWidth int
+
+// BridgeScan defines model for BridgeScan.
+type BridgeScan struct {
+	Text string `json:"text"`
+}
+
+// BridgeStatus defines model for BridgeStatus.
+type BridgeStatus struct {
+	Fiscal  PeripheralStatus `json:"fiscal"`
+	Label   PeripheralStatus `json:"label"`
+	Reader  PeripheralStatus `json:"reader"`
+	Receipt PeripheralStatus `json:"receipt"`
+}
+
+// BridgeTestRequest defines model for BridgeTestRequest.
+type BridgeTestRequest struct {
+	Device BridgeTestRequestDevice `json:"device"`
+}
+
+// BridgeTestRequestDevice defines model for BridgeTestRequest.Device.
+type BridgeTestRequestDevice string
 
 // Budget defines model for Budget.
 type Budget struct {
@@ -8709,6 +8949,39 @@ type Code = string
 type CodeCount struct {
 	Code  string `json:"code"`
 	Count int    `json:"count"`
+}
+
+// Collectible defines model for Collectible.
+type Collectible struct {
+	ChargeId     string `json:"charge_id"`
+	ContractCode string `json:"contract_code"`
+	ContractId   string `json:"contract_id"`
+
+	// CustomerDisplayName Only with customers.read
+	CustomerDisplayName *string `json:"customer_display_name,omitempty"`
+	CustomerId          string  `json:"customer_id"`
+	Description         string  `json:"description"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn      IsoDate    `json:"due_on"`
+	FiscalMode FiscalMode `json:"fiscal_mode"`
+	Number     string     `json:"number"`
+
+	// ResidualCents Amount in integer cents of the marina currency
+	ResidualCents Cents             `json:"residual_cents"`
+	Vessel        CollectibleVessel `json:"vessel"`
+}
+
+// CollectiblePage defines model for CollectiblePage.
+type CollectiblePage struct {
+	Items      []Collectible `json:"items"`
+	NextCursor *string       `json:"next_cursor"`
+}
+
+// CollectibleVessel defines model for CollectibleVessel.
+type CollectibleVessel struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 // CommAttachment defines model for CommAttachment.
@@ -10023,7 +10296,18 @@ type DesktopFirstRunResult struct {
 	UserId string `json:"user_id"`
 }
 
-// DesktopMode local in M6a (remote is reserved for M6b)
+// DesktopKioskExit Local mode only (remote mode uses Porto-App-Pin).
+type DesktopKioskExit struct {
+	Email    *string `json:"email,omitempty"`
+	Password *string `json:"password,omitempty"`
+}
+
+// DesktopKioskUpdate defines model for DesktopKioskUpdate.
+type DesktopKioskUpdate struct {
+	Enabled bool `json:"enabled"`
+}
+
+// DesktopMode local = the app runs the server (M6a); remote = the app is a client of an online instance (M6b)
 type DesktopMode string
 
 // DesktopOpenRequest defines model for DesktopOpenRequest.
@@ -10033,6 +10317,28 @@ type DesktopOpenRequest struct {
 
 // DesktopOpenRequestTarget defines model for DesktopOpenRequest.Target.
 type DesktopOpenRequestTarget string
+
+// DesktopRemoteOffline defines model for DesktopRemoteOffline.
+type DesktopRemoteOffline struct {
+	Offline bool `json:"offline"`
+}
+
+// DesktopRemotePairRequest The porto://pair link, or url + code (+ fp); pin is the new app PIN.
+type DesktopRemotePairRequest struct {
+	Code          *string `json:"code,omitempty"`
+	FirstRunToken string  `json:"first_run_token"`
+
+	// Fp Leaf fingerprint (base64url) of a self-signed target
+	Fp *string `json:"fp,omitempty"`
+
+	// Link porto://pair?v=1&url=…&code=…&fp=…
+	Link *string `json:"link,omitempty"`
+
+	// Name Device name shown on the online instance
+	Name *string `json:"name,omitempty"`
+	Pin  string  `json:"pin"`
+	Url  *string `json:"url,omitempty"`
+}
 
 // DesktopSecretKey defines model for DesktopSecretKey.
 type DesktopSecretKey struct {
@@ -10061,7 +10367,7 @@ type DesktopSettings struct {
 	LanPort    int     `json:"lan_port"`
 	LogsDir    *string `json:"logs_dir,omitempty"`
 
-	// Mode local in M6a (remote is reserved for M6b)
+	// Mode local = the app runs the server (M6a); remote = the app is a client of an online instance (M6b)
 	Mode DesktopMode `json:"mode"`
 
 	// Port Loopback port of the app window
@@ -10082,8 +10388,14 @@ type DesktopSettingsPatch struct {
 type DesktopStatus struct {
 	FirstRunPending bool `json:"first_run_pending"`
 
-	// Mode local in M6a (remote is reserved for M6b)
-	Mode        DesktopMode              `json:"mode"`
+	// Kiosk The window runs in kiosk mode (M6b)
+	Kiosk bool `json:"kiosk"`
+
+	// Mode local = the app runs the server (M6a); remote = the app is a client of an online instance (M6b)
+	Mode DesktopMode `json:"mode"`
+
+	// Remote Remote mode only (M6b)
+	Remote      *RemoteStatus            `json:"remote,omitempty"`
 	SecretStore DesktopStatusSecretStore `json:"secret_store"`
 
 	// Update A newer version (notify only, never installed); null when none, dismissed or the check is off
@@ -10570,6 +10882,35 @@ type FileLink struct {
 	Url       string    `json:"url"`
 }
 
+// FiscalClaim defines model for FiscalClaim.
+type FiscalClaim struct {
+	Items []FiscalClaimDocument `json:"items"`
+}
+
+// FiscalClaimDocument A claimed document with what the local fiscal driver needs (no customer data).
+type FiscalClaimDocument struct {
+	// BusinessDate Calendar date YYYY-MM-DD in the marina timezone
+	BusinessDate IsoDate           `json:"business_date"`
+	ClaimId      string            `json:"claim_id"`
+	ClaimUntil   time.Time         `json:"claim_until"`
+	DocumentId   string            `json:"document_id"`
+	Lines        []ReceiptDataLine `json:"lines"`
+	Method       string            `json:"method"`
+	Number       string            `json:"number"`
+
+	// Refund A refund document (reso)
+	Refund bool `json:"refund"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents            `json:"total_cents"`
+	Vat        []ReceiptDataVat `json:"vat"`
+}
+
+// FiscalClaimRequest defines model for FiscalClaimRequest.
+type FiscalClaimRequest struct {
+	Max int `json:"max"`
+}
+
 // FiscalDailyTotals defines model for FiscalDailyTotals.
 type FiscalDailyTotals struct {
 	// From Calendar date YYYY-MM-DD in the marina timezone
@@ -10622,6 +10963,22 @@ type FiscalDocumentStatus string
 
 // FiscalMode defines model for FiscalMode.
 type FiscalMode string
+
+// FiscalOutcome defines model for FiscalOutcome.
+type FiscalOutcome struct {
+	ClaimId string `json:"claim_id"`
+
+	// ErrorCode A driver code (failed)
+	ErrorCode *string `json:"error_code,omitempty"`
+
+	// ExternalRef Number assigned by the fiscal device (issued)
+	ExternalRef *string             `json:"external_ref,omitempty"`
+	IssuedAt    *time.Time          `json:"issued_at,omitempty"`
+	Status      FiscalOutcomeStatus `json:"status"`
+}
+
+// FiscalOutcomeStatus defines model for FiscalOutcome.Status.
+type FiscalOutcomeStatus string
 
 // FiscalTotalRow defines model for FiscalTotalRow.
 type FiscalTotalRow struct {
@@ -11260,6 +11617,15 @@ type ItemUsage struct {
 	PriceLists int `json:"price_lists"`
 }
 
+// LabelPrinterSettings defines model for LabelPrinterSettings.
+type LabelPrinterSettings struct {
+	Driver LabelPrinterSettingsDriver `json:"driver"`
+	Target *string                    `json:"target,omitempty"`
+}
+
+// LabelPrinterSettingsDriver defines model for LabelPrinterSettings.Driver.
+type LabelPrinterSettingsDriver string
+
 // LanCertificateRotate defines model for LanCertificateRotate.
 type LanCertificateRotate struct {
 	// All Also regenerate the local CA
@@ -11270,6 +11636,12 @@ type LanCertificateRotate struct {
 type LanStatus struct {
 	Address   string   `json:"address"`
 	Addresses []string `json:"addresses"`
+
+	// CaConstrained The local CA carries name constraints (private addresses and .local only, M6b); a CA created by M6a does not until "rotate all"; the CA download is offered only for constrained CAs.
+	CaConstrained bool `json:"ca_constrained"`
+
+	// CaDownloadUrl URL of the CA certificate for phones on the local network (/lan/porto-ca.crt), empty when not offered
+	CaDownloadUrl string `json:"ca_download_url"`
 
 	// CaFingerprint SHA-256 of the local CA certificate (hex)
 	CaFingerprint string     `json:"ca_fingerprint"`
@@ -11419,6 +11791,21 @@ type LinearAreaGeneratorType string
 
 // LinkPurpose defines model for LinkPurpose.
 type LinkPurpose string
+
+// LocalFiscalSettings defines model for LocalFiscalSettings.
+type LocalFiscalSettings struct {
+	// Driver Real device models are extensions
+	Driver LocalFiscalSettingsDriver `json:"driver"`
+
+	// FakeMode Behaviour of the fake driver (development)
+	FakeMode *LocalFiscalSettingsFakeMode `json:"fake_mode,omitempty"`
+}
+
+// LocalFiscalSettingsDriver Real device models are extensions
+type LocalFiscalSettingsDriver string
+
+// LocalFiscalSettingsFakeMode Behaviour of the fake driver (development)
+type LocalFiscalSettingsFakeMode string
 
 // LocalTime Local time HH:MM in the marina timezone
 type LocalTime = string
@@ -12856,6 +13243,24 @@ type PeriodColor string
 // PeriodKind defines model for PeriodKind.
 type PeriodKind string
 
+// PeripheralSettings defines model for PeripheralSettings.
+type PeripheralSettings struct {
+	Fiscal  LocalFiscalSettings    `json:"fiscal"`
+	Label   LabelPrinterSettings   `json:"label"`
+	Reader  QrReaderSettings       `json:"reader"`
+	Receipt ReceiptPrinterSettings `json:"receipt"`
+}
+
+// PeripheralStatus defines model for PeripheralStatus.
+type PeripheralStatus struct {
+	// Driver Driver code: none, fake, escpos, zpl, keyboard, or a fiscal driver code
+	Driver string `json:"driver"`
+
+	// Message A status code
+	Message string `json:"message"`
+	Ready   bool   `json:"ready"`
+}
+
 // Permission defines model for Permission.
 type Permission string
 
@@ -13018,6 +13423,9 @@ type PresenceCreate struct {
 	AllocationId *string       `json:"allocation_id,omitempty"`
 	At           *time.Time    `json:"at,omitempty"`
 	Event        PresenceEvent `json:"event"`
+
+	// ExpectedResourceId The resource the operator saw for the allocation (M6b, with allocation_id): a different current resource is 409 allocation_changed.
+	ExpectedResourceId *string `json:"expected_resource_id,omitempty"`
 
 	// ExpectedReturnOn Calendar date YYYY-MM-DD in the marina timezone
 	ExpectedReturnOn *IsoDate `json:"expected_return_on,omitempty"`
@@ -13566,7 +13974,7 @@ type PricingStage string
 type Problem struct {
 	Detail *string `json:"detail,omitempty"`
 
-	// Details Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}; resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?}; invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid {reason}. Ids, codes, dates and integers only.
+	// Details Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}; resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?}; invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid {reason}; allocation_changed {current_resource_id, current_resource_code} (null when the allocation is gone); remote_pin_mismatch {expected_fingerprint, presented_fingerprint}. Ids, codes, dates and integers only.
 	Details  *map[string]interface{} `json:"details,omitempty"`
 	Errors   *[]FieldError           `json:"errors,omitempty"`
 	Instance *string                 `json:"instance,omitempty"`
@@ -13784,6 +14192,15 @@ type PublicSignatureResult struct {
 type PublicUnsubscribe struct {
 	Subscribed bool `json:"subscribed"`
 }
+
+// QrReaderSettings defines model for QrReaderSettings.
+type QrReaderSettings struct {
+	// Driver keyboard = USB HID reader typing into the page
+	Driver QrReaderSettingsDriver `json:"driver"`
+}
+
+// QrReaderSettingsDriver keyboard = USB HID reader typing into the page
+type QrReaderSettingsDriver string
 
 // QtyMilli Quantity in thousandths (1.5 = 1500)
 type QtyMilli = int64
@@ -14059,6 +14476,74 @@ type ReasonRequired struct {
 	Reason string `json:"reason"`
 }
 
+// ReceiptData Courtesy receipt data for the desktop bridge printers ("Non valido ai fini fiscali"); no customer data.
+type ReceiptData struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents Cents `json:"amount_cents"`
+
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date IsoDate `json:"date"`
+
+	// FiscalNumber Number of the fiscal document
+	FiscalNumber string            `json:"fiscal_number"`
+	Footer       string            `json:"footer"`
+	Lines        []ReceiptDataLine `json:"lines"`
+	Marina       ReceiptMarina     `json:"marina"`
+	Method       string            `json:"method"`
+
+	// NotFiscal Always true (courtesy receipt)
+	NotFiscal bool             `json:"not_fiscal"`
+	Number    string           `json:"number"`
+	Vat       []ReceiptDataVat `json:"vat"`
+}
+
+// ReceiptDataLine defines model for ReceiptDataLine.
+type ReceiptDataLine struct {
+	Description string `json:"description"`
+
+	// GrossCents Amount in integer cents of the marina currency
+	GrossCents Cents `json:"gross_cents"`
+	QtyMilli   int64 `json:"qty_milli"`
+	VatRateBp  int   `json:"vat_rate_bp"`
+}
+
+// ReceiptDataVat defines model for ReceiptDataVat.
+type ReceiptDataVat struct {
+	// GrossCents Amount in integer cents of the marina currency
+	GrossCents Cents `json:"gross_cents"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents Cents `json:"net_cents"`
+
+	// VatCents Amount in integer cents of the marina currency
+	VatCents  Cents  `json:"vat_cents"`
+	VatNature string `json:"vat_nature"`
+	VatRateBp int    `json:"vat_rate_bp"`
+}
+
+// ReceiptMarina defines model for ReceiptMarina.
+type ReceiptMarina struct {
+	Address   string `json:"address"`
+	LegalName string `json:"legal_name"`
+	Name      string `json:"name"`
+	VatNumber string `json:"vat_number"`
+}
+
+// ReceiptPrinterSettings defines model for ReceiptPrinterSettings.
+type ReceiptPrinterSettings struct {
+	Driver ReceiptPrinterSettingsDriver `json:"driver"`
+
+	// Target tcp://<private IP or .local name>:<port> (default 9100), cups://<queue> (macOS, Linux), file://<path> (development)
+	Target *string                      `json:"target,omitempty"`
+	Width  *ReceiptPrinterSettingsWidth `json:"width,omitempty"`
+}
+
+// ReceiptPrinterSettingsDriver defines model for ReceiptPrinterSettings.Driver.
+type ReceiptPrinterSettingsDriver string
+
+// ReceiptPrinterSettingsWidth defines model for ReceiptPrinterSettings.Width.
+type ReceiptPrinterSettingsWidth int
+
 // Receivable defines model for Receivable.
 type Receivable struct {
 	// AmountCents Amount in integer cents of the marina currency
@@ -14327,6 +14812,17 @@ type ReminderRunDetail struct {
 type ReminderRunPage struct {
 	Items      []ReminderRun `json:"items"`
 	NextCursor *string       `json:"next_cursor"`
+}
+
+// RemoteStatus defines model for RemoteStatus.
+type RemoteStatus struct {
+	Marina    MarinaRef `json:"marina"`
+	PairedAt  time.Time `json:"paired_at"`
+	Reachable bool      `json:"reachable"`
+	Url       string    `json:"url"`
+
+	// VersionMismatch The remote major version differs from the app's (update the app)
+	VersionMismatch bool `json:"version_mismatch"`
 }
 
 // RenewInput defines model for RenewInput.
@@ -16147,6 +16643,9 @@ type MillesimalTableId = string
 // ObligationId defines model for ObligationId.
 type ObligationId = string
 
+// OfflineQueuedAt defines model for OfflineQueuedAt.
+type OfflineQueuedAt = time.Time
+
 // OrganizationId defines model for OrganizationId.
 type OrganizationId = string
 
@@ -16296,7 +16795,7 @@ type UpdateMarinaParams struct {
 
 // CreateApiKeyParams defines parameters for CreateApiKey.
 type CreateApiKeyParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16322,13 +16821,13 @@ type ListBerthCategoriesParams struct {
 
 // CreateBerthCategoryParams defines parameters for CreateBerthCategory.
 type CreateBerthCategoryParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // SyncBerthCategoriesParams defines parameters for SyncBerthCategories.
 type SyncBerthCategoriesParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16346,7 +16845,7 @@ type UpdateBerthCategoryParams struct {
 
 // CreateBerthGroupParams defines parameters for CreateBerthGroup.
 type CreateBerthGroupParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16389,7 +16888,7 @@ type UpdateBillingSettingsParams struct {
 
 // CreateBlockParams defines parameters for CreateBlock.
 type CreateBlockParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16401,7 +16900,7 @@ type DeleteBlockParams struct {
 
 // CreateCashRegisterParams defines parameters for CreateCashRegister.
 type CreateCashRegisterParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16424,7 +16923,7 @@ type ListCashSessionsParamsStatus string
 
 // OpenCashSessionParams defines parameters for OpenCashSession.
 type OpenCashSessionParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16441,7 +16940,7 @@ type CloseCashSessionParams struct {
 
 // AddCashMovementParams defines parameters for AddCashMovement.
 type AddCashMovementParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16461,13 +16960,13 @@ type ListChargeExportsParams struct {
 
 // CreateChargeExportParams defines parameters for CreateChargeExport.
 type CreateChargeExportParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // ReexportChargesParams defines parameters for ReexportCharges.
 type ReexportChargesParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16509,7 +17008,7 @@ type ListChargesParamsFormat string
 
 // CreateChargeParams defines parameters for CreateCharge.
 type CreateChargeParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16521,7 +17020,7 @@ type UpdateChargeParams struct {
 
 // AdjustChargeParams defines parameters for AdjustCharge.
 type AdjustChargeParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16541,7 +17040,7 @@ type ListCharterFleetsParams struct {
 
 // CreateCharterFleetParams defines parameters for CreateCharterFleet.
 type CreateCharterFleetParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16553,13 +17052,13 @@ type UpdateCharterFleetParams struct {
 
 // CreateCharterParams defines parameters for CreateCharter.
 type CreateCharterParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // RotateCharterParams defines parameters for RotateCharter.
 type RotateCharterParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16574,7 +17073,7 @@ type ListClosuresParams struct {
 
 // CreateClosureParams defines parameters for CreateClosure.
 type CreateClosureParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16584,9 +17083,16 @@ type DeleteClosureParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// ListCollectiblesParams defines parameters for ListCollectibles.
+type ListCollectiblesParams struct {
+	Date   *IsoDate `form:"date,omitempty" json:"date,omitempty"`
+	Cursor *Cursor  `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit   `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
 // CreateCommonChargeBudgetParams defines parameters for CreateCommonChargeBudget.
 type CreateCommonChargeBudgetParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16610,7 +17116,7 @@ type SetBudgetActualsParams struct {
 
 // ApproveCommonChargeBudgetParams defines parameters for ApproveCommonChargeBudget.
 type ApproveCommonChargeBudgetParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16619,7 +17125,7 @@ type ApproveCommonChargeBudgetParams struct {
 
 // CloseCommonChargeBudgetParams defines parameters for CloseCommonChargeBudget.
 type CloseCommonChargeBudgetParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16628,7 +17134,7 @@ type CloseCommonChargeBudgetParams struct {
 
 // CreateBudgetItemParams defines parameters for CreateBudgetItem.
 type CreateBudgetItemParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16646,7 +17152,7 @@ type UpdateBudgetItemParams struct {
 
 // CreateCommonChargeRunParams defines parameters for CreateCommonChargeRun.
 type CreateCommonChargeRunParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16664,7 +17170,7 @@ type ListCommonChargeAllocationsParamsFormat string
 
 // DiscardCommonChargeRunParams defines parameters for DiscardCommonChargeRun.
 type DiscardCommonChargeRunParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16673,7 +17179,7 @@ type DiscardCommonChargeRunParams struct {
 
 // IssueCommonChargeRunParams defines parameters for IssueCommonChargeRun.
 type IssueCommonChargeRunParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16702,7 +17208,7 @@ type ListCommunicationsParams struct {
 
 // CreateCommunicationParams defines parameters for CreateCommunication.
 type CreateCommunicationParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16714,7 +17220,7 @@ type UpdateCommunicationParams struct {
 
 // CancelCommunicationParams defines parameters for CancelCommunication.
 type CancelCommunicationParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16734,7 +17240,7 @@ type ListCommunicationRecipientsParamsFormat string
 
 // ScheduleCommunicationParams defines parameters for ScheduleCommunication.
 type ScheduleCommunicationParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16743,7 +17249,7 @@ type ScheduleCommunicationParams struct {
 
 // SendCommunicationParams defines parameters for SendCommunication.
 type SendCommunicationParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16758,7 +17264,7 @@ type UpdateConcessionParams struct {
 
 // CreateConcessionObligationParams defines parameters for CreateConcessionObligation.
 type CreateConcessionObligationParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16776,7 +17282,7 @@ type UpdateConcessionObligationParams struct {
 
 // MarkObligationDoneParams defines parameters for MarkObligationDone.
 type MarkObligationDoneParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16806,7 +17312,7 @@ type ListContractsParams struct {
 
 // CreateContractParams defines parameters for CreateContract.
 type CreateContractParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16818,7 +17324,7 @@ type UpdateContractParams struct {
 
 // ActivateContractParams defines parameters for ActivateContract.
 type ActivateContractParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16827,13 +17333,13 @@ type ActivateContractParams struct {
 
 // CreateAddendumParams defines parameters for CreateAddendum.
 type CreateAddendumParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // ActivateAddendumParams defines parameters for ActivateAddendum.
 type ActivateAddendumParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16842,7 +17348,7 @@ type ActivateAddendumParams struct {
 
 // CancelAddendumParams defines parameters for CancelAddendum.
 type CancelAddendumParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16851,7 +17357,7 @@ type CancelAddendumParams struct {
 
 // RequestAddendumSignatureParams defines parameters for RequestAddendumSignature.
 type RequestAddendumSignatureParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16860,7 +17366,7 @@ type RequestAddendumSignatureParams struct {
 
 // CancelContractParams defines parameters for CancelContract.
 type CancelContractParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16869,7 +17375,7 @@ type CancelContractParams struct {
 
 // ReplanInstallmentsParams defines parameters for ReplanInstallments.
 type ReplanInstallmentsParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16878,7 +17384,7 @@ type ReplanInstallmentsParams struct {
 
 // RenewContractParams defines parameters for RenewContract.
 type RenewContractParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16887,7 +17393,7 @@ type RenewContractParams struct {
 
 // RequestContractSignatureParams defines parameters for RequestContractSignature.
 type RequestContractSignatureParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16896,7 +17402,7 @@ type RequestContractSignatureParams struct {
 
 // ResumeContractParams defines parameters for ResumeContract.
 type ResumeContractParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16905,7 +17411,7 @@ type ResumeContractParams struct {
 
 // SuspendContractParams defines parameters for SuspendContract.
 type SuspendContractParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16914,7 +17420,7 @@ type SuspendContractParams struct {
 
 // TerminateContractParams defines parameters for TerminateContract.
 type TerminateContractParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16923,7 +17429,7 @@ type TerminateContractParams struct {
 
 // CreateTerminationChargeParams defines parameters for CreateTerminationCharge.
 type CreateTerminationChargeParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -16932,7 +17438,7 @@ type CreateTerminationChargeParams struct {
 
 // CreateCounterSaleParams defines parameters for CreateCounterSale.
 type CreateCounterSaleParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16956,7 +17462,7 @@ type ListCustomersParams struct {
 
 // CreateCustomerParams defines parameters for CreateCustomer.
 type CreateCustomerParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16968,19 +17474,19 @@ type UpdateCustomerParams struct {
 
 // RecordConsentParams defines parameters for RecordConsent.
 type RecordConsentParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // GrantCustomerCreditParams defines parameters for GrantCustomerCredit.
 type GrantCustomerCreditParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // ApplyCustomerCreditParams defines parameters for ApplyCustomerCredit.
 type ApplyCustomerCreditParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -16998,7 +17504,7 @@ type ListCustomerMessagesParams struct {
 
 // CreateSepaMandateParams defines parameters for CreateSepaMandate.
 type CreateSepaMandateParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17029,7 +17535,7 @@ type ListDeadlinesParams struct {
 
 // SyncDeadlinesParams defines parameters for SyncDeadlines.
 type SyncDeadlinesParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17041,7 +17547,7 @@ type UpdateDeadlineParams struct {
 
 // CreatePairingCodeParams defines parameters for CreatePairingCode.
 type CreatePairingCodeParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17057,7 +17563,7 @@ type ListDocumentsParams struct {
 
 // CreateDocumentParams defines parameters for CreateDocument.
 type CreateDocumentParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17096,13 +17602,13 @@ type ListDunningExclusionsParams struct {
 
 // CreateDunningExclusionParams defines parameters for CreateDunningExclusion.
 type CreateDunningExclusionParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // SaveAreaLayoutParams defines parameters for SaveAreaLayout.
 type SaveAreaLayoutParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17113,13 +17619,13 @@ type ListFeeRunsParams struct {
 
 // CreateFeeRunParams defines parameters for CreateFeeRun.
 type CreateFeeRunParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // DiscardFeeRunParams defines parameters for DiscardFeeRun.
 type DiscardFeeRunParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17128,7 +17634,7 @@ type DiscardFeeRunParams struct {
 
 // IssueFeeRunParams defines parameters for IssueFeeRun.
 type IssueFeeRunParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17147,7 +17653,7 @@ type ListFeeRunLinesParamsFormat string
 
 // SimulateFeeRunParams defines parameters for SimulateFeeRun.
 type SimulateFeeRunParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17161,7 +17667,7 @@ type ListFeeTablesParams struct {
 
 // CreateFeeTableParams defines parameters for CreateFeeTable.
 type CreateFeeTableParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17179,7 +17685,7 @@ type UpdateFeeTableParams struct {
 
 // ActivateFeeTableParams defines parameters for ActivateFeeTable.
 type ActivateFeeTableParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17226,7 +17732,7 @@ type GetGeneratedDocumentFileParams struct {
 
 // RetryRenderParams defines parameters for RetryRender.
 type RetryRenderParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17254,13 +17760,13 @@ type ListHolderInstallmentsParamsFormat string
 
 // SettleHolderInstallmentsParams defines parameters for SettleHolderInstallments.
 type SettleHolderInstallmentsParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // SettleHolderInstallmentParams defines parameters for SettleHolderInstallment.
 type SettleHolderInstallmentParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17276,13 +17782,13 @@ type ListImportsParams struct {
 
 // CreateImportParams defines parameters for CreateImport.
 type CreateImportParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // UndoImportParams defines parameters for UndoImport.
 type UndoImportParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17300,7 +17806,7 @@ type ListInquiriesParams struct {
 
 // CreateInquiryParams defines parameters for CreateInquiry.
 type CreateInquiryParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17328,25 +17834,25 @@ type ListInstallmentsParamsFormat string
 
 // IssueInstallmentsParams defines parameters for IssueInstallments.
 type IssueInstallmentsParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // RemindInstallmentsParams defines parameters for RemindInstallments.
 type RemindInstallmentsParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // SettleInstallmentsParams defines parameters for SettleInstallments.
 type SettleInstallmentsParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // SettleInstallmentParams defines parameters for SettleInstallment.
 type SettleInstallmentParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17361,7 +17867,7 @@ type ListInvoiceReconciliationsParams struct {
 
 // CreateInvoiceReconciliationParams defines parameters for CreateInvoiceReconciliation.
 type CreateInvoiceReconciliationParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17378,7 +17884,7 @@ type ListItemsParams struct {
 
 // CreateItemParams defines parameters for CreateItem.
 type CreateItemParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17404,19 +17910,19 @@ type ListMandatesParams struct {
 
 // CreateMandateParams defines parameters for CreateMandate.
 type CreateMandateParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // AccrueMandatesParams defines parameters for AccrueMandates.
 type AccrueMandatesParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // CancelMandateParams defines parameters for CancelMandate.
 type CancelMandateParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17425,7 +17931,7 @@ type CancelMandateParams struct {
 
 // EndMandateParams defines parameters for EndMandate.
 type EndMandateParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17434,7 +17940,7 @@ type EndMandateParams struct {
 
 // SettleMandateParams defines parameters for SettleMandate.
 type SettleMandateParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17450,13 +17956,13 @@ type GetMandateStatementParamsFormat string
 
 // CreateMapParams defines parameters for CreateMap.
 type CreateMapParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // ImportMapParams defines parameters for ImportMap.
 type ImportMapParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17521,13 +18027,13 @@ type GetMapRightsParams struct {
 
 // AddMemberParams defines parameters for AddMember.
 type AddMemberParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // CreateMillesimalTableParams defines parameters for CreateMillesimalTable.
 type CreateMillesimalTableParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17545,7 +18051,7 @@ type UpdateMillesimalTableParams struct {
 
 // ActivateMillesimalTableParams defines parameters for ActivateMillesimalTable.
 type ActivateMillesimalTableParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17568,7 +18074,7 @@ type ReplaceMillesimalEntriesParams struct {
 
 // UndoMoveParams defines parameters for UndoMove.
 type UndoMoveParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17580,13 +18086,13 @@ type GetMovementsParams struct {
 
 // MoveAllocationParams defines parameters for MoveAllocation.
 type MoveAllocationParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // SwapAllocationsParams defines parameters for SwapAllocations.
 type SwapAllocationsParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17598,7 +18104,7 @@ type UpdateOccupancySettingsParams struct {
 
 // ImportOpeningBalancesParams defines parameters for ImportOpeningBalances.
 type ImportOpeningBalancesParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17630,13 +18136,13 @@ type ListPaymentRequestsParams struct {
 
 // CreatePaymentRequestParams defines parameters for CreatePaymentRequest.
 type CreatePaymentRequestParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // CreatePaymentRequestsBulkParams defines parameters for CreatePaymentRequestsBulk.
 type CreatePaymentRequestsBulkParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17668,8 +18174,11 @@ type ListPaymentsParams struct {
 
 // RecordPaymentParams defines parameters for RecordPayment.
 type RecordPaymentParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// PortoOfflineQueuedAt Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline.
+	PortoOfflineQueuedAt *OfflineQueuedAt `json:"Porto-Offline-Queued-At,omitempty"`
 }
 
 // ExportPaymentsParams defines parameters for ExportPayments.
@@ -17685,13 +18194,13 @@ type ExportPaymentsParamsFormat string
 
 // MatchPaymentParams defines parameters for MatchPayment.
 type MatchPaymentParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // ReverseMatchParams defines parameters for ReverseMatch.
 type ReverseMatchParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17705,13 +18214,13 @@ type GetPaymentReceiptParamsFormat string
 
 // RefundPaymentParams defines parameters for RefundPayment.
 type RefundPaymentParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // RetainDepositParams defines parameters for RetainDeposit.
 type RetainDepositParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17725,14 +18234,26 @@ type ListPresencesParams struct {
 
 // RecordPresenceParams defines parameters for RecordPresence.
 type RecordPresenceParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// PortoOfflineQueuedAt Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline.
+	PortoOfflineQueuedAt *OfflineQueuedAt `json:"Porto-Offline-Queued-At,omitempty"`
 }
 
 // RecordUnexpectedArrivalParams defines parameters for RecordUnexpectedArrival.
 type RecordUnexpectedArrivalParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UploadPresencePhotoParams defines parameters for UploadPresencePhoto.
+type UploadPresencePhotoParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// PortoOfflineQueuedAt Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline.
+	PortoOfflineQueuedAt *OfflineQueuedAt `json:"Porto-Offline-Queued-At,omitempty"`
 }
 
 // GetPresencePhotoFileParams defines parameters for GetPresencePhotoFile.
@@ -17752,7 +18273,7 @@ type ListPriceListsParams struct {
 
 // CreatePriceListParams defines parameters for CreatePriceList.
 type CreatePriceListParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17804,7 +18325,7 @@ type GetPriceMatrixParamsRows string
 
 // RenewPriceListParams defines parameters for RenewPriceList.
 type RenewPriceListParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17828,7 +18349,7 @@ type ListQuotesParams struct {
 
 // CreateQuoteParams defines parameters for CreateQuote.
 type CreateQuoteParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17840,7 +18361,7 @@ type UpdateQuoteParams struct {
 
 // AcceptQuoteParams defines parameters for AcceptQuote.
 type AcceptQuoteParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17849,7 +18370,7 @@ type AcceptQuoteParams struct {
 
 // DeclineQuoteParams defines parameters for DeclineQuote.
 type DeclineQuoteParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17860,7 +18381,7 @@ type DeclineQuoteParams struct {
 type SendQuoteParams struct {
 	Manual *bool `form:"manual,omitempty" json:"manual,omitempty"`
 
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17918,13 +18439,13 @@ type ListReleasesParams struct {
 
 // CreateReleaseParams defines parameters for CreateRelease.
 type CreateReleaseParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // RevokeReleaseParams defines parameters for RevokeRelease.
 type RevokeReleaseParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17939,7 +18460,7 @@ type ListReminderRunsParams struct {
 
 // CreateReminderRunParams defines parameters for CreateReminderRun.
 type CreateReminderRunParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17951,7 +18472,7 @@ type GetReminderRunParams struct {
 
 // SendRemindersParams defines parameters for SendReminders.
 type SendRemindersParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17964,7 +18485,7 @@ type ListRenewalCampaignsParams struct {
 
 // CreateRenewalCampaignParams defines parameters for CreateRenewalCampaign.
 type CreateRenewalCampaignParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -17976,7 +18497,7 @@ type UpdateRenewalCampaignParams struct {
 
 // CloseRenewalCampaignParams defines parameters for CloseRenewalCampaign.
 type CloseRenewalCampaignParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17985,7 +18506,7 @@ type CloseRenewalCampaignParams struct {
 
 // DiscardRenewalCampaignParams defines parameters for DiscardRenewalCampaign.
 type DiscardRenewalCampaignParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -17994,7 +18515,7 @@ type DiscardRenewalCampaignParams struct {
 
 // LaunchRenewalCampaignParams defines parameters for LaunchRenewalCampaign.
 type LaunchRenewalCampaignParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18003,7 +18524,7 @@ type LaunchRenewalCampaignParams struct {
 
 // PreviewRenewalCampaignParams defines parameters for PreviewRenewalCampaign.
 type PreviewRenewalCampaignParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18023,7 +18544,7 @@ type ListCampaignProposalsParamsFormat string
 
 // AcceptRenewalProposalParams defines parameters for AcceptRenewalProposal.
 type AcceptRenewalProposalParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18032,7 +18553,7 @@ type AcceptRenewalProposalParams struct {
 
 // DeclineRenewalProposalParams defines parameters for DeclineRenewalProposal.
 type DeclineRenewalProposalParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18041,7 +18562,7 @@ type DeclineRenewalProposalParams struct {
 
 // IncludeRenewalProposalParams defines parameters for IncludeRenewalProposal.
 type IncludeRenewalProposalParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18050,7 +18571,7 @@ type IncludeRenewalProposalParams struct {
 
 // SendRenewalProposalParams defines parameters for SendRenewalProposal.
 type SendRenewalProposalParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18064,7 +18585,7 @@ type ListRevenueClassesParams struct {
 
 // CreateRevenueClassParams defines parameters for CreateRevenueClass.
 type CreateRevenueClassParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18090,13 +18611,13 @@ type ListRightTransfersParams struct {
 
 // CreateRightTransferParams defines parameters for CreateRightTransfer.
 type CreateRightTransferParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // CancelRightTransferParams defines parameters for CancelRightTransfer.
 type CancelRightTransferParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18105,7 +18626,7 @@ type CancelRightTransferParams struct {
 
 // CompleteRightTransferParams defines parameters for CompleteRightTransfer.
 type CompleteRightTransferParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18114,7 +18635,7 @@ type CompleteRightTransferParams struct {
 
 // RequestTransferSignatureParams defines parameters for RequestTransferSignature.
 type RequestTransferSignatureParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18133,7 +18654,7 @@ type ListRightsParams struct {
 
 // CreateRightParams defines parameters for CreateRight.
 type CreateRightParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18145,7 +18666,7 @@ type UpdateRightParams struct {
 
 // CancelRightParams defines parameters for CancelRight.
 type CancelRightParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18154,7 +18675,7 @@ type CancelRightParams struct {
 
 // EndRightParams defines parameters for EndRight.
 type EndRightParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18178,7 +18699,7 @@ type ListSignatureRequestsParams struct {
 
 // CancelSignatureRequestParams defines parameters for CancelSignatureRequest.
 type CancelSignatureRequestParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18187,7 +18708,7 @@ type CancelSignatureRequestParams struct {
 
 // ConfirmPaperSignatureParams defines parameters for ConfirmPaperSignature.
 type ConfirmPaperSignatureParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18196,7 +18717,7 @@ type ConfirmPaperSignatureParams struct {
 
 // UploadPaperScanParams defines parameters for UploadPaperScan.
 type UploadPaperScanParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// XFileName Original file name (sanitised)
@@ -18205,7 +18726,7 @@ type UploadPaperScanParams struct {
 
 // RemindSignatureRequestParams defines parameters for RemindSignatureRequest.
 type RemindSignatureRequestParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18225,7 +18746,7 @@ type ListTemplatesParams struct {
 
 // CreateTemplateParams defines parameters for CreateTemplate.
 type CreateTemplateParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18242,13 +18763,13 @@ type ListTemplateVersionsParams struct {
 
 // CreateTemplateVersionParams defines parameters for CreateTemplateVersion.
 type CreateTemplateVersionParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // PublishTemplateVersionParams defines parameters for PublishTemplateVersion.
 type PublishTemplateVersionParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18269,7 +18790,7 @@ type ListTransitsParams struct {
 
 // CreateTransitParams defines parameters for CreateTransit.
 type CreateTransitParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18281,7 +18802,7 @@ type UpdateTransitParams struct {
 
 // CancelTransitParams defines parameters for CancelTransit.
 type CancelTransitParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18290,7 +18811,7 @@ type CancelTransitParams struct {
 
 // ConfirmTransitParams defines parameters for ConfirmTransit.
 type ConfirmTransitParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18299,7 +18820,7 @@ type ConfirmTransitParams struct {
 
 // MarkTransitNoShowParams defines parameters for MarkTransitNoShow.
 type MarkTransitNoShowParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18308,7 +18829,7 @@ type MarkTransitNoShowParams struct {
 
 // CreateTransitPaymentLinkParams defines parameters for CreateTransitPaymentLink.
 type CreateTransitPaymentLinkParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18317,7 +18838,7 @@ type CreateTransitPaymentLinkParams struct {
 
 // ChangeTransitStayParams defines parameters for ChangeTransitStay.
 type ChangeTransitStayParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
@@ -18336,7 +18857,7 @@ type ListVesselsParams struct {
 
 // CreateVesselParams defines parameters for CreateVessel.
 type CreateVesselParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18362,7 +18883,7 @@ type ListWaitlistParams struct {
 
 // CreateWaitlistEntryParams defines parameters for CreateWaitlistEntry.
 type CreateWaitlistEntryParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18374,13 +18895,13 @@ type UpdateWaitlistEntryParams struct {
 
 // QuoteFromWaitlistParams defines parameters for QuoteFromWaitlist.
 type QuoteFromWaitlistParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // CreateWebhookEndpointParams defines parameters for CreateWebhookEndpoint.
 type CreateWebhookEndpointParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18399,13 +18920,13 @@ type ListWebhookDeliveriesParams struct {
 
 // RedeliverWebhookParams defines parameters for RedeliverWebhook.
 type RedeliverWebhookParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // TestWebhookEndpointParams defines parameters for TestWebhookEndpoint.
 type TestWebhookEndpointParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18426,13 +18947,13 @@ type UpdateOrganizationParams struct {
 
 // CreateMarinaParams defines parameters for CreateMarina.
 type CreateMarinaParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
 // AddOrgOwnerParams defines parameters for AddOrgOwner.
 type AddOrgOwnerParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18442,9 +18963,14 @@ type StreamParams struct {
 	LastEventID *string `json:"Last-Event-ID,omitempty"`
 }
 
+// NextBridgeScanParams defines parameters for NextBridgeScan.
+type NextBridgeScanParams struct {
+	Timeout *int `form:"timeout,omitempty" json:"timeout,omitempty"`
+}
+
 // CreateDesktopBackupParams defines parameters for CreateDesktopBackup.
 type CreateDesktopBackupParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -18454,9 +18980,15 @@ type DesktopFirstRunRestoreParams struct {
 	PortoFirstRunToken FirstRunToken `json:"Porto-First-Run-Token"`
 }
 
+// ReportFiscalOutcomeParams defines parameters for ReportFiscalOutcome.
+type ReportFiscalOutcomeParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
 // PairDeviceParams defines parameters for PairDevice.
 type PairDeviceParams struct {
-	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours.
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
@@ -19022,8 +19554,23 @@ type CreateMarinaJSONRequestBody = MarinaCreate
 // AddOrgOwnerJSONRequestBody defines body for AddOrgOwner for application/json ContentType.
 type AddOrgOwnerJSONRequestBody = MemberCreate
 
+// PrintBridgeReceiptJSONRequestBody defines body for PrintBridgeReceipt for application/json ContentType.
+type PrintBridgeReceiptJSONRequestBody = BridgeReceiptRequest
+
+// TestBridgePeripheralJSONRequestBody defines body for TestBridgePeripheral for application/json ContentType.
+type TestBridgePeripheralJSONRequestBody = BridgeTestRequest
+
+// SetDesktopRemoteOfflineJSONRequestBody defines body for SetDesktopRemoteOffline for application/json ContentType.
+type SetDesktopRemoteOfflineJSONRequestBody = DesktopRemoteOffline
+
 // DesktopFirstRunJSONRequestBody defines body for DesktopFirstRun for application/json ContentType.
 type DesktopFirstRunJSONRequestBody = DesktopFirstRunRequest
+
+// SetDesktopKioskJSONRequestBody defines body for SetDesktopKiosk for application/json ContentType.
+type SetDesktopKioskJSONRequestBody = DesktopKioskUpdate
+
+// ExitDesktopKioskJSONRequestBody defines body for ExitDesktopKiosk for application/json ContentType.
+type ExitDesktopKioskJSONRequestBody = DesktopKioskExit
 
 // SetDesktopLanJSONRequestBody defines body for SetDesktopLan for application/json ContentType.
 type SetDesktopLanJSONRequestBody = LanUpdate
@@ -19034,6 +19581,12 @@ type RotateLanCertificateJSONRequestBody = LanCertificateRotate
 // OpenDesktopFolderJSONRequestBody defines body for OpenDesktopFolder for application/json ContentType.
 type OpenDesktopFolderJSONRequestBody = DesktopOpenRequest
 
+// UpdateDesktopPeripheralsJSONRequestBody defines body for UpdateDesktopPeripherals for application/json ContentType.
+type UpdateDesktopPeripheralsJSONRequestBody = PeripheralSettings
+
+// PairDesktopRemoteJSONRequestBody defines body for PairDesktopRemote for application/json ContentType.
+type PairDesktopRemoteJSONRequestBody = DesktopRemotePairRequest
+
 // RevealDesktopSecretKeyJSONRequestBody defines body for RevealDesktopSecretKey for application/json ContentType.
 type RevealDesktopSecretKeyJSONRequestBody = DesktopSecretRevealRequest
 
@@ -19042,6 +19595,12 @@ type UpdateDesktopSettingsJSONRequestBody = DesktopSettingsPatch
 
 // DemoPairDeviceJSONRequestBody defines body for DemoPairDevice for application/json ContentType.
 type DemoPairDeviceJSONRequestBody = DemoPairRequest
+
+// ClaimFiscalDocumentsJSONRequestBody defines body for ClaimFiscalDocuments for application/json ContentType.
+type ClaimFiscalDocumentsJSONRequestBody = FiscalClaimRequest
+
+// ReportFiscalOutcomeJSONRequestBody defines body for ReportFiscalOutcome for application/json ContentType.
+type ReportFiscalOutcomeJSONRequestBody = FiscalOutcome
 
 // PairDeviceJSONRequestBody defines body for PairDevice for application/json ContentType.
 type PairDeviceJSONRequestBody = PairRequest
@@ -19586,6 +20145,9 @@ type ServerInterface interface {
 	// DeleteClosure Delete a closure (harbor.configure)
 	// (DELETE /api/admin/v1/marinas/{marinaId}/closures/{closureId})
 	DeleteClosure(w http.ResponseWriter, r *http.Request, marinaId MarinaId, closureId ClosureId, params DeleteClosureParams)
+	// ListCollectibles Open charges to collect at the dock on a date: contracts with an allocation on the night or a movement on the date (payments.collect or payments.collect_cash)
+	// (GET /api/admin/v1/marinas/{marinaId}/collectibles)
+	ListCollectibles(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListCollectiblesParams)
 	// ListCommonChargeBudgets Common charge budgets (rights.manage)
 	// (GET /api/admin/v1/marinas/{marinaId}/common-charge-budgets)
 	ListCommonChargeBudgets(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -20231,7 +20793,7 @@ type ServerInterface interface {
 	// ReverseMatch Reverse a match (refunds.issue)
 	// (POST /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/matches/{matchId}/reverse)
 	ReverseMatch(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, matchId PaymentMatchId, params ReverseMatchParams)
-	// GetPaymentReceipt Courtesy receipt (not valid for tax purposes): 80/58 mm HTML or A4 PDF (payments.collect, charges.manage or payments.collect_cash)
+	// GetPaymentReceipt Courtesy receipt (not valid for tax purposes): 80/58 mm HTML, A4 PDF or the receipt data as JSON for the desktop bridge printers (M6b) (payments.collect, charges.manage or payments.collect_cash)
 	// (GET /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/receipt)
 	GetPaymentReceipt(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, params GetPaymentReceiptParams)
 	// RefundPayment Refund unallocated money, optionally reversing matches first; through the provider when possible (refunds.issue)
@@ -20254,7 +20816,7 @@ type ServerInterface interface {
 	GetPresencePhotoLink(w http.ResponseWriter, r *http.Request, marinaId MarinaId, presenceId PresenceId)
 	// UploadPresencePhoto Attach a photo to a presence (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write)
 	// (POST /api/admin/v1/marinas/{marinaId}/presences/{presenceId}/photo)
-	UploadPresencePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, presenceId PresenceId)
+	UploadPresencePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, presenceId PresenceId, params UploadPresencePhotoParams)
 	// GetPresencePhotoFile Download the photo through a signed link from getPresencePhotoLink (exp and sig checked in the service) (customers.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/presences/{presenceId}/photo/file)
 	GetPresencePhotoFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, presenceId PresenceId, params GetPresencePhotoFileParams)
@@ -20522,6 +21084,9 @@ type ServerInterface interface {
 	// CreateTransitPaymentLink Payment link for a held transit: pending_payment until the provider webhook confirms it (transits.desk)
 	// (POST /api/admin/v1/marinas/{marinaId}/transits/{contractId}/payment-link)
 	CreateTransitPaymentLink(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params CreateTransitPaymentLinkParams)
+	// GetTransitQr QR code of a transit for the dock worker's scanner, payload PT1:<contract_id> (contracts.read or transits.desk)
+	// (GET /api/admin/v1/marinas/{marinaId}/transits/{contractId}/qr)
+	GetTransitQr(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId)
 	// ChangeTransitStay Change arrival and/or departure; added nights must be free (409 with alternatives) and the price is recomputed (transits.desk)
 	// (POST /api/admin/v1/marinas/{marinaId}/transits/{contractId}/stay)
 	ChangeTransitStay(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params ChangeTransitStayParams)
@@ -20621,6 +21186,18 @@ type ServerInterface interface {
 	// Stream Server-sent events of a marina (marina.read)
 	// (GET /api/admin/v1/stream)
 	Stream(w http.ResponseWriter, r *http.Request, params StreamParams)
+	// PrintBridgeReceipt Print the courtesy receipt of a payment on the local receipt printer (payments.collect or payments.collect_cash) (M6b)
+	// (POST /api/bridge/v1/receipts)
+	PrintBridgeReceipt(w http.ResponseWriter, r *http.Request)
+	// NextBridgeScan Wait for the next scan of a local QR reader driver (long poll, at most 25 seconds) (M6b)
+	// (GET /api/bridge/v1/scanner/next)
+	NextBridgeScan(w http.ResponseWriter, r *http.Request, params NextBridgeScanParams)
+	// GetBridgeStatus Status of the local peripherals (any authenticated user of the app window) (M6b)
+	// (GET /api/bridge/v1/status)
+	GetBridgeStatus(w http.ResponseWriter, r *http.Request)
+	// TestBridgePeripheral Print a test page or check the local fiscal device (local mode owner; remote mode app PIN) (M6b)
+	// (POST /api/bridge/v1/test)
+	TestBridgePeripheral(w http.ResponseWriter, r *http.Request)
 	// ActivateDesktop Bring the running app window to the front (second launch on the same data folder)
 	// (POST /api/desktop/v1/activate)
 	ActivateDesktop(w http.ResponseWriter, r *http.Request)
@@ -20633,12 +21210,21 @@ type ServerInterface interface {
 	// RestoreDesktopBackup Restore a listed backup after a pre-restore safety backup; the server restarts (owner, loopback)
 	// (POST /api/desktop/v1/backups/{backupId}/restore)
 	RestoreDesktopBackup(w http.ResponseWriter, r *http.Request, backupId string)
+	// SetDesktopRemoteOffline Make the remote proxy behave as if the online instance were unreachable (PORTO_DEV only, e2e) (M6b)
+	// (POST /api/desktop/v1/dev/remote-offline)
+	SetDesktopRemoteOffline(w http.ResponseWriter, r *http.Request)
 	// DesktopFirstRun Create the first owner and organization from the app window (single-use first-run token)
 	// (POST /api/desktop/v1/first-run)
 	DesktopFirstRun(w http.ResponseWriter, r *http.Request)
 	// DesktopFirstRunRestore Restore a backup instead of creating the owner on the first run (first-run token in a header)
 	// (POST /api/desktop/v1/first-run/restore)
 	DesktopFirstRunRestore(w http.ResponseWriter, r *http.Request, params DesktopFirstRunRestoreParams)
+	// SetDesktopKiosk Switch kiosk mode for the next launch (local mode owner; remote mode app PIN) (M6b)
+	// (PUT /api/desktop/v1/kiosk)
+	SetDesktopKiosk(w http.ResponseWriter, r *http.Request)
+	// ExitDesktopKiosk Leave kiosk mode until the next launch (local mode owner credentials; remote mode app PIN) (M6b)
+	// (POST /api/desktop/v1/kiosk/exit)
+	ExitDesktopKiosk(w http.ResponseWriter, r *http.Request)
 	// GetDesktopLan Local-network listener status (owner, loopback)
 	// (GET /api/desktop/v1/lan)
 	GetDesktopLan(w http.ResponseWriter, r *http.Request)
@@ -20651,6 +21237,18 @@ type ServerInterface interface {
 	// OpenDesktopFolder Open a fixed folder (data, backups, logs) with the operating system (owner, loopback)
 	// (POST /api/desktop/v1/open)
 	OpenDesktopFolder(w http.ResponseWriter, r *http.Request)
+	// GetDesktopPeripherals Peripheral settings of this app (local mode owner; remote mode any proxy user) (M6b)
+	// (GET /api/desktop/v1/peripherals)
+	GetDesktopPeripherals(w http.ResponseWriter, r *http.Request)
+	// UpdateDesktopPeripherals Change the peripheral settings (local mode owner; remote mode app PIN) (M6b)
+	// (PUT /api/desktop/v1/peripherals)
+	UpdateDesktopPeripherals(w http.ResponseWriter, r *http.Request)
+	// UnpairDesktopRemote Unpair the app from the online instance and go back to the first run (remote mode, app PIN) (M6b)
+	// (DELETE /api/desktop/v1/remote)
+	UnpairDesktopRemote(w http.ResponseWriter, r *http.Request)
+	// PairDesktopRemote Pair this app to an online Porto instance on the first run and restart in remote mode (M6b)
+	// (POST /api/desktop/v1/remote/pair)
+	PairDesktopRemote(w http.ResponseWriter, r *http.Request)
 	// UploadDesktopRestore Restore an uploaded backup archive (owner, loopback); the server restarts
 	// (POST /api/desktop/v1/restore-upload)
 	UploadDesktopRestore(w http.ResponseWriter, r *http.Request)
@@ -20669,6 +21267,12 @@ type ServerInterface interface {
 	// DemoPairDevice Pair as the demo user without a code (demo installations only)
 	// (POST /api/device/v1/demo-pairing)
 	DemoPairDevice(w http.ResponseWriter, r *http.Request)
+	// ClaimFiscalDocuments Claim pending documents of the bridge fiscal driver for issuing on the desktop's local device (M6b)
+	// (POST /api/device/v1/fiscal/claim)
+	ClaimFiscalDocuments(w http.ResponseWriter, r *http.Request)
+	// ReportFiscalOutcome Report the outcome of a claimed bridge document (issued, failed or deferred) (M6b)
+	// (POST /api/device/v1/fiscal/documents/{documentId}/outcome)
+	ReportFiscalOutcome(w http.ResponseWriter, r *http.Request, documentId string, params ReportFiscalOutcomeParams)
 	// PairDevice Exchange a pairing code for a device token (shown once)
 	// (POST /api/device/v1/pair)
 	PairDevice(w http.ResponseWriter, r *http.Request, params PairDeviceParams)
@@ -21143,6 +21747,12 @@ func (_ Unimplemented) CreateClosure(w http.ResponseWriter, r *http.Request, mar
 // DeleteClosure Delete a closure (harbor.configure)
 // (DELETE /api/admin/v1/marinas/{marinaId}/closures/{closureId})
 func (_ Unimplemented) DeleteClosure(w http.ResponseWriter, r *http.Request, marinaId MarinaId, closureId ClosureId, params DeleteClosureParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListCollectibles Open charges to collect at the dock on a date: contracts with an allocation on the night or a movement on the date (payments.collect or payments.collect_cash)
+// (GET /api/admin/v1/marinas/{marinaId}/collectibles)
+func (_ Unimplemented) ListCollectibles(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListCollectiblesParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -22436,7 +23046,7 @@ func (_ Unimplemented) ReverseMatch(w http.ResponseWriter, r *http.Request, mari
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// GetPaymentReceipt Courtesy receipt (not valid for tax purposes): 80/58 mm HTML or A4 PDF (payments.collect, charges.manage or payments.collect_cash)
+// GetPaymentReceipt Courtesy receipt (not valid for tax purposes): 80/58 mm HTML, A4 PDF or the receipt data as JSON for the desktop bridge printers (M6b) (payments.collect, charges.manage or payments.collect_cash)
 // (GET /api/admin/v1/marinas/{marinaId}/payments/{paymentId}/receipt)
 func (_ Unimplemented) GetPaymentReceipt(w http.ResponseWriter, r *http.Request, marinaId MarinaId, paymentId PaymentId, params GetPaymentReceiptParams) {
 	w.WriteHeader(http.StatusNotImplemented)
@@ -22480,7 +23090,7 @@ func (_ Unimplemented) GetPresencePhotoLink(w http.ResponseWriter, r *http.Reque
 
 // UploadPresencePhoto Attach a photo to a presence (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write)
 // (POST /api/admin/v1/marinas/{marinaId}/presences/{presenceId}/photo)
-func (_ Unimplemented) UploadPresencePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, presenceId PresenceId) {
+func (_ Unimplemented) UploadPresencePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, presenceId PresenceId, params UploadPresencePhotoParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -23018,6 +23628,12 @@ func (_ Unimplemented) CreateTransitPaymentLink(w http.ResponseWriter, r *http.R
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// GetTransitQr QR code of a transit for the dock worker's scanner, payload PT1:<contract_id> (contracts.read or transits.desk)
+// (GET /api/admin/v1/marinas/{marinaId}/transits/{contractId}/qr)
+func (_ Unimplemented) GetTransitQr(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ChangeTransitStay Change arrival and/or departure; added nights must be free (409 with alternatives) and the price is recomputed (transits.desk)
 // (POST /api/admin/v1/marinas/{marinaId}/transits/{contractId}/stay)
 func (_ Unimplemented) ChangeTransitStay(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params ChangeTransitStayParams) {
@@ -23216,6 +23832,30 @@ func (_ Unimplemented) Stream(w http.ResponseWriter, r *http.Request, params Str
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// PrintBridgeReceipt Print the courtesy receipt of a payment on the local receipt printer (payments.collect or payments.collect_cash) (M6b)
+// (POST /api/bridge/v1/receipts)
+func (_ Unimplemented) PrintBridgeReceipt(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// NextBridgeScan Wait for the next scan of a local QR reader driver (long poll, at most 25 seconds) (M6b)
+// (GET /api/bridge/v1/scanner/next)
+func (_ Unimplemented) NextBridgeScan(w http.ResponseWriter, r *http.Request, params NextBridgeScanParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetBridgeStatus Status of the local peripherals (any authenticated user of the app window) (M6b)
+// (GET /api/bridge/v1/status)
+func (_ Unimplemented) GetBridgeStatus(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// TestBridgePeripheral Print a test page or check the local fiscal device (local mode owner; remote mode app PIN) (M6b)
+// (POST /api/bridge/v1/test)
+func (_ Unimplemented) TestBridgePeripheral(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ActivateDesktop Bring the running app window to the front (second launch on the same data folder)
 // (POST /api/desktop/v1/activate)
 func (_ Unimplemented) ActivateDesktop(w http.ResponseWriter, r *http.Request) {
@@ -23240,6 +23880,12 @@ func (_ Unimplemented) RestoreDesktopBackup(w http.ResponseWriter, r *http.Reque
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// SetDesktopRemoteOffline Make the remote proxy behave as if the online instance were unreachable (PORTO_DEV only, e2e) (M6b)
+// (POST /api/desktop/v1/dev/remote-offline)
+func (_ Unimplemented) SetDesktopRemoteOffline(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // DesktopFirstRun Create the first owner and organization from the app window (single-use first-run token)
 // (POST /api/desktop/v1/first-run)
 func (_ Unimplemented) DesktopFirstRun(w http.ResponseWriter, r *http.Request) {
@@ -23249,6 +23895,18 @@ func (_ Unimplemented) DesktopFirstRun(w http.ResponseWriter, r *http.Request) {
 // DesktopFirstRunRestore Restore a backup instead of creating the owner on the first run (first-run token in a header)
 // (POST /api/desktop/v1/first-run/restore)
 func (_ Unimplemented) DesktopFirstRunRestore(w http.ResponseWriter, r *http.Request, params DesktopFirstRunRestoreParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SetDesktopKiosk Switch kiosk mode for the next launch (local mode owner; remote mode app PIN) (M6b)
+// (PUT /api/desktop/v1/kiosk)
+func (_ Unimplemented) SetDesktopKiosk(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ExitDesktopKiosk Leave kiosk mode until the next launch (local mode owner credentials; remote mode app PIN) (M6b)
+// (POST /api/desktop/v1/kiosk/exit)
+func (_ Unimplemented) ExitDesktopKiosk(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -23273,6 +23931,30 @@ func (_ Unimplemented) RotateLanCertificate(w http.ResponseWriter, r *http.Reque
 // OpenDesktopFolder Open a fixed folder (data, backups, logs) with the operating system (owner, loopback)
 // (POST /api/desktop/v1/open)
 func (_ Unimplemented) OpenDesktopFolder(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetDesktopPeripherals Peripheral settings of this app (local mode owner; remote mode any proxy user) (M6b)
+// (GET /api/desktop/v1/peripherals)
+func (_ Unimplemented) GetDesktopPeripherals(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateDesktopPeripherals Change the peripheral settings (local mode owner; remote mode app PIN) (M6b)
+// (PUT /api/desktop/v1/peripherals)
+func (_ Unimplemented) UpdateDesktopPeripherals(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UnpairDesktopRemote Unpair the app from the online instance and go back to the first run (remote mode, app PIN) (M6b)
+// (DELETE /api/desktop/v1/remote)
+func (_ Unimplemented) UnpairDesktopRemote(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PairDesktopRemote Pair this app to an online Porto instance on the first run and restart in remote mode (M6b)
+// (POST /api/desktop/v1/remote/pair)
+func (_ Unimplemented) PairDesktopRemote(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -23309,6 +23991,18 @@ func (_ Unimplemented) GetDesktopStatus(w http.ResponseWriter, r *http.Request) 
 // DemoPairDevice Pair as the demo user without a code (demo installations only)
 // (POST /api/device/v1/demo-pairing)
 func (_ Unimplemented) DemoPairDevice(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ClaimFiscalDocuments Claim pending documents of the bridge fiscal driver for issuing on the desktop's local device (M6b)
+// (POST /api/device/v1/fiscal/claim)
+func (_ Unimplemented) ClaimFiscalDocuments(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ReportFiscalOutcome Report the outcome of a claimed bridge document (issued, failed or deferred) (M6b)
+// (POST /api/device/v1/fiscal/documents/{documentId}/outcome)
+func (_ Unimplemented) ReportFiscalOutcome(w http.ResponseWriter, r *http.Request, documentId string, params ReportFiscalOutcomeParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -26596,6 +27290,74 @@ func (siw *ServerInterfaceWrapper) DeleteClosure(w http.ResponseWriter, r *http.
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteClosure(w, r, marinaId, closureId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCollectibles operation middleware
+func (siw *ServerInterfaceWrapper) ListCollectibles(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListCollectiblesParams
+
+	// ------------- Optional query parameter "date" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "date", r.URL.Query(), &params.Date, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "date"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "date", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCollectibles(w, r, marinaId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -38537,6 +39299,25 @@ func (siw *ServerInterfaceWrapper) RecordPayment(w http.ResponseWriter, r *http.
 
 	}
 
+	// ------------- Optional header parameter "Porto-Offline-Queued-At" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Offline-Queued-At")]; found {
+		var PortoOfflineQueuedAt OfflineQueuedAt
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Offline-Queued-At", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Offline-Queued-At", valueList[0], &PortoOfflineQueuedAt, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "date-time"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Offline-Queued-At", Err: err})
+			return
+		}
+
+		params.PortoOfflineQueuedAt = &PortoOfflineQueuedAt
+
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.RecordPayment(w, r, marinaId, params)
 	}))
@@ -39080,6 +39861,25 @@ func (siw *ServerInterfaceWrapper) RecordPresence(w http.ResponseWriter, r *http
 
 	}
 
+	// ------------- Optional header parameter "Porto-Offline-Queued-At" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Offline-Queued-At")]; found {
+		var PortoOfflineQueuedAt OfflineQueuedAt
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Offline-Queued-At", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Offline-Queued-At", valueList[0], &PortoOfflineQueuedAt, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "date-time"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Offline-Queued-At", Err: err})
+			return
+		}
+
+		params.PortoOfflineQueuedAt = &PortoOfflineQueuedAt
+
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.RecordPresence(w, r, marinaId, params)
 	}))
@@ -39200,8 +40000,51 @@ func (siw *ServerInterfaceWrapper) UploadPresencePhoto(w http.ResponseWriter, r 
 		return
 	}
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UploadPresencePhotoParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Porto-Offline-Queued-At" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Offline-Queued-At")]; found {
+		var PortoOfflineQueuedAt OfflineQueuedAt
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Offline-Queued-At", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Offline-Queued-At", valueList[0], &PortoOfflineQueuedAt, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "date-time"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Offline-Queued-At", Err: err})
+			return
+		}
+
+		params.PortoOfflineQueuedAt = &PortoOfflineQueuedAt
+
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.UploadPresencePhoto(w, r, marinaId, presenceId)
+		siw.Handler.UploadPresencePhoto(w, r, marinaId, presenceId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -44890,6 +45733,41 @@ func (siw *ServerInterfaceWrapper) CreateTransitPaymentLink(w http.ResponseWrite
 	handler.ServeHTTP(w, r)
 }
 
+// GetTransitQr operation middleware
+func (siw *ServerInterfaceWrapper) GetTransitQr(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetTransitQr(w, r, marinaId, contractId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ChangeTransitStay operation middleware
 func (siw *ServerInterfaceWrapper) ChangeTransitStay(w http.ResponseWriter, r *http.Request) {
 
@@ -46533,6 +47411,81 @@ func (siw *ServerInterfaceWrapper) Stream(w http.ResponseWriter, r *http.Request
 	handler.ServeHTTP(w, r)
 }
 
+// PrintBridgeReceipt operation middleware
+func (siw *ServerInterfaceWrapper) PrintBridgeReceipt(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PrintBridgeReceipt(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// NextBridgeScan operation middleware
+func (siw *ServerInterfaceWrapper) NextBridgeScan(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params NextBridgeScanParams
+
+	// ------------- Optional query parameter "timeout" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "timeout", r.URL.Query(), &params.Timeout, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "timeout"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "timeout", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.NextBridgeScan(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetBridgeStatus operation middleware
+func (siw *ServerInterfaceWrapper) GetBridgeStatus(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetBridgeStatus(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// TestBridgePeripheral operation middleware
+func (siw *ServerInterfaceWrapper) TestBridgePeripheral(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.TestBridgePeripheral(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ActivateDesktop operation middleware
 func (siw *ServerInterfaceWrapper) ActivateDesktop(w http.ResponseWriter, r *http.Request) {
 
@@ -46628,6 +47581,20 @@ func (siw *ServerInterfaceWrapper) RestoreDesktopBackup(w http.ResponseWriter, r
 	handler.ServeHTTP(w, r)
 }
 
+// SetDesktopRemoteOffline operation middleware
+func (siw *ServerInterfaceWrapper) SetDesktopRemoteOffline(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetDesktopRemoteOffline(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // DesktopFirstRun operation middleware
 func (siw *ServerInterfaceWrapper) DesktopFirstRun(w http.ResponseWriter, r *http.Request) {
 
@@ -46687,6 +47654,34 @@ func (siw *ServerInterfaceWrapper) DesktopFirstRunRestore(w http.ResponseWriter,
 	handler.ServeHTTP(w, r)
 }
 
+// SetDesktopKiosk operation middleware
+func (siw *ServerInterfaceWrapper) SetDesktopKiosk(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetDesktopKiosk(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ExitDesktopKiosk operation middleware
+func (siw *ServerInterfaceWrapper) ExitDesktopKiosk(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ExitDesktopKiosk(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetDesktopLan operation middleware
 func (siw *ServerInterfaceWrapper) GetDesktopLan(w http.ResponseWriter, r *http.Request) {
 
@@ -46734,6 +47729,62 @@ func (siw *ServerInterfaceWrapper) OpenDesktopFolder(w http.ResponseWriter, r *h
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.OpenDesktopFolder(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetDesktopPeripherals operation middleware
+func (siw *ServerInterfaceWrapper) GetDesktopPeripherals(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetDesktopPeripherals(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateDesktopPeripherals operation middleware
+func (siw *ServerInterfaceWrapper) UpdateDesktopPeripherals(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateDesktopPeripherals(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnpairDesktopRemote operation middleware
+func (siw *ServerInterfaceWrapper) UnpairDesktopRemote(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnpairDesktopRemote(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PairDesktopRemote operation middleware
+func (siw *ServerInterfaceWrapper) PairDesktopRemote(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PairDesktopRemote(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -46818,6 +47869,70 @@ func (siw *ServerInterfaceWrapper) DemoPairDevice(w http.ResponseWriter, r *http
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DemoPairDevice(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ClaimFiscalDocuments operation middleware
+func (siw *ServerInterfaceWrapper) ClaimFiscalDocuments(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ClaimFiscalDocuments(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReportFiscalOutcome operation middleware
+func (siw *ServerInterfaceWrapper) ReportFiscalOutcome(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ReportFiscalOutcomeParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReportFiscalOutcome(w, r, documentId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -47826,6 +48941,12 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Post(options.BaseURL+"/api/device/v1/pair-session/totp", wrapper.VerifyDeviceSessionTotp)
 	})
 	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/device/v1/fiscal/claim", wrapper.ClaimFiscalDocuments)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/device/v1/fiscal/documents/{documentId}/outcome", wrapper.ReportFiscalOutcome)
+	})
+	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/desktop/v1/status", wrapper.GetDesktopStatus)
 	})
 	r.Group(func(r chi.Router) {
@@ -47869,6 +48990,39 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/api/desktop/v1/activate", wrapper.ActivateDesktop)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/remote/pair", wrapper.PairDesktopRemote)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/desktop/v1/remote", wrapper.UnpairDesktopRemote)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/desktop/v1/peripherals", wrapper.GetDesktopPeripherals)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/desktop/v1/peripherals", wrapper.UpdateDesktopPeripherals)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/desktop/v1/kiosk", wrapper.SetDesktopKiosk)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/kiosk/exit", wrapper.ExitDesktopKiosk)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/desktop/v1/dev/remote-offline", wrapper.SetDesktopRemoteOffline)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/bridge/v1/status", wrapper.GetBridgeStatus)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/bridge/v1/receipts", wrapper.PrintBridgeReceipt)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/bridge/v1/test", wrapper.TestBridgePeripheral)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/bridge/v1/scanner/next", wrapper.NextBridgeScan)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/public/v1/{slug}", wrapper.GetPublicMarina)
@@ -48241,6 +49395,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/transits/{contractId}/stay", wrapper.ChangeTransitStay)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/transits/{contractId}/qr", wrapper.GetTransitQr)
 	})
 	r.Group(func(r chi.Router) {
 		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/transits/{contractId}", wrapper.UpdateTransit)
@@ -48763,6 +49920,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/api/public/v1/{slug}/links/{token}/unsubscribe", wrapper.PublicUnsubscribe)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/collectibles", wrapper.ListCollectibles)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/charges", wrapper.ListCharges)

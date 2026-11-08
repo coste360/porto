@@ -12,6 +12,7 @@ import {
 
 import { ifMatch, newIdempotencyKey, unwrap, uploadBinary, type ApiClient } from '../client';
 import { useApi } from '../context';
+import { assertOnline, enqueueAndWait, type OfflineReasonCode } from '../../offline/index';
 import { isProblem } from '../problem';
 import { queryKeys } from '../queryKeys';
 import type { components } from '../schema';
@@ -65,10 +66,12 @@ function invalidateDesk(qc: QueryClient, marinaId: string) {
 function useDeskMutation<V, R>(
   marinaId: string,
   fn: (api: ApiClient, vars: V, idempotencyKey: string) => Promise<R>,
+  offlineGuard?: [operationId: string, reason: OfflineReasonCode],
 ) {
   const api = useApi();
   const qc = useQueryClient();
   return useMutation({
+    ...(offlineGuard ? { onMutate: () => assertOnline(...offlineGuard) } : {}),
     mutationFn: (vars: V) => fn(api, vars, newIdempotencyKey()),
     onSuccess: () => invalidateDesk(qc, marinaId),
   });
@@ -203,13 +206,16 @@ export function useQuote(marinaId: string, quoteId: string) {
 }
 
 export function useCreateQuote(marinaId: string) {
-  return useDeskMutation(marinaId, (api, body: QuoteInput, key) =>
-    unwrap(
-      api.POST(`${M}/quotes`, {
-        params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
-        body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, body: QuoteInput, key) =>
+      unwrap(
+        api.POST(`${M}/quotes`, {
+          params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
+          body,
+        }),
+      ),
+    ['createQuote', 'allocation'],
   );
 }
 
@@ -226,51 +232,61 @@ export function useUpdateQuote(marinaId: string) {
           body: v.body,
         }),
       ),
+    ['updateQuote', 'online_only'],
   );
 }
 
 type Versioned = { id: string; version: number };
 
 export function useMarkQuoteSent(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned, key) =>
-    unwrap(
-      api.POST(`${M}/quotes/{quoteId}/send`, {
-        params: {
-          path: { marinaId, quoteId: v.id },
-          // M3 "segna come inviato": only the mark, no email (the M4 send by email is useSendQuote).
-          query: { manual: true },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned, key) =>
+      unwrap(
+        api.POST(`${M}/quotes/{quoteId}/send`, {
+          params: {
+            path: { marinaId, quoteId: v.id },
+            // M3 "segna come inviato": only the mark, no email (the M4 send by email is useSendQuote).
+            query: { manual: true },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+        }),
+      ),
+    ['markQuoteSent', 'online_only'],
   );
 }
 
 export function useAcceptQuote(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned & { body: S['QuoteAccept'] }, key) =>
-    unwrap(
-      api.POST(`${M}/quotes/{quoteId}/accept`, {
-        params: {
-          path: { marinaId, quoteId: v.id },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-        body: v.body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned & { body: S['QuoteAccept'] }, key) =>
+      unwrap(
+        api.POST(`${M}/quotes/{quoteId}/accept`, {
+          params: {
+            path: { marinaId, quoteId: v.id },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+          body: v.body,
+        }),
+      ),
+    ['acceptQuote', 'allocation'],
   );
 }
 
 export function useDeclineQuote(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned & { reason?: string }, key) =>
-    unwrap(
-      api.POST(`${M}/quotes/{quoteId}/decline`, {
-        params: {
-          path: { marinaId, quoteId: v.id },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-        body: v.reason ? { reason: v.reason } : {},
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned & { reason?: string }, key) =>
+      unwrap(
+        api.POST(`${M}/quotes/{quoteId}/decline`, {
+          params: {
+            path: { marinaId, quoteId: v.id },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+          body: v.reason ? { reason: v.reason } : {},
+        }),
+      ),
+    ['declineQuote', 'online_only'],
   );
 }
 
@@ -321,68 +337,83 @@ export function useContract(marinaId: string, contractId: string) {
 }
 
 export function useCreateContract(marinaId: string) {
-  return useDeskMutation(marinaId, (api, body: ContractCreate, key) =>
-    unwrap(
-      api.POST(`${M}/contracts`, {
-        params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
-        body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, body: ContractCreate, key) =>
+      unwrap(
+        api.POST(`${M}/contracts`, {
+          params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
+          body,
+        }),
+      ),
+    ['createContract', 'allocation'],
   );
 }
 
 export function useUpdateContract(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned & { patch: S['ContractPatch'] }) =>
-    unwrap(
-      api.PATCH(`${M}/contracts/{contractId}`, {
-        params: {
-          path: { marinaId, contractId: v.id },
-          header: { 'If-Match': ifMatch(v.version) },
-        },
-        body: v.patch,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned & { patch: S['ContractPatch'] }) =>
+      unwrap(
+        api.PATCH(`${M}/contracts/{contractId}`, {
+          params: {
+            path: { marinaId, contractId: v.id },
+            header: { 'If-Match': ifMatch(v.version) },
+          },
+          body: v.patch,
+        }),
+      ),
+    ['updateContract', 'online_only'],
   );
 }
 
 export function useActivateContract(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned, key) =>
-    unwrap(
-      api.POST(`${M}/contracts/{contractId}/activate`, {
-        params: {
-          path: { marinaId, contractId: v.id },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned, key) =>
+      unwrap(
+        api.POST(`${M}/contracts/{contractId}/activate`, {
+          params: {
+            path: { marinaId, contractId: v.id },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+        }),
+      ),
+    ['activateContract', 'allocation'],
   );
 }
 
 export function useCancelContract(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned & { reason?: string }, key) =>
-    unwrap(
-      api.POST(`${M}/contracts/{contractId}/cancel`, {
-        params: {
-          path: { marinaId, contractId: v.id },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-        body: v.reason ? { reason: v.reason } : {},
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned & { reason?: string }, key) =>
+      unwrap(
+        api.POST(`${M}/contracts/{contractId}/cancel`, {
+          params: {
+            path: { marinaId, contractId: v.id },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+          body: v.reason ? { reason: v.reason } : {},
+        }),
+      ),
+    ['cancelContract', 'allocation'],
   );
 }
 
 export function useTerminateContract(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned & { body: S['TerminateInput'] }, key) =>
-    unwrap(
-      api.POST(`${M}/contracts/{contractId}/terminate`, {
-        params: {
-          path: { marinaId, contractId: v.id },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-        body: v.body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned & { body: S['TerminateInput'] }, key) =>
+      unwrap(
+        api.POST(`${M}/contracts/{contractId}/terminate`, {
+          params: {
+            path: { marinaId, contractId: v.id },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+          body: v.body,
+        }),
+      ),
+    ['terminateContract', 'allocation'],
   );
 }
 
@@ -417,83 +448,101 @@ export function useTransits(marinaId: string, filters: TransitFilters = {}) {
 }
 
 export function useCreateTransit(marinaId: string) {
-  return useDeskMutation(marinaId, (api, body: TransitCreate, key) =>
-    unwrap(
-      api.POST(`${M}/transits`, {
-        params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
-        body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, body: TransitCreate, key) =>
+      unwrap(
+        api.POST(`${M}/transits`, {
+          params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
+          body,
+        }),
+      ),
+    ['createTransit', 'allocation'],
   );
 }
 
 /** Manual-driver confirmation (INV-09): the only confirmation path of the desk. */
 export function useConfirmTransit(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned & { body: ManualConfirmation }, key) =>
-    unwrap(
-      api.POST(`${M}/transits/{contractId}/confirm`, {
-        params: {
-          path: { marinaId, contractId: v.id },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-        body: v.body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned & { body: ManualConfirmation }, key) =>
+      unwrap(
+        api.POST(`${M}/transits/{contractId}/confirm`, {
+          params: {
+            path: { marinaId, contractId: v.id },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+          body: v.body,
+        }),
+      ),
+    ['confirmTransit', 'allocation'],
   );
 }
 
 export function useCancelTransit(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned & { reason?: string }, key) =>
-    unwrap(
-      api.POST(`${M}/transits/{contractId}/cancel`, {
-        params: {
-          path: { marinaId, contractId: v.id },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-        body: v.reason ? { reason: v.reason } : {},
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned & { reason?: string }, key) =>
+      unwrap(
+        api.POST(`${M}/transits/{contractId}/cancel`, {
+          params: {
+            path: { marinaId, contractId: v.id },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+          body: v.reason ? { reason: v.reason } : {},
+        }),
+      ),
+    ['cancelTransit', 'allocation'],
   );
 }
 
 export function useMarkTransitNoShow(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned, key) =>
-    unwrap(
-      api.POST(`${M}/transits/{contractId}/no-show`, {
-        params: {
-          path: { marinaId, contractId: v.id },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned, key) =>
+      unwrap(
+        api.POST(`${M}/transits/{contractId}/no-show`, {
+          params: {
+            path: { marinaId, contractId: v.id },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+        }),
+      ),
+    ['markTransitNoShow', 'allocation'],
   );
 }
 
 export function useChangeTransitStay(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned & { body: S['StayChange'] }, key) =>
-    unwrap(
-      api.POST(`${M}/transits/{contractId}/stay`, {
-        params: {
-          path: { marinaId, contractId: v.id },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-        body: v.body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned & { body: S['StayChange'] }, key) =>
+      unwrap(
+        api.POST(`${M}/transits/{contractId}/stay`, {
+          params: {
+            path: { marinaId, contractId: v.id },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+          body: v.body,
+        }),
+      ),
+    ['changeTransitStay', 'allocation'],
   );
 }
 
 export function useUpdateTransit(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned & { patch: S['TransitPatch'] }) =>
-    unwrap(
-      api.PATCH(`${M}/transits/{contractId}`, {
-        params: {
-          path: { marinaId, contractId: v.id },
-          header: { 'If-Match': ifMatch(v.version) },
-        },
-        body: v.patch,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned & { patch: S['TransitPatch'] }) =>
+      unwrap(
+        api.PATCH(`${M}/transits/{contractId}`, {
+          params: {
+            path: { marinaId, contractId: v.id },
+            header: { 'If-Match': ifMatch(v.version) },
+          },
+          body: v.patch,
+        }),
+      ),
+    ['updateTransit', 'online_only'],
   );
 }
 
@@ -521,27 +570,33 @@ export function useReleases(marinaId: string, filters: ReleaseFilters = {}, enab
 }
 
 export function useCreateRelease(marinaId: string) {
-  return useDeskMutation(marinaId, (api, body: S['ReleaseCreate'], key) =>
-    unwrap(
-      api.POST(`${M}/releases`, {
-        params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
-        body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, body: S['ReleaseCreate'], key) =>
+      unwrap(
+        api.POST(`${M}/releases`, {
+          params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
+          body,
+        }),
+      ),
+    ['createRelease', 'allocation'],
   );
 }
 
 export function useRevokeRelease(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned & { body: S['RevokeRequest'] }, key) =>
-    unwrap(
-      api.POST(`${M}/releases/{releaseId}/revoke`, {
-        params: {
-          path: { marinaId, releaseId: v.id },
-          header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
-        },
-        body: v.body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned & { body: S['RevokeRequest'] }, key) =>
+      unwrap(
+        api.POST(`${M}/releases/{releaseId}/revoke`, {
+          params: {
+            path: { marinaId, releaseId: v.id },
+            header: { 'Idempotency-Key': key, 'If-Match': ifMatch(v.version) },
+          },
+          body: v.body,
+        }),
+      ),
+    ['revokeRelease', 'allocation'],
   );
 }
 
@@ -561,23 +616,32 @@ export function useClosures(marinaId: string, filters: { from?: string; to?: str
 }
 
 export function useCreateClosure(marinaId: string) {
-  return useDeskMutation(marinaId, (api, body: S['ClosureCreate'], key) =>
-    unwrap(
-      api.POST(`${M}/closures`, {
-        params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
-        body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, body: S['ClosureCreate'], key) =>
+      unwrap(
+        api.POST(`${M}/closures`, {
+          params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
+          body,
+        }),
+      ),
+    ['createClosure', 'allocation'],
   );
 }
 
 export function useDeleteClosure(marinaId: string) {
-  return useDeskMutation(marinaId, (api, v: Versioned) =>
-    unwrap(
-      api.DELETE(`${M}/closures/{closureId}`, {
-        params: { path: { marinaId, closureId: v.id }, header: { 'If-Match': ifMatch(v.version) } },
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, v: Versioned) =>
+      unwrap(
+        api.DELETE(`${M}/closures/{closureId}`, {
+          params: {
+            path: { marinaId, closureId: v.id },
+            header: { 'If-Match': ifMatch(v.version) },
+          },
+        }),
+      ),
+    ['deleteClosure', 'allocation'],
   );
 }
 
@@ -628,25 +692,77 @@ export function usePresences(marinaId: string, date: string) {
   });
 }
 
-export function useRecordPresence(marinaId: string) {
-  return useDeskMutation(marinaId, (api, body: S['PresenceCreate'], key) =>
-    unwrap(
-      api.POST(`${M}/presences`, {
-        params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
-        body,
-      }),
-    ),
+/** A presence the offline queue may carry: arrival or departure on an existing allocation, with the berth the
+ * operator saw (29.2, m6b-plan §4.2). */
+function queueablePresence(body: S['PresenceCreate']): boolean {
+  return (
+    (body.event === 'arrived' || body.event === 'departed') &&
+    !!body.allocation_id &&
+    !!body.expected_resource_id
   );
 }
 
+function signedInUser(qc: QueryClient): string | undefined {
+  return qc.getQueryData<S['Me'] | null>(queryKeys.me)?.user.id;
+}
+
+const marinaPath = (marinaId: string) => `/api/admin/v1/marinas/${encodeURIComponent(marinaId)}`;
+
+/**
+ * Records a presence. Queue first (m6b-plan §4.3, D2): an arrival or departure on an existing allocation with
+ * `expected_resource_id` goes through the offline queue (online it resolves with the server's answer; offline it
+ * rejects with OfflineQueuedError, the queue sends it later). Any other presence is online only.
+ */
+export function useRecordPresence(marinaId: string) {
+  const api = useApi();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (vars: S['PresenceCreate'] & { vesselName?: string }) => {
+      const { vesselName, ...body } = vars;
+      const userId = signedInUser(qc);
+      if (userId && queueablePresence(body)) {
+        return enqueueAndWait<S['PresenceResult']>({
+          kind: 'presence.record',
+          userId,
+          marinaId,
+          lane: `vessel:${body.vessel_id}`,
+          request: {
+            operationId: 'recordPresence',
+            path: `${marinaPath(marinaId)}/presences`,
+            body,
+          },
+          label: {
+            key:
+              body.event === 'arrived'
+                ? 'offline:queue.label.arrived'
+                : 'offline:queue.label.departed',
+            params: { vessel: vesselName ?? '' },
+          },
+        });
+      }
+      assertOnline('recordPresence', body.allocation_id ? 'online_only' : 'allocation');
+      return unwrap(
+        api.POST(`${M}/presences`, {
+          params: { path: { marinaId }, header: { 'Idempotency-Key': newIdempotencyKey() } },
+          body,
+        }),
+      );
+    },
+    onSuccess: () => invalidateDesk(qc, marinaId),
+  });
+}
+
 export function useRecordUnexpectedArrival(marinaId: string) {
-  return useDeskMutation(marinaId, (api, body: S['UnexpectedArrival'], key) =>
-    unwrap(
-      api.POST(`${M}/presences/unexpected-arrival`, {
-        params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
-        body,
-      }),
-    ),
+  return useDeskMutation(
+    marinaId,
+    (api, body: S['UnexpectedArrival'], key) =>
+      unwrap(
+        api.POST(`${M}/presences/unexpected-arrival`, {
+          params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
+          body,
+        }),
+      ),
+    ['recordUnexpectedArrival', 'allocation'],
   );
 }
 
@@ -654,17 +770,46 @@ export function useRecordUnexpectedArrival(marinaId: string) {
 export const PRESENCE_PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
 export const PRESENCE_PHOTO_MAX_BYTES = 8 * 1024 * 1024;
 
+/** Uploads the photo of a recorded presence through the offline queue (queue first; offline it rejects with
+ * OfflineQueuedError and is sent later). Without a signed-in user (tests, boot) it uploads directly. */
 export function useUploadPresencePhoto(marinaId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (v: { presenceId: string; file: Blob }) =>
-      (
+    mutationFn: async (v: {
+      presenceId: string;
+      file: Blob;
+      vesselId?: string;
+      vesselName?: string;
+    }) => {
+      const userId = signedInUser(qc);
+      if (userId) {
+        return enqueueAndWait<S['PresencePhoto']>({
+          kind: 'presence.photo',
+          userId,
+          marinaId,
+          lane: `vessel:${v.vesselId ?? v.presenceId}`,
+          request: {
+            operationId: 'uploadPresencePhoto',
+            path: `${marinaPath(marinaId)}/presences/${encodeURIComponent(v.presenceId)}/photo`,
+            contentType: v.file.type || 'image/jpeg',
+          },
+          blob: v.file,
+          label: { key: 'offline:queue.label.photo', params: { vessel: v.vesselName ?? '' } },
+        });
+      }
+      assertOnline('uploadPresencePhoto');
+      return (
         await uploadBinary<S['PresencePhoto']>(
-          `/api/admin/v1/marinas/${encodeURIComponent(marinaId)}/presences/${encodeURIComponent(v.presenceId)}/photo`,
+          `${marinaPath(marinaId)}/presences/${encodeURIComponent(v.presenceId)}/photo`,
           v.file,
-          { method: 'POST', contentType: v.file.type },
+          {
+            method: 'POST',
+            contentType: v.file.type,
+            headers: { 'Idempotency-Key': newIdempotencyKey() },
+          },
         )
-      ).data,
+      ).data;
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.presences(marinaId) }),
   });
 }

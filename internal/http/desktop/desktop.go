@@ -75,6 +75,10 @@ func (h *Handler) GetDesktopStatus(w http.ResponseWriter, r *http.Request) {
 	if st.Update != nil {
 		out.Update = &api.DesktopUpdate{Version: st.Update.Version, Url: st.Update.URL}
 	}
+	out.Kiosk = st.Kiosk
+	if st.Remote != nil {
+		out.Remote = remoteStatusView(*st.Remote)
+	}
 	respond.JSON(w, http.StatusOK, out)
 }
 
@@ -174,7 +178,7 @@ func lanView(s desktopport.LANStatus) api.LanStatus {
 	return api.LanStatus{
 		Enabled: s.Enabled, Listening: s.Listening, Url: s.URL, Address: s.Address, Addresses: addrs, Port: s.Port,
 		Fingerprint: s.Fingerprint, CaFingerprint: s.CAFingerprint, CertExpiresAt: timePtr(s.CertExpiresAt),
-		Error: strPtr(s.Error),
+		Error: strPtr(s.Error), CaConstrained: s.CAConstrained, CaDownloadUrl: s.CADownloadURL,
 	}
 }
 

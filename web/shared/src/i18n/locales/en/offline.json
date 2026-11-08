@@ -1,0 +1,65 @@
+{
+  "status": {
+    "online": "Online",
+    "offline": "Offline",
+    "pending_one": "{{count}} queued operation",
+    "pending_other": "{{count}} queued operations",
+    "conflicts_one": "{{count}} conflict",
+    "conflicts_other": "{{count}} conflicts",
+    "noOfflineStart": "Offline start unavailable: install the marina certificate",
+    "swFailed": "Offline start unavailable on this device"
+  },
+  "staleSince": "Data updated at {{time}}",
+  "queuedBadge": "Queued",
+  "forbidden": {
+    "allocation": "Not available offline: it needs the server's availability guarantee.",
+    "document": "Not available offline: it issues a document.",
+    "online_only": "Available online only."
+  },
+  "queue": {
+    "title": "Queued operations",
+    "empty": "No queued operations.",
+    "sendNow": "Send now",
+    "discard": "Discard",
+    "retryAsNew": "Retry as a new operation",
+    "state": {
+      "pending": "Waiting",
+      "sending": "Sending",
+      "retrying": "Retrying",
+      "conflict": "Conflict",
+      "blocked": "Blocked",
+      "expired": "Expired",
+      "done": "Sent"
+    },
+    "label": {
+      "arrived": "Arrival of {{vessel}}",
+      "departed": "Departure of {{vessel}}",
+      "photo": "Photo of {{vessel}}",
+      "cash": "Collection of {{amount}}"
+    }
+  },
+  "logoutConfirm": {
+    "title": "Unsent operations",
+    "description_one": "{{count}} unsent operation will be lost.",
+    "description_other": "{{count}} unsent operations will be lost.",
+    "confirm": "Sign out anyway"
+  },
+  "marinaSwitchBlocked": "Send or discard the queued operations before switching marina.",
+  "signInAgain": "Sign in again to send the queued operations.",
+  "otherUserOps": "There are queued operations of another user: they can only be discarded.",
+  "quotaFull": "Device storage is full: send the queued operations before adding more.",
+  "schemaNewer": "The offline data was saved by a newer version: reload the page.",
+  "update": {
+    "available": "New version available",
+    "action": "Update"
+  },
+  "certificate": {
+    "title": "Marina certificate",
+    "intro": "To use Porto offline on this phone, install the marina certificate.",
+    "android": "Android: Settings, Security, Install CA certificate.",
+    "ios": "iPhone: download the profile, install it, then enable it in Settings, General, About, Certificate Trust Settings.",
+    "fingerprint": "Fingerprint to compare",
+    "download": "Download the certificate",
+    "downloadProfile": "Download the iOS profile"
+  }
+}

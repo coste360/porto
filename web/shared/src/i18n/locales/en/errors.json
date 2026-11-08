@@ -113,5 +113,12 @@
   "lan_no_address": "This computer has no local network address: connect it to the office Wi-Fi or network.",
   "backup_in_progress": "A backup or restore is already running: wait for it to finish.",
   "restore_failed": "The backup cannot be restored: the current data was not changed.",
-  "restore_backup_newer": "The backup was made by a newer version of Porto: update the app and try again. The current data was not changed."
+  "restore_backup_newer": "The backup was made by a newer version of Porto: update the app and try again. The current data was not changed.",
+  "allocation_changed": "The vessel's berth changed after the operation was queued: check the new berth and try again.",
+  "offline_not_allowed": "This operation cannot be recorded offline: repeat it when you are connected.",
+  "remote_unreachable": "The online Porto cannot be reached: check the connection. Allowed operations stay queued.",
+  "remote_pin_mismatch": "The online Porto presented a certificate different from the expected one: connection stopped for safety.",
+  "peripheral_unavailable": "The peripheral is not configured or not ready.",
+  "claim_expired": "The claim of the fiscal document expired: it will be retried.",
+  "app_pin_invalid": "Wrong app PIN."
 }

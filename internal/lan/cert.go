@@ -72,6 +72,45 @@ func (c *Certs) FingerprintB64() string { return FingerprintB64(c.Leaf.Raw) }
 // CAFingerprint is the SHA-256 of the CA DER, lowercase hex (M6b installs the CA as a profile).
 func (c *Certs) CAFingerprint() string { return FingerprintHex(c.CA.Raw) }
 
+// CAConstrained reports whether the CA carries the M6b name constraints (a CA created by M6a does not until
+// "Rigenera tutto"); only a constrained CA is offered for download.
+func (c *Certs) CAConstrained() bool { return Constrained(c.CA) }
+
+// PermittedDNSDomains are the DNS name constraints of a local CA: <name>.local and localhost.
+var PermittedDNSDomains = []string{"local", "localhost"}
+
+// PermittedIPCIDRs are the IP name constraints of a local CA: private, unique local and loopback ranges.
+var PermittedIPCIDRs = []string{"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "127.0.0.0/8", "fc00::/7"}
+
+func permittedIPRanges() []*net.IPNet {
+	out := make([]*net.IPNet, 0, len(PermittedIPCIDRs))
+	for _, c := range PermittedIPCIDRs {
+		_, n, err := net.ParseCIDR(c)
+		if err == nil {
+			out = append(out, n)
+		}
+	}
+	return out
+}
+
+// Constrained reports whether ca is critically constrained to the local names and addresses.
+func Constrained(ca *x509.Certificate) bool {
+	if ca == nil || !ca.PermittedDNSDomainsCritical || len(ca.PermittedIPRanges) == 0 {
+		return false
+	}
+	for _, d := range ca.PermittedDNSDomains {
+		if !slices.Contains(PermittedDNSDomains, d) {
+			return false
+		}
+	}
+	for _, r := range ca.PermittedIPRanges {
+		if !slices.Contains(PermittedIPCIDRs, r.String()) {
+			return false
+		}
+	}
+	return true
+}
+
 // FingerprintHex returns the SHA-256 of der in lowercase hex.
 func FingerprintHex(der []byte) string {
 	sum := sha256.Sum256(der)
@@ -253,6 +292,11 @@ func (s *CertStore) createCA(now time.Time) (*x509.Certificate, *ecdsa.PrivateKe
 		IsCA:                  true,
 		MaxPathLen:            0,
 		MaxPathLenZero:        true,
+		// M6b (m6b-plan §8.5, D18): the CA can only vouch for private addresses and local names, so a phone
+		// that installs it trusts nothing on the internet because of it.
+		PermittedDNSDomainsCritical: true,
+		PermittedDNSDomains:         PermittedDNSDomains,
+		PermittedIPRanges:           permittedIPRanges(),
 	}
 	der, err := x509.CreateCertificate(rand.Reader, tmpl, tmpl, &key.PublicKey, key)
 	if err != nil {

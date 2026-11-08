@@ -107,7 +107,7 @@ desktop* (password re-entry) to keep it safe and to move online.
 | `PORTO_SECRET_KEY` | advanced: wins over the keychain and the file |
 | `PORTO_UPDATE_URL` | dev only (`PORTO_DEV=true`): another version manifest |
 | `PORTO_DESKTOP_LAN_LOOPBACK=true` | dev only: the local-network listener on 127.0.0.1 (tests) |
-| `PORTO_DESKTOP_FIRST_RUN_FILE=true` | dev only: writes the first-run URL to `<data>/first-run.url` (e2e) |
+| `PORTO_DESKTOP_FIRST_RUN_FILE=true` | dev only: writes the first-run URL to `<data>/first-run.url` and, in remote mode, the enter URL to `<data>/remote-enter.url` (e2e) |
 
 Passed to the embedded server: `PORTO_LOG_LEVEL`, `PORTO_SMTP_URL`, `PORTO_MAIL_FROM`, `PORTO_DEV`,
 `PORTO_BOOTSTRAP_OWNER_*`, `PORTO_ADMIN_PASSWORD`, `PORTO_REQUIRE_TOTP_FOR_OWNERS`. `DATABASE_URL` is ignored: the
@@ -144,8 +144,80 @@ reads `https://download.coste360.it/porto/desktop/latest.json` with a User-Agent
 (no cookies, identifiers or marina data). A newer version shows a dismissible banner; nothing is ever downloaded
 or installed, and a failure is silent.
 
-## Seams left for M6b
+### Local CA for phones (M6b)
 
-Remote mode (`desktopport.ModeRemote`, rejected in M6a), kiosk (`desktop.WindowOptions{Kiosk}`), tray and keep
-running (`keep_running` in `desktop.json`), the bridge to local peripherals, mDNS (`lan.Announcer`), signed and
-notarised packages, Windows arm64.
+New local CAs are name constrained: they can vouch only for private and loopback addresses (10/8, 172.16/12,
+192.168/16, 127/8, fc00::/7) and for `.local` and `localhost` names. While the local network listens, a
+constrained CA is offered to phones at `https://<address>:<port>/lan/porto-ca.crt` (Android: install CA
+certificate) and `/lan/porto-ca.mobileconfig` (iOS: install the profile, then enable full trust in Settings >
+General > About > Certificate Trust Settings). With the CA installed the phone trusts the desktop origin and its
+service worker works (offline start). A CA created by M6a has no constraints and is not offered: use "Rigenera
+tutto" once (every device accepts the certificate again).
+
+## Remote mode (M6b)
+
+The app as a client of an online Porto: no database, no local users. On the first run, *Collega a un Porto
+online* takes the link copied from *Dispositivi* (desktop kind, "Copia collegamento") of the online instance, or
+its address and pairing code, and an **app PIN** (6 to 12 digits, Argon2id in `desktop.json`) that protects the
+local administration (peripherals, kiosk, unpair). The app pairs as a `kind: desktop` device, keeps the device token
+in the OS keychain (account `device-token/<data folder hash>`, file fallback `<data>/device.token`, 0600), never in
+`desktop.json` or in the page, and restarts in remote mode on the same loopback port.
+
+- **TLS**: `https` only (`http` with `PORTO_DEV=true`). A link with `fp` (self-signed or LAN target) pins that
+  leaf; the CA that issued it is pinned at pairing, so a leaf rotated under the same CA is accepted; anything else
+  is refused (`remote_pin_mismatch`, both fingerprints shown). Without `fp`: system roots, no pinning.
+- **Proxy**: `127.0.0.1:<port>` reverse-proxies the panel and the API with `Authorization: Bearer <device token>`
+  (cookies stripped both ways, SSE streamed). Only the app window can use it: the window opens
+  `/__porto/enter#k=<per-launch secret>` once and gets an HttpOnly `porto_remote` cookie; foreign `Host` values
+  are refused and unsafe requests must be same-origin. `/api/desktop/v1` and `/api/bridge/v1` are answered by the
+  app itself.
+- **Offline start**: the panel shell (index and assets) is cached in `<data>/remote-cache`; with the online
+  instance unreachable the shell is served from it and `/api/*` answers 503 `remote_unreachable`, which the offline
+  queue retries. The settings page shows the reachability.
+- **Revocation and unpairing**: revoking the device on the online instance, or *Scollega* with the PIN, deletes the
+  token, the cache and the remote settings and restarts on the first run ("Dispositivo revocato").
+- `PORTO_DESKTOP_FIRST_RUN_FILE=true` (dev) also writes the enter URL to `<data>/remote-enter.url` (e2e);
+  `POST /api/desktop/v1/dev/remote-offline` (dev) makes the proxy behave as unreachable.
+
+## Kiosk (M6b)
+
+*App desktop* > *Modalità chiosco* (owner in local mode, PIN in remote mode), applied from the next launch and only
+to the webview window (never on the first run): full screen, no decorations, menus or developer tools, navigation
+limited to the panel origin, no context menu, `window.open` and external links blocked, close shortcuts ignored
+(macOS presentation options hide the Dock and the menu bar and disable process switching; Windows: topmost popup
+window on its monitor; Linux: GTK full screen, undecorated, kept above). **Cmd/Ctrl+Shift+K** opens
+`/admin/desktop/kiosk-exit`: the PIN (remote mode) or the email and password of an owner (local mode) leave kiosk
+mode until the next launch. The desk start page in remote mode is `/admin/m/<marina>`.
+
+## Peripherals and bridge (M6b)
+
+Configured in *App desktop* > *Periferiche* (`desktop.json peripherals`), used by the loopback-only bridge
+`/api/bridge/v1` ("Stampa scontrino" on the payment page and the dock Cassa tab, test buttons):
+
+| Device | Drivers | Target |
+|---|---|---|
+| Receipt printer | `none`, `fake`, `escpos` (generic ESC/POS, CP858 with €, 80/58 mm, partial cut) | `tcp://<private IP or .local>[:9100]`, `cups://<queue>` (macOS, Linux), `file://` (dev) |
+| Label printer | `none`, `fake`, `zpl` (generic ZPL text label) | as above |
+| QR reader | `keyboard` (USB HID readers type into the page), `fake` | — |
+| Local fiscal device | `none`, `fake` (`ok`, `offline`, `fail`) | — |
+
+Fake drivers write JSON lines to `<data>/peripherals/<kind>.jsonl`. Printer targets on public addresses are
+refused. Courtesy receipts are built from `getPaymentReceipt?format=json` (no customer data) and always say "Non
+valido ai fini fiscali".
+
+**Fiscal device.** Local mode: the configured local device is the fiscal driver `desktop` (documents stay pending
+while none is configured or it is unreachable). Remote mode: the online instance uses the core driver `bridge` with
+`fiscal_bridge_device_id` = this desktop in its billing settings; the app's fiscal agent claims the pending
+documents every 10 s while the instance is reachable (60 s lease), issues them on the local device and reports the
+outcome. Nothing is issued offline. Real device models (Epson FP-81 II RT / FP-90III RT, RCH Print!F / MyCash,
+Custom KUBE II / Q3X, Olivetti Form 200 RT / Nettuna 7000, Ditron Zip/Sole, Axon, Micrelec) are extensions
+implementing `ext.FiscalDriver`; Windows raw USB printing, serial QR readers and Bluetooth printers are later.
+
+Manual checks: a real ESC/POS network printer prints a courtesy receipt from a remote-mode desktop; kiosk on macOS
+hides the Dock and the menu bar and exits only with the PIN.
+
+## Seams left after M6b
+
+Tray and keep running (`keep_running` in `desktop.json`), mDNS (`lan.Announcer`), signed and notarised packages,
+Windows arm64, Windows raw USB / serial / Bluetooth peripheral transports (`desktopport.Transport`), real fiscal
+device models (extensions).

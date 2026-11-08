@@ -38,8 +38,15 @@ type FileSettings struct {
 	BackupKeepExit  int              `json:"backup_keep_exit"`
 	UpdateCheck     bool             `json:"update_check"`
 	DismissedUpdate string           `json:"dismissed_update"`
-	// KeepRunning is reserved for M6b (tray, keep running when the window is closed); ignored in M6a.
+	// KeepRunning is reserved (tray, keep running when the window is closed); ignored.
 	KeepRunning bool `json:"keep_running"`
+	// M6b (m6b-plan §7, §8): kiosk, peripherals, the remote instance (remote mode) and the app PIN hash (Argon2id,
+	// set when the app is paired; it protects the local administration in remote mode). The device token is not
+	// here: it lives in the SecretStore.
+	Kiosk       KioskFile       `json:"kiosk"`
+	Peripherals PeripheralsFile `json:"peripherals"`
+	Remote      *RemoteFile     `json:"remote,omitempty"`
+	AppPinHash  string          `json:"app_pin_hash,omitempty"`
 
 	extra map[string]json.RawMessage
 }
@@ -54,7 +61,7 @@ func DefaultSettings() FileSettings {
 
 var knownSettingsFields = []string{
 	"version", "mode", "port", "lan_enabled", "lan_port", "lan_address", "backup_dir", "backup_keep_daily",
-	"backup_keep_exit", "update_check", "dismissed_update", "keep_running",
+	"backup_keep_exit", "update_check", "dismissed_update", "keep_running", "kiosk", "peripherals", "remote", "app_pin_hash",
 }
 
 // UnmarshalJSON reads the known fields over the defaults and keeps the others.
@@ -97,12 +104,22 @@ func (s FileSettings) MarshalJSON() ([]byte, error) {
 	return json.Marshal(all)
 }
 
-// Validate reports the invalid fields (names only). The remote mode is reserved for M6b and refused.
+// Validate reports the invalid fields (names only). The remote mode needs the remote instance and the app PIN.
 func (s *FileSettings) Validate() error {
 	var bad []string
-	if s.Mode != desktopport.ModeLocal {
+	switch s.Mode {
+	case desktopport.ModeLocal:
+	case desktopport.ModeRemote:
+		if s.Remote == nil || s.AppPinHash == "" {
+			bad = append(bad, "mode")
+		}
+	default:
 		bad = append(bad, "mode")
 	}
+	if s.Remote != nil {
+		bad = append(bad, s.Remote.invalid()...)
+	}
+	bad = append(bad, s.Peripherals.invalid()...)
 	if s.Port < 0 || s.Port > 65535 {
 		bad = append(bad, "port")
 	}
@@ -219,5 +236,7 @@ func (s FileSettings) view(p Paths) desktopport.Settings {
 		Mode: s.Mode, Port: s.Port, LANEnabled: s.LANEnabled, LANPort: s.LANPort, LANAddress: s.LANAddress,
 		BackupDir: s.BackupDir, BackupKeepDaily: s.BackupKeepDaily, BackupKeepExit: s.BackupKeepExit,
 		UpdateCheck: s.UpdateCheck, DismissedUpdate: s.DismissedUpdate, DataDir: p.Root, LogsDir: p.Logs(),
+		Kiosk: desktopport.KioskSettings{Enabled: s.Kiosk.Enabled}, Peripherals: s.Peripherals.Port(),
+		Remote: s.Remote.Port(),
 	}
 }

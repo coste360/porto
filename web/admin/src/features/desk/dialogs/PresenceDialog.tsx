@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { PRESENCE_PHOTO_TYPES, useRecordPresence, useUploadPresencePhoto } from '@porto/shared/api';
 import { useT } from '@porto/shared/i18n';
+import { isQueuedOffline } from '@porto/shared/offline';
 import { Button } from '@porto/shared/ui/button';
 import {
   Dialog,
@@ -57,6 +59,12 @@ function PresenceForm({
   const [expectedReturn, setExpectedReturn] = useState<string | null>(null);
   const fileError = photoError(photo);
   const busy = record.isPending || upload.isPending;
+  // A queued operation (offline, or no answer yet) is not an error: the queue sends it later (m6b-plan §4.3).
+  const closeIfQueued = (err: unknown) => {
+    if (!isQueuedOffline(err)) return;
+    toast(t('offline:queuedBadge'));
+    onOpenChange(false);
+  };
   return (
     <form
       className="flex flex-col gap-4"
@@ -72,16 +80,18 @@ function PresenceForm({
             ...(event === 'departed' && expectedReturn
               ? { expected_return_on: expectedReturn }
               : {}),
+            ...(vesselName ? { vesselName } : {}),
           },
           {
             onSuccess: (r) => {
               if (photo)
                 upload.mutate(
-                  { presenceId: r.presence.id, file: photo },
-                  { onSuccess: () => onOpenChange(false) },
+                  { presenceId: r.presence.id, file: photo, vesselId, vesselName },
+                  { onSuccess: () => onOpenChange(false), onError: closeIfQueued },
                 );
               else onOpenChange(false);
             },
+            onError: closeIfQueued,
           },
         );
       }}
@@ -121,7 +131,7 @@ function PresenceForm({
         <FieldDescription>{t('desk:presence.photoHint')}</FieldDescription>
         {fileError ? <FieldError>{t(fileError)}</FieldError> : null}
       </Field>
-      <DeskProblemAlert error={record.error ?? upload.error} />
+      <DeskProblemAlert error={queuedOrError(record.error) ?? queuedOrError(upload.error)} />
       <DialogFooter>
         <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
           {t('common:actions.cancel')}
@@ -134,4 +144,9 @@ function PresenceForm({
       </DialogFooter>
     </form>
   );
+}
+
+/** Errors shown in the dialog: a queued operation is not one. */
+function queuedOrError(err: Error | null): Error | null {
+  return err && !isQueuedOffline(err) ? err : null;
 }

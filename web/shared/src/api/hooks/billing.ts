@@ -13,6 +13,8 @@ import {
 
 import { ifMatch, newIdempotencyKey, unwrap, type ApiClient } from '../client';
 import { useApi } from '../context';
+import { assertOnline, enqueueAndWait, type OfflineReasonCode } from '../../offline/index';
+import { amountEqualsMatches } from '../../offline/queue';
 import { queryKeys } from '../queryKeys';
 import type { components } from '../schema';
 import { actionHeaders, compactFilters, fetchExport } from './contractsM4';
@@ -113,10 +115,12 @@ function invalidateBilling(qc: QueryClient, marinaId: string) {
 function useBillingMutation<V, R>(
   marinaId: string,
   fn: (api: ApiClient, vars: V, idempotencyKey: string) => Promise<R>,
+  offlineGuard?: [operationId: string, reason: OfflineReasonCode],
 ) {
   const api = useApi();
   const qc = useQueryClient();
   return useMutation({
+    ...(offlineGuard ? { onMutate: () => assertOnline(...offlineGuard) } : {}),
     mutationFn: (vars: V) => fn(api, vars, newIdempotencyKey()),
     onSuccess: () => invalidateBilling(qc, marinaId),
   });
@@ -499,15 +503,70 @@ export function usePayment(marinaId: string, paymentId: string, enabled = true) 
   });
 }
 
-export function useRecordPayment(marinaId: string) {
-  return useBillingMutation(marinaId, (api, body: RecordPayment, key) =>
-    unwrap(
-      api.POST(`${M}/payments`, {
-        params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
-        body,
-      }),
-    ),
+/**
+ * A payment the offline queue may carry (29.2, D6): cash, kind payment, matched in full to existing charges (no
+ * unmatched credit, INV-87) and none of them in receipt mode (`receiptMode` must be known to be false).
+ */
+function queueableCash(body: RecordPayment, receiptMode: boolean | undefined): boolean {
+  return (
+    body.method === 'cash' &&
+    body.kind === 'payment' &&
+    !body.auto_match &&
+    receiptMode === false &&
+    Array.isArray(body.matches) &&
+    body.matches.length > 0 &&
+    amountEqualsMatches(body.amount_cents, body.matches)
   );
+}
+
+export type RecordPaymentVars = RecordPayment & {
+  amountLabel?: string;
+  /**
+   * Whether any matched charge has `fiscal_mode: receipt` (the payment numbers a commercial document). Unknown
+   * (undefined) is treated as true: the payment goes online only.
+   */
+  receiptMode?: boolean;
+};
+
+/**
+ * Records a payment. The cash branch is queue first (m6b-plan §4.3): a cash payment matched in full to charges not in
+ * receipt mode goes through the offline queue (online it resolves with the server's answer; offline it rejects with
+ * OfflineQueuedError and is sent later). Everything else, receipt-mode cash included, is a direct online POST and is
+ * refused offline (OfflineForbiddenError: `document` for cash, `online_only` otherwise).
+ */
+export function useRecordPayment(marinaId: string) {
+  const api = useApi();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (vars: RecordPaymentVars): Promise<Payment> => {
+      const { amountLabel, receiptMode, ...body } = vars;
+      const userId = qc.getQueryData<S['Me'] | null>(queryKeys.me)?.user.id;
+      const firstCharge = body.matches?.[0]?.charge_id;
+      if (userId && firstCharge && queueableCash(body, receiptMode)) {
+        return enqueueAndWait<Payment>({
+          kind: 'payment.cash',
+          userId,
+          marinaId,
+          lane: `charge:${firstCharge}`,
+          request: {
+            operationId: 'recordPayment',
+            path: `/api/admin/v1/marinas/${encodeURIComponent(marinaId)}/payments`,
+            body,
+          },
+          label: { key: 'offline:queue.label.cash', params: { amount: amountLabel ?? '' } },
+          issuesDocument: false,
+        });
+      }
+      assertOnline('recordPayment', body.method === 'cash' ? 'document' : 'online_only');
+      return unwrap(
+        api.POST(`${M}/payments`, {
+          params: { path: { marinaId }, header: { 'Idempotency-Key': newIdempotencyKey() } },
+          body,
+        }),
+      );
+    },
+    onSuccess: () => invalidateBilling(qc, marinaId),
+  });
 }
 
 export function useMatchPayment(marinaId: string) {
@@ -535,13 +594,16 @@ export function useReverseMatch(marinaId: string) {
 }
 
 export function useRefundPayment(marinaId: string) {
-  return useBillingMutation(marinaId, (api, v: { id: string; body: RefundInput }, key) =>
-    unwrap(
-      api.POST(`${M}/payments/{paymentId}/refunds`, {
-        params: { path: { marinaId, paymentId: v.id }, header: { 'Idempotency-Key': key } },
-        body: v.body,
-      }),
-    ),
+  return useBillingMutation(
+    marinaId,
+    (api, v: { id: string; body: RefundInput }, key) =>
+      unwrap(
+        api.POST(`${M}/payments/{paymentId}/refunds`, {
+          params: { path: { marinaId, paymentId: v.id }, header: { 'Idempotency-Key': key } },
+          body: v.body,
+        }),
+      ),
+    ['refundPayment', 'online_only'],
   );
 }
 
@@ -948,13 +1010,16 @@ export function useCashSession(marinaId: string, sessionId: string, enabled = tr
 }
 
 export function useOpenCashSession(marinaId: string) {
-  return useBillingMutation(marinaId, (api, body: S['OpenCashSessionInput'], key) =>
-    unwrap(
-      api.POST(`${M}/cash-sessions`, {
-        params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
-        body,
-      }),
-    ),
+  return useBillingMutation(
+    marinaId,
+    (api, body: S['OpenCashSessionInput'], key) =>
+      unwrap(
+        api.POST(`${M}/cash-sessions`, {
+          params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
+          body,
+        }),
+      ),
+    ['openCashSession', 'online_only'],
   );
 }
 
@@ -971,17 +1036,24 @@ export function useAddCashMovement(marinaId: string) {
           body: v.body,
         }),
       ),
+    ['addCashMovement', 'online_only'],
   );
 }
 
 export function useCloseCashSession(marinaId: string) {
-  return useBillingMutation(marinaId, (api, v: Versioned & { body: CloseCashSessionInput }) =>
-    unwrap(
-      api.POST(`${M}/cash-sessions/{sessionId}/close`, {
-        params: { path: { marinaId, sessionId: v.id }, header: { 'If-Match': ifMatch(v.version) } },
-        body: v.body,
-      }),
-    ),
+  return useBillingMutation(
+    marinaId,
+    (api, v: Versioned & { body: CloseCashSessionInput }) =>
+      unwrap(
+        api.POST(`${M}/cash-sessions/{sessionId}/close`, {
+          params: {
+            path: { marinaId, sessionId: v.id },
+            header: { 'If-Match': ifMatch(v.version) },
+          },
+          body: v.body,
+        }),
+      ),
+    ['closeCashSession', 'online_only'],
   );
 }
 
@@ -999,13 +1071,16 @@ export function useZReport(marinaId: string) {
 }
 
 export function useCounterSale(marinaId: string) {
-  return useBillingMutation(marinaId, (api, body: CounterSaleInput, key) =>
-    unwrap(
-      api.POST(`${M}/counter-sales`, {
-        params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
-        body,
-      }),
-    ),
+  return useBillingMutation(
+    marinaId,
+    (api, body: CounterSaleInput, key) =>
+      unwrap(
+        api.POST(`${M}/counter-sales`, {
+          params: { path: { marinaId }, header: { 'Idempotency-Key': key } },
+          body,
+        }),
+      ),
+    ['createCounterSale', 'document'],
   );
 }
 
@@ -1068,18 +1143,21 @@ export function useFiscalDocuments(marinaId: string, filters: Filters = {}) {
 }
 
 export function useFiscalDocumentAction(marinaId: string) {
-  return useBillingMutation(marinaId, (api, v: { id: string; action: 'retry' | 'void' }) =>
-    v.action === 'retry'
-      ? unwrap(
-          api.POST(`${M}/fiscal/documents/{fiscalDocumentId}/retry`, {
-            params: { path: { marinaId, fiscalDocumentId: v.id } },
-          }),
-        )
-      : unwrap(
-          api.POST(`${M}/fiscal/documents/{fiscalDocumentId}/void`, {
-            params: { path: { marinaId, fiscalDocumentId: v.id } },
-          }),
-        ),
+  return useBillingMutation(
+    marinaId,
+    (api, v: { id: string; action: 'retry' | 'void' }) =>
+      v.action === 'retry'
+        ? unwrap(
+            api.POST(`${M}/fiscal/documents/{fiscalDocumentId}/retry`, {
+              params: { path: { marinaId, fiscalDocumentId: v.id } },
+            }),
+          )
+        : unwrap(
+            api.POST(`${M}/fiscal/documents/{fiscalDocumentId}/void`, {
+              params: { path: { marinaId, fiscalDocumentId: v.id } },
+            }),
+          ),
+    ['fiscalDocumentAction', 'document'],
   );
 }
 

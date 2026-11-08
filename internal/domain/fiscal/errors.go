@@ -17,6 +17,12 @@ var (
 	ErrNotFound = store.ErrNotFound
 	// ErrNotImplemented is returned by the contract-phase skeleton until CASH-DRIVERS lands M5.
 	ErrNotImplemented = errors.New("fiscal: not implemented")
+	// ErrClaimExpired: the bridge claim of a document is stale (lease expired or claimed again, M6b §8.4).
+	// 409 claim_expired.
+	ErrClaimExpired = errors.New("fiscal: bridge claim expired")
+	// ErrBridgeDeviceMismatch: the calling device is not the bridge device of the marina's billing settings
+	// (M6b §8.4). 403 forbidden.
+	ErrBridgeDeviceMismatch = errors.New("fiscal: not the bridge device")
 )
 
 // More errors of the fiscal service.

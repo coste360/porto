@@ -28,6 +28,13 @@ export const queryKeys = {
     settings: ['desktop', 'settings'] as const,
     lan: ['desktop', 'lan'] as const,
     backups: ['desktop', 'backups'] as const,
+    // M6b: peripheral settings of this app.
+    peripherals: ['desktop', 'peripherals'] as const,
+  },
+  // M6b bridge to local peripherals (loopback only): not marina-scoped, never invalidated by SSE.
+  bridge: {
+    all: ['bridge'] as const,
+    status: ['bridge', 'status'] as const,
   },
 
   // M1 harbour: everything under ['marina', id, 'maps'] (invalidated by map.changed).
@@ -107,6 +114,9 @@ export const queryKeys = {
     trim(['marina', marinaId, 'desk', 'contracts', filters]),
   contract: (marinaId: string, contractId?: string) =>
     trim(['marina', marinaId, 'desk', 'contract', contractId]),
+  // M6b: SVG QR of a transit (PT1:<contract_id>); never persisted offline.
+  transitQr: (marinaId: string, contractId: string) =>
+    ['marina', marinaId, 'desk', 'transit-qr', contractId] as const,
   transits: (marinaId: string, filters?: Record<string, string | undefined>) =>
     trim(['marina', marinaId, 'desk', 'transits', filters]),
   inquiries: (marinaId: string, filters?: Record<string, string | undefined>) =>
@@ -223,6 +233,10 @@ export const queryKeys = {
 
   // M5 billing: everything under ['marina', id, 'billing'] (invalidated by billing.changed, m5-plan §9.2).
   billing: (marinaId: string) => ['marina', marinaId, 'billing'] as const,
+  // M6b: open charges to collect at the dock on a date (under billing: refreshed by billing.changed; cached
+  // offline for 48 h).
+  collectibles: (marinaId: string, date?: string) =>
+    trim(['marina', marinaId, 'billing', 'collectibles', date]),
   charges: (marinaId: string, filters?: Record<string, string | undefined>) =>
     trim(['marina', marinaId, 'billing', 'charges', filters]),
   charge: (marinaId: string, chargeId?: string) =>

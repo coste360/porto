@@ -110,4 +110,9 @@ type FiscalDocument struct {
 	Version      int           `bun:"version"`
 	CreatedAt    time.Time     `bun:"created_at"`
 	UpdatedAt    time.Time     `bun:"updated_at"`
+	// Fiscal bridge (M6b, driver "bridge"): the claiming desktop device, the current claim and its lease.
+	BridgeDeviceID   string    `bun:"bridge_device_id,nullzero"`
+	BridgeClaimID    string    `bun:"bridge_claim_id,nullzero"`
+	BridgeClaimUntil time.Time `bun:"bridge_claim_until,nullzero"`
+	BridgeAttempts   int       `bun:"bridge_attempts"`
 }

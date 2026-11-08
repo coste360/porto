@@ -25,6 +25,7 @@ export type MarinaRoutePath =
   | '/m/$marinaId/contracts'
   | '/m/$marinaId/inquiries'
   | '/m/$marinaId/dock'
+  | '/m/$marinaId/direction'
   | '/m/$marinaId/occupancy-settings'
   | '/m/$marinaId/installments'
   | '/m/$marinaId/renewals'
@@ -274,6 +275,12 @@ export const NAV_ITEMS: NavItem[] = [
     anyOf: ['providers.configure'],
   },
   { id: 'dock', to: '/m/$marinaId/dock', labelKey: 'common:nav.dock', anyOf: ['presence.write'] },
+  {
+    id: 'direction',
+    to: '/m/$marinaId/direction',
+    labelKey: 'common:nav.direction',
+    anyOf: ['reports.all', 'marina.configure'],
+  },
   { id: 'maps', to: '/m/$marinaId/maps', labelKey: 'common:nav.maps', anyOf: ['map.view'] },
   {
     id: 'customers',

@@ -1,7 +1,6 @@
 import { createRoute } from '@tanstack/react-router';
 
 import type { MarinaRoute } from '../../router';
-import { DockPage } from '../dock/DockPage';
 import { ContractPage } from './contracts/ContractPage';
 import { ContractsPage } from './contracts/ContractsPage';
 import { ContractWizardPage } from './contracts/ContractWizardPage';
@@ -17,8 +16,7 @@ import { OccupancySettingsPage } from './settings/OccupancySettingsPage';
 import { TransitPage } from './transits/TransitPage';
 import { TransitsPage } from './transits/TransitsPage';
 
-// Desk routes (m3-plan §8.1): planner, quotes, contracts, transits, inquiries, the phone dock panel and the
-// occupancy settings, children of the marina route.
+// Desk routes (m3-plan §8.1): planner, quotes, contracts, transits, inquiries, and the occupancy settings, children of the marina route.
 
 export type PlannerSearch = {
   map?: string;
@@ -81,7 +79,7 @@ export function deskRoutes(parent: MarinaRoute) {
       component: TransitPage,
     }),
     createRoute({ getParentRoute: () => parent, path: 'inquiries', component: InquiriesPage }),
-    createRoute({ getParentRoute: () => parent, path: 'dock', component: DockPage }),
+    // The dock route moved to features/phone/routes.tsx in M6b (phone shell).
     createRoute({
       getParentRoute: () => parent,
       path: 'occupancy-settings',

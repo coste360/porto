@@ -17,6 +17,7 @@ import (
 	"github.com/coste360/porto/internal/domain/event"
 	"github.com/coste360/porto/internal/domain/notify"
 	"github.com/coste360/porto/internal/money"
+	"github.com/coste360/porto/internal/reqctx"
 	"github.com/coste360/porto/internal/store"
 )
 
@@ -49,6 +50,11 @@ func (s *Service) Record(ctx context.Context, p *auth.Principal, marinaID string
 	if in.Kind == store.PaymentKindCredit {
 		return nil, invalid("kind", "invalid")
 	}
+	if _, offline := reqctx.OfflineReplay(ctx); offline {
+		if err := s.checkOffline(ctx, scope, in); err != nil {
+			return nil, err
+		}
+	}
 	var id string
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		pay, err := s.RecordTx(ctx, tx, scope, p.Actor(), in)
@@ -75,6 +81,47 @@ func (s *Service) Record(ctx context.Context, p *auth.Principal, marinaID string
 		return nil, err
 	}
 	return s.detail(ctx, s.d.DB.DB, scope, p, id)
+}
+
+// checkOffline refuses an offline replay that is not a cash payment matched in full to existing invoice-mode
+// charges (M6b §5.3, D6): a receipt-mode charge would number a commercial document, which offline never does (29.2,
+// INV-71). A key already recorded skips the check, so that the replay answers with the stored payment.
+func (s *Service) checkOffline(ctx context.Context, scope store.MarinaScope, in RecordInput) error {
+	if in.IdempotencyKey != "" {
+		if _, err := store.PaymentByIdempotencyKey(ctx, s.d.DB.DB, scope, in.IdempotencyKey); err == nil {
+			return nil
+		} else if !errors.Is(err, store.ErrNotFound) {
+			return err
+		}
+	}
+	if in.Method != store.PaymentMethodCash || in.Kind != store.PaymentKindPayment || len(in.Matches) == 0 ||
+		in.AutoMatch != "" {
+		return ErrOfflineNotAllowed
+	}
+	// Collection on existing documents only: the whole amount is matched, no unmatched cash credit (INV-87). Each
+	// match stays within the charge residual through matchTx (INV-52).
+	ids := make([]string, 0, len(in.Matches))
+	var allocated money.Cents
+	for _, m := range in.Matches {
+		if m.Amount <= 0 {
+			return ErrOfflineNotAllowed
+		}
+		allocated += m.Amount
+		ids = append(ids, m.ChargeID)
+	}
+	if allocated != in.Amount {
+		return ErrOfflineNotAllowed
+	}
+	charges, err := store.ChargesByIDs(ctx, s.d.DB.DB, scope, ids)
+	if err != nil {
+		return err
+	}
+	for _, c := range charges {
+		if c.FiscalMode == "receipt" {
+			return ErrOfflineNotAllowed
+		}
+	}
+	return nil // unknown charges fail later in the match with 404
 }
 
 // inputHash is the SHA-256 of the canonical input of a payment (idempotency replays).
@@ -245,11 +292,13 @@ func (s *Service) RecordTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 	if err := store.InsertPayment(ctx, tx, p); err != nil {
 		return nil, err
 	}
-	if err := s.audit(ctx, tx, scope, actor, "payment.record", "payment", p.ID, map[string]any{
+	diff := map[string]any{
 		"number": p.Number, "customer_id": p.CustomerID, "kind": p.Kind, "method": p.Method, "source": p.Source,
 		"provider_code": p.ProviderCode, "amount_cents": p.AmountCents, "received_on": p.ReceivedOn,
 		"cash_session_id": p.CashSessionID, "intent_id": p.IntentID, "has_reference": in.Reference != "",
-	}); err != nil {
+	}
+	// offline_queued_at of a replay is added by audit.Writer.
+	if err := s.audit(ctx, tx, scope, actor, "payment.record", "payment", p.ID, diff); err != nil {
 		return nil, err
 	}
 	switch {

@@ -2,6 +2,9 @@ package presence
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"slices"
 	"time"
@@ -14,6 +17,7 @@ import (
 	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/event"
 	"github.com/coste360/porto/internal/domain/occupancy"
+	"github.com/coste360/porto/internal/reqctx"
 	"github.com/coste360/porto/internal/store"
 )
 
@@ -27,6 +31,28 @@ type Input struct {
 	AllocationID     string     // default: the vessel's allocation of the night
 	Notes            string
 	ExpectedReturnOn *calendar.Date // departures: when the vessel is expected back
+	// ExpectedResourceID is the resource the operator saw for AllocationID (M6b §5.2): when it no longer matches
+	// the active allocation of the vessel for the night the record is refused with *AllocationChangedError.
+	ExpectedResourceID string
+	// IdempotencyKey dedupes the presence in the domain (M6b §4.4, second layer under the middleware): a replay
+	// with the same input returns the presence already recorded with the key.
+	IdempotencyKey string
+}
+
+// inputHash is the SHA-256 of the canonical input (domain dedupe of a presence recorded with a key).
+func inputHash(vesselID string, in Input) string {
+	c := struct {
+		VesselID, Event, AllocationID, Notes, ExpectedResourceID string
+		At                                                       *time.Time
+		ExpectedReturnOn                                         *calendar.Date
+	}{vesselID, in.Event, in.AllocationID, in.Notes, in.ExpectedResourceID, nil, in.ExpectedReturnOn}
+	if in.At != nil {
+		t := store.UTC(*in.At)
+		c.At = &t
+	}
+	b, _ := json.Marshal(c)
+	sum := sha256.Sum256(b)
+	return hex.EncodeToString(sum[:])
 }
 
 // Result is a recorded presence and the contract it changed (if any).
@@ -103,8 +129,26 @@ func (s *Service) Record(ctx context.Context, p *auth.Principal, marinaID string
 	if in.ExpectedReturnOn != nil && in.Event != EventDeparted {
 		v.Add("expected_return_on", "not_allowed")
 	}
+	if in.ExpectedResourceID != "" && in.AllocationID == "" {
+		v.Add("expected_resource_id", "requires_allocation")
+	}
+	if len(in.ExpectedResourceID) > 36 {
+		v.Add("expected_resource_id", "too_long")
+	}
 	if err := v.Err(); err != nil {
 		return nil, err
+	}
+	if queuedAt, offline := reqctx.OfflineReplay(ctx); offline {
+		// An offline replay records only arrivals and departures of an existing allocation (29.2, INV-71), and names
+		// the resource the operator saw, so that a moved or cancelled allocation surfaces as allocation_changed
+		// instead of being recorded silently.
+		if in.AllocationID == "" || in.ExpectedResourceID == "" || (in.Event != EventArrived && in.Event != EventDeparted) {
+			return nil, ErrOfflineNotAllowed
+		}
+		if in.At == nil {
+			at := queuedAt
+			in.At = &at
+		}
 	}
 	var presenceID, contractID string
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
@@ -118,10 +162,54 @@ func (s *Service) Record(ctx context.Context, p *auth.Principal, marinaID string
 		}
 		return nil
 	})
+	if err != nil && in.IdempotencyKey != "" && store.IsUniqueViolation(err) {
+		// A concurrent request with the same key won the unique index: answer with its presence.
+		prev, rerr := store.PresenceByIdempotencyKey(ctx, s.d.DB.DB, scope, in.IdempotencyKey)
+		if rerr != nil {
+			return nil, err
+		}
+		if prev.IdempotencyHash != inputHash(in.VesselID, in) {
+			return nil, ErrIdempotencyMismatch
+		}
+		presenceID, contractID, err = prev.ID, prev.ContractID, nil
+	}
 	if err != nil {
 		return nil, err
 	}
 	return s.result(ctx, scope, p, presenceID, contractID)
+}
+
+// checkExpectedResource refuses the record when the allocation the operator saw moved or ended (M6b §5.2, D5):
+// it must be active, of the vessel, on the expected resource and cover the night (for a departure the night
+// before or the night itself). The error carries the current resource of the vessel, if any.
+func checkExpectedResource(ctx context.Context, tx bun.IDB, scope store.MarinaScope, in Input, alloc *store.Allocation, night calendar.Date) error {
+	covers := func(n calendar.Date) bool { return !n.Before(alloc.FirstNight) && !n.After(alloc.LastNight) }
+	ok := alloc.Status == store.AllocActive && alloc.ResourceID == in.ExpectedResourceID &&
+		(covers(night) || (in.Event == EventDeparted && covers(night.AddDays(-1))))
+	if ok {
+		return nil
+	}
+	ce := &AllocationChangedError{}
+	n := night
+	if in.Event == EventDeparted {
+		n = night.AddDays(-1)
+	}
+	cur, err := store.VesselAllocationOn(ctx, tx, scope, in.VesselID, n)
+	if errors.Is(err, store.ErrNotFound) && in.Event == EventDeparted {
+		cur, err = store.VesselAllocationOn(ctx, tx, scope, in.VesselID, night)
+	}
+	switch {
+	case err == nil:
+		ce.CurrentResourceID = cur.ResourceID
+		refs, rerr := store.ResourceRefs(ctx, tx, scope, []string{cur.ResourceID})
+		if rerr != nil {
+			return rerr
+		}
+		ce.CurrentResourceCode = refs[cur.ResourceID].Code
+	case !errors.Is(err, store.ErrNotFound):
+		return err
+	}
+	return ce
 }
 
 func (s *Service) result(ctx context.Context, scope store.MarinaScope, p *auth.Principal, presenceID, contractID string) (*Result, error) {
@@ -149,6 +237,25 @@ func (s *Service) result(ctx context.Context, scope store.MarinaScope, p *auth.P
 func (s *Service) recordTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, p *auth.Principal, in Input) (*store.Presence, *store.Contract, error) {
 	if _, err := store.GetVessel(ctx, tx, scope, in.VesselID); err != nil {
 		return nil, nil, notFound(err)
+	}
+	var hash string
+	if in.IdempotencyKey != "" {
+		// Domain dedupe first: a replay must not meet the transition it caused itself.
+		hash = inputHash(in.VesselID, in)
+		prev, err := store.PresenceByIdempotencyKey(ctx, tx, scope, in.IdempotencyKey)
+		switch {
+		case err == nil:
+			if prev.IdempotencyHash != hash {
+				return nil, nil, ErrIdempotencyMismatch
+			}
+			var c *store.Contract
+			if prev.ContractID != "" {
+				c = &store.Contract{ID: prev.ContractID}
+			}
+			return prev, c, nil
+		case !errors.Is(err, store.ErrNotFound):
+			return nil, nil, err
+		}
 	}
 	now := s.now()
 	at := now
@@ -184,6 +291,11 @@ func (s *Service) recordTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 			return nil, nil, auth.ErrNotFound
 		}
 		alloc = &as[0]
+		if in.ExpectedResourceID != "" {
+			if err := checkExpectedResource(ctx, tx, scope, in, alloc, night); err != nil {
+				return nil, nil, err
+			}
+		}
 	} else {
 		n := night
 		if in.Event == EventDeparted {
@@ -203,7 +315,8 @@ func (s *Service) recordTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 	}
 	pr := &store.Presence{
 		ID: store.NewID(), MarinaID: scope.ID(), VesselID: in.VesselID, Event: in.Event, At: at, Night: night,
-		Source: "staff", Notes: in.Notes, CreatedAt: now, UpdatedAt: now,
+		Source: "staff", Notes: in.Notes, IdempotencyKey: in.IdempotencyKey, IdempotencyHash: hash,
+		CreatedAt: now, UpdatedAt: now,
 	}
 	if p != nil && p.Kind == auth.KindUser {
 		pr.UserID = p.UserID
@@ -242,7 +355,10 @@ func (s *Service) recordTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 	if err := s.d.Audit.Write(ctx, tx, audit.Entry{
 		OrganizationID: scope.OrgID(), MarinaID: scope.ID(), Actor: p.Actor(), Action: "presence.record",
 		EntityType: "presence", EntityID: pr.ID,
-		Diff: map[string]any{"event": pr.Event, "vessel_id": pr.VesselID, "allocation_id": pr.AllocationID, "night": pr.Night, "from_state": state},
+		// offline_queued_at of a replay is added by audit.Writer (one place for every audited action).
+		Diff: map[string]any{
+			"event": pr.Event, "vessel_id": pr.VesselID, "allocation_id": pr.AllocationID, "night": pr.Night, "from_state": state,
+		},
 	}); err != nil {
 		return nil, nil, err
 	}

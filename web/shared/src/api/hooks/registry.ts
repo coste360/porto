@@ -18,6 +18,7 @@ import {
   type UploadBinaryOptions,
 } from '../client';
 import { useApi } from '../context';
+import { assertOnline, type OfflineReasonCode } from '../../offline/index';
 import { queryKeys } from '../queryKeys';
 import type { components } from '../schema';
 
@@ -42,10 +43,15 @@ function invalidateRegistry(queryClient: QueryClient, marinaId: string) {
 }
 
 /** Mutation hook with registry invalidation on success. */
-function useRegistryMutation<V, R>(marinaId: string, fn: (api: ApiClient, vars: V) => Promise<R>) {
+function useRegistryMutation<V, R>(
+  marinaId: string,
+  fn: (api: ApiClient, vars: V) => Promise<R>,
+  offlineGuard?: [operationId: string, reason: OfflineReasonCode],
+) {
   const api = useApi();
   const queryClient = useQueryClient();
   return useMutation({
+    ...(offlineGuard ? { onMutate: () => assertOnline(...offlineGuard) } : {}),
     mutationFn: (vars: V) => fn(api, vars),
     onSuccess: () => invalidateRegistry(queryClient, marinaId),
   });
@@ -314,6 +320,7 @@ export function useRecordVesselMeasurement(marinaId: string) {
           body: vars.measurement,
         }),
       ),
+    ['recordVesselMeasurement', 'online_only'],
   );
 }
 

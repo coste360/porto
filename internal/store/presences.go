@@ -36,6 +36,18 @@ func GetPresence(ctx context.Context, db bun.IDB, s MarinaScope, id string) (*Pr
 	return p, nil
 }
 
+// PresenceByIdempotencyKey returns the presence recorded with an Idempotency-Key (M6b domain dedupe).
+func PresenceByIdempotencyKey(ctx context.Context, db bun.IDB, s MarinaScope, key string) (*Presence, error) {
+	if key == "" {
+		return nil, ErrNotFound
+	}
+	p := new(Presence)
+	if err := db.NewSelect().Model(p).Where("marina_id = ?", s.ID()).Where("idempotency_key = ?", key).Scan(ctx); err != nil {
+		return nil, notFound(err)
+	}
+	return p, nil
+}
+
 // SetPresencePhoto links a stored file to a presence.
 func SetPresencePhoto(ctx context.Context, db bun.IDB, s MarinaScope, id, fileID string, now time.Time) error {
 	res, err := db.NewUpdate().Model((*Presence)(nil)).Set("photo_file_id = ?", fileID).Set("updated_at = ?", UTC(now)).

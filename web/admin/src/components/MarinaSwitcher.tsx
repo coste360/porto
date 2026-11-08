@@ -1,7 +1,9 @@
 import { Link } from '@tanstack/react-router';
 import { BuildingIcon, CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { useT } from '@porto/shared/i18n';
+import { canSwitchMarina } from '@porto/shared/offline';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +21,12 @@ export function MarinaSwitcher() {
   const { t } = useT();
   const { me, marina, marinaId } = useCurrentMarina();
   const orgs = ownedOrganizations(me);
+  // Queued offline ops belong to the current marina: leaving it with unsent ones is refused (D9, INV-84).
+  const guard = (e: { preventDefault: () => void }, target: string) => {
+    if (!me || target === marinaId || canSwitchMarina(me.user.id, marinaId)) return;
+    e.preventDefault();
+    toast.error(t('offline:marinaSwitchBlocked'));
+  };
 
   return (
     <SidebarMenu>
@@ -36,7 +44,7 @@ export function MarinaSwitcher() {
             <DropdownMenuLabel>{t('common:nav.switchMarina')}</DropdownMenuLabel>
             {me?.marinas.map((m) => (
               <DropdownMenuItem key={m.id} asChild>
-                <Link to="/m/$marinaId" params={{ marinaId: m.id }}>
+                <Link to="/m/$marinaId" params={{ marinaId: m.id }} onClick={(e) => guard(e, m.id)}>
                   <span className="flex-1 truncate">{m.name}</span>
                   {m.id === marinaId ? <CheckIcon /> : null}
                 </Link>
@@ -45,7 +53,11 @@ export function MarinaSwitcher() {
             {orgs.length > 0 ? <DropdownMenuSeparator /> : null}
             {orgs.map((org) => (
               <DropdownMenuItem key={org.id} asChild>
-                <Link to="/org/$organizationId" params={{ organizationId: org.id }}>
+                <Link
+                  to="/org/$organizationId"
+                  params={{ organizationId: org.id }}
+                  onClick={(e) => guard(e, '')}
+                >
                   {t('common:nav.organization')}: {org.name}
                 </Link>
               </DropdownMenuItem>

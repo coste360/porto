@@ -18,7 +18,7 @@ func ClaimIdempotencyKey(ctx context.Context, db bun.IDB, scope, key, requestHas
 	for range 2 {
 		row := &IdempotencyKey{
 			ID: NewID(), Scope: scope, Key: key, RequestHash: requestHash, State: IdempotencyInProgress,
-			ExpiresAt: expiresAt, CreatedAt: now, UpdatedAt: now,
+			ExpiresAt: UTC(expiresAt), CreatedAt: UTC(now), UpdatedAt: UTC(now),
 		}
 		res, err := db.NewInsert().Model(row).On("CONFLICT (scope, key) DO NOTHING").Exec(ctx)
 		if err != nil {
@@ -55,6 +55,17 @@ func CompleteIdempotencyKey(ctx context.Context, db bun.IDB, id string, status i
 		Set("response_content_type = ?", contentType).Set("response_body = ?", body).Set("updated_at = ?", at).
 		Where("id = ?", id).Exec(ctx)
 	return err
+}
+
+// TakeOverIdempotencyKey claims an in-progress key whose claimer is presumed dead (M6b offline operations): the
+// conditional update on (id, state, updated_at) makes at most one concurrent caller win.
+func TakeOverIdempotencyKey(ctx context.Context, db bun.IDB, id string, prevUpdatedAt, now time.Time) (bool, error) {
+	res, err := db.NewUpdate().Table("idempotency_keys").Set("updated_at = ?", UTC(now)).
+		Where("id = ?", id).Where("state = ?", IdempotencyInProgress).Where("updated_at = ?", UTC(prevUpdatedAt)).Exec(ctx)
+	if err != nil {
+		return false, err
+	}
+	return affected(res) == 1, nil
 }
 
 // ReleaseIdempotencyKey forgets an in-progress claim (the request failed before producing a response worth

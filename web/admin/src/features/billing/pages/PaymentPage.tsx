@@ -49,6 +49,7 @@ import { MatchingTable } from '../components/RecordPaymentDialog';
 import { COUNTED_METHODS, type CountedMethod } from '../lib/cash';
 import { autoFill, isValidAllocation, toMatches } from '../lib/matching';
 import { toMatchRows } from '../lib/drafts';
+import { BridgeReceiptButton } from '../../desktop/BridgeReceiptButton';
 import { useReceiptOpener } from '../lib/receipt';
 
 const route = getRouteApi('/auth/m/$marinaId/payments/$paymentId');
@@ -95,6 +96,7 @@ function PaymentDetail({ payment }: { payment: Payment }) {
                 {t(`payments:receipt.${f === 'a4' ? 'a4' : `mm${f}`}`)}
               </Button>
             ))}
+            <BridgeReceiptButton paymentId={payment.id} />
             {can('payments.collect') && payment.unallocated_cents > 0 && payment.customer ? (
               <Button variant="outline" onClick={() => setDialog('match')}>
                 {t('payments:detail.match')}

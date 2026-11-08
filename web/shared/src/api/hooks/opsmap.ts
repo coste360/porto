@@ -6,6 +6,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 
 import { ifMatch, newIdempotencyKey, unwrap, type ApiClient } from '../client';
 import { useApi } from '../context';
+import { assertOnline } from '../../offline/index';
 import { queryKeys } from '../queryKeys';
 import type { Schemas } from '../schema';
 
@@ -180,6 +181,7 @@ export function useMoveAllocation(marinaId: string) {
   const api = useApi();
   const invalidate = useInvalidateOps(marinaId);
   return useMutation({
+    onMutate: () => assertOnline('moveAllocation', 'allocation'),
     mutationFn: ({ body, idempotencyKey }: WithKey<MoveRequestData>) =>
       unwrap(
         api.POST(`${M}/occupancies/move`, {
@@ -198,6 +200,7 @@ export function useSwapAllocations(marinaId: string) {
   const api = useApi();
   const invalidate = useInvalidateOps(marinaId);
   return useMutation({
+    onMutate: () => assertOnline('swapAllocations', 'allocation'),
     mutationFn: ({ body, idempotencyKey }: WithKey<SwapRequestData>) =>
       unwrap(
         api.POST(`${M}/occupancies/swap`, {
@@ -216,6 +219,7 @@ export function useSaveAreaLayout(marinaId: string, areaId: string) {
   const api = useApi();
   const invalidate = useInvalidateOps(marinaId);
   return useMutation({
+    onMutate: () => assertOnline('saveAreaLayout', 'allocation'),
     mutationFn: ({ body, idempotencyKey }: WithKey<AreaLayoutSaveData>) =>
       unwrap(
         api.POST(`${M}/dynamic-areas/{areaId}/layout`, {
@@ -234,6 +238,7 @@ export function useUndoMove(marinaId: string) {
   const api = useApi();
   const invalidate = useInvalidateOps(marinaId);
   return useMutation({
+    onMutate: () => assertOnline('undoMove', 'allocation'),
     mutationFn: ({ undoId, idempotencyKey }: { undoId: string; idempotencyKey?: string }) =>
       unwrap(
         api.POST(`${M}/move-undo/{undoId}`, {
@@ -251,6 +256,7 @@ export function useCreateBlock(marinaId: string) {
   const api = useApi();
   const invalidate = useInvalidateOps(marinaId);
   return useMutation({
+    onMutate: () => assertOnline('createBlock', 'allocation'),
     mutationFn: ({ body, idempotencyKey }: WithKey<BlockCreateData>) =>
       unwrap(
         api.POST(`${M}/blocks`, {
@@ -269,6 +275,7 @@ export function useDeleteBlock(marinaId: string) {
   const api = useApi();
   const invalidate = useInvalidateOps(marinaId);
   return useMutation({
+    onMutate: () => assertOnline('deleteBlock', 'allocation'),
     mutationFn: ({ allocationId, version }: { allocationId: string; version: number }) =>
       unwrap(
         api.DELETE(`${M}/blocks/{allocationId}`, {

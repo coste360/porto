@@ -8,6 +8,8 @@ export type MatchRow = {
   number: string;
   dueOn: string;
   residualCents: number;
+  /** The charge is in receipt mode: a payment on it numbers a commercial document (online only, 29.2). */
+  receiptMode?: boolean;
 };
 
 export type Allocation = Readonly<Record<string, number>>;

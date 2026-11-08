@@ -98,6 +98,9 @@ type SettingsInput struct {
 	OriginItems        map[string]string
 	// FiscalDrivers are the accepted fiscal driver codes (none, export and the registered extensions).
 	FiscalDrivers []string
+	// FiscalBridgeDeviceID is the desktop device (kind desktop, paired with a token, of this marina) that issues
+	// the documents of the driver "bridge" (M6b); required with that driver, "" = none.
+	FiscalBridgeDeviceID string
 }
 
 // UpdateSettings saves the billing settings and origin items (marina.configure, If-Match; 0 when never saved).
@@ -122,6 +125,13 @@ func (s *Service) UpdateSettings(ctx context.Context, p *auth.Principal, marinaI
 		for _, id := range in.OriginItems {
 			ids = append(ids, id)
 		}
+		if in.FiscalBridgeDeviceID != "" {
+			d, err := store.DeviceByID(ctx, tx, in.FiscalBridgeDeviceID)
+			if err != nil || d.MarinaID != scope.ID() || d.Kind != "desktop" || d.Access != store.DeviceAccessToken ||
+				!d.RevokedAt.IsZero() {
+				return invalid("fiscal_bridge_device_id", "invalid")
+			}
+		}
 		items, err := store.ItemsByIDs(ctx, tx, scope, ids)
 		if err != nil {
 			return err
@@ -133,8 +143,12 @@ func (s *Service) UpdateSettings(ctx context.Context, p *auth.Principal, marinaI
 		upd.DefaultDueDays, upd.AutoPaymentRequest, upd.ReminderHour = in.DefaultDueDays, in.AutoPaymentRequest, in.ReminderHour
 		upd.ReminderPolicy, upd.ArrearsPolicy = store.MustJSON(in.Reminder), store.MustJSON(in.Arrears)
 		upd.ExportReminderDays, upd.FiscalDriver, upd.ReceiptFooter, upd.SEPALeadDays = in.ExportReminderDays, in.FiscalDriver, in.ReceiptFooter, in.SEPALeadDays
+		upd.FiscalBridgeDeviceID = in.FiscalBridgeDeviceID
 		if err := store.SaveBillingSettings(ctx, tx, scope, &upd, ifMatch, s.now()); err != nil {
 			return mapStore(err)
+		}
+		if err := store.SetFiscalBridgeDevice(ctx, tx, scope, in.FiscalBridgeDeviceID); err != nil {
+			return err
 		}
 		if err := store.ReplaceOriginItems(ctx, tx, scope, in.OriginItems, s.now()); err != nil {
 			return err
@@ -143,6 +157,7 @@ func (s *Service) UpdateSettings(ctx context.Context, p *auth.Principal, marinaI
 			"default_due_days": in.DefaultDueDays, "auto_payment_request": in.AutoPaymentRequest, "reminder_hour": in.ReminderHour,
 			"export_reminder_days": in.ExportReminderDays, "fiscal_driver": in.FiscalDriver, "sepa_lead_days": in.SEPALeadDays,
 			"arrears_enabled": in.Arrears.Enabled, "origin_items": len(in.OriginItems),
+			"fiscal_bridge_device_id": in.FiscalBridgeDeviceID,
 		}); err != nil {
 			return err
 		}
@@ -176,6 +191,13 @@ func (in *SettingsInput) validate() error {
 	in.FiscalDriver = strings.TrimSpace(in.FiscalDriver)
 	if !contains(in.FiscalDrivers, in.FiscalDriver) {
 		return invalid("fiscal_driver", "unknown")
+	}
+	in.FiscalBridgeDeviceID = strings.TrimSpace(in.FiscalBridgeDeviceID)
+	switch {
+	case in.FiscalBridgeDeviceID != "" && !store.ValidID(in.FiscalBridgeDeviceID):
+		return invalid("fiscal_bridge_device_id", "invalid")
+	case in.FiscalDriver == "bridge" && in.FiscalBridgeDeviceID == "":
+		return invalid("fiscal_bridge_device_id", "required")
 	}
 	seen := map[string]bool{}
 	for _, l := range in.Reminder.Levels {

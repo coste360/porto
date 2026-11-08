@@ -94,6 +94,7 @@ export function toMatchRows(charges: readonly Charge[]): MatchRow[] {
         number: c.number,
         dueOn: c.due_on,
         residualCents: c.residual_cents,
+        receiptMode: c.fiscal_mode === 'receipt',
       })),
   );
 }

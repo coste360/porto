@@ -113,5 +113,12 @@
   "lan_no_address": "Questo computer non ha un indirizzo sulla rete locale: collegalo al Wi-Fi o alla rete dell'ufficio.",
   "backup_in_progress": "È già in corso un backup o un ripristino: attendi che finisca.",
   "restore_failed": "Il backup non può essere ripristinato: i dati attuali non sono stati modificati.",
-  "restore_backup_newer": "Il backup è stato creato da una versione più recente di Porto: aggiorna l'app e riprova. I dati attuali non sono stati modificati."
+  "restore_backup_newer": "Il backup è stato creato da una versione più recente di Porto: aggiorna l'app e riprova. I dati attuali non sono stati modificati.",
+  "allocation_changed": "L'ormeggio della barca è cambiato dopo che l'operazione è stata messa in coda: controlla il nuovo posto e riprova.",
+  "offline_not_allowed": "Questa operazione non può essere registrata offline: ripetila quando sei connesso.",
+  "remote_unreachable": "Il Porto online non è raggiungibile: controlla la connessione. Le operazioni consentite restano in coda.",
+  "remote_pin_mismatch": "Il Porto online ha presentato un certificato diverso da quello atteso: collegamento interrotto per sicurezza.",
+  "peripheral_unavailable": "La periferica non è configurata o non è pronta.",
+  "claim_expired": "La presa in carico del documento fiscale è scaduta: verrà ritentata.",
+  "app_pin_invalid": "PIN dell'app errato."
 }

@@ -81,6 +81,33 @@ func (r *lanRuntime) Open(context.Context, *auth.Principal, string) error {
 	return auth.ErrForbidden
 }
 
+// M6b methods: no peripherals, local mode only.
+func (r *lanRuntime) Peripherals() desktopport.Peripherals { return desktopport.Peripherals{} }
+
+func (r *lanRuntime) PeripheralSettings(context.Context, desktopport.AdminAuth) (desktopport.PeripheralSettings, error) {
+	return desktopport.PeripheralSettings{}, auth.ErrForbidden
+}
+
+func (r *lanRuntime) UpdatePeripheralSettings(context.Context, desktopport.AdminAuth, desktopport.PeripheralSettings) (desktopport.PeripheralSettings, error) {
+	return desktopport.PeripheralSettings{}, auth.ErrForbidden
+}
+
+func (r *lanRuntime) SetKiosk(context.Context, desktopport.AdminAuth, bool) (desktopport.KioskSettings, error) {
+	return desktopport.KioskSettings{}, auth.ErrForbidden
+}
+
+func (r *lanRuntime) ExitKiosk(context.Context, desktopport.AdminAuth, desktopport.KioskExitCredentials) error {
+	return auth.ErrForbidden
+}
+
+func (r *lanRuntime) PairRemote(context.Context, desktopport.RemotePairInput) error {
+	return desktopport.ErrFirstRunToken
+}
+
+func (r *lanRuntime) UnpairRemote(context.Context, desktopport.AdminAuth) error {
+	return desktopport.ErrWrongMode
+}
+
 // desktopHarness is an in-process desktop instance: the app on a loopback listener (http, tagged loopback,
 // Host-checked) and the real local-network server on 127.0.0.1 (PORTO_DESKTOP_LAN_LOOPBACK).
 type desktopHarness struct {

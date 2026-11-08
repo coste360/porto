@@ -45,7 +45,7 @@ func (h *Handler) ListPresences(w http.ResponseWriter, r *http.Request, marinaID
 }
 
 // RecordPresence implements api.ServerInterface (POST .../presences).
-func (h *Handler) RecordPresence(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, _ api.RecordPresenceParams) {
+func (h *Handler) RecordPresence(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, params api.RecordPresenceParams) {
 	var in api.PresenceCreate
 	if !respond.DecodeOrFail(w, r, &in, false) {
 		return
@@ -53,7 +53,8 @@ func (h *Handler) RecordPresence(w http.ResponseWriter, r *http.Request, marinaI
 	d := newCtrDates()
 	pi := presence.Input{
 		VesselID: in.VesselId, Event: string(in.Event), At: in.At, AllocationID: str(in.AllocationId), Notes: str(in.Notes),
-		ExpectedReturnOn: d.ptr(in.ExpectedReturnOn),
+		ExpectedReturnOn: d.ptr(in.ExpectedReturnOn), ExpectedResourceID: str(in.ExpectedResourceId),
+		IdempotencyKey: str(params.IdempotencyKey),
 	}
 	if !d.ok {
 		h.ctrBadBody(w, r, marinaID)
@@ -95,7 +96,7 @@ func (h *Handler) RecordUnexpectedArrival(w http.ResponseWriter, r *http.Request
 }
 
 // UploadPresencePhoto implements api.ServerInterface (POST .../presences/{presenceId}/photo): raw image body.
-func (h *Handler) UploadPresencePhoto(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, presenceID api.PresenceId) {
+func (h *Handler) UploadPresencePhoto(w http.ResponseWriter, r *http.Request, marinaID api.MarinaId, presenceID api.PresenceId, _ api.UploadPresencePhotoParams) {
 	id, err := h.Presence.UploadPhoto(r.Context(), principal(r), marinaID, presenceID, r.Header.Get("Content-Type"), r.Body)
 	if err != nil {
 		respond.Error(w, r, err)

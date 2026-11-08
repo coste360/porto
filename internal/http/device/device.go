@@ -6,6 +6,7 @@ import (
 
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/device"
+	"github.com/coste360/porto/internal/domain/fiscal"
 	"github.com/coste360/porto/internal/http/api"
 	"github.com/coste360/porto/internal/http/respond"
 	"github.com/coste360/porto/internal/http/view"
@@ -18,6 +19,8 @@ type Handler struct {
 	BaseURL string
 	// SecureCookies is config.SecureCookies (device session cookies of pairDeviceSession).
 	SecureCookies bool
+	// Fiscal serves the fiscal bridge claims of a desktop in remote mode (M6b); nil = 404.
+	Fiscal *fiscal.Service
 }
 
 func str(s *string) string {

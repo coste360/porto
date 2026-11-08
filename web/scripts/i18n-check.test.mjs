@@ -32,6 +32,14 @@ describe('i18n-check', () => {
     expect(errors).toEqual(['a.tsx: unknown i18n key "common:nope"']);
   });
 
+  it('accepts the base key of plural keys', () => {
+    const locale = { offline: { pending_one: '{{count}}', pending_other: '{{count}}' } };
+    expect(checkUsages([['a.tsx', "t('offline:pending', { count })"]], locale)).toEqual([]);
+    expect(checkUsages([['a.tsx', "t('offline:pendin', { count })"]], locale)).toEqual([
+      'a.tsx: unknown i18n key "offline:pendin"',
+    ]);
+  });
+
   it('passes on the repository', () => {
     expect(run()).toEqual([]);
   });

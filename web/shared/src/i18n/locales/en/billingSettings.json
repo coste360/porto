@@ -35,7 +35,12 @@
   "fiscal": {
     "title": "Receipts and fiscal module",
     "driver": "Fiscal driver",
-    "footer": "Receipt footer"
+    "footer": "Receipt footer",
+    "bridgeDevice": "Desktop that issues the documents",
+    "bridgeDeviceNone": "No desktop",
+    "bridgeDeviceSearch": "Search a desktop",
+    "bridgeDeviceEmpty": "No desktop paired in remote mode",
+    "bridgeDeviceHint": "The desktop paired with the online Porto prints the documents on the local fiscal device."
   },
   "registers": {
     "title": "Registers",

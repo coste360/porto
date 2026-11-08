@@ -1,8 +1,11 @@
-import { mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { spawn, type ChildProcess } from 'node:child_process';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
-import { expect, type Page } from '@playwright/test';
+import { expect, request, type APIRequestContext, type Page } from '@playwright/test';
+
+import { OWNER } from './env';
 
 /**
  * The desktop suite runs `bin/porto-desktop -headless` (no window, no browser) on its own data folder, with the
@@ -106,6 +109,79 @@ export async function addDockMember(page: Page, marinaId: string): Promise<strin
   });
   expect(res.ok(), `member: ${res.status()} ${await res.text()}`).toBeTruthy();
   return name;
+}
+
+// ---- M6b remote mode (m6b-plan §10.3) ----
+
+/** The online Porto the remote specs pair to (second webServer of playwright.desktop.config.ts). */
+export const REMOTE_URL = `http://127.0.0.1:${Number(process.env.PORTO_E2E_REMOTE_PORT ?? 18100)}`;
+
+/** App PIN used by the remote specs. */
+export const APP_PIN = '482910';
+
+/** A second desktop app on an empty data folder (the main one is past its first run), started by a spec. */
+export type SecondDesktop = { url: string; dataDir: string; stop: () => Promise<void> };
+
+export async function startSecondDesktop(port = 18190): Promise<SecondDesktop> {
+  const dataDir = mkdtempSync(path.join(DESKTOP_RUN_DIR, 'remote-app-'));
+  const env = {
+    ...process.env,
+    ...desktopEnv(),
+    PORTO_DESKTOP_PORT: String(port),
+    PORTO_DESKTOP_LAN_PORT: String(port + 353),
+  };
+  const child: ChildProcess = spawn(DESKTOP_BINARY, ['-headless', '-data-dir', dataDir], {
+    env,
+    stdio: ['ignore', 'ignore', 'pipe'],
+  });
+  const url = `http://127.0.0.1:${port}`;
+  await expect
+    .poll(() => existsSync(path.join(dataDir, 'first-run.url')), { timeout: 60_000 })
+    .toBe(true);
+  return {
+    url,
+    dataDir,
+    stop: () =>
+      new Promise<void>((resolve) => {
+        if (child.exitCode !== null) return resolve();
+        child.once('exit', () => resolve());
+        child.kill('SIGTERM');
+      }),
+  };
+}
+
+/** The first-run URL of a data folder (absolute). */
+export function firstRunUrlOf(dataDir: string): string {
+  return readFileSync(path.join(dataDir, 'first-run.url'), 'utf8').trim();
+}
+
+/** The enter URL of the remote proxy (`<data>/remote-enter.url`, dev only), once the app runs in remote mode. */
+export async function remoteEnterUrl(dataDir: string): Promise<string> {
+  const file = path.join(dataDir, 'remote-enter.url');
+  await expect.poll(() => existsSync(file), { timeout: 60_000 }).toBe(true);
+  return readFileSync(file, 'utf8').trim();
+}
+
+/** Lines written by a fake peripheral of a data folder (receipt, label, fiscal). */
+export function fakePeripheralLines(dataDir: string, kind: 'receipt' | 'label' | 'fiscal'): string[] {
+  try {
+    return readFileSync(path.join(dataDir, 'peripherals', `${kind}.jsonl`), 'utf8')
+      .split('\n')
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+/** An API context signed in as the owner of the online Porto; returns it with the marina id. */
+export async function onlineOwner(): Promise<{ api: APIRequestContext; marinaId: string }> {
+  const api = await request.newContext({ baseURL: REMOTE_URL });
+  const res = await api.post('/api/admin/v1/auth/login', {
+    data: { email: OWNER.email, password: OWNER.password },
+  });
+  expect(res.ok(), `online login: ${res.status()}`).toBeTruthy();
+  const me = (await (await api.get('/api/admin/v1/auth/me')).json()) as { marinas: { id: string }[] };
+  return { api, marinaId: me.marinas[0]!.id };
 }
 
 /** Global teardown: removes the run's data folder; set PORTO_E2E_KEEP=1 to inspect it after a run. */

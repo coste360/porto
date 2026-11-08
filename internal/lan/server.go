@@ -154,10 +154,14 @@ func (s *Server) statusLocked() desktopport.LANStatus {
 	}
 	if c := s.current.Load(); c != nil {
 		st.Fingerprint, st.CAFingerprint, st.CertExpiresAt = c.Fingerprint(), c.CAFingerprint(), c.Leaf.NotAfter
+		st.CAConstrained = c.CAConstrained()
 	}
 	if s.srv != nil {
 		st.Address = s.inUse.String()
 		st.URL = originFor(s.inUse, s.port)
+		if st.CAConstrained {
+			st.CADownloadURL = st.URL + CACertPath
+		}
 	}
 	return st
 }
@@ -304,6 +308,7 @@ func (s *Server) newHTTPServer(hosts []string) *http.Server {
 		}
 		srv = &http.Server{Handler: h, ReadHeaderTimeout: 10 * time.Second, IdleTimeout: 120 * time.Second}
 	}
+	srv.Handler = s.caHandler(srv.Handler)
 	prev := srv.ConnContext
 	srv.ConnContext = func(ctx context.Context, c net.Conn) context.Context {
 		if prev != nil {

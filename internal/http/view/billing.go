@@ -251,7 +251,7 @@ func BillingSettings(s *charge.Settings, fiscalDrivers []string) api.BillingSett
 		fiscalDrivers = []string{}
 	}
 	r := s.Row
-	return api.BillingSettings{
+	out := api.BillingSettings{
 		DefaultDueDays: r.DefaultDueDays, AutoPaymentRequest: r.AutoPaymentRequest, ReminderPolicy: api.ReminderPolicy{Levels: levels},
 		ReminderHour: r.ReminderHour, ArrearsPolicy: api.ArrearsPolicy{
 			Enabled: s.Arrears.Enabled, DaysOverdue: s.Arrears.DaysOverdue, MinAmountCents: int64(s.Arrears.MinAmountCents),
@@ -259,6 +259,10 @@ func BillingSettings(s *charge.Settings, fiscalDrivers []string) api.BillingSett
 		ExportReminderDays: r.ExportReminderDays, FiscalDriver: r.FiscalDriver, ReceiptFooter: r.ReceiptFooter,
 		SepaLeadDays: r.SEPALeadDays, OriginItems: items, FiscalDrivers: fiscalDrivers, Version: r.Version,
 	}
+	if id := r.FiscalBridgeDeviceID; id != "" { // M6b
+		out.FiscalBridgeDeviceId = &id
+	}
+	return out
 }
 
 // BillingSettingsIn converts the settings input.
@@ -270,6 +274,9 @@ func BillingSettingsIn(in api.BillingSettingsInput, fiscalDrivers []string) char
 		},
 		ExportReminderDays: in.ExportReminderDays, FiscalDriver: in.FiscalDriver, ReceiptFooter: in.ReceiptFooter,
 		SEPALeadDays: in.SepaLeadDays, OriginItems: map[string]string{}, FiscalDrivers: fiscalDrivers,
+	}
+	if in.FiscalBridgeDeviceId != nil { // M6b
+		out.FiscalBridgeDeviceID = *in.FiscalBridgeDeviceId
 	}
 	for _, l := range in.ReminderPolicy.Levels {
 		out.Reminder.Levels = append(out.Reminder.Levels, charge.ReminderLevel{Level: string(l.Level), Days: l.Days, Enabled: l.Enabled})

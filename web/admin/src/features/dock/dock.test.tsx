@@ -53,56 +53,10 @@ afterEach(() => {
 });
 
 describe('dock panel', () => {
-  it('works at 360 px: today movements, one-tap arrival with a note, bottom tabs', async () => {
-    phone();
-    const { calls } = renderApp(`/m/${MARINA_ID}/dock`, [
-      ...baseRoutes(),
-      { path: `${API}/movements`, body: movements },
-      {
-        method: 'POST',
-        path: `${API}/presences`,
-        status: 201,
-        body: {
-          presence: {
-            id: 'p1',
-            vessel: vesselBrief,
-            event: 'arrived',
-            at: '2026-07-10T08:00:00Z',
-            night: '2026-07-10',
-            source: 'staff',
-            has_photo: false,
-          },
-        },
-      },
-    ]);
-    const page = await screen.findByTestId('dock-page');
-    for (const name of ['Oggi', 'Mappa', 'Arrivo', 'Rilasci'])
-      expect(within(page).getByRole('tab', { name })).toHaveClass('min-h-11');
-    const arrivals = await screen.findByTestId('desk-movements-arrivals_expected');
-    expect(within(arrivals).getByText('Libeccio')).toBeInTheDocument();
-    expect(within(arrivals).getByText(/A01 · 11,34 m × 3,80 m · 14:00/)).toBeInTheDocument();
-    const tap = within(arrivals).getByRole('button', { name: 'Arrivato' });
-    expect(tap).toHaveClass('min-h-11');
-    await userEvent.click(tap);
-    const dialog = await screen.findByTestId('desk-presence-dialog');
-    await userEvent.type(within(dialog).getByLabelText('Note'), 'Ormeggiato di poppa');
-    await userEvent.click(within(dialog).getByRole('button', { name: "Registra l'arrivo" }));
-    await waitFor(() =>
-      expect(calls.some((c) => c.method === 'POST' && c.url.pathname.endsWith('/presences'))).toBe(
-        true,
-      ),
-    );
-    const post = calls.find((c) => c.method === 'POST')!;
-    expect(post.body).toEqual({
-      vessel_id: VESSEL_ID,
-      event: 'arrived',
-      allocation_id: ALLOC_ID,
-      notes: 'Ormeggiato di poppa',
-    });
-    expect(post.headers.get('Idempotency-Key')).toBeTruthy();
-    expect(
-      calls.find((c) => c.url.pathname.endsWith('/movements'))!.url.searchParams.get('date'),
-    ).toBe('2026-07-10');
+  it('the old dock module re-exports the phone dock screen', async () => {
+    const old = await import('./DockPage');
+    const now = await import('../phone/dock/DockPage');
+    expect(old.DockPage).toBe(now.DockPage);
   });
 
   it('records an unexpected arrival of a new vessel with estimated dimensions', async () => {
@@ -117,7 +71,8 @@ describe('dock panel', () => {
         body: { presence: { id: 'p1' } },
       },
     ]);
-    await userEvent.click(await screen.findByRole('tab', { name: 'Arrivo' }));
+    await userEvent.click(await screen.findByRole('tab', { name: 'Altro' }));
+    await userEvent.click(await screen.findByTestId('dock-more-unexpected'));
     await userEvent.type(await screen.findByLabelText("Nome dell'imbarcazione"), 'Grecale');
     await userEvent.type(screen.getByLabelText('Lunghezza fuori tutto'), '9');
     await userEvent.type(screen.getByLabelText('Larghezza'), '3,2');
@@ -135,7 +90,7 @@ describe('dock panel', () => {
     expect(await screen.findByText('Arrivo registrato')).toBeInTheDocument();
   });
 
-  it('lands the dock role on the panel on a phone, others on the overview with a link card', async () => {
+  it('lands the dock role on the panel on a phone', async () => {
     phone();
     const dockMe = makeMe({}, ['marina.read', 'map.view', 'presence.write', 'transits.desk']);
     dockMe.marinas[0]!.roles = ['dock'];
@@ -187,9 +142,13 @@ describe('dock panel', () => {
         },
       },
     ]);
-    const alert = await screen.findByTestId('dock-payment-warning');
-    expect(within(alert).getByText('Saldo da verificare')).toBeInTheDocument();
-    expect(within(alert).getByText(/A07/)).toBeInTheDocument();
+    const row = await screen.findByTestId(`dock-row-${VESSEL_ID}`);
+    expect(within(row).getByTestId('dock-row-payment-warning')).toHaveTextContent(
+      'Saldo da verificare',
+    );
+    expect(within(row).getByText(/A07/)).toBeInTheDocument();
+    // Only a warning: the departure stays one tap away.
+    expect(within(row).getByRole('button', { name: 'Partito' })).toBeEnabled();
   });
 
   it('checks photo type and size before upload', () => {

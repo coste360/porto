@@ -28,6 +28,7 @@ export const status = (overrides: Partial<DesktopStatus> = {}): DesktopStatus =>
   first_run_pending: false,
   update: null,
   secret_store: 'keyring',
+  kiosk: false,
   ...overrides,
 });
 
@@ -57,6 +58,8 @@ export const lanOff: LanStatus = {
   ca_fingerprint: '',
   cert_expires_at: null,
   error: null,
+  ca_constrained: false,
+  ca_download_url: '',
 };
 
 export const lanOn: LanStatus = {

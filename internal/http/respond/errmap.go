@@ -178,6 +178,19 @@ var sentinels = []struct {
 	{desktopport.ErrInvalidSettings, problem.ValidationFailed},
 	{desktopport.ErrInstanceToken, problem.Unauthorized},
 	{desktopport.ErrNotFound, problem.NotFound},
+	// M6b (m6b-plan §9.1)
+	{desktopport.ErrRemoteUnreachable, problem.RemoteUnreachable},
+	{desktopport.ErrRemotePinMismatch, problem.RemotePinMismatch},
+	{desktopport.ErrAppPinInvalid, problem.AppPinInvalid},
+	{desktopport.ErrPeripheralUnavailable, problem.PeripheralUnavailable},
+	{desktopport.ErrWrongMode, problem.NotFound},
+	{desktopport.ErrAlreadyPaired, problem.FirstRunDone},
+	{presence.ErrAllocationChanged, problem.AllocationChanged},
+	{presence.ErrOfflineNotAllowed, problem.OfflineNotAllowed},
+	{presence.ErrIdempotencyMismatch, problem.IdempotencyKeyReused},
+	{payment.ErrOfflineNotAllowed, problem.OfflineNotAllowed},
+	{fiscal.ErrClaimExpired, problem.ClaimExpired},
+	{fiscal.ErrBridgeDeviceMismatch, problem.Forbidden},
 	{payment.ErrRefundExceeds, problem.RefundExceeds},
 	{payment.ErrAlreadyReversed, problem.AlreadyReversed},
 	{payment.ErrCreditInsufficient, problem.CreditInsufficient},
@@ -341,6 +354,19 @@ func mapM5(err error) (problem.Type, []problem.Option, bool) {
 	}
 	if errors.Is(err, collect.ErrProviderError) {
 		return problem.ProviderError, nil, true
+	}
+	// M6b (m6b-plan §5.2, §7.3): ids, codes and fingerprints only.
+	if ae, ok := errors.AsType[*presence.AllocationChangedError](err); ok {
+		d := map[string]any{"current_resource_id": nil, "current_resource_code": nil}
+		if ae.CurrentResourceID != "" {
+			d["current_resource_id"] = ae.CurrentResourceID
+			d["current_resource_code"] = ae.CurrentResourceCode
+		}
+		return problem.AllocationChanged, []problem.Option{problem.WithDetails(d)}, true
+	}
+	if pe, ok := errors.AsType[*desktopport.PinMismatchError](err); ok {
+		d := map[string]string{"expected_fingerprint": pe.Expected, "presented_fingerprint": pe.Presented}
+		return problem.RemotePinMismatch, []problem.Option{problem.WithDetails(d)}, true
 	}
 	return "", nil, false
 }

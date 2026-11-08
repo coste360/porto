@@ -11,6 +11,10 @@ import (
 const (
 	DriverNone   = "none"
 	DriverExport = "export"
+	// DriverBridge (M6b, m6b-plan §8.4): documents are issued by the desktop set in billing settings
+	// (fiscal_bridge_device_id), in remote mode, through the device claim/outcome API; the fiscal.issue job leaves
+	// them pending.
+	DriverBridge = "bridge"
 )
 
 // inlineDriver is a core driver with no I/O: the document is issued with the internal number (tracking only; the

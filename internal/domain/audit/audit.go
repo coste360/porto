@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/uptrace/bun"
 
@@ -76,8 +77,15 @@ func (w *Writer) Write(ctx context.Context, tx bun.IDB, e Entry) error {
 	if info.ClientIP.IsValid() {
 		row.IP = info.ClientIP.String()
 	}
+	var diff any
 	if e.Diff != nil {
-		b, err := json.Marshal(Redact(e.Diff))
+		diff = Redact(e.Diff)
+	}
+	if at, ok := reqctx.OfflineReplay(ctx); ok {
+		diff = withOfflineQueuedAt(diff, at)
+	}
+	if diff != nil {
+		b, err := json.Marshal(diff)
 		if err != nil {
 			return fmt.Errorf("audit: marshal diff: %w", err)
 		}
@@ -87,6 +95,24 @@ func (w *Writer) Write(ctx context.Context, tx bun.IDB, e Entry) error {
 		return fmt.Errorf("audit: write: %w", err)
 	}
 	return nil
+}
+
+// withOfflineQueuedAt records the enqueue instant of an offline replay (M6b, m6b-plan §4.4) on every audit row
+// of the request. diff is already redacted (JSON-generic): an object gains offline_queued_at unless the domain
+// set it, a missing diff becomes one, any other value is wrapped.
+func withOfflineQueuedAt(diff any, at time.Time) any {
+	stamp := at.UTC().Format(time.RFC3339Nano)
+	switch d := diff.(type) {
+	case nil:
+		return map[string]any{"offline_queued_at": stamp}
+	case map[string]any:
+		if _, ok := d["offline_queued_at"]; !ok {
+			d["offline_queued_at"] = stamp
+		}
+		return d
+	default:
+		return map[string]any{"offline_queued_at": stamp, "diff": d}
+	}
 }
 
 // Filter narrows a listing.

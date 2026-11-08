@@ -26,6 +26,8 @@ const (
 	Receipt80 = "80"
 	Receipt58 = "58"
 	ReceiptA4 = "a4"
+	// ReceiptJSON (M6b) is the receipt data for a local printer driver (ReceiptData): no customer data.
+	ReceiptJSON = "json"
 )
 
 // NotFiscalIT is the fixed notice of every courtesy receipt.
@@ -45,7 +47,7 @@ func (s *Service) Receipt(ctx context.Context, p *auth.Principal, marinaID, paym
 	if format == "" {
 		format = Receipt80
 	}
-	if format != Receipt80 && format != Receipt58 && format != ReceiptA4 {
+	if format != Receipt80 && format != Receipt58 && format != ReceiptA4 && format != ReceiptJSON {
 		return nil, "", invalid("format", "invalid")
 	}
 	pay, err := store.GetPayment(ctx, s.d.DB.DB, scope, paymentID)
@@ -58,6 +60,10 @@ func (s *Service) Receipt(ctx context.Context, p *auth.Principal, marinaID, paym
 	v, locale, err := s.ReceiptViewOf(ctx, s.d.DB.DB, scope, pay)
 	if err != nil {
 		return nil, "", err
+	}
+	if format == ReceiptJSON {
+		b, err := json.Marshal(receiptData(v))
+		return b, "application/json", err
 	}
 	if format == ReceiptA4 {
 		if s.d.Docs == nil {
@@ -253,4 +259,47 @@ func italianDate(iso string) string {
 		return iso
 	}
 	return iso[8:10] + "/" + iso[5:7] + "/" + iso[0:4]
+}
+
+// receiptJSON is the wire form ReceiptData of getPaymentReceipt format=json (M6b, m6b-plan §8.3): the marina
+// header, lines, VAT, totals and footer of the courtesy receipt, never the customer.
+type receiptJSON struct {
+	Marina struct {
+		Name      string `json:"name"`
+		LegalName string `json:"legal_name"`
+		Address   string `json:"address"`
+		VATNumber string `json:"vat_number"`
+	} `json:"marina"`
+	Number       string            `json:"number"`
+	Date         string            `json:"date"`
+	Method       string            `json:"method"`
+	AmountCents  int64             `json:"amount_cents"`
+	Lines        []receiptJSONLine `json:"lines"`
+	VAT          []views.VATRow    `json:"vat"`
+	FiscalNumber string            `json:"fiscal_number"`
+	Footer       string            `json:"footer"`
+	NotFiscal    bool              `json:"not_fiscal"`
+}
+
+type receiptJSONLine struct {
+	Description string `json:"description"`
+	QtyMilli    int64  `json:"qty_milli"`
+	GrossCents  int64  `json:"gross_cents"`
+	VATRateBP   int64  `json:"vat_rate_bp"`
+}
+
+func receiptData(v views.ReceiptView) receiptJSON {
+	var out receiptJSON
+	out.Marina.Name, out.Marina.LegalName, out.Marina.Address, out.Marina.VATNumber = v.Marina.Name, v.Marina.LegalName, v.Marina.Address, v.Marina.VATNumber
+	out.Number, out.Date, out.Method, out.AmountCents = v.Number, v.Date.String(), v.Method, int64(v.AmountCents)
+	out.FiscalNumber, out.Footer, out.NotFiscal = v.FiscalNumber, string(v.Footer), true
+	out.Lines = make([]receiptJSONLine, 0, len(v.Lines))
+	for _, l := range v.Lines {
+		out.Lines = append(out.Lines, receiptJSONLine{Description: l.Description, QtyMilli: int64(l.Qty), GrossCents: int64(l.Gross), VATRateBP: int64(l.VATRate)})
+	}
+	out.VAT = v.VAT
+	if out.VAT == nil {
+		out.VAT = []views.VATRow{}
+	}
+	return out
 }

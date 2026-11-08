@@ -72,6 +72,9 @@ oppure PostgreSQL (`DATABASE_URL`). Stesso schema logico sui due dialetti.
 | `internal/desktop` | launcher desktop: cartella dati, impostazioni, chiave nel portachiavi, istanza unica, primo avvio, backup, controllo versione, log (implementa `desktopport.Runtime`) |
 | `internal/lan` | modalità rete locale: CA e certificato locali, listener solo peer privati, controllo `Host` (implementa `desktopport.LANController`) |
 | `internal/http/desktop` | handler di `/api/desktop/v1`, solo sul listener di loopback (INV-80) |
+| `internal/desktop/remote` | modalità remota (M6b): proxy loopback verso un Porto online che custodisce il token di dispositivo, fissaggio del certificato, cache della shell, agente fiscale bridge; senza database né `app.App` |
+| `internal/peripheral` | driver delle periferiche locali (M6b): finti, ESC/POS generico, ZPL, trasporti tcp/cups/file; Go puro, solo `desktopport` e `pkg/ext` |
+| `internal/http/bridge` | handler di `/api/bridge/v1` (M6b), solo su loopback come l'API desktop (INV-85) |
 | `pkg/ext` | interfacce pubbliche delle estensioni (sottoinsieme M0 di spec [27.5](spec/27-api-eventi-estensioni.md)) |
 | `web/shared`, `web/admin`, `web/booking` | workspace npm: libreria condivisa (client generato, shadcn/ui, tema, i18n, marchio), pannello, pagina pubblica |
 | `e2e/` | Playwright sul binario reale |
@@ -178,6 +181,15 @@ Spec [29](spec/29-tempo-reale-offline-i18n.md), [31.3](spec/31-multipiattaforma.
   M0 (impostazioni marina, team, chiavi API, dispositivi, webhook, audit, account, organizzazione).
 - `web/booking` (`/b/{slug}`): segnaposto della pagina pubblica.
 - Niente CSS personalizzato: solo classi Tailwind sui token del tema (controllato in lint).
+- Offline (M6b, spec 29.2, ADR 0011): il pannello è una PWA con service worker scritto a mano che mette in cache
+  solo la shell (`/api/*` mai intercettato). `web/shared/src/offline` tiene in IndexedDB l'allowlist di query del
+  marina e dell'utente correnti (48 ore) e la coda delle sole operazioni con `x-porto-offline` (arrivo e partenza con
+  allocazione, foto della presenza, incasso in contanti su addebiti in modalità fattura), con `Idempotency-Key`
+  generata all'accodamento e `Porto-Offline-Queued-At` alla ripetizione; il server rifiuta l'header su ogni altra
+  operazione (`middleware.OfflineGuard`) e deduplica anche nel dominio. I conflitti si mostrano all'utente.
+- Telefono (M6b, 31.3): `landingFor()` porta ogni ruolo alla sua schermata; le route con `staticData.shell =
+  'phone'` (banchina `/m/$marinaId/dock`, direzione `/m/$marinaId/direction`) usano `PhoneShell` al posto di
+  `AppShell`. Il QR del transito (`PT1:<contract_id>`) si scansiona con la fotocamera o un lettore a tastiera.
 
 ## 9. Distribuzione
 
@@ -193,6 +205,12 @@ Spec [29](spec/29-tempo-reale-offline-i18n.md), [31.3](spec/31-multipiattaforma.
   WebKitGTK) e, se attivata, lo espone sulla rete locale in HTTPS con un certificato proprio. Il meta riporta
   `edition: desktop` e `local_mode: true`. Pacchetti non firmati (`make desktop-package-*`,
   `docs/desktop-build.md`); `make check` non richiede la toolchain webview.
+- Modalità remota (M6b, ADR 0011): l'app desktop abbinata a un Porto online non avvia un server ma un proxy su
+  loopback (`internal/desktop/remote`) con il token di dispositivo nel portachiavi, il certificato fissato (foglia,
+  poi CA), la cache della shell per l'avvio offline, il PIN dell'app per l'amministrazione locale, il chiosco per la
+  reception e il bridge `/api/bridge/v1` verso stampante scontrini, stampante etichette, lettore QR e dispositivo
+  fiscale locale (`internal/peripheral`). In modalità remota i documenti del driver fiscale `bridge` sono presi in
+  carico dal desktop con lease di 60 secondi (`/api/device/v1/fiscal/*`).
 
 ## 10. Domini pianificati
 

@@ -7,6 +7,7 @@ import {
   type QueryKey,
   type StreamMessage,
 } from './queryKeys';
+import { sendQueueNow } from '../offline/runner';
 
 export const SSE_TOPICS = [
   'marina.changed',
@@ -92,7 +93,15 @@ export function subscribeMarinaStream(
     source.addEventListener(topic, listener);
     return [topic, listener] as const;
   });
+  // A reconnected stream means the server is reachable again: send the offline queue now (m6b-plan §4.3).
+  let opened = false;
+  const onOpen = () => {
+    if (opened) sendQueueNow();
+    opened = true;
+  };
+  source.addEventListener('open', onOpen);
   return () => {
+    source.removeEventListener('open', onOpen);
     for (const [topic, listener] of listeners) source.removeEventListener(topic, listener);
     for (const { timer } of pending.values()) clearTimeout(timer);
     pending.clear();

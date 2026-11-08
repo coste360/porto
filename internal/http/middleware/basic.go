@@ -210,7 +210,7 @@ func SecurityHeaders(o SecurityOptions) func(http.Handler) http.Handler {
 			h.Set("X-Frame-Options", "DENY")
 			h.Set("Referrer-Policy", "no-referrer")
 			h.Set("Cross-Origin-Opener-Policy", "same-origin")
-			h.Set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()")
+			h.Set("Permissions-Policy", "camera=(self), microphone=(), geolocation=(), payment=()")
 			if o.HSTS {
 				h.Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 			}

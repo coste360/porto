@@ -94,6 +94,10 @@ import itWorklist from './locales/it/worklist.json';
 import itPayPublic from './locales/it/payPublic.json';
 import enDesktop from './locales/en/desktop.json';
 import itDesktop from './locales/it/desktop.json';
+import enOffline from './locales/en/offline.json';
+import itOffline from './locales/it/offline.json';
+import enPhone from './locales/en/phone.json';
+import itPhone from './locales/it/phone.json';
 
 export const SUPPORTED_LOCALES = ['it', 'en'] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -151,6 +155,8 @@ export const NAMESPACES = [
   'payPublic',
   // M6a (m6a-plan §7)
   'desktop',
+  'offline',
+  'phone',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -204,6 +210,8 @@ export const resources = {
     worklist: itWorklist,
     payPublic: itPayPublic,
     desktop: itDesktop,
+    offline: itOffline,
+    phone: itPhone,
   },
   en: {
     common: enCommon,
@@ -254,5 +262,7 @@ export const resources = {
     worklist: enWorklist,
     payPublic: enPayPublic,
     desktop: enDesktop,
+    offline: enOffline,
+    phone: enPhone,
   },
 } as const;

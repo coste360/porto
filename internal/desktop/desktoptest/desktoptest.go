@@ -157,3 +157,47 @@ func (g guard) RotateCertificate(ctx context.Context, all bool) (desktopport.LAN
 	}
 	return g.inner.RotateCertificate(ctx, all)
 }
+
+// M6b methods of desktopport.Runtime: no peripherals, local mode only.
+
+// Peripherals implements desktopport.Runtime.
+func (*Runtime) Peripherals() desktopport.Peripherals { return desktopport.Peripherals{} }
+
+// PeripheralSettings implements desktopport.Runtime.
+func (*Runtime) PeripheralSettings(_ context.Context, a desktopport.AdminAuth) (desktopport.PeripheralSettings, error) {
+	if err := owner(a.Principal); err != nil {
+		return desktopport.PeripheralSettings{}, err
+	}
+	return desktopport.PeripheralSettings{}, nil
+}
+
+// UpdatePeripheralSettings implements desktopport.Runtime.
+func (*Runtime) UpdatePeripheralSettings(_ context.Context, a desktopport.AdminAuth, in desktopport.PeripheralSettings) (desktopport.PeripheralSettings, error) {
+	if err := owner(a.Principal); err != nil {
+		return desktopport.PeripheralSettings{}, err
+	}
+	return in, nil
+}
+
+// SetKiosk implements desktopport.Runtime.
+func (*Runtime) SetKiosk(_ context.Context, a desktopport.AdminAuth, enabled bool) (desktopport.KioskSettings, error) {
+	if err := owner(a.Principal); err != nil {
+		return desktopport.KioskSettings{}, err
+	}
+	return desktopport.KioskSettings{Enabled: enabled}, nil
+}
+
+// ExitKiosk implements desktopport.Runtime.
+func (*Runtime) ExitKiosk(context.Context, desktopport.AdminAuth, desktopport.KioskExitCredentials) error {
+	return desktopport.ErrAppPinInvalid
+}
+
+// PairRemote implements desktopport.Runtime.
+func (*Runtime) PairRemote(context.Context, desktopport.RemotePairInput) error {
+	return desktopport.ErrFirstRunToken
+}
+
+// UnpairRemote implements desktopport.Runtime.
+func (*Runtime) UnpairRemote(context.Context, desktopport.AdminAuth) error {
+	return desktopport.ErrWrongMode
+}

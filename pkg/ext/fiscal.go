@@ -9,6 +9,11 @@ import (
 // Porto ships the drivers "none" (tracking only, the operator uses their own registered device) and "export"
 // (daily corrispettivi file); device drivers are extensions. A driver whose device is temporarily unreachable
 // returns an error implementing Deferred() bool = true: the document stays pending and is retried.
+//
+// Issue should be idempotent on DocumentID when the device allows it (a device that can look up the document by
+// Porto's id returns the first result instead of printing again). Porto does not rely on it: the desktop bridge
+// journals every issued outcome before reporting it and never calls Issue again for a journalled document; the only
+// window left is a crash between the device print and the journal write.
 type FiscalDriver interface {
 	Code() string
 	Issue(ctx context.Context, doc FiscalDocumentRequest) (*FiscalDocumentResult, error)

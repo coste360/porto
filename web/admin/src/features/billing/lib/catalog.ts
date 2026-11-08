@@ -125,6 +125,7 @@ export function toSettingsInput(s: BillingSettings): BillingSettingsInput {
     receipt_footer: s.receipt_footer,
     sepa_lead_days: s.sepa_lead_days,
     origin_items: s.origin_items,
+    fiscal_bridge_device_id: s.fiscal_bridge_device_id ?? null,
   };
 }
 

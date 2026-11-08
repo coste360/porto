@@ -47,6 +47,7 @@ import { StatusBadge } from '../components/StatusBadge';
 import { daysBetween, isIsoDate } from '../lib/dates';
 import { transitActions } from '../lib/status';
 import { ManualConfirmFields } from './NewTransitDialog';
+import { TransitQrButton } from '../../phone/public';
 
 const route = getRouteApi('/auth/m/$marinaId/transits/$contractId');
 
@@ -84,6 +85,7 @@ function TransitDetail({ transit }: { transit: Contract }) {
           <>
             <ShowOnMapButton contract={transit} date={today} />
             <TransitPaymentLinkButton transit={transit} />
+            <TransitQrButton marinaId={marinaId} transit={transit} />
             {desk && actions.confirm ? (
               <Button onClick={() => setDialog('confirm')}>{t('desk:transit.confirm')}</Button>
             ) : null}

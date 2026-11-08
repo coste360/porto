@@ -6,6 +6,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	"io"
 	"mime"
@@ -91,6 +92,13 @@ func (s *Service) UploadPhoto(ctx context.Context, p *auth.Principal, marinaID, 
 	if s.d.Files == nil {
 		return "", errors.New("presence: file store not wired")
 	}
+	// Domain key of the effect (INV-83): the same bytes as the current photo are the same upload (a replay whose
+	// idempotency row was lost or taken over), answered with the stored file, nothing written again.
+	sum := sha256.Sum256(content)
+	digest := hex.EncodeToString(sum[:])
+	if same, err := s.currentPhotoWithDigest(ctx, s.d.DB.DB, scope, id, digest); err != nil || same != "" {
+		return same, err
+	}
 	fileID := store.NewID()
 	blob, err := s.d.Files.Put(ctx, scope.ID(), fileID, bytes.NewReader(content), MaxPhotoBytes)
 	if err != nil {
@@ -102,11 +110,15 @@ func (s *Service) UploadPhoto(ctx context.Context, p *auth.Principal, marinaID, 
 			_ = s.d.Files.Remove(blob.StorageKey)
 		}
 	}()
-	var oldKey string
+	var oldKey, existing string
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		pr, err := store.GetPresence(ctx, tx, scope, id)
 		if err != nil {
 			return notFound(err)
+		}
+		// A concurrent replay of the same bytes committed first: answer with its file.
+		if existing, err = s.currentPhotoWithDigest(ctx, tx, scope, id, digest); err != nil || existing != "" {
+			return err
 		}
 		now := s.now()
 		f := &store.StoredFile{
@@ -135,11 +147,36 @@ func (s *Service) UploadPhoto(ctx context.Context, p *auth.Principal, marinaID, 
 	if err != nil {
 		return "", err
 	}
+	if existing != "" {
+		return existing, nil // the deferred cleanup removes the blob just written
+	}
 	committed = true
 	if oldKey != "" {
 		_ = s.d.Files.Remove(oldKey)
 	}
 	return fileID, nil
+}
+
+// currentPhotoWithDigest returns the id of the presence's current photo when its plaintext SHA-256 is digest, or "".
+func (s *Service) currentPhotoWithDigest(ctx context.Context, db bun.IDB, scope store.MarinaScope, presenceID, digest string) (string, error) {
+	pr, err := store.GetPresence(ctx, db, scope, presenceID)
+	if err != nil {
+		return "", notFound(err)
+	}
+	if pr.PhotoFileID == "" {
+		return "", nil
+	}
+	f, err := store.GetStoredFile(ctx, db, scope, pr.PhotoFileID)
+	if errors.Is(err, store.ErrNotFound) {
+		return "", nil
+	}
+	if err != nil {
+		return "", err
+	}
+	if f.SHA256 == digest {
+		return f.ID, nil
+	}
+	return "", nil
 }
 
 func (s *Service) photoSignature(marinaID, presenceID, principalID string, exp int64) (string, error) {

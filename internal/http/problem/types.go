@@ -134,6 +134,16 @@ const (
 	BackupInProgress     Type = "backup_in_progress"
 	RestoreFailed        Type = "restore_failed"
 	RestoreBackupNewer   Type = "restore_backup_newer"
+
+	// M6b (m6b-plan §9.1). concurrent_update is not added: a transaction that keeps failing on serialization
+	// after the RunInTx retries surfaces as 500, which the offline queue already retries (D21).
+	AllocationChanged     Type = "allocation_changed"
+	OfflineNotAllowed     Type = "offline_not_allowed"
+	RemoteUnreachable     Type = "remote_unreachable"
+	RemotePinMismatch     Type = "remote_pin_mismatch"
+	PeripheralUnavailable Type = "peripheral_unavailable"
+	ClaimExpired          Type = "claim_expired"
+	AppPinInvalid         Type = "app_pin_invalid"
 )
 
 type typeInfo struct {
@@ -258,6 +268,13 @@ var registry = map[Type]typeInfo{
 	BackupInProgress:          {http.StatusConflict, "A backup or restore is already running"},
 	RestoreFailed:             {http.StatusUnprocessableEntity, "The backup cannot be restored"},
 	RestoreBackupNewer:        {http.StatusUnprocessableEntity, "The backup was made by a newer version"},
+	AllocationChanged:         {http.StatusConflict, "The allocation changed since the operation was queued"},
+	OfflineNotAllowed:         {http.StatusUnprocessableEntity, "This operation cannot be replayed from the offline queue"},
+	RemoteUnreachable:         {http.StatusServiceUnavailable, "The online Porto instance is unreachable"},
+	RemotePinMismatch:         {http.StatusBadGateway, "The online Porto instance presented an unexpected certificate"},
+	PeripheralUnavailable:     {http.StatusServiceUnavailable, "The peripheral is not configured or not ready"},
+	ClaimExpired:              {http.StatusConflict, "The fiscal claim expired"},
+	AppPinInvalid:             {http.StatusUnauthorized, "Wrong app PIN"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

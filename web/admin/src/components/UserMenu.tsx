@@ -1,10 +1,22 @@
 import { Link } from '@tanstack/react-router';
 import { ChevronsUpDownIcon, LogOutIcon, MonitorIcon, UserIcon } from 'lucide-react';
+import { useState } from 'react';
 
 import { SUPPORTED_LOCALES, useT } from '@porto/shared/i18n';
+import { unsentOps } from '@porto/shared/offline';
 import { useTheme, type ThemePreference } from '@porto/shared/theme';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@porto/shared/ui/alert-dialog';
 import { Avatar, AvatarFallback } from '@porto/shared/ui/avatar';
-import { Button } from '@porto/shared/ui/button';
+import { Button, buttonVariants } from '@porto/shared/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +49,8 @@ export function UserMenu({ variant = 'button' }: { variant?: 'button' | 'sidebar
   const { theme, setTheme } = useTheme();
   const logout = useLogout();
   const desktop = useDesktopAccess();
+  // Unsent offline operations are lost on logout (the offline database is deleted): ask first (m6b-plan §4.3).
+  const [unsent, setUnsent] = useState(0);
   if (!me) return null;
   const name = me.user.name || me.user.email;
 
@@ -117,11 +131,38 @@ export function UserMenu({ variant = 'button' }: { variant?: 'button' | 'sidebar
           </DropdownMenuSub>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={() => logout.mutate()}>
+        <DropdownMenuItem
+          onSelect={() => {
+            const n = unsentOps(me.user.id).length;
+            if (n > 0) setUnsent(n);
+            else logout.mutate();
+          }}
+        >
           <LogOutIcon />
           {t('common:user.logout')}
         </DropdownMenuItem>
       </DropdownMenuContent>
+      <AlertDialog open={unsent > 0} onOpenChange={(o) => !o && setUnsent(0)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('offline:logoutConfirm.title')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {unsent === 1
+                ? t('offline:logoutConfirm.description_one', { count: 1 })
+                : t('offline:logoutConfirm.description_other', { count: unsent })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common:actions.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              className={buttonVariants({ variant: 'destructive' })}
+              onClick={() => logout.mutate()}
+            >
+              {t('offline:logoutConfirm.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </DropdownMenu>
   );
 }

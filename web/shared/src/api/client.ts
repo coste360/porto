@@ -15,6 +15,8 @@ const ANONYMOUS_PATHS = [
   '/api/admin/v1/auth/login',
   '/api/admin/v1/auth/me',
   '/api/admin/v1/auth/password-reset/',
+  // Desktop API (M6a/M6b): a 401 is a wrong app PIN or owner password (app_pin_invalid), not an expired session.
+  '/api/desktop/v1/',
 ];
 
 export type ApiClient = Client<paths>;

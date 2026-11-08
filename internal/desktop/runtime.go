@@ -48,6 +48,10 @@ type RuntimeConfig struct {
 	CountUsers  UserCounter
 	Updater     *Updater
 	InstanceTok string // hash of the activation token (instance.json)
+	// M6b: platform (transport rules, pairing), app PIN hashing cost (tests), device token store override (tests).
+	GOOS   string
+	Argon2 auth.Argon2Params
+	Tokens TokenStore
 }
 
 // Runtime implements desktopport.Runtime over the running App. It outlives the App: a restore builds a new App
@@ -70,6 +74,8 @@ type Runtime struct {
 	restore  string // staging folder of a prepared restore, consumed by the launcher
 	origin   string // loopback origin http://127.0.0.1:<port>
 	attempts map[string][]time.Time
+
+	m6b m6bState
 }
 
 var _ desktopport.Runtime = (*Runtime)(nil)
@@ -90,6 +96,7 @@ func NewRuntime(c RuntimeConfig) *Runtime {
 	if c.Updater != nil {
 		c.Updater.Enabled = rt.updateCheckOn
 	}
+	rt.initM6b()
 	return rt
 }
 
@@ -117,6 +124,14 @@ func (rt *Runtime) saveSettings(change func(*FileSettings)) (FileSettings, error
 	}
 	rt.settings = s
 	return s, nil
+}
+
+// replaceSettings gives the runtime the settings of desktop.json (back from the remote mode).
+func (rt *Runtime) replaceSettings(s FileSettings) {
+	rt.setMu.Lock()
+	rt.settings = s
+	rt.setMu.Unlock()
+	rt.m6b.periph.load(s.Peripherals.Port())
 }
 
 // Attach makes a the App the runtime works on, with its local-network server, UI and loopback origin.
@@ -168,7 +183,9 @@ func (rt *Runtime) users(ctx context.Context) (int, error) {
 
 // Status implements desktopport.Runtime.
 func (rt *Runtime) Status(ctx context.Context) desktopport.Status {
-	st := desktopport.Status{Version: rt.cfg.Version, Mode: desktopport.ModeLocal, SecretStore: rt.cfg.SecretKind}
+	st := desktopport.Status{
+		Version: rt.cfg.Version, Mode: desktopport.ModeLocal, SecretStore: rt.cfg.SecretKind, Kiosk: rt.kioskActive(),
+	}
 	if rt.token.pending() {
 		if n, err := rt.users(ctx); err == nil && n == 0 {
 			st.FirstRunPending = true

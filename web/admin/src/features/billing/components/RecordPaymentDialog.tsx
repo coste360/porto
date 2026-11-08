@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import { useCharges, useRecordPayment, type Payment, type RecordPayment } from '@porto/shared/api';
 import { useT } from '@porto/shared/i18n';
+import { formatCents } from '@porto/shared/lib/format';
+import { isQueuedOffline, useOnlineStatus } from '@porto/shared/offline';
 import { MoneyInput } from '@porto/shared/money';
 import { Button } from '@porto/shared/ui/button';
 import { Checkbox } from '@porto/shared/ui/checkbox';
@@ -16,6 +19,7 @@ import {
 import { Field, FieldLabel } from '@porto/shared/ui/field';
 import { Input } from '@porto/shared/ui/input';
 import { DatePicker } from '@porto/shared/ui/patterns';
+import { OfflineReason } from '@porto/shared/ui/patterns/OfflineReason';
 import { TableCell, TableRow } from '@porto/shared/ui/table';
 
 import { useCurrentMarina } from '../../../auth/hooks';
@@ -33,6 +37,7 @@ import {
 } from '../lib/matching';
 import { BillingProblemAlert, EnumSelect, IsoDate, Money, SimpleTable } from './kit';
 import { toMatchRows } from '../lib/drafts';
+import { offlineReasonOf } from '../lib/offline';
 
 /**
  * Matching table (m5-plan §4.2): one row per open charge, amounts typed per row and clamped so a row never
@@ -154,6 +159,13 @@ export function RecordPaymentDialog({
   // Until the operator edits, the table follows the amount (auto-fill oldest first).
   const shown = alloc ?? autoFill(rows, cents);
   const valid = cents > 0 && isValidAllocation(rows, shown, cents);
+  const { online } = useOnlineStatus();
+  // Receipt mode of the matched charges (unknown until they are loaded: then online only).
+  const matched = rows.filter((r) => (shown[r.chargeId] ?? 0) > 0);
+  const receiptMode = charges.data ? matched.some((r) => r.receiptMode === true) : undefined;
+  const offlineReason = online
+    ? null
+    : offlineReasonOf({ kind, method, cents, allocated: allocatedTotal(shown), receiptMode });
   const submit = () => {
     const body: RecordPayment = {
       kind,
@@ -165,12 +177,21 @@ export function RecordPaymentDialog({
       ...(kind === 'payment' ? { matches: toMatches(rows, shown) } : {}),
       ...(sendReceipt ? { send_receipt: true } : {}),
     };
-    record.mutate(body, {
-      onSuccess: (p) => {
-        onDone?.(p);
-        onClose();
+    record.mutate(
+      { ...body, amountLabel: formatCents(cents, 'EUR', i18n.language), receiptMode },
+      {
+        onSuccess: (p) => {
+          onDone?.(p);
+          onClose();
+        },
+        // A queued cash collection (offline, or no answer yet) is sent later by the queue (m6b-plan §4.3).
+        onError: (err) => {
+          if (!isQueuedOffline(err)) return;
+          toast(t('offline:queuedBadge'));
+          onClose();
+        },
       },
-    });
+    );
   };
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
@@ -246,12 +267,15 @@ export function RecordPaymentDialog({
           <Checkbox checked={sendReceipt} onCheckedChange={(v) => setSendReceipt(v === true)} />
           {t('payments:record.sendReceipt')}
         </label>
-        <BillingProblemAlert error={record.error} />
+        {offlineReason ? <OfflineReason reason={offlineReason} /> : null}
+        <BillingProblemAlert
+          error={record.error && !isQueuedOffline(record.error) ? record.error : null}
+        />
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
             {t('common:actions.cancel')}
           </Button>
-          <Button disabled={!valid || record.isPending} onClick={submit}>
+          <Button disabled={!valid || record.isPending || offlineReason !== null} onClick={submit}>
             {t('payments:record.submit')}
           </Button>
         </DialogFooter>

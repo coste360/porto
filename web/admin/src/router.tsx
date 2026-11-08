@@ -9,9 +9,10 @@ import {
 } from '@tanstack/react-router';
 
 import type { ApiClient } from '@porto/shared/api';
+import { marinaBlockingEntry, noteMarinaSwitchBlocked } from '@porto/shared/offline';
 
 import { ensureMe, findMarina } from './auth/me';
-import { AppShell } from './components/AppShell';
+import { MarinaLayout } from './components/MarinaLayout';
 import { PlainLayout } from './components/PlainLayout';
 import { RootLayout } from './components/RootLayout';
 import { AccountPage } from './pages/AccountPage';
@@ -43,6 +44,8 @@ import { documentsRoutes } from './features/documents/routes';
 import { rightsRoutes } from './features/rights/routes';
 import { billingRoutes } from './features/billing/routes';
 import { desktopRoutes } from './features/desktop/routes';
+import { phoneRoutes } from './features/phone/routes';
+import { CertificateHelpPage } from './features/help/CertificateHelpPage';
 
 export type RouterContext = { queryClient: QueryClient; api: ApiClient };
 
@@ -82,6 +85,13 @@ const pairRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'pair',
   component: PairPage,
+});
+
+/** Public help page for installing the local CA on phones (M6b, m6b-plan §8.5). */
+const certificateHelpRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'help/certificate',
+  component: CertificateHelpPage,
 });
 
 /** The root route, parent of the public desktop routes (features/desktop/routes.tsx). */
@@ -139,13 +149,20 @@ const organizationRoute = createRoute({
 const marinaRoute = createRoute({
   getParentRoute: () => authRoute,
   path: 'm/$marinaId',
-  beforeLoad: ({ context, params }) => {
+  beforeLoad: async ({ context, params }) => {
     // Unknown and foreign marinas look the same (the API answers 404 too).
     const marina = findMarina(context.me, params.marinaId);
     if (!marina) throw notFound();
+    // Unsent offline ops of another marina: back there, whatever link led here (D9, INV-84).
+    const blocking = await marinaBlockingEntry(context.me.user.id, marina.id);
+    if (blocking && findMarina(context.me, blocking)) {
+      noteMarinaSwitchBlocked();
+      throw redirect({ to: '/m/$marinaId', params: { marinaId: blocking } });
+    }
     return { marina };
   },
-  component: AppShell,
+  // AppShell, or PhoneShell for the phone screens (M6b, staticData.shell).
+  component: MarinaLayout,
 });
 
 /** The marina route, parent of the M1 feature route factories (features/<name>/routes.tsx). */
@@ -192,6 +209,7 @@ export const routeTree = rootRoute.addChildren([
   forgotPasswordRoute,
   resetPasswordRoute,
   pairRoute,
+  certificateHelpRoute,
   ...desktop.publicRoutes,
   authRoute.addChildren([
     totpSetupRoute,
@@ -215,6 +233,7 @@ export const routeTree = rootRoute.addChildren([
       ...rightsRoutes(marinaRoute),
       ...documentsRoutes(marinaRoute),
       ...billingRoutes(marinaRoute),
+      ...phoneRoutes(marinaRoute),
     ]),
   ]),
 ]);

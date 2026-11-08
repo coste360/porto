@@ -173,8 +173,8 @@ func TestWriteError_UnmappedIsInternal(t *testing.T) {
 func TestTypes_Registry(t *testing.T) {
 	slug := regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	all := All()
-	if len(all) != 114 {
-		t.Fatalf("declared %d types, want 114 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4 + m5-plan §7.4 + m6a-plan §3.4)", len(all))
+	if len(all) != 121 {
+		t.Fatalf("declared %d types, want 121 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4 + m5-plan §7.4 + m6a-plan §3.4 + m6b-plan §9.1)", len(all))
 	}
 	for _, ty := range all {
 		if !slug.MatchString(string(ty)) {
@@ -206,6 +206,8 @@ func TestTypes_Registry(t *testing.T) {
 		ReleaseNotResold: 422, CashSessionRequired: 409, CashSessionOpen: 409, CashSessionClosed: 409,
 		CashInsufficient: 409, RegisterInUse: 409, ProviderDisabled: 422, ProviderRefundUnsupported: 422,
 		ProviderError: 502, BillingItemMissing: 422,
+		AllocationChanged: 409, OfflineNotAllowed: 422, RemoteUnreachable: 503, RemotePinMismatch: 502,
+		PeripheralUnavailable: 503, ClaimExpired: 409, AppPinInvalid: 401,
 	}
 	for ty, s := range want {
 		if StatusOf(ty) != s {

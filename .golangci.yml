@@ -228,7 +228,7 @@ linters:
           deny:
             - pkg: github.com/webview/webview_go
               desc: only cmd/porto-desktop may import the webview binding (CGO stays out of every other package)
-        # desktopport is the frozen M6a contract: standard library and internal/domain/auth only.
+        # desktopport is the frozen M6a/M6b contract: standard library, internal/domain/auth and pkg/ext only.
         desktopport:
           list-mode: lax
           files:
@@ -237,11 +237,33 @@ linters:
             - github.com/coste360/porto/internal/domain/auth
           deny:
             - pkg: github.com/coste360/porto/internal
-              desc: desktopport imports the standard library and internal/domain/auth only (m6a-plan §2.1)
+              desc: desktopport imports the standard library, internal/domain/auth and pkg/ext only (m6a-plan §2.1)
             - pkg: github.com/uptrace/bun
               desc: desktopport carries no logic
             - pkg: net/http
               desc: desktopport is transport independent
+        # Peripheral drivers (M6b, m6b-plan §9.3): pure Go, standard library, desktopport and pkg/ext only.
+        peripheral:
+          list-mode: lax
+          files:
+            - "**/internal/peripheral/**"
+          allow:
+            - github.com/coste360/porto/internal/desktopport
+          deny:
+            - pkg: github.com/coste360/porto/internal
+              desc: peripheral drivers import the standard library, internal/desktopport and pkg/ext only (m6b-plan §9.3)
+            - pkg: github.com/uptrace/bun
+              desc: peripheral drivers never touch the database
+        # The remote-mode proxy (M6b) runs without a database or an app.App.
+        desktop-remote:
+          list-mode: lax
+          files:
+            - "**/internal/desktop/remote/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/app
+              desc: remote mode runs no local Porto server (m6b-plan §7.1)
+            - pkg: github.com/coste360/porto/internal/store
+              desc: remote mode has no database (m6b-plan §7.1)
         # The launcher and the local-network server go through app, backup and the services, never the store.
         desktop-lan:
           list-mode: lax

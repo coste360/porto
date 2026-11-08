@@ -56,19 +56,21 @@ const (
 type BillingSettings struct {
 	bun.BaseModel `bun:"table:billing_settings"`
 
-	MarinaID           string    `bun:"marina_id,pk"`
-	DefaultDueDays     int       `bun:"default_due_days"`
-	AutoPaymentRequest bool      `bun:"auto_payment_request"`
-	ReminderPolicy     JSON      `bun:"reminder_policy"`
-	ReminderHour       int       `bun:"reminder_hour"`
-	ArrearsPolicy      JSON      `bun:"arrears_policy"`
-	ExportReminderDays int       `bun:"export_reminder_days"`
-	FiscalDriver       string    `bun:"fiscal_driver"`
-	ReceiptFooter      string    `bun:"receipt_footer"`
-	SEPALeadDays       int       `bun:"sepa_lead_days"`
-	Version            int       `bun:"version"`
-	CreatedAt          time.Time `bun:"created_at"`
-	UpdatedAt          time.Time `bun:"updated_at"`
+	MarinaID           string `bun:"marina_id,pk"`
+	DefaultDueDays     int    `bun:"default_due_days"`
+	AutoPaymentRequest bool   `bun:"auto_payment_request"`
+	ReminderPolicy     JSON   `bun:"reminder_policy"`
+	ReminderHour       int    `bun:"reminder_hour"`
+	ArrearsPolicy      JSON   `bun:"arrears_policy"`
+	ExportReminderDays int    `bun:"export_reminder_days"`
+	FiscalDriver       string `bun:"fiscal_driver"`
+	ReceiptFooter      string `bun:"receipt_footer"`
+	SEPALeadDays       int    `bun:"sepa_lead_days"`
+	// FiscalBridgeDeviceID is the desktop device allowed to claim the documents of the "bridge" driver (M6b).
+	FiscalBridgeDeviceID string    `bun:"fiscal_bridge_device_id,nullzero"`
+	Version              int       `bun:"version"`
+	CreatedAt            time.Time `bun:"created_at"`
+	UpdatedAt            time.Time `bun:"updated_at"`
 }
 
 // ChargeOriginItem is a row of charge_origin_items: the catalogue item used for charges without a price snapshot.

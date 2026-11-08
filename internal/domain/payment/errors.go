@@ -31,6 +31,9 @@ var (
 	ErrNotFound = store.ErrNotFound
 	// ErrNotImplemented is returned by the contract-phase skeleton until PAYMENTS lands M5.
 	ErrNotImplemented = errors.New("payment: not implemented")
+	// ErrOfflineNotAllowed: an offline replay of recordPayment that is not a matched cash payment on invoice-mode
+	// charges (M6b §5.3). 422 offline_not_allowed.
+	ErrOfflineNotAllowed = errors.New("payment: not allowed offline")
 )
 
 // Limits of a match (LimitError.Limit).

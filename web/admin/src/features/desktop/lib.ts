@@ -1,4 +1,4 @@
-import { useDesktopStatus } from '@porto/shared/api';
+import { useAppWindowStatus } from '@porto/shared/desktop/hooks';
 
 import { useMe } from '../../auth/hooks';
 import { ownedOrganizations } from '../../auth/me';
@@ -21,11 +21,12 @@ export function formatBytes(bytes: number, locale = 'it'): string {
 }
 
 /**
- * Desktop administration is owner only and loopback only (D19): `loopback` is true in the app window of the
- * desktop edition (the status endpoint answers there only), `owner` when the user owns an organization.
+ * Desktop administration is owner only and loopback only (D19): `loopback` is true in the app window (the status
+ * endpoint answers there only), `owner` when the user owns an organization. In remote mode (M6b) there are no
+ * local users: `remote` is true and the administration asks for the app PIN instead.
  */
 export function useDesktopAccess() {
-  const status = useDesktopStatus();
+  const status = useAppWindowStatus();
   const { data: me } = useMe();
   const owner = ownedOrganizations(me).length > 0;
   return {
@@ -33,6 +34,7 @@ export function useDesktopAccess() {
     resolving: status.resolving,
     loopback: status.loopback,
     owner,
-    admin: status.loopback && owner,
+    remote: status.remote,
+    admin: status.loopback && (owner || status.remote),
   };
 }

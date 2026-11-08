@@ -144,8 +144,12 @@ type Presence struct {
 	UserID       string        `bun:"user_id,nullzero"`
 	Notes        string        `bun:"notes"` // never logged
 	PhotoFileID  string        `bun:"photo_file_id,nullzero"`
-	CreatedAt    time.Time     `bun:"created_at"`
-	UpdatedAt    time.Time     `bun:"updated_at"`
+	// IdempotencyKey and IdempotencyHash dedupe a presence recorded with an Idempotency-Key (M6b, unique per
+	// marina): a replay with the same hash returns the existing presence.
+	IdempotencyKey  string    `bun:"idempotency_key,nullzero"`
+	IdempotencyHash string    `bun:"idempotency_hash,nullzero"`
+	CreatedAt       time.Time `bun:"created_at"`
+	UpdatedAt       time.Time `bun:"updated_at"`
 }
 
 // VesselPresence is the row of vessel_presence of a vessel: its current state (m3-plan §13 D21).

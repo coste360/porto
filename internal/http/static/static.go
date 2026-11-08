@@ -62,15 +62,26 @@ func (a *App) ServeFile(w http.ResponseWriter, r *http.Request, rel string, fall
 		a.ServeIndex(w, r)
 		return
 	}
+	if strings.HasPrefix(rel, ".vite/") {
+		http.NotFound(w, r) // the build manifest is an input of sw-precache, never served
+		return
+	}
 	f, err := a.fsys.Open(rel)
 	if err == nil {
 		defer f.Close()
 		st, err := f.Stat()
 		if err == nil && !st.IsDir() {
 			if rs, ok := f.(readSeeker); ok {
-				if strings.HasPrefix(rel, "assets/") {
+				switch {
+				case rel == ServiceWorkerFile:
+					// The service worker (M6b) is revalidated on every check, so that a deploy is picked up, and
+					// may control the whole prefix.
+					w.Header().Set("Cache-Control", "no-cache")
+					w.Header().Set("Service-Worker-Allowed", a.prefix)
+					w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
+				case strings.HasPrefix(rel, "assets/"):
 					w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-				} else {
+				default:
 					w.Header().Set("Cache-Control", "public, max-age=3600")
 				}
 				http.ServeContent(w, r, st.Name(), time.Time{}, rs)
@@ -84,6 +95,9 @@ func (a *App) ServeFile(w http.ResponseWriter, r *http.Request, rel string, fall
 	}
 	http.NotFound(w, r)
 }
+
+// ServiceWorkerFile is the service worker of the admin panel (m6b-plan §3.1), built without a hash.
+const ServiceWorkerFile = "sw.js"
 
 type readSeeker interface {
 	Read(p []byte) (int, error)

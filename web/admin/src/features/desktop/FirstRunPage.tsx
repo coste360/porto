@@ -1,12 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
-import { UploadIcon } from 'lucide-react';
+import { LinkIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import { useDesktopFirstRun, useDesktopFirstRunRestore, useDesktopStatus } from '@porto/shared/api';
 import { useT } from '@porto/shared/i18n';
-import { Alert, AlertDescription } from '@porto/shared/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@porto/shared/ui/alert';
 import { Button } from '@porto/shared/ui/button';
 import { Checkbox } from '@porto/shared/ui/checkbox';
 import { Field, FieldGroup, FieldLabel } from '@porto/shared/ui/field';
@@ -29,13 +29,18 @@ export function FirstRunPage() {
   const { t } = useT();
   const navigate = useNavigate();
   const hash = useRouterState({ select: (s) => s.location.hash });
+  // Only this page strips its own fragment (a link to the sibling page also carries the token in the fragment).
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [token] = useState(() => readHashParams(hash).get('t')?.trim() ?? '');
+  // M6b: the remote mode was reset because the online instance revoked this app.
+  const [revoked] = useState(() => readHashParams(hash).get('revoked') === '1');
   const status = useDesktopStatus();
   const [restarting, setRestarting] = useState(false);
 
   useEffect(() => {
-    if (hash) void navigate({ to: '/desktop/first-run', hash: '', replace: true });
-  }, [hash, navigate]);
+    if (hash && pathname.endsWith('/desktop/first-run'))
+      void navigate({ to: '/desktop/first-run', hash: '', replace: true });
+  }, [hash, pathname, navigate]);
 
   if (restarting) {
     return (
@@ -67,6 +72,19 @@ export function FirstRunPage() {
   } else {
     body = (
       <div className="flex flex-col gap-6">
+        {revoked ? (
+          <Alert variant="destructive" data-testid="first-run-revoked">
+            <AlertTitle>{t('desktop:remote.revoked')}</AlertTitle>
+            <AlertDescription>{t('desktop:remote.revokedDescription')}</AlertDescription>
+          </Alert>
+        ) : null}
+        <Button variant="outline" asChild data-testid="first-run-remote">
+          <Link to="/desktop/remote" hash={`t=${token}`}>
+            <LinkIcon />
+            {t('desktop:remote.fromFirstRun')}
+          </Link>
+        </Button>
+        <Separator />
         <OwnerForm token={token} />
         <Separator />
         <FirstRunRestore token={token} onRestart={() => setRestarting(true)} />

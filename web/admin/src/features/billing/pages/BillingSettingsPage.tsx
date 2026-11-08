@@ -1,7 +1,11 @@
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  queryKeys,
+  unwrap,
+  useApi,
   useAllItems,
   useBillingSettings,
   useCashRegisters,
@@ -284,6 +288,12 @@ function SettingsForm({ settings }: { settings: BillingSettings }) {
           value={f.fiscal_driver}
           onChange={(fiscal_driver) => fiscal_driver && setF({ ...f, fiscal_driver })}
         />
+        {f.fiscal_driver === 'bridge' ? (
+          <BridgeDeviceField
+            value={f.fiscal_bridge_device_id ?? null}
+            onChange={(fiscal_bridge_device_id) => setF({ ...f, fiscal_bridge_device_id })}
+          />
+        ) : null}
         <Field>
           <FieldLabel htmlFor="bs-footer">{t('billingSettings:fiscal.footer')}</FieldLabel>
           <Textarea
@@ -309,6 +319,50 @@ function SettingsForm({ settings }: { settings: BillingSettings }) {
         </Button>
       </div>
     </>
+  );
+}
+
+/**
+ * Desktop that issues the documents of the bridge fiscal driver (M6b, m6b-plan §8.4): a desktop of the marina
+ * paired with a token (remote mode), not revoked. The server validates the choice.
+ */
+function BridgeDeviceField({
+  value,
+  onChange,
+}: {
+  value: string | null;
+  onChange: (id: string | null) => void;
+}) {
+  const { t } = useT();
+  const api = useApi();
+  const { marinaId, can } = useCurrentMarina();
+  const devices = useQuery({
+    queryKey: queryKeys.devices(marinaId),
+    queryFn: () =>
+      unwrap(
+        api.GET('/api/admin/v1/marinas/{marinaId}/devices', { params: { path: { marinaId } } }),
+      ),
+    enabled: can('devices.manage'),
+  });
+  const options = (devices.data?.items ?? [])
+    .filter((d) => d.kind === 'desktop' && d.access === 'token' && !d.revoked_at)
+    .map((d) => ({ value: d.id, label: d.name }));
+  return (
+    <Field>
+      <FieldLabel htmlFor="bs-bridge-device">{t('billingSettings:fiscal.bridgeDevice')}</FieldLabel>
+      <ElementCombobox
+        id="bs-bridge-device"
+        options={options}
+        value={value}
+        onChange={onChange}
+        placeholder={t('billingSettings:fiscal.bridgeDeviceNone')}
+        searchPlaceholder={t('billingSettings:fiscal.bridgeDeviceSearch')}
+        emptyText={t('billingSettings:fiscal.bridgeDeviceEmpty')}
+      />
+      <p className="text-muted-foreground text-xs">
+        {t('billingSettings:fiscal.bridgeDeviceHint')}
+      </p>
+    </Field>
   );
 }
 

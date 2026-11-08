@@ -20,9 +20,17 @@ type UI interface {
 	Quit()
 }
 
-// WindowOptions are the window choices. Kiosk is reserved for M6b (desk kiosk) and ignored in M6a.
+// WindowOptions are the window choices (M6b: kiosk for the front desk, m6b-plan §7.6).
 type WindowOptions struct {
 	Kiosk bool
+	// Origin is the panel origin: in kiosk mode the window never navigates elsewhere.
+	Origin string
+}
+
+// KioskUI is implemented by a UI that can run in kiosk mode (the webview window). SetKiosk before Run sets the
+// launch state; SetKiosk(false) afterwards leaves kiosk mode until the next launch.
+type KioskUI interface {
+	SetKiosk(on bool, origin string)
 }
 
 // HeadlessUI shows nothing: Run waits until Quit or ctx is done (tests, e2e, -headless).

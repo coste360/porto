@@ -48,7 +48,8 @@ func NewService(d Deps) *Service {
 		d.Log = slog.New(slog.DiscardHandler)
 	}
 	s := &Service{d: d, drivers: map[string]ext.FiscalDriver{}, wake: make(chan struct{}, 1)}
-	for _, drv := range append([]ext.FiscalDriver{NoneDriver(), ExportDriver()}, d.Drivers...) {
+	// M6b: "bridge" is a core driver too (bridge.go); its documents are issued by a desktop, never by the job.
+	for _, drv := range append([]ext.FiscalDriver{NoneDriver(), ExportDriver(), BridgeDriver()}, d.Drivers...) {
 		s.drivers[drv.Code()] = drv
 	}
 	return s
@@ -66,11 +67,11 @@ func (s *Service) kick() {
 
 // DriverCodes returns the codes of the registered extension drivers (meta capability fiscal.drivers).
 func (s *Service) DriverCodes() []string {
-	out := make([]string, 0, len(s.d.Drivers))
+	out := make([]string, 0, len(s.d.Drivers)+1)
 	for _, d := range s.d.Drivers {
 		out = append(out, d.Code())
 	}
-	return out
+	return append(out, DriverBridge) // M6b: the core driver issued by a desktop in remote mode
 }
 
 // KnownDriver reports whether a driver code is registered (billing settings validation).
@@ -243,7 +244,8 @@ func sumBuckets(rows []Bucket) []Bucket {
 // RunIssue is the job fiscal.issue: pending documents of deferred drivers are sent to their driver after commit and
 // the outcome applied with a conditional update. No-op with inline drivers.
 func (s *Service) RunIssue(ctx context.Context) error {
-	docs, err := store.PendingFiscalDocuments(ctx, s.d.DB.DB, 50)
+	// M6b: bridge documents wait for their desktop (BridgeOutcome), the job leaves them alone.
+	docs, err := store.PendingFiscalDocumentsExcept(ctx, s.d.DB.DB, DriverBridge, 50)
 	if err != nil {
 		return err
 	}
@@ -262,8 +264,8 @@ func (s *Service) issueOne(ctx context.Context, doc *store.FiscalDocument) error
 		return err
 	}
 	drv, ok := s.drivers[doc.Driver]
-	if !ok {
-		return nil // driver uninstalled: the document stays pending until it is registered again
+	if !ok || doc.Driver == DriverBridge {
+		return nil // driver uninstalled (or the bridge, issued by a desktop): the document stays pending until it is registered again
 	}
 	req := ext.FiscalDocumentRequest{
 		MarinaID: doc.MarinaID, DocumentID: doc.ID, Number: doc.Number, BusinessDate: doc.BusinessDate.String(),

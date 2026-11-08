@@ -35,7 +35,12 @@
   "fiscal": {
     "title": "Ricevute e modulo fiscale",
     "driver": "Modulo fiscale",
-    "footer": "Piè di pagina della ricevuta"
+    "footer": "Piè di pagina della ricevuta",
+    "bridgeDevice": "Desktop che emette i documenti",
+    "bridgeDeviceNone": "Nessun desktop",
+    "bridgeDeviceSearch": "Cerca un desktop",
+    "bridgeDeviceEmpty": "Nessun desktop collegato in modalità remota",
+    "bridgeDeviceHint": "Il desktop collegato al Porto online stampa i documenti sul dispositivo fiscale locale."
   },
   "registers": {
     "title": "Casse",
