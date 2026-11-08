@@ -28,4 +28,15 @@ describe('reportLinks', () => {
     );
     expect(reportQueryString(s)).toBe('basis=issued&from=2026-11-01&to=2026-11-08');
   });
+
+  it('keeps the own period of a tile whose drill carries from and to', () => {
+    const s = drillSearch(
+      {
+        report: 'storage',
+        params: { exits_blocked_only: 'true', from: '2026-11-08', to: '2026-12-07' },
+      },
+      { from: '2026-01-01', to: '2026-11-08' },
+    );
+    expect(s).toEqual({ exits_blocked_only: 'true', from: '2026-11-08', to: '2026-12-07' });
+  });
 });

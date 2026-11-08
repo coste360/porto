@@ -237,6 +237,6 @@ describe('ReportsIndexPage', () => {
   it('lists every report to reports.all', async () => {
     render([...ALL], `/m/${MARINA_ID}/reports`);
     await screen.findByTestId('reports-index');
-    expect(screen.getAllByTestId(/^report-card-/)).toHaveLength(16 + 1 + 2);
+    expect(screen.getAllByTestId(/^report-card-/)).toHaveLength(16 + 3 + 1 + 2);
   });
 });

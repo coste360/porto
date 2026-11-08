@@ -622,7 +622,8 @@
     "tacit_renewal_blocked": "Rinnovo tacito bloccato",
     "waitlist_offer": "Proposta dalla lista d'attesa",
     "document_failed": "Documento non generato",
-    "signature_expiring": "Firma in scadenza"
+    "signature_expiring": "Firma in scadenza",
+    "maintenance_due": "Manutenzione in scadenza"
   },
   "deadlineChannel": {
     "panel": "Pannello",

@@ -52,3 +52,6 @@ export * from './hooks/dashboard';
 export * from './hooks/onlineBooking';
 export * from './hooks/account';
 export * from './hooks/onlineAdmin';
+export * from './hooks/storage';
+export * from './hooks/maintenance';
+export * from './hooks/utilities';

@@ -278,7 +278,7 @@ linters:
             - pkg: github.com/uptrace/bun
               desc: internal/desktop and internal/lan do not touch the database directly
         # Pure engines (AGENTS.md, INV-21): no database, no clock, no randomness, no I/O. The optimizer takes
-        # an explicit seed (math/rand/v2 with a seeded source is allowed there).
+        # an explicit seed for its own PRNG (M9: math/rand is denied there too, see pure-engines-no-rand).
         pure-engines:
           list-mode: lax
           files:
@@ -307,6 +307,9 @@ linters:
             - "**/internal/domain/report/export/**"
             # M8 (m8-plan §0.6)
             - "**/internal/domain/booking/policy/**"
+            # M9 (m9-plan §0.4); the optimizer is listed above
+            - "**/internal/domain/maintenance/due/**"
+            - "**/internal/domain/utility/consume/**"
           deny:
             - pkg: github.com/coste360/porto/internal/store
               desc: pure engines must not touch the database (INV-21)
@@ -324,6 +327,23 @@ linters:
               desc: pure engines do no I/O
         # M8 online booking (m8-plan §2): booking/policy imports only calendar, money and geo; booking never imports
         # the packages that call it (portal, channel); the fake channel is a driver (pkg/ext only, no store).
+        # M9 optimizer (m9-plan §2): imports only layout, fit, geo, calendar and the standard library; its
+        # randomness is its own seeded PRNG (rng.go), never math/rand.
+        optimizer:
+          list-mode: lax
+          files:
+            - "**/internal/domain/optimizer/**"
+          allow:
+            - github.com/coste360/porto/internal/domain/layout
+            - github.com/coste360/porto/internal/domain/fit
+            - github.com/coste360/porto/internal/geo
+            - github.com/coste360/porto/internal/calendar
+            - github.com/coste360/porto/internal/domain/optimizer
+          deny:
+            - pkg: github.com/coste360/porto/internal
+              desc: the optimizer imports only layout, fit, geo and calendar (m9-plan §2)
+            - pkg: github.com/coste360/porto/pkg
+              desc: the optimizer imports only layout, fit, geo and calendar (m9-plan §2)
         booking-policy:
           list-mode: lax
           files:
@@ -376,8 +396,8 @@ linters:
           deny:
             - pkg: github.com/coste360/porto/internal/domain/report$
               desc: the pure report packages do not depend on the report service (m7-plan §2)
-        # The engines without a seed take no randomness at all, not even math/rand (INV-21); the optimizer is
-        # left out because it takes an explicit seed.
+        # The engines take no randomness from math/rand at all (INV-21); the optimizer has its own seeded PRNG
+        # (M9, m9-plan §6.3).
         pure-engines-no-rand:
           list-mode: lax
           files:
@@ -400,6 +420,10 @@ linters:
             - "**/internal/domain/report/align/**"
             - "**/internal/domain/report/swap/**"
             - "**/internal/domain/report/export/**"
+            # M9 (m9-plan §0.4): the optimizer uses its own seeded PRNG, never math/rand.
+            - "**/internal/domain/optimizer/**"
+            - "**/internal/domain/maintenance/due/**"
+            - "**/internal/domain/utility/consume/**"
             # Seeded generators of the layout and fit parity vectors (test data, not the engines).
             - "!**/internal/domain/layout/internal/vectors/**"
             - "!**/internal/domain/fit/internal/genvectors/**"

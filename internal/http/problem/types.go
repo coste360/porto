@@ -162,6 +162,22 @@ const (
 	CancellationNotAllowed Type = "cancellation_not_allowed"
 	NothingDue             Type = "nothing_due"
 	IdempotencyMismatch    Type = "idempotency_mismatch"
+
+	// M9 (m9-plan §3, §7, §8, §9).
+	StorageTargetInvalid  Type = "storage_target_invalid"
+	StorageNoSpace        Type = "storage_no_space"
+	AreaExitsInvalid      Type = "area_exits_invalid"
+	PinnedInvalid         Type = "pinned_invalid"
+	TooManyItems          Type = "too_many_items"
+	ScenarioWindowInvalid Type = "scenario_window_invalid"
+	ScenarioNotDraft      Type = "scenario_not_draft"
+	ScenarioConflicts     Type = "scenario_conflicts"
+	MovementNotPending    Type = "movement_not_pending"
+	ElementInvalid        Type = "element_invalid"
+	MaintenanceConflicts  Type = "maintenance_conflicts"
+	TaskAlreadyDone       Type = "task_already_done"
+	ReadingCharged        Type = "reading_charged"
+	ConsumptionFrozen     Type = "consumption_frozen"
 )
 
 type typeInfo struct {
@@ -308,6 +324,21 @@ var registry = map[Type]typeInfo{
 	CancellationNotAllowed: {http.StatusUnprocessableEntity, "The booking cannot be cancelled online"},
 	NothingDue:             {http.StatusUnprocessableEntity, "Nothing is due"},
 	IdempotencyMismatch:    {http.StatusUnprocessableEntity, "The idempotency key was used with a different request"},
+	// M9
+	StorageTargetInvalid:  {http.StatusUnprocessableEntity, "Storage needs a surface area of a yard or shed map or a trailer spot"},
+	StorageNoSpace:        {http.StatusConflict, "No free position in the area for the period"},
+	AreaExitsInvalid:      {http.StatusUnprocessableEntity, "An exit of the area is not usable or not on the border"},
+	PinnedInvalid:         {http.StatusUnprocessableEntity, "A pinned item is not valid in its position"},
+	TooManyItems:          {http.StatusUnprocessableEntity, "Too many boats for one optimizer run"},
+	ScenarioWindowInvalid: {http.StatusUnprocessableEntity, "Invalid scenario window"},
+	ScenarioNotDraft:      {http.StatusConflict, "The scenario is not a draft any more"},
+	ScenarioConflicts:     {http.StatusConflict, "The scenario conflicts with the current state"},
+	MovementNotPending:    {http.StatusConflict, "The movement is not pending"},
+	ElementInvalid:        {http.StatusUnprocessableEntity, "Unknown or unsuitable element"},
+	MaintenanceConflicts:  {http.StatusConflict, "Boats occupy the element on the maintenance nights"},
+	TaskAlreadyDone:       {http.StatusConflict, "The task was already completed"},
+	ReadingCharged:        {http.StatusConflict, "The reading is used by a charged consumption"},
+	ConsumptionFrozen:     {http.StatusConflict, "The consumption is charged or excluded"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

@@ -151,6 +151,10 @@ export function amountEqualsMatches(amount: unknown, matches: readonly unknown[]
   return sum === amount;
 }
 
+function nonEmpty(v: unknown): boolean {
+  return typeof v === 'string' && v.trim() !== '';
+}
+
 export function validateNewOp(op: NewOp): void {
   const kind = (OFFLINE_OPERATION_KINDS as Record<string, OfflineOpKind>)[op.request.operationId];
   if (kind === undefined || kind !== op.kind) {
@@ -175,6 +179,37 @@ export function validateNewOp(op: NewOp): void {
       break;
     case 'presence.photo':
       if (!op.blob || op.blob.size === 0 || op.blob.size > MAX_PHOTO_BYTES) {
+        throw new OfflineForbiddenError(op.request.operationId, 'online_only');
+      }
+      break;
+    // M9 (m9-plan §10, INV-71): readings, field reports and outcomes never touch allocations; each carries the
+    // client_ref the server dedupes on, and the photo uploads carry their bytes and depend on their parent op.
+    case 'utility.reading':
+    case 'maintenance.report':
+      if (
+        op.request.operationId === 'uploadMeterReadingPhoto' ||
+        op.request.operationId === 'uploadMaintenancePhoto'
+      ) {
+        if (
+          !op.blob ||
+          op.blob.size === 0 ||
+          op.blob.size > MAX_PHOTO_BYTES ||
+          !op.blob.type.startsWith('image/')
+        ) {
+          throw new OfflineForbiddenError(op.request.operationId, 'online_only');
+        }
+        break;
+      }
+      if (
+        !nonEmpty(body.client_ref) ||
+        (op.kind === 'utility.reading' && (!nonEmpty(body.meter_id) || !nonEmpty(body.value))) ||
+        (op.kind === 'maintenance.report' && !nonEmpty(body.title))
+      ) {
+        throw new OfflineForbiddenError(op.request.operationId, 'online_only');
+      }
+      break;
+    case 'maintenance.outcome':
+      if (!nonEmpty(body.client_ref) || !nonEmpty(body.outcome)) {
         throw new OfflineForbiddenError(op.request.operationId, 'online_only');
       }
       break;

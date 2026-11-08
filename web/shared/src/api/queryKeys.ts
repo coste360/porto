@@ -344,6 +344,58 @@ export const queryKeys = {
   onlineQuotaUsage: (marinaId: string, from?: string, to?: string) =>
     trim(['marina', marinaId, 'online', 'quota-usage', from, to]),
   bookingChannels: (marinaId: string) => ['marina', marinaId, 'online', 'channels'] as const,
+
+  // M9 storage (m9-plan §12.1): areas, plans, accessibility, scenarios, movements and storage contract details
+  // under ['marina', id, 'storage'] (invalidated by storage.changed; placements also by occupancy.changed).
+  storage: (marinaId: string) => ['marina', marinaId, 'storage'] as const,
+  storageAreas: (marinaId: string) => ['marina', marinaId, 'storage', 'areas'] as const,
+  storagePlan: (marinaId: string, areaId?: string, from?: string, to?: string) =>
+    trim(['marina', marinaId, 'storage', 'plan', areaId, from, to]),
+  storageAccessibility: (marinaId: string, areaId?: string, date?: string) =>
+    trim(['marina', marinaId, 'storage', 'accessibility', areaId, date]),
+  storageScenarios: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'storage', 'scenarios', filters]),
+  storageScenario: (marinaId: string, scenarioId?: string) =>
+    trim(['marina', marinaId, 'storage', 'scenario', scenarioId]),
+  storageCompare: (marinaId: string, scenarioId?: string, withId?: string, date?: string) =>
+    trim(['marina', marinaId, 'storage', 'compare', scenarioId, withId, date]),
+  storageMovements: (marinaId: string, date?: string, areaId?: string) =>
+    trim(['marina', marinaId, 'storage', 'movements', date, areaId]),
+  storageContract: (marinaId: string, contractId?: string) =>
+    trim(['marina', marinaId, 'storage', 'contract', contractId]),
+
+  // M9 maintenance (m9-plan §12.2) under ['marina', id, 'maintenance'] (maintenance.changed). The worklist is the
+  // offline allowlist slot activities.assigned.
+  maintenance: (marinaId: string) => ['marina', marinaId, 'maintenance'] as const,
+  equipment: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'maintenance', 'equipment', filters]),
+  equipmentItem: (marinaId: string, equipmentId?: string) =>
+    trim(['marina', marinaId, 'maintenance', 'equipment-item', equipmentId]),
+  maintenancePlans: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'maintenance', 'plans', filters]),
+  maintenancePlan: (marinaId: string, planId?: string) =>
+    trim(['marina', marinaId, 'maintenance', 'plan', planId]),
+  maintenanceTasks: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'maintenance', 'tasks', filters]),
+  maintenanceTask: (marinaId: string, taskId?: string) =>
+    trim(['marina', marinaId, 'maintenance', 'task', taskId]),
+  maintenanceWorklist: (marinaId: string) =>
+    ['marina', marinaId, 'maintenance', 'worklist'] as const,
+  maintenanceMap: (marinaId: string, mapId?: string, date?: string) =>
+    trim(['marina', marinaId, 'maintenance', 'map', mapId, date]),
+
+  // M9 utilities (m9-plan §12.2) under ['marina', id, 'utilities'] (utilities.changed; utility charges also
+  // arrive on billing.changed).
+  utilities: (marinaId: string) => ['marina', marinaId, 'utilities'] as const,
+  utilityMeters: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'utilities', 'meters', filters]),
+  utilityMeter: (marinaId: string, meterId?: string) =>
+    trim(['marina', marinaId, 'utilities', 'meter', meterId]),
+  meterReadings: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'utilities', 'readings', filters]),
+  utilityConsumptions: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'utilities', 'consumptions', filters]),
+  utilitySettings: (marinaId: string) => ['marina', marinaId, 'utilities', 'settings'] as const,
 };
 
 /** Drops the trailing undefined segments, so a key with fewer arguments is a prefix of the full one. */
@@ -387,6 +439,8 @@ export function keysForMessage(msg: StreamMessage, marinaId: string): QueryKey[]
         queryKeys.allocation(marinaId),
         queryKeys.movements(marinaId),
         queryKeys.releases(marinaId),
+        // M9: storage plans, accessibility and scenario staleness follow the allocations.
+        queryKeys.storage(marinaId),
       ];
     case 'presence.changed':
       return [
@@ -420,6 +474,8 @@ export function keysForMessage(msg: StreamMessage, marinaId: string): QueryKey[]
         queryKeys.onlineBookings(marinaId),
         queryKeys.onlineBooking(marinaId),
         queryKeys.channelReservations(marinaId),
+        // M9: storage contract details.
+        queryKeys.storageContract(marinaId),
       ];
     default:
       return keysForTopic(msg.topic, marinaId);
@@ -458,6 +514,15 @@ export function keysForTopic(topic: string, marinaId: string): QueryKey[] {
         queryKeys.contractInstallments(marinaId),
         queryKeys.holderInstallments(marinaId),
       ];
+    case 'storage.changed':
+      // Scenarios, applies and movements (M9); applies also move allocations (occupancy.changed).
+      return [queryKeys.storage(marinaId)];
+    case 'maintenance.changed':
+      // Equipment, plans, tasks, worklist and the maintenance lens (M9).
+      return [queryKeys.maintenance(marinaId)];
+    case 'utilities.changed':
+      // Meters, readings, consumptions and utility settings (M9).
+      return [queryKeys.utilities(marinaId)];
     default:
       return [];
   }

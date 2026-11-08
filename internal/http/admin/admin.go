@@ -11,6 +11,10 @@ import (
 	"github.com/coste360/porto/internal/domain/channel"
 	"github.com/coste360/porto/internal/domain/onlineconf"
 
+	"github.com/coste360/porto/internal/domain/maintenance"
+	"github.com/coste360/porto/internal/domain/storage"
+	"github.com/coste360/porto/internal/domain/utility"
+
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/csvimport"
 	"github.com/coste360/porto/internal/domain/apikey"
@@ -107,6 +111,11 @@ type Handler struct {
 	Booking    *booking.Service
 	OnlineConf *onlineconf.Service
 	Channels   *channel.Service
+
+	// M9 (m9-plan §15.1): storage (STORAGE), maintenance and utilities (UTILITIES); M9 reports go through Reports.
+	Storage     *storage.Service
+	Maintenance *maintenance.Service
+	Utilities   *utility.Service
 }
 
 func principal(r *http.Request) *auth.Principal {

@@ -160,6 +160,9 @@ func everyReport(ctx context.Context, s *report.Service, p *auth.Principal, mari
 	_, out[calc.KeyCash] = s.Cash(ctx, p, marinaID, q)
 	_, out[calc.KeyVessels] = s.Vessels(ctx, p, marinaID, q)
 	_, out[calc.KeyBerthRevenue] = s.BerthRevenue(ctx, p, marinaID, q)
+	_, out[calc.KeyStorage] = s.Storage(ctx, p, marinaID, q)
+	_, out[calc.KeyMaintenance] = s.Maintenance(ctx, p, marinaID, q)
+	_, out[calc.KeyUtilities] = s.Utilities(ctx, p, marinaID, q)
 	_, out["dashboard"] = s.Dashboard(ctx, p, marinaID, report.DashboardParams{})
 	_, out[calc.KeyComparison] = s.Compare(ctx, p, marinaID, report.ComparisonParams{Indicator: calc.IndOccupancy})
 	return out
@@ -168,6 +171,7 @@ func everyReport(ctx context.Context, s *report.Service, p *auth.Principal, mari
 var operational = map[report.Key]bool{
 	calc.KeyOccupancy: true, calc.KeyEfficiency: true, calc.KeyAllocationWaste: true, calc.KeyLostDemand: true,
 	calc.KeyPresences: true, calc.KeyVessels: true, "dashboard": true, calc.KeyComparison: true,
+	calc.KeyStorage: true, calc.KeyMaintenance: true, calc.KeyUtilities: true,
 }
 
 // TestReport_Permissions (spec 26.1, D17): full roles read everything; office reads the operational reports with
@@ -304,6 +308,7 @@ func TestReport_QueryCount(t *testing.T) {
 			calc.KeyOccupancy, calc.KeyEfficiency, calc.KeyAllocationWaste, calc.KeyLostDemand,
 			calc.KeyCustomers, calc.KeyProduction, calc.KeyAccruals, calc.KeyCharges, calc.KeyPayments, calc.KeyRevenueClasses,
 			calc.KeyReceivables, calc.KeyPresences, calc.KeyRights, calc.KeyCash, calc.KeyVessels, calc.KeyBerthRevenue,
+			calc.KeyStorage, calc.KeyMaintenance, calc.KeyUtilities,
 		} {
 			qc.n, qc.q = 0, nil
 			errs := runOne(ctx, d.svc, p, d.marina, k)
@@ -366,6 +371,12 @@ func runQ(ctx context.Context, s *report.Service, p *auth.Principal, marinaID st
 		_, err = s.Vessels(ctx, p, marinaID, q)
 	case calc.KeyBerthRevenue:
 		_, err = s.BerthRevenue(ctx, p, marinaID, q)
+	case calc.KeyStorage:
+		_, err = s.Storage(ctx, p, marinaID, q)
+	case calc.KeyMaintenance:
+		_, err = s.Maintenance(ctx, p, marinaID, q)
+	case calc.KeyUtilities:
+		_, err = s.Utilities(ctx, p, marinaID, q)
 	}
 	return err
 }

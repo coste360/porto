@@ -23,7 +23,16 @@ function flaggedInContract(): string[] {
 describe('offline allowlists', () => {
   it('OFFLINE_OPERATIONS equals the x-porto-offline operations of the contract', () => {
     expect([...OFFLINE_OPERATIONS].sort()).toEqual(flaggedInContract());
-    expect(flaggedInContract()).toEqual(['recordPayment', 'recordPresence', 'uploadPresencePhoto']);
+    expect(flaggedInContract()).toEqual([
+      'completeMaintenanceTask',
+      'recordMeterReading',
+      'recordPayment',
+      'recordPresence',
+      'reportMaintenance',
+      'uploadMaintenancePhoto',
+      'uploadMeterReadingPhoto',
+      'uploadPresencePhoto',
+    ]);
   });
 
   it('matches the query keys of queryKeys.ts for today and tomorrow only', () => {
@@ -43,6 +52,8 @@ describe('offline allowlists', () => {
       queryKeys.collectibles(M, today),
       [...queryKeys.cashSession(M, 'current'), 'r1'],
       queryKeys.deadlines(M, { due_before: '2027-01-01' }),
+      queryKeys.maintenanceWorklist(M),
+      queryKeys.utilityMeters(M, { route: 'dock' }),
     ];
     const no = [
       queryKeys.dayView(M, 'x', localDate(2)),
@@ -60,15 +71,25 @@ describe('offline allowlists', () => {
       queryKeys.bridge.status,
       queryKeys.transitQr(M, 'c1'),
       queryKeys.chargeExports(M),
+      queryKeys.maintenanceTasks(M),
+      queryKeys.maintenanceTask(M, 't1'),
+      queryKeys.utilityMeters(M),
+      queryKeys.utilityMeters(M, { kind: 'power' }),
+      queryKeys.meterReadings(M),
+      queryKeys.utilityConsumptions(M),
     ];
     for (const k of yes) expect(isPersistable(k, M), JSON.stringify(k)).toBe(true);
     for (const k of no) expect(isPersistable(k, M), JSON.stringify(k)).toBe(false);
     expect(isPersistable(queryKeys.maps('other'), M)).toBe(false);
   });
 
-  it('keeps the reserved slot for the assigned activities (M9–M11) empty', () => {
+  it('fills the assigned activities slot with the maintenance worklist (M9) and keeps the dock meters', () => {
     const slot = OFFLINE_QUERY_ALLOWLIST.find((e) => e.name === 'activities.assigned');
-    expect(slot?.operationId).toBeNull();
+    expect(slot?.operationId).toBe('getMaintenanceWorklist');
+    expect(slot?.match(queryKeys.maintenanceWorklist(M))).toBe(true);
     expect(slot?.match(['marina', M, 'anything'])).toBe(false);
+    const meters = OFFLINE_QUERY_ALLOWLIST.find((e) => e.name === 'meters.dock');
+    expect(meters?.operationId).toBe('listUtilityMeters');
+    expect(OFFLINE_QUERY_ALLOWLIST.every((e) => e.operationId !== null)).toBe(true);
   });
 });

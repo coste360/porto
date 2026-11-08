@@ -31,6 +31,7 @@ var kindLabels = map[string]map[string]string{
 		KindMandateEnd: "Fine mandato di gestione", KindConcessionExpiry: "Scadenza concessione", KindConcessionObligation: "Adempimento concessione",
 		KindRenewalDeadline: "Termine proposta di rinnovo", KindTacitRenewalBlocked: "Rinnovo tacito bloccato", KindWaitlistOffer: "Posto per lista d'attesa",
 		KindDocumentFailed: "Documento non generato", KindSignatureExpiring: "Firma in scadenza",
+		KindMaintenanceDue: "Manutenzione in scadenza",
 	},
 	"en": {
 		KindIdentityDocument: "Identity document", KindBoatingLicence: "Boating licence", KindNavigationLicence: "Navigation licence",
@@ -40,6 +41,7 @@ var kindLabels = map[string]map[string]string{
 		KindMandateEnd: "Management mandate end", KindConcessionExpiry: "Concession expiry", KindConcessionObligation: "Concession obligation",
 		KindRenewalDeadline: "Renewal proposal deadline", KindTacitRenewalBlocked: "Tacit renewal blocked", KindWaitlistOffer: "Berth for the waiting list",
 		KindDocumentFailed: "Document not generated", KindSignatureExpiring: "Signature expiring",
+		KindMaintenanceDue: "Maintenance due",
 	},
 }
 

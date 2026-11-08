@@ -32,7 +32,8 @@
     "tacit_renewal_blocked": "Rinnovo tacito bloccato",
     "waitlist_offer": "Posto per la lista d'attesa",
     "document_failed": "Documento non generato",
-    "signature_expiring": "Firma in scadenza"
+    "signature_expiring": "Firma in scadenza",
+    "maintenance_due": "Manutenzione in scadenza"
   },
   "filters": {
     "status": "Stato",

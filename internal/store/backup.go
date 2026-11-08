@@ -63,6 +63,9 @@ var (
 		"online_booking_settings.allow_without_provider", "online_booking_settings.hide_header_in_embed",
 		"online_booking_settings.show_feet", "channel_connections.enabled",
 		"channel_connections.push_enabled", "channel_connections.push_dirty",
+		// M9 (00018_storage, 00019_maintenance_utilities)
+		"scenario_items.pinned", "storage_movements.temporary_position", "equipment.active", "utility_meters.active",
+		"maintenance_plans.requires_free", "maintenance_plans.active", "maintenance_tasks.out_of_service",
 	}
 	sqliteJSONColumns = []string{
 		"organizations.billing_address", "marinas.locales", "marinas.contacts", "marinas.address", "marinas.geo",
@@ -101,6 +104,9 @@ var (
 		"online_booking_settings.closed_weekdays", "online_booking_settings.cancellation_tiers",
 		"online_booking_settings.approval", "online_booking_settings.required_fields",
 		"online_booking_settings.arrival_info", "booking_texts.texts", "channel_connections.category_map",
+		// M9 (00018_storage, 00019_maintenance_utilities)
+		"storage_scenarios.score", "storage_scenarios.base", "maintenance_plans.checklist", "maintenance_tasks.checklist",
+		"maintenance_tasks.checklist_results", "maintenance_tasks.allocation_ids", "meter_readings.anomaly_codes",
 	}
 )
 
@@ -231,6 +237,12 @@ var dumpOrder = map[string]string{
 	"online_booking_settings": "marina_id",
 	"online_quota_usage":      "group_id, night",
 	"online_quota_claims":     "contract_id, group_id, night",
+	// M9
+	"storage_contract_details": "contract_id",
+	"scenario_items":           "scenario_id, allocation_id",
+	"scenario_moves":           "scenario_id, seq",
+	"maintenance_plan_targets": "plan_id, element_type, element_id",
+	"utility_settings":         "marina_id",
 }
 
 // DumpTable calls fn with every row of table (ordered by id, or by its primary key when it has no id), converted

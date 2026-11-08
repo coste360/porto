@@ -115,6 +115,12 @@ func Of(v any, lang string) (Table, error) {
 		return Vessels(r, lang), nil
 	case *calc.BerthRevenueResult:
 		return BerthRevenue(r, lang), nil
+	case *calc.StorageResult:
+		return Storage(r, lang), nil
+	case *calc.MaintenanceResult:
+		return Maintenance(r, lang), nil
+	case *calc.UtilitiesResult:
+		return Utilities(r, lang), nil
 	case *calc.Comparison:
 		return Comparison(r, lang), nil
 	}

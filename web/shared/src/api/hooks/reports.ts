@@ -37,6 +37,9 @@ export type RightsReport = S['RightsReport'];
 export type CashReport = S['CashReport'];
 export type VesselsReport = S['VesselsReport'];
 export type BerthRevenueReport = S['BerthRevenueReport'];
+export type StorageReport = S['StorageReport'];
+export type MaintenanceReport = S['MaintenanceReport'];
+export type UtilitiesReport = S['UtilitiesReport'];
 
 /** The JSON response of each report key (comparison has its own hook in dashboard.ts). */
 export type ReportResponses = {
@@ -56,6 +59,10 @@ export type ReportResponses = {
   cash: CashReport;
   vessels: VesselsReport;
   'berth-revenue': BerthRevenueReport;
+  // M9 (m9-plan §11)
+  storage: StorageReport;
+  maintenance: MaintenanceReport;
+  utilities: UtilitiesReport;
 };
 
 /** A report served by GET .../reports/{key} (every key but comparison and the reserved yard/rental). */

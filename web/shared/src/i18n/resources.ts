@@ -2,6 +2,9 @@ import enAccount from './locales/en/account.json';
 import enAudit from './locales/en/audit.json';
 import enCheckout from './locales/en/checkout.json';
 import enOnline from './locales/en/online.json';
+import enStorage from './locales/en/storage.json';
+import enMaintenance from './locales/en/maintenance.json';
+import enUtilities from './locales/en/utilities.json';
 import enAuth from './locales/en/auth.json';
 import enBooking from './locales/en/booking.json';
 import enCommon from './locales/en/common.json';
@@ -29,6 +32,9 @@ import itAccount from './locales/it/account.json';
 import itAudit from './locales/it/audit.json';
 import itCheckout from './locales/it/checkout.json';
 import itOnline from './locales/it/online.json';
+import itStorage from './locales/it/storage.json';
+import itMaintenance from './locales/it/maintenance.json';
+import itUtilities from './locales/it/utilities.json';
 import itAuth from './locales/it/auth.json';
 import itBooking from './locales/it/booking.json';
 import itCommon from './locales/it/common.json';
@@ -174,6 +180,10 @@ export const NAMESPACES = [
   'checkout',
   'account',
   'online',
+  // M9 (m9-plan §12)
+  'storage',
+  'maintenance',
+  'utilities',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -234,6 +244,9 @@ export const resources = {
     checkout: itCheckout,
     account: itAccount,
     online: itOnline,
+    storage: itStorage,
+    maintenance: itMaintenance,
+    utilities: itUtilities,
   },
   en: {
     common: enCommon,
@@ -291,5 +304,8 @@ export const resources = {
     checkout: enCheckout,
     account: enAccount,
     online: enOnline,
+    storage: enStorage,
+    maintenance: enMaintenance,
+    utilities: enUtilities,
   },
 } as const;

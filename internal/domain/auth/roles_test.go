@@ -180,6 +180,10 @@ var reportRoutePermissions = map[string][]Permission{
 	"getRightsReport":          {PermReportsAll},
 	"getCashReport":            {PermReportsAll},
 	"getBerthRevenueReport":    {PermReportsAll},
+	// M9 (m9-plan §11): amounts and costs only with reports.all.
+	"getStorageReport":     {PermReportsOperational, PermReportsAll},
+	"getMaintenanceReport": {PermReportsOperational, PermReportsAll},
+	"getUtilitiesReport":   {PermReportsOperational, PermReportsAll},
 }
 
 // TestReports_RouteTableMatchesContract: every M7 operation is in the contract with known permissions, and the

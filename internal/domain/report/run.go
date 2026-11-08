@@ -174,6 +174,9 @@ func (r *run) fitRules() (fit.Rules, error) {
 	}, nil
 }
 
+// seriesStorage is the number series of storage contracts (contracts.series, m9-plan §3.1).
+const seriesStorage = "storage"
+
 // contractCode is the display code of a contract.
 func contractCode(kind string, year int, number int64) string {
 	if kind == "" || number == 0 {
@@ -185,6 +188,8 @@ func contractCode(kind string, year int, number int64) string {
 		series = contract.SeriesTransit
 	case calc.ContractCharter:
 		series = contract.SeriesCharter
+	case calc.ContractStorage:
+		series = seriesStorage
 	}
 	return contract.ContractCode(series, year, number)
 }

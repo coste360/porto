@@ -53,3 +53,9 @@ export {
   utilitiesLens,
   vesselTypeLens,
 };
+
+// Accessibilità lens of the storage planner (M9, PLANNER): a function of the accessibility entries.
+export * from './accessibility';
+
+// Manutenzione lens (M9, UTILITIES): a function of the maintenance map entries.
+export * from './maintenance';

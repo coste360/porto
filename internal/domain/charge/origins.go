@@ -502,6 +502,11 @@ func (s *Service) cancelIfPossibleTx(ctx context.Context, tx bun.IDB, scope stor
 	if err := s.write(ctx, tx, scope, actor, "charge.cancel", "charge", ch.ID, map[string]any{"reason": reason, "total_cents": ch.TotalCents}); err != nil {
 		return false, err
 	}
+	if h := s.onCancel[ch.OriginType]; h != nil {
+		if err := h(ctx, tx, scope, actor, ch); err != nil {
+			return false, err
+		}
+	}
 	return true, s.emit(ctx, tx, scope, event.ChargeCancelled, event.ChargeCancelledData{ChargeID: ch.ID, OriginType: ch.OriginType})
 }
 

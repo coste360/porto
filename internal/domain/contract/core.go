@@ -69,10 +69,7 @@ func (s *Service) createTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 	}
 	now := s.now()
 	year := s.today(ctx, tx, scope).Year()
-	series := SeriesMooring
-	if n.kind == KindTransit {
-		series = SeriesTransit
-	}
+	series := seriesOf(n.kind) // mooring, transit or storage (M9)
 	number, err := store.NextNumber(ctx, tx, scope, series, year)
 	if err != nil {
 		return nil, nil, err

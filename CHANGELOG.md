@@ -8,6 +8,40 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M9 "Rimessaggio e manutenzioni" (spec 17, 20, 10, 29.2, m9-plan, ADR 0014):
+
+- Storage contracts (`RIM-YYYY-NNNN`) on the contract domain: indoor/outdoor areas, cradles and supports, launch
+  and haul-out dates, priced as contract type `storage` for every term. Every storage contract occupies a concrete
+  position from creation; without one given, the optimizer places it under the area lock (no space = 409). Fit gains
+  `support_not_allowed` (never overridable) and `weight_exceeds` (overridable), in Go and in the TypeScript twin.
+- Pure `optimizer` package: gates and distance field on the area grid, accessibility (each boat must leave along a
+  path to a door at least beam + margin wide, same-day extraction order, blocking sets, arrivals as warnings),
+  `Arrange` with its own seeded PRNG, iteration budget plus caller deadline (setting `storage.optimize_budget_ms`),
+  `PlaceOne` and an independent `Validate` (INV-15). In a 2,000 m² shed with 40 boats it returns a layout with no
+  boat left out and no exit blocked in well under 3 s.
+- Storage planner on the shed and yard map (SVG grid at scale with the timeline, drag, keyboard moves and rotation,
+  tray, preset, save and restore), accessibility lens, hypotheses (scenarios) kept apart from the real state
+  (INV-14) with optimize, compare and discard, transactional apply with re-check under the locks: all or nothing,
+  a conflicting apply answers 409 with the full list and changes nothing (INV-06). Movement worklist with equipment
+  hints, phone screen of today's movements.
+- Maintenance: equipment registry, plans with periodicity (months, cycles, fixed date) and checklist, hourly job
+  `maintenance.schedule`, tasks with states, outcome, costs, photos and documents (signed download links),
+  `maintenance` nights on berths and land resources with move proposals on conflict (INV-92), out-of-service marking,
+  field reports that never occupy anything, *Manutenzione* map lens, deadline kind `maintenance_due` and e-mail
+  template `maintenance_due` (it, en).
+- Utilities: meters on pedestals and resources, readings from the phone (offline, `client_ref`, photo), anomaly
+  checks and confirmation, consumptions split by the nights of the actual occupants (INV-91), charged once through
+  the M5 charges with origin `utility` (INV-90) with the next instalment, monthly, at transit departure or by hand;
+  late readings inside a charged interval become adjustments linked to the original charge.
+- Offline queue kinds `utility.reading`, `maintenance.report` and `maintenance.outcome` enabled (spec 29.2).
+- Reports `storage`, `maintenance`, `utilities` and dashboard tiles `storage_occupancy`, `storage_exits_blocked`,
+  `maintenance_overdue`, `utility_unbilled` on the M7 machinery (tile = sum of its drill records).
+- API: tags `storage`, `maintenance`, `utilities`; events `storage.scenario_applied`, `storage.movement_done`,
+  `maintenance.status_changed`, `meter.reading_recorded`; SSE topics `storage.changed`, `maintenance.changed`,
+  `utilities.changed`. Migrations `00018_storage` and `00019_maintenance_utilities` (SQLite and PostgreSQL).
+- Demo seed: shed and yard doors 6 m wide, a storage price list, storage contracts in the shed and the yard, one draft
+  scenario, equipment, maintenance plans and tasks, berth meters with readings.
+
 M8 "Prenotazione online" (spec 23, 13, 10.7, m8-plan, ADR 0013):
 
 - Public booking page `/b/{slug}` and embeddable widget (`/embed.js`, iframe that resizes itself and emits
@@ -422,7 +456,34 @@ M0 — Fondamenta (spec 32.3):
 - Development container and Claude Code support (`.claude/` rules, agents, skills, hooks).
 - Documentation: `docs/architecture.md`, `CONTRIBUTING.md`, invariants INV-72 and INV-73.
 
+### Changed
+
+- `scripts/with-postgres.sh` keeps the PostgreSQL data directory in memory (tmpfs) and removes the container with its
+  volumes, so test runs no longer leave anonymous volumes behind.
+
 ### Fixed
+
+M9 review:
+
+- A scenario apply prices the boats brought in from the "Da collocare" tray like a desk layout save (read-only
+  before the transaction, applied inside it; contract total, audit diff and `price_effect` of the apply result).
+- The optimizer keeps a boat accepted with a fit override (size, weight); `support_not_allowed` stays fatal. An area
+  holding an overridden boat can be optimized and applied.
+- A zero-total utility run writes no `utility_billings` row: the consumptions are closed with `zero_amount`
+  instead of staying pending for ever; Q21 also reports a billing without a charge.
+- Cancelling a utility charge puts its consumptions back to pending in the same transaction (INV-90).
+- Exit-day accessibility ignores obstacles starting on the exit day (exits before arrivals, D7).
+- A maintenance reschedule keeps the nights already held; the task state table is the plan's again (an outcome on a
+  task never started passes through `in_progress`).
+- SQLite test databases are WAL files in the test temp dir, as in production: the memdb VFS blocked every reader
+  while a writer held RESERVED and made `TestConcurrency_ScenarioApply` fail with SQLITE_BUSY under `-race`.
+- New: `listStorageTrayCandidates` and the "Da collocare da altre risorse" card of the scenario editor; the storage
+  contract form's marina cradle picker and price preview; M9 cases in `a11y.spec.ts`.
+- New tests: `TestScenarioApply_TrayItemRepriced`, `TestArrange_FitOverride`, `TestScenarioApply_FitOverriddenBoat`,
+  `TestUtility_ZeroTotalNoOrphanBilling`, `TestUtility_CancelledChargeReopensConsumptions`,
+  `TestMaintenance_RescheduleKeepsPastNights`, `TestTaskTransitions_Table`,
+  `TestContract_M9StorageStateChangesWriteAuditAndOutbox`, `TestAcceptance_CrossMarinaResourceIdsM9`,
+  `TestConcurrency_OfflineReplay_{Reading,MaintenanceReport,MaintenanceOutcome}`.
 
 M5 polish:
 
@@ -455,6 +516,10 @@ M4 review, fix round 1:
   `TestConcurrency_{ReplanVsSettle,RenewVsTerminate,RenewVsTacit,ContractTwoOperators,CampaignLaunchAndSync,AddendumVsTerminate,QuotePublicAcceptVsPanelAccept}`.
 
 ### Known gaps
+
+- M9, open for a product decision: report access for `yard_mgr` (today refused every report, storage included) and
+  `presence.write` for `yard_mgr` to record haul-out and launch. A storage contract price preview needs an end date
+  (seasonal and annual ends are derived by the server only at creation).
 
 - M6a: the window build was not opened on a real display in CI; Windows and Linux webview builds are compiled
   only by the `desktop.yml` jobs; the Linux AppImage step needs `APPIMAGETOOL_SHA256` (repository variable) or a

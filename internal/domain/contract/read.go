@@ -65,6 +65,8 @@ func seriesOf(kind string) string {
 		return SeriesTransit
 	case KindCharter:
 		return SeriesCharter
+	case KindStorage:
+		return SeriesStorage
 	}
 	return SeriesMooring
 }

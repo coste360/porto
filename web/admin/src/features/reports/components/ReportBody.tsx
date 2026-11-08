@@ -25,7 +25,7 @@ import {
 } from '@porto/shared/ui/table';
 import { cn } from '@porto/shared/lib/utils';
 
-import type { ColumnDef, ReportDef, TotalDef } from '../lib/catalog';
+import { fieldOf, type ColumnDef, type ReportDef, type TotalDef } from '../lib/catalog';
 import { formatCell, isNumeric, totalRow, unitOf, type Row } from '../lib/cells';
 import { RefLink } from './RefLink';
 
@@ -311,7 +311,7 @@ function RecordsTable({
             records.map((r, i) => (
               <TableRow key={i} data-testid="report-record">
                 {columns.map((c, ci) => {
-                  const text = fmt(r[c.key], c);
+                  const text = fmt(fieldOf(r, c.path ?? c.key), c);
                   return (
                     <TableCell
                       key={c.key}

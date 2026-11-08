@@ -50,8 +50,8 @@ func EngineKinds() []string {
 // M4Kinds are the kinds added by M4 (engine kinds and the contract-written ones).
 func M4Kinds() []string { return append(EngineKinds(), KindTacitRenewalBlocked) }
 
-// AllKinds are the M1 and M4 kinds.
-func AllKinds() []string { return append(Kinds(), M4Kinds()...) }
+// AllKinds are the M1, M4 and M9 kinds.
+func AllKinds() []string { return append(append(Kinds(), M4Kinds()...), KindMaintenanceDue) }
 
 // Channels of the notifications.
 const (

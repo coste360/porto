@@ -32,7 +32,7 @@ import {
   type PeriodPreset,
 } from '../../dashboard/lib/period';
 import { localName } from '../../maps/lib';
-import { FILTER_VALUES, FILTER_VALUE_GROUP, type FilterKey, type ReportDef } from '../lib/catalog';
+import { filterValuesOf, type FilterKey, type ReportDef } from '../lib/catalog';
 
 const ALL = '__all';
 
@@ -165,8 +165,8 @@ function FilterControls({
             id={`${idPrefix}-${f}`}
             label={t(`reports:filters.${f}`)}
             value={search[f]}
-            values={FILTER_VALUES[f]}
-            labelOf={(v) => t(`${FILTER_VALUE_GROUP[f]}.${v}`, { defaultValue: v })}
+            values={filterValuesOf(def, f).values}
+            labelOf={(v) => t(`${filterValuesOf(def, f).group}.${v}`, { defaultValue: v })}
             allLabel={t(defaultLabel(f))}
             onChange={(v) => onPatch({ [f]: v })}
           />

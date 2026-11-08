@@ -33,8 +33,8 @@ export function DockPage() {
   const search = route.useSearch();
   const navigate = useNavigate();
   const today = useMarinaToday();
-  const tab: DockTab = search.tab ?? 'today';
-  const setTab = (next: DockTab) =>
+  const tab: string = search.tab ?? 'today';
+  const setTab = (next: string) =>
     void navigate({
       to: '/m/$marinaId/dock',
       params: { marinaId },
@@ -52,12 +52,24 @@ export function DockPage() {
     cash: <BanknoteIcon />,
     more: <EllipsisIcon />,
   };
+  // M9: extra tabs registered by other features (DockSlots.extraTabs), shown before "Altro".
+  const extraTabs = (dockSlots().extraTabs ?? []).filter((x) => !x.permission || can(x.permission));
+  const builtIn = DOCK_TABS.map((value) => ({
+    value: value as string,
+    label: t(`phone:dock.tabs.${value}`),
+    icon: icons[value],
+  }));
+  const barTabs = [
+    ...builtIn.slice(0, -1),
+    ...extraTabs.map((x) => ({ value: x.value, label: t(x.labelKey), icon: x.icon })),
+    ...builtIn.slice(-1),
+  ];
   return (
     <RequirePermission allowed={canUseDock(marina?.permissions ?? [])}>
       <Tabs
         value={tab}
         onValueChange={(v) => {
-          if ((DOCK_TABS as readonly string[]).includes(v)) setTab(v as DockTab);
+          if (barTabs.some((x) => x.value === v)) setTab(v);
         }}
         data-testid="dock-page"
         data-tab={tab}
@@ -79,16 +91,15 @@ export function DockPage() {
         <TabsContent value="cash">
           <CashTab date={today} receiptAction={dockSlots().receiptAction} />
         </TabsContent>
+        {extraTabs.map((x) => (
+          <TabsContent key={x.value} value={x.value}>
+            {x.render(today)}
+          </TabsContent>
+        ))}
         <TabsContent value="more">
           <MoreTab date={today} />
         </TabsContent>
-        <PhoneTabBar
-          tabs={DOCK_TABS.map((value) => ({
-            value,
-            label: t(`phone:dock.tabs.${value}`),
-            icon: icons[value],
-          }))}
-        />
+        <PhoneTabBar tabs={barTabs} />
       </Tabs>
       <ElementSheet
         selection={selection}

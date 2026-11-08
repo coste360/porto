@@ -622,7 +622,8 @@
     "tacit_renewal_blocked": "Tacit renewal blocked",
     "waitlist_offer": "Waiting list offer",
     "document_failed": "Document failed",
-    "signature_expiring": "Signature expiring"
+    "signature_expiring": "Signature expiring",
+    "maintenance_due": "Maintenance due"
   },
   "deadlineChannel": {
     "panel": "Panel",

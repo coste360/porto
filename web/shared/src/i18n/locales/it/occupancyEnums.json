@@ -158,6 +158,8 @@
     "air_draft_exceeds": "Altezza oltre il massimo consentito",
     "multihull_not_allowed": "Multiscafo non ammesso",
     "vessel_invalid": "Misure dell'imbarcazione non valide",
+    "support_not_allowed": "Invaso non ammesso nell'area",
+    "weight_exceeds": "Peso oltre il massimo dell'area",
     "fill_below_threshold": "Posto sovradimensionato per l'imbarcazione",
     "depth_near_limit": "Fondale al limite",
     "power_insufficient": "Potenza elettrica insufficiente",

@@ -136,6 +136,10 @@ var MooringTransitions = []Transition{
 // are never created from quotes, so the quote acceptance path never uses it).
 var CharterTransitions = MooringTransitions
 
+// StorageTransitions is the table of storage contracts (m9-plan §3.1, D1): the mooring rows, kind storage. The
+// renewal rows (expire_renewed, tacit_renew) are never used: storage has no renewal campaigns in M9.
+var StorageTransitions = MooringTransitions
+
 // RenewalProposalStatus is a status of renewal_proposals (m4-plan §3.4).
 type RenewalProposalStatus string
 

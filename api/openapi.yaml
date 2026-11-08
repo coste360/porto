@@ -169,6 +169,12 @@ tags:
     description: Online booking settings, texts, quotas and the desk list of online bookings (M8)
   - name: channels
     description: Booking channel connections, reservations and callbacks (M8, spec 23.2)
+  - name: storage
+    description: Storage contracts, planner, accessibility, optimizer, scenarios, apply and movements (M9, spec 17)
+  - name: maintenance
+    description: Equipment, maintenance plans, tasks, field reports and the maintenance lens (M9, spec 20.1–20.2)
+  - name: utilities
+    description: Utility meters, readings, consumptions and their charging (M9, spec 20.4)
 
 paths:
   /healthz:
@@ -13678,6 +13684,1831 @@ paths:
         "429": { $ref: "#/components/responses/TooManyRequests" }
         "503": { $ref: "#/components/responses/ServiceUnavailable" }
 
+  /api/admin/v1/marinas/{marinaId}/storage/areas:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [storage]
+      operationId: listStorageAreas
+      summary: >-
+        Surface areas (yard and shed maps) with today's occupancy, boats, blocked exits in the next 30 days and draft scenarios (storage.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageAreaList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/plan:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/AreaId"
+    get:
+      tags: [storage]
+      operationId: getStoragePlan
+      summary: >-
+        Plan and timeline of a surface area for a night window (default today .. today + 30) with gates, obstacles and accessibility warnings (storage.read)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StoragePlan" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/accessibility:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/AreaId"
+    get:
+      tags: [storage]
+      operationId: getStorageAccessibility
+      summary: >-
+        Accessibility of the boats present on a date (default today): extraction order, blocked boats and their blocking boats (storage.read)
+      security: *readSecurity
+      parameters:
+        - { name: date, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageAccessibility" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/arrange:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/AreaId"
+    post:
+      tags: [storage]
+      operationId: arrangeStorageArea
+      summary: >-
+        Preset: run the optimizer on the real state or on a draft layout and return the proposal; nothing is saved (storage.manage)
+      description: >-
+        Deterministic for a seed when the iteration budget is not cut by the deadline (storage.optimize_budget_ms). 422 area_exits_invalid, pinned_invalid, too_many_items.
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StorageArrangeRequest" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageArrangeResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/evaluate:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/AreaId"
+    post:
+      tags: [storage]
+      operationId: evaluateStorageLayout
+      summary: >-
+        Indicators, accessibility and per-item issues of a draft layout of the area; nothing is saved (storage.read)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StorageEvaluateRequest" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageEvaluation" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/contracts:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [storage]
+      operationId: createStorageContract
+      summary: >-
+        Create a storage contract on a surface area (automatic position when placement is omitted) or a trailer spot, draft or active (storage.manage)
+      description: >-
+        409 storage_no_space when no position is free for the period; 422 storage_target_invalid, fit_blocked (support_not_allowed is never overridable).
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StorageContractCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageContract" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/OccupancyUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/contracts/{contractId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    get:
+      tags: [storage]
+      operationId: getStorageContract
+      summary: >-
+        A storage contract with its storage details, placement and cradle (storage.read); ETag = details version
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageContract" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [storage]
+      operationId: updateStorageContract
+      summary: >-
+        Change support, planned haul-out and launch, handling notes (storage.manage); period and position use resize and move
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StorageContractPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageContract" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/scenarios:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [storage]
+      operationId: listStorageScenarios
+      summary: >-
+        Scenarios (what-if layouts), newest first (storage.read)
+      security: *readSecurity
+      parameters:
+        - { name: area_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/StorageScenarioStatus" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageScenarioPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [storage]
+      operationId: createStorageScenario
+      summary: >-
+        Create a scenario from the real state of an area for a night window (at most 400 nights) (storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StorageScenarioCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageScenarioDetail" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ScenarioId"
+    get:
+      tags: [storage]
+      operationId: getStorageScenario
+      summary: >-
+        A scenario with its items, moves, indicators and accessibility; stale is computed on read (storage.read)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageScenarioDetail" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [storage]
+      operationId: updateStorageScenario
+      summary: >-
+        Rename a draft scenario or change its window (items not yet touched are reloaded) (storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StorageScenarioPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageScenarioDetail" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+    delete:
+      tags: [storage]
+      operationId: discardStorageScenario
+      summary: >-
+        Discard a draft scenario (status discarded; applied scenarios are history and cannot be discarded) (storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204":
+          description: No content
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ScenarioId"
+    put:
+      tags: [storage]
+      operationId: saveStorageScenarioItems
+      summary: >-
+        Save the placements of the working copy; overlaps are allowed and flagged, they block apply (storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StorageScenarioItemsPut" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageScenarioDetail" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+    post:
+      tags: [storage]
+      operationId: addStorageScenarioItem
+      summary: >-
+        Bring an allocation of another surface area or land resource of the marina into the scenario tray (storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StorageScenarioItemAdd" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageScenarioDetail" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/tray-candidates:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ScenarioId"
+    get:
+      tags: [storage]
+      operationId: listStorageTrayCandidates
+      summary: >-
+        Allocations the "Da collocare" tray accepts: active vessel allocations on another dynamic area or a land resource overlapping the scenario window, not yet in it (storage.read)
+      description: >-
+        409 scenario_not_draft.
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageTrayCandidateList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items/{allocationId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ScenarioId"
+      - $ref: "#/components/parameters/AllocationId"
+    delete:
+      tags: [storage]
+      operationId: removeStorageScenarioItem
+      summary: >-
+        Drop a tray item from the scenario (area items cannot be removed, only unplaced) (storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageScenarioDetail" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/optimize:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ScenarioId"
+    post:
+      tags: [storage]
+      operationId: optimizeStorageScenario
+      summary: >-
+        Run the optimizer on the working copy (pinned items stay), store result, seed and indicators (storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StorageOptimizeRequest" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageScenarioDetail" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/compare:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ScenarioId"
+    get:
+      tags: [storage]
+      operationId: compareStorageScenario
+      summary: >-
+        Compare a scenario with another scenario of the same area or with the real state (default) (storage.read)
+      security: *readSecurity
+      parameters:
+        - { name: with, in: query, required: false, description: "Scenario id or real (default)", schema: { type: string, maxLength: 36 } }
+        - { name: date, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageScenarioComparison" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/apply:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ScenarioId"
+    post:
+      tags: [storage]
+      operationId: applyStorageScenario
+      summary: >-
+        Apply a draft scenario in one transaction: re-validated on the current state, all moves or none; returns the movement worklist (storage.manage)
+      description: >-
+        409 scenario_not_draft; 409 scenario_conflicts with details.conflicts = [StorageScenarioConflict] (every conflict, nothing written).
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageApplyResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/movements:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [storage]
+      operationId: listStorageMovements
+      summary: >-
+        Movement worklist of a day (default today) with the accessibility warnings of the day (storage.read)
+      security: *readSecurity
+      parameters:
+        - { name: date, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: area_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/StorageMovementStatus" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageMovementList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/storage/movements/{movementId}/done:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MovementId"
+    post:
+      tags: [storage]
+      operationId: completeStorageMovement
+      summary: >-
+        Mark a movement done (online only) (storage.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageMovement" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/equipment:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [maintenance]
+      operationId: listEquipment
+      summary: >-
+        Equipment registry: lifting machines, vehicles, plants (maintenance.manage or maintenance.report)
+      security: *readSecurity
+      parameters:
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/EquipmentKind" } }
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EquipmentPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [maintenance]
+      operationId: createEquipment
+      summary: >-
+        Register equipment (maintenance.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EquipmentInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Equipment" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/equipment/{equipmentId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/EquipmentId"
+    get:
+      tags: [maintenance]
+      operationId: getEquipment
+      summary: >-
+        One equipment (maintenance.manage or maintenance.report)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Equipment" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [maintenance]
+      operationId: updateEquipment
+      summary: >-
+        Change equipment (maintenance.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EquipmentPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Equipment" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/plans:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [maintenance]
+      operationId: listMaintenancePlans
+      summary: >-
+        Maintenance plans (maintenance.manage)
+      security: *readSecurity
+      parameters:
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+        - { name: element_type, in: query, required: false, schema: { $ref: "#/components/schemas/MaintenanceElementType" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenancePlanPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [maintenance]
+      operationId: createMaintenancePlan
+      summary: >-
+        Create a maintenance plan with targets, periodicity, lead and checklist (maintenance.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenancePlanInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenancePlan" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/plans/{planId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/PlanId"
+    get:
+      tags: [maintenance]
+      operationId: getMaintenancePlan
+      summary: >-
+        One maintenance plan (maintenance.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenancePlan" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [maintenance]
+      operationId: updateMaintenancePlan
+      summary: >-
+        Change a maintenance plan; active=false stops new tasks (maintenance.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenancePlanPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenancePlan" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/tasks:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [maintenance]
+      operationId: listMaintenanceTasks
+      summary: >-
+        Maintenance tasks, overdue first (maintenance.manage; maintenance.report sees the tasks assigned to them and their reports)
+      security: *readSecurity
+      parameters:
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/MaintenanceTaskStatus" } }
+        - { name: priority, in: query, required: false, schema: { $ref: "#/components/schemas/MaintenancePriority" } }
+        - { name: element_type, in: query, required: false, schema: { $ref: "#/components/schemas/MaintenanceElementType" } }
+        - { name: element_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: plan_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: assignee_user_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: overdue_only, in: query, required: false, schema: { type: boolean } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceTaskPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [maintenance]
+      operationId: createMaintenanceTask
+      summary: >-
+        Create a task from the office (maintenance.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenanceTaskCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    get:
+      tags: [maintenance]
+      operationId: getMaintenanceTask
+      summary: >-
+        One task with files and maintenance allocations (maintenance.manage or maintenance.report)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceTask" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [maintenance]
+      operationId: updateMaintenanceTask
+      summary: >-
+        Change title, description, priority, due date, assignee, supplier reference, out of service (maintenance.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenanceTaskPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/schedule:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    post:
+      tags: [maintenance]
+      operationId: scheduleMaintenanceTask
+      summary: >-
+        Schedule nights; with requires_free on a berth or land resource books maintenance nights in the same transaction (maintenance.manage)
+      description: >-
+        409 maintenance_conflicts with details.conflicts = [MaintenanceConflict] (vessels on the nights, up to 3 alternatives each); never overrides an occupancy.
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenanceScheduleInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/start:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    post:
+      tags: [maintenance]
+      operationId: startMaintenanceTask
+      summary: >-
+        Start a task (open or scheduled to in_progress) (maintenance.manage or the assignee with maintenance.report)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/complete:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    post:
+      tags: [maintenance]
+      operationId: completeMaintenanceTask
+      summary: >-
+        Record the outcome, checklist, minutes and costs; done is final (maintenance.manage or the assignee with maintenance.report)
+      description: >-
+        Offline (kind maintenance.outcome): no If-Match; the state is re-checked. Done with the same client_ref returns the task; done by someone else is 409 task_already_done. Maintenance nights are not released (INV-71).
+      security: *writeSecurity
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenanceCompleteInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/release:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    post:
+      tags: [maintenance]
+      operationId: releaseMaintenanceTask
+      summary: >-
+        Release the maintenance nights after last_night (online only) (maintenance.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenanceReleaseInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    post:
+      tags: [maintenance]
+      operationId: cancelMaintenanceTask
+      summary: >-
+        Cancel a task and release its future maintenance nights (online only) (maintenance.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenanceCancelInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+    post:
+      tags: [maintenance]
+      operationId: uploadMaintenancePhoto
+      summary: >-
+        Attach a photo or document to a task (JPEG, PNG, WebP or PDF, at most 8 MiB, raw body), encrypted at rest (maintenance.report)
+      description: >-
+        Offline (kind maintenance.report, dependent on reportMaintenance through taskId). The same bytes as an existing file of the task return that file without writing again.
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema: { type: string, format: binary }
+          image/png:
+            schema: { type: string, format: binary }
+          image/webp:
+            schema: { type: string, format: binary }
+          application/pdf:
+            schema: { type: string, format: binary }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceFile" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files/{fileId}/link:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+      - $ref: "#/components/parameters/FileId"
+    get:
+      tags: [maintenance]
+      operationId: getMaintenanceFileLink
+      summary: >-
+        A short-lived (5 minutes) signed link to a task file (maintenance.manage or maintenance.report)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FileLink" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files/{fileId}/file:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/TaskId"
+      - $ref: "#/components/parameters/FileId"
+    get:
+      tags: [maintenance]
+      operationId: getMaintenanceFileFile
+      summary: >-
+        Download a task file through a signed link from getMaintenanceFileLink (exp and sig checked in the service) (maintenance.manage or maintenance.report)
+      security: *readSecurity
+      parameters:
+        - { name: exp, in: query, required: false, schema: { type: integer, format: int64 } }
+        - { name: sig, in: query, required: false, schema: { type: string, maxLength: 128 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            image/jpeg:
+              schema: { type: string, format: binary }
+            image/png:
+              schema: { type: string, format: binary }
+            application/pdf:
+              schema: { type: string, format: binary }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/reports:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [maintenance]
+      operationId: reportMaintenance
+      summary: >-
+        Report a problem from the field: an open task with element or map position; never schedules, never occupies (maintenance.report)
+      description: >-
+        Offline (kind maintenance.report): client_ref dedupes replays (same client_ref = the stored task).
+      security: *writeSecurity
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MaintenanceReportInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceTask" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/worklist:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [maintenance]
+      operationId: getMaintenanceWorklist
+      summary: >-
+        Tasks assigned to the current user plus open tasks due within 7 days (offline cache slot activities.assigned) (maintenance.report)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceWorklist" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/maintenance/map:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [maintenance]
+      operationId: getMaintenanceMap
+      summary: >-
+        Maintenance lens of a map (default the first water map): open, overdue and out-of-service counts per element (maintenance.manage or maintenance.report)
+      security: *readSecurity
+      parameters:
+        - { name: map_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: date, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceMap" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/utility-meters:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [utilities]
+      operationId: listUtilityMeters
+      summary: >-
+        Utility meters; route=dock returns the meters of the dock reading round (marina.configure or presence.write)
+      security: *readSecurity
+      parameters:
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/MeterKind" } }
+        - { name: pedestal_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: resource_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+        - { name: route, in: query, required: false, schema: { type: string, enum: [dock] } }
+        - { name: q, in: query, required: false, description: Code, serial or socket, schema: { type: string, maxLength: 64 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilityMeterPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [utilities]
+      operationId: createUtilityMeter
+      summary: >-
+        Create a meter (pedestal socket, water, hour or cycle counter) (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UtilityMeterInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilityMeter" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/utility-meters/{meterId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/MeterId"
+    get:
+      tags: [utilities]
+      operationId: getUtilityMeter
+      summary: >-
+        One meter with its last reading (marina.configure or presence.write)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilityMeter" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [utilities]
+      operationId: updateUtilityMeter
+      summary: >-
+        Change a meter (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UtilityMeterPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilityMeter" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/meter-readings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [utilities]
+      operationId: listMeterReadings
+      summary: >-
+        Meter readings, newest first (marina.configure, presence.write or charges.manage)
+      security: *readSecurity
+      parameters:
+        - { name: meter_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/MeterReadingStatus" } }
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MeterReadingPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [utilities]
+      operationId: recordMeterReading
+      summary: >-
+        Record a reading (value as a decimal string, 3 decimals); anomalies are flagged, never refused (presence.write)
+      description: >-
+        Offline (kind utility.reading): read_at defaults to Porto-Offline-Queued-At when replayed within 48 hours and not in the future, else now. A replay with the same client_ref returns the stored reading (INV-83).
+      security: *writeSecurity
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MeterReadingCreate" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MeterReading" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ReadingId"
+    post:
+      tags: [utilities]
+      operationId: uploadMeterReadingPhoto
+      summary: >-
+        Attach a photo to a reading (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write)
+      description: >-
+        Offline (kind utility.reading, dependent on recordMeterReading through readingId). The same bytes as the current photo return the current file id.
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema: { type: string, format: binary }
+          image/png:
+            schema: { type: string, format: binary }
+          image/webp:
+            schema: { type: string, format: binary }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MeterReadingPhoto" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+    get:
+      tags: [utilities]
+      operationId: getMeterReadingPhotoLink
+      summary: >-
+        A short-lived (5 minutes) signed link to the reading photo (marina.configure, presence.write or charges.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FileLink" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo/file:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ReadingId"
+    get:
+      tags: [utilities]
+      operationId: getMeterReadingPhotoFile
+      summary: >-
+        Download the reading photo through a signed link from getMeterReadingPhotoLink (exp and sig checked in the service) (marina.configure, presence.write or charges.manage)
+      security: *readSecurity
+      parameters:
+        - { name: exp, in: query, required: false, schema: { type: integer, format: int64 } }
+        - { name: sig, in: query, required: false, schema: { type: string, maxLength: 128 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            image/jpeg:
+              schema: { type: string, format: binary }
+            image/png:
+              schema: { type: string, format: binary }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/confirm:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ReadingId"
+    post:
+      tags: [utilities]
+      operationId: confirmMeterReading
+      summary: >-
+        Confirm an anomalous reading: its consumptions become chargeable (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MeterReading" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/void:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ReadingId"
+    post:
+      tags: [utilities]
+      operationId: voidMeterReading
+      summary: >-
+        Void a reading; refused with 409 reading_charged when a charged consumption uses it (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MeterReadingVoidInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MeterReading" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/utility-consumptions:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [utilities]
+      operationId: listUtilityConsumptions
+      summary: >-
+        Consumptions split by occupant (charges.manage)
+      security: *readSecurity
+      parameters:
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/UtilityConsumptionStatus" } }
+        - { name: contract_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: meter_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/MeterKind" } }
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilityConsumptionPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/utility-consumptions/{consumptionId}/exclude:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ConsumptionId"
+    post:
+      tags: [utilities]
+      operationId: excludeUtilityConsumption
+      summary: >-
+        Exclude a pending, anomalous or unassigned consumption from charging (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UtilityConsumptionExclude" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilityConsumption" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/utility-consumptions/{consumptionId}/assign:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ConsumptionId"
+    post:
+      tags: [utilities]
+      operationId: assignUtilityConsumption
+      summary: >-
+        Assign an unassigned consumption to a contract of the marina (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UtilityConsumptionAssign" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilityConsumption" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/utility-charges/run:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [utilities]
+      operationId: runUtilityCharges
+      summary: >-
+        Charge the pending consumptions now (all contracts due today, or one contract) through the M5 charges (charges.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - { name: contract_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilityChargeRunResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/utility-settings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [utilities]
+      operationId: getUtilitySettings
+      summary: >-
+        Utility settings: tariff items, charging mode, daily thresholds (marina.configure or charges.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilitySettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [utilities]
+      operationId: updateUtilitySettings
+      summary: >-
+        Replace the utility settings (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UtilitySettingsInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilitySettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "422": { $ref: "#/components/responses/StorageUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/storage:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getStorageReport
+      summary: >-
+        R-storage: allocations on surface areas, m²-nights available and occupied, blocked exits (reports.operational or reports.all; production with reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [area, map_kind, contract_kind, month] } }
+        - $ref: "#/components/parameters/ReportMapId"
+        - $ref: "#/components/parameters/ReportMapKind"
+        - { name: area_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: exits_blocked_only, in: query, required: false, schema: { type: boolean } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/maintenance:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getMaintenanceReport
+      summary: >-
+        R-maintenance: tasks by status, overdue, minutes and external costs (reports.operational or reports.all; costs with reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [status, priority, element_type, intervention, month] } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/MaintenanceTaskStatus" } }
+        - { name: element_type, in: query, required: false, schema: { $ref: "#/components/schemas/MaintenanceElementType" } }
+        - { name: overdue_only, in: query, required: false, schema: { type: boolean } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MaintenanceReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/utilities:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getUtilitiesReport
+      summary: >-
+        R-utilities: consumptions by kind and status, charged and pending value, unassigned quantity (reports.operational; amounts with reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [kind, meter, status, contract, month] } }
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/MeterKind" } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/UtilityConsumptionStatus" } }
+        - { name: meter_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: contract_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UtilitiesReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+
 components:
   securitySchemes:
     cookieAuth:
@@ -14239,6 +16070,46 @@ components:
         Required on createBooking; handled by the domain (online_bookings.idempotency_hash): same key and body
         returns the same booking and token, a different body is 422 idempotency_mismatch
       schema: { type: string, minLength: 8, maxLength: 128, pattern: "^[A-Za-z0-9_\\-:.]+$" }
+    ScenarioId:
+      name: scenarioId
+      in: path
+      required: true
+      schema: { type: string }
+    MovementId:
+      name: movementId
+      in: path
+      required: true
+      schema: { type: string }
+    EquipmentId:
+      name: equipmentId
+      in: path
+      required: true
+      schema: { type: string }
+    PlanId:
+      name: planId
+      in: path
+      required: true
+      schema: { type: string }
+    TaskId:
+      name: taskId
+      in: path
+      required: true
+      schema: { type: string }
+    MeterId:
+      name: meterId
+      in: path
+      required: true
+      schema: { type: string }
+    ReadingId:
+      name: readingId
+      in: path
+      required: true
+      schema: { type: string }
+    ConsumptionId:
+      name: consumptionId
+      in: path
+      required: true
+      schema: { type: string }
   responses:
     M4Unprocessable:
       description: >-
@@ -14363,6 +16234,15 @@ components:
       content:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
+    StorageUnprocessable:
+      description: >-
+        A storage, maintenance or utilities rule refused the request (m9-plan §3, §7, §8, §9: storage_target_invalid,
+        area_exits_invalid, pinned_invalid, too_many_items, scenario_window_invalid, element_invalid, fit_blocked,
+        no_price, ...), a validation failure, or an idempotency key was reused
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+
   schemas:
     ProblemType:
       type: string
@@ -14502,6 +16382,20 @@ components:
         - cancellation_not_allowed
         - nothing_due
         - idempotency_mismatch
+        - storage_target_invalid
+        - storage_no_space
+        - area_exits_invalid
+        - pinned_invalid
+        - too_many_items
+        - scenario_window_invalid
+        - scenario_not_draft
+        - scenario_conflicts
+        - movement_not_pending
+        - element_invalid
+        - maintenance_conflicts
+        - task_already_done
+        - reading_charged
+        - consumption_frozen
 
     FieldError:
       type: object
@@ -14540,8 +16434,9 @@ components:
             resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?};
             invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid
             {reason}; allocation_changed {current_resource_id, current_resource_code} (null when the allocation
-            is gone); remote_pin_mismatch {expected_fingerprint, presented_fingerprint}. Ids, codes, dates and
-            integers only.
+            is gone); remote_pin_mismatch {expected_fingerprint, presented_fingerprint}; scenario_conflicts
+            {conflicts: [StorageScenarioConflict]}; maintenance_conflicts {conflicts: [MaintenanceConflict]};
+            storage_no_space {area_id, from, to}. Ids, codes, dates and integers only.
           type: object
           additionalProperties: true
 
@@ -17397,11 +19292,12 @@ components:
         - waitlist_offer
         - document_failed
         - signature_expiring
+        - maintenance_due
 
     DeadlineSourceType:
       type: string
       enum: [document, contract, installment, holder_installment, right, mandate, concession, concession_obligation,
-             renewal_proposal, waitlist_entry, generated_document, signature_request, import]
+             renewal_proposal, waitlist_entry, generated_document, signature_request, import, maintenance_task]
 
     CustomerRef:
       type: object
@@ -18545,7 +20441,7 @@ components:
       type: string
       enum: [loa_exceeds, beam_exceeds, draft_exceeds, air_draft_exceeds, multihull_not_allowed, vessel_invalid,
              fill_below_threshold, depth_near_limit, power_insufficient, insurance_missing, insurance_expires_in_period,
-             overhang]
+             overhang, support_not_allowed, weight_exceeds]
 
     FitResult:
       type: object
@@ -23796,7 +25692,8 @@ components:
         reserved and not served yet.
       type: string
       enum: [occupancy, efficiency, allocation-waste, lost-demand, customers, production, accruals, charges, payments,
-             revenue-classes, comparison, receivables, presences, rights, cash, vessels, berth-revenue]
+             revenue-classes, comparison, receivables, presences, rights, cash, vessels, berth-revenue, storage,
+             maintenance, utilities]
 
     ReportFormat:
       description: json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
@@ -23840,7 +25737,7 @@ components:
           type: string
           enum: [contract, transit, charge, payment, refund, allocation, berth, area, land_resource, customer, vessel,
                  inquiry, release, presence, cash_session, fiscal_document, right, common_charge_run, mandate,
-                 installment, holder_installment]
+                 installment, holder_installment, scenario, maintenance_task, utility_meter, utility_consumption]
         id: { type: string }
         label: { type: string }
 
@@ -24791,7 +26688,8 @@ components:
       type: string
       enum: [production, charged, collected, receivables_open, receivables_overdue, occupancy, efficiency,
              berth_revenue_per_m, transit_avg_night, new_customers, renewal_rate, vessels_hosted, vessels_avg_loa,
-             yard_open_orders, yard_hours, yard_margin, rental_utilisation, rental_revenue]
+             yard_open_orders, yard_hours, yard_margin, rental_utilisation, rental_revenue, storage_occupancy,
+             storage_exits_blocked, maintenance_overdue, utility_unbilled]
 
     TileTrend:
       type: string
@@ -25851,3 +27749,1313 @@ components:
           type: array
           items: { $ref: "#/components/schemas/ChannelReservation" }
         next_cursor: { type: [string, "null"] }
+
+    # ---- M9 storage, maintenance and utilities (spec 17, 20; m9-plan §3–§11). Lengths cm, areas cm², money
+    # cents, meter values and consumptions milli (qty.Milli), dates YYYY-MM-DD in the marina timezone, nights
+    # inclusive. Events and these views carry ids and enums, never customer data beyond the M3 briefs. ----
+
+    StorageSupport:
+      description: How the boat stands ashore (fit code support_not_allowed when the area does not accept it)
+      type: string
+      enum: [cradle, trailer, rack, none]
+
+    StorageSupportOwner:
+      type: string
+      enum: [own, marina]
+
+    SurfaceRotationDd:
+      description: Rotation on a surface area in tenths of a degree (multiples of 90°; 0/1800 and 900/2700 are the same rectangle)
+      type: integer
+      format: int64
+      enum: [0, 900, 1800, 2700]
+
+    StoragePlacementInput:
+      description: Top-left corner of the footprint box in area grid space (cm, snapped to cells by the service) and rotation
+      type: object
+      required: [x_cm, y_cm, rotation_dd]
+      properties:
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/SurfaceRotationDd" }
+
+    StorageContractCreate:
+      description: >-
+        Exactly one of area_id (surface dynamic area of a yard or shed map) and trailer_spot_id (land resource of
+        kind trailer_spot). Without placement on an area the optimizer chooses a position (409 storage_no_space when
+        none is free). ends_on defaults by term (annual +1 year, seasonal the season end of the active storage list,
+        monthly +1 month; period requires it).
+      type: object
+      required: [term, customer_id, vessel_id, starts_on, support]
+      properties:
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        customer_id: { type: string, maxLength: 36 }
+        billing_customer_id: { type: string, maxLength: 36 }
+        vessel_id: { type: string, maxLength: 36 }
+        starts_on: { $ref: "#/components/schemas/IsoDate" }
+        ends_on: { $ref: "#/components/schemas/IsoDate" }
+        area_id: { type: string, maxLength: 36 }
+        trailer_spot_id: { type: string, maxLength: 36 }
+        placement: { $ref: "#/components/schemas/StoragePlacementInput" }
+        cradle_resource_id: { type: string, maxLength: 36, description: Marina cradle (land resource of kind cradle) for the whole period }
+        support: { $ref: "#/components/schemas/StorageSupport" }
+        support_owner: { $ref: "#/components/schemas/StorageSupportOwner" }
+        haul_out_on: { $ref: "#/components/schemas/IsoDate" }
+        launch_on: { $ref: "#/components/schemas/IsoDate" }
+        services:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/SimulateService" }
+        policy: { $ref: "#/components/schemas/ContractPolicy" }
+        notes: { type: string, maxLength: 4000 }
+        notes_handling: { type: string, maxLength: 500 }
+        activate: { type: boolean }
+        fit_override: { $ref: "#/components/schemas/FitOverrideInput" }
+
+    StorageContractPatch:
+      type: object
+      properties:
+        support: { $ref: "#/components/schemas/StorageSupport" }
+        support_owner: { $ref: "#/components/schemas/StorageSupportOwner" }
+        haul_out_on: { type: [string, "null"], format: date, x-go-type: string }
+        launch_on: { type: [string, "null"], format: date, x-go-type: string }
+        notes_handling: { type: string, maxLength: 500 }
+
+    StorageContractDetails:
+      description: exit_on = launch_on or ends_on; arrival_on = haul_out_on or starts_on, clamped into the period
+      type: object
+      required: [contract_id, support, support_owner, exit_on, arrival_on, version, updated_at]
+      properties:
+        contract_id: { type: string }
+        support: { $ref: "#/components/schemas/StorageSupport" }
+        support_owner: { $ref: "#/components/schemas/StorageSupportOwner" }
+        haul_out_on: { $ref: "#/components/schemas/IsoDate" }
+        launch_on: { $ref: "#/components/schemas/IsoDate" }
+        notes_handling: { type: string }
+        exit_on: { $ref: "#/components/schemas/IsoDate" }
+        arrival_on: { $ref: "#/components/schemas/IsoDate" }
+        version: { type: integer, format: int64 }
+        updated_at: { type: string, format: date-time }
+
+    StoragePlacement:
+      type: object
+      required: [allocation_id, resource_type, resource_id, first_night, last_night]
+      properties:
+        allocation_id: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        map_id: { type: string }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/SurfaceRotationDd" }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+
+    StorageContract:
+      type: object
+      required: [contract, details]
+      properties:
+        contract: { $ref: "#/components/schemas/Contract" }
+        details: { $ref: "#/components/schemas/StorageContractDetails" }
+        placement: { $ref: "#/components/schemas/StoragePlacement" }
+        cradle: { $ref: "#/components/schemas/StoragePlacement" }
+        fit: { $ref: "#/components/schemas/FitResult" }
+
+    StorageArea:
+      type: object
+      required: [id, map_id, map_kind, code, cell_cm, cols, rows, usable_cells, usable_cm2, occupied_cells_today,
+                 boats_today, exits_blocked_next_30, draft_scenarios, gates_valid]
+      properties:
+        id: { type: string }
+        map_id: { type: string }
+        map_kind: { $ref: "#/components/schemas/MapKind" }
+        code: { type: string }
+        name: { type: string }
+        price_class: { type: string }
+        cell_cm: { $ref: "#/components/schemas/Cm" }
+        cols: { type: integer }
+        rows: { type: integer }
+        usable_cells: { type: integer }
+        usable_cm2: { type: integer, format: int64, description: usable cells × cell² }
+        occupied_cells_today: { type: integer }
+        boats_today: { type: integer }
+        exits_blocked_next_30: { type: integer }
+        draft_scenarios: { type: integer }
+        gates_valid: { type: boolean, description: false when an exit gate is not usable or not on the grid border (area_exits_invalid) }
+
+    StorageAreaList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/StorageArea" }
+
+    StorageGate:
+      description: A 4-connected component of exit cells
+      type: object
+      required: [index, cells, valid]
+      properties:
+        index: { type: integer }
+        cells: { type: array, items: { type: integer } }
+        valid: { type: boolean }
+        issue: { type: string, enum: [not_usable, not_on_border] }
+
+    StorageObstacle:
+      description: Fixed obstacle of the window (blocks, maintenance rows)
+      type: object
+      required: [allocation_id, kind, cells, first_night, last_night]
+      properties:
+        allocation_id: { type: string }
+        kind: { $ref: "#/components/schemas/AllocationKind" }
+        cells: { type: array, items: { type: integer } }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+
+    StoragePlanItem:
+      type: object
+      required: [allocation_id, kind, x_cm, y_cm, rotation_dd, cells, first_night, last_night, arrival_on, exit_on,
+                 version]
+      properties:
+        allocation_id: { type: string }
+        kind: { $ref: "#/components/schemas/AllocationKind" }
+        contract: { $ref: "#/components/schemas/ContractBrief" }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        support: { $ref: "#/components/schemas/StorageSupport" }
+        displacement_kg: { type: integer, format: int64 }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/SurfaceRotationDd" }
+        cells: { type: array, items: { type: integer }, description: Footprint cells (with margin) }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+        arrival_on: { $ref: "#/components/schemas/IsoDate" }
+        exit_on: { $ref: "#/components/schemas/IsoDate" }
+        version: { type: integer, format: int64 }
+
+    StorageAccessEntry:
+      description: Accessibility of one exit or arrival event (m9-plan §5); blocking = allocation ids (heuristic minimal set)
+      type: object
+      required: [allocation_id, event, on, accessible, blocking]
+      properties:
+        allocation_id: { type: string }
+        vessel_id: { type: string }
+        event: { type: string, enum: [exit, arrival] }
+        "on": { $ref: "#/components/schemas/IsoDate" }
+        accessible: { type: boolean }
+        order: { type: integer, description: Extraction order among the exits of that day (1 = first) }
+        blocking: { type: array, items: { type: string } }
+
+    StoragePlan:
+      type: object
+      required: [area, from, to, gates, obstacles, items, access]
+      properties:
+        area: { $ref: "#/components/schemas/StorageArea" }
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        gates: { type: array, items: { $ref: "#/components/schemas/StorageGate" } }
+        obstacles: { type: array, items: { $ref: "#/components/schemas/StorageObstacle" } }
+        items: { type: array, items: { $ref: "#/components/schemas/StoragePlanItem" } }
+        access: { type: array, items: { $ref: "#/components/schemas/StorageAccessEntry" } }
+
+    StorageAccessibility:
+      type: object
+      required: [area_id, date, entries, extraction_order]
+      properties:
+        area_id: { type: string }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        entries: { type: array, items: { $ref: "#/components/schemas/StorageAccessEntry" } }
+        extraction_order: { type: array, items: { type: string }, description: Allocation ids leaving that day in order }
+
+    StorageLayoutItemInput:
+      description: A position of the draft; x_cm, y_cm and rotation_dd all null = unplaced
+      type: object
+      required: [allocation_id]
+      properties:
+        allocation_id: { type: string, maxLength: 36 }
+        x_cm: { type: [integer, "null"], format: int64 }
+        y_cm: { type: [integer, "null"], format: int64 }
+        rotation_dd: { type: [integer, "null"], format: int64, description: "0, 900, 1800 or 2700" }
+        pinned: { type: boolean }
+
+    StorageArrangeRequest:
+      type: object
+      properties:
+        from_on: { $ref: "#/components/schemas/IsoDate" }
+        to_on: { $ref: "#/components/schemas/IsoDate" }
+        items:
+          description: Draft layout to start from (default the real state of the window)
+          type: array
+          maxItems: 300
+          items: { $ref: "#/components/schemas/StorageLayoutItemInput" }
+        seed: { type: integer, format: int64, minimum: 0 }
+        max_iterations: { type: integer, minimum: 1, maximum: 200000 }
+
+    StorageEvaluateRequest:
+      type: object
+      required: [items]
+      properties:
+        from_on: { $ref: "#/components/schemas/IsoDate" }
+        to_on: { $ref: "#/components/schemas/IsoDate" }
+        items:
+          type: array
+          maxItems: 300
+          items: { $ref: "#/components/schemas/StorageLayoutItemInput" }
+
+    StorageIndicators:
+      type: object
+      required: [usable_cm2, used_hull_cm2, used_footprint_cm2, moves, unplaced, overlaps, exits_blocked,
+                 arrivals_blocked, largest_free_rect_cm2, blocked_by_date]
+      properties:
+        usable_cm2: { type: integer, format: int64 }
+        used_hull_cm2: { type: integer, format: int64 }
+        used_footprint_cm2: { type: integer, format: int64 }
+        moves: { type: integer }
+        unplaced: { type: integer }
+        overlaps: { type: integer }
+        exits_blocked: { type: integer }
+        arrivals_blocked: { type: integer }
+        largest_free_rect_cm2: { type: integer, format: int64 }
+        blocked_by_date:
+          type: array
+          items:
+            type: object
+            required: [date, exits_blocked]
+            properties:
+              date: { $ref: "#/components/schemas/IsoDate" }
+              exits_blocked: { type: integer }
+              arrivals_blocked: { type: integer }
+
+    StorageItemIssue:
+      type: object
+      required: [allocation_id, reason]
+      properties:
+        allocation_id: { type: string }
+        reason: { type: string, enum: [overlap, blocked_cell, outside, fit, unplaced, stale] }
+        fit_codes: { type: array, items: { $ref: "#/components/schemas/FitCode" } }
+        with_allocation_ids: { type: array, items: { type: string } }
+
+    StorageLayoutItem:
+      type: object
+      required: [allocation_id]
+      properties:
+        allocation_id: { type: string }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/SurfaceRotationDd" }
+        unplaced_reason: { type: string, enum: [fit, no_space] }
+        fit_codes: { type: array, items: { $ref: "#/components/schemas/FitCode" } }
+
+    StorageArrangeResult:
+      type: object
+      required: [items, indicators, access, seed, iterations, stopped_by]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/StorageLayoutItem" } }
+        indicators: { $ref: "#/components/schemas/StorageIndicators" }
+        access: { type: array, items: { $ref: "#/components/schemas/StorageAccessEntry" } }
+        seed: { type: integer, format: int64 }
+        iterations: { type: integer }
+        stopped_by: { type: string, enum: [iterations, deadline, optimal] }
+
+    StorageEvaluation:
+      type: object
+      required: [indicators, access, issues]
+      properties:
+        indicators: { $ref: "#/components/schemas/StorageIndicators" }
+        access: { type: array, items: { $ref: "#/components/schemas/StorageAccessEntry" } }
+        issues: { type: array, items: { $ref: "#/components/schemas/StorageItemIssue" } }
+
+    StorageScenarioStatus:
+      type: string
+      enum: [draft, applied, discarded]
+
+    StorageScenario:
+      type: object
+      required: [id, area_id, name, author_user_id, from_on, to_on, status, seed, stale, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        area_id: { type: string }
+        name: { type: string }
+        author_user_id: { type: string }
+        from_on: { $ref: "#/components/schemas/IsoDate" }
+        to_on: { $ref: "#/components/schemas/IsoDate" }
+        status: { $ref: "#/components/schemas/StorageScenarioStatus" }
+        seed: { type: integer, format: int64 }
+        indicators: { $ref: "#/components/schemas/StorageIndicators" }
+        stale: { type: boolean, description: Some allocation changed since it was loaded (computed on read, enforced at apply) }
+        applied_at: { type: string, format: date-time }
+        applied_by_user_id: { type: string }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    StorageScenarioPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/StorageScenario" } }
+        next_cursor: { type: [string, "null"] }
+
+    StorageScenarioCreate:
+      type: object
+      required: [area_id, name, from_on, to_on]
+      properties:
+        area_id: { type: string, maxLength: 36 }
+        name: { type: string, minLength: 1, maxLength: 80 }
+        from_on: { $ref: "#/components/schemas/IsoDate" }
+        to_on: { $ref: "#/components/schemas/IsoDate" }
+
+    StorageScenarioPatch:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        from_on: { $ref: "#/components/schemas/IsoDate" }
+        to_on: { $ref: "#/components/schemas/IsoDate" }
+
+    StorageScenarioItem:
+      type: object
+      required: [allocation_id, kind, origin, pinned, first_night, last_night, arrival_on, exit_on, base_version]
+      properties:
+        allocation_id: { type: string }
+        kind: { $ref: "#/components/schemas/AllocationKind" }
+        origin: { type: string, enum: [area, tray] }
+        contract: { $ref: "#/components/schemas/ContractBrief" }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        support: { $ref: "#/components/schemas/StorageSupport" }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/SurfaceRotationDd" }
+        pinned: { type: boolean }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+        arrival_on: { $ref: "#/components/schemas/IsoDate" }
+        exit_on: { $ref: "#/components/schemas/IsoDate" }
+        base_version: { type: integer, format: int64 }
+        current_version: { type: integer, format: int64, description: Absent when the allocation is gone }
+
+    StorageMoveEnd:
+      type: object
+      required: [resource_type, resource_id]
+      properties:
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        rotation_dd: { $ref: "#/components/schemas/SurfaceRotationDd" }
+
+    StorageScenarioMove:
+      type: object
+      required: [seq, allocation_id, kind, to, move_on]
+      properties:
+        seq: { type: integer }
+        allocation_id: { type: string }
+        vessel_id: { type: string }
+        kind: { type: string, enum: [move, place] }
+        from: { $ref: "#/components/schemas/StorageMoveEnd" }
+        to: { $ref: "#/components/schemas/StorageMoveEnd" }
+        move_on: { $ref: "#/components/schemas/IsoDate" }
+
+    StorageScenarioDetail:
+      type: object
+      required: [scenario, items, moves, issues, access]
+      properties:
+        scenario: { $ref: "#/components/schemas/StorageScenario" }
+        items: { type: array, items: { $ref: "#/components/schemas/StorageScenarioItem" } }
+        moves: { type: array, items: { $ref: "#/components/schemas/StorageScenarioMove" } }
+        issues: { type: array, items: { $ref: "#/components/schemas/StorageItemIssue" } }
+        access: { type: array, items: { $ref: "#/components/schemas/StorageAccessEntry" } }
+        run:
+          description: Statistics of the last optimize call of this response
+          type: object
+          required: [seed, iterations, stopped_by]
+          properties:
+            seed: { type: integer, format: int64 }
+            iterations: { type: integer }
+            stopped_by: { type: string, enum: [iterations, deadline, optimal] }
+
+    StorageScenarioItemsPut:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          maxItems: 300
+          items: { $ref: "#/components/schemas/StorageLayoutItemInput" }
+
+    StorageScenarioItemAdd:
+      type: object
+      required: [allocation_id]
+      properties:
+        allocation_id: { type: string, maxLength: 36 }
+
+    StorageOptimizeRequest:
+      type: object
+      properties:
+        seed: { type: integer, format: int64, minimum: 0, description: Default = the scenario seed (FNV-1a of its id) }
+        max_iterations: { type: integer, minimum: 1, maximum: 200000 }
+
+    StorageScenarioComparison:
+      type: object
+      required: [scenario_id, with, date, left, right, diffs]
+      properties:
+        scenario_id: { type: string }
+        with: { type: string, description: The other scenario id or real }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        left: { $ref: "#/components/schemas/StorageIndicators" }
+        right: { $ref: "#/components/schemas/StorageIndicators" }
+        diffs:
+          type: array
+          items:
+            type: object
+            required: [allocation_id]
+            properties:
+              allocation_id: { type: string }
+              vessel_id: { type: string }
+              left: { $ref: "#/components/schemas/StorageMoveEnd" }
+              right: { $ref: "#/components/schemas/StorageMoveEnd" }
+
+    StorageScenarioConflict:
+      description: One entry of details.conflicts of 409 scenario_conflicts
+      type: object
+      required: [allocation_id, reason]
+      properties:
+        allocation_id: { type: string }
+        reason: { type: string, enum: [stale, resource_taken, fit, unplaced, overlap] }
+        cells: { type: array, items: { type: integer } }
+        nights: { $ref: "#/components/schemas/NightRange" }
+        fit_codes: { type: array, items: { $ref: "#/components/schemas/FitCode" } }
+        with_allocation_ids: { type: array, items: { type: string } }
+
+    StorageMovementStatus:
+      type: string
+      enum: [pending, done, cancelled]
+
+    StorageEquipmentHint:
+      description: Text hint until M10 (equipment slots)
+      type: string
+      enum: [travel_lift, trailer, cradle_mover, forklift, none]
+
+    StorageMovement:
+      type: object
+      required: [id, area_id, allocation_id, seq, move_on, to, equipment_hint, temporary, status, version]
+      properties:
+        id: { type: string }
+        area_id: { type: string }
+        scenario_id: { type: string }
+        allocation_id: { type: string }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        seq: { type: integer }
+        move_on: { $ref: "#/components/schemas/IsoDate" }
+        from: { $ref: "#/components/schemas/StorageMoveEnd" }
+        to: { $ref: "#/components/schemas/StorageMoveEnd" }
+        equipment_hint: { $ref: "#/components/schemas/StorageEquipmentHint" }
+        temporary: { type: boolean, description: Temporary position to break a cycle (spostamento provvisorio) }
+        status: { $ref: "#/components/schemas/StorageMovementStatus" }
+        done_at: { type: string, format: date-time }
+        done_by_user_id: { type: string }
+        version: { type: integer, format: int64 }
+
+    StorageMovementList:
+      type: object
+      required: [date, items, warnings]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        items: { type: array, items: { $ref: "#/components/schemas/StorageMovement" } }
+        warnings: { type: array, items: { $ref: "#/components/schemas/StorageAccessEntry" } }
+
+    StorageTrayCandidate:
+      type: object
+      required: [allocation_id, resource_type, resource_id, resource_code, first_night, last_night]
+      properties:
+        allocation_id: { type: string }
+        vessel: { $ref: "#/components/schemas/VesselBrief" }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        resource_code: { type: string }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+
+    StorageTrayCandidateList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/StorageTrayCandidate" } }
+
+    StorageApplyResult:
+      type: object
+      required: [scenario, movements]
+      properties:
+        scenario: { $ref: "#/components/schemas/StorageScenario" }
+        movements: { type: array, items: { $ref: "#/components/schemas/StorageMovement" } }
+        price_effect: { $ref: "#/components/schemas/PriceEffect" }
+
+    # ---- M9 maintenance (spec 20.1, 20.2) ----
+
+    EquipmentKind:
+      type: string
+      enum: [travel_lift, crane, forklift, trailer, vehicle, plant, other]
+
+    Equipment:
+      type: object
+      required: [id, code, name, kind, active, out_of_service, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { type: string }
+        kind: { $ref: "#/components/schemas/EquipmentKind" }
+        map_id: { type: string }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        capacity_kg: { type: integer, format: int64 }
+        active: { type: boolean }
+        out_of_service: { type: boolean }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    EquipmentInput:
+      type: object
+      required: [code, name, kind]
+      properties:
+        code: { $ref: "#/components/schemas/Code" }
+        name: { type: string, minLength: 1, maxLength: 100 }
+        kind: { $ref: "#/components/schemas/EquipmentKind" }
+        map_id: { type: string, maxLength: 36 }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        capacity_kg: { type: integer, format: int64, minimum: 1 }
+        active: { type: boolean }
+
+    EquipmentPatch:
+      type: object
+      properties:
+        code: { $ref: "#/components/schemas/Code" }
+        name: { type: string, minLength: 1, maxLength: 100 }
+        kind: { $ref: "#/components/schemas/EquipmentKind" }
+        map_id: { type: [string, "null"], maxLength: 36 }
+        x_cm: { type: [integer, "null"], format: int64 }
+        y_cm: { type: [integer, "null"], format: int64 }
+        capacity_kg: { type: [integer, "null"], format: int64, minimum: 1 }
+        active: { type: boolean }
+
+    EquipmentPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Equipment" } }
+        next_cursor: { type: [string, "null"] }
+
+    MaintenanceElementType:
+      type: string
+      enum: [berth, structure, dynamic_area, land_resource, pedestal, equipment]
+
+    MaintenanceElementRef:
+      type: object
+      required: [element_type, element_id]
+      properties:
+        element_type: { $ref: "#/components/schemas/MaintenanceElementType" }
+        element_id: { type: string, maxLength: 36 }
+        code: { type: string, description: Display code (read only) }
+
+    MaintenanceIntervention:
+      type: string
+      enum: [underwater_inspection, pennant_replacement, chain_check, rcd_test, general, custom]
+
+    MaintenancePeriodicity:
+      description: >-
+        months: every N months from the last done (or starts_on), end-of-month clamp; fixed_date: every year on
+        month_day (MM-DD); cycles: when the meter (hours or cycles) advanced by every units since the last done
+      type: object
+      required: [kind]
+      properties:
+        kind: { type: string, enum: [months, cycles, fixed_date] }
+        every: { type: integer, format: int64, minimum: 1, description: Months, or units of the meter in milli for cycles }
+        month_day: { type: string, pattern: "^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$" }
+        meter_id: { type: string, maxLength: 36 }
+        starts_on: { $ref: "#/components/schemas/IsoDate" }
+
+    ChecklistEntry:
+      type: object
+      required: [key, label]
+      properties:
+        key: { type: string, minLength: 1, maxLength: 40, pattern: "^[a-z0-9_]+$" }
+        label: { type: string, minLength: 1, maxLength: 200 }
+
+    ChecklistResult:
+      type: object
+      required: [key, done]
+      properties:
+        key: { type: string, maxLength: 40 }
+        done: { type: boolean }
+        note: { type: string, maxLength: 500 }
+
+    MaintenancePlan:
+      type: object
+      required: [id, name, intervention, targets, periodicity, lead_days, checklist, requires_free, nights, active,
+                 version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        intervention: { $ref: "#/components/schemas/MaintenanceIntervention" }
+        intervention_label: { type: string }
+        targets: { type: array, items: { $ref: "#/components/schemas/MaintenanceElementRef" } }
+        periodicity: { $ref: "#/components/schemas/MaintenancePeriodicity" }
+        lead_days: { type: integer }
+        assignee_user_id: { type: string }
+        supplier_name: { type: string }
+        checklist: { type: array, items: { $ref: "#/components/schemas/ChecklistEntry" } }
+        requires_free: { type: boolean }
+        nights: { type: integer }
+        active: { type: boolean }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    MaintenancePlanInput:
+      type: object
+      required: [name, intervention, targets, periodicity]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100 }
+        intervention: { $ref: "#/components/schemas/MaintenanceIntervention" }
+        intervention_label: { type: string, maxLength: 100, description: Required for custom }
+        targets:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items: { $ref: "#/components/schemas/MaintenanceElementRef" }
+        periodicity: { $ref: "#/components/schemas/MaintenancePeriodicity" }
+        lead_days: { type: integer, minimum: 0, maximum: 180 }
+        assignee_user_id: { type: string, maxLength: 36 }
+        supplier_name: { type: string, maxLength: 100 }
+        checklist:
+          type: array
+          maxItems: 40
+          items: { $ref: "#/components/schemas/ChecklistEntry" }
+        requires_free: { type: boolean }
+        nights: { type: integer, minimum: 1, maximum: 60 }
+        active: { type: boolean }
+
+    MaintenancePlanPatch:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100 }
+        intervention: { $ref: "#/components/schemas/MaintenanceIntervention" }
+        intervention_label: { type: string, maxLength: 100 }
+        targets:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items: { $ref: "#/components/schemas/MaintenanceElementRef" }
+        periodicity: { $ref: "#/components/schemas/MaintenancePeriodicity" }
+        lead_days: { type: integer, minimum: 0, maximum: 180 }
+        assignee_user_id: { type: [string, "null"], maxLength: 36 }
+        supplier_name: { type: [string, "null"], maxLength: 100 }
+        checklist:
+          type: array
+          maxItems: 40
+          items: { $ref: "#/components/schemas/ChecklistEntry" }
+        requires_free: { type: boolean }
+        nights: { type: integer, minimum: 1, maximum: 60 }
+        active: { type: boolean }
+
+    MaintenancePlanPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/MaintenancePlan" } }
+        next_cursor: { type: [string, "null"] }
+
+    MaintenanceTaskStatus:
+      type: string
+      enum: [open, scheduled, in_progress, done, cancelled]
+
+    MaintenancePriority:
+      type: string
+      enum: [low, normal, high, urgent]
+
+    MaintenanceOutcome:
+      type: string
+      enum: [ok, fixed, needs_followup, not_done]
+
+    MaintenanceSource:
+      type: string
+      enum: [plan, office, report]
+
+    MaintenanceFile:
+      type: object
+      required: [file_id, kind, content_type, created_at]
+      properties:
+        file_id: { type: string }
+        kind: { type: string, enum: [photo, document] }
+        content_type: { type: string }
+        created_at: { type: string, format: date-time }
+
+    MaintenanceTask:
+      type: object
+      required: [id, source, title, priority, status, out_of_service, overdue, checklist, checklist_results,
+                 allocation_ids, files, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        element: { $ref: "#/components/schemas/MaintenanceElementRef" }
+        plan_id: { type: string }
+        intervention: { $ref: "#/components/schemas/MaintenanceIntervention" }
+        source: { $ref: "#/components/schemas/MaintenanceSource" }
+        title: { type: string }
+        description: { type: string }
+        priority: { $ref: "#/components/schemas/MaintenancePriority" }
+        status: { $ref: "#/components/schemas/MaintenanceTaskStatus" }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        overdue: { type: boolean }
+        scheduled_from: { $ref: "#/components/schemas/IsoDate" }
+        scheduled_to: { $ref: "#/components/schemas/IsoDate" }
+        out_of_service: { type: boolean }
+        map_id: { type: string }
+        position_x_cm: { $ref: "#/components/schemas/Cm" }
+        position_y_cm: { $ref: "#/components/schemas/Cm" }
+        checklist: { type: array, items: { $ref: "#/components/schemas/ChecklistEntry" } }
+        checklist_results: { type: array, items: { $ref: "#/components/schemas/ChecklistResult" } }
+        outcome: { $ref: "#/components/schemas/MaintenanceOutcome" }
+        outcome_notes: { type: string }
+        internal_minutes: { type: integer }
+        external_cost_cents: { $ref: "#/components/schemas/Cents" }
+        supplier_ref: { type: string }
+        assignee_user_id: { type: string }
+        reported_by_user_id: { type: string }
+        follows_task_id: { type: string }
+        allocation_ids: { type: array, items: { type: string } }
+        files: { type: array, items: { $ref: "#/components/schemas/MaintenanceFile" } }
+        done_at: { type: string, format: date-time }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    MaintenanceTaskPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/MaintenanceTask" } }
+        next_cursor: { type: [string, "null"] }
+
+    MaintenanceTaskCreate:
+      type: object
+      required: [title]
+      properties:
+        element: { $ref: "#/components/schemas/MaintenanceElementRef" }
+        title: { type: string, minLength: 1, maxLength: 200 }
+        description: { type: string, maxLength: 2000 }
+        priority: { $ref: "#/components/schemas/MaintenancePriority" }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        assignee_user_id: { type: string, maxLength: 36 }
+        out_of_service: { type: boolean }
+        follows_task_id: { type: string, maxLength: 36 }
+        map_id: { type: string, maxLength: 36 }
+        position_x_cm: { $ref: "#/components/schemas/Cm" }
+        position_y_cm: { $ref: "#/components/schemas/Cm" }
+
+    MaintenanceTaskPatch:
+      type: object
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        description: { type: string, maxLength: 2000 }
+        priority: { $ref: "#/components/schemas/MaintenancePriority" }
+        due_on: { type: [string, "null"], format: date, x-go-type: string }
+        assignee_user_id: { type: [string, "null"], maxLength: 36 }
+        supplier_ref: { type: string, maxLength: 100 }
+        out_of_service: { type: boolean }
+
+    MaintenanceScheduleInput:
+      type: object
+      required: [from_night, to_night]
+      properties:
+        from_night: { $ref: "#/components/schemas/IsoDate" }
+        to_night: { $ref: "#/components/schemas/IsoDate" }
+        out_of_service: { type: boolean }
+        occupy_berth_ids:
+          description: For a structure task, the berths of the structure to occupy (D24)
+          type: array
+          maxItems: 200
+          items: { type: string, maxLength: 36 }
+
+    MaintenanceConflict:
+      description: One entry of details.conflicts of 409 maintenance_conflicts
+      type: object
+      required: [allocation_id, resource_type, resource_id, from, to, alternatives]
+      properties:
+        allocation_id: { type: string }
+        vessel_id: { type: string }
+        contract_id: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        alternatives: { type: array, maxItems: 3, items: { $ref: "#/components/schemas/OccupancySolution" } }
+
+    MaintenanceCompleteInput:
+      type: object
+      required: [outcome]
+      properties:
+        outcome: { $ref: "#/components/schemas/MaintenanceOutcome" }
+        notes: { type: string, maxLength: 2000 }
+        checklist_results:
+          type: array
+          maxItems: 40
+          items: { $ref: "#/components/schemas/ChecklistResult" }
+        internal_minutes: { type: integer, minimum: 0, maximum: 100000 }
+        external_cost_cents: { type: integer, format: int64, minimum: 0 }
+        supplier_ref: { type: string, maxLength: 100 }
+        client_ref: { type: string, minLength: 8, maxLength: 128, pattern: "^[A-Za-z0-9_\\-:.]+$" }
+
+    MaintenanceReleaseInput:
+      type: object
+      properties:
+        last_night: { $ref: "#/components/schemas/IsoDate", description: Keep the nights up to this one; absent = release every future night }
+
+    MaintenanceCancelInput:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 500 }
+
+    MaintenanceReportInput:
+      description: element, or map_id with a position, or both
+      type: object
+      required: [client_ref, title]
+      properties:
+        client_ref: { type: string, minLength: 8, maxLength: 128, pattern: "^[A-Za-z0-9_\\-:.]+$" }
+        element: { $ref: "#/components/schemas/MaintenanceElementRef" }
+        map_id: { type: string, maxLength: 36 }
+        position_x_cm: { $ref: "#/components/schemas/Cm" }
+        position_y_cm: { $ref: "#/components/schemas/Cm" }
+        title: { type: string, minLength: 1, maxLength: 200 }
+        description: { type: string, maxLength: 2000 }
+        priority: { $ref: "#/components/schemas/MaintenancePriority" }
+
+    MaintenanceWorklist:
+      type: object
+      required: [date, items]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        items: { type: array, items: { $ref: "#/components/schemas/MaintenanceTask" } }
+
+    MaintenanceMapEntry:
+      type: object
+      required: [element_type, element_id, open, overdue, out_of_service]
+      properties:
+        element_type: { $ref: "#/components/schemas/MaintenanceElementType" }
+        element_id: { type: string }
+        open: { type: integer }
+        overdue: { type: integer }
+        out_of_service: { type: boolean }
+
+    MaintenanceMap:
+      type: object
+      required: [map_id, date, items]
+      properties:
+        map_id: { type: string }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        items: { type: array, items: { $ref: "#/components/schemas/MaintenanceMapEntry" } }
+
+    # ---- M9 utilities (spec 20.4) ----
+
+    MeterKind:
+      type: string
+      enum: [power, water, hours, cycles]
+
+    UtilityUnit:
+      type: string
+      enum: [kwh, m3, h, cycle]
+
+    MeterReadingBrief:
+      type: object
+      required: [id, value_milli, read_at, read_on]
+      properties:
+        id: { type: string }
+        value_milli: { $ref: "#/components/schemas/QtyMilli" }
+        read_at: { type: string, format: date-time }
+        read_on: { $ref: "#/components/schemas/IsoDate" }
+
+    UtilityMeter:
+      type: object
+      required: [id, code, kind, unit, multiplier_milli, active, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        kind: { $ref: "#/components/schemas/MeterKind" }
+        unit: { $ref: "#/components/schemas/UtilityUnit" }
+        pedestal_id: { type: string }
+        socket_code: { type: string }
+        serial: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        equipment_id: { type: string }
+        item_id: { type: string }
+        multiplier_milli: { $ref: "#/components/schemas/QtyMilli" }
+        rollover_milli: { $ref: "#/components/schemas/QtyMilli" }
+        daily_threshold_milli: { $ref: "#/components/schemas/QtyMilli" }
+        active: { type: boolean }
+        last_reading: { $ref: "#/components/schemas/MeterReadingBrief" }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    UtilityMeterInput:
+      type: object
+      required: [code, kind, unit]
+      properties:
+        code: { $ref: "#/components/schemas/Code" }
+        kind: { $ref: "#/components/schemas/MeterKind" }
+        unit: { $ref: "#/components/schemas/UtilityUnit" }
+        pedestal_id: { type: string, maxLength: 36 }
+        socket_code: { type: string, maxLength: 32 }
+        serial: { type: string, maxLength: 64 }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string, maxLength: 36 }
+        equipment_id: { type: string, maxLength: 36 }
+        item_id: { type: string, maxLength: 36 }
+        multiplier_milli: { type: integer, format: int64, minimum: 1 }
+        rollover_milli: { type: integer, format: int64, minimum: 1 }
+        daily_threshold_milli: { type: integer, format: int64, minimum: 1 }
+        active: { type: boolean }
+
+    UtilityMeterPatch:
+      type: object
+      properties:
+        code: { $ref: "#/components/schemas/Code" }
+        pedestal_id: { type: [string, "null"], maxLength: 36 }
+        socket_code: { type: [string, "null"], maxLength: 32 }
+        serial: { type: [string, "null"], maxLength: 64 }
+        resource_type: { type: [string, "null"], maxLength: 16, description: "berth, dynamic_area or land_resource" }
+        resource_id: { type: [string, "null"], maxLength: 36 }
+        equipment_id: { type: [string, "null"], maxLength: 36 }
+        item_id: { type: [string, "null"], maxLength: 36 }
+        multiplier_milli: { type: integer, format: int64, minimum: 1 }
+        rollover_milli: { type: [integer, "null"], format: int64, minimum: 1 }
+        daily_threshold_milli: { type: [integer, "null"], format: int64, minimum: 1 }
+        active: { type: boolean }
+
+    UtilityMeterPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/UtilityMeter" } }
+        next_cursor: { type: [string, "null"] }
+
+    MeterReadingKind:
+      type: string
+      enum: [regular, initial, replacement_old, replacement_new]
+
+    MeterReadingStatus:
+      type: string
+      enum: [valid, anomaly, confirmed, void]
+
+    MeterReadingSource:
+      description: sensor is reserved for M12
+      type: string
+      enum: [staff, import, sensor]
+
+    MeterAnomalyCode:
+      type: string
+      enum: [negative, rollover, over_threshold, out_of_order, gap]
+
+    MeterReading:
+      type: object
+      required: [id, meter_id, read_at, read_on, value_milli, kind, source, status, anomaly_codes, version, created_at]
+      properties:
+        id: { type: string }
+        meter_id: { type: string }
+        read_at: { type: string, format: date-time }
+        read_on: { $ref: "#/components/schemas/IsoDate" }
+        value_milli: { $ref: "#/components/schemas/QtyMilli" }
+        delta_milli: { $ref: "#/components/schemas/QtyMilli", description: Difference from the previous valid reading (after multiplier) }
+        kind: { $ref: "#/components/schemas/MeterReadingKind" }
+        source: { $ref: "#/components/schemas/MeterReadingSource" }
+        photo_file_id: { type: string }
+        user_id: { type: string }
+        note: { type: string }
+        status: { $ref: "#/components/schemas/MeterReadingStatus" }
+        anomaly_codes: { type: array, items: { $ref: "#/components/schemas/MeterAnomalyCode" } }
+        client_ref: { type: string }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+
+    MeterReadingCreate:
+      type: object
+      required: [meter_id, value]
+      properties:
+        meter_id: { type: string, maxLength: 36 }
+        value: { type: string, pattern: "^[0-9]{1,12}([.,][0-9]{1,3})?$", description: Cumulative index, decimal string with at most 3 decimals }
+        kind: { $ref: "#/components/schemas/MeterReadingKind" }
+        note: { type: string, maxLength: 500 }
+        read_at: { type: string, format: date-time }
+        client_ref: { type: string, minLength: 8, maxLength: 128, pattern: "^[A-Za-z0-9_\\-:.]+$" }
+
+    MeterReadingPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/MeterReading" } }
+        next_cursor: { type: [string, "null"] }
+
+    MeterReadingPhoto:
+      type: object
+      required: [file_id]
+      properties:
+        file_id: { type: string }
+
+    MeterReadingVoidInput:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 500 }
+
+    UtilityConsumptionStatus:
+      type: string
+      enum: [pending, anomaly, unassigned, charged, excluded]
+
+    UtilityConsumption:
+      type: object
+      required: [id, meter_id, kind, from_reading_id, to_reading_id, first_night, last_night, qty_milli, status, version]
+      properties:
+        id: { type: string }
+        meter_id: { type: string }
+        meter_code: { type: string }
+        kind: { $ref: "#/components/schemas/MeterKind" }
+        from_reading_id: { type: string }
+        to_reading_id: { type: string }
+        contract: { $ref: "#/components/schemas/ContractBrief" }
+        allocation_id: { type: string }
+        customer_id: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        status: { $ref: "#/components/schemas/UtilityConsumptionStatus" }
+        charge_id: { type: string }
+        billing_id: { type: string }
+        exclude_reason: { type: string }
+        version: { type: integer, format: int64 }
+
+    UtilityConsumptionPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/UtilityConsumption" } }
+        next_cursor: { type: [string, "null"] }
+
+    UtilityConsumptionExclude:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 500 }
+
+    UtilityConsumptionAssign:
+      type: object
+      required: [contract_id]
+      properties:
+        contract_id: { type: string, maxLength: 36 }
+
+    UtilityChargeRunResult:
+      type: object
+      required: [charges, skipped]
+      properties:
+        charges:
+          type: array
+          items:
+            type: object
+            required: [charge_id, billing_id, contract_id, lines, total_cents]
+            properties:
+              charge_id: { type: string }
+              billing_id: { type: string }
+              contract_id: { type: string }
+              lines: { type: integer }
+              total_cents: { $ref: "#/components/schemas/Cents" }
+              adjustment: { type: boolean, description: An adjustment charge linked to an exported charge (INV-51) }
+        skipped:
+          type: array
+          items:
+            type: object
+            required: [reason]
+            properties:
+              contract_id: { type: string }
+              consumption_id: { type: string }
+              reason: { type: string, enum: [no_price, anomaly, unassigned, not_due] }
+
+    UtilityChargingMode:
+      type: string
+      enum: [with_installment, monthly]
+
+    UtilitySettings:
+      type: object
+      required: [mode, version]
+      properties:
+        power_item_id: { type: string }
+        water_item_id: { type: string }
+        mode: { $ref: "#/components/schemas/UtilityChargingMode" }
+        power_daily_threshold_milli: { $ref: "#/components/schemas/QtyMilli" }
+        water_daily_threshold_milli: { $ref: "#/components/schemas/QtyMilli" }
+        version: { type: integer, format: int64 }
+
+    UtilitySettingsInput:
+      type: object
+      required: [mode]
+      properties:
+        power_item_id: { type: [string, "null"], maxLength: 36 }
+        water_item_id: { type: [string, "null"], maxLength: 36 }
+        mode: { $ref: "#/components/schemas/UtilityChargingMode" }
+        power_daily_threshold_milli: { type: [integer, "null"], format: int64, minimum: 1 }
+        water_daily_threshold_milli: { type: [integer, "null"], format: int64, minimum: 1 }
+
+    # ---- M9 reports (m9-plan §11, M7 machinery) ----
+
+    StorageReportTotals:
+      type: object
+      required: [available_m2_nights_milli, occupied_m2_nights_milli, occupancy_bp, boats, exits_blocked]
+      properties:
+        available_m2_nights_milli: { $ref: "#/components/schemas/QtyMilli", description: Denominator }
+        occupied_m2_nights_milli: { $ref: "#/components/schemas/QtyMilli", description: Numerator (footprint) }
+        hull_m2_nights_milli: { $ref: "#/components/schemas/QtyMilli" }
+        occupancy_bp: { type: [integer, "null"], format: int64 }
+        boats: { type: integer, format: int64 }
+        exits_blocked: { type: integer, format: int64 }
+        production_cents: { $ref: "#/components/schemas/Cents", description: reports.all only }
+
+    StorageReportGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/StorageReportTotals" }
+
+    StorageReportRecord:
+      type: object
+      required: [allocation_id, area_id, area_code, map_kind, nights, hull_m2_nights_milli, footprint_m2_nights_milli,
+                 exit_blocked, ref]
+      properties:
+        allocation_id: { type: string }
+        area_id: { type: string }
+        area_code: { type: string }
+        map_kind: { $ref: "#/components/schemas/MapKind" }
+        vessel_id: { type: string }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        contract_kind: { $ref: "#/components/schemas/ContractKind" }
+        contract_code: { type: string }
+        nights: { type: integer, format: int64 }
+        hull_m2_nights_milli: { $ref: "#/components/schemas/QtyMilli" }
+        footprint_m2_nights_milli: { $ref: "#/components/schemas/QtyMilli" }
+        exit_on: { $ref: "#/components/schemas/IsoDate" }
+        exit_blocked: { type: boolean }
+        production_cents: { $ref: "#/components/schemas/Cents" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    StorageReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/StorageReportTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/StorageReportGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/StorageReportRecord" } }
+
+    MaintenanceReportTotals:
+      type: object
+      required: [tasks, open, scheduled, in_progress, done, cancelled, overdue, internal_minutes]
+      properties:
+        tasks: { type: integer, format: int64 }
+        open: { type: integer, format: int64 }
+        scheduled: { type: integer, format: int64 }
+        in_progress: { type: integer, format: int64 }
+        done: { type: integer, format: int64 }
+        cancelled: { type: integer, format: int64 }
+        overdue: { type: integer, format: int64 }
+        internal_minutes: { type: integer, format: int64 }
+        external_cost_cents: { $ref: "#/components/schemas/Cents", description: reports.all only }
+
+    MaintenanceReportGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/MaintenanceReportTotals" }
+
+    MaintenanceReportRecord:
+      type: object
+      required: [task_id, source, priority, status, overdue_days, ref]
+      properties:
+        task_id: { type: string }
+        element: { $ref: "#/components/schemas/MaintenanceElementRef" }
+        intervention: { $ref: "#/components/schemas/MaintenanceIntervention" }
+        source: { $ref: "#/components/schemas/MaintenanceSource" }
+        priority: { $ref: "#/components/schemas/MaintenancePriority" }
+        status: { $ref: "#/components/schemas/MaintenanceTaskStatus" }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        done_on: { $ref: "#/components/schemas/IsoDate" }
+        overdue_days: { type: integer, format: int64 }
+        internal_minutes: { type: integer, format: int64 }
+        external_cost_cents: { $ref: "#/components/schemas/Cents" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    MaintenanceReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/MaintenanceReportTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/MaintenanceReportGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/MaintenanceReportRecord" } }
+
+    UtilitiesReportTotals:
+      type: object
+      required: [power_milli, water_milli, hours_milli, cycles_milli, pending_milli, unassigned_milli, charged_milli]
+      properties:
+        power_milli: { $ref: "#/components/schemas/QtyMilli" }
+        water_milli: { $ref: "#/components/schemas/QtyMilli" }
+        hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        cycles_milli: { $ref: "#/components/schemas/QtyMilli" }
+        pending_milli: { $ref: "#/components/schemas/QtyMilli" }
+        unassigned_milli: { $ref: "#/components/schemas/QtyMilli" }
+        charged_milli: { $ref: "#/components/schemas/QtyMilli" }
+        charged_cents: { $ref: "#/components/schemas/Cents", description: reports.all only }
+        pending_value_cents: { $ref: "#/components/schemas/Cents", description: At the current price, reports.all only }
+
+    UtilitiesReportGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/UtilitiesReportTotals" }
+
+    UtilitiesReportRecord:
+      type: object
+      required: [consumption_id, meter_id, meter_code, kind, first_night, last_night, nights, qty_milli, status, ref]
+      properties:
+        consumption_id: { type: string }
+        meter_id: { type: string }
+        meter_code: { type: string }
+        kind: { $ref: "#/components/schemas/MeterKind" }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        resource_id: { type: string }
+        contract_id: { type: string }
+        contract_code: { type: string }
+        first_night: { $ref: "#/components/schemas/IsoDate" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+        nights: { type: integer, format: int64 }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        status: { $ref: "#/components/schemas/UtilityConsumptionStatus" }
+        charged_cents: { $ref: "#/components/schemas/Cents" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    UtilitiesReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/UtilitiesReportTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/UtilitiesReportGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/UtilitiesReportRecord" } }

@@ -19,7 +19,11 @@
     "yard_hours": "Hours worked",
     "yard_margin": "Boatyard margin",
     "rental_utilisation": "Rental fleet utilisation",
-    "rental_revenue": "Rental revenue"
+    "rental_revenue": "Rental revenue",
+    "storage_occupancy": "Storage occupancy",
+    "storage_exits_blocked": "Blocked exits (30 days)",
+    "maintenance_overdue": "Overdue maintenance",
+    "utility_unbilled": "Consumption to charge"
   },
   "periods": {
     "mtd": "Month to date",

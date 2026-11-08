@@ -364,7 +364,7 @@ func TestRegistryHandlers_Operations(t *testing.T) {
 	}
 	o.expect(t, 412, "version_conflict", "PATCH", M+"/deadlines/"+sstr(dl, "id"), map[string]any{"status": "open"}, "If-Match", `"1"`)
 	o.expect(t, 404, "not_found", "PATCH", M+"/deadlines/"+missing, map[string]any{"status": "open"}, "If-Match", `"1"`)
-	if ps := o.expect(t, 200, "", "GET", M+"/deadline-policies", nil); len(ps["items"].([]any)) != 20 { // M1 kinds and the M4 engine kinds
+	if ps := o.expect(t, 200, "", "GET", M+"/deadline-policies", nil); len(ps["items"].([]any)) != 21 { // M1 kinds, the M4 engine kinds and M9 maintenance_due
 		t.Fatalf("policies %v", ps)
 	}
 	o.expect(t, 200, "", "PUT", M+"/deadline-policies", map[string]any{"items": []map[string]any{{"kind": "insurance", "lead_days": []int{30, 90}}}})

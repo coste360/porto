@@ -29,21 +29,25 @@ type Vessel struct {
 	Hull           string  `json:"hull"`
 	PowerRequiredA *int64  `json:"power_required_a,omitempty"`
 	InsuranceUntil *string `json:"insurance_until,omitempty"`
+	Support        string  `json:"support,omitempty"`
+	DisplacementKg *int64  `json:"displacement_kg,omitempty"`
 }
 
 // Target is the wire form of fit.Target.
 type Target struct {
-	Kind            string `json:"kind"`
-	MaxLOACm        int64  `json:"max_loa_cm"`
-	MaxBeamCm       int64  `json:"max_beam_cm"`
-	LengthCm        int64  `json:"length_cm"`
-	WidthCm         int64  `json:"width_cm"`
-	DepthCm         *int64 `json:"depth_cm,omitempty"`
-	MaxAirDraftCm   *int64 `json:"max_air_draft_cm,omitempty"`
-	MultihullOK     bool   `json:"multihull_ok"`
-	OverhangAllowed bool   `json:"overhang_allowed"`
-	PowerA          *int64 `json:"power_a,omitempty"`
-	LandKind        string `json:"land_kind,omitempty"`
+	Kind            string   `json:"kind"`
+	MaxLOACm        int64    `json:"max_loa_cm"`
+	MaxBeamCm       int64    `json:"max_beam_cm"`
+	LengthCm        int64    `json:"length_cm"`
+	WidthCm         int64    `json:"width_cm"`
+	DepthCm         *int64   `json:"depth_cm,omitempty"`
+	MaxAirDraftCm   *int64   `json:"max_air_draft_cm,omitempty"`
+	MultihullOK     bool     `json:"multihull_ok"`
+	OverhangAllowed bool     `json:"overhang_allowed"`
+	PowerA          *int64   `json:"power_a,omitempty"`
+	LandKind        string   `json:"land_kind,omitempty"`
+	Supports        []string `json:"supports,omitempty"`
+	MaxWeightKg     *int64   `json:"max_weight_kg,omitempty"`
 }
 
 // Rules is the wire form of fit.Rules.
@@ -60,6 +64,8 @@ type Expect struct {
 	Blocking []string `json:"blocking"`
 	Warnings []string `json:"warnings"`
 	FillBP   int64    `json:"fill_bp"`
+	// Overridable is false when a physical code blocks (vessel_invalid, support_not_allowed).
+	Overridable bool `json:"overridable"`
 }
 
 // Case is one vector.
@@ -85,6 +91,7 @@ func (c Case) ToFit() (fit.Vessel, fit.Target, calendar.Date, fit.Rules) {
 	v := fit.Vessel{
 		LOA: geo.Cm(c.Vessel.LOACm), Beam: geo.Cm(c.Vessel.BeamCm), Draft: cmPtr(c.Vessel.DraftCm),
 		AirDraft: cmPtr(c.Vessel.AirDraftCm), Hull: c.Vessel.Hull, PowerRequiredA: c.Vessel.PowerRequiredA,
+		Support: c.Vessel.Support, DisplacementKg: c.Vessel.DisplacementKg,
 	}
 	if c.Vessel.InsuranceUntil != nil {
 		d := calendar.MustParse(*c.Vessel.InsuranceUntil)
@@ -95,6 +102,7 @@ func (c Case) ToFit() (fit.Vessel, fit.Target, calendar.Date, fit.Rules) {
 		Length: geo.Cm(c.Target.LengthCm), Width: geo.Cm(c.Target.WidthCm), Depth: cmPtr(c.Target.DepthCm),
 		MaxAirDraft: cmPtr(c.Target.MaxAirDraftCm), MultihullOK: c.Target.MultihullOK,
 		OverhangAllowed: c.Target.OverhangAllowed, PowerA: c.Target.PowerA, LandKind: c.Target.LandKind,
+		Supports: c.Target.Supports, MaxWeightKg: c.Target.MaxWeightKg,
 	}
 	r := fit.Rules{
 		LOATolerance: geo.Cm(c.Rules.LOAToleranceCm), SafetyClearance: geo.Cm(c.Rules.SafetyClearanceCm),
@@ -106,7 +114,10 @@ func (c Case) ToFit() (fit.Vessel, fit.Target, calendar.Date, fit.Rules) {
 // Run evaluates a case with fit.Check.
 func Run(c Case) Expect {
 	res := fit.Check(c.ToFit())
-	return Expect{OK: res.OK, Blocking: res.BlockingCodeList(), Warnings: res.WarningCodeList(), FillBP: res.FillBP}
+	return Expect{
+		OK: res.OK, Blocking: res.BlockingCodeList(), Warnings: res.WarningCodeList(), FillBP: res.FillBP,
+		Overridable: res.Overridable,
+	}
 }
 
 func p(v int64) *int64 { return &v }
@@ -142,6 +153,13 @@ func hand(name string, e Expect, edits ...edit) Case {
 	}
 	if e.Warnings == nil {
 		e.Warnings = []string{}
+	}
+	// Only the physical codes make a result non-overridable.
+	e.Overridable = true
+	for _, b := range e.Blocking {
+		if b == fit.CodeVesselInvalid || b == fit.CodeSupportNotAllowed {
+			e.Overridable = false
+		}
 	}
 	c.Expect = e
 	return c
@@ -180,9 +198,13 @@ func land(k string) edit {
 		c.Target = Target{Kind: "land", LandKind: k, MaxLOACm: 1300, MaxBeamCm: 450, LengthCm: 1300, WidthCm: 450}
 	}
 }
-func tolerance(v int64) edit { return func(c *Case) { c.Rules.LOAToleranceCm = v } }
-func clearance(v int64) edit { return func(c *Case) { c.Rules.SafetyClearanceCm = v } }
-func waste(v int64) edit     { return func(c *Case) { c.Rules.WasteThresholdBP = v } }
+func support(s string) edit      { return func(c *Case) { c.Vessel.Support = s } }
+func displacement(v *int64) edit { return func(c *Case) { c.Vessel.DisplacementKg = v } }
+func supports(s ...string) edit  { return func(c *Case) { c.Target.Supports = s } }
+func maxWeight(v *int64) edit    { return func(c *Case) { c.Target.MaxWeightKg = v } }
+func tolerance(v int64) edit     { return func(c *Case) { c.Rules.LOAToleranceCm = v } }
+func clearance(v int64) edit     { return func(c *Case) { c.Rules.SafetyClearanceCm = v } }
+func waste(v int64) edit         { return func(c *Case) { c.Rules.WasteThresholdBP = v } }
 
 // fill of the default vessel on the default berth: 1100×380 / (1200×450) = 0.774074… → 7741 bp.
 const baseFill = 7741
@@ -264,6 +286,18 @@ func Handwritten() []Case {
 		hand("trailer spot beam + 1", blocked(8480, B(fit.CodeBeamExceeds)), land("trailer_spot"), beam(451), loa(1100)),
 		hand("trailer spot fits", ok(7145), land("trailer_spot")),
 		hand("cradle catamaran blocks", blocked(7145, B(fit.CodeMultihullNotAllowed)), land("cradle"), hull(fit.HullCatamaran)),
+		// m9-plan §3.3: supports and weight on surfaces.
+		hand("surface support accepted", ok(10000), kind("surface_area"), support("cradle"), supports("cradle", "trailer")),
+		hand("surface support refused", blocked(10000, B(fit.CodeSupportNotAllowed)), kind("surface_area"), support("rack"), supports("cradle", "trailer")),
+		hand("surface support none refused by a list", blocked(10000, B(fit.CodeSupportNotAllowed)), kind("surface_area"), support("none"), supports("rack")),
+		hand("surface any support when the list is empty", ok(10000), kind("surface_area"), support("rack")),
+		hand("unknown support skips", ok(10000), kind("surface_area"), supports("cradle")),
+		hand("weight = limit", ok(10000), kind("surface_area"), displacement(p(8000)), maxWeight(p(8000))),
+		hand("weight = limit + 1 blocks", blocked(10000, B(fit.CodeWeightExceeds)), kind("surface_area"), displacement(p(8001)), maxWeight(p(8000))),
+		hand("unknown weight skips", ok(10000), kind("surface_area"), maxWeight(p(10))),
+		hand("no weight limit skips", ok(10000), kind("surface_area"), displacement(p(90000))),
+		hand("support and weight sorted", blocked(10000, B(fit.CodeLOAExceeds, fit.CodeSupportNotAllowed, fit.CodeWeightExceeds)),
+			kind("surface_area"), loa(1300), support("trailer"), supports("cradle"), displacement(p(5000)), maxWeight(p(4000))),
 	}
 }
 
@@ -284,9 +318,10 @@ func (g *splitmix) in(lo, hi int64) int64 { return lo + int64(g.next()%uint64(hi
 func (g *splitmix) chance(pct int64) bool { return g.in(1, 100) <= pct }
 
 var (
-	hulls     = []string{"monohull_motor", "monohull_sail", "catamaran", "trimaran", "rib", "gozzo", "other"}
-	kinds     = []string{"berth", "berth", "berth", "linear_area", "surface_area", "land"}
-	landKinds = []string{"parking", "box", "storeroom", "locker", "cradle", "trailer_spot", "custom"}
+	hulls        = []string{"monohull_motor", "monohull_sail", "catamaran", "trimaran", "rib", "gozzo", "other"}
+	kinds        = []string{"berth", "berth", "berth", "linear_area", "surface_area", "land"}
+	landKinds    = []string{"parking", "box", "storeroom", "locker", "cradle", "trailer_spot", "custom"}
+	supportKinds = []string{"cradle", "trailer", "rack", "none"}
 )
 
 // Random returns n seeded random cases; their expectations are the Go results.
@@ -317,6 +352,18 @@ func Random(seed uint64, n int) []Case {
 		if t.Kind == "land" {
 			t.LandKind = landKinds[g.in(0, int64(len(landKinds)-1))]
 		}
+		if g.chance(30) {
+			v.Support = supportKinds[g.in(0, int64(len(supportKinds)-1))]
+		}
+		if g.chance(30) {
+			for _, k := range supportKinds[:3] {
+				if g.chance(50) {
+					t.Supports = append(t.Supports, k)
+				}
+			}
+		}
+		v.DisplacementKg = opt(40, 500, 30000)
+		t.MaxWeightKg = opt(30, 1000, 40000)
 		r := Rules{LOAToleranceCm: g.in(0, 100), SafetyClearanceCm: g.in(0, 60), DepthWarnMarginCm: g.in(0, 30), WasteThresholdBP: g.in(0, 10000)}
 		c := Case{Name: "random " + strconv.Itoa(i+1), Vessel: v, Target: t, LastNight: calendar.New(2027, 6, 1).AddDays(int(g.in(0, 120))).String(), Rules: r}
 		c.Expect = Run(c)

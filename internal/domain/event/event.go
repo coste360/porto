@@ -135,6 +135,16 @@ const (
 	TransitApprovalRequested = "transit.approval_requested"
 )
 
+// M9 event types (version 1, m9-plan §15.1, D28). maintenance.due is public (spec 27.3); the others feed SSE and
+// cache invalidation only. Data carry ids, enums and dates (never meter values, INV-70).
+const (
+	StorageScenarioApplied   = "storage.scenario_applied"
+	StorageMovementDone      = "storage.movement_done"
+	MaintenanceDue           = "maintenance.due"
+	MaintenanceStatusChanged = "maintenance.status_changed"
+	MeterReadingRecorded     = "meter.reading_recorded"
+)
+
 // SSE topics.
 const (
 	TopicMarina = "marina.changed"
@@ -159,6 +169,13 @@ const (
 	// TopicBilling carries charges, exports, payments, refunds, credits, cash, fiscal documents, payment requests,
 	// reminders, provider settings, mandates and the worklist (M5, spec 27.4).
 	TopicBilling = "billing.changed"
+	// TopicStorage carries storage scenarios, applies and movements (M9); storage contracts use TopicContract and
+	// their placements TopicOccupancy.
+	TopicStorage = "storage.changed"
+	// TopicMaintenance carries equipment, plans and maintenance tasks (M9).
+	TopicMaintenance = "maintenance.changed"
+	// TopicUtilities carries meters, readings, consumptions and utility settings (M9).
+	TopicUtilities = "utilities.changed"
 )
 
 // TypeInfo describes an event type. Public types can be subscribed by webhook endpoints; Topic is the SSE event
@@ -260,6 +277,12 @@ var catalogue = []TypeInfo{
 	{BillingChanged, TopicBilling, false},
 	// M8
 	{TransitApprovalRequested, TopicContract, true},
+	// M9
+	{StorageScenarioApplied, TopicStorage, false},
+	{StorageMovementDone, TopicStorage, false},
+	{MaintenanceDue, TopicMaintenance, true},
+	{MaintenanceStatusChanged, TopicMaintenance, false},
+	{MeterReadingRecorded, TopicUtilities, false},
 }
 
 // Types returns the catalogue of event types.

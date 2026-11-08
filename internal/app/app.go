@@ -61,6 +61,10 @@ import (
 	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/domain/webhook"
 	"github.com/coste360/porto/internal/filestore"
+
+	"github.com/coste360/porto/internal/domain/maintenance"
+	"github.com/coste360/porto/internal/domain/storage"
+	"github.com/coste360/porto/internal/domain/utility"
 	httpserver "github.com/coste360/porto/internal/http"
 	"github.com/coste360/porto/internal/http/admin"
 	httpbridge "github.com/coste360/porto/internal/http/bridge"
@@ -183,6 +187,11 @@ type App struct {
 	OnlineConf *onlineconf.Service
 	Portal     *portal.Service
 	Channels   *channel.Service
+
+	// M9 (m9-plan §2): storage, maintenance and utilities.
+	Storage     *storage.Service
+	Maintenance *maintenance.Service
+	Utilities   *utility.Service
 
 	ownDB     bool
 	restartMu sync.Mutex
@@ -324,6 +333,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	}
 	a.wireBilling(x)
 	a.wireBooking(x)
+	a.wireM9()
 	a.Reports = report.NewService(report.Deps{DB: db, Clock: clk, Prices: a.PriceLists, Log: log})
 	a.Presence = presence.NewService(presence.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
@@ -358,6 +368,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			Charges: a.Charges, Payments: a.Payments, Cash: a.Cash, Fiscal: a.Fiscal, Collect: a.Collect,
 			PayDrivers: a.PayDrivers, Reports: a.Reports,
 			Booking: a.Booking, OnlineConf: a.OnlineConf, Channels: a.Channels,
+			Storage: a.Storage, Maintenance: a.Maintenance, Utilities: a.Utilities,
 		},
 		Device: &httpdevice.Handler{
 			Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String(), SecureCookies: cfg.SecureCookies(),
@@ -441,6 +452,25 @@ func (a *App) wireBilling(x ext.Extensions) {
 	a.Payments.SetCash(a.Cash)
 	a.Payments.SetFiscal(a.Fiscal)
 	a.Payments.SetProviderRefunder(a.Collect)
+}
+
+// wireM9 builds the M9 services after billing and booking (m9-plan §2): storage over occupancy and contracts;
+// maintenance over occupancy and deadlines; utilities over charges and contracts.
+func (a *App) wireM9() {
+	cfg, db, clk, log := a.Config, a.DB, a.Clock, a.Log
+	aw := audit.NewWriter(clk)
+	a.Storage = storage.NewService(storage.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Occupancy: a.Occupancy, Contracts: a.Contracts,
+		Prices: a.PriceLists,
+	})
+	a.Maintenance = maintenance.NewService(maintenance.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Files: a.Files,
+		Occupancy: a.Occupancy, Deadlines: a.Deadlines,
+	})
+	a.Utilities = utility.NewService(utility.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Files: a.Files,
+		Charges: a.Charges, Contracts: a.Contracts, Prices: a.PriceLists,
+	})
 }
 
 // wireBooking builds the M8 services after billing (m8-plan §2): settings, booking (over occupancy, contracts,
@@ -551,6 +581,10 @@ func (a *App) registerJobs() error {
 		{Name: channel.JobPull, Every: 5 * time.Minute, Run: a.Channels.RunPull},
 		{Name: channel.JobPush, Every: time.Minute, Run: a.Channels.RunPush},
 		{Name: "portal.cleanup", Every: time.Hour, Run: a.Portal.Cleanup},
+		// M9 (m9-plan §8.2, §9.4). The contract phase registers no-ops; UTILITIES implements them. utilities.charge
+		// is listed after installments.issue and charges the consumptions of the instalments issued that day.
+		{Name: maintenance.JobSchedule, Every: time.Hour, RunAtStart: true, Run: a.Maintenance.RunSchedule},
+		{Name: utility.JobCharge, Every: time.Hour, Run: a.Utilities.RunCharge},
 	}
 	for _, j := range defs {
 		if err := a.Jobs.Register(j); err != nil {

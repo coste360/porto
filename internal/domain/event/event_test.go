@@ -274,6 +274,12 @@ func TestTypes_Catalogue(t *testing.T) {
 			PaymentRequestChanged: {PaymentRequestChanged, TopicBilling, false},
 			ReminderChanged:       {ReminderChanged, TopicBilling, false},
 			BillingChanged:        {BillingChanged, TopicBilling, false},
+			// M9 (m9-plan D28): maintenance.due is public (spec 27.3); the others are internal.
+			StorageScenarioApplied:   {StorageScenarioApplied, TopicStorage, false},
+			StorageMovementDone:      {StorageMovementDone, TopicStorage, false},
+			MaintenanceDue:           {MaintenanceDue, TopicMaintenance, true},
+			MaintenanceStatusChanged: {MaintenanceStatusChanged, TopicMaintenance, false},
+			MeterReadingRecorded:     {MeterReadingRecorded, TopicUtilities, false},
 		}
 		if want, ok := m1[ti.Type]; ok {
 			if ti != want {

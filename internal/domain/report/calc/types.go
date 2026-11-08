@@ -35,6 +35,14 @@ const (
 	KeyRental          ReportKey = "rental"
 )
 
+// M9 report keys (m9-plan §11). CONTRACT seam: PLANNER implements the builders; until then the handlers answer
+// 501 and no M7 code path serves them.
+const (
+	KeyStorage     ReportKey = "storage"
+	KeyMaintenance ReportKey = "maintenance"
+	KeyUtilities   ReportKey = "utilities"
+)
+
 // Unit is the unit of an integer value (OpenAPI ReportUnit).
 type Unit string
 
@@ -785,6 +793,15 @@ const (
 	TileYardMargin         TileKey = "yard_margin"
 	TileRentalUtilisation  TileKey = "rental_utilisation"
 	TileRentalRevenue      TileKey = "rental_revenue"
+)
+
+// M9 tile keys (m9-plan §11). CONTRACT seam: PLANNER adds them to the dashboard (drill = the M9 reports with the
+// same filter, value = Σ records); until then the dashboard does not return them.
+const (
+	TileStorageOccupancy    TileKey = "storage_occupancy"
+	TileStorageExitsBlocked TileKey = "storage_exits_blocked"
+	TileMaintenanceOverdue  TileKey = "maintenance_overdue"
+	TileUtilityUnbilled     TileKey = "utility_unbilled"
 )
 
 // Unavailable reasons of the seam tiles.

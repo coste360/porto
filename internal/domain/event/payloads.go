@@ -595,6 +595,51 @@ const (
 	ChangePaid          = "paid"
 )
 
+// M9 payloads (m9-plan §15.1, D28): ids, enums, dates and counts only; meter values stay out of events.
+
+// StorageScenarioAppliedData is the data of storage.scenario_applied.
+type StorageScenarioAppliedData struct {
+	ScenarioID    string   `json:"scenario_id"`
+	AreaID        string   `json:"area_id"`
+	Moves         int      `json:"moves"`
+	AllocationIDs []string `json:"allocation_ids"`
+}
+
+// StorageMovementDoneData is the data of storage.movement_done.
+type StorageMovementDoneData struct {
+	MovementID   string `json:"movement_id"`
+	AreaID       string `json:"area_id"`
+	AllocationID string `json:"allocation_id"`
+}
+
+// MaintenanceDueData is the data of maintenance.due (public).
+type MaintenanceDueData struct {
+	TaskID      string `json:"task_id"`
+	PlanID      string `json:"plan_id,omitempty"`
+	ElementType string `json:"element_type"`
+	ElementID   string `json:"element_id"`
+	DueOn       string `json:"due_on"`
+}
+
+// MaintenanceStatusChangedData is the data of maintenance.status_changed (also equipment and plan changes, with
+// Entity set).
+type MaintenanceStatusChangedData struct {
+	Entity      string `json:"entity"` // task, plan, equipment
+	ID          string `json:"entity_id"`
+	ElementType string `json:"element_type,omitempty"`
+	ElementID   string `json:"element_id,omitempty"`
+	Status      string `json:"status,omitempty"`
+}
+
+// MeterReadingRecordedData is the data of meter.reading_recorded (also meter, consumption and settings changes, with
+// Entity set).
+type MeterReadingRecordedData struct {
+	Entity  string `json:"entity"` // reading, meter, consumption, settings
+	ID      string `json:"entity_id"`
+	MeterID string `json:"meter_id,omitempty"`
+	Status  string `json:"status,omitempty"`
+}
+
 const sampleID = "01900000-0000-7000-8000-000000000000"
 
 // Samples returns one example payload per event type.
@@ -730,5 +775,15 @@ func Samples() map[string]any {
 		BillingChanged:        BillingChangedData{Entity: "settings", ID: sampleID, Change: ChangeUpdated},
 		// M8
 		TransitApprovalRequested: TransitApprovalData{ContractID: sampleID, Reason: "loa"},
+		// M9
+		StorageScenarioApplied: StorageScenarioAppliedData{ScenarioID: sampleID, AreaID: sampleID, Moves: 3, AllocationIDs: ids},
+		StorageMovementDone:    StorageMovementDoneData{MovementID: sampleID, AreaID: sampleID, AllocationID: sampleID},
+		MaintenanceDue: MaintenanceDueData{
+			TaskID: sampleID, PlanID: sampleID, ElementType: "berth", ElementID: sampleID, DueOn: "2026-05-01",
+		},
+		MaintenanceStatusChanged: MaintenanceStatusChangedData{
+			Entity: "task", ID: sampleID, ElementType: "pedestal", ElementID: sampleID, Status: "scheduled",
+		},
+		MeterReadingRecorded: MeterReadingRecordedData{Entity: "reading", ID: sampleID, MeterID: sampleID, Status: "valid"},
 	}
 }

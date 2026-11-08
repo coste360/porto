@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Hello,</p>
+<p>a planned maintenance task is coming due. Open the maintenance list to schedule it.</p>
+<table>
+{{with v . "task_title"}}<tr><td>Task</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "element_code"}}<tr><td>Element</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "due_on"}}<tr><td>Due</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+{{with v . "link"}}<p><a href="{{.}}">Open maintenance</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

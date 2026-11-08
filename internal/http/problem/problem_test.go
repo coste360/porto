@@ -173,8 +173,8 @@ func TestWriteError_UnmappedIsInternal(t *testing.T) {
 func TestTypes_Registry(t *testing.T) {
 	slug := regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	all := All()
-	if len(all) != 135 {
-		t.Fatalf("declared %d types, want 135 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4 + m5-plan §7.4 + m6a-plan §3.4 + m6b-plan §9.1 + m7-plan §8 + m8-plan §11)", len(all))
+	if len(all) != 149 {
+		t.Fatalf("declared %d types, want 149 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4 + m5-plan §7.4 + m6a-plan §3.4 + m6b-plan §9.1 + m7-plan §8 + m8-plan §11 + m9-plan §15.1)", len(all))
 	}
 	for _, ty := range all {
 		if !slug.MatchString(string(ty)) {
@@ -209,6 +209,10 @@ func TestTypes_Registry(t *testing.T) {
 		AllocationChanged: 409, OfflineNotAllowed: 422, RemoteUnreachable: 503, RemotePinMismatch: 502,
 		PeripheralUnavailable: 503, ClaimExpired: 409, AppPinInvalid: 401,
 		InvalidPeriod: 422, InvalidReportFilter: 422, ReportTooLarge: 422, UnknownIndicator: 422,
+		StorageTargetInvalid: 422, StorageNoSpace: 409, AreaExitsInvalid: 422, PinnedInvalid: 422, TooManyItems: 422,
+		ScenarioWindowInvalid: 422, ScenarioNotDraft: 409, ScenarioConflicts: 409, MovementNotPending: 409,
+		ElementInvalid: 422, MaintenanceConflicts: 409, TaskAlreadyDone: 409, ReadingCharged: 409,
+		ConsumptionFrozen: 409,
 	}
 	for ty, s := range want {
 		if StatusOf(ty) != s {

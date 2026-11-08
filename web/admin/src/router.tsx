@@ -48,6 +48,9 @@ import { phoneRoutes } from './features/phone/routes';
 import { reportsRoutes } from './features/reports/routes';
 import { dashboardRoutes } from './features/dashboard/routes';
 import { onlineRoutes, onlineSettingsRoutes } from './features/online/routes';
+import { storageRoutes } from './features/storage/routes';
+import { maintenanceRoutes } from './features/maintenance/routes';
+import { utilitiesRoutes } from './features/utilities/routes';
 import { CertificateHelpPage } from './features/help/CertificateHelpPage';
 
 export type RouterContext = { queryClient: QueryClient; api: ApiClient };
@@ -243,6 +246,10 @@ export const routeTree = rootRoute.addChildren([
       // M8 (m8-plan §12.3)
       ...onlineRoutes(marinaRoute),
       ...onlineSettingsRoutes(marinaRoute),
+      // M9 (m9-plan §12)
+      ...storageRoutes(marinaRoute),
+      ...maintenanceRoutes(marinaRoute),
+      ...utilitiesRoutes(marinaRoute),
     ]),
   ]),
 ]);

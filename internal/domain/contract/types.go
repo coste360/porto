@@ -64,7 +64,7 @@ const (
 // ContractCode is the display code of a contract, transit or quote: ORM-2026-0001, TRN-2026-0001,
 // PRV-2026-0001 (m3-plan §4.5, §13 D20).
 func ContractCode(series string, year int, number int64) string { //nolint:revive // name fixed by m3-plan §4.5
-	prefix := map[string]string{SeriesMooring: "ORM", SeriesTransit: "TRN", SeriesQuote: "PRV", SeriesCharter: "CHR"}[series]
+	prefix := map[string]string{SeriesMooring: "ORM", SeriesTransit: "TRN", SeriesQuote: "PRV", SeriesCharter: "CHR", SeriesStorage: "RIM"}[series]
 	if prefix == "" {
 		prefix = "CTR"
 	}

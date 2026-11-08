@@ -312,7 +312,7 @@ func (a *App) seedYardMap(ctx context.Context, p *auth.Principal, marinaID strin
 	s.doc.LandPolygons = [][]geo.Point{rectOutline(0, 0, 12000, 8000)}
 	if _, err := s.generate(harbor.GeneratorSpec{
 		Type: "surface_area", KeyPrefix: "yard-", Code: strp("PIAZZALE"), Outline: &[]geo.Point{pt(2000, 1500), pt(10000, 1500), pt(10000, 6500), pt(2000, 6500)},
-		CellCm: i64p(100), MarginCm: i64p(60), Exits: &[]geo.Point{pt(2050, 4050), pt(9950, 4050)},
+		CellCm: i64p(100), MarginCm: i64p(60), Exits: doorCells(2050, 9950, 3750, 6),
 		Lanes: &[]harbor.LaneSpec{{From: pt(2000, 4000), To: pt(10000, 4000), WidthCm: 400}}, MaxLOACm: i64p(2400),
 	}); err != nil {
 		return 0, err
@@ -328,7 +328,7 @@ func (a *App) seedShedMap(ctx context.Context, p *auth.Principal, marinaID strin
 	}
 	if _, err := s.generate(harbor.GeneratorSpec{
 		Type: "surface_area", KeyPrefix: "shed-", Code: strp("CAPANNONE"), Outline: &[]geo.Point{pt(500, 250), pt(4500, 250), pt(4500, 2750), pt(500, 2750)},
-		CellCm: i64p(100), MarginCm: i64p(60), MaxLOACm: i64p(1500), MaxHeightCm: i64p(1400), Exits: &[]geo.Point{pt(550, 1450)},
+		CellCm: i64p(100), MarginCm: i64p(60), MaxLOACm: i64p(1500), MaxHeightCm: i64p(1400), Exits: doorCells(550, -1, 1250, 6),
 	}); err != nil {
 		return 0, err
 	}
@@ -366,4 +366,19 @@ func (a *App) seedParkingMap(ctx context.Context, p *auth.Principal, marinaID st
 	}
 	_, err = s.save()
 	return 0, err
+}
+
+// doorCells returns the exit points of a demo door n cells (1 m each) tall on the left grid edge (x at the centre
+// of column 0) and, when right ≥ 0, on the right edge too, from the cell centre y0 downwards. A storage boat leaves
+// through a door at least beam + margin wide (m9-plan D7), so a one-cell door would lock every boat in.
+func doorCells(left, right, y0 geo.Cm, n int) *[]geo.Point {
+	var out []geo.Point
+	for i := range n {
+		y := y0 + geo.Cm(i)*100
+		out = append(out, pt(left, y))
+		if right >= 0 {
+			out = append(out, pt(right, y))
+		}
+	}
+	return &out
 }

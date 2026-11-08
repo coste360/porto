@@ -1,4 +1,4 @@
-// Package testdb runs database tests on every available dialect: SQLite (in memory, always) and PostgreSQL when
+// Package testdb runs database tests on every available dialect: SQLite (a WAL file in the test temp dir, always) and PostgreSQL when
 // PORTO_TEST_POSTGRES_URL is set. Each test gets a fresh, migrated database (a private schema on PostgreSQL).
 package testdb
 
@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -42,7 +43,7 @@ func RunUnmigrated(t *testing.T, fn func(t *testing.T, db *store.DB)) {
 	})
 }
 
-// SQLite returns a fresh migrated in-memory SQLite database.
+// SQLite returns a fresh migrated SQLite database (a WAL file in the test's temp dir).
 func SQLite(t *testing.T) *store.DB {
 	t.Helper()
 	return open(t, migrations.SQLite, true)
@@ -60,7 +61,10 @@ func open(t *testing.T, d migrations.Dialect, migrate bool) *store.DB {
 	var opts store.Options
 	switch d {
 	case migrations.SQLite:
-		opts.SQLiteMemory = true
+		// A WAL file in the test's temp dir, as in production: readers never wait for the writer. The memdb VFS
+		// refuses a reader while any writer holds RESERVED, so under a burst of queued writers (-race) the reads
+		// outside the write queue starved past busy_timeout with SQLITE_BUSY, a lock model production never has.
+		opts.SQLitePath = filepath.Join(t.TempDir(), "porto.db")
 	case migrations.Postgres:
 		base := os.Getenv(EnvPostgresURL)
 		if base == "" {

@@ -158,6 +158,8 @@
     "air_draft_exceeds": "Height above the allowed maximum",
     "multihull_not_allowed": "Multihulls not allowed",
     "vessel_invalid": "Invalid vessel dimensions",
+    "support_not_allowed": "Support not accepted by the area",
+    "weight_exceeds": "Weight above the area maximum",
     "fill_below_threshold": "Berth oversized for the vessel",
     "depth_near_limit": "Depth near the limit",
     "power_insufficient": "Insufficient electrical power",

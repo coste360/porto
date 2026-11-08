@@ -44,6 +44,11 @@ import (
 	"github.com/coste360/porto/internal/domain/channel"
 	"github.com/coste360/porto/internal/domain/onlineconf"
 	"github.com/coste360/porto/internal/domain/portal"
+
+	"github.com/coste360/porto/internal/domain/maintenance"
+	"github.com/coste360/porto/internal/domain/optimizer"
+	"github.com/coste360/porto/internal/domain/storage"
+	"github.com/coste360/porto/internal/domain/utility"
 	"github.com/coste360/porto/pkg/ext"
 )
 
@@ -258,6 +263,34 @@ var sentinels = []struct {
 	{onlineconf.ErrNotImplemented, problem.NotImplemented},
 	{contract.ErrNotImplementedM8, problem.NotImplemented},
 	{occupancy.ErrNotImplementedM8, problem.NotImplemented},
+	// M9 (m9-plan §15.1); storage.ConflictsError and maintenance.ConflictsError are mapped in mapM9.
+	{storage.ErrTargetInvalid, problem.StorageTargetInvalid},
+	{storage.ErrNoSpace, problem.StorageNoSpace},
+	{storage.ErrExitsInvalid, problem.AreaExitsInvalid},
+	{optimizer.ErrGatesInvalid, problem.AreaExitsInvalid},
+	{storage.ErrPinnedInvalid, problem.PinnedInvalid},
+	{optimizer.ErrPinnedInvalid, problem.PinnedInvalid},
+	{storage.ErrTooManyItems, problem.TooManyItems},
+	{optimizer.ErrTooManyItems, problem.TooManyItems},
+	{storage.ErrWindowInvalid, problem.ScenarioWindowInvalid},
+	{storage.ErrScenarioNotDraft, problem.ScenarioNotDraft},
+	{storage.ErrMovementNotPending, problem.MovementNotPending},
+	{storage.ErrVersionMismatch, problem.VersionConflict},
+	{maintenance.ErrInvalidTransition, problem.InvalidTransition},
+	{maintenance.ErrElementInvalid, problem.ElementInvalid},
+	{maintenance.ErrAlreadyDone, problem.TaskAlreadyDone},
+	{maintenance.ErrVersionMismatch, problem.VersionConflict},
+	{maintenance.ErrCodeTaken, problem.CodeTaken},
+	{utility.ErrReadingCharged, problem.ReadingCharged},
+	{utility.ErrConsumptionFrozen, problem.ConsumptionFrozen},
+	{utility.ErrCodeTaken, problem.CodeTaken},
+	{utility.ErrElementInvalid, problem.ElementInvalid},
+	{utility.ErrVersionMismatch, problem.VersionConflict},
+	{utility.ErrInvalidTransition, problem.InvalidTransition},
+	{storage.ErrNotImplemented, problem.NotImplemented},
+	{maintenance.ErrNotImplemented, problem.NotImplemented},
+	{utility.ErrNotImplemented, problem.NotImplemented},
+	{contract.ErrNotImplementedM9, problem.NotImplemented},
 	{ErrBadJSON, problem.BadRequest},
 	{errUnsupportedMedia, problem.UnsupportedMediaType},
 }
@@ -285,6 +318,9 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 		return t, opts, true
 	}
 	if t, opts, ok := mapM8(err); ok {
+		return t, opts, true
+	}
+	if t, opts, ok := mapM9(err); ok {
 		return t, opts, true
 	}
 	if fe, ok := errors.AsType[*report.FilterError](err); ok {
@@ -436,6 +472,53 @@ func mapM8(err error) (problem.Type, []problem.Option, bool) {
 	}
 	if errors.Is(err, booking.ErrBusy) {
 		return problem.BookingBusy, []problem.Option{problem.RetryAfter(bookingBusyRetry)}, true
+	}
+	return "", nil, false
+}
+
+// mapM9 maps the typed errors of M9 that carry details (m9-plan §7.3, §8.3): details.conflicts lists every
+// conflict with ids, enums, cells and dates only.
+func mapM9(err error) (problem.Type, []problem.Option, bool) {
+	if ce, ok := errors.AsType[*storage.ConflictsError](err); ok {
+		list := make([]map[string]any, 0, len(ce.Conflicts))
+		for _, c := range ce.Conflicts {
+			m := map[string]any{"allocation_id": c.AllocationID, "reason": c.Reason}
+			if len(c.Cells) > 0 {
+				m["cells"] = c.Cells
+			}
+			if c.From != nil && c.To != nil {
+				m["nights"] = map[string]string{"from": c.From.String(), "to": c.To.String()}
+			}
+			if len(c.FitCodes) > 0 {
+				m["fit_codes"] = c.FitCodes
+			}
+			if len(c.WithAllocationID) > 0 {
+				m["with_allocation_ids"] = c.WithAllocationID
+			}
+			list = append(list, m)
+		}
+		return problem.ScenarioConflicts, []problem.Option{problem.WithDetails(map[string]any{"conflicts": list})}, true
+	}
+	if ce, ok := errors.AsType[*maintenance.ConflictsError](err); ok {
+		list := make([]map[string]any, 0, len(ce.Conflicts))
+		for _, c := range ce.Conflicts {
+			alts := c.Alternatives
+			if alts == nil {
+				alts = []occupancy.Solution{}
+			}
+			m := map[string]any{
+				"allocation_id": c.AllocationID, "resource_type": c.ResourceType, "resource_id": c.ResourceID,
+				"from": c.From.String(), "to": c.To.String(), "alternatives": alts,
+			}
+			if c.VesselID != "" {
+				m["vessel_id"] = c.VesselID
+			}
+			if c.ContractID != "" {
+				m["contract_id"] = c.ContractID
+			}
+			list = append(list, m)
+		}
+		return problem.MaintenanceConflicts, []problem.Option{problem.WithDetails(map[string]any{"conflicts": list})}, true
 	}
 	return "", nil, false
 }

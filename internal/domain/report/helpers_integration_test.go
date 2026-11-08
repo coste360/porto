@@ -72,8 +72,11 @@ func params(t *testing.T, key report.Key, drill map[string]string, from, to cale
 	for k, x := range drill {
 		v.Set(k, x)
 	}
-	v.Set("from", from.String())
-	v.Set("to", to.String())
+	// A tile with its own period (storage_exits_blocked) carries from/to in its drill.
+	if v.Get("from") == "" {
+		v.Set("from", from.String())
+		v.Set("to", to.String())
+	}
 	if format != "" {
 		v.Set("format", string(format))
 	}
@@ -189,6 +192,39 @@ func sumRecords(t *testing.T, d *demo, p *auth.Principal, key string, drill *cal
 			return frac(loa, int64(len(r.Records)))
 		}
 		return frac(int64(len(r.Records)), 0)
+	case calc.KeyStorage:
+		r, err := d.svc.Storage(ctx, p, d.marina, q)
+		must(t, err)
+		var occ, blocked int64
+		for _, x := range r.Records {
+			occ += x.FootprintM2Milli
+			if x.ExitBlocked {
+				blocked++
+			}
+		}
+		if key == calc.IndStorageExitsBlocked {
+			return frac(blocked, 0)
+		}
+		// The denominator is the usable surface of the areas, not a record value.
+		return frac(occ, r.Totals.AvailableM2Milli)
+	case calc.KeyMaintenance:
+		r, err := d.svc.Maintenance(ctx, p, d.marina, q)
+		must(t, err)
+		var n int64
+		for _, x := range r.Records {
+			if x.Overdue {
+				n++
+			}
+		}
+		return frac(n, 0)
+	case calc.KeyUtilities:
+		r, err := d.svc.Utilities(ctx, p, d.marina, q)
+		must(t, err)
+		var v int64
+		for _, x := range r.Records {
+			v += int64(x.PendingValue.Value)
+		}
+		return frac(v, 0)
 	}
 	t.Fatalf("no drill for %s", drill.Report)
 	return calc.TileValue{}

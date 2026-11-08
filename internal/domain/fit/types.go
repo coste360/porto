@@ -13,6 +13,11 @@ type Vessel struct {
 	Hull            string // vessels.hull_type
 	PowerRequiredA  *int64
 	InsuranceUntil  *calendar.Date // latest expires_on of a valid insurance_policy document; nil = none on file
+	// Support is how the boat stands ashore on a surface (storage_contract_details.support: cradle, trailer, rack,
+	// none); "" skips the support check (m9-plan §3.3).
+	Support string
+	// DisplacementKg is the boat weight; nil skips the weight check.
+	DisplacementKg *int64
 }
 
 // TargetKind is the kind of resource checked.
@@ -37,6 +42,11 @@ type Target struct {
 	OverhangAllowed bool
 	PowerA          *int64
 	LandKind        string // land only: parking, box, storeroom, locker, cradle, trailer_spot, custom
+	// Supports are the supports a surface accepts (dynamic_areas.supports); empty = any (m9-plan §3.3).
+	Supports []string
+	// MaxWeightKg is the weight the hull cells of the placement bear (area max_weight_kg × hull cells, computed by
+	// the caller); nil = no limit.
+	MaxWeightKg *int64
 }
 
 // Rules are the marina parameters of the check.
@@ -62,7 +72,7 @@ type Result struct {
 	Blocking    []Issue // sorted by code
 	Warnings    []Issue // sorted by code
 	FillBP      int64   // vessel LOA×Beam / (Length×Width) in bp, half-even; 10000 for areas; 0 for land non-boat kinds
-	Overridable bool    // every blocking code is dimensional (fit_override allowed)
+	Overridable bool    // no blocking code is physical (vessel_invalid, support_not_allowed): fit_override allowed
 }
 
 // Blocking issue codes (m3-plan §2.1).
@@ -72,7 +82,9 @@ const (
 	CodeDraftExceeds        = "draft_exceeds"
 	CodeAirDraftExceeds     = "air_draft_exceeds"
 	CodeMultihullNotAllowed = "multihull_not_allowed"
-	CodeVesselInvalid       = "vessel_invalid" // not overridable
+	CodeVesselInvalid       = "vessel_invalid"      // not overridable
+	CodeSupportNotAllowed   = "support_not_allowed" // not overridable (physical, m9-plan D6)
+	CodeWeightExceeds       = "weight_exceeds"
 )
 
 // Warning codes (m3-plan §2.1).
@@ -88,7 +100,8 @@ const (
 // BlockingCodes returns every blocking code, sorted.
 func BlockingCodes() []string {
 	return []string{
-		CodeAirDraftExceeds, CodeBeamExceeds, CodeDraftExceeds, CodeLOAExceeds, CodeMultihullNotAllowed, CodeVesselInvalid,
+		CodeAirDraftExceeds, CodeBeamExceeds, CodeDraftExceeds, CodeLOAExceeds, CodeMultihullNotAllowed,
+		CodeSupportNotAllowed, CodeVesselInvalid, CodeWeightExceeds,
 	}
 }
 

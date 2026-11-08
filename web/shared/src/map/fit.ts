@@ -16,6 +16,10 @@ export type FitVessel = {
   powerRequiredA?: number | null;
   /** Latest expiry (YYYY-MM-DD) of a valid insurance policy; null when none is on file. */
   insuranceUntil?: string | null;
+  /** How the boat stands ashore (cradle, trailer, rack, none); empty skips the support check. */
+  support?: string | null;
+  /** Unknown weight skips the weight check. */
+  displacementKg?: number | null;
 };
 
 export type FitTarget = {
@@ -33,6 +37,10 @@ export type FitTarget = {
   powerA?: number | null;
   /** Land only. */
   landKind?: string;
+  /** Supports a surface accepts; empty = any. */
+  supports?: string[];
+  /** Weight the hull cells of the placement bear (area max_weight_kg × hull cells); null = no limit. */
+  maxWeightKg?: number | null;
 };
 
 export type FitRules = {
@@ -56,6 +64,8 @@ export type FitCode =
   | 'air_draft_exceeds'
   | 'multihull_not_allowed'
   | 'vessel_invalid'
+  | 'support_not_allowed'
+  | 'weight_exceeds'
   | 'fill_below_threshold'
   | 'depth_near_limit'
   | 'power_insufficient'
@@ -93,8 +103,8 @@ export function fillBp(loa: number, beam: number, length: number, width: number)
 
 /**
  * Compatibility of v with t for a stay whose last night is lastNight (insurance warnings). Blocking codes:
- * loa_exceeds, beam_exceeds, draft_exceeds, air_draft_exceeds, multihull_not_allowed, vessel_invalid (not
- * overridable). Overlap is never a fit issue: it is the occupancy rows' job.
+ * loa_exceeds, beam_exceeds, draft_exceeds, air_draft_exceeds, multihull_not_allowed, weight_exceeds,
+ * support_not_allowed and vessel_invalid (the last two are physical: not overridable). Overlap is never a fit issue: it is the occupancy rows' job.
  */
 export function checkFit(
   v: FitVessel,
@@ -142,6 +152,12 @@ export function checkFit(
     blocking.push({ code: 'air_draft_exceeds', limit: t.maxAirDraft, actual: v.airDraft });
   }
   if (MULTIHULLS.has(v.hull) && !t.multihullOk) blocking.push({ code: 'multihull_not_allowed' });
+  const supportRefused =
+    !!v.support && (t.supports?.length ?? 0) > 0 && !(t.supports ?? []).includes(v.support);
+  if (supportRefused) blocking.push({ code: 'support_not_allowed' });
+  if (known(v.displacementKg) && known(t.maxWeightKg) && v.displacementKg > t.maxWeightKg) {
+    blocking.push({ code: 'weight_exceeds' });
+  }
 
   const fill =
     t.kind === 'linear_area' || t.kind === 'surface_area'
@@ -167,6 +183,6 @@ export function checkFit(
     blocking,
     warnings,
     fillBp: fill,
-    overridable: true,
+    overridable: !supportRefused,
   };
 }

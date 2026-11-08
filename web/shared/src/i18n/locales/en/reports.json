@@ -29,7 +29,10 @@
     "vessels": "Hosted vessels",
     "berth-revenue": "Revenue per berth metre",
     "yard": "Boatyard",
-    "rental": "Rental"
+    "rental": "Rental",
+    "storage": "Dry storage",
+    "maintenance": "Maintenance",
+    "utilities": "Utilities and consumption"
   },
   "export": {
     "csv": "Export CSV",
@@ -230,7 +233,39 @@
     "waste_after_bp": "Waste after %",
     "waste_before_bp": "Waste before %",
     "waste_bp": "Waste %",
-    "waste_bp_nights": "Weighted waste (bp × nights)"
+    "waste_bp_nights": "Weighted waste (bp × nights)",
+    "area_code": "Area",
+    "map_kind": "Map kind",
+    "contract_code": "Contract",
+    "hull_m2_nights_milli": "Hull (m² × nights)",
+    "footprint_m2_nights_milli": "Footprint (m² × nights)",
+    "occupied_m2_nights_milli": "Occupied (m² × nights)",
+    "available_m2_nights_milli": "Available (m² × nights)",
+    "exit_on": "Exit",
+    "exit_blocked": "Exit blocked",
+    "exits_blocked": "Blocked exits",
+    "boats": "Boats",
+    "production_cents": "Production",
+    "intervention": "Intervention",
+    "priority": "Priority",
+    "done_on": "Done on",
+    "overdue_days": "Days overdue",
+    "internal_minutes": "Internal minutes",
+    "external_cost_cents": "External costs",
+    "tasks": "Tasks",
+    "open": "Open",
+    "in_progress": "In progress",
+    "done": "Done",
+    "meter_code": "Meter",
+    "first_night": "From night",
+    "qty_milli": "Quantity",
+    "power_milli": "Power (kWh)",
+    "water_milli": "Water (m³)",
+    "pending_milli": "To charge",
+    "unassigned_milli": "Unassigned",
+    "pending_value_cents": "Value to charge",
+    "element_code": "Element",
+    "element_type": "Element type"
   },
   "descriptions": {
     "occupancy": "Occupied over available nights, physical or contractual, for berths, land and dynamic areas.",
@@ -249,7 +284,10 @@
     "rights": "Berth right holders, instalments, allotments, balances and mandates.",
     "cash": "Cash sessions and fiscal receipts by VAT rate and method.",
     "vessels": "Hosted vessels by hull, length and flag.",
-    "berth-revenue": "Berth revenue per linear metre."
+    "berth-revenue": "Berth revenue per linear metre.",
+    "storage": "Boats ashore in yards and sheds: occupied surface, blocked exits and storage contract production.",
+    "maintenance": "Maintenance tasks by status, delays, internal minutes and external costs.",
+    "utilities": "Power, water and counter consumption: to charge, charged and unassigned."
   },
   "groupBy": {
     "resource": "Resource",
@@ -287,7 +325,15 @@
     "run_kind": "Run kind",
     "register": "Register",
     "hull_type": "Hull",
-    "flag": "Flag"
+    "flag": "Flag",
+    "area": "Area",
+    "map_kind": "Map kind",
+    "status": "Status",
+    "priority": "Priority",
+    "element_type": "Element type",
+    "intervention": "Intervention",
+    "meter": "Meter",
+    "contract": "Contract"
   },
   "sections": {
     "presences": {
@@ -363,7 +409,11 @@
       "family": "Berths (default)",
       "basis": "Default",
       "suggestions": "With suggestions"
-    }
+    },
+    "exits_blocked_only": "Blocked exits only",
+    "status": "Status",
+    "element_type": "Element type",
+    "overdue_only": "Overdue only"
   },
   "values": {
     "bool": {
@@ -505,6 +555,53 @@
     "suggestionKind": {
       "swap": "Swap",
       "move": "Move"
+    },
+    "taskStatus": {
+      "open": "Open",
+      "scheduled": "Scheduled",
+      "in_progress": "In progress",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    },
+    "priority": {
+      "low": "Low",
+      "normal": "Normal",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "elementType": {
+      "berth": "Berth",
+      "structure": "Structure",
+      "dynamic_area": "Dynamic area",
+      "land_resource": "Land resource",
+      "pedestal": "Pedestal",
+      "equipment": "Equipment"
+    },
+    "intervention": {
+      "underwater_inspection": "Underwater inspection",
+      "pennant_replacement": "Pennant replacement",
+      "chain_check": "Chain check",
+      "rcd_test": "RCD test",
+      "general": "General",
+      "custom": "Custom"
+    },
+    "taskSource": {
+      "plan": "Plan",
+      "office": "Office",
+      "report": "Report"
+    },
+    "meterKind": {
+      "power": "Power",
+      "water": "Water",
+      "hours": "Hours",
+      "cycles": "Cycles"
+    },
+    "consumptionStatus": {
+      "pending": "To charge",
+      "anomaly": "Anomaly",
+      "unassigned": "Unassigned",
+      "charged": "Charged",
+      "excluded": "Excluded"
     }
   },
   "suggestions": {
@@ -529,7 +626,9 @@
     "inactive_resource_one": "{{count}} inactive resource excluded",
     "inactive_resource_other": "{{count}} inactive resources excluded",
     "truncated_suggestions_one": "Suggestions capped: {{count}} not shown",
-    "truncated_suggestions_other": "Suggestions capped: {{count}} not shown"
+    "truncated_suggestions_other": "Suggestions capped: {{count}} not shown",
+    "no_price_one": "{{count}} consumption without a current price (left out of the value to charge)",
+    "no_price_other": "{{count}} consumptions without a current price (left out of the value to charge)"
   },
   "unknown": "Report not available.",
   "backToIndex": "All reports"

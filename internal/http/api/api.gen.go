@@ -107,25 +107,25 @@ func (e AddendumStatus) Valid() bool {
 
 // Defines values for AgeingBucket.
 const (
-	D030    AgeingBucket = "d0_30"
-	D3160   AgeingBucket = "d31_60"
-	D6190   AgeingBucket = "d61_90"
-	D90Plus AgeingBucket = "d90_plus"
-	NotDue  AgeingBucket = "not_due"
+	AgeingBucketD030    AgeingBucket = "d0_30"
+	AgeingBucketD3160   AgeingBucket = "d31_60"
+	AgeingBucketD6190   AgeingBucket = "d61_90"
+	AgeingBucketD90Plus AgeingBucket = "d90_plus"
+	AgeingBucketNotDue  AgeingBucket = "not_due"
 )
 
 // Valid indicates whether the value is a known member of the AgeingBucket enum.
 func (e AgeingBucket) Valid() bool {
 	switch e {
-	case D030:
+	case AgeingBucketD030:
 		return true
-	case D3160:
+	case AgeingBucketD3160:
 		return true
-	case D6190:
+	case AgeingBucketD6190:
 		return true
-	case D90Plus:
+	case AgeingBucketD90Plus:
 		return true
-	case NotDue:
+	case AgeingBucketNotDue:
 		return true
 	default:
 		return false
@@ -665,16 +665,16 @@ func (e CancellationPolicyRefund) Valid() bool {
 
 // Defines values for CancellationPreviewReason.
 const (
-	ArrivalPassed CancellationPreviewReason = "arrival_passed"
-	Status        CancellationPreviewReason = "status"
+	CancellationPreviewReasonArrivalPassed CancellationPreviewReason = "arrival_passed"
+	CancellationPreviewReasonStatus        CancellationPreviewReason = "status"
 )
 
 // Valid indicates whether the value is a known member of the CancellationPreviewReason enum.
 func (e CancellationPreviewReason) Valid() bool {
 	switch e {
-	case ArrivalPassed:
+	case CancellationPreviewReasonArrivalPassed:
 		return true
-	case Status:
+	case CancellationPreviewReasonStatus:
 		return true
 	default:
 		return false
@@ -2078,6 +2078,7 @@ const (
 	DeadlineKindIdentityDocument        DeadlineKind = "identity_document"
 	DeadlineKindInstallmentDue          DeadlineKind = "installment_due"
 	DeadlineKindInsurance               DeadlineKind = "insurance"
+	DeadlineKindMaintenanceDue          DeadlineKind = "maintenance_due"
 	DeadlineKindMandateEnd              DeadlineKind = "mandate_end"
 	DeadlineKindNavigationLicence       DeadlineKind = "navigation_licence"
 	DeadlineKindOtherDocument           DeadlineKind = "other_document"
@@ -2111,6 +2112,8 @@ func (e DeadlineKind) Valid() bool {
 	case DeadlineKindInstallmentDue:
 		return true
 	case DeadlineKindInsurance:
+		return true
+	case DeadlineKindMaintenanceDue:
 		return true
 	case DeadlineKindMandateEnd:
 		return true
@@ -2149,6 +2152,7 @@ const (
 	DeadlineSourceTypeHolderInstallment    DeadlineSourceType = "holder_installment"
 	DeadlineSourceTypeImport               DeadlineSourceType = "import"
 	DeadlineSourceTypeInstallment          DeadlineSourceType = "installment"
+	DeadlineSourceTypeMaintenanceTask      DeadlineSourceType = "maintenance_task"
 	DeadlineSourceTypeMandate              DeadlineSourceType = "mandate"
 	DeadlineSourceTypeRenewalProposal      DeadlineSourceType = "renewal_proposal"
 	DeadlineSourceTypeRight                DeadlineSourceType = "right"
@@ -2174,6 +2178,8 @@ func (e DeadlineSourceType) Valid() bool {
 	case DeadlineSourceTypeImport:
 		return true
 	case DeadlineSourceTypeInstallment:
+		return true
+	case DeadlineSourceTypeMaintenanceTask:
 		return true
 	case DeadlineSourceTypeMandate:
 		return true
@@ -2700,6 +2706,39 @@ func (e EfficiencyRecordKind) Valid() bool {
 	}
 }
 
+// Defines values for EquipmentKind.
+const (
+	EquipmentKindCrane      EquipmentKind = "crane"
+	EquipmentKindForklift   EquipmentKind = "forklift"
+	EquipmentKindOther      EquipmentKind = "other"
+	EquipmentKindPlant      EquipmentKind = "plant"
+	EquipmentKindTrailer    EquipmentKind = "trailer"
+	EquipmentKindTravelLift EquipmentKind = "travel_lift"
+	EquipmentKindVehicle    EquipmentKind = "vehicle"
+)
+
+// Valid indicates whether the value is a known member of the EquipmentKind enum.
+func (e EquipmentKind) Valid() bool {
+	switch e {
+	case EquipmentKindCrane:
+		return true
+	case EquipmentKindForklift:
+		return true
+	case EquipmentKindOther:
+		return true
+	case EquipmentKindPlant:
+		return true
+	case EquipmentKindTrailer:
+		return true
+	case EquipmentKindTravelLift:
+		return true
+	case EquipmentKindVehicle:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ExportWarningCode.
 const (
 	CustomerFiscalIncomplete ExportWarningCode = "customer_fiscal_incomplete"
@@ -2944,7 +2983,9 @@ const (
 	FitCodeMultihullNotAllowed      FitCode = "multihull_not_allowed"
 	FitCodeOverhang                 FitCode = "overhang"
 	FitCodePowerInsufficient        FitCode = "power_insufficient"
+	FitCodeSupportNotAllowed        FitCode = "support_not_allowed"
 	FitCodeVesselInvalid            FitCode = "vessel_invalid"
+	FitCodeWeightExceeds            FitCode = "weight_exceeds"
 )
 
 // Valid indicates whether the value is a known member of the FitCode enum.
@@ -2972,7 +3013,11 @@ func (e FitCode) Valid() bool {
 		return true
 	case FitCodePowerInsufficient:
 		return true
+	case FitCodeSupportNotAllowed:
+		return true
 	case FitCodeVesselInvalid:
+		return true
+	case FitCodeWeightExceeds:
 		return true
 	default:
 		return false
@@ -3789,6 +3834,201 @@ func (e Locale) Valid() bool {
 	}
 }
 
+// Defines values for MaintenanceElementType.
+const (
+	MaintenanceElementTypeBerth        MaintenanceElementType = "berth"
+	MaintenanceElementTypeDynamicArea  MaintenanceElementType = "dynamic_area"
+	MaintenanceElementTypeEquipment    MaintenanceElementType = "equipment"
+	MaintenanceElementTypeLandResource MaintenanceElementType = "land_resource"
+	MaintenanceElementTypePedestal     MaintenanceElementType = "pedestal"
+	MaintenanceElementTypeStructure    MaintenanceElementType = "structure"
+)
+
+// Valid indicates whether the value is a known member of the MaintenanceElementType enum.
+func (e MaintenanceElementType) Valid() bool {
+	switch e {
+	case MaintenanceElementTypeBerth:
+		return true
+	case MaintenanceElementTypeDynamicArea:
+		return true
+	case MaintenanceElementTypeEquipment:
+		return true
+	case MaintenanceElementTypeLandResource:
+		return true
+	case MaintenanceElementTypePedestal:
+		return true
+	case MaintenanceElementTypeStructure:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MaintenanceFileKind.
+const (
+	MaintenanceFileKindDocument MaintenanceFileKind = "document"
+	MaintenanceFileKindPhoto    MaintenanceFileKind = "photo"
+)
+
+// Valid indicates whether the value is a known member of the MaintenanceFileKind enum.
+func (e MaintenanceFileKind) Valid() bool {
+	switch e {
+	case MaintenanceFileKindDocument:
+		return true
+	case MaintenanceFileKindPhoto:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MaintenanceIntervention.
+const (
+	MaintenanceInterventionChainCheck           MaintenanceIntervention = "chain_check"
+	MaintenanceInterventionCustom               MaintenanceIntervention = "custom"
+	MaintenanceInterventionGeneral              MaintenanceIntervention = "general"
+	MaintenanceInterventionPennantReplacement   MaintenanceIntervention = "pennant_replacement"
+	MaintenanceInterventionRcdTest              MaintenanceIntervention = "rcd_test"
+	MaintenanceInterventionUnderwaterInspection MaintenanceIntervention = "underwater_inspection"
+)
+
+// Valid indicates whether the value is a known member of the MaintenanceIntervention enum.
+func (e MaintenanceIntervention) Valid() bool {
+	switch e {
+	case MaintenanceInterventionChainCheck:
+		return true
+	case MaintenanceInterventionCustom:
+		return true
+	case MaintenanceInterventionGeneral:
+		return true
+	case MaintenanceInterventionPennantReplacement:
+		return true
+	case MaintenanceInterventionRcdTest:
+		return true
+	case MaintenanceInterventionUnderwaterInspection:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MaintenanceOutcome.
+const (
+	MaintenanceOutcomeFixed         MaintenanceOutcome = "fixed"
+	MaintenanceOutcomeNeedsFollowup MaintenanceOutcome = "needs_followup"
+	MaintenanceOutcomeNotDone       MaintenanceOutcome = "not_done"
+	MaintenanceOutcomeOk            MaintenanceOutcome = "ok"
+)
+
+// Valid indicates whether the value is a known member of the MaintenanceOutcome enum.
+func (e MaintenanceOutcome) Valid() bool {
+	switch e {
+	case MaintenanceOutcomeFixed:
+		return true
+	case MaintenanceOutcomeNeedsFollowup:
+		return true
+	case MaintenanceOutcomeNotDone:
+		return true
+	case MaintenanceOutcomeOk:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MaintenancePeriodicityKind.
+const (
+	MaintenancePeriodicityKindCycles    MaintenancePeriodicityKind = "cycles"
+	MaintenancePeriodicityKindFixedDate MaintenancePeriodicityKind = "fixed_date"
+	MaintenancePeriodicityKindMonths    MaintenancePeriodicityKind = "months"
+)
+
+// Valid indicates whether the value is a known member of the MaintenancePeriodicityKind enum.
+func (e MaintenancePeriodicityKind) Valid() bool {
+	switch e {
+	case MaintenancePeriodicityKindCycles:
+		return true
+	case MaintenancePeriodicityKindFixedDate:
+		return true
+	case MaintenancePeriodicityKindMonths:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MaintenancePriority.
+const (
+	High   MaintenancePriority = "high"
+	Low    MaintenancePriority = "low"
+	Normal MaintenancePriority = "normal"
+	Urgent MaintenancePriority = "urgent"
+)
+
+// Valid indicates whether the value is a known member of the MaintenancePriority enum.
+func (e MaintenancePriority) Valid() bool {
+	switch e {
+	case High:
+		return true
+	case Low:
+		return true
+	case Normal:
+		return true
+	case Urgent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MaintenanceSource.
+const (
+	MaintenanceSourceOffice MaintenanceSource = "office"
+	MaintenanceSourcePlan   MaintenanceSource = "plan"
+	MaintenanceSourceReport MaintenanceSource = "report"
+)
+
+// Valid indicates whether the value is a known member of the MaintenanceSource enum.
+func (e MaintenanceSource) Valid() bool {
+	switch e {
+	case MaintenanceSourceOffice:
+		return true
+	case MaintenanceSourcePlan:
+		return true
+	case MaintenanceSourceReport:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MaintenanceTaskStatus.
+const (
+	MaintenanceTaskStatusCancelled  MaintenanceTaskStatus = "cancelled"
+	MaintenanceTaskStatusDone       MaintenanceTaskStatus = "done"
+	MaintenanceTaskStatusInProgress MaintenanceTaskStatus = "in_progress"
+	MaintenanceTaskStatusOpen       MaintenanceTaskStatus = "open"
+	MaintenanceTaskStatusScheduled  MaintenanceTaskStatus = "scheduled"
+)
+
+// Valid indicates whether the value is a known member of the MaintenanceTaskStatus enum.
+func (e MaintenanceTaskStatus) Valid() bool {
+	switch e {
+	case MaintenanceTaskStatusCancelled:
+		return true
+	case MaintenanceTaskStatusDone:
+		return true
+	case MaintenanceTaskStatusInProgress:
+		return true
+	case MaintenanceTaskStatusOpen:
+		return true
+	case MaintenanceTaskStatusScheduled:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for MandateSettlement.
 const (
 	MandateSettlementCredit   MandateSettlement = "credit"
@@ -4062,6 +4302,126 @@ func (e MetaEdition) Valid() bool {
 	case MetaEditionDesktop:
 		return true
 	case MetaEditionServer:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MeterAnomalyCode.
+const (
+	Gap           MeterAnomalyCode = "gap"
+	Negative      MeterAnomalyCode = "negative"
+	OutOfOrder    MeterAnomalyCode = "out_of_order"
+	OverThreshold MeterAnomalyCode = "over_threshold"
+	Rollover      MeterAnomalyCode = "rollover"
+)
+
+// Valid indicates whether the value is a known member of the MeterAnomalyCode enum.
+func (e MeterAnomalyCode) Valid() bool {
+	switch e {
+	case Gap:
+		return true
+	case Negative:
+		return true
+	case OutOfOrder:
+		return true
+	case OverThreshold:
+		return true
+	case Rollover:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MeterKind.
+const (
+	MeterKindCycles MeterKind = "cycles"
+	MeterKindHours  MeterKind = "hours"
+	MeterKindPower  MeterKind = "power"
+	MeterKindWater  MeterKind = "water"
+)
+
+// Valid indicates whether the value is a known member of the MeterKind enum.
+func (e MeterKind) Valid() bool {
+	switch e {
+	case MeterKindCycles:
+		return true
+	case MeterKindHours:
+		return true
+	case MeterKindPower:
+		return true
+	case MeterKindWater:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MeterReadingKind.
+const (
+	Initial        MeterReadingKind = "initial"
+	Regular        MeterReadingKind = "regular"
+	ReplacementNew MeterReadingKind = "replacement_new"
+	ReplacementOld MeterReadingKind = "replacement_old"
+)
+
+// Valid indicates whether the value is a known member of the MeterReadingKind enum.
+func (e MeterReadingKind) Valid() bool {
+	switch e {
+	case Initial:
+		return true
+	case Regular:
+		return true
+	case ReplacementNew:
+		return true
+	case ReplacementOld:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MeterReadingSource.
+const (
+	MeterReadingSourceImport MeterReadingSource = "import"
+	MeterReadingSourceSensor MeterReadingSource = "sensor"
+	MeterReadingSourceStaff  MeterReadingSource = "staff"
+)
+
+// Valid indicates whether the value is a known member of the MeterReadingSource enum.
+func (e MeterReadingSource) Valid() bool {
+	switch e {
+	case MeterReadingSourceImport:
+		return true
+	case MeterReadingSourceSensor:
+		return true
+	case MeterReadingSourceStaff:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MeterReadingStatus.
+const (
+	MeterReadingStatusAnomaly   MeterReadingStatus = "anomaly"
+	MeterReadingStatusConfirmed MeterReadingStatus = "confirmed"
+	MeterReadingStatusValid     MeterReadingStatus = "valid"
+	MeterReadingStatusVoid      MeterReadingStatus = "void"
+)
+
+// Valid indicates whether the value is a known member of the MeterReadingStatus enum.
+func (e MeterReadingStatus) Valid() bool {
+	switch e {
+	case MeterReadingStatusAnomaly:
+		return true
+	case MeterReadingStatusConfirmed:
+		return true
+	case MeterReadingStatusValid:
+		return true
+	case MeterReadingStatusVoid:
 		return true
 	default:
 		return false
@@ -4934,130 +5294,130 @@ func (e PeriodKind) Valid() bool {
 
 // Defines values for Permission.
 const (
-	AuditRead            Permission = "audit.read"
-	ChargesExport        Permission = "charges.export"
-	ChargesManage        Permission = "charges.manage"
-	CommunicationsSend   Permission = "communications.send"
-	ContractsRead        Permission = "contracts.read"
-	ContractsWrite       Permission = "contracts.write"
-	CustomersRead        Permission = "customers.read"
-	CustomersWrite       Permission = "customers.write"
-	DevicesManage        Permission = "devices.manage"
-	DevicesPairSelf      Permission = "devices.pair_self"
-	HarborConfigure      Permission = "harbor.configure"
-	MaintenanceManage    Permission = "maintenance.manage"
-	MaintenanceReport    Permission = "maintenance.report"
-	MapView              Permission = "map.view"
-	MarinaConfigure      Permission = "marina.configure"
-	MarinaRead           Permission = "marina.read"
-	OccupancyMove        Permission = "occupancy.move"
-	OccupancyOverrideFit Permission = "occupancy.override_fit"
-	OrganizationManage   Permission = "organization.manage"
-	PaymentsCollect      Permission = "payments.collect"
-	PaymentsCollectCash  Permission = "payments.collect_cash"
-	PresenceWrite        Permission = "presence.write"
-	PricingConfigure     Permission = "pricing.configure"
-	PricingRead          Permission = "pricing.read"
-	ProvidersConfigure   Permission = "providers.configure"
-	RefundsIssue         Permission = "refunds.issue"
-	RentalManage         Permission = "rental.manage"
-	ReportsAll           Permission = "reports.all"
-	ReportsOperational   Permission = "reports.operational"
-	ReportsRental        Permission = "reports.rental"
-	ReportsYard          Permission = "reports.yard"
-	RightsManage         Permission = "rights.manage"
-	StorageManage        Permission = "storage.manage"
-	StorageRead          Permission = "storage.read"
-	TemplatesConfigure   Permission = "templates.configure"
-	TransitsDesk         Permission = "transits.desk"
-	UsersManage          Permission = "users.manage"
-	YardManage           Permission = "yard.manage"
-	YardRead             Permission = "yard.read"
-	YardTimesheets       Permission = "yard.timesheets"
+	PermissionAuditRead            Permission = "audit.read"
+	PermissionChargesExport        Permission = "charges.export"
+	PermissionChargesManage        Permission = "charges.manage"
+	PermissionCommunicationsSend   Permission = "communications.send"
+	PermissionContractsRead        Permission = "contracts.read"
+	PermissionContractsWrite       Permission = "contracts.write"
+	PermissionCustomersRead        Permission = "customers.read"
+	PermissionCustomersWrite       Permission = "customers.write"
+	PermissionDevicesManage        Permission = "devices.manage"
+	PermissionDevicesPairSelf      Permission = "devices.pair_self"
+	PermissionHarborConfigure      Permission = "harbor.configure"
+	PermissionMaintenanceManage    Permission = "maintenance.manage"
+	PermissionMaintenanceReport    Permission = "maintenance.report"
+	PermissionMapView              Permission = "map.view"
+	PermissionMarinaConfigure      Permission = "marina.configure"
+	PermissionMarinaRead           Permission = "marina.read"
+	PermissionOccupancyMove        Permission = "occupancy.move"
+	PermissionOccupancyOverrideFit Permission = "occupancy.override_fit"
+	PermissionOrganizationManage   Permission = "organization.manage"
+	PermissionPaymentsCollect      Permission = "payments.collect"
+	PermissionPaymentsCollectCash  Permission = "payments.collect_cash"
+	PermissionPresenceWrite        Permission = "presence.write"
+	PermissionPricingConfigure     Permission = "pricing.configure"
+	PermissionPricingRead          Permission = "pricing.read"
+	PermissionProvidersConfigure   Permission = "providers.configure"
+	PermissionRefundsIssue         Permission = "refunds.issue"
+	PermissionRentalManage         Permission = "rental.manage"
+	PermissionReportsAll           Permission = "reports.all"
+	PermissionReportsOperational   Permission = "reports.operational"
+	PermissionReportsRental        Permission = "reports.rental"
+	PermissionReportsYard          Permission = "reports.yard"
+	PermissionRightsManage         Permission = "rights.manage"
+	PermissionStorageManage        Permission = "storage.manage"
+	PermissionStorageRead          Permission = "storage.read"
+	PermissionTemplatesConfigure   Permission = "templates.configure"
+	PermissionTransitsDesk         Permission = "transits.desk"
+	PermissionUsersManage          Permission = "users.manage"
+	PermissionYardManage           Permission = "yard.manage"
+	PermissionYardRead             Permission = "yard.read"
+	PermissionYardTimesheets       Permission = "yard.timesheets"
 )
 
 // Valid indicates whether the value is a known member of the Permission enum.
 func (e Permission) Valid() bool {
 	switch e {
-	case AuditRead:
+	case PermissionAuditRead:
 		return true
-	case ChargesExport:
+	case PermissionChargesExport:
 		return true
-	case ChargesManage:
+	case PermissionChargesManage:
 		return true
-	case CommunicationsSend:
+	case PermissionCommunicationsSend:
 		return true
-	case ContractsRead:
+	case PermissionContractsRead:
 		return true
-	case ContractsWrite:
+	case PermissionContractsWrite:
 		return true
-	case CustomersRead:
+	case PermissionCustomersRead:
 		return true
-	case CustomersWrite:
+	case PermissionCustomersWrite:
 		return true
-	case DevicesManage:
+	case PermissionDevicesManage:
 		return true
-	case DevicesPairSelf:
+	case PermissionDevicesPairSelf:
 		return true
-	case HarborConfigure:
+	case PermissionHarborConfigure:
 		return true
-	case MaintenanceManage:
+	case PermissionMaintenanceManage:
 		return true
-	case MaintenanceReport:
+	case PermissionMaintenanceReport:
 		return true
-	case MapView:
+	case PermissionMapView:
 		return true
-	case MarinaConfigure:
+	case PermissionMarinaConfigure:
 		return true
-	case MarinaRead:
+	case PermissionMarinaRead:
 		return true
-	case OccupancyMove:
+	case PermissionOccupancyMove:
 		return true
-	case OccupancyOverrideFit:
+	case PermissionOccupancyOverrideFit:
 		return true
-	case OrganizationManage:
+	case PermissionOrganizationManage:
 		return true
-	case PaymentsCollect:
+	case PermissionPaymentsCollect:
 		return true
-	case PaymentsCollectCash:
+	case PermissionPaymentsCollectCash:
 		return true
-	case PresenceWrite:
+	case PermissionPresenceWrite:
 		return true
-	case PricingConfigure:
+	case PermissionPricingConfigure:
 		return true
-	case PricingRead:
+	case PermissionPricingRead:
 		return true
-	case ProvidersConfigure:
+	case PermissionProvidersConfigure:
 		return true
-	case RefundsIssue:
+	case PermissionRefundsIssue:
 		return true
-	case RentalManage:
+	case PermissionRentalManage:
 		return true
-	case ReportsAll:
+	case PermissionReportsAll:
 		return true
-	case ReportsOperational:
+	case PermissionReportsOperational:
 		return true
-	case ReportsRental:
+	case PermissionReportsRental:
 		return true
-	case ReportsYard:
+	case PermissionReportsYard:
 		return true
-	case RightsManage:
+	case PermissionRightsManage:
 		return true
-	case StorageManage:
+	case PermissionStorageManage:
 		return true
-	case StorageRead:
+	case PermissionStorageRead:
 		return true
-	case TemplatesConfigure:
+	case PermissionTemplatesConfigure:
 		return true
-	case TransitsDesk:
+	case PermissionTransitsDesk:
 		return true
-	case UsersManage:
+	case PermissionUsersManage:
 		return true
-	case YardManage:
+	case PermissionYardManage:
 		return true
-	case YardRead:
+	case PermissionYardRead:
 		return true
-	case YardTimesheets:
+	case PermissionYardTimesheets:
 		return true
 	default:
 		return false
@@ -5430,6 +5790,7 @@ const (
 	ProblemTypeAlreadyMember             ProblemType = "already_member"
 	ProblemTypeAlreadyReversed           ProblemType = "already_reversed"
 	ProblemTypeAppPinInvalid             ProblemType = "app_pin_invalid"
+	ProblemTypeAreaExitsInvalid          ProblemType = "area_exits_invalid"
 	ProblemTypeBackupInProgress          ProblemType = "backup_in_progress"
 	ProblemTypeBadRequest                ProblemType = "bad_request"
 	ProblemTypeBillingItemMissing        ProblemType = "billing_item_missing"
@@ -5450,6 +5811,7 @@ const (
 	ProblemTypeCodeTaken                 ProblemType = "code_taken"
 	ProblemTypeConflict                  ProblemType = "conflict"
 	ProblemTypeConsentRequired           ProblemType = "consent_required"
+	ProblemTypeConsumptionFrozen         ProblemType = "consumption_frozen"
 	ProblemTypeCreditInsufficient        ProblemType = "credit_insufficient"
 	ProblemTypeCsrfFailed                ProblemType = "csrf_failed"
 	ProblemTypeCsvInvalid                ProblemType = "csv_invalid"
@@ -5458,6 +5820,7 @@ const (
 	ProblemTypeCustomerMerged            ProblemType = "customer_merged"
 	ProblemTypeCustomerRequired          ProblemType = "customer_required"
 	ProblemTypeDownloadLinkExpired       ProblemType = "download_link_expired"
+	ProblemTypeElementInvalid            ProblemType = "element_invalid"
 	ProblemTypeEndpointDisabled          ProblemType = "endpoint_disabled"
 	ProblemTypeExportEmpty               ProblemType = "export_empty"
 	ProblemTypeExportTooLarge            ProblemType = "export_too_large"
@@ -5488,12 +5851,14 @@ const (
 	ProblemTypeLanPortUnavailable        ProblemType = "lan_port_unavailable"
 	ProblemTypeLastOwner                 ProblemType = "last_owner"
 	ProblemTypeLinkInvalid               ProblemType = "link_invalid"
+	ProblemTypeMaintenanceConflicts      ProblemType = "maintenance_conflicts"
 	ProblemTypeMandateOverlap            ProblemType = "mandate_overlap"
 	ProblemTypeMapInvalid                ProblemType = "map_invalid"
 	ProblemTypeMapNotEmpty               ProblemType = "map_not_empty"
 	ProblemTypeMapNotGeoreferenced       ProblemType = "map_not_georeferenced"
 	ProblemTypeMatchExceeds              ProblemType = "match_exceeds"
 	ProblemTypeMethodNotAllowed          ProblemType = "method_not_allowed"
+	ProblemTypeMovementNotPending        ProblemType = "movement_not_pending"
 	ProblemTypeNoPrice                   ProblemType = "no_price"
 	ProblemTypeNoTerminationAmount       ProblemType = "no_termination_amount"
 	ProblemTypeNotDeposit                ProblemType = "not_deposit"
@@ -5510,6 +5875,7 @@ const (
 	ProblemTypePairingCodeInvalid        ProblemType = "pairing_code_invalid"
 	ProblemTypePaperScanRequired         ProblemType = "paper_scan_required"
 	ProblemTypePeripheralUnavailable     ProblemType = "peripheral_unavailable"
+	ProblemTypePinnedInvalid             ProblemType = "pinned_invalid"
 	ProblemTypePlacementInvalid          ProblemType = "placement_invalid"
 	ProblemTypePreconditionRequired      ProblemType = "precondition_required"
 	ProblemTypePriceChanged              ProblemType = "price_changed"
@@ -5524,6 +5890,7 @@ const (
 	ProblemTypeProviderUnknown           ProblemType = "provider_unknown"
 	ProblemTypeQuoteExpired              ProblemType = "quote_expired"
 	ProblemTypeRateLimited               ProblemType = "rate_limited"
+	ProblemTypeReadingCharged            ProblemType = "reading_charged"
 	ProblemTypeRefundChanged             ProblemType = "refund_changed"
 	ProblemTypeRefundExceeds             ProblemType = "refund_exceeds"
 	ProblemTypeRegisterInUse             ProblemType = "register_in_use"
@@ -5536,14 +5903,21 @@ const (
 	ProblemTypeResourceTaken             ProblemType = "resource_taken"
 	ProblemTypeRestoreBackupNewer        ProblemType = "restore_backup_newer"
 	ProblemTypeRestoreFailed             ProblemType = "restore_failed"
+	ProblemTypeScenarioConflicts         ProblemType = "scenario_conflicts"
+	ProblemTypeScenarioNotDraft          ProblemType = "scenario_not_draft"
+	ProblemTypeScenarioWindowInvalid     ProblemType = "scenario_window_invalid"
 	ProblemTypeSharesInvalid             ProblemType = "shares_invalid"
 	ProblemTypeSignatureOpen             ProblemType = "signature_open"
 	ProblemTypeSlugTaken                 ProblemType = "slug_taken"
+	ProblemTypeStorageNoSpace            ProblemType = "storage_no_space"
+	ProblemTypeStorageTargetInvalid      ProblemType = "storage_target_invalid"
 	ProblemTypeTableActive               ProblemType = "table_active"
 	ProblemTypeTableIncomplete           ProblemType = "table_incomplete"
+	ProblemTypeTaskAlreadyDone           ProblemType = "task_already_done"
 	ProblemTypeTemplateInvalid           ProblemType = "template_invalid"
 	ProblemTypeTemplateLimits            ProblemType = "template_limits"
 	ProblemTypeTextOutdated              ProblemType = "text_outdated"
+	ProblemTypeTooManyItems              ProblemType = "too_many_items"
 	ProblemTypeTotpAlreadyEnabled        ProblemType = "totp_already_enabled"
 	ProblemTypeTotpEnrolmentRequired     ProblemType = "totp_enrolment_required"
 	ProblemTypeTotpNotEnrolled           ProblemType = "totp_not_enrolled"
@@ -5573,6 +5947,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeAlreadyReversed:
 		return true
 	case ProblemTypeAppPinInvalid:
+		return true
+	case ProblemTypeAreaExitsInvalid:
 		return true
 	case ProblemTypeBackupInProgress:
 		return true
@@ -5614,6 +5990,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeConsentRequired:
 		return true
+	case ProblemTypeConsumptionFrozen:
+		return true
 	case ProblemTypeCreditInsufficient:
 		return true
 	case ProblemTypeCsrfFailed:
@@ -5629,6 +6007,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeCustomerRequired:
 		return true
 	case ProblemTypeDownloadLinkExpired:
+		return true
+	case ProblemTypeElementInvalid:
 		return true
 	case ProblemTypeEndpointDisabled:
 		return true
@@ -5690,6 +6070,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeLinkInvalid:
 		return true
+	case ProblemTypeMaintenanceConflicts:
+		return true
 	case ProblemTypeMandateOverlap:
 		return true
 	case ProblemTypeMapInvalid:
@@ -5701,6 +6083,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeMatchExceeds:
 		return true
 	case ProblemTypeMethodNotAllowed:
+		return true
+	case ProblemTypeMovementNotPending:
 		return true
 	case ProblemTypeNoPrice:
 		return true
@@ -5734,6 +6118,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypePeripheralUnavailable:
 		return true
+	case ProblemTypePinnedInvalid:
+		return true
 	case ProblemTypePlacementInvalid:
 		return true
 	case ProblemTypePreconditionRequired:
@@ -5762,6 +6148,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeRateLimited:
 		return true
+	case ProblemTypeReadingCharged:
+		return true
 	case ProblemTypeRefundChanged:
 		return true
 	case ProblemTypeRefundExceeds:
@@ -5786,21 +6174,35 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeRestoreFailed:
 		return true
+	case ProblemTypeScenarioConflicts:
+		return true
+	case ProblemTypeScenarioNotDraft:
+		return true
+	case ProblemTypeScenarioWindowInvalid:
+		return true
 	case ProblemTypeSharesInvalid:
 		return true
 	case ProblemTypeSignatureOpen:
 		return true
 	case ProblemTypeSlugTaken:
 		return true
+	case ProblemTypeStorageNoSpace:
+		return true
+	case ProblemTypeStorageTargetInvalid:
+		return true
 	case ProblemTypeTableActive:
 		return true
 	case ProblemTypeTableIncomplete:
+		return true
+	case ProblemTypeTaskAlreadyDone:
 		return true
 	case ProblemTypeTemplateInvalid:
 		return true
 	case ProblemTypeTemplateLimits:
 		return true
 	case ProblemTypeTextOutdated:
+		return true
+	case ProblemTypeTooManyItems:
 		return true
 	case ProblemTypeTotpAlreadyEnabled:
 		return true
@@ -6677,6 +7079,7 @@ const (
 	ReportKeyCustomers       ReportKey = "customers"
 	ReportKeyEfficiency      ReportKey = "efficiency"
 	ReportKeyLostDemand      ReportKey = "lost-demand"
+	ReportKeyMaintenance     ReportKey = "maintenance"
 	ReportKeyOccupancy       ReportKey = "occupancy"
 	ReportKeyPayments        ReportKey = "payments"
 	ReportKeyPresences       ReportKey = "presences"
@@ -6684,6 +7087,8 @@ const (
 	ReportKeyReceivables     ReportKey = "receivables"
 	ReportKeyRevenueClasses  ReportKey = "revenue-classes"
 	ReportKeyRights          ReportKey = "rights"
+	ReportKeyStorage         ReportKey = "storage"
+	ReportKeyUtilities       ReportKey = "utilities"
 	ReportKeyVessels         ReportKey = "vessels"
 )
 
@@ -6708,6 +7113,8 @@ func (e ReportKey) Valid() bool {
 		return true
 	case ReportKeyLostDemand:
 		return true
+	case ReportKeyMaintenance:
+		return true
 	case ReportKeyOccupancy:
 		return true
 	case ReportKeyPayments:
@@ -6721,6 +7128,10 @@ func (e ReportKey) Valid() bool {
 	case ReportKeyRevenueClasses:
 		return true
 	case ReportKeyRights:
+		return true
+	case ReportKeyStorage:
+		return true
+	case ReportKeyUtilities:
 		return true
 	case ReportKeyVessels:
 		return true
@@ -6764,27 +7175,31 @@ func (e ReportLengthBand) Valid() bool {
 
 // Defines values for ReportRefType.
 const (
-	ReportRefTypeAllocation        ReportRefType = "allocation"
-	ReportRefTypeArea              ReportRefType = "area"
-	ReportRefTypeBerth             ReportRefType = "berth"
-	ReportRefTypeCashSession       ReportRefType = "cash_session"
-	ReportRefTypeCharge            ReportRefType = "charge"
-	ReportRefTypeCommonChargeRun   ReportRefType = "common_charge_run"
-	ReportRefTypeContract          ReportRefType = "contract"
-	ReportRefTypeCustomer          ReportRefType = "customer"
-	ReportRefTypeFiscalDocument    ReportRefType = "fiscal_document"
-	ReportRefTypeHolderInstallment ReportRefType = "holder_installment"
-	ReportRefTypeInquiry           ReportRefType = "inquiry"
-	ReportRefTypeInstallment       ReportRefType = "installment"
-	ReportRefTypeLandResource      ReportRefType = "land_resource"
-	ReportRefTypeMandate           ReportRefType = "mandate"
-	ReportRefTypePayment           ReportRefType = "payment"
-	ReportRefTypePresence          ReportRefType = "presence"
-	ReportRefTypeRefund            ReportRefType = "refund"
-	ReportRefTypeRelease           ReportRefType = "release"
-	ReportRefTypeRight             ReportRefType = "right"
-	ReportRefTypeTransit           ReportRefType = "transit"
-	ReportRefTypeVessel            ReportRefType = "vessel"
+	ReportRefTypeAllocation         ReportRefType = "allocation"
+	ReportRefTypeArea               ReportRefType = "area"
+	ReportRefTypeBerth              ReportRefType = "berth"
+	ReportRefTypeCashSession        ReportRefType = "cash_session"
+	ReportRefTypeCharge             ReportRefType = "charge"
+	ReportRefTypeCommonChargeRun    ReportRefType = "common_charge_run"
+	ReportRefTypeContract           ReportRefType = "contract"
+	ReportRefTypeCustomer           ReportRefType = "customer"
+	ReportRefTypeFiscalDocument     ReportRefType = "fiscal_document"
+	ReportRefTypeHolderInstallment  ReportRefType = "holder_installment"
+	ReportRefTypeInquiry            ReportRefType = "inquiry"
+	ReportRefTypeInstallment        ReportRefType = "installment"
+	ReportRefTypeLandResource       ReportRefType = "land_resource"
+	ReportRefTypeMaintenanceTask    ReportRefType = "maintenance_task"
+	ReportRefTypeMandate            ReportRefType = "mandate"
+	ReportRefTypePayment            ReportRefType = "payment"
+	ReportRefTypePresence           ReportRefType = "presence"
+	ReportRefTypeRefund             ReportRefType = "refund"
+	ReportRefTypeRelease            ReportRefType = "release"
+	ReportRefTypeRight              ReportRefType = "right"
+	ReportRefTypeScenario           ReportRefType = "scenario"
+	ReportRefTypeTransit            ReportRefType = "transit"
+	ReportRefTypeUtilityConsumption ReportRefType = "utility_consumption"
+	ReportRefTypeUtilityMeter       ReportRefType = "utility_meter"
+	ReportRefTypeVessel             ReportRefType = "vessel"
 )
 
 // Valid indicates whether the value is a known member of the ReportRefType enum.
@@ -6816,6 +7231,8 @@ func (e ReportRefType) Valid() bool {
 		return true
 	case ReportRefTypeLandResource:
 		return true
+	case ReportRefTypeMaintenanceTask:
+		return true
 	case ReportRefTypeMandate:
 		return true
 	case ReportRefTypePayment:
@@ -6828,7 +7245,13 @@ func (e ReportRefType) Valid() bool {
 		return true
 	case ReportRefTypeRight:
 		return true
+	case ReportRefTypeScenario:
+		return true
 	case ReportRefTypeTransit:
+		return true
+	case ReportRefTypeUtilityConsumption:
+		return true
+	case ReportRefTypeUtilityMeter:
 		return true
 	case ReportRefTypeVessel:
 		return true
@@ -7473,6 +7896,306 @@ func (e StatementRowKind) Valid() bool {
 	}
 }
 
+// Defines values for StorageAccessEntryEvent.
+const (
+	StorageAccessEntryEventArrival StorageAccessEntryEvent = "arrival"
+	StorageAccessEntryEventExit    StorageAccessEntryEvent = "exit"
+)
+
+// Valid indicates whether the value is a known member of the StorageAccessEntryEvent enum.
+func (e StorageAccessEntryEvent) Valid() bool {
+	switch e {
+	case StorageAccessEntryEventArrival:
+		return true
+	case StorageAccessEntryEventExit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageArrangeResultStoppedBy.
+const (
+	StorageArrangeResultStoppedByDeadline   StorageArrangeResultStoppedBy = "deadline"
+	StorageArrangeResultStoppedByIterations StorageArrangeResultStoppedBy = "iterations"
+	StorageArrangeResultStoppedByOptimal    StorageArrangeResultStoppedBy = "optimal"
+)
+
+// Valid indicates whether the value is a known member of the StorageArrangeResultStoppedBy enum.
+func (e StorageArrangeResultStoppedBy) Valid() bool {
+	switch e {
+	case StorageArrangeResultStoppedByDeadline:
+		return true
+	case StorageArrangeResultStoppedByIterations:
+		return true
+	case StorageArrangeResultStoppedByOptimal:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageEquipmentHint.
+const (
+	StorageEquipmentHintCradleMover StorageEquipmentHint = "cradle_mover"
+	StorageEquipmentHintForklift    StorageEquipmentHint = "forklift"
+	StorageEquipmentHintNone        StorageEquipmentHint = "none"
+	StorageEquipmentHintTrailer     StorageEquipmentHint = "trailer"
+	StorageEquipmentHintTravelLift  StorageEquipmentHint = "travel_lift"
+)
+
+// Valid indicates whether the value is a known member of the StorageEquipmentHint enum.
+func (e StorageEquipmentHint) Valid() bool {
+	switch e {
+	case StorageEquipmentHintCradleMover:
+		return true
+	case StorageEquipmentHintForklift:
+		return true
+	case StorageEquipmentHintNone:
+		return true
+	case StorageEquipmentHintTrailer:
+		return true
+	case StorageEquipmentHintTravelLift:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageGateIssue.
+const (
+	NotOnBorder StorageGateIssue = "not_on_border"
+	NotUsable   StorageGateIssue = "not_usable"
+)
+
+// Valid indicates whether the value is a known member of the StorageGateIssue enum.
+func (e StorageGateIssue) Valid() bool {
+	switch e {
+	case NotOnBorder:
+		return true
+	case NotUsable:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageItemIssueReason.
+const (
+	StorageItemIssueReasonBlockedCell StorageItemIssueReason = "blocked_cell"
+	StorageItemIssueReasonFit         StorageItemIssueReason = "fit"
+	StorageItemIssueReasonOutside     StorageItemIssueReason = "outside"
+	StorageItemIssueReasonOverlap     StorageItemIssueReason = "overlap"
+	StorageItemIssueReasonStale       StorageItemIssueReason = "stale"
+	StorageItemIssueReasonUnplaced    StorageItemIssueReason = "unplaced"
+)
+
+// Valid indicates whether the value is a known member of the StorageItemIssueReason enum.
+func (e StorageItemIssueReason) Valid() bool {
+	switch e {
+	case StorageItemIssueReasonBlockedCell:
+		return true
+	case StorageItemIssueReasonFit:
+		return true
+	case StorageItemIssueReasonOutside:
+		return true
+	case StorageItemIssueReasonOverlap:
+		return true
+	case StorageItemIssueReasonStale:
+		return true
+	case StorageItemIssueReasonUnplaced:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageLayoutItemUnplacedReason.
+const (
+	StorageLayoutItemUnplacedReasonFit     StorageLayoutItemUnplacedReason = "fit"
+	StorageLayoutItemUnplacedReasonNoSpace StorageLayoutItemUnplacedReason = "no_space"
+)
+
+// Valid indicates whether the value is a known member of the StorageLayoutItemUnplacedReason enum.
+func (e StorageLayoutItemUnplacedReason) Valid() bool {
+	switch e {
+	case StorageLayoutItemUnplacedReasonFit:
+		return true
+	case StorageLayoutItemUnplacedReasonNoSpace:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageMovementStatus.
+const (
+	StorageMovementStatusCancelled StorageMovementStatus = "cancelled"
+	StorageMovementStatusDone      StorageMovementStatus = "done"
+	StorageMovementStatusPending   StorageMovementStatus = "pending"
+)
+
+// Valid indicates whether the value is a known member of the StorageMovementStatus enum.
+func (e StorageMovementStatus) Valid() bool {
+	switch e {
+	case StorageMovementStatusCancelled:
+		return true
+	case StorageMovementStatusDone:
+		return true
+	case StorageMovementStatusPending:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageScenarioConflictReason.
+const (
+	StorageScenarioConflictReasonFit           StorageScenarioConflictReason = "fit"
+	StorageScenarioConflictReasonOverlap       StorageScenarioConflictReason = "overlap"
+	StorageScenarioConflictReasonResourceTaken StorageScenarioConflictReason = "resource_taken"
+	StorageScenarioConflictReasonStale         StorageScenarioConflictReason = "stale"
+	StorageScenarioConflictReasonUnplaced      StorageScenarioConflictReason = "unplaced"
+)
+
+// Valid indicates whether the value is a known member of the StorageScenarioConflictReason enum.
+func (e StorageScenarioConflictReason) Valid() bool {
+	switch e {
+	case StorageScenarioConflictReasonFit:
+		return true
+	case StorageScenarioConflictReasonOverlap:
+		return true
+	case StorageScenarioConflictReasonResourceTaken:
+		return true
+	case StorageScenarioConflictReasonStale:
+		return true
+	case StorageScenarioConflictReasonUnplaced:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageScenarioDetailRunStoppedBy.
+const (
+	StorageScenarioDetailRunStoppedByDeadline   StorageScenarioDetailRunStoppedBy = "deadline"
+	StorageScenarioDetailRunStoppedByIterations StorageScenarioDetailRunStoppedBy = "iterations"
+	StorageScenarioDetailRunStoppedByOptimal    StorageScenarioDetailRunStoppedBy = "optimal"
+)
+
+// Valid indicates whether the value is a known member of the StorageScenarioDetailRunStoppedBy enum.
+func (e StorageScenarioDetailRunStoppedBy) Valid() bool {
+	switch e {
+	case StorageScenarioDetailRunStoppedByDeadline:
+		return true
+	case StorageScenarioDetailRunStoppedByIterations:
+		return true
+	case StorageScenarioDetailRunStoppedByOptimal:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageScenarioItemOrigin.
+const (
+	StorageScenarioItemOriginArea StorageScenarioItemOrigin = "area"
+	StorageScenarioItemOriginTray StorageScenarioItemOrigin = "tray"
+)
+
+// Valid indicates whether the value is a known member of the StorageScenarioItemOrigin enum.
+func (e StorageScenarioItemOrigin) Valid() bool {
+	switch e {
+	case StorageScenarioItemOriginArea:
+		return true
+	case StorageScenarioItemOriginTray:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageScenarioMoveKind.
+const (
+	StorageScenarioMoveKindMove  StorageScenarioMoveKind = "move"
+	StorageScenarioMoveKindPlace StorageScenarioMoveKind = "place"
+)
+
+// Valid indicates whether the value is a known member of the StorageScenarioMoveKind enum.
+func (e StorageScenarioMoveKind) Valid() bool {
+	switch e {
+	case StorageScenarioMoveKindMove:
+		return true
+	case StorageScenarioMoveKindPlace:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageScenarioStatus.
+const (
+	StorageScenarioStatusApplied   StorageScenarioStatus = "applied"
+	StorageScenarioStatusDiscarded StorageScenarioStatus = "discarded"
+	StorageScenarioStatusDraft     StorageScenarioStatus = "draft"
+)
+
+// Valid indicates whether the value is a known member of the StorageScenarioStatus enum.
+func (e StorageScenarioStatus) Valid() bool {
+	switch e {
+	case StorageScenarioStatusApplied:
+		return true
+	case StorageScenarioStatusDiscarded:
+		return true
+	case StorageScenarioStatusDraft:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageSupport.
+const (
+	StorageSupportCradle  StorageSupport = "cradle"
+	StorageSupportNone    StorageSupport = "none"
+	StorageSupportRack    StorageSupport = "rack"
+	StorageSupportTrailer StorageSupport = "trailer"
+)
+
+// Valid indicates whether the value is a known member of the StorageSupport enum.
+func (e StorageSupport) Valid() bool {
+	switch e {
+	case StorageSupportCradle:
+		return true
+	case StorageSupportNone:
+		return true
+	case StorageSupportRack:
+		return true
+	case StorageSupportTrailer:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for StorageSupportOwner.
+const (
+	StorageSupportOwnerMarina StorageSupportOwner = "marina"
+	StorageSupportOwnerOwn    StorageSupportOwner = "own"
+)
+
+// Valid indicates whether the value is a known member of the StorageSupportOwner enum.
+func (e StorageSupportOwner) Valid() bool {
+	switch e {
+	case StorageSupportOwnerMarina:
+		return true
+	case StorageSupportOwnerOwn:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for StructureKind.
 const (
 	StructureKindBreakwater StructureKind = "breakwater"
@@ -7536,6 +8259,30 @@ const (
 func (e SurfaceAreaGeneratorType) Valid() bool {
 	switch e {
 	case SurfaceAreaGeneratorTypeSurfaceArea:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SurfaceRotationDd.
+const (
+	SurfaceRotationDdN0    SurfaceRotationDd = 0
+	SurfaceRotationDdN1800 SurfaceRotationDd = 1800
+	SurfaceRotationDdN2700 SurfaceRotationDd = 2700
+	SurfaceRotationDdN900  SurfaceRotationDd = 900
+)
+
+// Valid indicates whether the value is a known member of the SurfaceRotationDd enum.
+func (e SurfaceRotationDd) Valid() bool {
+	switch e {
+	case SurfaceRotationDdN0:
+		return true
+	case SurfaceRotationDdN1800:
+		return true
+	case SurfaceRotationDdN2700:
+		return true
+	case SurfaceRotationDdN900:
 		return true
 	default:
 		return false
@@ -7697,24 +8444,28 @@ func (e TileReason) Valid() bool {
 
 // Defines values for TileKey.
 const (
-	TileKeyBerthRevenuePerM   TileKey = "berth_revenue_per_m"
-	TileKeyCharged            TileKey = "charged"
-	TileKeyCollected          TileKey = "collected"
-	TileKeyEfficiency         TileKey = "efficiency"
-	TileKeyNewCustomers       TileKey = "new_customers"
-	TileKeyOccupancy          TileKey = "occupancy"
-	TileKeyProduction         TileKey = "production"
-	TileKeyReceivablesOpen    TileKey = "receivables_open"
-	TileKeyReceivablesOverdue TileKey = "receivables_overdue"
-	TileKeyRenewalRate        TileKey = "renewal_rate"
-	TileKeyRentalRevenue      TileKey = "rental_revenue"
-	TileKeyRentalUtilisation  TileKey = "rental_utilisation"
-	TileKeyTransitAvgNight    TileKey = "transit_avg_night"
-	TileKeyVesselsAvgLoa      TileKey = "vessels_avg_loa"
-	TileKeyVesselsHosted      TileKey = "vessels_hosted"
-	TileKeyYardHours          TileKey = "yard_hours"
-	TileKeyYardMargin         TileKey = "yard_margin"
-	TileKeyYardOpenOrders     TileKey = "yard_open_orders"
+	TileKeyBerthRevenuePerM    TileKey = "berth_revenue_per_m"
+	TileKeyCharged             TileKey = "charged"
+	TileKeyCollected           TileKey = "collected"
+	TileKeyEfficiency          TileKey = "efficiency"
+	TileKeyMaintenanceOverdue  TileKey = "maintenance_overdue"
+	TileKeyNewCustomers        TileKey = "new_customers"
+	TileKeyOccupancy           TileKey = "occupancy"
+	TileKeyProduction          TileKey = "production"
+	TileKeyReceivablesOpen     TileKey = "receivables_open"
+	TileKeyReceivablesOverdue  TileKey = "receivables_overdue"
+	TileKeyRenewalRate         TileKey = "renewal_rate"
+	TileKeyRentalRevenue       TileKey = "rental_revenue"
+	TileKeyRentalUtilisation   TileKey = "rental_utilisation"
+	TileKeyStorageExitsBlocked TileKey = "storage_exits_blocked"
+	TileKeyStorageOccupancy    TileKey = "storage_occupancy"
+	TileKeyTransitAvgNight     TileKey = "transit_avg_night"
+	TileKeyUtilityUnbilled     TileKey = "utility_unbilled"
+	TileKeyVesselsAvgLoa       TileKey = "vessels_avg_loa"
+	TileKeyVesselsHosted       TileKey = "vessels_hosted"
+	TileKeyYardHours           TileKey = "yard_hours"
+	TileKeyYardMargin          TileKey = "yard_margin"
+	TileKeyYardOpenOrders      TileKey = "yard_open_orders"
 )
 
 // Valid indicates whether the value is a known member of the TileKey enum.
@@ -7727,6 +8478,8 @@ func (e TileKey) Valid() bool {
 	case TileKeyCollected:
 		return true
 	case TileKeyEfficiency:
+		return true
+	case TileKeyMaintenanceOverdue:
 		return true
 	case TileKeyNewCustomers:
 		return true
@@ -7744,7 +8497,13 @@ func (e TileKey) Valid() bool {
 		return true
 	case TileKeyRentalUtilisation:
 		return true
+	case TileKeyStorageExitsBlocked:
+		return true
+	case TileKeyStorageOccupancy:
+		return true
 	case TileKeyTransitAvgNight:
+		return true
+	case TileKeyUtilityUnbilled:
 		return true
 	case TileKeyVesselsAvgLoa:
 		return true
@@ -7959,6 +8718,75 @@ func (e UnplacedVesselReason) Valid() bool {
 	}
 }
 
+// Defines values for UtilityChargeRunResultSkippedReason.
+const (
+	UtilityChargeRunResultSkippedReasonAnomaly    UtilityChargeRunResultSkippedReason = "anomaly"
+	UtilityChargeRunResultSkippedReasonNoPrice    UtilityChargeRunResultSkippedReason = "no_price"
+	UtilityChargeRunResultSkippedReasonNotDue     UtilityChargeRunResultSkippedReason = "not_due"
+	UtilityChargeRunResultSkippedReasonUnassigned UtilityChargeRunResultSkippedReason = "unassigned"
+)
+
+// Valid indicates whether the value is a known member of the UtilityChargeRunResultSkippedReason enum.
+func (e UtilityChargeRunResultSkippedReason) Valid() bool {
+	switch e {
+	case UtilityChargeRunResultSkippedReasonAnomaly:
+		return true
+	case UtilityChargeRunResultSkippedReasonNoPrice:
+		return true
+	case UtilityChargeRunResultSkippedReasonNotDue:
+		return true
+	case UtilityChargeRunResultSkippedReasonUnassigned:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UtilityChargingMode.
+const (
+	UtilityChargingModeMonthly         UtilityChargingMode = "monthly"
+	UtilityChargingModeWithInstallment UtilityChargingMode = "with_installment"
+)
+
+// Valid indicates whether the value is a known member of the UtilityChargingMode enum.
+func (e UtilityChargingMode) Valid() bool {
+	switch e {
+	case UtilityChargingModeMonthly:
+		return true
+	case UtilityChargingModeWithInstallment:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UtilityConsumptionStatus.
+const (
+	UtilityConsumptionStatusAnomaly    UtilityConsumptionStatus = "anomaly"
+	UtilityConsumptionStatusCharged    UtilityConsumptionStatus = "charged"
+	UtilityConsumptionStatusExcluded   UtilityConsumptionStatus = "excluded"
+	UtilityConsumptionStatusPending    UtilityConsumptionStatus = "pending"
+	UtilityConsumptionStatusUnassigned UtilityConsumptionStatus = "unassigned"
+)
+
+// Valid indicates whether the value is a known member of the UtilityConsumptionStatus enum.
+func (e UtilityConsumptionStatus) Valid() bool {
+	switch e {
+	case UtilityConsumptionStatusAnomaly:
+		return true
+	case UtilityConsumptionStatusCharged:
+		return true
+	case UtilityConsumptionStatusExcluded:
+		return true
+	case UtilityConsumptionStatusPending:
+		return true
+	case UtilityConsumptionStatusUnassigned:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for UtilityKind.
 const (
 	UtilityKindPower UtilityKind = "power"
@@ -7971,6 +8799,30 @@ func (e UtilityKind) Valid() bool {
 	case UtilityKindPower:
 		return true
 	case UtilityKindWater:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UtilityUnit.
+const (
+	UtilityUnitCycle UtilityUnit = "cycle"
+	UtilityUnitH     UtilityUnit = "h"
+	UtilityUnitKwh   UtilityUnit = "kwh"
+	UtilityUnitM3    UtilityUnit = "m3"
+)
+
+// Valid indicates whether the value is a known member of the UtilityUnit enum.
+func (e UtilityUnit) Valid() bool {
+	switch e {
+	case UtilityUnitCycle:
+		return true
+	case UtilityUnitH:
+		return true
+	case UtilityUnitKwh:
+		return true
+	case UtilityUnitM3:
 		return true
 	default:
 		return false
@@ -8189,16 +9041,16 @@ func (e WasteRecordKind) Valid() bool {
 
 // Defines values for WasteSuggestionKind.
 const (
-	Move WasteSuggestionKind = "move"
-	Swap WasteSuggestionKind = "swap"
+	WasteSuggestionKindMove WasteSuggestionKind = "move"
+	WasteSuggestionKindSwap WasteSuggestionKind = "swap"
 )
 
 // Valid indicates whether the value is a known member of the WasteSuggestionKind enum.
 func (e WasteSuggestionKind) Valid() bool {
 	switch e {
-	case Move:
+	case WasteSuggestionKindMove:
 		return true
-	case Swap:
+	case WasteSuggestionKindSwap:
 		return true
 	default:
 		return false
@@ -9132,6 +9984,33 @@ func (e GetLostDemandReportParamsGroupBy) Valid() bool {
 	}
 }
 
+// Defines values for GetMaintenanceReportParamsGroupBy.
+const (
+	GetMaintenanceReportParamsGroupByElementType  GetMaintenanceReportParamsGroupBy = "element_type"
+	GetMaintenanceReportParamsGroupByIntervention GetMaintenanceReportParamsGroupBy = "intervention"
+	GetMaintenanceReportParamsGroupByMonth        GetMaintenanceReportParamsGroupBy = "month"
+	GetMaintenanceReportParamsGroupByPriority     GetMaintenanceReportParamsGroupBy = "priority"
+	GetMaintenanceReportParamsGroupByStatus       GetMaintenanceReportParamsGroupBy = "status"
+)
+
+// Valid indicates whether the value is a known member of the GetMaintenanceReportParamsGroupBy enum.
+func (e GetMaintenanceReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetMaintenanceReportParamsGroupByElementType:
+		return true
+	case GetMaintenanceReportParamsGroupByIntervention:
+		return true
+	case GetMaintenanceReportParamsGroupByMonth:
+		return true
+	case GetMaintenanceReportParamsGroupByPriority:
+		return true
+	case GetMaintenanceReportParamsGroupByStatus:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetOccupancyReportParamsVariant.
 const (
 	GetOccupancyReportParamsVariantContractual GetOccupancyReportParamsVariant = "contractual"
@@ -9414,6 +10293,57 @@ func (e GetRightsReportParamsSection) Valid() bool {
 	}
 }
 
+// Defines values for GetStorageReportParamsGroupBy.
+const (
+	GetStorageReportParamsGroupByArea         GetStorageReportParamsGroupBy = "area"
+	GetStorageReportParamsGroupByContractKind GetStorageReportParamsGroupBy = "contract_kind"
+	GetStorageReportParamsGroupByMapKind      GetStorageReportParamsGroupBy = "map_kind"
+	GetStorageReportParamsGroupByMonth        GetStorageReportParamsGroupBy = "month"
+)
+
+// Valid indicates whether the value is a known member of the GetStorageReportParamsGroupBy enum.
+func (e GetStorageReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetStorageReportParamsGroupByArea:
+		return true
+	case GetStorageReportParamsGroupByContractKind:
+		return true
+	case GetStorageReportParamsGroupByMapKind:
+		return true
+	case GetStorageReportParamsGroupByMonth:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetUtilitiesReportParamsGroupBy.
+const (
+	GetUtilitiesReportParamsGroupByContract GetUtilitiesReportParamsGroupBy = "contract"
+	GetUtilitiesReportParamsGroupByKind     GetUtilitiesReportParamsGroupBy = "kind"
+	GetUtilitiesReportParamsGroupByMeter    GetUtilitiesReportParamsGroupBy = "meter"
+	GetUtilitiesReportParamsGroupByMonth    GetUtilitiesReportParamsGroupBy = "month"
+	GetUtilitiesReportParamsGroupByStatus   GetUtilitiesReportParamsGroupBy = "status"
+)
+
+// Valid indicates whether the value is a known member of the GetUtilitiesReportParamsGroupBy enum.
+func (e GetUtilitiesReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetUtilitiesReportParamsGroupByContract:
+		return true
+	case GetUtilitiesReportParamsGroupByKind:
+		return true
+	case GetUtilitiesReportParamsGroupByMeter:
+		return true
+	case GetUtilitiesReportParamsGroupByMonth:
+		return true
+	case GetUtilitiesReportParamsGroupByStatus:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetVesselsReportParamsGroupBy.
 const (
 	GetVesselsReportParamsGroupByFlag       GetVesselsReportParamsGroupBy = "flag"
@@ -9432,6 +10362,21 @@ func (e GetVesselsReportParamsGroupBy) Valid() bool {
 	case GetVesselsReportParamsGroupByKind:
 		return true
 	case GetVesselsReportParamsGroupByLengthBand:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListUtilityMetersParamsRoute.
+const (
+	ListUtilityMetersParamsRouteDock ListUtilityMetersParamsRoute = "dock"
+)
+
+// Valid indicates whether the value is a known member of the ListUtilityMetersParamsRoute enum.
+func (e ListUtilityMetersParamsRoute) Valid() bool {
+	switch e {
+	case ListUtilityMetersParamsRouteDock:
 		return true
 	default:
 		return false
@@ -11951,6 +12896,19 @@ type CharterRotate struct {
 	FromNight IsoDate `json:"from_night"`
 }
 
+// ChecklistEntry defines model for ChecklistEntry.
+type ChecklistEntry struct {
+	Key   string `json:"key"`
+	Label string `json:"label"`
+}
+
+// ChecklistResult defines model for ChecklistResult.
+type ChecklistResult struct {
+	Done bool    `json:"done"`
+	Key  string  `json:"key"`
+	Note *string `json:"note,omitempty"`
+}
+
 // CloseCashSessionInput defines model for CloseCashSessionInput.
 type CloseCashSessionInput struct {
 	Counted []CountedInput `json:"counted"`
@@ -14004,6 +14962,64 @@ type Engine struct {
 	Serial  *string `json:"serial,omitempty"`
 }
 
+// Equipment defines model for Equipment.
+type Equipment struct {
+	Active       bool          `json:"active"`
+	CapacityKg   *int64        `json:"capacity_kg,omitempty"`
+	Code         string        `json:"code"`
+	CreatedAt    time.Time     `json:"created_at"`
+	Id           string        `json:"id"`
+	Kind         EquipmentKind `json:"kind"`
+	MapId        *string       `json:"map_id,omitempty"`
+	Name         string        `json:"name"`
+	OutOfService bool          `json:"out_of_service"`
+	UpdatedAt    time.Time     `json:"updated_at"`
+	Version      int64         `json:"version"`
+
+	// XCm Length in integer centimetres
+	XCm *Cm `json:"x_cm,omitempty"`
+
+	// YCm Length in integer centimetres
+	YCm *Cm `json:"y_cm,omitempty"`
+}
+
+// EquipmentInput defines model for EquipmentInput.
+type EquipmentInput struct {
+	Active     *bool         `json:"active,omitempty"`
+	CapacityKg *int64        `json:"capacity_kg,omitempty"`
+	Code       Code          `json:"code"`
+	Kind       EquipmentKind `json:"kind"`
+	MapId      *string       `json:"map_id,omitempty"`
+	Name       string        `json:"name"`
+
+	// XCm Length in integer centimetres
+	XCm *Cm `json:"x_cm,omitempty"`
+
+	// YCm Length in integer centimetres
+	YCm *Cm `json:"y_cm,omitempty"`
+}
+
+// EquipmentKind defines model for EquipmentKind.
+type EquipmentKind string
+
+// EquipmentPage defines model for EquipmentPage.
+type EquipmentPage struct {
+	Items      []Equipment `json:"items"`
+	NextCursor *string     `json:"next_cursor"`
+}
+
+// EquipmentPatch defines model for EquipmentPatch.
+type EquipmentPatch struct {
+	Active     *bool          `json:"active,omitempty"`
+	CapacityKg *int64         `json:"capacity_kg,omitempty"`
+	Code       *Code          `json:"code,omitempty"`
+	Kind       *EquipmentKind `json:"kind,omitempty"`
+	MapId      *string        `json:"map_id,omitempty"`
+	Name       *string        `json:"name,omitempty"`
+	XCm        *int64         `json:"x_cm,omitempty"`
+	YCm        *int64         `json:"y_cm,omitempty"`
+}
+
 // EventType defines model for EventType.
 type EventType struct {
 	// Public Can be subscribed by webhooks
@@ -15252,6 +16268,372 @@ type LostDemandTotals struct {
 	ValueCents *int64 `json:"value_cents"`
 }
 
+// MaintenanceCancelInput defines model for MaintenanceCancelInput.
+type MaintenanceCancelInput struct {
+	Reason string `json:"reason"`
+}
+
+// MaintenanceCompleteInput defines model for MaintenanceCompleteInput.
+type MaintenanceCompleteInput struct {
+	ChecklistResults  *[]ChecklistResult `json:"checklist_results,omitempty"`
+	ClientRef         *string            `json:"client_ref,omitempty"`
+	ExternalCostCents *int64             `json:"external_cost_cents,omitempty"`
+	InternalMinutes   *int               `json:"internal_minutes,omitempty"`
+	Notes             *string            `json:"notes,omitempty"`
+	Outcome           MaintenanceOutcome `json:"outcome"`
+	SupplierRef       *string            `json:"supplier_ref,omitempty"`
+}
+
+// MaintenanceConflict One entry of details.conflicts of 409 maintenance_conflicts
+type MaintenanceConflict struct {
+	AllocationId string              `json:"allocation_id"`
+	Alternatives []OccupancySolution `json:"alternatives"`
+	ContractId   *string             `json:"contract_id,omitempty"`
+
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From         IsoDate      `json:"from"`
+	ResourceId   string       `json:"resource_id"`
+	ResourceType ResourceType `json:"resource_type"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To       IsoDate `json:"to"`
+	VesselId *string `json:"vessel_id,omitempty"`
+}
+
+// MaintenanceElementRef defines model for MaintenanceElementRef.
+type MaintenanceElementRef struct {
+	// Code Display code (read only)
+	Code        *string                `json:"code,omitempty"`
+	ElementId   string                 `json:"element_id"`
+	ElementType MaintenanceElementType `json:"element_type"`
+}
+
+// MaintenanceElementType defines model for MaintenanceElementType.
+type MaintenanceElementType string
+
+// MaintenanceFile defines model for MaintenanceFile.
+type MaintenanceFile struct {
+	ContentType string              `json:"content_type"`
+	CreatedAt   time.Time           `json:"created_at"`
+	FileId      string              `json:"file_id"`
+	Kind        MaintenanceFileKind `json:"kind"`
+}
+
+// MaintenanceFileKind defines model for MaintenanceFile.Kind.
+type MaintenanceFileKind string
+
+// MaintenanceIntervention defines model for MaintenanceIntervention.
+type MaintenanceIntervention string
+
+// MaintenanceMap defines model for MaintenanceMap.
+type MaintenanceMap struct {
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date  IsoDate               `json:"date"`
+	Items []MaintenanceMapEntry `json:"items"`
+	MapId string                `json:"map_id"`
+}
+
+// MaintenanceMapEntry defines model for MaintenanceMapEntry.
+type MaintenanceMapEntry struct {
+	ElementId    string                 `json:"element_id"`
+	ElementType  MaintenanceElementType `json:"element_type"`
+	Open         int                    `json:"open"`
+	OutOfService bool                   `json:"out_of_service"`
+	Overdue      int                    `json:"overdue"`
+}
+
+// MaintenanceOutcome defines model for MaintenanceOutcome.
+type MaintenanceOutcome string
+
+// MaintenancePeriodicity months: every N months from the last done (or starts_on), end-of-month clamp; fixed_date: every year on month_day (MM-DD); cycles: when the meter (hours or cycles) advanced by every units since the last done
+type MaintenancePeriodicity struct {
+	// Every Months
+	Every    *int64                     `json:"every,omitempty"`
+	Kind     MaintenancePeriodicityKind `json:"kind"`
+	MeterId  *string                    `json:"meter_id,omitempty"`
+	MonthDay *string                    `json:"month_day,omitempty"`
+
+	// StartsOn Calendar date YYYY-MM-DD in the marina timezone
+	StartsOn *IsoDate `json:"starts_on,omitempty"`
+}
+
+// MaintenancePeriodicityKind defines model for MaintenancePeriodicity.Kind.
+type MaintenancePeriodicityKind string
+
+// MaintenancePlan defines model for MaintenancePlan.
+type MaintenancePlan struct {
+	Active            bool                    `json:"active"`
+	AssigneeUserId    *string                 `json:"assignee_user_id,omitempty"`
+	Checklist         []ChecklistEntry        `json:"checklist"`
+	CreatedAt         time.Time               `json:"created_at"`
+	Id                string                  `json:"id"`
+	Intervention      MaintenanceIntervention `json:"intervention"`
+	InterventionLabel *string                 `json:"intervention_label,omitempty"`
+	LeadDays          int                     `json:"lead_days"`
+	Name              string                  `json:"name"`
+	Nights            int                     `json:"nights"`
+
+	// Periodicity months: every N months from the last done (or starts_on), end-of-month clamp; fixed_date: every year on month_day (MM-DD); cycles: when the meter (hours or cycles) advanced by every units since the last done
+	Periodicity  MaintenancePeriodicity  `json:"periodicity"`
+	RequiresFree bool                    `json:"requires_free"`
+	SupplierName *string                 `json:"supplier_name,omitempty"`
+	Targets      []MaintenanceElementRef `json:"targets"`
+	UpdatedAt    time.Time               `json:"updated_at"`
+	Version      int64                   `json:"version"`
+}
+
+// MaintenancePlanInput defines model for MaintenancePlanInput.
+type MaintenancePlanInput struct {
+	Active         *bool                   `json:"active,omitempty"`
+	AssigneeUserId *string                 `json:"assignee_user_id,omitempty"`
+	Checklist      *[]ChecklistEntry       `json:"checklist,omitempty"`
+	Intervention   MaintenanceIntervention `json:"intervention"`
+
+	// InterventionLabel Required for custom
+	InterventionLabel *string `json:"intervention_label,omitempty"`
+	LeadDays          *int    `json:"lead_days,omitempty"`
+	Name              string  `json:"name"`
+	Nights            *int    `json:"nights,omitempty"`
+
+	// Periodicity months: every N months from the last done (or starts_on), end-of-month clamp; fixed_date: every year on month_day (MM-DD); cycles: when the meter (hours or cycles) advanced by every units since the last done
+	Periodicity  MaintenancePeriodicity  `json:"periodicity"`
+	RequiresFree *bool                   `json:"requires_free,omitempty"`
+	SupplierName *string                 `json:"supplier_name,omitempty"`
+	Targets      []MaintenanceElementRef `json:"targets"`
+}
+
+// MaintenancePlanPage defines model for MaintenancePlanPage.
+type MaintenancePlanPage struct {
+	Items      []MaintenancePlan `json:"items"`
+	NextCursor *string           `json:"next_cursor"`
+}
+
+// MaintenancePlanPatch defines model for MaintenancePlanPatch.
+type MaintenancePlanPatch struct {
+	Active            *bool                    `json:"active,omitempty"`
+	AssigneeUserId    *string                  `json:"assignee_user_id,omitempty"`
+	Checklist         *[]ChecklistEntry        `json:"checklist,omitempty"`
+	Intervention      *MaintenanceIntervention `json:"intervention,omitempty"`
+	InterventionLabel *string                  `json:"intervention_label,omitempty"`
+	LeadDays          *int                     `json:"lead_days,omitempty"`
+	Name              *string                  `json:"name,omitempty"`
+	Nights            *int                     `json:"nights,omitempty"`
+
+	// Periodicity months: every N months from the last done (or starts_on), end-of-month clamp; fixed_date: every year on month_day (MM-DD); cycles: when the meter (hours or cycles) advanced by every units since the last done
+	Periodicity  *MaintenancePeriodicity  `json:"periodicity,omitempty"`
+	RequiresFree *bool                    `json:"requires_free,omitempty"`
+	SupplierName *string                  `json:"supplier_name,omitempty"`
+	Targets      *[]MaintenanceElementRef `json:"targets,omitempty"`
+}
+
+// MaintenancePriority defines model for MaintenancePriority.
+type MaintenancePriority string
+
+// MaintenanceReleaseInput defines model for MaintenanceReleaseInput.
+type MaintenanceReleaseInput struct {
+	// LastNight Keep the nights up to this one; absent = release every future night
+	LastNight *IsoDate `json:"last_night,omitempty"`
+}
+
+// MaintenanceReport defines model for MaintenanceReport.
+type MaintenanceReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string        `json:"filters"`
+	GroupBy *string                  `json:"group_by,omitempty"`
+	Groups  []MaintenanceReportGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod              `json:"period"`
+	Records []MaintenanceReportRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate                 `json:"today"`
+	Totals MaintenanceReportTotals `json:"totals"`
+}
+
+// MaintenanceReportGroup defines model for MaintenanceReportGroup.
+type MaintenanceReportGroup struct {
+	Key    string                  `json:"key"`
+	Label  string                  `json:"label"`
+	Totals MaintenanceReportTotals `json:"totals"`
+}
+
+// MaintenanceReportInput element, or map_id with a position, or both
+type MaintenanceReportInput struct {
+	ClientRef   string                 `json:"client_ref"`
+	Description *string                `json:"description,omitempty"`
+	Element     *MaintenanceElementRef `json:"element,omitempty"`
+	MapId       *string                `json:"map_id,omitempty"`
+
+	// PositionXCm Length in integer centimetres
+	PositionXCm *Cm `json:"position_x_cm,omitempty"`
+
+	// PositionYCm Length in integer centimetres
+	PositionYCm *Cm                  `json:"position_y_cm,omitempty"`
+	Priority    *MaintenancePriority `json:"priority,omitempty"`
+	Title       string               `json:"title"`
+}
+
+// MaintenanceReportRecord defines model for MaintenanceReportRecord.
+type MaintenanceReportRecord struct {
+	// DoneOn Calendar date YYYY-MM-DD in the marina timezone
+	DoneOn *IsoDate `json:"done_on,omitempty"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn   *IsoDate               `json:"due_on,omitempty"`
+	Element *MaintenanceElementRef `json:"element,omitempty"`
+
+	// ExternalCostCents Amount in integer cents of the marina currency
+	ExternalCostCents *Cents                   `json:"external_cost_cents,omitempty"`
+	InternalMinutes   *int64                   `json:"internal_minutes,omitempty"`
+	Intervention      *MaintenanceIntervention `json:"intervention,omitempty"`
+	OverdueDays       int64                    `json:"overdue_days"`
+	Priority          MaintenancePriority      `json:"priority"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref    ReportRef             `json:"ref"`
+	Source MaintenanceSource     `json:"source"`
+	Status MaintenanceTaskStatus `json:"status"`
+	TaskId string                `json:"task_id"`
+}
+
+// MaintenanceReportTotals defines model for MaintenanceReportTotals.
+type MaintenanceReportTotals struct {
+	Cancelled int64 `json:"cancelled"`
+	Done      int64 `json:"done"`
+
+	// ExternalCostCents reports.all only
+	ExternalCostCents *Cents `json:"external_cost_cents,omitempty"`
+	InProgress        int64  `json:"in_progress"`
+	InternalMinutes   int64  `json:"internal_minutes"`
+	Open              int64  `json:"open"`
+	Overdue           int64  `json:"overdue"`
+	Scheduled         int64  `json:"scheduled"`
+	Tasks             int64  `json:"tasks"`
+}
+
+// MaintenanceScheduleInput defines model for MaintenanceScheduleInput.
+type MaintenanceScheduleInput struct {
+	// FromNight Calendar date YYYY-MM-DD in the marina timezone
+	FromNight IsoDate `json:"from_night"`
+
+	// OccupyBerthIds For a structure task, the berths of the structure to occupy (D24)
+	OccupyBerthIds *[]string `json:"occupy_berth_ids,omitempty"`
+	OutOfService   *bool     `json:"out_of_service,omitempty"`
+
+	// ToNight Calendar date YYYY-MM-DD in the marina timezone
+	ToNight IsoDate `json:"to_night"`
+}
+
+// MaintenanceSource defines model for MaintenanceSource.
+type MaintenanceSource string
+
+// MaintenanceTask defines model for MaintenanceTask.
+type MaintenanceTask struct {
+	AllocationIds    []string          `json:"allocation_ids"`
+	AssigneeUserId   *string           `json:"assignee_user_id,omitempty"`
+	Checklist        []ChecklistEntry  `json:"checklist"`
+	ChecklistResults []ChecklistResult `json:"checklist_results"`
+	CreatedAt        time.Time         `json:"created_at"`
+	Description      *string           `json:"description,omitempty"`
+	DoneAt           *time.Time        `json:"done_at,omitempty"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn   *IsoDate               `json:"due_on,omitempty"`
+	Element *MaintenanceElementRef `json:"element,omitempty"`
+
+	// ExternalCostCents Amount in integer cents of the marina currency
+	ExternalCostCents *Cents                   `json:"external_cost_cents,omitempty"`
+	Files             []MaintenanceFile        `json:"files"`
+	FollowsTaskId     *string                  `json:"follows_task_id,omitempty"`
+	Id                string                   `json:"id"`
+	InternalMinutes   *int                     `json:"internal_minutes,omitempty"`
+	Intervention      *MaintenanceIntervention `json:"intervention,omitempty"`
+	MapId             *string                  `json:"map_id,omitempty"`
+	OutOfService      bool                     `json:"out_of_service"`
+	Outcome           *MaintenanceOutcome      `json:"outcome,omitempty"`
+	OutcomeNotes      *string                  `json:"outcome_notes,omitempty"`
+	Overdue           bool                     `json:"overdue"`
+	PlanId            *string                  `json:"plan_id,omitempty"`
+
+	// PositionXCm Length in integer centimetres
+	PositionXCm *Cm `json:"position_x_cm,omitempty"`
+
+	// PositionYCm Length in integer centimetres
+	PositionYCm      *Cm                 `json:"position_y_cm,omitempty"`
+	Priority         MaintenancePriority `json:"priority"`
+	ReportedByUserId *string             `json:"reported_by_user_id,omitempty"`
+
+	// ScheduledFrom Calendar date YYYY-MM-DD in the marina timezone
+	ScheduledFrom *IsoDate `json:"scheduled_from,omitempty"`
+
+	// ScheduledTo Calendar date YYYY-MM-DD in the marina timezone
+	ScheduledTo *IsoDate              `json:"scheduled_to,omitempty"`
+	Source      MaintenanceSource     `json:"source"`
+	Status      MaintenanceTaskStatus `json:"status"`
+	SupplierRef *string               `json:"supplier_ref,omitempty"`
+	Title       string                `json:"title"`
+	UpdatedAt   time.Time             `json:"updated_at"`
+	Version     int64                 `json:"version"`
+}
+
+// MaintenanceTaskCreate defines model for MaintenanceTaskCreate.
+type MaintenanceTaskCreate struct {
+	AssigneeUserId *string `json:"assignee_user_id,omitempty"`
+	Description    *string `json:"description,omitempty"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn         *IsoDate               `json:"due_on,omitempty"`
+	Element       *MaintenanceElementRef `json:"element,omitempty"`
+	FollowsTaskId *string                `json:"follows_task_id,omitempty"`
+	MapId         *string                `json:"map_id,omitempty"`
+	OutOfService  *bool                  `json:"out_of_service,omitempty"`
+
+	// PositionXCm Length in integer centimetres
+	PositionXCm *Cm `json:"position_x_cm,omitempty"`
+
+	// PositionYCm Length in integer centimetres
+	PositionYCm *Cm                  `json:"position_y_cm,omitempty"`
+	Priority    *MaintenancePriority `json:"priority,omitempty"`
+	Title       string               `json:"title"`
+}
+
+// MaintenanceTaskPage defines model for MaintenanceTaskPage.
+type MaintenanceTaskPage struct {
+	Items      []MaintenanceTask `json:"items"`
+	NextCursor *string           `json:"next_cursor"`
+}
+
+// MaintenanceTaskPatch defines model for MaintenanceTaskPatch.
+type MaintenanceTaskPatch struct {
+	AssigneeUserId *string              `json:"assignee_user_id,omitempty"`
+	Description    *string              `json:"description,omitempty"`
+	DueOn          *string              `json:"due_on,omitempty"`
+	OutOfService   *bool                `json:"out_of_service,omitempty"`
+	Priority       *MaintenancePriority `json:"priority,omitempty"`
+	SupplierRef    *string              `json:"supplier_ref,omitempty"`
+	Title          *string              `json:"title,omitempty"`
+}
+
+// MaintenanceTaskStatus defines model for MaintenanceTaskStatus.
+type MaintenanceTaskStatus string
+
+// MaintenanceWorklist defines model for MaintenanceWorklist.
+type MaintenanceWorklist struct {
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date  IsoDate           `json:"date"`
+	Items []MaintenanceTask `json:"items"`
+}
+
 // Mandate defines model for Mandate.
 type Mandate struct {
 	Berth     *ResourceRef     `json:"berth,omitempty"`
@@ -15859,6 +17241,89 @@ type Meta struct {
 
 // MetaEdition defines model for Meta.Edition.
 type MetaEdition string
+
+// MeterAnomalyCode defines model for MeterAnomalyCode.
+type MeterAnomalyCode string
+
+// MeterKind defines model for MeterKind.
+type MeterKind string
+
+// MeterReading defines model for MeterReading.
+type MeterReading struct {
+	AnomalyCodes []MeterAnomalyCode `json:"anomaly_codes"`
+	ClientRef    *string            `json:"client_ref,omitempty"`
+	CreatedAt    time.Time          `json:"created_at"`
+
+	// DeltaMilli Difference from the previous valid reading (after multiplier)
+	DeltaMilli  *QtyMilli        `json:"delta_milli,omitempty"`
+	Id          string           `json:"id"`
+	Kind        MeterReadingKind `json:"kind"`
+	MeterId     string           `json:"meter_id"`
+	Note        *string          `json:"note,omitempty"`
+	PhotoFileId *string          `json:"photo_file_id,omitempty"`
+	ReadAt      time.Time        `json:"read_at"`
+
+	// ReadOn Calendar date YYYY-MM-DD in the marina timezone
+	ReadOn IsoDate `json:"read_on"`
+
+	// Source sensor is reserved for M12
+	Source MeterReadingSource `json:"source"`
+	Status MeterReadingStatus `json:"status"`
+	UserId *string            `json:"user_id,omitempty"`
+
+	// ValueMilli Quantity in thousandths (1.5 = 1500)
+	ValueMilli QtyMilli `json:"value_milli"`
+	Version    int64    `json:"version"`
+}
+
+// MeterReadingBrief defines model for MeterReadingBrief.
+type MeterReadingBrief struct {
+	Id     string    `json:"id"`
+	ReadAt time.Time `json:"read_at"`
+
+	// ReadOn Calendar date YYYY-MM-DD in the marina timezone
+	ReadOn IsoDate `json:"read_on"`
+
+	// ValueMilli Quantity in thousandths (1.5 = 1500)
+	ValueMilli QtyMilli `json:"value_milli"`
+}
+
+// MeterReadingCreate defines model for MeterReadingCreate.
+type MeterReadingCreate struct {
+	ClientRef *string           `json:"client_ref,omitempty"`
+	Kind      *MeterReadingKind `json:"kind,omitempty"`
+	MeterId   string            `json:"meter_id"`
+	Note      *string           `json:"note,omitempty"`
+	ReadAt    *time.Time        `json:"read_at,omitempty"`
+
+	// Value Cumulative index
+	Value string `json:"value"`
+}
+
+// MeterReadingKind defines model for MeterReadingKind.
+type MeterReadingKind string
+
+// MeterReadingPage defines model for MeterReadingPage.
+type MeterReadingPage struct {
+	Items      []MeterReading `json:"items"`
+	NextCursor *string        `json:"next_cursor"`
+}
+
+// MeterReadingPhoto defines model for MeterReadingPhoto.
+type MeterReadingPhoto struct {
+	FileId string `json:"file_id"`
+}
+
+// MeterReadingSource sensor is reserved for M12
+type MeterReadingSource string
+
+// MeterReadingStatus defines model for MeterReadingStatus.
+type MeterReadingStatus string
+
+// MeterReadingVoidInput defines model for MeterReadingVoidInput.
+type MeterReadingVoidInput struct {
+	Reason string `json:"reason"`
+}
 
 // MethodAmount defines model for MethodAmount.
 type MethodAmount struct {
@@ -17943,7 +19408,7 @@ type PricingStage string
 type Problem struct {
 	Detail *string `json:"detail,omitempty"`
 
-	// Details Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}; resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?}; invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid {reason}; allocation_changed {current_resource_id, current_resource_code} (null when the allocation is gone); remote_pin_mismatch {expected_fingerprint, presented_fingerprint}. Ids, codes, dates and integers only.
+	// Details Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}; resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?}; invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid {reason}; allocation_changed {current_resource_id, current_resource_code} (null when the allocation is gone); remote_pin_mismatch {expected_fingerprint, presented_fingerprint}; scenario_conflicts {conflicts: [StorageScenarioConflict]}; maintenance_conflicts {conflicts: [MaintenanceConflict]}; storage_no_space {area_id, from, to}. Ids, codes, dates and integers only.
 	Details  *map[string]interface{} `json:"details,omitempty"`
 	Errors   *[]FieldError           `json:"errors,omitempty"`
 	Instance *string                 `json:"instance,omitempty"`
@@ -20091,6 +21556,733 @@ type StayChangeResult struct {
 	PriceEffect PriceEffect `json:"price_effect"`
 }
 
+// StorageAccessEntry Accessibility of one exit or arrival event (m9-plan §5); blocking = allocation ids (heuristic minimal set)
+type StorageAccessEntry struct {
+	Accessible   bool                    `json:"accessible"`
+	AllocationId string                  `json:"allocation_id"`
+	Blocking     []string                `json:"blocking"`
+	Event        StorageAccessEntryEvent `json:"event"`
+
+	// On Calendar date YYYY-MM-DD in the marina timezone
+	On IsoDate `json:"on"`
+
+	// Order Extraction order among the exits of that day (1 = first)
+	Order    *int    `json:"order,omitempty"`
+	VesselId *string `json:"vessel_id,omitempty"`
+}
+
+// StorageAccessEntryEvent defines model for StorageAccessEntry.Event.
+type StorageAccessEntryEvent string
+
+// StorageAccessibility defines model for StorageAccessibility.
+type StorageAccessibility struct {
+	AreaId string `json:"area_id"`
+
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date    IsoDate              `json:"date"`
+	Entries []StorageAccessEntry `json:"entries"`
+
+	// ExtractionOrder Allocation ids leaving that day in order
+	ExtractionOrder []string `json:"extraction_order"`
+}
+
+// StorageApplyResult defines model for StorageApplyResult.
+type StorageApplyResult struct {
+	Movements   []StorageMovement `json:"movements"`
+	PriceEffect *PriceEffect      `json:"price_effect,omitempty"`
+	Scenario    StorageScenario   `json:"scenario"`
+}
+
+// StorageArea defines model for StorageArea.
+type StorageArea struct {
+	BoatsToday int `json:"boats_today"`
+
+	// CellCm Length in integer centimetres
+	CellCm             Cm     `json:"cell_cm"`
+	Code               string `json:"code"`
+	Cols               int    `json:"cols"`
+	DraftScenarios     int    `json:"draft_scenarios"`
+	ExitsBlockedNext30 int    `json:"exits_blocked_next_30"`
+
+	// GatesValid false when an exit gate is not usable or not on the grid border (area_exits_invalid)
+	GatesValid         bool    `json:"gates_valid"`
+	Id                 string  `json:"id"`
+	MapId              string  `json:"map_id"`
+	MapKind            MapKind `json:"map_kind"`
+	Name               *string `json:"name,omitempty"`
+	OccupiedCellsToday int     `json:"occupied_cells_today"`
+	PriceClass         *string `json:"price_class,omitempty"`
+	Rows               int     `json:"rows"`
+	UsableCells        int     `json:"usable_cells"`
+
+	// UsableCm2 usable cells × cell²
+	UsableCm2 int64 `json:"usable_cm2"`
+}
+
+// StorageAreaList defines model for StorageAreaList.
+type StorageAreaList struct {
+	Items []StorageArea `json:"items"`
+}
+
+// StorageArrangeRequest defines model for StorageArrangeRequest.
+type StorageArrangeRequest struct {
+	// FromOn Calendar date YYYY-MM-DD in the marina timezone
+	FromOn *IsoDate `json:"from_on,omitempty"`
+
+	// Items Draft layout to start from (default the real state of the window)
+	Items         *[]StorageLayoutItemInput `json:"items,omitempty"`
+	MaxIterations *int                      `json:"max_iterations,omitempty"`
+	Seed          *int64                    `json:"seed,omitempty"`
+
+	// ToOn Calendar date YYYY-MM-DD in the marina timezone
+	ToOn *IsoDate `json:"to_on,omitempty"`
+}
+
+// StorageArrangeResult defines model for StorageArrangeResult.
+type StorageArrangeResult struct {
+	Access     []StorageAccessEntry          `json:"access"`
+	Indicators StorageIndicators             `json:"indicators"`
+	Items      []StorageLayoutItem           `json:"items"`
+	Iterations int                           `json:"iterations"`
+	Seed       int64                         `json:"seed"`
+	StoppedBy  StorageArrangeResultStoppedBy `json:"stopped_by"`
+}
+
+// StorageArrangeResultStoppedBy defines model for StorageArrangeResult.StoppedBy.
+type StorageArrangeResultStoppedBy string
+
+// StorageContract defines model for StorageContract.
+type StorageContract struct {
+	// Contract A mooring contract or a transit
+	Contract Contract          `json:"contract"`
+	Cradle   *StoragePlacement `json:"cradle,omitempty"`
+
+	// Details exit_on = launch_on or ends_on; arrival_on = haul_out_on or starts_on, clamped into the period
+	Details   StorageContractDetails `json:"details"`
+	Fit       *FitResult             `json:"fit,omitempty"`
+	Placement *StoragePlacement      `json:"placement,omitempty"`
+}
+
+// StorageContractCreate Exactly one of area_id (surface dynamic area of a yard or shed map) and trailer_spot_id (land resource of kind trailer_spot). Without placement on an area the optimizer chooses a position (409 storage_no_space when none is free). ends_on defaults by term (annual +1 year, seasonal the season end of the active storage list, monthly +1 month; period requires it).
+type StorageContractCreate struct {
+	Activate          *bool   `json:"activate,omitempty"`
+	AreaId            *string `json:"area_id,omitempty"`
+	BillingCustomerId *string `json:"billing_customer_id,omitempty"`
+
+	// CradleResourceId Marina cradle (land resource of kind cradle) for the whole period
+	CradleResourceId *string `json:"cradle_resource_id,omitempty"`
+	CustomerId       string  `json:"customer_id"`
+
+	// EndsOn Calendar date YYYY-MM-DD in the marina timezone
+	EndsOn *IsoDate `json:"ends_on,omitempty"`
+
+	// FitOverride Accept the blocking dimensional fit codes (occupancy.override_fit); the reason is audited
+	FitOverride *FitOverrideInput `json:"fit_override,omitempty"`
+
+	// HaulOutOn Calendar date YYYY-MM-DD in the marina timezone
+	HaulOutOn *IsoDate `json:"haul_out_on,omitempty"`
+
+	// LaunchOn Calendar date YYYY-MM-DD in the marina timezone
+	LaunchOn      *IsoDate `json:"launch_on,omitempty"`
+	Notes         *string  `json:"notes,omitempty"`
+	NotesHandling *string  `json:"notes_handling,omitempty"`
+
+	// Placement Top-left corner of the footprint box in area grid space (cm, snapped to cells by the service) and rotation
+	Placement *StoragePlacementInput `json:"placement,omitempty"`
+
+	// Policy Versioned contract policy (m3-plan §4.7); unknown keys are rejected
+	Policy   *ContractPolicy    `json:"policy,omitempty"`
+	Services *[]SimulateService `json:"services,omitempty"`
+
+	// StartsOn Calendar date YYYY-MM-DD in the marina timezone
+	StartsOn IsoDate `json:"starts_on"`
+
+	// Support How the boat stands ashore (fit code support_not_allowed when the area does not accept it)
+	Support       StorageSupport       `json:"support"`
+	SupportOwner  *StorageSupportOwner `json:"support_owner,omitempty"`
+	Term          ContractTerm         `json:"term"`
+	TrailerSpotId *string              `json:"trailer_spot_id,omitempty"`
+	VesselId      string               `json:"vessel_id"`
+}
+
+// StorageContractDetails exit_on = launch_on or ends_on; arrival_on = haul_out_on or starts_on, clamped into the period
+type StorageContractDetails struct {
+	// ArrivalOn Calendar date YYYY-MM-DD in the marina timezone
+	ArrivalOn  IsoDate `json:"arrival_on"`
+	ContractId string  `json:"contract_id"`
+
+	// ExitOn Calendar date YYYY-MM-DD in the marina timezone
+	ExitOn IsoDate `json:"exit_on"`
+
+	// HaulOutOn Calendar date YYYY-MM-DD in the marina timezone
+	HaulOutOn *IsoDate `json:"haul_out_on,omitempty"`
+
+	// LaunchOn Calendar date YYYY-MM-DD in the marina timezone
+	LaunchOn      *IsoDate `json:"launch_on,omitempty"`
+	NotesHandling *string  `json:"notes_handling,omitempty"`
+
+	// Support How the boat stands ashore (fit code support_not_allowed when the area does not accept it)
+	Support      StorageSupport      `json:"support"`
+	SupportOwner StorageSupportOwner `json:"support_owner"`
+	UpdatedAt    time.Time           `json:"updated_at"`
+	Version      int64               `json:"version"`
+}
+
+// StorageContractPatch defines model for StorageContractPatch.
+type StorageContractPatch struct {
+	HaulOutOn     *string `json:"haul_out_on,omitempty"`
+	LaunchOn      *string `json:"launch_on,omitempty"`
+	NotesHandling *string `json:"notes_handling,omitempty"`
+
+	// Support How the boat stands ashore (fit code support_not_allowed when the area does not accept it)
+	Support      *StorageSupport      `json:"support,omitempty"`
+	SupportOwner *StorageSupportOwner `json:"support_owner,omitempty"`
+}
+
+// StorageEquipmentHint Text hint until M10 (equipment slots)
+type StorageEquipmentHint string
+
+// StorageEvaluateRequest defines model for StorageEvaluateRequest.
+type StorageEvaluateRequest struct {
+	// FromOn Calendar date YYYY-MM-DD in the marina timezone
+	FromOn *IsoDate                 `json:"from_on,omitempty"`
+	Items  []StorageLayoutItemInput `json:"items"`
+
+	// ToOn Calendar date YYYY-MM-DD in the marina timezone
+	ToOn *IsoDate `json:"to_on,omitempty"`
+}
+
+// StorageEvaluation defines model for StorageEvaluation.
+type StorageEvaluation struct {
+	Access     []StorageAccessEntry `json:"access"`
+	Indicators StorageIndicators    `json:"indicators"`
+	Issues     []StorageItemIssue   `json:"issues"`
+}
+
+// StorageGate A 4-connected component of exit cells
+type StorageGate struct {
+	Cells []int             `json:"cells"`
+	Index int               `json:"index"`
+	Issue *StorageGateIssue `json:"issue,omitempty"`
+	Valid bool              `json:"valid"`
+}
+
+// StorageGateIssue defines model for StorageGate.Issue.
+type StorageGateIssue string
+
+// StorageIndicators defines model for StorageIndicators.
+type StorageIndicators struct {
+	ArrivalsBlocked int `json:"arrivals_blocked"`
+	BlockedByDate   []struct {
+		ArrivalsBlocked *int `json:"arrivals_blocked,omitempty"`
+
+		// Date Calendar date YYYY-MM-DD in the marina timezone
+		Date         IsoDate `json:"date"`
+		ExitsBlocked int     `json:"exits_blocked"`
+	} `json:"blocked_by_date"`
+	ExitsBlocked       int   `json:"exits_blocked"`
+	LargestFreeRectCm2 int64 `json:"largest_free_rect_cm2"`
+	Moves              int   `json:"moves"`
+	Overlaps           int   `json:"overlaps"`
+	Unplaced           int   `json:"unplaced"`
+	UsableCm2          int64 `json:"usable_cm2"`
+	UsedFootprintCm2   int64 `json:"used_footprint_cm2"`
+	UsedHullCm2        int64 `json:"used_hull_cm2"`
+}
+
+// StorageItemIssue defines model for StorageItemIssue.
+type StorageItemIssue struct {
+	AllocationId      string                 `json:"allocation_id"`
+	FitCodes          *[]FitCode             `json:"fit_codes,omitempty"`
+	Reason            StorageItemIssueReason `json:"reason"`
+	WithAllocationIds *[]string              `json:"with_allocation_ids,omitempty"`
+}
+
+// StorageItemIssueReason defines model for StorageItemIssue.Reason.
+type StorageItemIssueReason string
+
+// StorageLayoutItem defines model for StorageLayoutItem.
+type StorageLayoutItem struct {
+	AllocationId string     `json:"allocation_id"`
+	FitCodes     *[]FitCode `json:"fit_codes,omitempty"`
+
+	// RotationDd Rotation on a surface area in tenths of a degree (multiples of 90°; 0/1800 and 900/2700 are the same rectangle)
+	RotationDd     *SurfaceRotationDd               `json:"rotation_dd,omitempty"`
+	UnplacedReason *StorageLayoutItemUnplacedReason `json:"unplaced_reason,omitempty"`
+
+	// XCm Length in integer centimetres
+	XCm *Cm `json:"x_cm,omitempty"`
+
+	// YCm Length in integer centimetres
+	YCm *Cm `json:"y_cm,omitempty"`
+}
+
+// StorageLayoutItemUnplacedReason defines model for StorageLayoutItem.UnplacedReason.
+type StorageLayoutItemUnplacedReason string
+
+// StorageLayoutItemInput A position of the draft; x_cm, y_cm and rotation_dd all null = unplaced
+type StorageLayoutItemInput struct {
+	AllocationId string `json:"allocation_id"`
+	Pinned       *bool  `json:"pinned,omitempty"`
+
+	// RotationDd 0, 900, 1800 or 2700
+	RotationDd *int64 `json:"rotation_dd,omitempty"`
+	XCm        *int64 `json:"x_cm,omitempty"`
+	YCm        *int64 `json:"y_cm,omitempty"`
+}
+
+// StorageMoveEnd defines model for StorageMoveEnd.
+type StorageMoveEnd struct {
+	ResourceId   string       `json:"resource_id"`
+	ResourceType ResourceType `json:"resource_type"`
+
+	// RotationDd Rotation on a surface area in tenths of a degree (multiples of 90°; 0/1800 and 900/2700 are the same rectangle)
+	RotationDd *SurfaceRotationDd `json:"rotation_dd,omitempty"`
+
+	// XCm Length in integer centimetres
+	XCm *Cm `json:"x_cm,omitempty"`
+
+	// YCm Length in integer centimetres
+	YCm *Cm `json:"y_cm,omitempty"`
+}
+
+// StorageMovement defines model for StorageMovement.
+type StorageMovement struct {
+	AllocationId string     `json:"allocation_id"`
+	AreaId       string     `json:"area_id"`
+	DoneAt       *time.Time `json:"done_at,omitempty"`
+	DoneByUserId *string    `json:"done_by_user_id,omitempty"`
+
+	// EquipmentHint Text hint until M10 (equipment slots)
+	EquipmentHint StorageEquipmentHint `json:"equipment_hint"`
+	From          *StorageMoveEnd      `json:"from,omitempty"`
+	Id            string               `json:"id"`
+
+	// MoveOn Calendar date YYYY-MM-DD in the marina timezone
+	MoveOn     IsoDate               `json:"move_on"`
+	ScenarioId *string               `json:"scenario_id,omitempty"`
+	Seq        int                   `json:"seq"`
+	Status     StorageMovementStatus `json:"status"`
+
+	// Temporary Temporary position to break a cycle (spostamento provvisorio)
+	Temporary bool           `json:"temporary"`
+	To        StorageMoveEnd `json:"to"`
+	Version   int64          `json:"version"`
+
+	// Vessel The vessel embedded in occupancy and contract views (no registration, no owner)
+	Vessel *VesselBrief `json:"vessel,omitempty"`
+}
+
+// StorageMovementList defines model for StorageMovementList.
+type StorageMovementList struct {
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date     IsoDate              `json:"date"`
+	Items    []StorageMovement    `json:"items"`
+	Warnings []StorageAccessEntry `json:"warnings"`
+}
+
+// StorageMovementStatus defines model for StorageMovementStatus.
+type StorageMovementStatus string
+
+// StorageObstacle Fixed obstacle of the window (blocks, maintenance rows)
+type StorageObstacle struct {
+	AllocationId string `json:"allocation_id"`
+	Cells        []int  `json:"cells"`
+
+	// FirstNight Calendar date YYYY-MM-DD in the marina timezone
+	FirstNight IsoDate        `json:"first_night"`
+	Kind       AllocationKind `json:"kind"`
+
+	// LastNight Calendar date YYYY-MM-DD in the marina timezone
+	LastNight IsoDate `json:"last_night"`
+}
+
+// StorageOptimizeRequest defines model for StorageOptimizeRequest.
+type StorageOptimizeRequest struct {
+	MaxIterations *int `json:"max_iterations,omitempty"`
+
+	// Seed Default = the scenario seed (FNV-1a of its id)
+	Seed *int64 `json:"seed,omitempty"`
+}
+
+// StoragePlacement defines model for StoragePlacement.
+type StoragePlacement struct {
+	AllocationId string `json:"allocation_id"`
+
+	// FirstNight Calendar date YYYY-MM-DD in the marina timezone
+	FirstNight IsoDate `json:"first_night"`
+
+	// LastNight Calendar date YYYY-MM-DD in the marina timezone
+	LastNight    IsoDate      `json:"last_night"`
+	MapId        *string      `json:"map_id,omitempty"`
+	ResourceId   string       `json:"resource_id"`
+	ResourceType ResourceType `json:"resource_type"`
+
+	// RotationDd Rotation on a surface area in tenths of a degree (multiples of 90°; 0/1800 and 900/2700 are the same rectangle)
+	RotationDd *SurfaceRotationDd `json:"rotation_dd,omitempty"`
+
+	// XCm Length in integer centimetres
+	XCm *Cm `json:"x_cm,omitempty"`
+
+	// YCm Length in integer centimetres
+	YCm *Cm `json:"y_cm,omitempty"`
+}
+
+// StoragePlacementInput Top-left corner of the footprint box in area grid space (cm, snapped to cells by the service) and rotation
+type StoragePlacementInput struct {
+	// RotationDd Rotation on a surface area in tenths of a degree (multiples of 90°; 0/1800 and 900/2700 are the same rectangle)
+	RotationDd SurfaceRotationDd `json:"rotation_dd"`
+
+	// XCm Length in integer centimetres
+	XCm Cm `json:"x_cm"`
+
+	// YCm Length in integer centimetres
+	YCm Cm `json:"y_cm"`
+}
+
+// StoragePlan defines model for StoragePlan.
+type StoragePlan struct {
+	Access []StorageAccessEntry `json:"access"`
+	Area   StorageArea          `json:"area"`
+
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From      IsoDate           `json:"from"`
+	Gates     []StorageGate     `json:"gates"`
+	Items     []StoragePlanItem `json:"items"`
+	Obstacles []StorageObstacle `json:"obstacles"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To IsoDate `json:"to"`
+}
+
+// StoragePlanItem defines model for StoragePlanItem.
+type StoragePlanItem struct {
+	AllocationId string `json:"allocation_id"`
+
+	// ArrivalOn Calendar date YYYY-MM-DD in the marina timezone
+	ArrivalOn IsoDate `json:"arrival_on"`
+
+	// Cells Footprint cells (with margin)
+	Cells          []int          `json:"cells"`
+	Contract       *ContractBrief `json:"contract,omitempty"`
+	DisplacementKg *int64         `json:"displacement_kg,omitempty"`
+
+	// ExitOn Calendar date YYYY-MM-DD in the marina timezone
+	ExitOn IsoDate `json:"exit_on"`
+
+	// FirstNight Calendar date YYYY-MM-DD in the marina timezone
+	FirstNight IsoDate        `json:"first_night"`
+	Kind       AllocationKind `json:"kind"`
+
+	// LastNight Calendar date YYYY-MM-DD in the marina timezone
+	LastNight IsoDate `json:"last_night"`
+
+	// RotationDd Rotation on a surface area in tenths of a degree (multiples of 90°; 0/1800 and 900/2700 are the same rectangle)
+	RotationDd SurfaceRotationDd `json:"rotation_dd"`
+
+	// Support How the boat stands ashore (fit code support_not_allowed when the area does not accept it)
+	Support *StorageSupport `json:"support,omitempty"`
+	Version int64           `json:"version"`
+
+	// Vessel The vessel embedded in occupancy and contract views (no registration, no owner)
+	Vessel *VesselBrief `json:"vessel,omitempty"`
+
+	// XCm Length in integer centimetres
+	XCm Cm `json:"x_cm"`
+
+	// YCm Length in integer centimetres
+	YCm Cm `json:"y_cm"`
+}
+
+// StorageReport defines model for StorageReport.
+type StorageReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string    `json:"filters"`
+	GroupBy *string              `json:"group_by,omitempty"`
+	Groups  []StorageReportGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod          `json:"period"`
+	Records []StorageReportRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate             `json:"today"`
+	Totals StorageReportTotals `json:"totals"`
+}
+
+// StorageReportGroup defines model for StorageReportGroup.
+type StorageReportGroup struct {
+	Key    string              `json:"key"`
+	Label  string              `json:"label"`
+	Totals StorageReportTotals `json:"totals"`
+}
+
+// StorageReportRecord defines model for StorageReportRecord.
+type StorageReportRecord struct {
+	AllocationId string `json:"allocation_id"`
+	AreaCode     string `json:"area_code"`
+	AreaId       string `json:"area_id"`
+
+	// BeamCm Length in integer centimetres
+	BeamCm       *Cm           `json:"beam_cm,omitempty"`
+	ContractCode *string       `json:"contract_code,omitempty"`
+	ContractKind *ContractKind `json:"contract_kind,omitempty"`
+	ExitBlocked  bool          `json:"exit_blocked"`
+
+	// ExitOn Calendar date YYYY-MM-DD in the marina timezone
+	ExitOn *IsoDate `json:"exit_on,omitempty"`
+
+	// FootprintM2NightsMilli Quantity in thousandths (1.5 = 1500)
+	FootprintM2NightsMilli QtyMilli `json:"footprint_m2_nights_milli"`
+
+	// HullM2NightsMilli Quantity in thousandths (1.5 = 1500)
+	HullM2NightsMilli QtyMilli `json:"hull_m2_nights_milli"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm   *Cm     `json:"loa_cm,omitempty"`
+	MapKind MapKind `json:"map_kind"`
+	Nights  int64   `json:"nights"`
+
+	// ProductionCents Amount in integer cents of the marina currency
+	ProductionCents *Cents `json:"production_cents,omitempty"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref      ReportRef `json:"ref"`
+	VesselId *string   `json:"vessel_id,omitempty"`
+}
+
+// StorageReportTotals defines model for StorageReportTotals.
+type StorageReportTotals struct {
+	// AvailableM2NightsMilli Denominator
+	AvailableM2NightsMilli QtyMilli `json:"available_m2_nights_milli"`
+	Boats                  int64    `json:"boats"`
+	ExitsBlocked           int64    `json:"exits_blocked"`
+
+	// HullM2NightsMilli Quantity in thousandths (1.5 = 1500)
+	HullM2NightsMilli *QtyMilli `json:"hull_m2_nights_milli,omitempty"`
+	OccupancyBp       *int64    `json:"occupancy_bp"`
+
+	// OccupiedM2NightsMilli Numerator (footprint)
+	OccupiedM2NightsMilli QtyMilli `json:"occupied_m2_nights_milli"`
+
+	// ProductionCents reports.all only
+	ProductionCents *Cents `json:"production_cents,omitempty"`
+}
+
+// StorageScenario defines model for StorageScenario.
+type StorageScenario struct {
+	AppliedAt       *time.Time `json:"applied_at,omitempty"`
+	AppliedByUserId *string    `json:"applied_by_user_id,omitempty"`
+	AreaId          string     `json:"area_id"`
+	AuthorUserId    string     `json:"author_user_id"`
+	CreatedAt       time.Time  `json:"created_at"`
+
+	// FromOn Calendar date YYYY-MM-DD in the marina timezone
+	FromOn     IsoDate            `json:"from_on"`
+	Id         string             `json:"id"`
+	Indicators *StorageIndicators `json:"indicators,omitempty"`
+	Name       string             `json:"name"`
+	Seed       int64              `json:"seed"`
+
+	// Stale Some allocation changed since it was loaded (computed on read
+	Stale  bool                  `json:"stale"`
+	Status StorageScenarioStatus `json:"status"`
+
+	// ToOn Calendar date YYYY-MM-DD in the marina timezone
+	ToOn      IsoDate   `json:"to_on"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Version   int64     `json:"version"`
+}
+
+// StorageScenarioComparison defines model for StorageScenarioComparison.
+type StorageScenarioComparison struct {
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date  IsoDate `json:"date"`
+	Diffs []struct {
+		AllocationId string          `json:"allocation_id"`
+		Left         *StorageMoveEnd `json:"left,omitempty"`
+		Right        *StorageMoveEnd `json:"right,omitempty"`
+		VesselId     *string         `json:"vessel_id,omitempty"`
+	} `json:"diffs"`
+	Left       StorageIndicators `json:"left"`
+	Right      StorageIndicators `json:"right"`
+	ScenarioId string            `json:"scenario_id"`
+
+	// With The other scenario id or real
+	With string `json:"with"`
+}
+
+// StorageScenarioConflict One entry of details.conflicts of 409 scenario_conflicts
+type StorageScenarioConflict struct {
+	AllocationId string     `json:"allocation_id"`
+	Cells        *[]int     `json:"cells,omitempty"`
+	FitCodes     *[]FitCode `json:"fit_codes,omitempty"`
+
+	// Nights Inclusive range of nights
+	Nights            *NightRange                   `json:"nights,omitempty"`
+	Reason            StorageScenarioConflictReason `json:"reason"`
+	WithAllocationIds *[]string                     `json:"with_allocation_ids,omitempty"`
+}
+
+// StorageScenarioConflictReason defines model for StorageScenarioConflict.Reason.
+type StorageScenarioConflictReason string
+
+// StorageScenarioCreate defines model for StorageScenarioCreate.
+type StorageScenarioCreate struct {
+	AreaId string `json:"area_id"`
+
+	// FromOn Calendar date YYYY-MM-DD in the marina timezone
+	FromOn IsoDate `json:"from_on"`
+	Name   string  `json:"name"`
+
+	// ToOn Calendar date YYYY-MM-DD in the marina timezone
+	ToOn IsoDate `json:"to_on"`
+}
+
+// StorageScenarioDetail defines model for StorageScenarioDetail.
+type StorageScenarioDetail struct {
+	Access []StorageAccessEntry  `json:"access"`
+	Issues []StorageItemIssue    `json:"issues"`
+	Items  []StorageScenarioItem `json:"items"`
+	Moves  []StorageScenarioMove `json:"moves"`
+
+	// Run Statistics of the last optimize call of this response
+	Run *struct {
+		Iterations int                               `json:"iterations"`
+		Seed       int64                             `json:"seed"`
+		StoppedBy  StorageScenarioDetailRunStoppedBy `json:"stopped_by"`
+	} `json:"run,omitempty"`
+	Scenario StorageScenario `json:"scenario"`
+}
+
+// StorageScenarioDetailRunStoppedBy defines model for StorageScenarioDetail.Run.StoppedBy.
+type StorageScenarioDetailRunStoppedBy string
+
+// StorageScenarioItem defines model for StorageScenarioItem.
+type StorageScenarioItem struct {
+	AllocationId string `json:"allocation_id"`
+
+	// ArrivalOn Calendar date YYYY-MM-DD in the marina timezone
+	ArrivalOn   IsoDate        `json:"arrival_on"`
+	BaseVersion int64          `json:"base_version"`
+	Contract    *ContractBrief `json:"contract,omitempty"`
+
+	// CurrentVersion Absent when the allocation is gone
+	CurrentVersion *int64 `json:"current_version,omitempty"`
+
+	// ExitOn Calendar date YYYY-MM-DD in the marina timezone
+	ExitOn IsoDate `json:"exit_on"`
+
+	// FirstNight Calendar date YYYY-MM-DD in the marina timezone
+	FirstNight IsoDate        `json:"first_night"`
+	Kind       AllocationKind `json:"kind"`
+
+	// LastNight Calendar date YYYY-MM-DD in the marina timezone
+	LastNight IsoDate                   `json:"last_night"`
+	Origin    StorageScenarioItemOrigin `json:"origin"`
+	Pinned    bool                      `json:"pinned"`
+
+	// RotationDd Rotation on a surface area in tenths of a degree (multiples of 90°; 0/1800 and 900/2700 are the same rectangle)
+	RotationDd *SurfaceRotationDd `json:"rotation_dd,omitempty"`
+
+	// Support How the boat stands ashore (fit code support_not_allowed when the area does not accept it)
+	Support *StorageSupport `json:"support,omitempty"`
+
+	// Vessel The vessel embedded in occupancy and contract views (no registration, no owner)
+	Vessel *VesselBrief `json:"vessel,omitempty"`
+
+	// XCm Length in integer centimetres
+	XCm *Cm `json:"x_cm,omitempty"`
+
+	// YCm Length in integer centimetres
+	YCm *Cm `json:"y_cm,omitempty"`
+}
+
+// StorageScenarioItemOrigin defines model for StorageScenarioItem.Origin.
+type StorageScenarioItemOrigin string
+
+// StorageScenarioItemAdd defines model for StorageScenarioItemAdd.
+type StorageScenarioItemAdd struct {
+	AllocationId string `json:"allocation_id"`
+}
+
+// StorageScenarioItemsPut defines model for StorageScenarioItemsPut.
+type StorageScenarioItemsPut struct {
+	Items []StorageLayoutItemInput `json:"items"`
+}
+
+// StorageScenarioMove defines model for StorageScenarioMove.
+type StorageScenarioMove struct {
+	AllocationId string                  `json:"allocation_id"`
+	From         *StorageMoveEnd         `json:"from,omitempty"`
+	Kind         StorageScenarioMoveKind `json:"kind"`
+
+	// MoveOn Calendar date YYYY-MM-DD in the marina timezone
+	MoveOn   IsoDate        `json:"move_on"`
+	Seq      int            `json:"seq"`
+	To       StorageMoveEnd `json:"to"`
+	VesselId *string        `json:"vessel_id,omitempty"`
+}
+
+// StorageScenarioMoveKind defines model for StorageScenarioMove.Kind.
+type StorageScenarioMoveKind string
+
+// StorageScenarioPage defines model for StorageScenarioPage.
+type StorageScenarioPage struct {
+	Items      []StorageScenario `json:"items"`
+	NextCursor *string           `json:"next_cursor"`
+}
+
+// StorageScenarioPatch defines model for StorageScenarioPatch.
+type StorageScenarioPatch struct {
+	// FromOn Calendar date YYYY-MM-DD in the marina timezone
+	FromOn *IsoDate `json:"from_on,omitempty"`
+	Name   *string  `json:"name,omitempty"`
+
+	// ToOn Calendar date YYYY-MM-DD in the marina timezone
+	ToOn *IsoDate `json:"to_on,omitempty"`
+}
+
+// StorageScenarioStatus defines model for StorageScenarioStatus.
+type StorageScenarioStatus string
+
+// StorageSupport How the boat stands ashore (fit code support_not_allowed when the area does not accept it)
+type StorageSupport string
+
+// StorageSupportOwner defines model for StorageSupportOwner.
+type StorageSupportOwner string
+
+// StorageTrayCandidate defines model for StorageTrayCandidate.
+type StorageTrayCandidate struct {
+	AllocationId string `json:"allocation_id"`
+
+	// FirstNight Calendar date YYYY-MM-DD in the marina timezone
+	FirstNight IsoDate `json:"first_night"`
+
+	// LastNight Calendar date YYYY-MM-DD in the marina timezone
+	LastNight    IsoDate      `json:"last_night"`
+	ResourceCode string       `json:"resource_code"`
+	ResourceId   string       `json:"resource_id"`
+	ResourceType ResourceType `json:"resource_type"`
+
+	// Vessel The vessel embedded in occupancy and contract views (no registration, no owner)
+	Vessel *VesselBrief `json:"vessel,omitempty"`
+}
+
+// StorageTrayCandidateList defines model for StorageTrayCandidateList.
+type StorageTrayCandidateList struct {
+	Items []StorageTrayCandidate `json:"items"`
+}
+
 // Structure defines model for Structure.
 type Structure struct {
 	// BollardSpacingCm Strictly positive length in integer centimetres
@@ -20167,6 +22359,9 @@ type SurfaceLane struct {
 	// WidthCm Strictly positive length in integer centimetres
 	WidthCm PositiveCm `json:"width_cm"`
 }
+
+// SurfaceRotationDd Rotation on a surface area in tenths of a degree (multiples of 90°; 0/1800 and 900/2700 are the same rectangle)
+type SurfaceRotationDd int64
 
 // SwapRequest defines model for SwapRequest.
 type SwapRequest struct {
@@ -20534,8 +22729,269 @@ type UserRef struct {
 	Name string `json:"name"`
 }
 
+// UtilitiesReport defines model for UtilitiesReport.
+type UtilitiesReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string      `json:"filters"`
+	GroupBy *string                `json:"group_by,omitempty"`
+	Groups  []UtilitiesReportGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod            `json:"period"`
+	Records []UtilitiesReportRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate               `json:"today"`
+	Totals UtilitiesReportTotals `json:"totals"`
+}
+
+// UtilitiesReportGroup defines model for UtilitiesReportGroup.
+type UtilitiesReportGroup struct {
+	Key    string                `json:"key"`
+	Label  string                `json:"label"`
+	Totals UtilitiesReportTotals `json:"totals"`
+}
+
+// UtilitiesReportRecord defines model for UtilitiesReportRecord.
+type UtilitiesReportRecord struct {
+	// ChargedCents Amount in integer cents of the marina currency
+	ChargedCents  *Cents  `json:"charged_cents,omitempty"`
+	ConsumptionId string  `json:"consumption_id"`
+	ContractCode  *string `json:"contract_code,omitempty"`
+	ContractId    *string `json:"contract_id,omitempty"`
+
+	// FirstNight Calendar date YYYY-MM-DD in the marina timezone
+	FirstNight IsoDate   `json:"first_night"`
+	Kind       MeterKind `json:"kind"`
+
+	// LastNight Calendar date YYYY-MM-DD in the marina timezone
+	LastNight IsoDate `json:"last_night"`
+	MeterCode string  `json:"meter_code"`
+	MeterId   string  `json:"meter_id"`
+	Nights    int64   `json:"nights"`
+
+	// QtyMilli Quantity in thousandths (1.5 = 1500)
+	QtyMilli QtyMilli `json:"qty_milli"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref          ReportRef                `json:"ref"`
+	ResourceId   *string                  `json:"resource_id,omitempty"`
+	ResourceType *ResourceType            `json:"resource_type,omitempty"`
+	Status       UtilityConsumptionStatus `json:"status"`
+}
+
+// UtilitiesReportTotals defines model for UtilitiesReportTotals.
+type UtilitiesReportTotals struct {
+	// ChargedCents reports.all only
+	ChargedCents *Cents `json:"charged_cents,omitempty"`
+
+	// ChargedMilli Quantity in thousandths (1.5 = 1500)
+	ChargedMilli QtyMilli `json:"charged_milli"`
+
+	// CyclesMilli Quantity in thousandths (1.5 = 1500)
+	CyclesMilli QtyMilli `json:"cycles_milli"`
+
+	// HoursMilli Quantity in thousandths (1.5 = 1500)
+	HoursMilli QtyMilli `json:"hours_milli"`
+
+	// PendingMilli Quantity in thousandths (1.5 = 1500)
+	PendingMilli QtyMilli `json:"pending_milli"`
+
+	// PendingValueCents At the current price
+	PendingValueCents *Cents `json:"pending_value_cents,omitempty"`
+
+	// PowerMilli Quantity in thousandths (1.5 = 1500)
+	PowerMilli QtyMilli `json:"power_milli"`
+
+	// UnassignedMilli Quantity in thousandths (1.5 = 1500)
+	UnassignedMilli QtyMilli `json:"unassigned_milli"`
+
+	// WaterMilli Quantity in thousandths (1.5 = 1500)
+	WaterMilli QtyMilli `json:"water_milli"`
+}
+
+// UtilityChargeRunResult defines model for UtilityChargeRunResult.
+type UtilityChargeRunResult struct {
+	Charges []struct {
+		// Adjustment An adjustment charge linked to an exported charge (INV-51)
+		Adjustment *bool  `json:"adjustment,omitempty"`
+		BillingId  string `json:"billing_id"`
+		ChargeId   string `json:"charge_id"`
+		ContractId string `json:"contract_id"`
+		Lines      int    `json:"lines"`
+
+		// TotalCents Amount in integer cents of the marina currency
+		TotalCents Cents `json:"total_cents"`
+	} `json:"charges"`
+	Skipped []struct {
+		ConsumptionId *string                             `json:"consumption_id,omitempty"`
+		ContractId    *string                             `json:"contract_id,omitempty"`
+		Reason        UtilityChargeRunResultSkippedReason `json:"reason"`
+	} `json:"skipped"`
+}
+
+// UtilityChargeRunResultSkippedReason defines model for UtilityChargeRunResult.Skipped.Reason.
+type UtilityChargeRunResultSkippedReason string
+
+// UtilityChargingMode defines model for UtilityChargingMode.
+type UtilityChargingMode string
+
+// UtilityConsumption defines model for UtilityConsumption.
+type UtilityConsumption struct {
+	AllocationId  *string        `json:"allocation_id,omitempty"`
+	BillingId     *string        `json:"billing_id,omitempty"`
+	ChargeId      *string        `json:"charge_id,omitempty"`
+	Contract      *ContractBrief `json:"contract,omitempty"`
+	CustomerId    *string        `json:"customer_id,omitempty"`
+	ExcludeReason *string        `json:"exclude_reason,omitempty"`
+
+	// FirstNight Calendar date YYYY-MM-DD in the marina timezone
+	FirstNight    IsoDate   `json:"first_night"`
+	FromReadingId string    `json:"from_reading_id"`
+	Id            string    `json:"id"`
+	Kind          MeterKind `json:"kind"`
+
+	// LastNight Calendar date YYYY-MM-DD in the marina timezone
+	LastNight IsoDate `json:"last_night"`
+	MeterCode *string `json:"meter_code,omitempty"`
+	MeterId   string  `json:"meter_id"`
+
+	// QtyMilli Quantity in thousandths (1.5 = 1500)
+	QtyMilli     QtyMilli                 `json:"qty_milli"`
+	ResourceId   *string                  `json:"resource_id,omitempty"`
+	ResourceType *ResourceType            `json:"resource_type,omitempty"`
+	Status       UtilityConsumptionStatus `json:"status"`
+	ToReadingId  string                   `json:"to_reading_id"`
+	Version      int64                    `json:"version"`
+}
+
+// UtilityConsumptionAssign defines model for UtilityConsumptionAssign.
+type UtilityConsumptionAssign struct {
+	ContractId string `json:"contract_id"`
+}
+
+// UtilityConsumptionExclude defines model for UtilityConsumptionExclude.
+type UtilityConsumptionExclude struct {
+	Reason string `json:"reason"`
+}
+
+// UtilityConsumptionPage defines model for UtilityConsumptionPage.
+type UtilityConsumptionPage struct {
+	Items      []UtilityConsumption `json:"items"`
+	NextCursor *string              `json:"next_cursor"`
+}
+
+// UtilityConsumptionStatus defines model for UtilityConsumptionStatus.
+type UtilityConsumptionStatus string
+
 // UtilityKind defines model for UtilityKind.
 type UtilityKind string
+
+// UtilityMeter defines model for UtilityMeter.
+type UtilityMeter struct {
+	Active    bool      `json:"active"`
+	Code      string    `json:"code"`
+	CreatedAt time.Time `json:"created_at"`
+
+	// DailyThresholdMilli Quantity in thousandths (1.5 = 1500)
+	DailyThresholdMilli *QtyMilli          `json:"daily_threshold_milli,omitempty"`
+	EquipmentId         *string            `json:"equipment_id,omitempty"`
+	Id                  string             `json:"id"`
+	ItemId              *string            `json:"item_id,omitempty"`
+	Kind                MeterKind          `json:"kind"`
+	LastReading         *MeterReadingBrief `json:"last_reading,omitempty"`
+
+	// MultiplierMilli Quantity in thousandths (1.5 = 1500)
+	MultiplierMilli QtyMilli      `json:"multiplier_milli"`
+	PedestalId      *string       `json:"pedestal_id,omitempty"`
+	ResourceId      *string       `json:"resource_id,omitempty"`
+	ResourceType    *ResourceType `json:"resource_type,omitempty"`
+
+	// RolloverMilli Quantity in thousandths (1.5 = 1500)
+	RolloverMilli *QtyMilli   `json:"rollover_milli,omitempty"`
+	Serial        *string     `json:"serial,omitempty"`
+	SocketCode    *string     `json:"socket_code,omitempty"`
+	Unit          UtilityUnit `json:"unit"`
+	UpdatedAt     time.Time   `json:"updated_at"`
+	Version       int64       `json:"version"`
+}
+
+// UtilityMeterInput defines model for UtilityMeterInput.
+type UtilityMeterInput struct {
+	Active              *bool         `json:"active,omitempty"`
+	Code                Code          `json:"code"`
+	DailyThresholdMilli *int64        `json:"daily_threshold_milli,omitempty"`
+	EquipmentId         *string       `json:"equipment_id,omitempty"`
+	ItemId              *string       `json:"item_id,omitempty"`
+	Kind                MeterKind     `json:"kind"`
+	MultiplierMilli     *int64        `json:"multiplier_milli,omitempty"`
+	PedestalId          *string       `json:"pedestal_id,omitempty"`
+	ResourceId          *string       `json:"resource_id,omitempty"`
+	ResourceType        *ResourceType `json:"resource_type,omitempty"`
+	RolloverMilli       *int64        `json:"rollover_milli,omitempty"`
+	Serial              *string       `json:"serial,omitempty"`
+	SocketCode          *string       `json:"socket_code,omitempty"`
+	Unit                UtilityUnit   `json:"unit"`
+}
+
+// UtilityMeterPage defines model for UtilityMeterPage.
+type UtilityMeterPage struct {
+	Items      []UtilityMeter `json:"items"`
+	NextCursor *string        `json:"next_cursor"`
+}
+
+// UtilityMeterPatch defines model for UtilityMeterPatch.
+type UtilityMeterPatch struct {
+	Active              *bool   `json:"active,omitempty"`
+	Code                *Code   `json:"code,omitempty"`
+	DailyThresholdMilli *int64  `json:"daily_threshold_milli,omitempty"`
+	EquipmentId         *string `json:"equipment_id,omitempty"`
+	ItemId              *string `json:"item_id,omitempty"`
+	MultiplierMilli     *int64  `json:"multiplier_milli,omitempty"`
+	PedestalId          *string `json:"pedestal_id,omitempty"`
+	ResourceId          *string `json:"resource_id,omitempty"`
+
+	// ResourceType berth, dynamic_area or land_resource
+	ResourceType  *string `json:"resource_type,omitempty"`
+	RolloverMilli *int64  `json:"rollover_milli,omitempty"`
+	Serial        *string `json:"serial,omitempty"`
+	SocketCode    *string `json:"socket_code,omitempty"`
+}
+
+// UtilitySettings defines model for UtilitySettings.
+type UtilitySettings struct {
+	Mode UtilityChargingMode `json:"mode"`
+
+	// PowerDailyThresholdMilli Quantity in thousandths (1.5 = 1500)
+	PowerDailyThresholdMilli *QtyMilli `json:"power_daily_threshold_milli,omitempty"`
+	PowerItemId              *string   `json:"power_item_id,omitempty"`
+	Version                  int64     `json:"version"`
+
+	// WaterDailyThresholdMilli Quantity in thousandths (1.5 = 1500)
+	WaterDailyThresholdMilli *QtyMilli `json:"water_daily_threshold_milli,omitempty"`
+	WaterItemId              *string   `json:"water_item_id,omitempty"`
+}
+
+// UtilitySettingsInput defines model for UtilitySettingsInput.
+type UtilitySettingsInput struct {
+	Mode                     UtilityChargingMode `json:"mode"`
+	PowerDailyThresholdMilli *int64              `json:"power_daily_threshold_milli,omitempty"`
+	PowerItemId              *string             `json:"power_item_id,omitempty"`
+	WaterDailyThresholdMilli *int64              `json:"water_daily_threshold_milli,omitempty"`
+	WaterItemId              *string             `json:"water_item_id,omitempty"`
+}
+
+// UtilityUnit defines model for UtilityUnit.
+type UtilityUnit string
 
 // VatBucket defines model for VatBucket.
 type VatBucket struct {
@@ -21198,6 +23654,9 @@ type CommCampaignId = string
 // CommonRunId defines model for CommonRunId.
 type CommonRunId = string
 
+// ConsumptionId defines model for ConsumptionId.
+type ConsumptionId = string
+
 // ContractId defines model for ContractId.
 type ContractId = string
 
@@ -21221,6 +23680,9 @@ type DunningExclusionId = string
 
 // EndpointId defines model for EndpointId.
 type EndpointId = string
+
+// EquipmentId defines model for EquipmentId.
+type EquipmentId = string
 
 // FeeRunId defines model for FeeRunId.
 type FeeRunId = string
@@ -21279,8 +23741,14 @@ type MapId = string
 // MarinaId defines model for MarinaId.
 type MarinaId = string
 
+// MeterId defines model for MeterId.
+type MeterId = string
+
 // MillesimalTableId defines model for MillesimalTableId.
 type MillesimalTableId = string
+
+// MovementId defines model for MovementId.
+type MovementId = string
 
 // ObligationId defines model for ObligationId.
 type ObligationId = string
@@ -21306,6 +23774,9 @@ type PaymentProviderCode = string
 // PaymentRequestId defines model for PaymentRequestId.
 type PaymentRequestId = string
 
+// PlanId defines model for PlanId.
+type PlanId = string
+
 // PresenceId defines model for PresenceId.
 type PresenceId = string
 
@@ -21320,6 +23791,9 @@ type ProviderCode = string
 
 // QuoteId defines model for QuoteId.
 type QuoteId = string
+
+// ReadingId defines model for ReadingId.
+type ReadingId = string
 
 // ReleaseId defines model for ReleaseId.
 type ReleaseId = string
@@ -21378,6 +23852,9 @@ type RevenueClassId = string
 // RightId defines model for RightId.
 type RightId = string
 
+// ScenarioId defines model for ScenarioId.
+type ScenarioId = string
+
 // SepaMandateId defines model for SepaMandateId.
 type SepaMandateId = string
 
@@ -21389,6 +23866,9 @@ type Slug = string
 
 // StatusTokenHeader defines model for StatusTokenHeader.
 type StatusTokenHeader = string
+
+// TaskId defines model for TaskId.
+type TaskId = string
 
 // TemplateId defines model for TemplateId.
 type TemplateId = string
@@ -21467,6 +23947,9 @@ type ReportUnprocessable = Problem
 
 // ServiceUnavailable defines model for ServiceUnavailable.
 type ServiceUnavailable = Problem
+
+// StorageUnprocessable defines model for StorageUnprocessable.
+type StorageUnprocessable = Problem
 
 // TooManyRequests defines model for TooManyRequests.
 type TooManyRequests = Problem
@@ -22346,6 +24829,26 @@ type SaveAreaLayoutParams struct {
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
+// ListEquipmentParams defines parameters for ListEquipment.
+type ListEquipmentParams struct {
+	Kind   *EquipmentKind `form:"kind,omitempty" json:"kind,omitempty"`
+	Active *bool          `form:"active,omitempty" json:"active,omitempty"`
+	Cursor *Cursor        `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit         `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// CreateEquipmentParams defines parameters for CreateEquipment.
+type CreateEquipmentParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateEquipmentParams defines parameters for UpdateEquipment.
+type UpdateEquipmentParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
 // ListFeeRunsParams defines parameters for ListFeeRuns.
 type ListFeeRunsParams struct {
 	Year *int `form:"year,omitempty" json:"year,omitempty"`
@@ -22634,6 +25137,114 @@ type UpdateItemParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// GetMaintenanceMapParams defines parameters for GetMaintenanceMap.
+type GetMaintenanceMapParams struct {
+	MapId *string  `form:"map_id,omitempty" json:"map_id,omitempty"`
+	Date  *IsoDate `form:"date,omitempty" json:"date,omitempty"`
+}
+
+// ListMaintenancePlansParams defines parameters for ListMaintenancePlans.
+type ListMaintenancePlansParams struct {
+	Active      *bool                   `form:"active,omitempty" json:"active,omitempty"`
+	ElementType *MaintenanceElementType `form:"element_type,omitempty" json:"element_type,omitempty"`
+	Cursor      *Cursor                 `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit       *Limit                  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// CreateMaintenancePlanParams defines parameters for CreateMaintenancePlan.
+type CreateMaintenancePlanParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateMaintenancePlanParams defines parameters for UpdateMaintenancePlan.
+type UpdateMaintenancePlanParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ReportMaintenanceParams defines parameters for ReportMaintenance.
+type ReportMaintenanceParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// PortoOfflineQueuedAt Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline.
+	PortoOfflineQueuedAt *OfflineQueuedAt `json:"Porto-Offline-Queued-At,omitempty"`
+}
+
+// ListMaintenanceTasksParams defines parameters for ListMaintenanceTasks.
+type ListMaintenanceTasksParams struct {
+	Status         *MaintenanceTaskStatus  `form:"status,omitempty" json:"status,omitempty"`
+	Priority       *MaintenancePriority    `form:"priority,omitempty" json:"priority,omitempty"`
+	ElementType    *MaintenanceElementType `form:"element_type,omitempty" json:"element_type,omitempty"`
+	ElementId      *string                 `form:"element_id,omitempty" json:"element_id,omitempty"`
+	PlanId         *string                 `form:"plan_id,omitempty" json:"plan_id,omitempty"`
+	AssigneeUserId *string                 `form:"assignee_user_id,omitempty" json:"assignee_user_id,omitempty"`
+	OverdueOnly    *bool                   `form:"overdue_only,omitempty" json:"overdue_only,omitempty"`
+	Cursor         *Cursor                 `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit          *Limit                  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// CreateMaintenanceTaskParams defines parameters for CreateMaintenanceTask.
+type CreateMaintenanceTaskParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateMaintenanceTaskParams defines parameters for UpdateMaintenanceTask.
+type UpdateMaintenanceTaskParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// CancelMaintenanceTaskParams defines parameters for CancelMaintenanceTask.
+type CancelMaintenanceTaskParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// CompleteMaintenanceTaskParams defines parameters for CompleteMaintenanceTask.
+type CompleteMaintenanceTaskParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// PortoOfflineQueuedAt Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline.
+	PortoOfflineQueuedAt *OfflineQueuedAt `json:"Porto-Offline-Queued-At,omitempty"`
+}
+
+// UploadMaintenancePhotoParams defines parameters for UploadMaintenancePhoto.
+type UploadMaintenancePhotoParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// PortoOfflineQueuedAt Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline.
+	PortoOfflineQueuedAt *OfflineQueuedAt `json:"Porto-Offline-Queued-At,omitempty"`
+}
+
+// GetMaintenanceFileFileParams defines parameters for GetMaintenanceFileFile.
+type GetMaintenanceFileFileParams struct {
+	Exp *int64  `form:"exp,omitempty" json:"exp,omitempty"`
+	Sig *string `form:"sig,omitempty" json:"sig,omitempty"`
+}
+
+// ReleaseMaintenanceTaskParams defines parameters for ReleaseMaintenanceTask.
+type ReleaseMaintenanceTaskParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ScheduleMaintenanceTaskParams defines parameters for ScheduleMaintenanceTask.
+type ScheduleMaintenanceTaskParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// StartMaintenanceTaskParams defines parameters for StartMaintenanceTask.
+type StartMaintenanceTaskParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
 // ListMandatesParams defines parameters for ListMandates.
 type ListMandatesParams struct {
 	RightId *string        `form:"right_id,omitempty" json:"right_id,omitempty"`
@@ -22763,6 +25374,52 @@ type GetMapRightsParams struct {
 type AddMemberParams struct {
 	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ListMeterReadingsParams defines parameters for ListMeterReadings.
+type ListMeterReadingsParams struct {
+	MeterId *string             `form:"meter_id,omitempty" json:"meter_id,omitempty"`
+	Status  *MeterReadingStatus `form:"status,omitempty" json:"status,omitempty"`
+	From    *IsoDate            `form:"from,omitempty" json:"from,omitempty"`
+	To      *IsoDate            `form:"to,omitempty" json:"to,omitempty"`
+	Cursor  *Cursor             `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit   *Limit              `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// RecordMeterReadingParams defines parameters for RecordMeterReading.
+type RecordMeterReadingParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// PortoOfflineQueuedAt Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline.
+	PortoOfflineQueuedAt *OfflineQueuedAt `json:"Porto-Offline-Queued-At,omitempty"`
+}
+
+// ConfirmMeterReadingParams defines parameters for ConfirmMeterReading.
+type ConfirmMeterReadingParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UploadMeterReadingPhotoParams defines parameters for UploadMeterReadingPhoto.
+type UploadMeterReadingPhotoParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// PortoOfflineQueuedAt Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline.
+	PortoOfflineQueuedAt *OfflineQueuedAt `json:"Porto-Offline-Queued-At,omitempty"`
+}
+
+// GetMeterReadingPhotoFileParams defines parameters for GetMeterReadingPhotoFile.
+type GetMeterReadingPhotoFileParams struct {
+	Exp *int64  `form:"exp,omitempty" json:"exp,omitempty"`
+	Sig *string `form:"sig,omitempty" json:"sig,omitempty"`
+}
+
+// VoidMeterReadingParams defines parameters for VoidMeterReading.
+type VoidMeterReadingParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
 // CreateMillesimalTableParams defines parameters for CreateMillesimalTable.
@@ -23633,6 +26290,28 @@ type GetLostDemandReportParams struct {
 // GetLostDemandReportParamsGroupBy defines parameters for GetLostDemandReport.
 type GetLostDemandReportParamsGroupBy string
 
+// GetMaintenanceReportParams defines parameters for GetMaintenanceReport.
+type GetMaintenanceReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang        *ReportLang                        `form:"lang,omitempty" json:"lang,omitempty"`
+	Page        *ReportPageNumber                  `form:"page,omitempty" json:"page,omitempty"`
+	PageSize    *ReportPageSize                    `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy     *GetMaintenanceReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	Status      *MaintenanceTaskStatus             `form:"status,omitempty" json:"status,omitempty"`
+	ElementType *MaintenanceElementType            `form:"element_type,omitempty" json:"element_type,omitempty"`
+	OverdueOnly *bool                              `form:"overdue_only,omitempty" json:"overdue_only,omitempty"`
+}
+
+// GetMaintenanceReportParamsGroupBy defines parameters for GetMaintenanceReport.
+type GetMaintenanceReportParamsGroupBy string
+
 // GetOccupancyReportParams defines parameters for GetOccupancyReport.
 type GetOccupancyReportParams struct {
 	// From First night of the period (default January 1 of the current year)
@@ -23820,6 +26499,52 @@ type GetRightsReportParamsGroupBy string
 
 // GetRightsReportParamsSection defines parameters for GetRightsReport.
 type GetRightsReportParamsSection string
+
+// GetStorageReportParams defines parameters for GetStorageReport.
+type GetStorageReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang             *ReportLang                    `form:"lang,omitempty" json:"lang,omitempty"`
+	Page             *ReportPageNumber              `form:"page,omitempty" json:"page,omitempty"`
+	PageSize         *ReportPageSize                `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy          *GetStorageReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	MapId            *ReportMapId                   `form:"map_id,omitempty" json:"map_id,omitempty"`
+	MapKind          *ReportMapKind                 `form:"map_kind,omitempty" json:"map_kind,omitempty"`
+	AreaId           *string                        `form:"area_id,omitempty" json:"area_id,omitempty"`
+	ExitsBlockedOnly *bool                          `form:"exits_blocked_only,omitempty" json:"exits_blocked_only,omitempty"`
+}
+
+// GetStorageReportParamsGroupBy defines parameters for GetStorageReport.
+type GetStorageReportParamsGroupBy string
+
+// GetUtilitiesReportParams defines parameters for GetUtilitiesReport.
+type GetUtilitiesReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang       *ReportLang                      `form:"lang,omitempty" json:"lang,omitempty"`
+	Page       *ReportPageNumber                `form:"page,omitempty" json:"page,omitempty"`
+	PageSize   *ReportPageSize                  `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy    *GetUtilitiesReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	Kind       *MeterKind                       `form:"kind,omitempty" json:"kind,omitempty"`
+	Status     *UtilityConsumptionStatus        `form:"status,omitempty" json:"status,omitempty"`
+	MeterId    *string                          `form:"meter_id,omitempty" json:"meter_id,omitempty"`
+	ContractId *string                          `form:"contract_id,omitempty" json:"contract_id,omitempty"`
+}
+
+// GetUtilitiesReportParamsGroupBy defines parameters for GetUtilitiesReport.
+type GetUtilitiesReportParamsGroupBy string
 
 // GetVesselsReportParams defines parameters for GetVesselsReport.
 type GetVesselsReportParams struct {
@@ -24012,6 +26737,108 @@ type UpdateSignatureSettingsParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// GetStorageAccessibilityParams defines parameters for GetStorageAccessibility.
+type GetStorageAccessibilityParams struct {
+	Date *IsoDate `form:"date,omitempty" json:"date,omitempty"`
+}
+
+// GetStoragePlanParams defines parameters for GetStoragePlan.
+type GetStoragePlanParams struct {
+	From *IsoDate `form:"from,omitempty" json:"from,omitempty"`
+	To   *IsoDate `form:"to,omitempty" json:"to,omitempty"`
+}
+
+// CreateStorageContractParams defines parameters for CreateStorageContract.
+type CreateStorageContractParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateStorageContractParams defines parameters for UpdateStorageContract.
+type UpdateStorageContractParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListStorageMovementsParams defines parameters for ListStorageMovements.
+type ListStorageMovementsParams struct {
+	Date   *IsoDate               `form:"date,omitempty" json:"date,omitempty"`
+	AreaId *string                `form:"area_id,omitempty" json:"area_id,omitempty"`
+	Status *StorageMovementStatus `form:"status,omitempty" json:"status,omitempty"`
+}
+
+// CompleteStorageMovementParams defines parameters for CompleteStorageMovement.
+type CompleteStorageMovementParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListStorageScenariosParams defines parameters for ListStorageScenarios.
+type ListStorageScenariosParams struct {
+	AreaId *string                `form:"area_id,omitempty" json:"area_id,omitempty"`
+	Status *StorageScenarioStatus `form:"status,omitempty" json:"status,omitempty"`
+	Cursor *Cursor                `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit                 `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// CreateStorageScenarioParams defines parameters for CreateStorageScenario.
+type CreateStorageScenarioParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DiscardStorageScenarioParams defines parameters for DiscardStorageScenario.
+type DiscardStorageScenarioParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdateStorageScenarioParams defines parameters for UpdateStorageScenario.
+type UpdateStorageScenarioParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ApplyStorageScenarioParams defines parameters for ApplyStorageScenario.
+type ApplyStorageScenarioParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// CompareStorageScenarioParams defines parameters for CompareStorageScenario.
+type CompareStorageScenarioParams struct {
+	// With Scenario id or real (default)
+	With *string  `form:"with,omitempty" json:"with,omitempty"`
+	Date *IsoDate `form:"date,omitempty" json:"date,omitempty"`
+}
+
+// AddStorageScenarioItemParams defines parameters for AddStorageScenarioItem.
+type AddStorageScenarioItemParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// SaveStorageScenarioItemsParams defines parameters for SaveStorageScenarioItems.
+type SaveStorageScenarioItemsParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// RemoveStorageScenarioItemParams defines parameters for RemoveStorageScenarioItem.
+type RemoveStorageScenarioItemParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// OptimizeStorageScenarioParams defines parameters for OptimizeStorageScenario.
+type OptimizeStorageScenarioParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
 // ListTemplatesParams defines parameters for ListTemplates.
 type ListTemplatesParams struct {
 	Kind *TemplateKind `form:"kind,omitempty" json:"kind,omitempty"`
@@ -24114,6 +26941,73 @@ type ChangeTransitStayParams struct {
 	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// RunUtilityChargesParams defines parameters for RunUtilityCharges.
+type RunUtilityChargesParams struct {
+	ContractId *string `form:"contract_id,omitempty" json:"contract_id,omitempty"`
+
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ListUtilityConsumptionsParams defines parameters for ListUtilityConsumptions.
+type ListUtilityConsumptionsParams struct {
+	Status     *UtilityConsumptionStatus `form:"status,omitempty" json:"status,omitempty"`
+	ContractId *string                   `form:"contract_id,omitempty" json:"contract_id,omitempty"`
+	MeterId    *string                   `form:"meter_id,omitempty" json:"meter_id,omitempty"`
+	Kind       *MeterKind                `form:"kind,omitempty" json:"kind,omitempty"`
+	From       *IsoDate                  `form:"from,omitempty" json:"from,omitempty"`
+	To         *IsoDate                  `form:"to,omitempty" json:"to,omitempty"`
+	Cursor     *Cursor                   `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit      *Limit                    `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// AssignUtilityConsumptionParams defines parameters for AssignUtilityConsumption.
+type AssignUtilityConsumptionParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ExcludeUtilityConsumptionParams defines parameters for ExcludeUtilityConsumption.
+type ExcludeUtilityConsumptionParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListUtilityMetersParams defines parameters for ListUtilityMeters.
+type ListUtilityMetersParams struct {
+	Kind       *MeterKind                    `form:"kind,omitempty" json:"kind,omitempty"`
+	PedestalId *string                       `form:"pedestal_id,omitempty" json:"pedestal_id,omitempty"`
+	ResourceId *string                       `form:"resource_id,omitempty" json:"resource_id,omitempty"`
+	Active     *bool                         `form:"active,omitempty" json:"active,omitempty"`
+	Route      *ListUtilityMetersParamsRoute `form:"route,omitempty" json:"route,omitempty"`
+
+	// Q Code
+	Q      *string `form:"q,omitempty" json:"q,omitempty"`
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ListUtilityMetersParamsRoute defines parameters for ListUtilityMeters.
+type ListUtilityMetersParamsRoute string
+
+// CreateUtilityMeterParams defines parameters for CreateUtilityMeter.
+type CreateUtilityMeterParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateUtilityMeterParams defines parameters for UpdateUtilityMeter.
+type UpdateUtilityMeterParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdateUtilitySettingsParams defines parameters for UpdateUtilitySettings.
+type UpdateUtilitySettingsParams struct {
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
@@ -24688,6 +27582,12 @@ type ProposeCompactionJSONRequestBody = CompactionRequest
 // SaveAreaLayoutJSONRequestBody defines body for SaveAreaLayout for application/json ContentType.
 type SaveAreaLayoutJSONRequestBody = AreaLayoutSave
 
+// CreateEquipmentJSONRequestBody defines body for CreateEquipment for application/json ContentType.
+type CreateEquipmentJSONRequestBody = EquipmentInput
+
+// UpdateEquipmentJSONRequestBody defines body for UpdateEquipment for application/json ContentType.
+type UpdateEquipmentJSONRequestBody = EquipmentPatch
+
 // CreateFeeRunJSONRequestBody defines body for CreateFeeRun for application/json ContentType.
 type CreateFeeRunJSONRequestBody = FeeRunInput
 
@@ -24736,6 +27636,33 @@ type CreateItemJSONRequestBody = ItemCreate
 // UpdateItemJSONRequestBody defines body for UpdateItem for application/json ContentType.
 type UpdateItemJSONRequestBody = ItemPatch
 
+// CreateMaintenancePlanJSONRequestBody defines body for CreateMaintenancePlan for application/json ContentType.
+type CreateMaintenancePlanJSONRequestBody = MaintenancePlanInput
+
+// UpdateMaintenancePlanJSONRequestBody defines body for UpdateMaintenancePlan for application/json ContentType.
+type UpdateMaintenancePlanJSONRequestBody = MaintenancePlanPatch
+
+// ReportMaintenanceJSONRequestBody defines body for ReportMaintenance for application/json ContentType.
+type ReportMaintenanceJSONRequestBody = MaintenanceReportInput
+
+// CreateMaintenanceTaskJSONRequestBody defines body for CreateMaintenanceTask for application/json ContentType.
+type CreateMaintenanceTaskJSONRequestBody = MaintenanceTaskCreate
+
+// UpdateMaintenanceTaskJSONRequestBody defines body for UpdateMaintenanceTask for application/json ContentType.
+type UpdateMaintenanceTaskJSONRequestBody = MaintenanceTaskPatch
+
+// CancelMaintenanceTaskJSONRequestBody defines body for CancelMaintenanceTask for application/json ContentType.
+type CancelMaintenanceTaskJSONRequestBody = MaintenanceCancelInput
+
+// CompleteMaintenanceTaskJSONRequestBody defines body for CompleteMaintenanceTask for application/json ContentType.
+type CompleteMaintenanceTaskJSONRequestBody = MaintenanceCompleteInput
+
+// ReleaseMaintenanceTaskJSONRequestBody defines body for ReleaseMaintenanceTask for application/json ContentType.
+type ReleaseMaintenanceTaskJSONRequestBody = MaintenanceReleaseInput
+
+// ScheduleMaintenanceTaskJSONRequestBody defines body for ScheduleMaintenanceTask for application/json ContentType.
+type ScheduleMaintenanceTaskJSONRequestBody = MaintenanceScheduleInput
+
 // CreateMandateJSONRequestBody defines body for CreateMandate for application/json ContentType.
 type CreateMandateJSONRequestBody = MandateInput
 
@@ -24777,6 +27704,12 @@ type AddMemberJSONRequestBody = MemberCreate
 
 // UpdateMemberJSONRequestBody defines body for UpdateMember for application/json ContentType.
 type UpdateMemberJSONRequestBody = MemberUpdate
+
+// RecordMeterReadingJSONRequestBody defines body for RecordMeterReading for application/json ContentType.
+type RecordMeterReadingJSONRequestBody = MeterReadingCreate
+
+// VoidMeterReadingJSONRequestBody defines body for VoidMeterReading for application/json ContentType.
+type VoidMeterReadingJSONRequestBody = MeterReadingVoidInput
 
 // CreateMillesimalTableJSONRequestBody defines body for CreateMillesimalTable for application/json ContentType.
 type CreateMillesimalTableJSONRequestBody = MillesimalTableInput
@@ -24943,6 +27876,33 @@ type ConfirmPaperSignatureJSONRequestBody = PaperConfirmInput
 // UpdateSignatureSettingsJSONRequestBody defines body for UpdateSignatureSettings for application/json ContentType.
 type UpdateSignatureSettingsJSONRequestBody = SignatureSettingsInput
 
+// ArrangeStorageAreaJSONRequestBody defines body for ArrangeStorageArea for application/json ContentType.
+type ArrangeStorageAreaJSONRequestBody = StorageArrangeRequest
+
+// EvaluateStorageLayoutJSONRequestBody defines body for EvaluateStorageLayout for application/json ContentType.
+type EvaluateStorageLayoutJSONRequestBody = StorageEvaluateRequest
+
+// CreateStorageContractJSONRequestBody defines body for CreateStorageContract for application/json ContentType.
+type CreateStorageContractJSONRequestBody = StorageContractCreate
+
+// UpdateStorageContractJSONRequestBody defines body for UpdateStorageContract for application/json ContentType.
+type UpdateStorageContractJSONRequestBody = StorageContractPatch
+
+// CreateStorageScenarioJSONRequestBody defines body for CreateStorageScenario for application/json ContentType.
+type CreateStorageScenarioJSONRequestBody = StorageScenarioCreate
+
+// UpdateStorageScenarioJSONRequestBody defines body for UpdateStorageScenario for application/json ContentType.
+type UpdateStorageScenarioJSONRequestBody = StorageScenarioPatch
+
+// AddStorageScenarioItemJSONRequestBody defines body for AddStorageScenarioItem for application/json ContentType.
+type AddStorageScenarioItemJSONRequestBody = StorageScenarioItemAdd
+
+// SaveStorageScenarioItemsJSONRequestBody defines body for SaveStorageScenarioItems for application/json ContentType.
+type SaveStorageScenarioItemsJSONRequestBody = StorageScenarioItemsPut
+
+// OptimizeStorageScenarioJSONRequestBody defines body for OptimizeStorageScenario for application/json ContentType.
+type OptimizeStorageScenarioJSONRequestBody = StorageOptimizeRequest
+
 // CreateTemplateJSONRequestBody defines body for CreateTemplate for application/json ContentType.
 type CreateTemplateJSONRequestBody = TemplateInput
 
@@ -24975,6 +27935,21 @@ type CreateTransitPaymentLinkJSONRequestBody = TransitPaymentLinkInput
 
 // ChangeTransitStayJSONRequestBody defines body for ChangeTransitStay for application/json ContentType.
 type ChangeTransitStayJSONRequestBody = StayChange
+
+// AssignUtilityConsumptionJSONRequestBody defines body for AssignUtilityConsumption for application/json ContentType.
+type AssignUtilityConsumptionJSONRequestBody = UtilityConsumptionAssign
+
+// ExcludeUtilityConsumptionJSONRequestBody defines body for ExcludeUtilityConsumption for application/json ContentType.
+type ExcludeUtilityConsumptionJSONRequestBody = UtilityConsumptionExclude
+
+// CreateUtilityMeterJSONRequestBody defines body for CreateUtilityMeter for application/json ContentType.
+type CreateUtilityMeterJSONRequestBody = UtilityMeterInput
+
+// UpdateUtilityMeterJSONRequestBody defines body for UpdateUtilityMeter for application/json ContentType.
+type UpdateUtilityMeterJSONRequestBody = UtilityMeterPatch
+
+// UpdateUtilitySettingsJSONRequestBody defines body for UpdateUtilitySettings for application/json ContentType.
+type UpdateUtilitySettingsJSONRequestBody = UtilitySettingsInput
 
 // CreateVesselJSONRequestBody defines body for CreateVessel for application/json ContentType.
 type CreateVesselJSONRequestBody = VesselInput
@@ -25963,6 +28938,18 @@ type ServerInterface interface {
 	// SaveAreaLayout Save a layout session of a dynamic area: every allocation of the area from from_night with its version in base, all placements applied or none (occupancy.move)
 	// (POST /api/admin/v1/marinas/{marinaId}/dynamic-areas/{areaId}/layout)
 	SaveAreaLayout(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId, params SaveAreaLayoutParams)
+	// ListEquipment Equipment registry: lifting machines, vehicles, plants (maintenance.manage or maintenance.report)
+	// (GET /api/admin/v1/marinas/{marinaId}/equipment)
+	ListEquipment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListEquipmentParams)
+	// CreateEquipment Register equipment (maintenance.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/equipment)
+	CreateEquipment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateEquipmentParams)
+	// GetEquipment One equipment (maintenance.manage or maintenance.report)
+	// (GET /api/admin/v1/marinas/{marinaId}/equipment/{equipmentId})
+	GetEquipment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, equipmentId EquipmentId)
+	// UpdateEquipment Change equipment (maintenance.manage)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/equipment/{equipmentId})
+	UpdateEquipment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, equipmentId EquipmentId, params UpdateEquipmentParams)
 	// ListFeeRuns Management fee runs (rights.manage)
 	// (GET /api/admin/v1/marinas/{marinaId}/fee-runs)
 	ListFeeRuns(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListFeeRunsParams)
@@ -26101,6 +29088,63 @@ type ServerInterface interface {
 	// UpdateItem Update an item; every field stays editable: drafts price with the live item, published (active or archived) lists with the snapshot taken at activation (pricing.configure)
 	// (PATCH /api/admin/v1/marinas/{marinaId}/items/{itemId})
 	UpdateItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, itemId ItemId, params UpdateItemParams)
+	// GetMaintenanceMap Maintenance lens of a map (default the first water map): open, overdue and out-of-service counts per element (maintenance.manage or maintenance.report)
+	// (GET /api/admin/v1/marinas/{marinaId}/maintenance/map)
+	GetMaintenanceMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetMaintenanceMapParams)
+	// ListMaintenancePlans Maintenance plans (maintenance.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/maintenance/plans)
+	ListMaintenancePlans(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListMaintenancePlansParams)
+	// CreateMaintenancePlan Create a maintenance plan with targets, periodicity, lead and checklist (maintenance.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/maintenance/plans)
+	CreateMaintenancePlan(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateMaintenancePlanParams)
+	// GetMaintenancePlan One maintenance plan (maintenance.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/maintenance/plans/{planId})
+	GetMaintenancePlan(w http.ResponseWriter, r *http.Request, marinaId MarinaId, planId PlanId)
+	// UpdateMaintenancePlan Change a maintenance plan; active=false stops new tasks (maintenance.manage)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/maintenance/plans/{planId})
+	UpdateMaintenancePlan(w http.ResponseWriter, r *http.Request, marinaId MarinaId, planId PlanId, params UpdateMaintenancePlanParams)
+	// ReportMaintenance Report a problem from the field: an open task with element or map position; never schedules, never occupies (maintenance.report)
+	// (POST /api/admin/v1/marinas/{marinaId}/maintenance/reports)
+	ReportMaintenance(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ReportMaintenanceParams)
+	// ListMaintenanceTasks Maintenance tasks, overdue first (maintenance.manage; maintenance.report sees the tasks assigned to them and their reports)
+	// (GET /api/admin/v1/marinas/{marinaId}/maintenance/tasks)
+	ListMaintenanceTasks(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListMaintenanceTasksParams)
+	// CreateMaintenanceTask Create a task from the office (maintenance.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks)
+	CreateMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateMaintenanceTaskParams)
+	// GetMaintenanceTask One task with files and maintenance allocations (maintenance.manage or maintenance.report)
+	// (GET /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId})
+	GetMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId)
+	// UpdateMaintenanceTask Change title, description, priority, due date, assignee, supplier reference, out of service (maintenance.manage)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId})
+	UpdateMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params UpdateMaintenanceTaskParams)
+	// CancelMaintenanceTask Cancel a task and release its future maintenance nights (online only) (maintenance.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/cancel)
+	CancelMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params CancelMaintenanceTaskParams)
+	// CompleteMaintenanceTask Record the outcome, checklist, minutes and costs; done is final (maintenance.manage or the assignee with maintenance.report)
+	// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/complete)
+	CompleteMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params CompleteMaintenanceTaskParams)
+	// UploadMaintenancePhoto Attach a photo or document to a task (JPEG, PNG, WebP or PDF, at most 8 MiB, raw body), encrypted at rest (maintenance.report)
+	// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files)
+	UploadMaintenancePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params UploadMaintenancePhotoParams)
+	// GetMaintenanceFileFile Download a task file through a signed link from getMaintenanceFileLink (exp and sig checked in the service) (maintenance.manage or maintenance.report)
+	// (GET /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files/{fileId}/file)
+	GetMaintenanceFileFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, fileId FileId, params GetMaintenanceFileFileParams)
+	// GetMaintenanceFileLink A short-lived (5 minutes) signed link to a task file (maintenance.manage or maintenance.report)
+	// (GET /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files/{fileId}/link)
+	GetMaintenanceFileLink(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, fileId FileId)
+	// ReleaseMaintenanceTask Release the maintenance nights after last_night (online only) (maintenance.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/release)
+	ReleaseMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params ReleaseMaintenanceTaskParams)
+	// ScheduleMaintenanceTask Schedule nights; with requires_free on a berth or land resource books maintenance nights in the same transaction (maintenance.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/schedule)
+	ScheduleMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params ScheduleMaintenanceTaskParams)
+	// StartMaintenanceTask Start a task (open or scheduled to in_progress) (maintenance.manage or the assignee with maintenance.report)
+	// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/start)
+	StartMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params StartMaintenanceTaskParams)
+	// GetMaintenanceWorklist Tasks assigned to the current user plus open tasks due within 7 days (offline cache slot activities.assigned) (maintenance.report)
+	// (GET /api/admin/v1/marinas/{marinaId}/maintenance/worklist)
+	GetMaintenanceWorklist(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
 	// ListMandates Management mandates (rights.manage)
 	// (GET /api/admin/v1/marinas/{marinaId}/mandates)
 	ListMandates(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListMandatesParams)
@@ -26197,6 +29241,27 @@ type ServerInterface interface {
 	// SendMemberPasswordReset Email a password reset link to a member (users.manage)
 	// (POST /api/admin/v1/marinas/{marinaId}/members/{userId}/password-reset)
 	SendMemberPasswordReset(w http.ResponseWriter, r *http.Request, marinaId MarinaId, userId UserId)
+	// ListMeterReadings Meter readings, newest first (marina.configure, presence.write or charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/meter-readings)
+	ListMeterReadings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListMeterReadingsParams)
+	// RecordMeterReading Record a reading (value as a decimal string, 3 decimals); anomalies are flagged, never refused (presence.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/meter-readings)
+	RecordMeterReading(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params RecordMeterReadingParams)
+	// ConfirmMeterReading Confirm an anomalous reading: its consumptions become chargeable (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/confirm)
+	ConfirmMeterReading(w http.ResponseWriter, r *http.Request, marinaId MarinaId, readingId ReadingId, params ConfirmMeterReadingParams)
+	// GetMeterReadingPhotoLink A short-lived (5 minutes) signed link to the reading photo (marina.configure, presence.write or charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo)
+	GetMeterReadingPhotoLink(w http.ResponseWriter, r *http.Request, marinaId MarinaId, readingId ReadingId)
+	// UploadMeterReadingPhoto Attach a photo to a reading (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo)
+	UploadMeterReadingPhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, readingId ReadingId, params UploadMeterReadingPhotoParams)
+	// GetMeterReadingPhotoFile Download the reading photo through a signed link from getMeterReadingPhotoLink (exp and sig checked in the service) (marina.configure, presence.write or charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo/file)
+	GetMeterReadingPhotoFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, readingId ReadingId, params GetMeterReadingPhotoFileParams)
+	// VoidMeterReading Void a reading; refused with 409 reading_charged when a charged consumption uses it (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/void)
+	VoidMeterReading(w http.ResponseWriter, r *http.Request, marinaId MarinaId, readingId ReadingId, params VoidMeterReadingParams)
 	// ListMillesimalTables Millesimal tables (rights.manage)
 	// (GET /api/admin/v1/marinas/{marinaId}/millesimal-tables)
 	ListMillesimalTables(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -26533,6 +29598,9 @@ type ServerInterface interface {
 	// GetLostDemandReport R4 lost demand from unserved inquiries; values only with reports.all (reports.operational or reports.all)
 	// (GET /api/admin/v1/marinas/{marinaId}/reports/lost-demand)
 	GetLostDemandReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetLostDemandReportParams)
+	// GetMaintenanceReport R-maintenance: tasks by status, overdue, minutes and external costs (reports.operational or reports.all; costs with reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/maintenance)
+	GetMaintenanceReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetMaintenanceReportParams)
 	// GetOccupancyReport R1 occupancy, physical or contractual, berths, land or dynamic areas (reports.operational or reports.all)
 	// (GET /api/admin/v1/marinas/{marinaId}/reports/occupancy)
 	GetOccupancyReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetOccupancyReportParams)
@@ -26554,6 +29622,12 @@ type ServerInterface interface {
 	// GetRightsReport R14 rights of use, holder charges, common-charge allotments and mandates (reports.all)
 	// (GET /api/admin/v1/marinas/{marinaId}/reports/rights)
 	GetRightsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRightsReportParams)
+	// GetStorageReport R-storage: allocations on surface areas, m²-nights available and occupied, blocked exits (reports.operational or reports.all; production with reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/storage)
+	GetStorageReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetStorageReportParams)
+	// GetUtilitiesReport R-utilities: consumptions by kind and status, charged and pending value, unassigned quantity (reports.operational; amounts with reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/utilities)
+	GetUtilitiesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetUtilitiesReportParams)
 	// GetVesselsReport R16 vessels hosted in the period (reports.operational or reports.all)
 	// (GET /api/admin/v1/marinas/{marinaId}/reports/vessels)
 	GetVesselsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetVesselsReportParams)
@@ -26632,6 +29706,72 @@ type ServerInterface interface {
 	// UpdateSignatureSettings Set the provider and its write-only credentials (providers.configure)
 	// (PUT /api/admin/v1/marinas/{marinaId}/signature-settings)
 	UpdateSignatureSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateSignatureSettingsParams)
+	// ListStorageAreas Surface areas (yard and shed maps) with today's occupancy, boats, blocked exits in the next 30 days and draft scenarios (storage.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/storage/areas)
+	ListStorageAreas(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// GetStorageAccessibility Accessibility of the boats present on a date (default today): extraction order, blocked boats and their blocking boats (storage.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/accessibility)
+	GetStorageAccessibility(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId, params GetStorageAccessibilityParams)
+	// ArrangeStorageArea Preset: run the optimizer on the real state or on a draft layout and return the proposal; nothing is saved (storage.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/arrange)
+	ArrangeStorageArea(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId)
+	// EvaluateStorageLayout Indicators, accessibility and per-item issues of a draft layout of the area; nothing is saved (storage.read)
+	// (POST /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/evaluate)
+	EvaluateStorageLayout(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId)
+	// GetStoragePlan Plan and timeline of a surface area for a night window (default today .. today + 30) with gates, obstacles and accessibility warnings (storage.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/plan)
+	GetStoragePlan(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId, params GetStoragePlanParams)
+	// CreateStorageContract Create a storage contract on a surface area (automatic position when placement is omitted) or a trailer spot, draft or active (storage.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/storage/contracts)
+	CreateStorageContract(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateStorageContractParams)
+	// GetStorageContract A storage contract with its storage details, placement and cradle (storage.read); ETag = details version
+	// (GET /api/admin/v1/marinas/{marinaId}/storage/contracts/{contractId})
+	GetStorageContract(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId)
+	// UpdateStorageContract Change support, planned haul-out and launch, handling notes (storage.manage); period and position use resize and move
+	// (PATCH /api/admin/v1/marinas/{marinaId}/storage/contracts/{contractId})
+	UpdateStorageContract(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params UpdateStorageContractParams)
+	// ListStorageMovements Movement worklist of a day (default today) with the accessibility warnings of the day (storage.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/storage/movements)
+	ListStorageMovements(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListStorageMovementsParams)
+	// CompleteStorageMovement Mark a movement done (online only) (storage.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/storage/movements/{movementId}/done)
+	CompleteStorageMovement(w http.ResponseWriter, r *http.Request, marinaId MarinaId, movementId MovementId, params CompleteStorageMovementParams)
+	// ListStorageScenarios Scenarios (what-if layouts), newest first (storage.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/storage/scenarios)
+	ListStorageScenarios(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListStorageScenariosParams)
+	// CreateStorageScenario Create a scenario from the real state of an area for a night window (at most 400 nights) (storage.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/storage/scenarios)
+	CreateStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateStorageScenarioParams)
+	// DiscardStorageScenario Discard a draft scenario (status discarded; applied scenarios are history and cannot be discarded) (storage.manage)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId})
+	DiscardStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params DiscardStorageScenarioParams)
+	// GetStorageScenario A scenario with its items, moves, indicators and accessibility; stale is computed on read (storage.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId})
+	GetStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId)
+	// UpdateStorageScenario Rename a draft scenario or change its window (items not yet touched are reloaded) (storage.manage)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId})
+	UpdateStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params UpdateStorageScenarioParams)
+	// ApplyStorageScenario Apply a draft scenario in one transaction: re-validated on the current state, all moves or none; returns the movement worklist (storage.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/apply)
+	ApplyStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params ApplyStorageScenarioParams)
+	// CompareStorageScenario Compare a scenario with another scenario of the same area or with the real state (default) (storage.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/compare)
+	CompareStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params CompareStorageScenarioParams)
+	// AddStorageScenarioItem Bring an allocation of another surface area or land resource of the marina into the scenario tray (storage.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items)
+	AddStorageScenarioItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params AddStorageScenarioItemParams)
+	// SaveStorageScenarioItems Save the placements of the working copy; overlaps are allowed and flagged, they block apply (storage.manage)
+	// (PUT /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items)
+	SaveStorageScenarioItems(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params SaveStorageScenarioItemsParams)
+	// RemoveStorageScenarioItem Drop a tray item from the scenario (area items cannot be removed, only unplaced) (storage.manage)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items/{allocationId})
+	RemoveStorageScenarioItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, allocationId AllocationId, params RemoveStorageScenarioItemParams)
+	// OptimizeStorageScenario Run the optimizer on the working copy (pinned items stay), store result, seed and indicators (storage.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/optimize)
+	OptimizeStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params OptimizeStorageScenarioParams)
+	// ListStorageTrayCandidates Allocations the "Da collocare" tray accepts: active vessel allocations on another dynamic area or a land resource overlapping the scenario window, not yet in it (storage.read)
+	// (GET /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/tray-candidates)
+	ListStorageTrayCandidates(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId)
 	// ListTemplateKinds Template kinds with their field catalogue (contracts.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/template-kinds)
 	ListTemplateKinds(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -26686,6 +29826,36 @@ type ServerInterface interface {
 	// ChangeTransitStay Change arrival and/or departure; added nights must be free (409 with alternatives) and the price is recomputed (transits.desk)
 	// (POST /api/admin/v1/marinas/{marinaId}/transits/{contractId}/stay)
 	ChangeTransitStay(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params ChangeTransitStayParams)
+	// RunUtilityCharges Charge the pending consumptions now (all contracts due today, or one contract) through the M5 charges (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/utility-charges/run)
+	RunUtilityCharges(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params RunUtilityChargesParams)
+	// ListUtilityConsumptions Consumptions split by occupant (charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/utility-consumptions)
+	ListUtilityConsumptions(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListUtilityConsumptionsParams)
+	// AssignUtilityConsumption Assign an unassigned consumption to a contract of the marina (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/utility-consumptions/{consumptionId}/assign)
+	AssignUtilityConsumption(w http.ResponseWriter, r *http.Request, marinaId MarinaId, consumptionId ConsumptionId, params AssignUtilityConsumptionParams)
+	// ExcludeUtilityConsumption Exclude a pending, anomalous or unassigned consumption from charging (charges.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/utility-consumptions/{consumptionId}/exclude)
+	ExcludeUtilityConsumption(w http.ResponseWriter, r *http.Request, marinaId MarinaId, consumptionId ConsumptionId, params ExcludeUtilityConsumptionParams)
+	// ListUtilityMeters Utility meters; route=dock returns the meters of the dock reading round (marina.configure or presence.write)
+	// (GET /api/admin/v1/marinas/{marinaId}/utility-meters)
+	ListUtilityMeters(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListUtilityMetersParams)
+	// CreateUtilityMeter Create a meter (pedestal socket, water, hour or cycle counter) (marina.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/utility-meters)
+	CreateUtilityMeter(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateUtilityMeterParams)
+	// GetUtilityMeter One meter with its last reading (marina.configure or presence.write)
+	// (GET /api/admin/v1/marinas/{marinaId}/utility-meters/{meterId})
+	GetUtilityMeter(w http.ResponseWriter, r *http.Request, marinaId MarinaId, meterId MeterId)
+	// UpdateUtilityMeter Change a meter (marina.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/utility-meters/{meterId})
+	UpdateUtilityMeter(w http.ResponseWriter, r *http.Request, marinaId MarinaId, meterId MeterId, params UpdateUtilityMeterParams)
+	// GetUtilitySettings Utility settings: tariff items, charging mode, daily thresholds (marina.configure or charges.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/utility-settings)
+	GetUtilitySettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// UpdateUtilitySettings Replace the utility settings (marina.configure)
+	// (PUT /api/admin/v1/marinas/{marinaId}/utility-settings)
+	UpdateUtilitySettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateUtilitySettingsParams)
 	// ListVessels Search vessels by name or registration (customers.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/vessels)
 	ListVessels(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListVesselsParams)
@@ -28081,6 +31251,30 @@ func (_ Unimplemented) SaveAreaLayout(w http.ResponseWriter, r *http.Request, ma
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ListEquipment Equipment registry: lifting machines, vehicles, plants (maintenance.manage or maintenance.report)
+// (GET /api/admin/v1/marinas/{marinaId}/equipment)
+func (_ Unimplemented) ListEquipment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListEquipmentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateEquipment Register equipment (maintenance.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/equipment)
+func (_ Unimplemented) CreateEquipment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateEquipmentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetEquipment One equipment (maintenance.manage or maintenance.report)
+// (GET /api/admin/v1/marinas/{marinaId}/equipment/{equipmentId})
+func (_ Unimplemented) GetEquipment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, equipmentId EquipmentId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateEquipment Change equipment (maintenance.manage)
+// (PATCH /api/admin/v1/marinas/{marinaId}/equipment/{equipmentId})
+func (_ Unimplemented) UpdateEquipment(w http.ResponseWriter, r *http.Request, marinaId MarinaId, equipmentId EquipmentId, params UpdateEquipmentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListFeeRuns Management fee runs (rights.manage)
 // (GET /api/admin/v1/marinas/{marinaId}/fee-runs)
 func (_ Unimplemented) ListFeeRuns(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListFeeRunsParams) {
@@ -28357,6 +31551,120 @@ func (_ Unimplemented) UpdateItem(w http.ResponseWriter, r *http.Request, marina
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// GetMaintenanceMap Maintenance lens of a map (default the first water map): open, overdue and out-of-service counts per element (maintenance.manage or maintenance.report)
+// (GET /api/admin/v1/marinas/{marinaId}/maintenance/map)
+func (_ Unimplemented) GetMaintenanceMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetMaintenanceMapParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListMaintenancePlans Maintenance plans (maintenance.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/maintenance/plans)
+func (_ Unimplemented) ListMaintenancePlans(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListMaintenancePlansParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateMaintenancePlan Create a maintenance plan with targets, periodicity, lead and checklist (maintenance.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/maintenance/plans)
+func (_ Unimplemented) CreateMaintenancePlan(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateMaintenancePlanParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetMaintenancePlan One maintenance plan (maintenance.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/maintenance/plans/{planId})
+func (_ Unimplemented) GetMaintenancePlan(w http.ResponseWriter, r *http.Request, marinaId MarinaId, planId PlanId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateMaintenancePlan Change a maintenance plan; active=false stops new tasks (maintenance.manage)
+// (PATCH /api/admin/v1/marinas/{marinaId}/maintenance/plans/{planId})
+func (_ Unimplemented) UpdateMaintenancePlan(w http.ResponseWriter, r *http.Request, marinaId MarinaId, planId PlanId, params UpdateMaintenancePlanParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ReportMaintenance Report a problem from the field: an open task with element or map position; never schedules, never occupies (maintenance.report)
+// (POST /api/admin/v1/marinas/{marinaId}/maintenance/reports)
+func (_ Unimplemented) ReportMaintenance(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ReportMaintenanceParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListMaintenanceTasks Maintenance tasks, overdue first (maintenance.manage; maintenance.report sees the tasks assigned to them and their reports)
+// (GET /api/admin/v1/marinas/{marinaId}/maintenance/tasks)
+func (_ Unimplemented) ListMaintenanceTasks(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListMaintenanceTasksParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateMaintenanceTask Create a task from the office (maintenance.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks)
+func (_ Unimplemented) CreateMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateMaintenanceTaskParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetMaintenanceTask One task with files and maintenance allocations (maintenance.manage or maintenance.report)
+// (GET /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId})
+func (_ Unimplemented) GetMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateMaintenanceTask Change title, description, priority, due date, assignee, supplier reference, out of service (maintenance.manage)
+// (PATCH /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId})
+func (_ Unimplemented) UpdateMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params UpdateMaintenanceTaskParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CancelMaintenanceTask Cancel a task and release its future maintenance nights (online only) (maintenance.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/cancel)
+func (_ Unimplemented) CancelMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params CancelMaintenanceTaskParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CompleteMaintenanceTask Record the outcome, checklist, minutes and costs; done is final (maintenance.manage or the assignee with maintenance.report)
+// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/complete)
+func (_ Unimplemented) CompleteMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params CompleteMaintenanceTaskParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UploadMaintenancePhoto Attach a photo or document to a task (JPEG, PNG, WebP or PDF, at most 8 MiB, raw body), encrypted at rest (maintenance.report)
+// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files)
+func (_ Unimplemented) UploadMaintenancePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params UploadMaintenancePhotoParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetMaintenanceFileFile Download a task file through a signed link from getMaintenanceFileLink (exp and sig checked in the service) (maintenance.manage or maintenance.report)
+// (GET /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files/{fileId}/file)
+func (_ Unimplemented) GetMaintenanceFileFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, fileId FileId, params GetMaintenanceFileFileParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetMaintenanceFileLink A short-lived (5 minutes) signed link to a task file (maintenance.manage or maintenance.report)
+// (GET /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files/{fileId}/link)
+func (_ Unimplemented) GetMaintenanceFileLink(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, fileId FileId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ReleaseMaintenanceTask Release the maintenance nights after last_night (online only) (maintenance.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/release)
+func (_ Unimplemented) ReleaseMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params ReleaseMaintenanceTaskParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ScheduleMaintenanceTask Schedule nights; with requires_free on a berth or land resource books maintenance nights in the same transaction (maintenance.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/schedule)
+func (_ Unimplemented) ScheduleMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params ScheduleMaintenanceTaskParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// StartMaintenanceTask Start a task (open or scheduled to in_progress) (maintenance.manage or the assignee with maintenance.report)
+// (POST /api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/start)
+func (_ Unimplemented) StartMaintenanceTask(w http.ResponseWriter, r *http.Request, marinaId MarinaId, taskId TaskId, params StartMaintenanceTaskParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetMaintenanceWorklist Tasks assigned to the current user plus open tasks due within 7 days (offline cache slot activities.assigned) (maintenance.report)
+// (GET /api/admin/v1/marinas/{marinaId}/maintenance/worklist)
+func (_ Unimplemented) GetMaintenanceWorklist(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListMandates Management mandates (rights.manage)
 // (GET /api/admin/v1/marinas/{marinaId}/mandates)
 func (_ Unimplemented) ListMandates(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListMandatesParams) {
@@ -28546,6 +31854,48 @@ func (_ Unimplemented) UpdateMember(w http.ResponseWriter, r *http.Request, mari
 // SendMemberPasswordReset Email a password reset link to a member (users.manage)
 // (POST /api/admin/v1/marinas/{marinaId}/members/{userId}/password-reset)
 func (_ Unimplemented) SendMemberPasswordReset(w http.ResponseWriter, r *http.Request, marinaId MarinaId, userId UserId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListMeterReadings Meter readings, newest first (marina.configure, presence.write or charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/meter-readings)
+func (_ Unimplemented) ListMeterReadings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListMeterReadingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RecordMeterReading Record a reading (value as a decimal string, 3 decimals); anomalies are flagged, never refused (presence.write)
+// (POST /api/admin/v1/marinas/{marinaId}/meter-readings)
+func (_ Unimplemented) RecordMeterReading(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params RecordMeterReadingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ConfirmMeterReading Confirm an anomalous reading: its consumptions become chargeable (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/confirm)
+func (_ Unimplemented) ConfirmMeterReading(w http.ResponseWriter, r *http.Request, marinaId MarinaId, readingId ReadingId, params ConfirmMeterReadingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetMeterReadingPhotoLink A short-lived (5 minutes) signed link to the reading photo (marina.configure, presence.write or charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo)
+func (_ Unimplemented) GetMeterReadingPhotoLink(w http.ResponseWriter, r *http.Request, marinaId MarinaId, readingId ReadingId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UploadMeterReadingPhoto Attach a photo to a reading (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write)
+// (POST /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo)
+func (_ Unimplemented) UploadMeterReadingPhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, readingId ReadingId, params UploadMeterReadingPhotoParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetMeterReadingPhotoFile Download the reading photo through a signed link from getMeterReadingPhotoLink (exp and sig checked in the service) (marina.configure, presence.write or charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo/file)
+func (_ Unimplemented) GetMeterReadingPhotoFile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, readingId ReadingId, params GetMeterReadingPhotoFileParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// VoidMeterReading Void a reading; refused with 409 reading_charged when a charged consumption uses it (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/void)
+func (_ Unimplemented) VoidMeterReading(w http.ResponseWriter, r *http.Request, marinaId MarinaId, readingId ReadingId, params VoidMeterReadingParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -29221,6 +32571,12 @@ func (_ Unimplemented) GetLostDemandReport(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// GetMaintenanceReport R-maintenance: tasks by status, overdue, minutes and external costs (reports.operational or reports.all; costs with reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/maintenance)
+func (_ Unimplemented) GetMaintenanceReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetMaintenanceReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // GetOccupancyReport R1 occupancy, physical or contractual, berths, land or dynamic areas (reports.operational or reports.all)
 // (GET /api/admin/v1/marinas/{marinaId}/reports/occupancy)
 func (_ Unimplemented) GetOccupancyReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetOccupancyReportParams) {
@@ -29260,6 +32616,18 @@ func (_ Unimplemented) GetRevenueClassesReport(w http.ResponseWriter, r *http.Re
 // GetRightsReport R14 rights of use, holder charges, common-charge allotments and mandates (reports.all)
 // (GET /api/admin/v1/marinas/{marinaId}/reports/rights)
 func (_ Unimplemented) GetRightsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRightsReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetStorageReport R-storage: allocations on surface areas, m²-nights available and occupied, blocked exits (reports.operational or reports.all; production with reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/storage)
+func (_ Unimplemented) GetStorageReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetStorageReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetUtilitiesReport R-utilities: consumptions by kind and status, charged and pending value, unassigned quantity (reports.operational; amounts with reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/utilities)
+func (_ Unimplemented) GetUtilitiesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetUtilitiesReportParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -29419,6 +32787,138 @@ func (_ Unimplemented) UpdateSignatureSettings(w http.ResponseWriter, r *http.Re
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ListStorageAreas Surface areas (yard and shed maps) with today's occupancy, boats, blocked exits in the next 30 days and draft scenarios (storage.read)
+// (GET /api/admin/v1/marinas/{marinaId}/storage/areas)
+func (_ Unimplemented) ListStorageAreas(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetStorageAccessibility Accessibility of the boats present on a date (default today): extraction order, blocked boats and their blocking boats (storage.read)
+// (GET /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/accessibility)
+func (_ Unimplemented) GetStorageAccessibility(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId, params GetStorageAccessibilityParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ArrangeStorageArea Preset: run the optimizer on the real state or on a draft layout and return the proposal; nothing is saved (storage.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/arrange)
+func (_ Unimplemented) ArrangeStorageArea(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// EvaluateStorageLayout Indicators, accessibility and per-item issues of a draft layout of the area; nothing is saved (storage.read)
+// (POST /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/evaluate)
+func (_ Unimplemented) EvaluateStorageLayout(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetStoragePlan Plan and timeline of a surface area for a night window (default today .. today + 30) with gates, obstacles and accessibility warnings (storage.read)
+// (GET /api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/plan)
+func (_ Unimplemented) GetStoragePlan(w http.ResponseWriter, r *http.Request, marinaId MarinaId, areaId AreaId, params GetStoragePlanParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateStorageContract Create a storage contract on a surface area (automatic position when placement is omitted) or a trailer spot, draft or active (storage.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/storage/contracts)
+func (_ Unimplemented) CreateStorageContract(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateStorageContractParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetStorageContract A storage contract with its storage details, placement and cradle (storage.read); ETag = details version
+// (GET /api/admin/v1/marinas/{marinaId}/storage/contracts/{contractId})
+func (_ Unimplemented) GetStorageContract(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateStorageContract Change support, planned haul-out and launch, handling notes (storage.manage); period and position use resize and move
+// (PATCH /api/admin/v1/marinas/{marinaId}/storage/contracts/{contractId})
+func (_ Unimplemented) UpdateStorageContract(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params UpdateStorageContractParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListStorageMovements Movement worklist of a day (default today) with the accessibility warnings of the day (storage.read)
+// (GET /api/admin/v1/marinas/{marinaId}/storage/movements)
+func (_ Unimplemented) ListStorageMovements(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListStorageMovementsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CompleteStorageMovement Mark a movement done (online only) (storage.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/storage/movements/{movementId}/done)
+func (_ Unimplemented) CompleteStorageMovement(w http.ResponseWriter, r *http.Request, marinaId MarinaId, movementId MovementId, params CompleteStorageMovementParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListStorageScenarios Scenarios (what-if layouts), newest first (storage.read)
+// (GET /api/admin/v1/marinas/{marinaId}/storage/scenarios)
+func (_ Unimplemented) ListStorageScenarios(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListStorageScenariosParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateStorageScenario Create a scenario from the real state of an area for a night window (at most 400 nights) (storage.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/storage/scenarios)
+func (_ Unimplemented) CreateStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateStorageScenarioParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DiscardStorageScenario Discard a draft scenario (status discarded; applied scenarios are history and cannot be discarded) (storage.manage)
+// (DELETE /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId})
+func (_ Unimplemented) DiscardStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params DiscardStorageScenarioParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetStorageScenario A scenario with its items, moves, indicators and accessibility; stale is computed on read (storage.read)
+// (GET /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId})
+func (_ Unimplemented) GetStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateStorageScenario Rename a draft scenario or change its window (items not yet touched are reloaded) (storage.manage)
+// (PATCH /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId})
+func (_ Unimplemented) UpdateStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params UpdateStorageScenarioParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ApplyStorageScenario Apply a draft scenario in one transaction: re-validated on the current state, all moves or none; returns the movement worklist (storage.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/apply)
+func (_ Unimplemented) ApplyStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params ApplyStorageScenarioParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CompareStorageScenario Compare a scenario with another scenario of the same area or with the real state (default) (storage.read)
+// (GET /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/compare)
+func (_ Unimplemented) CompareStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params CompareStorageScenarioParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// AddStorageScenarioItem Bring an allocation of another surface area or land resource of the marina into the scenario tray (storage.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items)
+func (_ Unimplemented) AddStorageScenarioItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params AddStorageScenarioItemParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SaveStorageScenarioItems Save the placements of the working copy; overlaps are allowed and flagged, they block apply (storage.manage)
+// (PUT /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items)
+func (_ Unimplemented) SaveStorageScenarioItems(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params SaveStorageScenarioItemsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RemoveStorageScenarioItem Drop a tray item from the scenario (area items cannot be removed, only unplaced) (storage.manage)
+// (DELETE /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items/{allocationId})
+func (_ Unimplemented) RemoveStorageScenarioItem(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, allocationId AllocationId, params RemoveStorageScenarioItemParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// OptimizeStorageScenario Run the optimizer on the working copy (pinned items stay), store result, seed and indicators (storage.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/optimize)
+func (_ Unimplemented) OptimizeStorageScenario(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId, params OptimizeStorageScenarioParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListStorageTrayCandidates Allocations the "Da collocare" tray accepts: active vessel allocations on another dynamic area or a land resource overlapping the scenario window, not yet in it (storage.read)
+// (GET /api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/tray-candidates)
+func (_ Unimplemented) ListStorageTrayCandidates(w http.ResponseWriter, r *http.Request, marinaId MarinaId, scenarioId ScenarioId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListTemplateKinds Template kinds with their field catalogue (contracts.read)
 // (GET /api/admin/v1/marinas/{marinaId}/template-kinds)
 func (_ Unimplemented) ListTemplateKinds(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
@@ -29524,6 +33024,66 @@ func (_ Unimplemented) GetTransitQr(w http.ResponseWriter, r *http.Request, mari
 // ChangeTransitStay Change arrival and/or departure; added nights must be free (409 with alternatives) and the price is recomputed (transits.desk)
 // (POST /api/admin/v1/marinas/{marinaId}/transits/{contractId}/stay)
 func (_ Unimplemented) ChangeTransitStay(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params ChangeTransitStayParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RunUtilityCharges Charge the pending consumptions now (all contracts due today, or one contract) through the M5 charges (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/utility-charges/run)
+func (_ Unimplemented) RunUtilityCharges(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params RunUtilityChargesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListUtilityConsumptions Consumptions split by occupant (charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/utility-consumptions)
+func (_ Unimplemented) ListUtilityConsumptions(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListUtilityConsumptionsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// AssignUtilityConsumption Assign an unassigned consumption to a contract of the marina (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/utility-consumptions/{consumptionId}/assign)
+func (_ Unimplemented) AssignUtilityConsumption(w http.ResponseWriter, r *http.Request, marinaId MarinaId, consumptionId ConsumptionId, params AssignUtilityConsumptionParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ExcludeUtilityConsumption Exclude a pending, anomalous or unassigned consumption from charging (charges.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/utility-consumptions/{consumptionId}/exclude)
+func (_ Unimplemented) ExcludeUtilityConsumption(w http.ResponseWriter, r *http.Request, marinaId MarinaId, consumptionId ConsumptionId, params ExcludeUtilityConsumptionParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListUtilityMeters Utility meters; route=dock returns the meters of the dock reading round (marina.configure or presence.write)
+// (GET /api/admin/v1/marinas/{marinaId}/utility-meters)
+func (_ Unimplemented) ListUtilityMeters(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListUtilityMetersParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateUtilityMeter Create a meter (pedestal socket, water, hour or cycle counter) (marina.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/utility-meters)
+func (_ Unimplemented) CreateUtilityMeter(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateUtilityMeterParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetUtilityMeter One meter with its last reading (marina.configure or presence.write)
+// (GET /api/admin/v1/marinas/{marinaId}/utility-meters/{meterId})
+func (_ Unimplemented) GetUtilityMeter(w http.ResponseWriter, r *http.Request, marinaId MarinaId, meterId MeterId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateUtilityMeter Change a meter (marina.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/utility-meters/{meterId})
+func (_ Unimplemented) UpdateUtilityMeter(w http.ResponseWriter, r *http.Request, marinaId MarinaId, meterId MeterId, params UpdateUtilityMeterParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetUtilitySettings Utility settings: tariff items, charging mode, daily thresholds (marina.configure or charges.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/utility-settings)
+func (_ Unimplemented) GetUtilitySettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateUtilitySettings Replace the utility settings (marina.configure)
+// (PUT /api/admin/v1/marinas/{marinaId}/utility-settings)
+func (_ Unimplemented) UpdateUtilitySettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateUtilitySettingsParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -39708,6 +43268,231 @@ func (siw *ServerInterfaceWrapper) SaveAreaLayout(w http.ResponseWriter, r *http
 	handler.ServeHTTP(w, r)
 }
 
+// ListEquipment operation middleware
+func (siw *ServerInterfaceWrapper) ListEquipment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListEquipmentParams
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "active" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "active", r.URL.Query(), &params.Active, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "active"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "active", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListEquipment(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateEquipment operation middleware
+func (siw *ServerInterfaceWrapper) CreateEquipment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateEquipmentParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateEquipment(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetEquipment operation middleware
+func (siw *ServerInterfaceWrapper) GetEquipment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "equipmentId" -------------
+	var equipmentId EquipmentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "equipmentId", chi.URLParam(r, "equipmentId"), &equipmentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "equipmentId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetEquipment(w, r, marinaId, equipmentId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateEquipment operation middleware
+func (siw *ServerInterfaceWrapper) UpdateEquipment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "equipmentId" -------------
+	var equipmentId EquipmentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "equipmentId", chi.URLParam(r, "equipmentId"), &equipmentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "equipmentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateEquipmentParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateEquipment(w, r, marinaId, equipmentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListFeeRuns operation middleware
 func (siw *ServerInterfaceWrapper) ListFeeRuns(w http.ResponseWriter, r *http.Request) {
 
@@ -42561,6 +46346,1180 @@ func (siw *ServerInterfaceWrapper) UpdateItem(w http.ResponseWriter, r *http.Req
 	handler.ServeHTTP(w, r)
 }
 
+// GetMaintenanceMap operation middleware
+func (siw *ServerInterfaceWrapper) GetMaintenanceMap(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMaintenanceMapParams
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "date" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "date", r.URL.Query(), &params.Date, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "date"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "date", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMaintenanceMap(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListMaintenancePlans operation middleware
+func (siw *ServerInterfaceWrapper) ListMaintenancePlans(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListMaintenancePlansParams
+
+	// ------------- Optional query parameter "active" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "active", r.URL.Query(), &params.Active, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "active"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "active", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "element_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "element_type", r.URL.Query(), &params.ElementType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "element_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "element_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListMaintenancePlans(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateMaintenancePlan operation middleware
+func (siw *ServerInterfaceWrapper) CreateMaintenancePlan(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateMaintenancePlanParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateMaintenancePlan(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMaintenancePlan operation middleware
+func (siw *ServerInterfaceWrapper) GetMaintenancePlan(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "planId" -------------
+	var planId PlanId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "planId", chi.URLParam(r, "planId"), &planId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "planId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMaintenancePlan(w, r, marinaId, planId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateMaintenancePlan operation middleware
+func (siw *ServerInterfaceWrapper) UpdateMaintenancePlan(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "planId" -------------
+	var planId PlanId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "planId", chi.URLParam(r, "planId"), &planId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "planId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateMaintenancePlanParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateMaintenancePlan(w, r, marinaId, planId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReportMaintenance operation middleware
+func (siw *ServerInterfaceWrapper) ReportMaintenance(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ReportMaintenanceParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Porto-Offline-Queued-At" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Offline-Queued-At")]; found {
+		var PortoOfflineQueuedAt OfflineQueuedAt
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Offline-Queued-At", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Offline-Queued-At", valueList[0], &PortoOfflineQueuedAt, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "date-time"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Offline-Queued-At", Err: err})
+			return
+		}
+
+		params.PortoOfflineQueuedAt = &PortoOfflineQueuedAt
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReportMaintenance(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListMaintenanceTasks operation middleware
+func (siw *ServerInterfaceWrapper) ListMaintenanceTasks(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListMaintenanceTasksParams
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "priority" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "priority", r.URL.Query(), &params.Priority, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "priority"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "priority", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "element_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "element_type", r.URL.Query(), &params.ElementType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "element_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "element_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "element_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "element_id", r.URL.Query(), &params.ElementId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "element_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "element_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "plan_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "plan_id", r.URL.Query(), &params.PlanId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "plan_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "plan_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "assignee_user_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "assignee_user_id", r.URL.Query(), &params.AssigneeUserId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "assignee_user_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "assignee_user_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "overdue_only" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "overdue_only", r.URL.Query(), &params.OverdueOnly, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "overdue_only"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "overdue_only", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListMaintenanceTasks(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateMaintenanceTask operation middleware
+func (siw *ServerInterfaceWrapper) CreateMaintenanceTask(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateMaintenanceTaskParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateMaintenanceTask(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMaintenanceTask operation middleware
+func (siw *ServerInterfaceWrapper) GetMaintenanceTask(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "taskId" -------------
+	var taskId TaskId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskId", chi.URLParam(r, "taskId"), &taskId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMaintenanceTask(w, r, marinaId, taskId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateMaintenanceTask operation middleware
+func (siw *ServerInterfaceWrapper) UpdateMaintenanceTask(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "taskId" -------------
+	var taskId TaskId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskId", chi.URLParam(r, "taskId"), &taskId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateMaintenanceTaskParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateMaintenanceTask(w, r, marinaId, taskId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CancelMaintenanceTask operation middleware
+func (siw *ServerInterfaceWrapper) CancelMaintenanceTask(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "taskId" -------------
+	var taskId TaskId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskId", chi.URLParam(r, "taskId"), &taskId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CancelMaintenanceTaskParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CancelMaintenanceTask(w, r, marinaId, taskId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CompleteMaintenanceTask operation middleware
+func (siw *ServerInterfaceWrapper) CompleteMaintenanceTask(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "taskId" -------------
+	var taskId TaskId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskId", chi.URLParam(r, "taskId"), &taskId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CompleteMaintenanceTaskParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Porto-Offline-Queued-At" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Offline-Queued-At")]; found {
+		var PortoOfflineQueuedAt OfflineQueuedAt
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Offline-Queued-At", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Offline-Queued-At", valueList[0], &PortoOfflineQueuedAt, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "date-time"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Offline-Queued-At", Err: err})
+			return
+		}
+
+		params.PortoOfflineQueuedAt = &PortoOfflineQueuedAt
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CompleteMaintenanceTask(w, r, marinaId, taskId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UploadMaintenancePhoto operation middleware
+func (siw *ServerInterfaceWrapper) UploadMaintenancePhoto(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "taskId" -------------
+	var taskId TaskId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskId", chi.URLParam(r, "taskId"), &taskId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UploadMaintenancePhotoParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Porto-Offline-Queued-At" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Offline-Queued-At")]; found {
+		var PortoOfflineQueuedAt OfflineQueuedAt
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Offline-Queued-At", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Offline-Queued-At", valueList[0], &PortoOfflineQueuedAt, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "date-time"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Offline-Queued-At", Err: err})
+			return
+		}
+
+		params.PortoOfflineQueuedAt = &PortoOfflineQueuedAt
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UploadMaintenancePhoto(w, r, marinaId, taskId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMaintenanceFileFile operation middleware
+func (siw *ServerInterfaceWrapper) GetMaintenanceFileFile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "taskId" -------------
+	var taskId TaskId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskId", chi.URLParam(r, "taskId"), &taskId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "fileId" -------------
+	var fileId FileId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "fileId", chi.URLParam(r, "fileId"), &fileId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fileId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMaintenanceFileFileParams
+
+	// ------------- Optional query parameter "exp" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "exp", r.URL.Query(), &params.Exp, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "exp"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "exp", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "sig" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "sig", r.URL.Query(), &params.Sig, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sig"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sig", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMaintenanceFileFile(w, r, marinaId, taskId, fileId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMaintenanceFileLink operation middleware
+func (siw *ServerInterfaceWrapper) GetMaintenanceFileLink(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "taskId" -------------
+	var taskId TaskId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskId", chi.URLParam(r, "taskId"), &taskId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "fileId" -------------
+	var fileId FileId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "fileId", chi.URLParam(r, "fileId"), &fileId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fileId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMaintenanceFileLink(w, r, marinaId, taskId, fileId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReleaseMaintenanceTask operation middleware
+func (siw *ServerInterfaceWrapper) ReleaseMaintenanceTask(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "taskId" -------------
+	var taskId TaskId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskId", chi.URLParam(r, "taskId"), &taskId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ReleaseMaintenanceTaskParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReleaseMaintenanceTask(w, r, marinaId, taskId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ScheduleMaintenanceTask operation middleware
+func (siw *ServerInterfaceWrapper) ScheduleMaintenanceTask(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "taskId" -------------
+	var taskId TaskId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskId", chi.URLParam(r, "taskId"), &taskId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ScheduleMaintenanceTaskParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ScheduleMaintenanceTask(w, r, marinaId, taskId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// StartMaintenanceTask operation middleware
+func (siw *ServerInterfaceWrapper) StartMaintenanceTask(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "taskId" -------------
+	var taskId TaskId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "taskId", chi.URLParam(r, "taskId"), &taskId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "taskId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params StartMaintenanceTaskParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.StartMaintenanceTask(w, r, marinaId, taskId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMaintenanceWorklist operation middleware
+func (siw *ServerInterfaceWrapper) GetMaintenanceWorklist(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMaintenanceWorklist(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListMandates operation middleware
 func (siw *ServerInterfaceWrapper) ListMandates(w http.ResponseWriter, r *http.Request) {
 
@@ -44134,6 +49093,477 @@ func (siw *ServerInterfaceWrapper) SendMemberPasswordReset(w http.ResponseWriter
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SendMemberPasswordReset(w, r, marinaId, userId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListMeterReadings operation middleware
+func (siw *ServerInterfaceWrapper) ListMeterReadings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListMeterReadingsParams
+
+	// ------------- Optional query parameter "meter_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "meter_id", r.URL.Query(), &params.MeterId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "meter_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "meter_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListMeterReadings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RecordMeterReading operation middleware
+func (siw *ServerInterfaceWrapper) RecordMeterReading(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RecordMeterReadingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Porto-Offline-Queued-At" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Offline-Queued-At")]; found {
+		var PortoOfflineQueuedAt OfflineQueuedAt
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Offline-Queued-At", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Offline-Queued-At", valueList[0], &PortoOfflineQueuedAt, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "date-time"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Offline-Queued-At", Err: err})
+			return
+		}
+
+		params.PortoOfflineQueuedAt = &PortoOfflineQueuedAt
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RecordMeterReading(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ConfirmMeterReading operation middleware
+func (siw *ServerInterfaceWrapper) ConfirmMeterReading(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "readingId" -------------
+	var readingId ReadingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "readingId", chi.URLParam(r, "readingId"), &readingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "readingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ConfirmMeterReadingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ConfirmMeterReading(w, r, marinaId, readingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMeterReadingPhotoLink operation middleware
+func (siw *ServerInterfaceWrapper) GetMeterReadingPhotoLink(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "readingId" -------------
+	var readingId ReadingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "readingId", chi.URLParam(r, "readingId"), &readingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "readingId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMeterReadingPhotoLink(w, r, marinaId, readingId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UploadMeterReadingPhoto operation middleware
+func (siw *ServerInterfaceWrapper) UploadMeterReadingPhoto(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "readingId" -------------
+	var readingId ReadingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "readingId", chi.URLParam(r, "readingId"), &readingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "readingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UploadMeterReadingPhotoParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Porto-Offline-Queued-At" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Offline-Queued-At")]; found {
+		var PortoOfflineQueuedAt OfflineQueuedAt
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Offline-Queued-At", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Offline-Queued-At", valueList[0], &PortoOfflineQueuedAt, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "date-time"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Offline-Queued-At", Err: err})
+			return
+		}
+
+		params.PortoOfflineQueuedAt = &PortoOfflineQueuedAt
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UploadMeterReadingPhoto(w, r, marinaId, readingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMeterReadingPhotoFile operation middleware
+func (siw *ServerInterfaceWrapper) GetMeterReadingPhotoFile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "readingId" -------------
+	var readingId ReadingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "readingId", chi.URLParam(r, "readingId"), &readingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "readingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMeterReadingPhotoFileParams
+
+	// ------------- Optional query parameter "exp" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "exp", r.URL.Query(), &params.Exp, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "exp"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "exp", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "sig" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "sig", r.URL.Query(), &params.Sig, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sig"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sig", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMeterReadingPhotoFile(w, r, marinaId, readingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// VoidMeterReading operation middleware
+func (siw *ServerInterfaceWrapper) VoidMeterReading(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "readingId" -------------
+	var readingId ReadingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "readingId", chi.URLParam(r, "readingId"), &readingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "readingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params VoidMeterReadingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.VoidMeterReading(w, r, marinaId, readingId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -51809,6 +57239,165 @@ func (siw *ServerInterfaceWrapper) GetLostDemandReport(w http.ResponseWriter, r 
 	handler.ServeHTTP(w, r)
 }
 
+// GetMaintenanceReport operation middleware
+func (siw *ServerInterfaceWrapper) GetMaintenanceReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMaintenanceReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "element_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "element_type", r.URL.Query(), &params.ElementType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "element_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "element_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "overdue_only" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "overdue_only", r.URL.Query(), &params.OverdueOnly, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "overdue_only"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "overdue_only", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMaintenanceReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetOccupancyReport operation middleware
 func (siw *ServerInterfaceWrapper) GetOccupancyReport(w http.ResponseWriter, r *http.Request) {
 
@@ -52900,6 +58489,350 @@ func (siw *ServerInterfaceWrapper) GetRightsReport(w http.ResponseWriter, r *htt
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetRightsReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetStorageReport operation middleware
+func (siw *ServerInterfaceWrapper) GetStorageReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetStorageReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_kind", r.URL.Query(), &params.MapKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "area_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "area_id", r.URL.Query(), &params.AreaId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "area_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "area_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "exits_blocked_only" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "exits_blocked_only", r.URL.Query(), &params.ExitsBlockedOnly, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "exits_blocked_only"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "exits_blocked_only", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetStorageReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetUtilitiesReport operation middleware
+func (siw *ServerInterfaceWrapper) GetUtilitiesReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetUtilitiesReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "meter_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "meter_id", r.URL.Query(), &params.MeterId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "meter_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "meter_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "contract_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "contract_id", r.URL.Query(), &params.ContractId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "contract_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contract_id", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetUtilitiesReport(w, r, marinaId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -54687,6 +60620,1194 @@ func (siw *ServerInterfaceWrapper) UpdateSignatureSettings(w http.ResponseWriter
 	handler.ServeHTTP(w, r)
 }
 
+// ListStorageAreas operation middleware
+func (siw *ServerInterfaceWrapper) ListStorageAreas(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListStorageAreas(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetStorageAccessibility operation middleware
+func (siw *ServerInterfaceWrapper) GetStorageAccessibility(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "areaId" -------------
+	var areaId AreaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "areaId", chi.URLParam(r, "areaId"), &areaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "areaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetStorageAccessibilityParams
+
+	// ------------- Optional query parameter "date" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "date", r.URL.Query(), &params.Date, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "date"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "date", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetStorageAccessibility(w, r, marinaId, areaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ArrangeStorageArea operation middleware
+func (siw *ServerInterfaceWrapper) ArrangeStorageArea(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "areaId" -------------
+	var areaId AreaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "areaId", chi.URLParam(r, "areaId"), &areaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "areaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ArrangeStorageArea(w, r, marinaId, areaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// EvaluateStorageLayout operation middleware
+func (siw *ServerInterfaceWrapper) EvaluateStorageLayout(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "areaId" -------------
+	var areaId AreaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "areaId", chi.URLParam(r, "areaId"), &areaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "areaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.EvaluateStorageLayout(w, r, marinaId, areaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetStoragePlan operation middleware
+func (siw *ServerInterfaceWrapper) GetStoragePlan(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "areaId" -------------
+	var areaId AreaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "areaId", chi.URLParam(r, "areaId"), &areaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "areaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetStoragePlanParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetStoragePlan(w, r, marinaId, areaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateStorageContract operation middleware
+func (siw *ServerInterfaceWrapper) CreateStorageContract(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateStorageContractParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateStorageContract(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetStorageContract operation middleware
+func (siw *ServerInterfaceWrapper) GetStorageContract(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetStorageContract(w, r, marinaId, contractId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateStorageContract operation middleware
+func (siw *ServerInterfaceWrapper) UpdateStorageContract(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateStorageContractParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateStorageContract(w, r, marinaId, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListStorageMovements operation middleware
+func (siw *ServerInterfaceWrapper) ListStorageMovements(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListStorageMovementsParams
+
+	// ------------- Optional query parameter "date" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "date", r.URL.Query(), &params.Date, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "date"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "date", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "area_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "area_id", r.URL.Query(), &params.AreaId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "area_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "area_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListStorageMovements(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CompleteStorageMovement operation middleware
+func (siw *ServerInterfaceWrapper) CompleteStorageMovement(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "movementId" -------------
+	var movementId MovementId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "movementId", chi.URLParam(r, "movementId"), &movementId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "movementId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CompleteStorageMovementParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CompleteStorageMovement(w, r, marinaId, movementId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListStorageScenarios operation middleware
+func (siw *ServerInterfaceWrapper) ListStorageScenarios(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListStorageScenariosParams
+
+	// ------------- Optional query parameter "area_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "area_id", r.URL.Query(), &params.AreaId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "area_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "area_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListStorageScenarios(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateStorageScenario operation middleware
+func (siw *ServerInterfaceWrapper) CreateStorageScenario(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateStorageScenarioParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateStorageScenario(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DiscardStorageScenario operation middleware
+func (siw *ServerInterfaceWrapper) DiscardStorageScenario(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "scenarioId" -------------
+	var scenarioId ScenarioId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "scenarioId", chi.URLParam(r, "scenarioId"), &scenarioId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scenarioId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DiscardStorageScenarioParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DiscardStorageScenario(w, r, marinaId, scenarioId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetStorageScenario operation middleware
+func (siw *ServerInterfaceWrapper) GetStorageScenario(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "scenarioId" -------------
+	var scenarioId ScenarioId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "scenarioId", chi.URLParam(r, "scenarioId"), &scenarioId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scenarioId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetStorageScenario(w, r, marinaId, scenarioId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateStorageScenario operation middleware
+func (siw *ServerInterfaceWrapper) UpdateStorageScenario(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "scenarioId" -------------
+	var scenarioId ScenarioId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "scenarioId", chi.URLParam(r, "scenarioId"), &scenarioId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scenarioId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateStorageScenarioParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateStorageScenario(w, r, marinaId, scenarioId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ApplyStorageScenario operation middleware
+func (siw *ServerInterfaceWrapper) ApplyStorageScenario(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "scenarioId" -------------
+	var scenarioId ScenarioId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "scenarioId", chi.URLParam(r, "scenarioId"), &scenarioId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scenarioId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ApplyStorageScenarioParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ApplyStorageScenario(w, r, marinaId, scenarioId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CompareStorageScenario operation middleware
+func (siw *ServerInterfaceWrapper) CompareStorageScenario(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "scenarioId" -------------
+	var scenarioId ScenarioId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "scenarioId", chi.URLParam(r, "scenarioId"), &scenarioId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scenarioId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CompareStorageScenarioParams
+
+	// ------------- Optional query parameter "with" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "with", r.URL.Query(), &params.With, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "with"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "with", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "date" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "date", r.URL.Query(), &params.Date, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "date"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "date", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CompareStorageScenario(w, r, marinaId, scenarioId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AddStorageScenarioItem operation middleware
+func (siw *ServerInterfaceWrapper) AddStorageScenarioItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "scenarioId" -------------
+	var scenarioId ScenarioId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "scenarioId", chi.URLParam(r, "scenarioId"), &scenarioId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scenarioId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AddStorageScenarioItemParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AddStorageScenarioItem(w, r, marinaId, scenarioId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SaveStorageScenarioItems operation middleware
+func (siw *ServerInterfaceWrapper) SaveStorageScenarioItems(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "scenarioId" -------------
+	var scenarioId ScenarioId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "scenarioId", chi.URLParam(r, "scenarioId"), &scenarioId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scenarioId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SaveStorageScenarioItemsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SaveStorageScenarioItems(w, r, marinaId, scenarioId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RemoveStorageScenarioItem operation middleware
+func (siw *ServerInterfaceWrapper) RemoveStorageScenarioItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "scenarioId" -------------
+	var scenarioId ScenarioId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "scenarioId", chi.URLParam(r, "scenarioId"), &scenarioId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scenarioId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "allocationId" -------------
+	var allocationId AllocationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "allocationId", chi.URLParam(r, "allocationId"), &allocationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "allocationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RemoveStorageScenarioItemParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RemoveStorageScenarioItem(w, r, marinaId, scenarioId, allocationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// OptimizeStorageScenario operation middleware
+func (siw *ServerInterfaceWrapper) OptimizeStorageScenario(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "scenarioId" -------------
+	var scenarioId ScenarioId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "scenarioId", chi.URLParam(r, "scenarioId"), &scenarioId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scenarioId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params OptimizeStorageScenarioParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.OptimizeStorageScenario(w, r, marinaId, scenarioId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListStorageTrayCandidates operation middleware
+func (siw *ServerInterfaceWrapper) ListStorageTrayCandidates(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "scenarioId" -------------
+	var scenarioId ScenarioId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "scenarioId", chi.URLParam(r, "scenarioId"), &scenarioId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "scenarioId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListStorageTrayCandidates(w, r, marinaId, scenarioId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListTemplateKinds operation middleware
 func (siw *ServerInterfaceWrapper) ListTemplateKinds(w http.ResponseWriter, r *http.Request) {
 
@@ -55757,6 +62878,673 @@ func (siw *ServerInterfaceWrapper) ChangeTransitStay(w http.ResponseWriter, r *h
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ChangeTransitStay(w, r, marinaId, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RunUtilityCharges operation middleware
+func (siw *ServerInterfaceWrapper) RunUtilityCharges(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RunUtilityChargesParams
+
+	// ------------- Optional query parameter "contract_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "contract_id", r.URL.Query(), &params.ContractId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "contract_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contract_id", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RunUtilityCharges(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListUtilityConsumptions operation middleware
+func (siw *ServerInterfaceWrapper) ListUtilityConsumptions(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListUtilityConsumptionsParams
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "contract_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "contract_id", r.URL.Query(), &params.ContractId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "contract_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contract_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "meter_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "meter_id", r.URL.Query(), &params.MeterId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "meter_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "meter_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListUtilityConsumptions(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AssignUtilityConsumption operation middleware
+func (siw *ServerInterfaceWrapper) AssignUtilityConsumption(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "consumptionId" -------------
+	var consumptionId ConsumptionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "consumptionId", chi.URLParam(r, "consumptionId"), &consumptionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "consumptionId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AssignUtilityConsumptionParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AssignUtilityConsumption(w, r, marinaId, consumptionId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ExcludeUtilityConsumption operation middleware
+func (siw *ServerInterfaceWrapper) ExcludeUtilityConsumption(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "consumptionId" -------------
+	var consumptionId ConsumptionId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "consumptionId", chi.URLParam(r, "consumptionId"), &consumptionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "consumptionId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ExcludeUtilityConsumptionParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ExcludeUtilityConsumption(w, r, marinaId, consumptionId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListUtilityMeters operation middleware
+func (siw *ServerInterfaceWrapper) ListUtilityMeters(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListUtilityMetersParams
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "pedestal_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "pedestal_id", r.URL.Query(), &params.PedestalId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "pedestal_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pedestal_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "resource_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "resource_id", r.URL.Query(), &params.ResourceId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "resource_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resource_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "active" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "active", r.URL.Query(), &params.Active, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "active"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "active", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "route" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "route", r.URL.Query(), &params.Route, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "route"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "route", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "q"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "q", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListUtilityMeters(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateUtilityMeter operation middleware
+func (siw *ServerInterfaceWrapper) CreateUtilityMeter(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateUtilityMeterParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateUtilityMeter(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetUtilityMeter operation middleware
+func (siw *ServerInterfaceWrapper) GetUtilityMeter(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "meterId" -------------
+	var meterId MeterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "meterId", chi.URLParam(r, "meterId"), &meterId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "meterId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetUtilityMeter(w, r, marinaId, meterId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateUtilityMeter operation middleware
+func (siw *ServerInterfaceWrapper) UpdateUtilityMeter(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "meterId" -------------
+	var meterId MeterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "meterId", chi.URLParam(r, "meterId"), &meterId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "meterId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateUtilityMeterParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateUtilityMeter(w, r, marinaId, meterId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetUtilitySettings operation middleware
+func (siw *ServerInterfaceWrapper) GetUtilitySettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetUtilitySettings(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateUtilitySettings operation middleware
+func (siw *ServerInterfaceWrapper) UpdateUtilitySettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateUtilitySettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateUtilitySettings(w, r, marinaId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -61915,6 +69703,201 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/webhooks/channels/{channel}/{marinaId}", wrapper.ReceiveChannelWebhook)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/areas", wrapper.ListStorageAreas)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/plan", wrapper.GetStoragePlan)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/accessibility", wrapper.GetStorageAccessibility)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/arrange", wrapper.ArrangeStorageArea)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/evaluate", wrapper.EvaluateStorageLayout)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/contracts", wrapper.CreateStorageContract)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/contracts/{contractId}", wrapper.GetStorageContract)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/contracts/{contractId}", wrapper.UpdateStorageContract)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios", wrapper.ListStorageScenarios)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios", wrapper.CreateStorageScenario)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}", wrapper.DiscardStorageScenario)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}", wrapper.GetStorageScenario)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}", wrapper.UpdateStorageScenario)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items", wrapper.AddStorageScenarioItem)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items", wrapper.SaveStorageScenarioItems)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/tray-candidates", wrapper.ListStorageTrayCandidates)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items/{allocationId}", wrapper.RemoveStorageScenarioItem)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/optimize", wrapper.OptimizeStorageScenario)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/compare", wrapper.CompareStorageScenario)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/apply", wrapper.ApplyStorageScenario)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/movements", wrapper.ListStorageMovements)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/storage/movements/{movementId}/done", wrapper.CompleteStorageMovement)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/equipment", wrapper.ListEquipment)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/equipment", wrapper.CreateEquipment)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/equipment/{equipmentId}", wrapper.GetEquipment)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/equipment/{equipmentId}", wrapper.UpdateEquipment)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/plans", wrapper.ListMaintenancePlans)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/plans", wrapper.CreateMaintenancePlan)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/plans/{planId}", wrapper.GetMaintenancePlan)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/plans/{planId}", wrapper.UpdateMaintenancePlan)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks", wrapper.ListMaintenanceTasks)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks", wrapper.CreateMaintenanceTask)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}", wrapper.GetMaintenanceTask)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}", wrapper.UpdateMaintenanceTask)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/schedule", wrapper.ScheduleMaintenanceTask)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/start", wrapper.StartMaintenanceTask)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/complete", wrapper.CompleteMaintenanceTask)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/release", wrapper.ReleaseMaintenanceTask)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/cancel", wrapper.CancelMaintenanceTask)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files", wrapper.UploadMaintenancePhoto)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files/{fileId}/link", wrapper.GetMaintenanceFileLink)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files/{fileId}/file", wrapper.GetMaintenanceFileFile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/reports", wrapper.ReportMaintenance)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/worklist", wrapper.GetMaintenanceWorklist)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/maintenance/map", wrapper.GetMaintenanceMap)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/utility-meters", wrapper.ListUtilityMeters)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/utility-meters", wrapper.CreateUtilityMeter)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/utility-meters/{meterId}", wrapper.GetUtilityMeter)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/utility-meters/{meterId}", wrapper.UpdateUtilityMeter)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/meter-readings", wrapper.ListMeterReadings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/meter-readings", wrapper.RecordMeterReading)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo", wrapper.GetMeterReadingPhotoLink)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo", wrapper.UploadMeterReadingPhoto)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo/file", wrapper.GetMeterReadingPhotoFile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/confirm", wrapper.ConfirmMeterReading)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/void", wrapper.VoidMeterReading)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/utility-consumptions", wrapper.ListUtilityConsumptions)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/utility-consumptions/{consumptionId}/exclude", wrapper.ExcludeUtilityConsumption)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/utility-consumptions/{consumptionId}/assign", wrapper.AssignUtilityConsumption)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/utility-charges/run", wrapper.RunUtilityCharges)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/utility-settings", wrapper.GetUtilitySettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/utility-settings", wrapper.UpdateUtilitySettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/storage", wrapper.GetStorageReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/maintenance", wrapper.GetMaintenanceReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/utilities", wrapper.GetUtilitiesReport)
 	})
 
 	return r

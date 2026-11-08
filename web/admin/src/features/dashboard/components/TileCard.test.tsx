@@ -84,4 +84,28 @@ describe('TileCard', () => {
     expect(within(yard).queryByRole('link')).not.toBeInTheDocument();
     expect(screen.getByTestId('dashboard-seams')).toHaveTextContent('Cantiere e noleggio');
   });
+
+  it('opens the M9 blocked exits tile on its own 30-day period', async () => {
+    renderDashboard([
+      {
+        key: 'storage_exits_blocked',
+        unit: 'count',
+        available: true,
+        dims_applied: false,
+        value: 2,
+        trend: 'none',
+        series: [],
+        drill: {
+          report: 'storage',
+          params: { exits_blocked_only: 'true', from: '2026-11-08', to: '2026-12-07' },
+        },
+      },
+    ]);
+    const exits = await tile('storage_exits_blocked');
+    expect(within(exits).getByText('Uscite bloccate (30 giorni)')).toBeInTheDocument();
+    expect(within(exits).getByTestId('tile-value')).toHaveAttribute(
+      'href',
+      `/admin/m/${MARINA_ID}/reports/storage?exits_blocked_only=true&from=2026-11-08&to=2026-12-07`,
+    );
+  });
 });

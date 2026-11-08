@@ -648,6 +648,20 @@ func (s *Service) LayoutTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 	return res, err
 }
 
+// PriceLayout prices, outside any transaction, the vessels a layout brings into the area from other resources
+// (the storage scenario apply, m9-plan §7.3 step 1). The result goes to LayoutPricedTx; nil when nothing is priced.
+func (s *Service) PriceLayout(ctx context.Context, p *auth.Principal, scope store.MarinaScope, l LayoutSpec) (*MovePrice, error) {
+	return s.priceLayout(ctx, p, scope, l)
+}
+
+// LayoutPricedTx is LayoutTx acting as p with the price computed by PriceLayout: the repriced contracts are written
+// in the same transaction and the effect is in MoveResult.PriceEffect and in the audit diff.
+func (s *Service) LayoutPricedTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, now time.Time, l LayoutSpec,
+	p *auth.Principal, mp *MovePrice,
+) (MoveResult, error) {
+	return s.layoutTx(ctx, tx, scope, now, l, p, mp)
+}
+
 // layoutFrom is the first night a layout save changes: the requested one (default the date), never in the past.
 func layoutFrom(l LayoutSpec, today calendar.Date) calendar.Date {
 	from := l.Date

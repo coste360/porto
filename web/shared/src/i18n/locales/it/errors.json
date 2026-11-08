@@ -134,5 +134,19 @@
   "price_changed": "Il prezzo è cambiato rispetto all'anteprima: controlla il nuovo importo.",
   "cancellation_not_allowed": "Questa prenotazione non può essere annullata online: contatta il porto.",
   "nothing_due": "Non c'è nulla da pagare.",
-  "idempotency_mismatch": "La richiesta è già stata inviata con dati diversi: ricarica la pagina e riprova."
+  "idempotency_mismatch": "La richiesta è già stata inviata con dati diversi: ricarica la pagina e riprova.",
+  "storage_target_invalid": "Il rimessaggio richiede un'area di superficie di un piazzale o capannone, oppure un posto carrello.",
+  "storage_no_space": "Nessuna posizione libera nell'area per il periodo: apri un'ipotesi per riorganizzare.",
+  "area_exits_invalid": "Un'uscita dell'area non è utilizzabile o non è sul bordo: correggi la mappa.",
+  "pinned_invalid": "Una barca bloccata non è valida nella sua posizione.",
+  "too_many_items": "Troppe barche per una sola ottimizzazione.",
+  "scenario_window_invalid": "Periodo dell'ipotesi non valido.",
+  "scenario_not_draft": "L'ipotesi non è più in bozza.",
+  "scenario_conflicts": "L'ipotesi è in conflitto con lo stato attuale: nulla è stato applicato.",
+  "movement_not_pending": "Lo spostamento non è più da eseguire.",
+  "element_invalid": "Elemento sconosciuto o non adatto.",
+  "maintenance_conflicts": "Ci sono barche sull'elemento nelle notti della manutenzione: spostale e riprova.",
+  "task_already_done": "L'intervento è già stato completato.",
+  "reading_charged": "La lettura è usata da un consumo già addebitato.",
+  "consumption_frozen": "Il consumo è già addebitato o escluso."
 }

@@ -54,6 +54,7 @@ var deferredColumns = map[string][]string{
 	"revenue_classes":   {"parent_id"},
 	"price_lists":       {"source_price_list_id"},
 	"allocations":       {"moved_from_id"},
+	"maintenance_tasks": {"follows_task_id"}, // M9
 }
 
 // lateColumns are inserted with a placeholder value and set to their real value after every table is loaded.

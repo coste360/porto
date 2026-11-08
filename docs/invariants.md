@@ -49,12 +49,19 @@ notti: al più un vincitore, rimborso integrale del pagamento tardivo se vince i
 **INV-06 — Spostamenti e ipotesi sono atomici.** Uno spostamento, uno scambio o l'applicazione di un'ipotesi o la
 modifica completa o lascia tutto invariato. Verificata da: `TestConcurrency_SwapVessels`,
 `TestConcurrency_LayoutSaveSingleWinner`, `TestOccupancy_LayoutSaveExchangePlaces` (M3);
-`TestScenarioApply_AllOrNothing` (ipotesi, M9). Stato: partial.
+`TestScenarioApply_AllOrNothing` (ipotesi, M9: iniezione di errori a ogni scrittura con trigger di test, lo stato
+di allocazioni, righe di occupazione, ipotesi, lista degli spostamenti, audit e outbox resta identico),
+`TestConcurrency_ScenarioApply` (M9: esattamente un'ipotesi vince e lo stato reale è il suo layout per intero,
+righe di cella = ingombro × notti; SQLite di test su file WAL come in produzione), `TestScenarioApply_TrayItemRepriced`
+(il prezzo delle barche portate dal vassoio è applicato nella stessa transazione) (M9). Stato: implemented.
 
 **INV-07 — Compatibilità rispettata o derogata esplicitamente.** Ogni allocazione attiva supera `fit.Check` senza
 bloccanti oppure ha `fit_override` con utente e motivazione (per una chiave API: la chiave e l'utente che l'ha
-creata). Verificata da: `TestAllocation_FitOrOverride`, query Q14 di `store.CheckOccupancyInvariants` (deroga senza
-motivazione o senza autore). Stato: implemented.
+creata). Fanno eccezione le allocazioni `maintenance` senza imbarcazione (M9, `occupancy/allocate.go`: non c'è una
+barca da confrontare, vedi INV-92). Da M9 l'ottimizzatore conserva una barca derogata (una bocciatura derogabile non la
+esclude, `support_not_allowed` sì). Verificata da: `TestAllocation_FitOrOverride`, query Q14 di
+`store.CheckOccupancyInvariants` (deroga senza motivazione o senza autore); da M9 `TestArrange_FitOverride` e
+`TestScenarioApply_FitOverriddenBoat`. Stato: implemented.
 
 **INV-08 — Una prenotazione online occupa sempre una risorsa concreta.** Ogni transito in `held`, `pending_payment`,
 `awaiting_approval` (M8) o `confirmed` ha almeno un'allocazione attiva; solo un transito ancora `held` può avere invece un'allocazione
@@ -124,6 +131,26 @@ risorse-notte libere consumate. Verificata da: `TestConcurrency_NoDoubleSaleDesk
 entrambi i dialetti, `-race`; le prenotazioni online e dei canali passano per il motore e le quote, quelle del banco
 con il posizionamento esplicito). Stato: implemented.
 
+**INV-14 — Le ipotesi non toccano lo stato reale.** Creare, salvare, ottimizzare, confrontare o scartare
+un'ipotesi di rimessaggio non modifica `allocations` né alcuna riga di occupazione: l'ipotesi vive solo in
+`storage_scenarios`, `scenario_items` e `scenario_moves`; solo l'applicazione (INV-06) scrive lo stato reale, con
+`occupancy.LayoutTx`. Verificata da: `TestScenario_NoRealWrites` (M9). Stato: implemented.
+
+**INV-15 — L'ottimizzatore produce solo disposizioni valide e riproducibili.** Ogni disposizione restituita da
+`optimizer.Arrange` supera il controllo indipendente `optimizer.Validate` (ingombri dentro le celle utilizzabili,
+nessuna cella bloccata, celle disgiunte tra barche con soggiorni sovrapposti e rispetto agli ostacoli, barche
+bloccate ferme, compatibilità rispettata); con lo stesso seme e un budget di iterazioni non interrotto dalla
+scadenza il risultato è identico. Verificata da: `TestRapid_ArrangeValid`, `TestArrange_Deterministic`,
+`TestArrange_Acceptance2000m2` (capannone di 2.000 m² con 40 barche: nessuna barca fuori, nessuna uscita
+bloccata, meno di 3 s) (M9). Stato: implemented.
+
+**INV-16 — Ogni contratto di rimessaggio ha i suoi dettagli e occupa una superficie.** Ogni contratto `storage`
+ha la sua riga di `storage_contract_details`; ogni contratto `storage` attivo ha allocazioni attive su un'area di
+superficie (o un posto carrello) che coprono ogni notte del suo periodo. Le bozze ricevono la posizione alla
+creazione (D4: senza posizione indicata la sceglie `PlaceOne`, senza spazio 409), verificato da
+`TestStorage_CreateContractAutoPlace` e `TestStorage_NoSpace409`. Verificata da: query Q20 di
+`store.CheckStorageInvariants` (M9). Stato: implemented.
+
 ## Prezzi (spec 12)
 
 **INV-20 — Snapshot riproducibile.** Ricalcolare un `price_snapshot` con la stessa `engine_version` e gli stessi
@@ -179,7 +206,9 @@ request_signature, signature_failed, addendum, change_vessel), `TestContract_Sus
 `SuspendForArrearsTx`); le righe M8 da `TestContract_M8StateChangesWriteAuditAndOutbox` (create e update dalla
 pagina pubblica, conferma dal provider e dal canale con attore `channel:<codice>`, payment_authorized, approve,
 reject, expire dal job `bookings.approval_expire`, change_stay e cancel dall'area cliente con attore
-`customer:<id>`, rollback che non lascia né audit né evento). Stato: implemented.
+`customer:<id>`, rollback che non lascia né audit né evento); le righe M9 dei contratti di rimessaggio da
+`TestContract_M9StorageStateChangesWriteAuditAndOutbox` (create in bozza, `storage.details_update`, activate,
+terminate, cancel). Stato: implemented.
 
 **INV-31 — Le rate sommano il totale.** Per ogni piano rate `Σ rate = totale del contratto` al centesimo (sulle
 rate vive, `status <> 'cancelled'`; con rate già emesse o pagate, il ripiano copre `totale − Σ emesse/pagate`); lo
@@ -369,13 +398,20 @@ disponibilità pubblica non espone codici posto, id, clienti, barche, riferiment
 launcher senza token, email o password); da M6b `TestConcurrency_OfflineReplay_Presence` (`assertNoPII` sui log e
 payload degli eventi `presence.arrived` senza note né nomi), `TestRemoteProxy_TokenNeverReachesPage` (token di
 dispositivo assente da risposte e log del proxy remoto) e `TestFiscalAgent_LostOutcomeNoReissue` (log dell'agente
-fiscale con soli id e stato, senza token né riferimenti del dispositivo). Stato: partial.
+fiscale con soli id e stato, senza token né riferimenti del dispositivo); da M9 i campioni di
+`TestEvents_DataHasNoPII` comprendono gli eventi di rimessaggio (ipotesi applicate, spostamenti), manutenzione
+(`maintenance.status_changed`, `maintenance.due`) e utenze (`meter.reading_recorded`): solo id, enum e conteggi, mai
+valori di lettura né note. Stato: partial.
 
 **INV-71 — Offline senza effetti sulle risorse.** Nessuna operazione accodata offline crea o sposta allocazioni né
 emette documenti numerati. La coda accetta solo le operazioni con `x-porto-offline: true` e il server rifiuta con 422
 `offline_not_allowed` ogni richiesta marcata `Porto-Offline-Queued-At` su un'altra operazione (M6b). Verificata da:
 `TestOfflineGuard_RefusesNonOfflineOps`, `TestPolicies_OfflineSet`, `TestPresence_OfflineRequiresAllocation`,
-`TestPayment_OfflineReceiptModeRefused`, `allowlist.test.ts` (Vitest, allowlist della coda). Stato: implemented (M6b).
+`TestPayment_OfflineReceiptModeRefused`, `allowlist.test.ts` (Vitest, allowlist della coda). Da M9 vale anche per
+le letture dei contatori, le segnalazioni e gli esiti delle manutenzioni (`utility.reading`, `maintenance.report`,
+`maintenance.outcome`): nessuna crea, sposta o rilascia allocazioni; completare un intervento non rilascia le notti
+di manutenzione (`TestMaintenance_ReportNeverOccupies`, `TestAcceptance_M9_Offline`, `queue.m9.test.ts`). Stato:
+implemented (M6b, M9).
 
 **INV-72 — Audit log solo in inserimento.** Le righe di `audit_log` non si modificano né si cancellano, su SQLite e
 PostgreSQL (trigger del database). Un ripristino desktop registra `desktop.restore` anche nel database ripristinato,
@@ -391,7 +427,9 @@ le rotte M2 con `{revenueClassId}`, `{itemId}`, `{categoryId}` e `{priceListId}`
 `TestStore_ElementReferencesStayInMarina` e `TestRegistryStore_MergeTargetStaysInMarina` (FK composite
 `(…_id, marina_id)` per strutture, colonnine, struttura padre e cliente di destinazione della fusione);
 da M4 `TestSignature_SignerUserScopedToMarina` (un firmatario utente deve avere un accesso al marina); da M6a
-`TestDeviceSession_NarrowedToDeviceMarina` e `TestDeviceSession_OtherMarinaIs404` (vedi INV-81). Stato: partial.
+`TestDeviceSession_NarrowedToDeviceMarina` e `TestDeviceSession_OtherMarinaIs404` (vedi INV-81); da M9
+`TestAcceptance_CrossMarinaResourceIdsM9` (le rotte con `{scenarioId}`, `{movementId}`, `{meterId}`, `{readingId}`,
+`{consumptionId}`, `{equipmentId}`, `{planId}` e `{taskId}` con id reali di un altro marina). Stato: partial.
 
 **INV-74 — Documenti cifrati a riposo e serviti solo con link firmati.** I file dei documenti (e gli sfondi delle
 mappe) sono salvati cifrati con il KeyRing sotto `PORTO_DATA_DIR/files`, legati a marina e id; il download di un
@@ -457,7 +495,11 @@ di idempotenza tenuta 7 giorni e chiave unica di dominio per effetto. Verificata
 `TestConcurrency_OfflineReplay_Photo`, `TestConcurrency_IdempotencyTakeOver`,
 `TestPresence_DomainKeyAfterLostMiddlewareRow`, `TestPresence_PhotoDomainKeyAfterLostMiddlewareRow` (la foto
 uguale a quella corrente, per SHA-256, risponde con lo stesso file), `queue.test.ts` e `runner.test.ts` (Vitest),
-`offline-queue.spec.ts`. Stato: implemented (M6b).
+`offline-queue.spec.ts`; da M9 per `utility.reading`, `maintenance.report` e `maintenance.outcome`:
+`TestConcurrency_OfflineReplay_Reading`, `TestConcurrency_OfflineReplay_MaintenanceReport`,
+`TestConcurrency_OfflineReplay_MaintenanceOutcome` (100 repliche in parallelo con lo stesso `client_ref`: una riga,
+la stessa risposta, un audit e un evento), `TestUtility_ReadingReplaySameKey`, `TestMaintenance_CompleteOfflineReplay`,
+`TestAcceptance_M9_Offline`. Stato: implemented (M6b, M9).
 
 **INV-84 — I dati offline appartengono a un utente e a un marina.** Cache e coda offline sono legate all'utente e al
 marina correnti, non contengono segreti né link firmati, si cancellano all'uscita; le operazioni di un altro utente
@@ -510,3 +552,30 @@ parallelo da webhook e pull. Verificata da: `TestMigrations_M8Constraints`, `Tes
 `TestChannel_CancelReleases` (lo stesso annullamento ricevuto due volte annulla una sola volta),
 `TestAcceptance_M8_ChannelFlow`.
 Stato: implemented.
+
+**INV-90 — Un consumo è addebitato al più una volta.** Ogni riga di `utility_consumptions` compare in al più un
+addebito vivo: il passaggio a `charged` è un UPDATE condizionato (`status = 'pending' AND charge_id IS NULL`) sotto
+il lock del contratto, `charge_id` è valorizzato se e solo se lo stato è `charged` (vincolo
+`utility_consumptions_charged_check`) e ogni addebito di origine `utility` ha un solo addebito primario vivo
+(`charges_origin_primary_uidx` include `utility`, `00019`). Verificata da: `TestMigrations_M9Constraints`,
+`TestConcurrency_UtilityChargeOnce`, query Q21 di `store.CheckUtilityInvariants` (M9; anche: nessuna riga di
+`utility_billings` senza addebito). Annullare un addebito `utility` riporta i suoi consumi a `pending` nella stessa
+transazione (`TestUtility_CancelledChargeReopensConsumptions`); un totale zero non scrive né addebito né riga di
+fatturazione e chiude i consumi con `zero_amount` (`TestUtility_ZeroTotalNoOrphanBilling`). Stato: implemented.
+
+**INV-91 — Le quote di consumo sommano la differenza di lettura.** Per ogni intervallo tra due letture consecutive
+la somma delle quote (occupanti e quota non assegnata) è uguale alla differenza (con moltiplicatore e giro del
+registro), al millesimo; ogni quota dista meno di 1 millesimo dalla proporzione esatta delle notti. Verificata da:
+`TestRapid_SplitSums`, `TestUtility_SplitAcrossOccupants`, query Q22 di `store.CheckUtilityInvariants` (M9). Le notti
+di ogni occupante vengono dalle righe di occupazione (una notte rilasciata e rivenduta è del rivenditore). Stato:
+implemented.
+
+**INV-92 — Le notti di manutenzione esistono solo per interventi pianificati.** Ogni allocazione attiva di tipo
+`maintenance` è elencata in un intervento `scheduled`, `in_progress` o `done` (un intervento annullato conserva solo
+le notti passate: l'annullamento rilascia quelle dal giorno stesso); una segnalazione non occupa mai nulla
+e la pianificazione non scavalca mai una barca (409 `maintenance_conflicts`). Verificata da:
+`TestMaintenance_OccupancyConflicts`, `TestMaintenance_ReportNeverOccupies`,
+`TestMaintenance_OutOfServiceNotSellable`, `TestConcurrency_MaintenanceScheduleVsAllocation`,
+`TestAcceptance_M9_MaintenanceCycle`, query Q23 di `store.CheckUtilityInvariants` (M9). `occupancy.AllocateTx`
+accetta un'allocazione `maintenance` senza barca (nessun controllo di compatibilità): le notti restano protette dai
+vincoli unique delle tabelle di occupazione (ADR 0003). Stato: implemented.

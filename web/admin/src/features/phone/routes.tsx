@@ -3,6 +3,8 @@ import { createRoute } from '@tanstack/react-router';
 import type { MarinaRoute } from '../../router';
 import { DirectionPage } from './DirectionPage';
 import { DockPage } from './dock/DockPage';
+import { MaintenancePhonePage } from './maintenance/MaintenancePhonePage';
+import { StoragePhonePage } from './storage/StoragePhonePage';
 import { validateDirectionSearch, validateDockSearch } from './lib/tabs';
 
 // Phone screens (m6b-plan §6): children of the marina route rendered inside PhoneShell (staticData.shell). The
@@ -22,6 +24,19 @@ export function phoneRoutes(parent: MarinaRoute) {
       path: 'direction',
       component: DirectionPage,
       validateSearch: validateDirectionSearch,
+      staticData: { shell: 'phone' },
+    }),
+    // M9 (m9-plan §12): storage (PLANNER) and maintenance (UTILITIES) phone screens.
+    createRoute({
+      getParentRoute: () => parent,
+      path: 'storage-phone',
+      component: StoragePhonePage,
+      staticData: { shell: 'phone' },
+    }),
+    createRoute({
+      getParentRoute: () => parent,
+      path: 'maintenance-phone',
+      component: MaintenancePhonePage,
       staticData: { shell: 'phone' },
     }),
   ] as const;

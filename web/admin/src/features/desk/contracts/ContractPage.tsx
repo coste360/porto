@@ -33,6 +33,7 @@ import {
 } from '../../contracts-m4/public';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../../components/PageStates';
 import { useMarinaToday } from '../../registry/lib/today';
+import { StorageContractSection } from '../../storage/public';
 import {
   AllocationsCard,
   LinesCard,
@@ -150,6 +151,7 @@ function ContractDetail({ contract }: { contract: Contract }) {
             <AllocationsCard contract={contract} />
             <ReleasesCard contract={contract} canRevoke={can('occupancy.move')} />
             <PresencesCard contract={contract} />
+            <StorageContractSection contract={contract} />
           </div>
         }
       />

@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
+import { AREA_ID, SCENARIO_ID, mockStorage } from '../fixtures/m9/storage';
+import { marinaIdOf } from '../support/api';
 import { OWNER } from '../support/env';
 import { login } from '../support/session';
 
@@ -63,6 +65,33 @@ for (const scheme of ['light', 'dark'] as const) {
       await page.getByRole('tab', { name: 'Incorpora' }).click();
       await expect(page.getByLabel('Codice con script')).toBeVisible();
       await expectNoSeriousViolations(page, `online-embed/${scheme}`);
+    });
+
+    test('storage, maintenance and utilities pages (M9)', async ({ page }) => {
+      await login(page);
+      const marinaId = marinaIdOf(page);
+      await mockStorage(page, marinaId);
+      await page.goto(`/admin/m/${marinaId}/storage`);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      await expectNoSeriousViolations(page, `storage-areas/${scheme}`);
+      await page.goto(`/admin/m/${marinaId}/storage/${AREA_ID}`);
+      await expect(page.getByTestId('storage-plan')).toBeVisible();
+      await expectNoSeriousViolations(page, `storage-planner/${scheme}`);
+      await page.goto(`/admin/m/${marinaId}/storage/${AREA_ID}/scenarios/${SCENARIO_ID}`);
+      await expect(page.getByTestId('storage-tray-candidates')).toBeVisible();
+      await expectNoSeriousViolations(page, `storage-scenario/${scheme}`);
+      await page.goto(`/admin/m/${marinaId}/storage/movements`);
+      await expect(page.getByTestId('storage-movements')).toBeVisible();
+      await expectNoSeriousViolations(page, `storage-movements/${scheme}`);
+      await page.goto(`/admin/m/${marinaId}/storage/contracts/new`);
+      await expect(page.getByTestId('storage-contract-form')).toBeVisible();
+      await expectNoSeriousViolations(page, `storage-contract/${scheme}`);
+      await page.goto(`/admin/m/${marinaId}/maintenance`);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      await expectNoSeriousViolations(page, `maintenance/${scheme}`);
+      await page.goto(`/admin/m/${marinaId}/utilities`);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      await expectNoSeriousViolations(page, `utilities/${scheme}`);
     });
 
     test('customer area login (M8)', async ({ page }) => {

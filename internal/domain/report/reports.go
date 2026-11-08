@@ -79,6 +79,8 @@ func contractType(kind, term string) (pricing.ContractType, bool) {
 		return pricing.ContractTransit, true
 	case calc.ContractCharter:
 		return pricing.ContractCharter, true
+	case calc.ContractStorage:
+		return pricing.ContractStorage, true
 	case calc.ContractMooring, "contract":
 		switch term {
 		case "annual":
@@ -307,6 +309,7 @@ func qualifyingStatuses() map[string][]string {
 		calc.ContractMooring: calc.QualifyingStatuses(calc.ContractMooring),
 		calc.ContractCharter: calc.QualifyingStatuses(calc.ContractCharter),
 		calc.ContractTransit: calc.QualifyingStatuses(calc.ContractTransit),
+		calc.ContractStorage: calc.QualifyingStatuses(calc.ContractStorage),
 	}
 }
 

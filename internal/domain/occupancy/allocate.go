@@ -198,6 +198,8 @@ func (s *Service) AllocateTx(ctx context.Context, tx bun.IDB, scope store.Marina
 		if a.BlockSize != nil {
 			lv = *a.BlockSize
 		}
+	case a.Kind == KindMaintenance && a.VesselID == nil:
+		// Maintenance nights (spec 20.2) reserve the place itself: no vessel, so no fit check.
 	case a.VesselID == nil:
 		return nil, invalid("vessel_id", "required")
 	default:

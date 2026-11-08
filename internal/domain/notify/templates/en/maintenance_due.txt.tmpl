@@ -1,0 +1,13 @@
+Hello,
+
+a planned maintenance task is coming due. Open the maintenance list to schedule it.
+{{with v . "task_title"}}Task: {{.}}
+{{end}}{{with v . "element_code"}}Element: {{.}}
+{{end}}{{with v . "due_on"}}Due: {{.}}
+{{end}}
+{{with v . "link"}}Open maintenance:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

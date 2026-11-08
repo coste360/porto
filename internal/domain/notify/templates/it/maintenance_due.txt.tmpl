@@ -1,0 +1,13 @@
+Buongiorno,
+
+un intervento di manutenzione programmata è in scadenza. Apri l'elenco delle manutenzioni per pianificarlo.
+{{with v . "task_title"}}Intervento: {{.}}
+{{end}}{{with v . "element_code"}}Elemento: {{.}}
+{{end}}{{with v . "due_on"}}Scadenza: {{.}}
+{{end}}
+{{with v . "link"}}Apri le manutenzioni:
+{{.}}
+{{end}}
+
+--
+{{v . "marina_name"}}

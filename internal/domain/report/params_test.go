@@ -27,6 +27,10 @@ func TestParams_ParseAndValues(t *testing.T) {
 		{calc.KeyReceivables, "as_of=2026-05-31&overdue=true&origin=manual&section=future&group_by=bucket"},
 		{calc.KeyPayments, "method=cash&customer_id=c1&section=payouts"},
 		{calc.KeyProduction, "kind=transit"},
+		// M9 (m9-plan §11): kind and status are enumerated per report.
+		{calc.KeyStorage, "group_by=area&map_kind=shed&area_id=a1&exits_blocked_only=true&from=2026-03-01&to=2026-03-30"},
+		{calc.KeyMaintenance, "group_by=intervention&status=in_progress&element_type=pedestal&overdue_only=true"},
+		{calc.KeyUtilities, "group_by=meter&kind=water&status=unassigned&meter_id=m1&contract_id=c1"},
 	}
 	for _, c := range cases {
 		q, _ := url.ParseQuery(c.query)
@@ -63,6 +67,13 @@ func TestParams_Errors(t *testing.T) {
 		{calc.KeyAllocationWaste, "threshold_bp=10001", ErrInvalidFilter, "threshold_bp"},
 		{calc.KeyPayments, "method=gold", ErrInvalidFilter, "method"},
 		{calc.KeyPayments, "customer_id=0123456789012345678901234567890123456789", ErrInvalidFilter, "customer_id"},
+		{calc.KeyStorage, "group_by=resource", ErrInvalidFilter, "group_by"},
+		{calc.KeyStorage, "exits_blocked_only=maybe", ErrInvalidFilter, "exits_blocked_only"},
+		{calc.KeyMaintenance, "status=pending", ErrInvalidFilter, "status"},
+		{calc.KeyMaintenance, "element_type=boat", ErrInvalidFilter, "element_type"},
+		{calc.KeyUtilities, "kind=mooring", ErrInvalidFilter, "kind"},
+		{calc.KeyUtilities, "status=open", ErrInvalidFilter, "status"},
+		{calc.KeyProduction, "kind=power", ErrInvalidFilter, "kind"},
 	}
 	for _, c := range cases {
 		q, _ := url.ParseQuery(c.query)

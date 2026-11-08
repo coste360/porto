@@ -19,7 +19,11 @@
     "yard_hours": "Ore lavorate",
     "yard_margin": "Margine del cantiere",
     "rental_utilisation": "Utilizzo della flotta a noleggio",
-    "rental_revenue": "Ricavi del noleggio"
+    "rental_revenue": "Ricavi del noleggio",
+    "storage_occupancy": "Occupazione rimessaggio",
+    "storage_exits_blocked": "Uscite bloccate (30 giorni)",
+    "maintenance_overdue": "Manutenzioni in ritardo",
+    "utility_unbilled": "Consumi da addebitare"
   },
   "periods": {
     "mtd": "Mese in corso",

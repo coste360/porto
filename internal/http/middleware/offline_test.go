@@ -28,10 +28,13 @@ func contractPolicies(t *testing.T) mw.Policies {
 	return ps
 }
 
-// TestPolicies_OfflineSet pins the operations the offline queue may replay (m6b-plan §4.2, INV-71).
+// TestPolicies_OfflineSet pins the operations the offline queue may replay (m6b-plan §4.2, m9-plan §10, INV-71).
 func TestPolicies_OfflineSet(t *testing.T) {
 	got := contractPolicies(t).OfflineOperations()
-	want := []string{"recordPayment", "recordPresence", "uploadPresencePhoto"}
+	want := []string{
+		"completeMaintenanceTask", "recordMeterReading", "recordPayment", "recordPresence", "reportMaintenance",
+		"uploadMaintenancePhoto", "uploadMeterReadingPhoto", "uploadPresencePhoto",
+	}
 	if !slices.Equal(got, want) {
 		t.Fatalf("x-porto-offline operations = %v, want %v", got, want)
 	}

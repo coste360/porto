@@ -23,9 +23,19 @@ import (
 const (
 	EventArrived   = "arrived"
 	EventDeparted  = "departed"
-	EventHauledOut = "hauled_out" // accepted by the API for M9, not offered by the UI
-	EventLaunched  = "launched"   // accepted by the API for M9, not offered by the UI
+	EventHauledOut = "hauled_out" // storage allocations (M9): the boat is taken out of the water
+	EventLaunched  = "launched"   // storage allocations (M9): the boat goes back into the water
 )
+
+// OfferedEvents returns the presence events offered for an allocation of a contract kind (m9-plan §1.1): storage
+// allocations record haul-outs and launches, every other kind arrivals and departures. The API accepts every
+// event for every allocation.
+func OfferedEvents(contractKind string) []string {
+	if contractKind == contract.KindStorage {
+		return []string{EventHauledOut, EventLaunched}
+	}
+	return []string{EventArrived, EventDeparted}
+}
 
 // Vessel presence states (vessel_presence.state).
 const (

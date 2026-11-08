@@ -29,7 +29,10 @@
     "vessels": "Imbarcazioni ospitate",
     "berth-revenue": "Ricavo per metro lineare",
     "yard": "Cantiere",
-    "rental": "Noleggio"
+    "rental": "Noleggio",
+    "storage": "Rimessaggio",
+    "maintenance": "Manutenzioni",
+    "utilities": "Consumi e utenze"
   },
   "export": {
     "csv": "Esporta CSV",
@@ -230,7 +233,39 @@
     "waste_after_bp": "Spreco dopo %",
     "waste_before_bp": "Spreco prima %",
     "waste_bp": "Spreco %",
-    "waste_bp_nights": "Spreco ponderato (bp × notti)"
+    "waste_bp_nights": "Spreco ponderato (bp × notti)",
+    "area_code": "Area",
+    "map_kind": "Tipo mappa",
+    "contract_code": "Contratto",
+    "hull_m2_nights_milli": "Scafo (m² × notti)",
+    "footprint_m2_nights_milli": "Ingombro (m² × notti)",
+    "occupied_m2_nights_milli": "Occupato (m² × notti)",
+    "available_m2_nights_milli": "Disponibile (m² × notti)",
+    "exit_on": "Uscita",
+    "exit_blocked": "Uscita bloccata",
+    "exits_blocked": "Uscite bloccate",
+    "boats": "Barche",
+    "production_cents": "Produzione",
+    "intervention": "Intervento",
+    "priority": "Priorità",
+    "done_on": "Eseguito il",
+    "overdue_days": "Giorni di ritardo",
+    "internal_minutes": "Minuti interni",
+    "external_cost_cents": "Costi esterni",
+    "tasks": "Interventi",
+    "open": "Aperti",
+    "in_progress": "In corso",
+    "done": "Eseguiti",
+    "meter_code": "Contatore",
+    "first_night": "Dalla notte",
+    "qty_milli": "Quantità",
+    "power_milli": "Energia (kWh)",
+    "water_milli": "Acqua (m³)",
+    "pending_milli": "Da addebitare",
+    "unassigned_milli": "Non assegnato",
+    "pending_value_cents": "Valore da addebitare",
+    "element_code": "Elemento",
+    "element_type": "Tipo elemento"
   },
   "descriptions": {
     "occupancy": "Notti occupate su notti disponibili, fisica o contrattuale, per posti, terre e aree dinamiche.",
@@ -249,7 +284,10 @@
     "rights": "Titolari dei diritti d'uso, rate, ripartizioni, conguagli e mandati.",
     "cash": "Sessioni di cassa e corrispettivi per aliquota e metodo.",
     "vessels": "Imbarcazioni ospitate per scafo, lunghezza e bandiera.",
-    "berth-revenue": "Ricavo dei posti per metro lineare."
+    "berth-revenue": "Ricavo dei posti per metro lineare.",
+    "storage": "Barche a terra su piazzali e capannoni: superficie occupata, uscite bloccate e produzione dei contratti di rimessaggio.",
+    "maintenance": "Interventi di manutenzione per stato, ritardi, minuti interni e costi esterni.",
+    "utilities": "Consumi di energia, acqua e contatori: da addebitare, addebitati e non assegnati."
   },
   "groupBy": {
     "resource": "Risorsa",
@@ -287,7 +325,15 @@
     "run_kind": "Tipo riparto",
     "register": "Cassa",
     "hull_type": "Scafo",
-    "flag": "Bandiera"
+    "flag": "Bandiera",
+    "area": "Area",
+    "map_kind": "Tipo mappa",
+    "status": "Stato",
+    "priority": "Priorità",
+    "element_type": "Tipo elemento",
+    "intervention": "Intervento",
+    "meter": "Contatore",
+    "contract": "Contratto"
   },
   "sections": {
     "presences": {
@@ -363,7 +409,11 @@
       "family": "Posti (predefinito)",
       "basis": "Predefinita",
       "suggestions": "Con suggerimenti"
-    }
+    },
+    "exits_blocked_only": "Solo uscite bloccate",
+    "status": "Stato",
+    "element_type": "Tipo elemento",
+    "overdue_only": "Solo in ritardo"
   },
   "values": {
     "bool": {
@@ -505,6 +555,53 @@
     "suggestionKind": {
       "swap": "Scambio",
       "move": "Spostamento"
+    },
+    "taskStatus": {
+      "open": "Aperto",
+      "scheduled": "Pianificato",
+      "in_progress": "In corso",
+      "done": "Eseguito",
+      "cancelled": "Annullato"
+    },
+    "priority": {
+      "low": "Bassa",
+      "normal": "Normale",
+      "high": "Alta",
+      "urgent": "Urgente"
+    },
+    "elementType": {
+      "berth": "Posto barca",
+      "structure": "Struttura",
+      "dynamic_area": "Area dinamica",
+      "land_resource": "Risorsa a terra",
+      "pedestal": "Colonnina",
+      "equipment": "Mezzo o impianto"
+    },
+    "intervention": {
+      "underwater_inspection": "Ispezione subacquea",
+      "pennant_replacement": "Sostituzione trappe",
+      "chain_check": "Controllo catenarie",
+      "rcd_test": "Prova differenziali",
+      "general": "Generale",
+      "custom": "Personalizzato"
+    },
+    "taskSource": {
+      "plan": "Piano",
+      "office": "Ufficio",
+      "report": "Segnalazione"
+    },
+    "meterKind": {
+      "power": "Energia",
+      "water": "Acqua",
+      "hours": "Ore",
+      "cycles": "Cicli"
+    },
+    "consumptionStatus": {
+      "pending": "Da addebitare",
+      "anomaly": "Anomalia",
+      "unassigned": "Non assegnato",
+      "charged": "Addebitato",
+      "excluded": "Escluso"
     }
   },
   "suggestions": {
@@ -529,7 +626,9 @@
     "inactive_resource_one": "{{count}} risorsa non attiva esclusa",
     "inactive_resource_other": "{{count}} risorse non attive escluse",
     "truncated_suggestions_one": "Suggerimenti limitati: {{count}} non mostrato",
-    "truncated_suggestions_other": "Suggerimenti limitati: {{count}} non mostrati"
+    "truncated_suggestions_other": "Suggerimenti limitati: {{count}} non mostrati",
+    "no_price_one": "{{count}} consumo senza prezzo corrente (escluso dal valore da addebitare)",
+    "no_price_other": "{{count}} consumi senza prezzo corrente (esclusi dal valore da addebitare)"
   },
   "unknown": "Report non disponibile.",
   "backToIndex": "Tutti i report"

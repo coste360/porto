@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 
 import type { Permission, Role } from '@porto/shared/api';
 
-import { canUseDirection, canUseDock, landingFor } from './landing';
+import {
+  canUseDirection,
+  canUseDock,
+  canUseMaintenancePhone,
+  canUseStoragePhone,
+  landingFor,
+} from './landing';
 
 const M = 'm-1';
 
@@ -21,9 +27,16 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   office: ['presence.write', 'transits.desk', 'map.view', 'contracts.read'],
   accounting: ['reports.all', 'map.view', 'payments.collect', 'contracts.read'],
   dock: ['presence.write', 'transits.desk', 'map.view', 'payments.collect_cash', 'contracts.read'],
-  yard_mgr: ['yard.manage', 'yard.timesheets', 'storage.manage', 'map.view'],
+  yard_mgr: [
+    'yard.manage',
+    'yard.timesheets',
+    'storage.manage',
+    'storage.read',
+    'maintenance.report',
+    'map.view',
+  ],
   yard: ['yard.timesheets', 'maintenance.report', 'map.view'],
-  rental: ['rental.manage', 'payments.collect', 'map.view'],
+  rental: ['rental.manage', 'payments.collect', 'maintenance.report', 'map.view'],
   viewer: ['reports.all', 'map.view', 'marina.read'],
 };
 
@@ -33,9 +46,9 @@ const PHONE: Record<Role, string> = {
   office: `/m/${M}/dock`,
   accounting: `/m/${M}/direction`,
   dock: `/m/${M}/dock`,
-  yard_mgr: `/m/${M}`,
-  yard: `/m/${M}`,
-  rental: `/m/${M}`,
+  yard_mgr: `/m/${M}/storage-phone`,
+  yard: `/m/${M}/maintenance-phone`,
+  rental: `/m/${M}/maintenance-phone`,
   viewer: `/m/${M}/direction`,
 };
 
@@ -70,5 +83,9 @@ describe('landingFor', () => {
     expect(canUseDock(ROLE_PERMISSIONS.dock)).toBe(true);
     expect(canUseDock(ROLE_PERMISSIONS.yard)).toBe(true);
     expect(canUseDock(['reports.all'])).toBe(false);
+    expect(canUseStoragePhone(ROLE_PERMISSIONS.yard_mgr)).toBe(true);
+    expect(canUseStoragePhone(ROLE_PERMISSIONS.yard)).toBe(false);
+    expect(canUseMaintenancePhone(ROLE_PERMISSIONS.yard)).toBe(true);
+    expect(canUseMaintenancePhone(ROLE_PERMISSIONS.accounting)).toBe(false);
   });
 });

@@ -196,7 +196,8 @@ func TestContractCode_Scenario(t *testing.T) {
 		{SeriesMooring, 2026, 1, "ORM-2026-0001"},
 		{SeriesTransit, 2027, 42, "TRN-2027-0042"},
 		{SeriesQuote, 2027, 12345, "PRV-2027-12345"},
-		{"storage", 2027, 3, "CTR-2027-0003"},
+		{SeriesStorage, 2027, 3, "RIM-2027-0003"}, // M9: storage contracts have their own prefix
+		{"other", 2027, 3, "CTR-2027-0003"},
 	}
 	for _, c := range cases {
 		if got := ContractCode(c.series, c.year, c.n); got != c.want {

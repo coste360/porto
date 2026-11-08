@@ -53,6 +53,7 @@ export function useMap(marinaId: string, mapId: string) {
   const api = useApi();
   return useQuery({
     queryKey: queryKeys.map(marinaId, mapId),
+    enabled: !!mapId,
     queryFn: () => fetchMap(api, marinaId, mapId),
   });
 }

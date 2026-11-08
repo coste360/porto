@@ -11,7 +11,8 @@ describe('AppShell', () => {
     expect(screen.queryByRole('link', { name: 'Team' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Registro attività' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Mappe' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Rimessaggio' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Cantiere' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: 'Rimessaggio' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Addebiti e pagamenti' })).not.toBeInTheDocument();
   });
 

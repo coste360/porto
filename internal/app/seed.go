@@ -195,5 +195,13 @@ func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) er
 	if err := a.seedCash(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: cash: %w", err)
 	}
+	// M9 (m9-plan §15.2): shed and yard storage contracts with one scenario (STORAGE), then equipment, meters,
+	// readings and maintenance plans (UTILITIES). Each part is a no-op when the demo marina already has its data.
+	if err := a.seedStorage(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: storage: %w", err)
+	}
+	if err := a.seedUtilities(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: utilities: %w", err)
+	}
 	return nil
 }

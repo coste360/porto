@@ -8338,12 +8338,1023 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/marinas/{marinaId}/storage/areas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Surface areas (yard and shed maps) with today's occupancy, boats, blocked exits in the next 30 days and draft scenarios (storage.read) */
+        get: operations["listStorageAreas"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        /** Plan and timeline of a surface area for a night window (default today .. today + 30) with gates, obstacles and accessibility warnings (storage.read) */
+        get: operations["getStoragePlan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/accessibility": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        /** Accessibility of the boats present on a date (default today): extraction order, blocked boats and their blocking boats (storage.read) */
+        get: operations["getStorageAccessibility"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/arrange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preset: run the optimizer on the real state or on a draft layout and return the proposal; nothing is saved (storage.manage)
+         * @description Deterministic for a seed when the iteration budget is not cut by the deadline (storage.optimize_budget_ms). 422 area_exits_invalid, pinned_invalid, too_many_items.
+         */
+        post: operations["arrangeStorageArea"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/areas/{areaId}/evaluate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Indicators, accessibility and per-item issues of a draft layout of the area; nothing is saved (storage.read) */
+        post: operations["evaluateStorageLayout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/contracts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a storage contract on a surface area (automatic position when placement is omitted) or a trailer spot, draft or active (storage.manage)
+         * @description 409 storage_no_space when no position is free for the period; 422 storage_target_invalid, fit_blocked (support_not_allowed is never overridable).
+         */
+        post: operations["createStorageContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/contracts/{contractId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        /** A storage contract with its storage details, placement and cradle (storage.read); ETag = details version */
+        get: operations["getStorageContract"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change support, planned haul-out and launch, handling notes (storage.manage); period and position use resize and move */
+        patch: operations["updateStorageContract"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/scenarios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Scenarios (what-if layouts), newest first (storage.read) */
+        get: operations["listStorageScenarios"];
+        put?: never;
+        /** Create a scenario from the real state of an area for a night window (at most 400 nights) (storage.manage) */
+        post: operations["createStorageScenario"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        /** A scenario with its items, moves, indicators and accessibility; stale is computed on read (storage.read) */
+        get: operations["getStorageScenario"];
+        put?: never;
+        post?: never;
+        /** Discard a draft scenario (status discarded; applied scenarios are history and cannot be discarded) (storage.manage) */
+        delete: operations["discardStorageScenario"];
+        options?: never;
+        head?: never;
+        /** Rename a draft scenario or change its window (items not yet touched are reloaded) (storage.manage) */
+        patch: operations["updateStorageScenario"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Save the placements of the working copy; overlaps are allowed and flagged, they block apply (storage.manage) */
+        put: operations["saveStorageScenarioItems"];
+        /** Bring an allocation of another surface area or land resource of the marina into the scenario tray (storage.manage) */
+        post: operations["addStorageScenarioItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/tray-candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        /**
+         * Allocations the "Da collocare" tray accepts: active vessel allocations on another dynamic area or a land resource overlapping the scenario window, not yet in it (storage.read)
+         * @description 409 scenario_not_draft.
+         */
+        get: operations["listStorageTrayCandidates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/items/{allocationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+                allocationId: components["parameters"]["AllocationId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Drop a tray item from the scenario (area items cannot be removed, only unplaced) (storage.manage) */
+        delete: operations["removeStorageScenarioItem"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/optimize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run the optimizer on the working copy (pinned items stay), store result, seed and indicators (storage.manage) */
+        post: operations["optimizeStorageScenario"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        /** Compare a scenario with another scenario of the same area or with the real state (default) (storage.read) */
+        get: operations["compareStorageScenario"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/scenarios/{scenarioId}/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Apply a draft scenario in one transaction: re-validated on the current state, all moves or none; returns the movement worklist (storage.manage)
+         * @description 409 scenario_not_draft; 409 scenario_conflicts with details.conflicts = [StorageScenarioConflict] (every conflict, nothing written).
+         */
+        post: operations["applyStorageScenario"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/movements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Movement worklist of a day (default today) with the accessibility warnings of the day (storage.read) */
+        get: operations["listStorageMovements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/storage/movements/{movementId}/done": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                movementId: components["parameters"]["MovementId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark a movement done (online only) (storage.manage) */
+        post: operations["completeStorageMovement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/equipment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Equipment registry: lifting machines, vehicles, plants (maintenance.manage or maintenance.report) */
+        get: operations["listEquipment"];
+        put?: never;
+        /** Register equipment (maintenance.manage) */
+        post: operations["createEquipment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/equipment/{equipmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentId: components["parameters"]["EquipmentId"];
+            };
+            cookie?: never;
+        };
+        /** One equipment (maintenance.manage or maintenance.report) */
+        get: operations["getEquipment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change equipment (maintenance.manage) */
+        patch: operations["updateEquipment"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Maintenance plans (maintenance.manage) */
+        get: operations["listMaintenancePlans"];
+        put?: never;
+        /** Create a maintenance plan with targets, periodicity, lead and checklist (maintenance.manage) */
+        post: operations["createMaintenancePlan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/plans/{planId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                planId: components["parameters"]["PlanId"];
+            };
+            cookie?: never;
+        };
+        /** One maintenance plan (maintenance.manage) */
+        get: operations["getMaintenancePlan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a maintenance plan; active=false stops new tasks (maintenance.manage) */
+        patch: operations["updateMaintenancePlan"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Maintenance tasks, overdue first (maintenance.manage; maintenance.report sees the tasks assigned to them and their reports) */
+        get: operations["listMaintenanceTasks"];
+        put?: never;
+        /** Create a task from the office (maintenance.manage) */
+        post: operations["createMaintenanceTask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        /** One task with files and maintenance allocations (maintenance.manage or maintenance.report) */
+        get: operations["getMaintenanceTask"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change title, description, priority, due date, assignee, supplier reference, out of service (maintenance.manage) */
+        patch: operations["updateMaintenanceTask"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Schedule nights; with requires_free on a berth or land resource books maintenance nights in the same transaction (maintenance.manage)
+         * @description 409 maintenance_conflicts with details.conflicts = [MaintenanceConflict] (vessels on the nights, up to 3 alternatives each); never overrides an occupancy.
+         */
+        post: operations["scheduleMaintenanceTask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start a task (open or scheduled to in_progress) (maintenance.manage or the assignee with maintenance.report) */
+        post: operations["startMaintenanceTask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Record the outcome, checklist, minutes and costs; done is final (maintenance.manage or the assignee with maintenance.report)
+         * @description Offline (kind maintenance.outcome): no If-Match; the state is re-checked. Done with the same client_ref returns the task; done by someone else is 409 task_already_done. Maintenance nights are not released (INV-71).
+         */
+        post: operations["completeMaintenanceTask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/release": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Release the maintenance nights after last_night (online only) (maintenance.manage) */
+        post: operations["releaseMaintenanceTask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a task and release its future maintenance nights (online only) (maintenance.manage) */
+        post: operations["cancelMaintenanceTask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Attach a photo or document to a task (JPEG, PNG, WebP or PDF, at most 8 MiB, raw body), encrypted at rest (maintenance.report)
+         * @description Offline (kind maintenance.report, dependent on reportMaintenance through taskId). The same bytes as an existing file of the task return that file without writing again.
+         */
+        post: operations["uploadMaintenancePhoto"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files/{fileId}/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        /** A short-lived (5 minutes) signed link to a task file (maintenance.manage or maintenance.report) */
+        get: operations["getMaintenanceFileLink"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/tasks/{taskId}/files/{fileId}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        /** Download a task file through a signed link from getMaintenanceFileLink (exp and sig checked in the service) (maintenance.manage or maintenance.report) */
+        get: operations["getMaintenanceFileFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Report a problem from the field: an open task with element or map position; never schedules, never occupies (maintenance.report)
+         * @description Offline (kind maintenance.report): client_ref dedupes replays (same client_ref = the stored task).
+         */
+        post: operations["reportMaintenance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/worklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Tasks assigned to the current user plus open tasks due within 7 days (offline cache slot activities.assigned) (maintenance.report) */
+        get: operations["getMaintenanceWorklist"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/maintenance/map": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Maintenance lens of a map (default the first water map): open, overdue and out-of-service counts per element (maintenance.manage or maintenance.report) */
+        get: operations["getMaintenanceMap"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/utility-meters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Utility meters; route=dock returns the meters of the dock reading round (marina.configure or presence.write) */
+        get: operations["listUtilityMeters"];
+        put?: never;
+        /** Create a meter (pedestal socket, water, hour or cycle counter) (marina.configure) */
+        post: operations["createUtilityMeter"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/utility-meters/{meterId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                meterId: components["parameters"]["MeterId"];
+            };
+            cookie?: never;
+        };
+        /** One meter with its last reading (marina.configure or presence.write) */
+        get: operations["getUtilityMeter"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a meter (marina.configure) */
+        patch: operations["updateUtilityMeter"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/meter-readings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Meter readings, newest first (marina.configure, presence.write or charges.manage) */
+        get: operations["listMeterReadings"];
+        put?: never;
+        /**
+         * Record a reading (value as a decimal string, 3 decimals); anomalies are flagged, never refused (presence.write)
+         * @description Offline (kind utility.reading): read_at defaults to Porto-Offline-Queued-At when replayed within 48 hours and not in the future, else now. A replay with the same client_ref returns the stored reading (INV-83).
+         */
+        post: operations["recordMeterReading"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                readingId: components["parameters"]["ReadingId"];
+            };
+            cookie?: never;
+        };
+        /** A short-lived (5 minutes) signed link to the reading photo (marina.configure, presence.write or charges.manage) */
+        get: operations["getMeterReadingPhotoLink"];
+        put?: never;
+        /**
+         * Attach a photo to a reading (JPEG, PNG or WebP, at most 8 MiB, raw body), encrypted at rest (presence.write)
+         * @description Offline (kind utility.reading, dependent on recordMeterReading through readingId). The same bytes as the current photo return the current file id.
+         */
+        post: operations["uploadMeterReadingPhoto"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/photo/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                readingId: components["parameters"]["ReadingId"];
+            };
+            cookie?: never;
+        };
+        /** Download the reading photo through a signed link from getMeterReadingPhotoLink (exp and sig checked in the service) (marina.configure, presence.write or charges.manage) */
+        get: operations["getMeterReadingPhotoFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                readingId: components["parameters"]["ReadingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm an anomalous reading: its consumptions become chargeable (charges.manage) */
+        post: operations["confirmMeterReading"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/meter-readings/{readingId}/void": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                readingId: components["parameters"]["ReadingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Void a reading; refused with 409 reading_charged when a charged consumption uses it (charges.manage) */
+        post: operations["voidMeterReading"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/utility-consumptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Consumptions split by occupant (charges.manage) */
+        get: operations["listUtilityConsumptions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/utility-consumptions/{consumptionId}/exclude": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                consumptionId: components["parameters"]["ConsumptionId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Exclude a pending, anomalous or unassigned consumption from charging (charges.manage) */
+        post: operations["excludeUtilityConsumption"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/utility-consumptions/{consumptionId}/assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                consumptionId: components["parameters"]["ConsumptionId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Assign an unassigned consumption to a contract of the marina (charges.manage) */
+        post: operations["assignUtilityConsumption"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/utility-charges/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Charge the pending consumptions now (all contracts due today, or one contract) through the M5 charges (charges.manage) */
+        post: operations["runUtilityCharges"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/utility-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Utility settings: tariff items, charging mode, daily thresholds (marina.configure or charges.manage) */
+        get: operations["getUtilitySettings"];
+        /** Replace the utility settings (marina.configure) */
+        put: operations["updateUtilitySettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/storage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R-storage: allocations on surface areas, m²-nights available and occupied, blocked exits (reports.operational or reports.all; production with reports.all) */
+        get: operations["getStorageReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/maintenance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R-maintenance: tasks by status, overdue, minutes and external costs (reports.operational or reports.all; costs with reports.all) */
+        get: operations["getMaintenanceReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/utilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R-utilities: consumptions by kind and status, charged and pending value, unassigned quantity (reports.operational; amounts with reports.all) */
+        get: operations["getUtilitiesReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid" | "invalid_period" | "invalid_report_filter" | "report_too_large" | "unknown_indicator" | "booking_unavailable" | "booking_rules" | "booking_busy" | "consent_required" | "text_outdated" | "refund_changed" | "price_changed" | "cancellation_not_allowed" | "nothing_due" | "idempotency_mismatch";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid" | "invalid_period" | "invalid_report_filter" | "report_too_large" | "unknown_indicator" | "booking_unavailable" | "booking_rules" | "booking_busy" | "consent_required" | "text_outdated" | "refund_changed" | "price_changed" | "cancellation_not_allowed" | "nothing_due" | "idempotency_mismatch" | "storage_target_invalid" | "storage_no_space" | "area_exits_invalid" | "pinned_invalid" | "too_many_items" | "scenario_window_invalid" | "scenario_not_draft" | "scenario_conflicts" | "movement_not_pending" | "element_invalid" | "maintenance_conflicts" | "task_already_done" | "reading_charged" | "consumption_frozen";
         FieldError: {
             field: string;
             code: string;
@@ -8362,7 +9373,7 @@ export interface components {
             issues?: components["schemas"]["MapIssue"][];
             /** @description Price list validation issues (price_list_invalid) */
             price_list_issues?: components["schemas"]["PriceListIssue"][];
-            /** @description Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}; resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?}; invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid {reason}; allocation_changed {current_resource_id, current_resource_code} (null when the allocation is gone); remote_pin_mismatch {expected_fingerprint, presented_fingerprint}. Ids, codes, dates and integers only. */
+            /** @description Machine-readable details: no_price {item_id, contract_type, night, unit, category, band, reason}; price_list_overlap {conflicts: [{id, code, valid_from, valid_to}]}; in_use {references}; resource_taken ConflictDetail; fit_blocked FitResult; placement_invalid {reason, allocation_id?}; invalid_transition {from, action}; closure_active {closure_id, from_date, to_date}; release_invalid {reason}; allocation_changed {current_resource_id, current_resource_code} (null when the allocation is gone); remote_pin_mismatch {expected_fingerprint, presented_fingerprint}; scenario_conflicts {conflicts: [StorageScenarioConflict]}; maintenance_conflicts {conflicts: [MaintenanceConflict]}; storage_no_space {area_id, from, to}. Ids, codes, dates and integers only. */
             details?: {
                 [key: string]: unknown;
             };
@@ -10255,9 +11266,9 @@ export interface components {
          * @description M1 kinds (from document types); later milestones add more
          * @enum {string}
          */
-        DeadlineKind: "identity_document" | "boating_licence" | "navigation_licence" | "registration_certificate" | "insurance" | "safety_certificate" | "power_declaration" | "other_document" | "contract_end" | "installment_due" | "holder_installment_due" | "right_end" | "mandate_end" | "concession_expiry" | "concession_obligation" | "renewal_deadline" | "tacit_renewal_blocked" | "waitlist_offer" | "document_failed" | "signature_expiring";
+        DeadlineKind: "identity_document" | "boating_licence" | "navigation_licence" | "registration_certificate" | "insurance" | "safety_certificate" | "power_declaration" | "other_document" | "contract_end" | "installment_due" | "holder_installment_due" | "right_end" | "mandate_end" | "concession_expiry" | "concession_obligation" | "renewal_deadline" | "tacit_renewal_blocked" | "waitlist_offer" | "document_failed" | "signature_expiring" | "maintenance_due";
         /** @enum {string} */
-        DeadlineSourceType: "document" | "contract" | "installment" | "holder_installment" | "right" | "mandate" | "concession" | "concession_obligation" | "renewal_proposal" | "waitlist_entry" | "generated_document" | "signature_request" | "import";
+        DeadlineSourceType: "document" | "contract" | "installment" | "holder_installment" | "right" | "mandate" | "concession" | "concession_obligation" | "renewal_proposal" | "waitlist_entry" | "generated_document" | "signature_request" | "import" | "maintenance_task";
         CustomerRef: {
             id: string;
             display_name: string;
@@ -11035,7 +12046,7 @@ export interface components {
             actual_cm?: components["schemas"]["Cm"];
         };
         /** @enum {string} */
-        FitCode: "loa_exceeds" | "beam_exceeds" | "draft_exceeds" | "air_draft_exceeds" | "multihull_not_allowed" | "vessel_invalid" | "fill_below_threshold" | "depth_near_limit" | "power_insufficient" | "insurance_missing" | "insurance_expires_in_period" | "overhang";
+        FitCode: "loa_exceeds" | "beam_exceeds" | "draft_exceeds" | "air_draft_exceeds" | "multihull_not_allowed" | "vessel_invalid" | "fill_below_threshold" | "depth_near_limit" | "power_insufficient" | "insurance_missing" | "insurance_expires_in_period" | "overhang" | "support_not_allowed" | "weight_exceeds";
         FitResult: {
             ok: boolean;
             overridable: boolean;
@@ -14683,7 +15694,7 @@ export interface components {
          * @description Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
          * @enum {string}
          */
-        ReportKey: "occupancy" | "efficiency" | "allocation-waste" | "lost-demand" | "customers" | "production" | "accruals" | "charges" | "payments" | "revenue-classes" | "comparison" | "receivables" | "presences" | "rights" | "cash" | "vessels" | "berth-revenue";
+        ReportKey: "occupancy" | "efficiency" | "allocation-waste" | "lost-demand" | "customers" | "production" | "accruals" | "charges" | "payments" | "revenue-classes" | "comparison" | "receivables" | "presences" | "rights" | "cash" | "vessels" | "berth-revenue" | "storage" | "maintenance" | "utilities";
         /**
          * @description json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
          * @enum {string}
@@ -14716,7 +15727,7 @@ export interface components {
         /** @description Link from a record to its entity page (ids and display codes only) */
         ReportRef: {
             /** @enum {string} */
-            type: "contract" | "transit" | "charge" | "payment" | "refund" | "allocation" | "berth" | "area" | "land_resource" | "customer" | "vessel" | "inquiry" | "release" | "presence" | "cash_session" | "fiscal_document" | "right" | "common_charge_run" | "mandate" | "installment" | "holder_installment";
+            type: "contract" | "transit" | "charge" | "payment" | "refund" | "allocation" | "berth" | "area" | "land_resource" | "customer" | "vessel" | "inquiry" | "release" | "presence" | "cash_session" | "fiscal_document" | "right" | "common_charge_run" | "mandate" | "installment" | "holder_installment" | "scenario" | "maintenance_task" | "utility_meter" | "utility_consumption";
             id: string;
             label?: string;
         };
@@ -15561,7 +16572,7 @@ export interface components {
          * @description Manager dashboard tiles (m7-plan §4). yard_* (M10) and rental_* (M11) are returned with available=false.
          * @enum {string}
          */
-        TileKey: "production" | "charged" | "collected" | "receivables_open" | "receivables_overdue" | "occupancy" | "efficiency" | "berth_revenue_per_m" | "transit_avg_night" | "new_customers" | "renewal_rate" | "vessels_hosted" | "vessels_avg_loa" | "yard_open_orders" | "yard_hours" | "yard_margin" | "rental_utilisation" | "rental_revenue";
+        TileKey: "production" | "charged" | "collected" | "receivables_open" | "receivables_overdue" | "occupancy" | "efficiency" | "berth_revenue_per_m" | "transit_avg_night" | "new_customers" | "renewal_rate" | "vessels_hosted" | "vessels_avg_loa" | "yard_open_orders" | "yard_hours" | "yard_margin" | "rental_utilisation" | "rental_revenue" | "storage_occupancy" | "storage_exits_blocked" | "maintenance_overdue" | "utility_unbilled";
         /** @enum {string} */
         TileTrend: "up" | "down" | "flat" | "none";
         TileValue: {
@@ -16394,6 +17405,1053 @@ export interface components {
             items: components["schemas"]["ChannelReservation"][];
             next_cursor: string | null;
         };
+        /**
+         * @description How the boat stands ashore (fit code support_not_allowed when the area does not accept it)
+         * @enum {string}
+         */
+        StorageSupport: "cradle" | "trailer" | "rack" | "none";
+        /** @enum {string} */
+        StorageSupportOwner: "own" | "marina";
+        /**
+         * Format: int64
+         * @description Rotation on a surface area in tenths of a degree (multiples of 90°; 0/1800 and 900/2700 are the same rectangle)
+         * @enum {integer}
+         */
+        SurfaceRotationDd: 0 | 900 | 1800 | 2700;
+        /** @description Top-left corner of the footprint box in area grid space (cm, snapped to cells by the service) and rotation */
+        StoragePlacementInput: {
+            x_cm: components["schemas"]["Cm"];
+            y_cm: components["schemas"]["Cm"];
+            rotation_dd: components["schemas"]["SurfaceRotationDd"];
+        };
+        /** @description Exactly one of area_id (surface dynamic area of a yard or shed map) and trailer_spot_id (land resource of kind trailer_spot). Without placement on an area the optimizer chooses a position (409 storage_no_space when none is free). ends_on defaults by term (annual +1 year, seasonal the season end of the active storage list, monthly +1 month; period requires it). */
+        StorageContractCreate: {
+            term: components["schemas"]["ContractTerm"];
+            customer_id: string;
+            billing_customer_id?: string;
+            vessel_id: string;
+            starts_on: components["schemas"]["IsoDate"];
+            ends_on?: components["schemas"]["IsoDate"];
+            area_id?: string;
+            trailer_spot_id?: string;
+            placement?: components["schemas"]["StoragePlacementInput"];
+            /** @description Marina cradle (land resource of kind cradle) for the whole period */
+            cradle_resource_id?: string;
+            support: components["schemas"]["StorageSupport"];
+            support_owner?: components["schemas"]["StorageSupportOwner"];
+            haul_out_on?: components["schemas"]["IsoDate"];
+            launch_on?: components["schemas"]["IsoDate"];
+            services?: components["schemas"]["SimulateService"][];
+            policy?: components["schemas"]["ContractPolicy"];
+            notes?: string;
+            notes_handling?: string;
+            activate?: boolean;
+            fit_override?: components["schemas"]["FitOverrideInput"];
+        };
+        StorageContractPatch: {
+            support?: components["schemas"]["StorageSupport"];
+            support_owner?: components["schemas"]["StorageSupportOwner"];
+            /** Format: date */
+            haul_out_on?: string | null;
+            /** Format: date */
+            launch_on?: string | null;
+            notes_handling?: string;
+        };
+        /** @description exit_on = launch_on or ends_on; arrival_on = haul_out_on or starts_on, clamped into the period */
+        StorageContractDetails: {
+            contract_id: string;
+            support: components["schemas"]["StorageSupport"];
+            support_owner: components["schemas"]["StorageSupportOwner"];
+            haul_out_on?: components["schemas"]["IsoDate"];
+            launch_on?: components["schemas"]["IsoDate"];
+            notes_handling?: string;
+            exit_on: components["schemas"]["IsoDate"];
+            arrival_on: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        StoragePlacement: {
+            allocation_id: string;
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            map_id?: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["SurfaceRotationDd"];
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+        };
+        StorageContract: {
+            contract: components["schemas"]["Contract"];
+            details: components["schemas"]["StorageContractDetails"];
+            placement?: components["schemas"]["StoragePlacement"];
+            cradle?: components["schemas"]["StoragePlacement"];
+            fit?: components["schemas"]["FitResult"];
+        };
+        StorageArea: {
+            id: string;
+            map_id: string;
+            map_kind: components["schemas"]["MapKind"];
+            code: string;
+            name?: string;
+            price_class?: string;
+            cell_cm: components["schemas"]["Cm"];
+            cols: number;
+            rows: number;
+            usable_cells: number;
+            /**
+             * Format: int64
+             * @description usable cells × cell²
+             */
+            usable_cm2: number;
+            occupied_cells_today: number;
+            boats_today: number;
+            exits_blocked_next_30: number;
+            draft_scenarios: number;
+            /** @description false when an exit gate is not usable or not on the grid border (area_exits_invalid) */
+            gates_valid: boolean;
+        };
+        StorageAreaList: {
+            items: components["schemas"]["StorageArea"][];
+        };
+        /** @description A 4-connected component of exit cells */
+        StorageGate: {
+            index: number;
+            cells: number[];
+            valid: boolean;
+            /** @enum {string} */
+            issue?: "not_usable" | "not_on_border";
+        };
+        /** @description Fixed obstacle of the window (blocks, maintenance rows) */
+        StorageObstacle: {
+            allocation_id: string;
+            kind: components["schemas"]["AllocationKind"];
+            cells: number[];
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+        };
+        StoragePlanItem: {
+            allocation_id: string;
+            kind: components["schemas"]["AllocationKind"];
+            contract?: components["schemas"]["ContractBrief"];
+            vessel?: components["schemas"]["VesselBrief"];
+            support?: components["schemas"]["StorageSupport"];
+            /** Format: int64 */
+            displacement_kg?: number;
+            x_cm: components["schemas"]["Cm"];
+            y_cm: components["schemas"]["Cm"];
+            rotation_dd: components["schemas"]["SurfaceRotationDd"];
+            /** @description Footprint cells (with margin) */
+            cells: number[];
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+            arrival_on: components["schemas"]["IsoDate"];
+            exit_on: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            version: number;
+        };
+        /** @description Accessibility of one exit or arrival event (m9-plan §5); blocking = allocation ids (heuristic minimal set) */
+        StorageAccessEntry: {
+            allocation_id: string;
+            vessel_id?: string;
+            /** @enum {string} */
+            event: "exit" | "arrival";
+            on: components["schemas"]["IsoDate"];
+            accessible: boolean;
+            /** @description Extraction order among the exits of that day (1 = first) */
+            order?: number;
+            blocking: string[];
+        };
+        StoragePlan: {
+            area: components["schemas"]["StorageArea"];
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            gates: components["schemas"]["StorageGate"][];
+            obstacles: components["schemas"]["StorageObstacle"][];
+            items: components["schemas"]["StoragePlanItem"][];
+            access: components["schemas"]["StorageAccessEntry"][];
+        };
+        StorageAccessibility: {
+            area_id: string;
+            date: components["schemas"]["IsoDate"];
+            entries: components["schemas"]["StorageAccessEntry"][];
+            /** @description Allocation ids leaving that day in order */
+            extraction_order: string[];
+        };
+        /** @description A position of the draft; x_cm, y_cm and rotation_dd all null = unplaced */
+        StorageLayoutItemInput: {
+            allocation_id: string;
+            /** Format: int64 */
+            x_cm?: number | null;
+            /** Format: int64 */
+            y_cm?: number | null;
+            /**
+             * Format: int64
+             * @description 0, 900, 1800 or 2700
+             */
+            rotation_dd?: number | null;
+            pinned?: boolean;
+        };
+        StorageArrangeRequest: {
+            from_on?: components["schemas"]["IsoDate"];
+            to_on?: components["schemas"]["IsoDate"];
+            /** @description Draft layout to start from (default the real state of the window) */
+            items?: components["schemas"]["StorageLayoutItemInput"][];
+            /** Format: int64 */
+            seed?: number;
+            max_iterations?: number;
+        };
+        StorageEvaluateRequest: {
+            from_on?: components["schemas"]["IsoDate"];
+            to_on?: components["schemas"]["IsoDate"];
+            items: components["schemas"]["StorageLayoutItemInput"][];
+        };
+        StorageIndicators: {
+            /** Format: int64 */
+            usable_cm2: number;
+            /** Format: int64 */
+            used_hull_cm2: number;
+            /** Format: int64 */
+            used_footprint_cm2: number;
+            moves: number;
+            unplaced: number;
+            overlaps: number;
+            exits_blocked: number;
+            arrivals_blocked: number;
+            /** Format: int64 */
+            largest_free_rect_cm2: number;
+            blocked_by_date: {
+                date: components["schemas"]["IsoDate"];
+                exits_blocked: number;
+                arrivals_blocked?: number;
+            }[];
+        };
+        StorageItemIssue: {
+            allocation_id: string;
+            /** @enum {string} */
+            reason: "overlap" | "blocked_cell" | "outside" | "fit" | "unplaced" | "stale";
+            fit_codes?: components["schemas"]["FitCode"][];
+            with_allocation_ids?: string[];
+        };
+        StorageLayoutItem: {
+            allocation_id: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["SurfaceRotationDd"];
+            /** @enum {string} */
+            unplaced_reason?: "fit" | "no_space";
+            fit_codes?: components["schemas"]["FitCode"][];
+        };
+        StorageArrangeResult: {
+            items: components["schemas"]["StorageLayoutItem"][];
+            indicators: components["schemas"]["StorageIndicators"];
+            access: components["schemas"]["StorageAccessEntry"][];
+            /** Format: int64 */
+            seed: number;
+            iterations: number;
+            /** @enum {string} */
+            stopped_by: "iterations" | "deadline" | "optimal";
+        };
+        StorageEvaluation: {
+            indicators: components["schemas"]["StorageIndicators"];
+            access: components["schemas"]["StorageAccessEntry"][];
+            issues: components["schemas"]["StorageItemIssue"][];
+        };
+        /** @enum {string} */
+        StorageScenarioStatus: "draft" | "applied" | "discarded";
+        StorageScenario: {
+            id: string;
+            area_id: string;
+            name: string;
+            author_user_id: string;
+            from_on: components["schemas"]["IsoDate"];
+            to_on: components["schemas"]["IsoDate"];
+            status: components["schemas"]["StorageScenarioStatus"];
+            /** Format: int64 */
+            seed: number;
+            indicators?: components["schemas"]["StorageIndicators"];
+            /** @description Some allocation changed since it was loaded (computed on read */
+            stale: boolean;
+            /** Format: date-time */
+            applied_at?: string;
+            applied_by_user_id?: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        StorageScenarioPage: {
+            items: components["schemas"]["StorageScenario"][];
+            next_cursor: string | null;
+        };
+        StorageScenarioCreate: {
+            area_id: string;
+            name: string;
+            from_on: components["schemas"]["IsoDate"];
+            to_on: components["schemas"]["IsoDate"];
+        };
+        StorageScenarioPatch: {
+            name?: string;
+            from_on?: components["schemas"]["IsoDate"];
+            to_on?: components["schemas"]["IsoDate"];
+        };
+        StorageScenarioItem: {
+            allocation_id: string;
+            kind: components["schemas"]["AllocationKind"];
+            /** @enum {string} */
+            origin: "area" | "tray";
+            contract?: components["schemas"]["ContractBrief"];
+            vessel?: components["schemas"]["VesselBrief"];
+            support?: components["schemas"]["StorageSupport"];
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["SurfaceRotationDd"];
+            pinned: boolean;
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+            arrival_on: components["schemas"]["IsoDate"];
+            exit_on: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            base_version: number;
+            /**
+             * Format: int64
+             * @description Absent when the allocation is gone
+             */
+            current_version?: number;
+        };
+        StorageMoveEnd: {
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            rotation_dd?: components["schemas"]["SurfaceRotationDd"];
+        };
+        StorageScenarioMove: {
+            seq: number;
+            allocation_id: string;
+            vessel_id?: string;
+            /** @enum {string} */
+            kind: "move" | "place";
+            from?: components["schemas"]["StorageMoveEnd"];
+            to: components["schemas"]["StorageMoveEnd"];
+            move_on: components["schemas"]["IsoDate"];
+        };
+        StorageScenarioDetail: {
+            scenario: components["schemas"]["StorageScenario"];
+            items: components["schemas"]["StorageScenarioItem"][];
+            moves: components["schemas"]["StorageScenarioMove"][];
+            issues: components["schemas"]["StorageItemIssue"][];
+            access: components["schemas"]["StorageAccessEntry"][];
+            /** @description Statistics of the last optimize call of this response */
+            run?: {
+                /** Format: int64 */
+                seed: number;
+                iterations: number;
+                /** @enum {string} */
+                stopped_by: "iterations" | "deadline" | "optimal";
+            };
+        };
+        StorageScenarioItemsPut: {
+            items: components["schemas"]["StorageLayoutItemInput"][];
+        };
+        StorageScenarioItemAdd: {
+            allocation_id: string;
+        };
+        StorageOptimizeRequest: {
+            /**
+             * Format: int64
+             * @description Default = the scenario seed (FNV-1a of its id)
+             */
+            seed?: number;
+            max_iterations?: number;
+        };
+        StorageScenarioComparison: {
+            scenario_id: string;
+            /** @description The other scenario id or real */
+            with: string;
+            date: components["schemas"]["IsoDate"];
+            left: components["schemas"]["StorageIndicators"];
+            right: components["schemas"]["StorageIndicators"];
+            diffs: {
+                allocation_id: string;
+                vessel_id?: string;
+                left?: components["schemas"]["StorageMoveEnd"];
+                right?: components["schemas"]["StorageMoveEnd"];
+            }[];
+        };
+        /** @description One entry of details.conflicts of 409 scenario_conflicts */
+        StorageScenarioConflict: {
+            allocation_id: string;
+            /** @enum {string} */
+            reason: "stale" | "resource_taken" | "fit" | "unplaced" | "overlap";
+            cells?: number[];
+            nights?: components["schemas"]["NightRange"];
+            fit_codes?: components["schemas"]["FitCode"][];
+            with_allocation_ids?: string[];
+        };
+        /** @enum {string} */
+        StorageMovementStatus: "pending" | "done" | "cancelled";
+        /**
+         * @description Text hint until M10 (equipment slots)
+         * @enum {string}
+         */
+        StorageEquipmentHint: "travel_lift" | "trailer" | "cradle_mover" | "forklift" | "none";
+        StorageMovement: {
+            id: string;
+            area_id: string;
+            scenario_id?: string;
+            allocation_id: string;
+            vessel?: components["schemas"]["VesselBrief"];
+            seq: number;
+            move_on: components["schemas"]["IsoDate"];
+            from?: components["schemas"]["StorageMoveEnd"];
+            to: components["schemas"]["StorageMoveEnd"];
+            equipment_hint: components["schemas"]["StorageEquipmentHint"];
+            /** @description Temporary position to break a cycle (spostamento provvisorio) */
+            temporary: boolean;
+            status: components["schemas"]["StorageMovementStatus"];
+            /** Format: date-time */
+            done_at?: string;
+            done_by_user_id?: string;
+            /** Format: int64 */
+            version: number;
+        };
+        StorageMovementList: {
+            date: components["schemas"]["IsoDate"];
+            items: components["schemas"]["StorageMovement"][];
+            warnings: components["schemas"]["StorageAccessEntry"][];
+        };
+        StorageTrayCandidate: {
+            allocation_id: string;
+            vessel?: components["schemas"]["VesselBrief"];
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            resource_code: string;
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+        };
+        StorageTrayCandidateList: {
+            items: components["schemas"]["StorageTrayCandidate"][];
+        };
+        StorageApplyResult: {
+            scenario: components["schemas"]["StorageScenario"];
+            movements: components["schemas"]["StorageMovement"][];
+            price_effect?: components["schemas"]["PriceEffect"];
+        };
+        /** @enum {string} */
+        EquipmentKind: "travel_lift" | "crane" | "forklift" | "trailer" | "vehicle" | "plant" | "other";
+        Equipment: {
+            id: string;
+            code: string;
+            name: string;
+            kind: components["schemas"]["EquipmentKind"];
+            map_id?: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            /** Format: int64 */
+            capacity_kg?: number;
+            active: boolean;
+            out_of_service: boolean;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        EquipmentInput: {
+            code: components["schemas"]["Code"];
+            name: string;
+            kind: components["schemas"]["EquipmentKind"];
+            map_id?: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            /** Format: int64 */
+            capacity_kg?: number;
+            active?: boolean;
+        };
+        EquipmentPatch: {
+            code?: components["schemas"]["Code"];
+            name?: string;
+            kind?: components["schemas"]["EquipmentKind"];
+            map_id?: string | null;
+            /** Format: int64 */
+            x_cm?: number | null;
+            /** Format: int64 */
+            y_cm?: number | null;
+            /** Format: int64 */
+            capacity_kg?: number | null;
+            active?: boolean;
+        };
+        EquipmentPage: {
+            items: components["schemas"]["Equipment"][];
+            next_cursor: string | null;
+        };
+        /** @enum {string} */
+        MaintenanceElementType: "berth" | "structure" | "dynamic_area" | "land_resource" | "pedestal" | "equipment";
+        MaintenanceElementRef: {
+            element_type: components["schemas"]["MaintenanceElementType"];
+            element_id: string;
+            /** @description Display code (read only) */
+            code?: string;
+        };
+        /** @enum {string} */
+        MaintenanceIntervention: "underwater_inspection" | "pennant_replacement" | "chain_check" | "rcd_test" | "general" | "custom";
+        /** @description months: every N months from the last done (or starts_on), end-of-month clamp; fixed_date: every year on month_day (MM-DD); cycles: when the meter (hours or cycles) advanced by every units since the last done */
+        MaintenancePeriodicity: {
+            /** @enum {string} */
+            kind: "months" | "cycles" | "fixed_date";
+            /**
+             * Format: int64
+             * @description Months
+             */
+            every?: number;
+            month_day?: string;
+            meter_id?: string;
+            starts_on?: components["schemas"]["IsoDate"];
+        };
+        ChecklistEntry: {
+            key: string;
+            label: string;
+        };
+        ChecklistResult: {
+            key: string;
+            done: boolean;
+            note?: string;
+        };
+        MaintenancePlan: {
+            id: string;
+            name: string;
+            intervention: components["schemas"]["MaintenanceIntervention"];
+            intervention_label?: string;
+            targets: components["schemas"]["MaintenanceElementRef"][];
+            periodicity: components["schemas"]["MaintenancePeriodicity"];
+            lead_days: number;
+            assignee_user_id?: string;
+            supplier_name?: string;
+            checklist: components["schemas"]["ChecklistEntry"][];
+            requires_free: boolean;
+            nights: number;
+            active: boolean;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        MaintenancePlanInput: {
+            name: string;
+            intervention: components["schemas"]["MaintenanceIntervention"];
+            /** @description Required for custom */
+            intervention_label?: string;
+            targets: components["schemas"]["MaintenanceElementRef"][];
+            periodicity: components["schemas"]["MaintenancePeriodicity"];
+            lead_days?: number;
+            assignee_user_id?: string;
+            supplier_name?: string;
+            checklist?: components["schemas"]["ChecklistEntry"][];
+            requires_free?: boolean;
+            nights?: number;
+            active?: boolean;
+        };
+        MaintenancePlanPatch: {
+            name?: string;
+            intervention?: components["schemas"]["MaintenanceIntervention"];
+            intervention_label?: string;
+            targets?: components["schemas"]["MaintenanceElementRef"][];
+            periodicity?: components["schemas"]["MaintenancePeriodicity"];
+            lead_days?: number;
+            assignee_user_id?: string | null;
+            supplier_name?: string | null;
+            checklist?: components["schemas"]["ChecklistEntry"][];
+            requires_free?: boolean;
+            nights?: number;
+            active?: boolean;
+        };
+        MaintenancePlanPage: {
+            items: components["schemas"]["MaintenancePlan"][];
+            next_cursor: string | null;
+        };
+        /** @enum {string} */
+        MaintenanceTaskStatus: "open" | "scheduled" | "in_progress" | "done" | "cancelled";
+        /** @enum {string} */
+        MaintenancePriority: "low" | "normal" | "high" | "urgent";
+        /** @enum {string} */
+        MaintenanceOutcome: "ok" | "fixed" | "needs_followup" | "not_done";
+        /** @enum {string} */
+        MaintenanceSource: "plan" | "office" | "report";
+        MaintenanceFile: {
+            file_id: string;
+            /** @enum {string} */
+            kind: "photo" | "document";
+            content_type: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        MaintenanceTask: {
+            id: string;
+            element?: components["schemas"]["MaintenanceElementRef"];
+            plan_id?: string;
+            intervention?: components["schemas"]["MaintenanceIntervention"];
+            source: components["schemas"]["MaintenanceSource"];
+            title: string;
+            description?: string;
+            priority: components["schemas"]["MaintenancePriority"];
+            status: components["schemas"]["MaintenanceTaskStatus"];
+            due_on?: components["schemas"]["IsoDate"];
+            overdue: boolean;
+            scheduled_from?: components["schemas"]["IsoDate"];
+            scheduled_to?: components["schemas"]["IsoDate"];
+            out_of_service: boolean;
+            map_id?: string;
+            position_x_cm?: components["schemas"]["Cm"];
+            position_y_cm?: components["schemas"]["Cm"];
+            checklist: components["schemas"]["ChecklistEntry"][];
+            checklist_results: components["schemas"]["ChecklistResult"][];
+            outcome?: components["schemas"]["MaintenanceOutcome"];
+            outcome_notes?: string;
+            internal_minutes?: number;
+            external_cost_cents?: components["schemas"]["Cents"];
+            supplier_ref?: string;
+            assignee_user_id?: string;
+            reported_by_user_id?: string;
+            follows_task_id?: string;
+            allocation_ids: string[];
+            files: components["schemas"]["MaintenanceFile"][];
+            /** Format: date-time */
+            done_at?: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        MaintenanceTaskPage: {
+            items: components["schemas"]["MaintenanceTask"][];
+            next_cursor: string | null;
+        };
+        MaintenanceTaskCreate: {
+            element?: components["schemas"]["MaintenanceElementRef"];
+            title: string;
+            description?: string;
+            priority?: components["schemas"]["MaintenancePriority"];
+            due_on?: components["schemas"]["IsoDate"];
+            assignee_user_id?: string;
+            out_of_service?: boolean;
+            follows_task_id?: string;
+            map_id?: string;
+            position_x_cm?: components["schemas"]["Cm"];
+            position_y_cm?: components["schemas"]["Cm"];
+        };
+        MaintenanceTaskPatch: {
+            title?: string;
+            description?: string;
+            priority?: components["schemas"]["MaintenancePriority"];
+            /** Format: date */
+            due_on?: string | null;
+            assignee_user_id?: string | null;
+            supplier_ref?: string;
+            out_of_service?: boolean;
+        };
+        MaintenanceScheduleInput: {
+            from_night: components["schemas"]["IsoDate"];
+            to_night: components["schemas"]["IsoDate"];
+            out_of_service?: boolean;
+            /** @description For a structure task, the berths of the structure to occupy (D24) */
+            occupy_berth_ids?: string[];
+        };
+        /** @description One entry of details.conflicts of 409 maintenance_conflicts */
+        MaintenanceConflict: {
+            allocation_id: string;
+            vessel_id?: string;
+            contract_id?: string;
+            resource_type: components["schemas"]["ResourceType"];
+            resource_id: string;
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            alternatives: components["schemas"]["OccupancySolution"][];
+        };
+        MaintenanceCompleteInput: {
+            outcome: components["schemas"]["MaintenanceOutcome"];
+            notes?: string;
+            checklist_results?: components["schemas"]["ChecklistResult"][];
+            internal_minutes?: number;
+            /** Format: int64 */
+            external_cost_cents?: number;
+            supplier_ref?: string;
+            client_ref?: string;
+        };
+        MaintenanceReleaseInput: {
+            /** @description Keep the nights up to this one; absent = release every future night */
+            last_night?: components["schemas"]["IsoDate"];
+        };
+        MaintenanceCancelInput: {
+            reason: string;
+        };
+        /** @description element, or map_id with a position, or both */
+        MaintenanceReportInput: {
+            client_ref: string;
+            element?: components["schemas"]["MaintenanceElementRef"];
+            map_id?: string;
+            position_x_cm?: components["schemas"]["Cm"];
+            position_y_cm?: components["schemas"]["Cm"];
+            title: string;
+            description?: string;
+            priority?: components["schemas"]["MaintenancePriority"];
+        };
+        MaintenanceWorklist: {
+            date: components["schemas"]["IsoDate"];
+            items: components["schemas"]["MaintenanceTask"][];
+        };
+        MaintenanceMapEntry: {
+            element_type: components["schemas"]["MaintenanceElementType"];
+            element_id: string;
+            open: number;
+            overdue: number;
+            out_of_service: boolean;
+        };
+        MaintenanceMap: {
+            map_id: string;
+            date: components["schemas"]["IsoDate"];
+            items: components["schemas"]["MaintenanceMapEntry"][];
+        };
+        /** @enum {string} */
+        MeterKind: "power" | "water" | "hours" | "cycles";
+        /** @enum {string} */
+        UtilityUnit: "kwh" | "m3" | "h" | "cycle";
+        MeterReadingBrief: {
+            id: string;
+            value_milli: components["schemas"]["QtyMilli"];
+            /** Format: date-time */
+            read_at: string;
+            read_on: components["schemas"]["IsoDate"];
+        };
+        UtilityMeter: {
+            id: string;
+            code: string;
+            kind: components["schemas"]["MeterKind"];
+            unit: components["schemas"]["UtilityUnit"];
+            pedestal_id?: string;
+            socket_code?: string;
+            serial?: string;
+            resource_type?: components["schemas"]["ResourceType"];
+            resource_id?: string;
+            equipment_id?: string;
+            item_id?: string;
+            multiplier_milli: components["schemas"]["QtyMilli"];
+            rollover_milli?: components["schemas"]["QtyMilli"];
+            daily_threshold_milli?: components["schemas"]["QtyMilli"];
+            active: boolean;
+            last_reading?: components["schemas"]["MeterReadingBrief"];
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        UtilityMeterInput: {
+            code: components["schemas"]["Code"];
+            kind: components["schemas"]["MeterKind"];
+            unit: components["schemas"]["UtilityUnit"];
+            pedestal_id?: string;
+            socket_code?: string;
+            serial?: string;
+            resource_type?: components["schemas"]["ResourceType"];
+            resource_id?: string;
+            equipment_id?: string;
+            item_id?: string;
+            /** Format: int64 */
+            multiplier_milli?: number;
+            /** Format: int64 */
+            rollover_milli?: number;
+            /** Format: int64 */
+            daily_threshold_milli?: number;
+            active?: boolean;
+        };
+        UtilityMeterPatch: {
+            code?: components["schemas"]["Code"];
+            pedestal_id?: string | null;
+            socket_code?: string | null;
+            serial?: string | null;
+            /** @description berth, dynamic_area or land_resource */
+            resource_type?: string | null;
+            resource_id?: string | null;
+            equipment_id?: string | null;
+            item_id?: string | null;
+            /** Format: int64 */
+            multiplier_milli?: number;
+            /** Format: int64 */
+            rollover_milli?: number | null;
+            /** Format: int64 */
+            daily_threshold_milli?: number | null;
+            active?: boolean;
+        };
+        UtilityMeterPage: {
+            items: components["schemas"]["UtilityMeter"][];
+            next_cursor: string | null;
+        };
+        /** @enum {string} */
+        MeterReadingKind: "regular" | "initial" | "replacement_old" | "replacement_new";
+        /** @enum {string} */
+        MeterReadingStatus: "valid" | "anomaly" | "confirmed" | "void";
+        /**
+         * @description sensor is reserved for M12
+         * @enum {string}
+         */
+        MeterReadingSource: "staff" | "import" | "sensor";
+        /** @enum {string} */
+        MeterAnomalyCode: "negative" | "rollover" | "over_threshold" | "out_of_order" | "gap";
+        MeterReading: {
+            id: string;
+            meter_id: string;
+            /** Format: date-time */
+            read_at: string;
+            read_on: components["schemas"]["IsoDate"];
+            value_milli: components["schemas"]["QtyMilli"];
+            /** @description Difference from the previous valid reading (after multiplier) */
+            delta_milli?: components["schemas"]["QtyMilli"];
+            kind: components["schemas"]["MeterReadingKind"];
+            source: components["schemas"]["MeterReadingSource"];
+            photo_file_id?: string;
+            user_id?: string;
+            note?: string;
+            status: components["schemas"]["MeterReadingStatus"];
+            anomaly_codes: components["schemas"]["MeterAnomalyCode"][];
+            client_ref?: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+        };
+        MeterReadingCreate: {
+            meter_id: string;
+            /** @description Cumulative index */
+            value: string;
+            kind?: components["schemas"]["MeterReadingKind"];
+            note?: string;
+            /** Format: date-time */
+            read_at?: string;
+            client_ref?: string;
+        };
+        MeterReadingPage: {
+            items: components["schemas"]["MeterReading"][];
+            next_cursor: string | null;
+        };
+        MeterReadingPhoto: {
+            file_id: string;
+        };
+        MeterReadingVoidInput: {
+            reason: string;
+        };
+        /** @enum {string} */
+        UtilityConsumptionStatus: "pending" | "anomaly" | "unassigned" | "charged" | "excluded";
+        UtilityConsumption: {
+            id: string;
+            meter_id: string;
+            meter_code?: string;
+            kind: components["schemas"]["MeterKind"];
+            from_reading_id: string;
+            to_reading_id: string;
+            contract?: components["schemas"]["ContractBrief"];
+            allocation_id?: string;
+            customer_id?: string;
+            resource_type?: components["schemas"]["ResourceType"];
+            resource_id?: string;
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+            qty_milli: components["schemas"]["QtyMilli"];
+            status: components["schemas"]["UtilityConsumptionStatus"];
+            charge_id?: string;
+            billing_id?: string;
+            exclude_reason?: string;
+            /** Format: int64 */
+            version: number;
+        };
+        UtilityConsumptionPage: {
+            items: components["schemas"]["UtilityConsumption"][];
+            next_cursor: string | null;
+        };
+        UtilityConsumptionExclude: {
+            reason: string;
+        };
+        UtilityConsumptionAssign: {
+            contract_id: string;
+        };
+        UtilityChargeRunResult: {
+            charges: {
+                charge_id: string;
+                billing_id: string;
+                contract_id: string;
+                lines: number;
+                total_cents: components["schemas"]["Cents"];
+                /** @description An adjustment charge linked to an exported charge (INV-51) */
+                adjustment?: boolean;
+            }[];
+            skipped: {
+                contract_id?: string;
+                consumption_id?: string;
+                /** @enum {string} */
+                reason: "no_price" | "anomaly" | "unassigned" | "not_due";
+            }[];
+        };
+        /** @enum {string} */
+        UtilityChargingMode: "with_installment" | "monthly";
+        UtilitySettings: {
+            power_item_id?: string;
+            water_item_id?: string;
+            mode: components["schemas"]["UtilityChargingMode"];
+            power_daily_threshold_milli?: components["schemas"]["QtyMilli"];
+            water_daily_threshold_milli?: components["schemas"]["QtyMilli"];
+            /** Format: int64 */
+            version: number;
+        };
+        UtilitySettingsInput: {
+            power_item_id?: string | null;
+            water_item_id?: string | null;
+            mode: components["schemas"]["UtilityChargingMode"];
+            /** Format: int64 */
+            power_daily_threshold_milli?: number | null;
+            /** Format: int64 */
+            water_daily_threshold_milli?: number | null;
+        };
+        StorageReportTotals: {
+            /** @description Denominator */
+            available_m2_nights_milli: components["schemas"]["QtyMilli"];
+            /** @description Numerator (footprint) */
+            occupied_m2_nights_milli: components["schemas"]["QtyMilli"];
+            hull_m2_nights_milli?: components["schemas"]["QtyMilli"];
+            /** Format: int64 */
+            occupancy_bp: number | null;
+            /** Format: int64 */
+            boats: number;
+            /** Format: int64 */
+            exits_blocked: number;
+            /** @description reports.all only */
+            production_cents?: components["schemas"]["Cents"];
+        };
+        StorageReportGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["StorageReportTotals"];
+        };
+        StorageReportRecord: {
+            allocation_id: string;
+            area_id: string;
+            area_code: string;
+            map_kind: components["schemas"]["MapKind"];
+            vessel_id?: string;
+            loa_cm?: components["schemas"]["Cm"];
+            beam_cm?: components["schemas"]["Cm"];
+            contract_kind?: components["schemas"]["ContractKind"];
+            contract_code?: string;
+            /** Format: int64 */
+            nights: number;
+            hull_m2_nights_milli: components["schemas"]["QtyMilli"];
+            footprint_m2_nights_milli: components["schemas"]["QtyMilli"];
+            exit_on?: components["schemas"]["IsoDate"];
+            exit_blocked: boolean;
+            production_cents?: components["schemas"]["Cents"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        StorageReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["StorageReportTotals"];
+            groups: components["schemas"]["StorageReportGroup"][];
+            records: components["schemas"]["StorageReportRecord"][];
+        };
+        MaintenanceReportTotals: {
+            /** Format: int64 */
+            tasks: number;
+            /** Format: int64 */
+            open: number;
+            /** Format: int64 */
+            scheduled: number;
+            /** Format: int64 */
+            in_progress: number;
+            /** Format: int64 */
+            done: number;
+            /** Format: int64 */
+            cancelled: number;
+            /** Format: int64 */
+            overdue: number;
+            /** Format: int64 */
+            internal_minutes: number;
+            /** @description reports.all only */
+            external_cost_cents?: components["schemas"]["Cents"];
+        };
+        MaintenanceReportGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["MaintenanceReportTotals"];
+        };
+        MaintenanceReportRecord: {
+            task_id: string;
+            element?: components["schemas"]["MaintenanceElementRef"];
+            intervention?: components["schemas"]["MaintenanceIntervention"];
+            source: components["schemas"]["MaintenanceSource"];
+            priority: components["schemas"]["MaintenancePriority"];
+            status: components["schemas"]["MaintenanceTaskStatus"];
+            due_on?: components["schemas"]["IsoDate"];
+            done_on?: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            overdue_days: number;
+            /** Format: int64 */
+            internal_minutes?: number;
+            external_cost_cents?: components["schemas"]["Cents"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        MaintenanceReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["MaintenanceReportTotals"];
+            groups: components["schemas"]["MaintenanceReportGroup"][];
+            records: components["schemas"]["MaintenanceReportRecord"][];
+        };
+        UtilitiesReportTotals: {
+            power_milli: components["schemas"]["QtyMilli"];
+            water_milli: components["schemas"]["QtyMilli"];
+            hours_milli: components["schemas"]["QtyMilli"];
+            cycles_milli: components["schemas"]["QtyMilli"];
+            pending_milli: components["schemas"]["QtyMilli"];
+            unassigned_milli: components["schemas"]["QtyMilli"];
+            charged_milli: components["schemas"]["QtyMilli"];
+            /** @description reports.all only */
+            charged_cents?: components["schemas"]["Cents"];
+            /** @description At the current price */
+            pending_value_cents?: components["schemas"]["Cents"];
+        };
+        UtilitiesReportGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["UtilitiesReportTotals"];
+        };
+        UtilitiesReportRecord: {
+            consumption_id: string;
+            meter_id: string;
+            meter_code: string;
+            kind: components["schemas"]["MeterKind"];
+            resource_type?: components["schemas"]["ResourceType"];
+            resource_id?: string;
+            contract_id?: string;
+            contract_code?: string;
+            first_night: components["schemas"]["IsoDate"];
+            last_night: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            nights: number;
+            qty_milli: components["schemas"]["QtyMilli"];
+            status: components["schemas"]["UtilityConsumptionStatus"];
+            charged_cents?: components["schemas"]["Cents"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        UtilitiesReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["UtilitiesReportTotals"];
+            groups: components["schemas"]["UtilitiesReportGroup"][];
+            records: components["schemas"]["UtilitiesReportRecord"][];
+        };
     };
     responses: {
         /** @description A domain rule refused the request (m4-plan §7.4: insurance_required, customer_email_missing, paper_scan_required, shares_invalid, table_incomplete, transfer_requirements, template_invalid, template_limits, otp_invalid, vessel_not_in_fleet, provider_unknown, fit_blocked, no_price, ...), a validation failure, or an idempotency key was reused */
@@ -16577,6 +18635,15 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description A storage, maintenance or utilities rule refused the request (m9-plan §3, §7, §8, §9: storage_target_invalid, area_exits_invalid, pinned_invalid, too_many_items, scenario_window_invalid, element_invalid, fit_blocked, no_price, ...), a validation failure, or an idempotency key was reused */
+        StorageUnprocessable: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
     };
     parameters: {
         ChargeId: string;
@@ -16694,6 +18761,14 @@ export interface components {
         BotTokenHeader: string;
         /** @description Required on createBooking; handled by the domain (online_bookings.idempotency_hash): same key and body returns the same booking and token, a different body is 422 idempotency_mismatch */
         BookingIdempotencyKey: string;
+        ScenarioId: string;
+        MovementId: string;
+        EquipmentId: string;
+        PlanId: string;
+        TaskId: string;
+        MeterId: string;
+        ReadingId: string;
+        ConsumptionId: string;
     };
     requestBodies: never;
     headers: {
@@ -33723,6 +35798,2239 @@ export interface operations {
             404: components["responses"]["NotFound"];
             429: components["responses"]["TooManyRequests"];
             503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    listStorageAreas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageAreaList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getStoragePlan: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoragePlan"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    getStorageAccessibility: {
+        parameters: {
+            query?: {
+                date?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageAccessibility"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    arrangeStorageArea: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorageArrangeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageArrangeResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    evaluateStorageLayout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                areaId: components["parameters"]["AreaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorageEvaluateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageEvaluation"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    createStorageContract: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorageContractCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageContract"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["OccupancyUnprocessable"];
+        };
+    };
+    getStorageContract: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageContract"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateStorageContract: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorageContractPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageContract"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listStorageScenarios: {
+        parameters: {
+            query?: {
+                area_id?: string;
+                status?: components["schemas"]["StorageScenarioStatus"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageScenarioPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createStorageScenario: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorageScenarioCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageScenarioDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    getStorageScenario: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageScenarioDetail"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    discardStorageScenario: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateStorageScenario: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorageScenarioPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageScenarioDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    saveStorageScenarioItems: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorageScenarioItemsPut"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageScenarioDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    addStorageScenarioItem: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorageScenarioItemAdd"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageScenarioDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listStorageTrayCandidates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageTrayCandidateList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    removeStorageScenarioItem: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+                allocationId: components["parameters"]["AllocationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageScenarioDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    optimizeStorageScenario: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorageOptimizeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageScenarioDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    compareStorageScenario: {
+        parameters: {
+            query?: {
+                /** @description Scenario id or real (default) */
+                with?: string;
+                date?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageScenarioComparison"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    applyStorageScenario: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                scenarioId: components["parameters"]["ScenarioId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageApplyResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listStorageMovements: {
+        parameters: {
+            query?: {
+                date?: components["schemas"]["IsoDate"];
+                area_id?: string;
+                status?: components["schemas"]["StorageMovementStatus"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageMovementList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    completeStorageMovement: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                movementId: components["parameters"]["MovementId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageMovement"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listEquipment: {
+        parameters: {
+            query?: {
+                kind?: components["schemas"]["EquipmentKind"];
+                active?: boolean;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createEquipment: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EquipmentInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Equipment"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    getEquipment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentId: components["parameters"]["EquipmentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Equipment"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateEquipment: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                equipmentId: components["parameters"]["EquipmentId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EquipmentPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Equipment"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listMaintenancePlans: {
+        parameters: {
+            query?: {
+                active?: boolean;
+                element_type?: components["schemas"]["MaintenanceElementType"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenancePlanPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createMaintenancePlan: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MaintenancePlanInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenancePlan"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    getMaintenancePlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                planId: components["parameters"]["PlanId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenancePlan"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateMaintenancePlan: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                planId: components["parameters"]["PlanId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MaintenancePlanPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenancePlan"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listMaintenanceTasks: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["MaintenanceTaskStatus"];
+                priority?: components["schemas"]["MaintenancePriority"];
+                element_type?: components["schemas"]["MaintenanceElementType"];
+                element_id?: string;
+                plan_id?: string;
+                assignee_user_id?: string;
+                overdue_only?: boolean;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceTaskPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createMaintenanceTask: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MaintenanceTaskCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    getMaintenanceTask: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceTask"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateMaintenanceTask: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MaintenanceTaskPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    scheduleMaintenanceTask: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MaintenanceScheduleInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    startMaintenanceTask: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    completeMaintenanceTask: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MaintenanceCompleteInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    releaseMaintenanceTask: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MaintenanceReleaseInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    cancelMaintenanceTask: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MaintenanceCancelInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    uploadMaintenancePhoto: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "image/jpeg": string;
+                "image/png": string;
+                "image/webp": string;
+                "application/pdf": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceFile"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    getMaintenanceFileLink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileLink"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getMaintenanceFileFile: {
+        parameters: {
+            query?: {
+                exp?: number;
+                sig?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                taskId: components["parameters"]["TaskId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "image/png": string;
+                    "application/pdf": string;
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    reportMaintenance: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MaintenanceReportInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceTask"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    getMaintenanceWorklist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceWorklist"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getMaintenanceMap: {
+        parameters: {
+            query?: {
+                map_id?: string;
+                date?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceMap"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listUtilityMeters: {
+        parameters: {
+            query?: {
+                kind?: components["schemas"]["MeterKind"];
+                pedestal_id?: string;
+                resource_id?: string;
+                active?: boolean;
+                route?: "dock";
+                /** @description Code */
+                q?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilityMeterPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createUtilityMeter: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UtilityMeterInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilityMeter"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    getUtilityMeter: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                meterId: components["parameters"]["MeterId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilityMeter"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateUtilityMeter: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                meterId: components["parameters"]["MeterId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UtilityMeterPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilityMeter"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listMeterReadings: {
+        parameters: {
+            query?: {
+                meter_id?: string;
+                status?: components["schemas"]["MeterReadingStatus"];
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeterReadingPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    recordMeterReading: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MeterReadingCreate"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeterReading"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    getMeterReadingPhotoLink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                readingId: components["parameters"]["ReadingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileLink"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    uploadMeterReadingPhoto: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                readingId: components["parameters"]["ReadingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "image/jpeg": string;
+                "image/png": string;
+                "image/webp": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeterReadingPhoto"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+            422: components["responses"]["StorageUnprocessable"];
+        };
+    };
+    getMeterReadingPhotoFile: {
+        parameters: {
+            query?: {
+                exp?: number;
+                sig?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                readingId: components["parameters"]["ReadingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "image/png": string;
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    confirmMeterReading: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                readingId: components["parameters"]["ReadingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeterReading"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    voidMeterReading: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                readingId: components["parameters"]["ReadingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MeterReadingVoidInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeterReading"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listUtilityConsumptions: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["UtilityConsumptionStatus"];
+                contract_id?: string;
+                meter_id?: string;
+                kind?: components["schemas"]["MeterKind"];
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilityConsumptionPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    excludeUtilityConsumption: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                consumptionId: components["parameters"]["ConsumptionId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UtilityConsumptionExclude"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilityConsumption"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    assignUtilityConsumption: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                consumptionId: components["parameters"]["ConsumptionId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UtilityConsumptionAssign"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilityConsumption"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    runUtilityCharges: {
+        parameters: {
+            query?: {
+                contract_id?: string;
+            };
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilityChargeRunResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    getUtilitySettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilitySettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateUtilitySettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UtilitySettingsInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilitySettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["StorageUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getStorageReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "area" | "map_kind" | "contract_kind" | "month";
+                map_id?: components["parameters"]["ReportMapId"];
+                map_kind?: components["parameters"]["ReportMapKind"];
+                area_id?: string;
+                exits_blocked_only?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getMaintenanceReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "status" | "priority" | "element_type" | "intervention" | "month";
+                status?: components["schemas"]["MaintenanceTaskStatus"];
+                element_type?: components["schemas"]["MaintenanceElementType"];
+                overdue_only?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MaintenanceReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getUtilitiesReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "kind" | "meter" | "status" | "contract" | "month";
+                kind?: components["schemas"]["MeterKind"];
+                status?: components["schemas"]["UtilityConsumptionStatus"];
+                meter_id?: string;
+                contract_id?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilitiesReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
         };
     };
 }

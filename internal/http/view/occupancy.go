@@ -107,6 +107,9 @@ func MoveResult(m occupancy.MoveResult) api.MoveResult {
 	return api.MoveResult{Allocations: Allocations(m.Allocations), UndoId: m.UndoID, UndoUntil: m.UndoUntil.UTC(), PriceEffect: priceEffect(m.PriceEffect)}
 }
 
+// PriceEffect maps a move price effect (nil when nothing was priced).
+func PriceEffect(e *occupancy.PriceEffect) *api.PriceEffect { return priceEffect(e) }
+
 func priceEffect(e *occupancy.PriceEffect) *api.PriceEffect {
 	if e == nil {
 		return nil

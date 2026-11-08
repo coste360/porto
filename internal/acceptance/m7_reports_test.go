@@ -114,8 +114,11 @@ func (h *m7Harness) drillURL(drill map[string]any, from, to calendar.Date, extra
 	for k, x := range params {
 		v.Set(k, x.(string))
 	}
-	v.Set("from", from.String())
-	v.Set("to", to.String())
+	// A tile with its own period (M9 storage_exits_blocked) carries from and to in its drill.
+	if v.Get("from") == "" || v.Get("to") == "" {
+		v.Set("from", from.String())
+		v.Set("to", to.String())
+	}
 	for k, xs := range extra {
 		v[k] = xs
 	}
@@ -168,8 +171,11 @@ func (h *m7Harness) recordSum(t *testing.T, c *client, key string, drill map[str
 			case "vessels_avg_loa":
 				numer += m7num(r, "loa_cm")
 				denom++
+			default:
+				m9RecordSum(key, r, &value, &numer)
 			}
 		}
+		m9TotalsDenom(key, body, &denom)
 		pg, _ := body["page"].(map[string]any)
 		total = m7num(pg, "total_records")
 		if int64(page)*1000 >= total {

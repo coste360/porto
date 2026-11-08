@@ -58,6 +58,8 @@ var (
 	ErrNotImplementedM8 = errors.New("contract: not implemented (M8)")
 	// ErrNotImplementedM5 is returned by the M5 entry points of payments.go until PAYMENTS lands them.
 	ErrNotImplementedM5 = errors.New("contract: not implemented (M5)")
+	// ErrNotImplementedM9 is returned by the M9 signatures of storage.go until STORAGE lands them.
+	ErrNotImplementedM9 = errors.New("contract: not implemented (M9)")
 )
 
 // InsuranceError names the vessel without a valid insurance (details.vessel_id).

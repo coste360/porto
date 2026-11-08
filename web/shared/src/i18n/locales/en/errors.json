@@ -134,5 +134,19 @@
   "price_changed": "The price changed since the preview: check the new amount.",
   "cancellation_not_allowed": "This booking cannot be cancelled online: contact the marina.",
   "nothing_due": "Nothing is due.",
-  "idempotency_mismatch": "The request was already sent with different data: reload the page and retry."
+  "idempotency_mismatch": "The request was already sent with different data: reload the page and retry.",
+  "storage_target_invalid": "Storage needs a surface area of a yard or shed, or a trailer spot.",
+  "storage_no_space": "No free position in the area for the period: open a scenario to rearrange it.",
+  "area_exits_invalid": "An exit of the area is not usable or not on the border: fix the map.",
+  "pinned_invalid": "A pinned boat is not valid in its position.",
+  "too_many_items": "Too many boats for one optimization.",
+  "scenario_window_invalid": "Invalid scenario period.",
+  "scenario_not_draft": "The scenario is no longer a draft.",
+  "scenario_conflicts": "The scenario conflicts with the current state: nothing was applied.",
+  "movement_not_pending": "The movement is no longer pending.",
+  "element_invalid": "Unknown or unsuitable element.",
+  "maintenance_conflicts": "Boats occupy the element on the maintenance nights: move them and retry.",
+  "task_already_done": "The task was already completed.",
+  "reading_charged": "The reading is used by a charged consumption.",
+  "consumption_frozen": "The consumption is already charged or excluded."
 }

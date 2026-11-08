@@ -99,7 +99,7 @@ type Params struct {
 	// R5
 	NewOnly bool // new=true
 	// R6
-	Kind string // contract kind
+	Kind string // contract kind (utilities: meter kind)
 	// R6, R7, R8, R9, R12
 	CustomerID string
 	// R8
@@ -116,6 +116,16 @@ type Params struct {
 	AsOf        calendar.Date // zero = today
 	OverdueOnly bool          // overdue=true
 	Origin      string
+
+	// M9 storage (m9-plan §11)
+	AreaID           string
+	ExitsBlockedOnly bool // exits_blocked_only=true
+	// M9 maintenance (status: task status) and utilities (status: consumption status, Kind: meter kind)
+	Status          string
+	ElementType     string
+	TaskOverdueOnly bool // overdue_only=true
+	MeterID         string
+	ContractID      string
 }
 
 // DashboardParams is the request of GET .../dashboard (m7-plan §4).
@@ -156,6 +166,9 @@ type (
 	CashResult           = calc.CashResult
 	VesselsResult        = calc.VesselsResult
 	BerthRevenueResult   = calc.BerthRevenueResult
+	StorageResult        = calc.StorageResult
+	MaintenanceResult    = calc.MaintenanceResult
+	UtilitiesResult      = calc.UtilitiesResult
 	Dashboard            = calc.Dashboard
 	Comparison           = calc.Comparison
 )

@@ -22,3 +22,4 @@ unique, 0004 prezzi puri, 0005 OpenAPI spec-first, 0009 shadcn, 0012 kit della m
 | [0011](0011-offline-telefono-remoto-m6b.md) | Offline, telefono e desktop remoto (M6b): coda con doppia deduplica, proxy remoto, bridge su loopback | proposta |
 | [0012](0012-report-e-cruscotto-m7.md) | Report e cruscotto (M7): righe grezze e calcolo puro, riquadro uguale ai suoi record | proposta |
 | [0013](0013-prenotazione-online-m8.md) | Prenotazione online (M8): quote come contatori nel DB, hold concreto con idempotenza di dominio, conferma anche da canale verificato | proposta |
+| [0014](0014-rimessaggio-manutenzioni-m9.md) | Rimessaggio e manutenzioni (M9): ipotesi separate dallo stato reale, ottimizzatore puro con seme, applicazione tutto o niente, consumi addebitati una volta | proposta |

@@ -24,6 +24,8 @@ type Vector = {
     hull_type?: string;
     power_required_a?: Opt;
     insurance_until?: string | null;
+    support?: string;
+    displacement_kg?: Opt;
   };
   target: {
     kind: FitTargetKind;
@@ -37,6 +39,8 @@ type Vector = {
     overhang_allowed?: boolean;
     power_a?: Opt;
     land_kind?: string;
+    supports?: string[];
+    max_weight_kg?: Opt;
   };
   last_night: string;
   rules: {
@@ -45,7 +49,13 @@ type Vector = {
     depth_warn_margin_cm?: number;
     waste_threshold_bp?: number;
   };
-  expect: { ok: boolean; blocking: string[]; warnings: string[]; fill_bp: number };
+  expect: {
+    ok: boolean;
+    blocking: string[];
+    warnings: string[];
+    fill_bp: number;
+    overridable: boolean;
+  };
 };
 
 function run(v: Vector) {
@@ -58,6 +68,8 @@ function run(v: Vector) {
       hull: v.vessel.hull ?? v.vessel.hull_type ?? 'other',
       powerRequiredA: v.vessel.power_required_a,
       insuranceUntil: v.vessel.insurance_until ?? null,
+      support: v.vessel.support ?? null,
+      displacementKg: v.vessel.displacement_kg,
     },
     {
       kind: v.target.kind,
@@ -71,6 +83,8 @@ function run(v: Vector) {
       overhangAllowed: v.target.overhang_allowed ?? false,
       powerA: v.target.power_a,
       landKind: v.target.land_kind,
+      supports: v.target.supports ?? [],
+      maxWeightKg: v.target.max_weight_kg,
     },
     v.last_night,
     {
@@ -85,6 +99,7 @@ function run(v: Vector) {
     blocking: r.blocking.map((i) => i.code),
     warnings: r.warnings.map((i) => i.code),
     fill_bp: r.fillBp,
+    overridable: r.overridable,
   };
 }
 
@@ -103,6 +118,7 @@ describe('fit parity vectors (testdata/fit/cases.json)', () => {
         blocking: v.expect.blocking,
         warnings: v.expect.warnings,
         fill_bp: v.expect.fill_bp,
+        overridable: v.expect.overridable,
       });
     }
   });

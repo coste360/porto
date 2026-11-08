@@ -1,15 +1,27 @@
 // Offline allowlists (m6b-plan §4.2, spec 29.2). OFFLINE_OPERATIONS must equal the operations flagged
 // `x-porto-offline: true` in api/openapi.yaml (the server pins the same set, TestPolicies_OfflineSet).
 
-/** Kinds of queued operations. Reserved for M9–M11 (not enabled): utility.reading, maintenance.report,
- * maintenance.outcome, yard.timesheet, yard.activity_done, rental.checklist. */
-export type OfflineOpKind = 'presence.record' | 'presence.photo' | 'payment.cash';
+/** Kinds of queued operations. M9 enables utility.reading, maintenance.report and maintenance.outcome
+ * (m9-plan §10); reserved for M10–M11 (not enabled): yard.timesheet, yard.activity_done, rental.checklist. */
+export type OfflineOpKind =
+  | 'presence.record'
+  | 'presence.photo'
+  | 'payment.cash'
+  | 'utility.reading'
+  | 'maintenance.report'
+  | 'maintenance.outcome';
 
 /** The only operations the queue may replay, with their kind. */
 export const OFFLINE_OPERATION_KINDS = {
   recordPresence: 'presence.record',
   uploadPresencePhoto: 'presence.photo',
   recordPayment: 'payment.cash',
+  // M9 (m9-plan §10): the photo uploads depend on their reading or report (dependsOn binds readingId / taskId).
+  recordMeterReading: 'utility.reading',
+  uploadMeterReadingPhoto: 'utility.reading',
+  reportMaintenance: 'maintenance.report',
+  uploadMaintenancePhoto: 'maintenance.report',
+  completeMaintenanceTask: 'maintenance.outcome',
 } as const satisfies Record<string, OfflineOpKind>;
 
 export const OFFLINE_OPERATIONS: readonly string[] = Object.keys(OFFLINE_OPERATION_KINDS);
@@ -85,9 +97,28 @@ export const OFFLINE_QUERY_ALLOWLIST: readonly AllowlistEntry[] = [
     match: (k) => marinaArea('billing', 'cash-session')(k) && k[4] === 'current',
   },
   { name: 'deadlines', operationId: 'listDeadlines', match: marinaArea('registry', 'deadlines') },
-  // M9–M11: assigned activities (yard, maintenance, rentals).
-  { name: 'activities.assigned', operationId: null, match: () => false },
+  // Assigned activities (M9: the maintenance worklist; M10–M11 add yard and rentals):
+  // ['marina', id, 'maintenance', 'worklist']
+  {
+    name: 'activities.assigned',
+    operationId: 'getMaintenanceWorklist',
+    match: (k) => marinaArea('maintenance', 'worklist')(k) && k.length === 4,
+  },
+  // The meters of the dock reading round (m9-plan §10): ['marina', id, 'utilities', 'meters', { route: 'dock' }]
+  {
+    name: 'meters.dock',
+    operationId: 'listUtilityMeters',
+    match: (k) => marinaArea('utilities', 'meters')(k) && isDockRoute(k[4]),
+  },
 ];
+
+function isDockRoute(filters: unknown): boolean {
+  return (
+    typeof filters === 'object' &&
+    filters !== null &&
+    (filters as { route?: unknown }).route === 'dock'
+  );
+}
 
 /** True when a query key may be persisted for the given marina (other marinas never are). */
 export function isPersistable(key: readonly unknown[], marinaId: string): boolean {

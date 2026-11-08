@@ -1,0 +1,203 @@
+{
+  "nav": {
+    "maintenance": "Manutenzioni",
+    "sections": "Sezioni delle manutenzioni",
+    "tasks": "Interventi",
+    "plans": "Piani",
+    "equipment": "Mezzi"
+  },
+  "all": "Tutti",
+  "yes": "Sì",
+  "no": "No",
+  "none": "Nessuno",
+  "queued": "Esito salvato sul dispositivo: verrà inviato appena torna la rete.",
+  "tasks": {
+    "title": "Manutenzioni",
+    "description": "Interventi da piani periodici, dall'ufficio e dalle segnalazioni, prima quelli scaduti.",
+    "pending": "Questa sezione sarà disponibile a breve.",
+    "new": "Nuovo intervento",
+    "create": "Crea intervento",
+    "empty": "Nessun intervento con questi filtri.",
+    "overdue": "Scaduto",
+    "overdueOnly": "Solo scaduti"
+  },
+  "task": {
+    "details": "Dettagli",
+    "schedule": "Pianifica",
+    "start": "Avvia",
+    "complete": "Registra esito",
+    "cancel": "Annulla intervento",
+    "cancelHint": "Le notti di manutenzione da oggi in poi vengono liberate.",
+    "release": "Libera notti",
+    "releaseHint": "Libera le notti di manutenzione dopo la data indicata (tutte da oggi se vuota).",
+    "keepUntil": "Tieni fino alla notte",
+    "releaseAll": "Libera da oggi",
+    "files": "Foto e documenti",
+    "addFile": "Aggiungi foto o PDF",
+    "openFile": "Apri",
+    "mapPosition": "Posizione sulla mappa",
+    "checked": "Fatto",
+    "unchecked": "Non fatto"
+  },
+  "schedule": {
+    "hint": "Con il posto da liberare vengono prenotate notti di manutenzione: una barca presente blocca la pianificazione.",
+    "from": "Dalla notte",
+    "to": "Alla notte",
+    "conflicts_one": "{{count}} barca occupa le notti: spostala e riprova.",
+    "conflicts_other": "{{count}} barche occupano le notti: spostale e riprova.",
+    "conflictNights": "Occupato dal {{from}} al {{to}}.",
+    "alternatives": "Posti liberi: {{list}}.",
+    "noAlternative": "Nessun posto alternativo libero."
+  },
+  "plans": {
+    "title": "Piani di manutenzione",
+    "description": "Interventi periodici su posti, pontili, colonnine e mezzi.",
+    "new": "Nuovo piano",
+    "edit": "Modifica",
+    "save": "Salva piano",
+    "empty": "Nessun piano.",
+    "addTarget": "Aggiungi elemento",
+    "removeTarget": "Rimuovi elemento",
+    "addItem": "Aggiungi voce",
+    "removeItem": "Rimuovi voce",
+    "checklistItem": "Voce {{n}}"
+  },
+  "period": {
+    "months_one": "Ogni mese",
+    "months_other": "Ogni {{count}} mesi",
+    "fixedDate": "Ogni anno il {{day}}",
+    "cycles_one": "Ogni {{count}} unità del contatore",
+    "cycles_other": "Ogni {{count}} unità del contatore"
+  },
+  "equipment": {
+    "title": "Mezzi e impianti",
+    "description": "Travel lift, gru, muletti, carrelli e impianti.",
+    "new": "Nuovo mezzo",
+    "edit": "Modifica",
+    "save": "Salva",
+    "empty": "Nessun mezzo.",
+    "inactive": "Non attivo",
+    "kg": "{{value}} kg"
+  },
+  "element": {
+    "map": "Mappa",
+    "type": "Tipo di elemento",
+    "element": "Elemento",
+    "choose": "Scegli…",
+    "search": "Cerca codice",
+    "none": "Nessun elemento."
+  },
+  "fields": {
+    "title": "Titolo",
+    "description": "Descrizione",
+    "element": "Elemento",
+    "priority": "Priorità",
+    "status": "Stato",
+    "dueOn": "Scadenza",
+    "source": "Origine",
+    "nights": "Notti",
+    "outOfService": "Fuori servizio",
+    "intervention": "Intervento",
+    "interventionLabel": "Nome dell'intervento",
+    "supplierRef": "Riferimento fornitore",
+    "outcome": "Esito",
+    "minutes": "Minuti di lavoro",
+    "externalCost": "Costo esterno",
+    "notes": "Note",
+    "checklist": "Lista di controllo",
+    "name": "Nome",
+    "periodicity": "Periodicità",
+    "targets": "Elementi",
+    "active": "Attivo",
+    "monthDay": "Giorno (MM-GG)",
+    "everyMonths": "Ogni quanti mesi",
+    "everyUnits": "Ogni quante unità",
+    "startsOn": "A partire dal",
+    "meter": "Contatore",
+    "leadDays": "Preavviso (giorni)",
+    "planNights": "Notti di fermo",
+    "requiresFree": "Richiede il posto libero",
+    "code": "Codice",
+    "kind": "Tipo",
+    "capacity": "Portata (kg)"
+  },
+  "enums": {
+    "status": {
+      "open": "Aperto",
+      "scheduled": "Pianificato",
+      "in_progress": "In corso",
+      "done": "Fatto",
+      "cancelled": "Annullato"
+    },
+    "priority": {
+      "low": "Bassa",
+      "normal": "Normale",
+      "high": "Alta",
+      "urgent": "Urgente"
+    },
+    "source": {
+      "plan": "Piano",
+      "office": "Ufficio",
+      "report": "Segnalazione"
+    },
+    "outcome": {
+      "ok": "Tutto in ordine",
+      "fixed": "Riparato",
+      "needs_followup": "Serve un altro intervento",
+      "not_done": "Non eseguito"
+    },
+    "intervention": {
+      "underwater_inspection": "Ispezione subacquea",
+      "pennant_replacement": "Sostituzione trappe",
+      "chain_check": "Controllo catenaria",
+      "rcd_test": "Prova differenziali",
+      "general": "Manutenzione generale",
+      "custom": "Personalizzato"
+    },
+    "elementType": {
+      "berth": "Posto",
+      "structure": "Struttura",
+      "dynamic_area": "Area",
+      "land_resource": "Risorsa a terra",
+      "pedestal": "Colonnina",
+      "equipment": "Mezzo"
+    },
+    "equipmentKind": {
+      "travel_lift": "Travel lift",
+      "crane": "Gru",
+      "forklift": "Muletto",
+      "trailer": "Carrello",
+      "vehicle": "Veicolo",
+      "plant": "Impianto",
+      "other": "Altro"
+    },
+    "periodKind": {
+      "months": "Mesi",
+      "fixed_date": "Data fissa",
+      "cycles": "Ore o cicli"
+    },
+    "fileKind": {
+      "photo": "Foto",
+      "document": "Documento"
+    }
+  },
+  "queue": {
+    "outcome": "Esito: {{title}}",
+    "report": "Segnalazione: {{title}}",
+    "photo": "Foto: {{title}}"
+  },
+  "phone": {
+    "title": "Manutenzioni",
+    "description": "Interventi assegnati e in scadenza nei prossimi 7 giorni.",
+    "pending": "Questa schermata sarà disponibile a breve.",
+    "empty": "Nessun intervento da fare.",
+    "report": "Segnala",
+    "send": "Invia segnalazione",
+    "back": "Indietro",
+    "photo": "Foto",
+    "queued_one": "{{count}} operazione in attesa di invio.",
+    "queued_other": "{{count}} operazioni in attesa di invio.",
+    "outcomeSaved": "Esito registrato.",
+    "reportSaved": "Segnalazione registrata."
+  }
+}

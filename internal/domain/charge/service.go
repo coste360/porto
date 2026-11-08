@@ -83,6 +83,19 @@ type Service struct {
 	d         Deps
 	requester PaymentRequester
 	credits   CreditGranter
+	onCancel  map[string]CancelHook // by origin type
+}
+
+// CancelHook runs inside the transaction that cancels a charge of its origin type, after the charge row is
+// cancelled: the origin releases what the charge had claimed (utility consumptions back to pending, INV-90).
+type CancelHook func(ctx context.Context, tx bun.IDB, scope store.MarinaScope, actor audit.Actor, ch *store.Charge) error
+
+// SetCancelHook registers the cancel hook of an origin type (utility registers itself in its NewService).
+func (s *Service) SetCancelHook(originType string, h CancelHook) {
+	if s.onCancel == nil {
+		s.onCancel = map[string]CancelHook{}
+	}
+	s.onCancel[originType] = h
 }
 
 // NewService returns the service.

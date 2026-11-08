@@ -49,6 +49,15 @@ func TileValueOf(key string, totals any) TileValue {
 			return f(t.Departures, 0)
 		}
 		return f(t.Arrivals, 0)
+	case StorageTotals:
+		if key == IndStorageExitsBlocked {
+			return f(t.ExitsBlocked, 0)
+		}
+		return f(t.OccupiedM2Milli, t.AvailableM2Milli)
+	case MaintenanceTotals:
+		return f(t.Overdue, 0)
+	case UtilitiesTotals:
+		return f(int64(t.PendingValue.Value), 0)
 	case LostDemandTotals:
 		if key == IndLostDemandValue {
 			return f(int64(t.Value.Value), 0)

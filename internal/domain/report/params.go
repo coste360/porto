@@ -27,6 +27,11 @@ var (
 	aligns          = []string{"date", "weekday"}
 	granularities   = []string{"day", "week", "month"}
 	compares        = []string{"previous_year", "none"}
+	// M9 (m9-plan §11).
+	meterKinds          = []string{"power", "water", "hours", "cycles"}
+	taskStatuses        = []string{"open", "scheduled", "in_progress", "done", "cancelled"}
+	consumptionStatuses = []string{"pending", "anomaly", "unassigned", "charged", "excluded"}
+	elementTypes        = []string{"berth", "structure", "dynamic_area", "land_resource", "pedestal", "equipment"}
 )
 
 var occupancyGroups = []string{"resource", "structure", "group", "category", "map", "month", "week", "night"}
@@ -85,6 +90,18 @@ var specs = map[Key]reportSpec{
 	calc.KeyCash:         {params: []string{"group_by", "section"}, groupBy: []string{"register", "day", "month", "vat_rate", "method"}, sections: []string{"sessions", "fiscal"}},
 	calc.KeyVessels:      {params: append([]string{"group_by"}, dimParams...), groupBy: []string{"hull_type", "length_band", "flag", "kind"}},
 	calc.KeyBerthRevenue: {params: append([]string{"group_by"}, dimParams...), groupBy: []string{"structure", "group", "category", "map"}},
+	calc.KeyStorage: {
+		params:  []string{"group_by", "map_id", "map_kind", "area_id", "exits_blocked_only"},
+		groupBy: []string{"area", "map_kind", "contract_kind", "month"},
+	},
+	calc.KeyMaintenance: {
+		params:  []string{"group_by", "status", "element_type", "overdue_only"},
+		groupBy: []string{"status", "priority", "element_type", "intervention", "month"},
+	},
+	calc.KeyUtilities: {
+		params:  []string{"group_by", "kind", "status", "meter_id", "contract_id"},
+		groupBy: []string{"kind", "meter", "status", "contract", "month"},
+	},
 }
 
 func (sp reportSpec) accepts(name string) bool { return slices.Contains(sp.params, name) }
@@ -225,7 +242,25 @@ func ParseParams(key Key, q url.Values) (Params, error) {
 	out.Channel = p.enum("channel", channels)
 	out.Purpose = p.enum("purpose", purposes)
 	out.NewOnly, _ = p.boolean("new")
-	out.Kind = p.enum("kind", contractKinds)
+	if key == calc.KeyUtilities {
+		out.Kind = p.enum("kind", meterKinds)
+	} else {
+		out.Kind = p.enum("kind", contractKinds)
+	}
+	switch key {
+	case calc.KeyMaintenance:
+		out.Status = p.enum("status", taskStatuses)
+	case calc.KeyUtilities:
+		out.Status = p.enum("status", consumptionStatuses)
+	default:
+		out.Status = p.str("status", 32)
+	}
+	out.AreaID = p.str("area_id", 36)
+	out.ExitsBlockedOnly, _ = p.boolean("exits_blocked_only")
+	out.ElementType = p.enum("element_type", elementTypes)
+	out.TaskOverdueOnly, _ = p.boolean("overdue_only")
+	out.MeterID = p.str("meter_id", 36)
+	out.ContractID = p.str("contract_id", 36)
 	out.CustomerID = p.str("customer_id", 36)
 	out.ItemID = p.str("item_id", 36)
 	if key == calc.KeyCharges {
@@ -321,6 +356,13 @@ func (p Params) Values() url.Values {
 	set("method", p.Method)
 	setDate("as_of", p.AsOf)
 	setBool("overdue", p.OverdueOnly)
+	set("area_id", p.AreaID)
+	setBool("exits_blocked_only", p.ExitsBlockedOnly)
+	set("status", p.Status)
+	set("element_type", p.ElementType)
+	setBool("overdue_only", p.TaskOverdueOnly)
+	set("meter_id", p.MeterID)
+	set("contract_id", p.ContractID)
 	return v
 }
 

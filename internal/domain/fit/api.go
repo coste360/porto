@@ -34,8 +34,9 @@ func holdsBoat(t Target) bool {
 // Check returns the compatibility of v with t for a stay whose last night is lastNight (m3-plan §2.1, §13 D19).
 //
 // Blocking codes: loa_exceeds (LOA > MaxLOA + tolerance), beam_exceeds (Beam > MaxBeam, no tolerance),
-// draft_exceeds (Draft + clearance > Depth), air_draft_exceeds, multihull_not_allowed and vessel_invalid (not
-// overridable). A zero MaxLOA or MaxBeam is unlimited; nil draft, depth, air draft or limits skip the check.
+// draft_exceeds (Draft + clearance > Depth), air_draft_exceeds, multihull_not_allowed, weight_exceeds
+// (DisplacementKg > MaxWeightKg), support_not_allowed (Support not in a non-empty Supports list; not overridable)
+// and vessel_invalid (not overridable). A zero MaxLOA or MaxBeam is unlimited; nil draft, depth, air draft or limits skip the check.
 // Land kinds other than cradle and trailer_spot never block and have no warnings.
 func Check(v Vessel, t Target, lastNight calendar.Date, r Rules) Result {
 	if v.LOA <= 0 || v.Beam <= 0 {
@@ -78,6 +79,13 @@ func Check(v Vessel, t Target, lastNight calendar.Date, r Rules) Result {
 	if IsMultihull(v.Hull) && !t.MultihullOK {
 		block(CodeMultihullNotAllowed, 0, 0)
 	}
+	supportRefused := v.Support != "" && len(t.Supports) > 0 && !slices.Contains(t.Supports, v.Support)
+	if supportRefused {
+		block(CodeSupportNotAllowed, 0, 0)
+	}
+	if v.DisplacementKg != nil && t.MaxWeightKg != nil && *v.DisplacementKg > *t.MaxWeightKg {
+		block(CodeWeightExceeds, 0, 0)
+	}
 	res.FillBP = fillBP(v, t)
 	if t.Kind == TargetBerth && res.FillBP < r.WasteThresholdBP {
 		warn(CodeFillBelowThreshold, 0, 0)
@@ -95,7 +103,7 @@ func Check(v Vessel, t Target, lastNight calendar.Date, r Rules) Result {
 	slices.SortFunc(res.Blocking, byCode)
 	slices.SortFunc(res.Warnings, byCode)
 	res.OK = len(res.Blocking) == 0
-	res.Overridable = true
+	res.Overridable = !supportRefused
 	return res
 }
 

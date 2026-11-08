@@ -32,7 +32,8 @@
     "tacit_renewal_blocked": "Tacit renewal blocked",
     "waitlist_offer": "Berth for the waiting list",
     "document_failed": "Document not generated",
-    "signature_expiring": "Signature expiring"
+    "signature_expiring": "Signature expiring",
+    "maintenance_due": "Maintenance due"
   },
   "filters": {
     "status": "Status",

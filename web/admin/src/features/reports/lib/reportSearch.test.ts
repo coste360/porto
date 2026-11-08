@@ -82,7 +82,7 @@ describe('catalog', () => {
 
   it('serves every report key once', () => {
     const keys = REPORTS.map((r) => r.key);
-    expect(new Set(keys).size).toBe(16);
+    expect(new Set(keys).size).toBe(16 + 3); // M7 + M9 (storage, maintenance, utilities)
   });
 
   it('has an Italian and English label for every column, total, grouping, section and filter', () => {

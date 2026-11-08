@@ -84,8 +84,11 @@ func DecodeSnapshot(raw store.JSON) *PriceSnapshot {
 
 // PricingType maps a contract kind and term to the price list contract type (m3-plan §13 D10).
 func PricingType(kind, term string) pricing.ContractType {
-	if kind == KindTransit {
+	switch kind {
+	case KindTransit:
 		return pricing.ContractTransit
+	case KindStorage:
+		return pricing.ContractStorage // every storage term (m9-plan D2)
 	}
 	switch term {
 	case TermAnnual:

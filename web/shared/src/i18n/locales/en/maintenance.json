@@ -1,0 +1,203 @@
+{
+  "nav": {
+    "maintenance": "Maintenance",
+    "sections": "Maintenance sections",
+    "tasks": "Tasks",
+    "plans": "Plans",
+    "equipment": "Equipment"
+  },
+  "all": "All",
+  "yes": "Yes",
+  "no": "No",
+  "none": "None",
+  "queued": "Outcome saved on the device: it will be sent when the network is back.",
+  "tasks": {
+    "title": "Maintenance",
+    "description": "Tasks from periodic plans, the office and field reports, overdue first.",
+    "pending": "This section will be available soon.",
+    "new": "New task",
+    "create": "Create task",
+    "empty": "No task with these filters.",
+    "overdue": "Overdue",
+    "overdueOnly": "Overdue only"
+  },
+  "task": {
+    "details": "Details",
+    "schedule": "Schedule",
+    "start": "Start",
+    "complete": "Record outcome",
+    "cancel": "Cancel task",
+    "cancelHint": "The maintenance nights from today on are released.",
+    "release": "Release nights",
+    "releaseHint": "Releases the maintenance nights after the given date (all from today when empty).",
+    "keepUntil": "Keep up to the night",
+    "releaseAll": "Release from today",
+    "files": "Photos and documents",
+    "addFile": "Add a photo or PDF",
+    "openFile": "Open",
+    "mapPosition": "Position on the map",
+    "checked": "Done",
+    "unchecked": "Not done"
+  },
+  "schedule": {
+    "hint": "When the place must be free, maintenance nights are booked: a boat on them blocks the schedule.",
+    "from": "From night",
+    "to": "To night",
+    "conflicts_one": "{{count}} boat holds the nights: move it and retry.",
+    "conflicts_other": "{{count}} boats hold the nights: move them and retry.",
+    "conflictNights": "Taken from {{from}} to {{to}}.",
+    "alternatives": "Free places: {{list}}.",
+    "noAlternative": "No free alternative place."
+  },
+  "plans": {
+    "title": "Maintenance plans",
+    "description": "Periodic work on berths, piers, pedestals and equipment.",
+    "new": "New plan",
+    "edit": "Edit",
+    "save": "Save plan",
+    "empty": "No plan.",
+    "addTarget": "Add element",
+    "removeTarget": "Remove element",
+    "addItem": "Add item",
+    "removeItem": "Remove item",
+    "checklistItem": "Item {{n}}"
+  },
+  "period": {
+    "months_one": "Every month",
+    "months_other": "Every {{count}} months",
+    "fixedDate": "Every year on {{day}}",
+    "cycles_one": "Every {{count}} meter unit",
+    "cycles_other": "Every {{count}} meter units"
+  },
+  "equipment": {
+    "title": "Equipment and plants",
+    "description": "Travel lifts, cranes, forklifts, trailers and plants.",
+    "new": "New equipment",
+    "edit": "Edit",
+    "save": "Save",
+    "empty": "No equipment.",
+    "inactive": "Inactive",
+    "kg": "{{value}} kg"
+  },
+  "element": {
+    "map": "Map",
+    "type": "Element type",
+    "element": "Element",
+    "choose": "Choose…",
+    "search": "Search code",
+    "none": "No element."
+  },
+  "fields": {
+    "title": "Title",
+    "description": "Description",
+    "element": "Element",
+    "priority": "Priority",
+    "status": "Status",
+    "dueOn": "Due",
+    "source": "Source",
+    "nights": "Nights",
+    "outOfService": "Out of service",
+    "intervention": "Intervention",
+    "interventionLabel": "Intervention name",
+    "supplierRef": "Supplier reference",
+    "outcome": "Outcome",
+    "minutes": "Working minutes",
+    "externalCost": "External cost",
+    "notes": "Notes",
+    "checklist": "Checklist",
+    "name": "Name",
+    "periodicity": "Periodicity",
+    "targets": "Elements",
+    "active": "Active",
+    "monthDay": "Day (MM-DD)",
+    "everyMonths": "Every how many months",
+    "everyUnits": "Every how many units",
+    "startsOn": "Starting on",
+    "meter": "Meter",
+    "leadDays": "Lead (days)",
+    "planNights": "Downtime nights",
+    "requiresFree": "Requires the place free",
+    "code": "Code",
+    "kind": "Kind",
+    "capacity": "Capacity (kg)"
+  },
+  "enums": {
+    "status": {
+      "open": "Open",
+      "scheduled": "Scheduled",
+      "in_progress": "In progress",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    },
+    "priority": {
+      "low": "Low",
+      "normal": "Normal",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "source": {
+      "plan": "Plan",
+      "office": "Office",
+      "report": "Field report"
+    },
+    "outcome": {
+      "ok": "All in order",
+      "fixed": "Fixed",
+      "needs_followup": "Needs a follow-up",
+      "not_done": "Not done"
+    },
+    "intervention": {
+      "underwater_inspection": "Underwater inspection",
+      "pennant_replacement": "Pennant replacement",
+      "chain_check": "Chain check",
+      "rcd_test": "RCD test",
+      "general": "General maintenance",
+      "custom": "Custom"
+    },
+    "elementType": {
+      "berth": "Berth",
+      "structure": "Structure",
+      "dynamic_area": "Area",
+      "land_resource": "Land resource",
+      "pedestal": "Pedestal",
+      "equipment": "Equipment"
+    },
+    "equipmentKind": {
+      "travel_lift": "Travel lift",
+      "crane": "Crane",
+      "forklift": "Forklift",
+      "trailer": "Trailer",
+      "vehicle": "Vehicle",
+      "plant": "Plant",
+      "other": "Other"
+    },
+    "periodKind": {
+      "months": "Months",
+      "fixed_date": "Fixed date",
+      "cycles": "Hours or cycles"
+    },
+    "fileKind": {
+      "photo": "Photo",
+      "document": "Document"
+    }
+  },
+  "queue": {
+    "outcome": "Outcome: {{title}}",
+    "report": "Report: {{title}}",
+    "photo": "Photo: {{title}}"
+  },
+  "phone": {
+    "title": "Maintenance",
+    "description": "Tasks assigned to you and due in the next 7 days.",
+    "pending": "This screen will be available soon.",
+    "empty": "Nothing to do.",
+    "report": "Report",
+    "send": "Send report",
+    "back": "Back",
+    "photo": "Photo",
+    "queued_one": "{{count}} operation waiting to be sent.",
+    "queued_other": "{{count}} operations waiting to be sent.",
+    "outcomeSaved": "Outcome recorded.",
+    "reportSaved": "Report recorded."
+  }
+}

@@ -116,6 +116,20 @@ export function RefLink({
           {children}
         </Link>
       );
+    // M9: the maintenance and utilities pages list the tasks and consumptions (no detail route).
+    case 'maintenance_task':
+      return (
+        <Link to="/m/$marinaId/maintenance" params={{ marinaId }} className={linkClass}>
+          {children}
+        </Link>
+      );
+    case 'utility_meter':
+    case 'utility_consumption':
+      return (
+        <Link to="/m/$marinaId/utilities" params={{ marinaId }} className={linkClass}>
+          {children}
+        </Link>
+      );
     default:
       return <>{children}</>;
   }

@@ -27,6 +27,8 @@ export type ColumnDef = {
   total?: string;
   /** Translation group of an enumeration value (namespace:prefix). */
   values?: string;
+  /** Dotted path of a nested record field (M9 maintenance element.code); default the key. */
+  path?: string;
 };
 
 export type TotalDef = { key: string; kind: CellKind };
@@ -52,7 +54,12 @@ export type FilterKey =
   | 'new'
   | 'overdue'
   | 'suggestions'
-  | 'as_of';
+  | 'as_of'
+  // M9 (m9-plan §11)
+  | 'exits_blocked_only'
+  | 'status'
+  | 'element_type'
+  | 'overdue_only';
 
 export const FILTER_VALUES: Record<Exclude<FilterKey, 'as_of'>, readonly string[]> = {
   variant: ['physical', 'contractual'],
@@ -93,6 +100,11 @@ export const FILTER_VALUES: Record<Exclude<FilterKey, 'as_of'>, readonly string[
   new: ['true'],
   overdue: ['true'],
   suggestions: ['false'],
+  exits_blocked_only: ['true'],
+  // The values of status depend on the report (ReportDef.filterValues).
+  status: [],
+  element_type: ['berth', 'structure', 'dynamic_area', 'land_resource', 'pedestal', 'equipment'],
+  overdue_only: ['true'],
 };
 
 /** Translation group of the values of each filter. */
@@ -113,6 +125,10 @@ export const FILTER_VALUE_GROUP: Record<Exclude<FilterKey, 'as_of'>, string> = {
   new: vg('reports', 'values.bool'),
   overdue: vg('reports', 'values.bool'),
   suggestions: vg('reports', 'values.bool'),
+  exits_blocked_only: vg('reports', 'values.bool'),
+  status: vg('reports', 'values.taskStatus'),
+  element_type: vg('reports', 'values.elementType'),
+  overdue_only: vg('reports', 'values.bool'),
 };
 
 export type ReportDef = {
@@ -129,6 +145,8 @@ export type ReportDef = {
   /** The value charted per group (from the group totals). */
   chart?: TotalDef;
   columns: (section: string) => readonly ColumnDef[];
+  /** Report-specific values of a filter (M9: kind = meter kinds, status = task or consumption states). */
+  filterValues?: Partial<Record<FilterKey, { values: readonly string[]; group: string }>>;
 };
 
 const E = {
@@ -159,6 +177,14 @@ const E = {
   source2: vg('billingEnums', 'paymentSource'),
   bucket: vg('billingEnums', 'ageingBucket'),
   reminderLevel: vg('billingEnums', 'reminderLevel'),
+  mapKind: vg('reports', 'values.mapKind'),
+  taskStatus: vg('reports', 'values.taskStatus'),
+  priority: vg('reports', 'values.priority'),
+  elementType: vg('reports', 'values.elementType'),
+  intervention: vg('reports', 'values.intervention'),
+  taskSource: vg('reports', 'values.taskSource'),
+  meterKind: vg('reports', 'values.meterKind'),
+  consumptionStatus: vg('reports', 'values.consumptionStatus'),
 } as const;
 
 const c = (key: string, kind: CellKind, extra: Partial<ColumnDef> = {}): ColumnDef => ({
@@ -726,7 +752,130 @@ export const REPORTS: readonly ReportDef[] = [
       c('revenue_per_m_cents', 'cents', { total: 'revenue_per_m_cents' }),
     ],
   },
+  // M9 (m9-plan §11): storage surfaces, maintenance tasks and utility consumptions (operational; money columns
+  // only with reports.all).
+  {
+    key: 'storage',
+    group: 'operational',
+    needsAll: false,
+    groupBy: ['area', 'map_kind', 'contract_kind', 'month'],
+    filters: ['map_kind', 'exits_blocked_only'],
+    filterValues: { map_kind: { values: ['yard', 'shed'], group: E.mapKind } },
+    totals: [
+      t('occupancy_bp', 'bp'),
+      t('occupied_m2_nights_milli', 'milli'),
+      t('available_m2_nights_milli', 'milli'),
+      t('boats', 'int'),
+      t('exits_blocked', 'int'),
+      t('production_cents', 'cents'),
+    ],
+    chart: t('occupancy_bp', 'bp'),
+    columns: () => [
+      c('area_code', 'text'),
+      en('map_kind', E.mapKind),
+      c('contract_code', 'text'),
+      en('contract_kind', E.contractKind),
+      c('loa_cm', 'cm'),
+      c('beam_cm', 'cm'),
+      c('nights', 'int'),
+      c('hull_m2_nights_milli', 'milli', { total: 'hull_m2_nights_milli' }),
+      c('footprint_m2_nights_milli', 'milli', { total: 'occupied_m2_nights_milli' }),
+      c('exit_on', 'date'),
+      c('exit_blocked', 'bool', { total: 'exits_blocked' }),
+      c('production_cents', 'cents', { total: 'production_cents' }),
+    ],
+  },
+  {
+    key: 'maintenance',
+    group: 'operational',
+    needsAll: false,
+    groupBy: ['status', 'priority', 'element_type', 'intervention', 'month'],
+    filters: ['status', 'element_type', 'overdue_only'],
+    filterValues: {
+      status: {
+        values: ['open', 'scheduled', 'in_progress', 'done', 'cancelled'],
+        group: E.taskStatus,
+      },
+    },
+    totals: [
+      t('tasks', 'int'),
+      t('overdue', 'int'),
+      t('open', 'int'),
+      t('in_progress', 'int'),
+      t('done', 'int'),
+      t('internal_minutes', 'int'),
+      t('external_cost_cents', 'cents'),
+    ],
+    chart: t('tasks', 'int'),
+    columns: () => [
+      c('element_code', 'text', { path: 'element.code' }),
+      { ...en('element_type', E.elementType), path: 'element.element_type' },
+      en('intervention', E.intervention),
+      en('source', E.taskSource),
+      en('priority', E.priority),
+      en('status', E.taskStatus),
+      c('due_on', 'date'),
+      c('done_on', 'date'),
+      c('overdue_days', 'int'),
+      c('internal_minutes', 'int', { total: 'internal_minutes' }),
+      c('external_cost_cents', 'cents', { total: 'external_cost_cents' }),
+    ],
+  },
+  {
+    key: 'utilities',
+    group: 'operational',
+    needsAll: false,
+    groupBy: ['kind', 'meter', 'status', 'contract', 'month'],
+    filters: ['kind', 'status'],
+    filterValues: {
+      kind: { values: ['power', 'water', 'hours', 'cycles'], group: E.meterKind },
+      status: {
+        values: ['pending', 'anomaly', 'unassigned', 'charged', 'excluded'],
+        group: E.consumptionStatus,
+      },
+    },
+    totals: [
+      t('power_milli', 'milli'),
+      t('water_milli', 'milli'),
+      t('pending_milli', 'milli'),
+      t('unassigned_milli', 'milli'),
+      t('charged_cents', 'cents'),
+      t('pending_value_cents', 'cents'),
+    ],
+    chart: t('power_milli', 'milli'),
+    columns: () => [
+      c('meter_code', 'text'),
+      en('kind', E.meterKind),
+      en('resource_type', E.resourceType),
+      c('contract_code', 'text'),
+      c('first_night', 'date'),
+      c('last_night', 'date'),
+      c('nights', 'int'),
+      c('qty_milli', 'milli'),
+      en('status', E.consumptionStatus),
+      c('charged_cents', 'cents', { total: 'charged_cents' }),
+    ],
+  },
 ];
+
+/** The values and their translation group of a filter in a report (report-specific values first). */
+export function filterValuesOf(
+  def: ReportDef,
+  f: Exclude<FilterKey, 'as_of'>,
+): { values: readonly string[]; group: string } {
+  return def.filterValues?.[f] ?? { values: FILTER_VALUES[f], group: FILTER_VALUE_GROUP[f] };
+}
+
+/** The value of a record field; dotted keys read nested objects (maintenance `element.code`). */
+export function fieldOf(record: Record<string, unknown>, key: string): unknown {
+  if (!key.includes('.')) return record[key];
+  let v: unknown = record;
+  for (const part of key.split('.')) {
+    if (v === null || typeof v !== 'object') return undefined;
+    v = (v as Record<string, unknown>)[part];
+  }
+  return v;
+}
 
 /** Reports announced for later milestones (m7-plan §1.2). */
 export const UPCOMING_REPORTS = [

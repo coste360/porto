@@ -24,6 +24,13 @@ type tileSpec struct {
 	noSeries  bool // not additive by day
 	seam      string
 	breakdown func(any) []calc.Breakdown
+	// period overrides the dashboard period (storage_exits_blocked: the next 30 days); its drill keeps from/to.
+	period func(today calendar.Date) (calendar.Date, calendar.Date)
+}
+
+// nextDays is the period of the next n days from today (today included).
+func nextDays(n int) func(calendar.Date) (calendar.Date, calendar.Date) {
+	return func(today calendar.Date) (calendar.Date, calendar.Date) { return today, today.AddDays(n - 1) }
 }
 
 var tileSpecs = []tileSpec{
@@ -61,6 +68,21 @@ var tileSpecs = []tileSpec{
 		},
 	},
 	{key: calc.IndVesselsAvgLOA, report: calc.KeyVessels, drill: func() Params { return Params{} }, noSeries: true},
+	// M9 (m9-plan §11): the occupancy of yard and shed surfaces, the blocked exits of the next 30 days, the overdue
+	// maintenance tasks and the unbilled utility consumptions (value at the current price).
+	{key: calc.IndStorageOccupancy, report: calc.KeyStorage, drill: func() Params { return Params{} }},
+	{
+		key: calc.IndStorageExitsBlocked, report: calc.KeyStorage, drill: func() Params { return Params{ExitsBlockedOnly: true} },
+		noPrev: true, noSeries: true, period: nextDays(30),
+	},
+	{
+		key: calc.IndMaintenanceOverdue, report: calc.KeyMaintenance, drill: func() Params { return Params{TaskOverdueOnly: true} },
+		noPrev: true, noSeries: true,
+	},
+	{
+		key: calc.IndUtilityUnbilled, report: calc.KeyUtilities, drill: func() Params { return Params{Status: "pending"} },
+		needAll: true, noPrev: true, noSeries: true,
+	},
 	{key: string(calc.TileYardOpenOrders), seam: calc.ReasonMilestoneM10},
 	{key: string(calc.TileYardHours), seam: calc.ReasonMilestoneM10},
 	{key: string(calc.TileYardMargin), seam: calc.ReasonMilestoneM10},
@@ -124,6 +146,16 @@ func drillOf(q Params) *calc.Drill {
 	v := q.Values()
 	v.Del("from")
 	v.Del("to")
+	m := map[string]string{}
+	for k := range v {
+		m[k] = joinValues(v[k])
+	}
+	return &calc.Drill{Report: q.Report, Params: m}
+}
+
+// drillWithPeriod is the drill of a tile with its own period: its parameters with from and to.
+func drillWithPeriod(q Params) *calc.Drill {
+	v := q.Values()
 	m := map[string]string{}
 	for k := range v {
 		m[k] = joinValues(v[k])
@@ -207,6 +239,24 @@ func (r *run) runReport(q Params, memo map[string]*tileRun) (*tileRun, error) {
 	case calc.KeyPresences:
 		var x *PresencesResult
 		x, t.facts, err = r.runPresences(q)
+		if x != nil {
+			t.res, t.totals = x, x.Totals
+		}
+	case calc.KeyStorage:
+		var x *StorageResult
+		x, t.facts, err = r.runStorage(q)
+		if x != nil {
+			t.res, t.totals = x, x.Totals
+		}
+	case calc.KeyMaintenance:
+		var x *MaintenanceResult
+		x, t.facts, err = r.runMaintenance(q)
+		if x != nil {
+			t.res, t.totals = x, x.Totals
+		}
+	case calc.KeyUtilities:
+		var x *UtilitiesResult
+		x, t.facts, err = r.runUtilities(q)
 		if x != nil {
 			t.res, t.totals = x, x.Totals
 		}
@@ -305,8 +355,15 @@ func (r *run) tile(t tileSpec, dims Dims, from, to, pf, pt calendar.Date, withPr
 ) (calc.Tile, error) {
 	q := ParamsOf(t, dims)
 	ind := calc.Indicators[t.key]
+	drill := drillOf(q)
+	if t.period != nil {
+		from, to = t.period(r.today)
+		withPrev = false
+		q.From, q.To = from, to
+		drill = drillWithPeriod(q)
+	}
 	tile := calc.Tile{
-		Key: calc.TileKey(t.key), Unit: ind.Unit, Available: true, DimsApplied: t.dims, Drill: drillOf(q),
+		Key: calc.TileKey(t.key), Unit: ind.Unit, Available: true, DimsApplied: t.dims, Drill: drill,
 		Trend: "none", Series: []calc.SeriesPoint{}, Breakdown: []calc.Breakdown{},
 	}
 	cq := q

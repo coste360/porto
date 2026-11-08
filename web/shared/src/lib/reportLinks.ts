@@ -20,14 +20,18 @@ export type ReportLinkTarget = {
   search: ReportSearch;
 };
 
-/** Search of a report page from a drill payload and a period (the period wins over any from/to in the drill). */
+/**
+ * Search of a report page from a drill payload and a period. The dashboard period wins, except for a tile with
+ * its own period (M9 storage_exits_blocked: the next 30 days), whose drill carries both from and to.
+ */
 export function drillSearch(drill: TileDrill, period: ReportPeriodSearch): ReportSearch {
   const search: ReportSearch = {};
   for (const [k, v] of Object.entries(drill.params)) {
     if (k !== 'from' && k !== 'to' && v !== '') search[k] = v;
   }
-  search.from = period.from;
-  search.to = period.to;
+  const own = drill.params.from && drill.params.to;
+  search.from = own ? drill.params.from! : period.from;
+  search.to = own ? drill.params.to! : period.to;
   return search;
 }
 

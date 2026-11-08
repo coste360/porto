@@ -1,0 +1,140 @@
+{
+  "nav": {
+    "utilities": "Consumi e contatori",
+    "sections": "Sezioni dei consumi",
+    "meters": "Contatori",
+    "readings": "Letture",
+    "consumptions": "Consumi",
+    "settings": "Impostazioni"
+  },
+  "all": "Tutti",
+  "none": "Nessuna",
+  "meters": {
+    "title": "Consumi e contatori",
+    "description": "Contatori di colonnine, acqua ed energia, letture e addebito dei consumi.",
+    "pending": "Questa sezione sarà disponibile a breve.",
+    "new": "Nuovo contatore",
+    "edit": "Modifica",
+    "save": "Salva",
+    "search": "Cerca",
+    "empty": "Nessun contatore.",
+    "inactive": "Non attivo",
+    "notChargeable": "Non addebitabile",
+    "prefillHint": "Scegli la presa di una colonnina: tipo, codice e posto servito vengono proposti.",
+    "chooseSocket": "Scegli la presa…",
+    "noSocket": "Nessuna presa."
+  },
+  "readings": {
+    "title": "Letture",
+    "description": "Letture dei contatori, anomalie da confermare o annullare.",
+    "empty": "Nessuna lettura.",
+    "confirm": "Conferma",
+    "void": "Annulla lettura",
+    "voidHint": "Una lettura usata da un consumo già addebitato non si annulla.",
+    "photo": "Foto"
+  },
+  "consumptions": {
+    "title": "Consumi",
+    "description": "Consumi divisi per notti tra gli occupanti; i non assegnati restano al porto.",
+    "empty": "Nessun consumo.",
+    "run": "Addebita consumi",
+    "assign": "Assegna a un contratto",
+    "exclude": "Escludi",
+    "assignHint": "Il consumo verrà addebitato al contratto scelto.",
+    "chooseContract": "Scegli il contratto…",
+    "noContract": "Nessun contratto.",
+    "runCharges_one": "{{count}} addebito creato, totale",
+    "runCharges_other": "{{count}} addebiti creati, totale",
+    "runSkipped_one": "{{count}} consumo rinviato (prezzo mancante o non ancora dovuto).",
+    "runSkipped_other": "{{count}} consumi rinviati (prezzo mancante o non ancora dovuti)."
+  },
+  "settings": {
+    "title": "Impostazioni consumi",
+    "description": "Articoli di tariffa, modalità di addebito e soglie giornaliere.",
+    "charging": "Addebito",
+    "save": "Salva"
+  },
+  "fields": {
+    "code": "Codice",
+    "kind": "Tipo",
+    "socket": "Presa",
+    "lastReading": "Ultima lettura",
+    "status": "Stato",
+    "map": "Mappa",
+    "serial": "Matricola",
+    "multiplier": "Moltiplicatore",
+    "active": "Attivo",
+    "meter": "Contatore",
+    "readAt": "Letto il",
+    "value": "Indice",
+    "delta": "Differenza",
+    "contract": "Contratto",
+    "nights": "Notti",
+    "quantity": "Quantità",
+    "mode": "Modalità",
+    "powerItem": "Articolo energia",
+    "waterItem": "Articolo acqua",
+    "powerThreshold": "Soglia giornaliera energia (kWh)",
+    "waterThreshold": "Soglia giornaliera acqua (m³)"
+  },
+  "enums": {
+    "kind": {
+      "power": "Energia",
+      "water": "Acqua",
+      "hours": "Ore",
+      "cycles": "Cicli"
+    },
+    "unit": {
+      "kwh": "kWh",
+      "m3": "m³",
+      "h": "h",
+      "cycle": "cicli"
+    },
+    "readingStatus": {
+      "valid": "Valida",
+      "anomaly": "Anomala",
+      "confirmed": "Confermata",
+      "void": "Annullata"
+    },
+    "anomaly": {
+      "negative": "Indice inferiore",
+      "rollover": "Giro del contatore",
+      "over_threshold": "Sopra soglia",
+      "out_of_order": "Fuori sequenza",
+      "gap": "Intervallo lungo"
+    },
+    "consumptionStatus": {
+      "pending": "Da addebitare",
+      "anomaly": "Anomalia",
+      "unassigned": "Non assegnato",
+      "charged": "Addebitato",
+      "excluded": "Escluso"
+    },
+    "mode": {
+      "with_installment": "Con la prossima rata",
+      "monthly": "Ogni mese"
+    }
+  },
+  "queue": {
+    "reading": "Lettura {{code}}",
+    "photo": "Foto lettura {{code}}"
+  },
+  "dock": {
+    "readings": "Letture",
+    "search": "Cerca contatore (codice, presa, matricola)",
+    "noMeters": "Nessun contatore.",
+    "queued_one": "{{count}} lettura in attesa di invio.",
+    "queued_other": "{{count}} letture in attesa di invio.",
+    "back": "Indietro",
+    "previous": "Lettura precedente: {{value}} {{unit}} del {{date}}",
+    "first": "Prima lettura di questo contatore.",
+    "value": "Indice ({{unit}})",
+    "range": "Atteso tra {{min}} e {{max}} {{unit}}",
+    "rangeMin": "Atteso almeno {{min}} {{unit}}",
+    "outOfRange": "Valore fuori dall'intervallo atteso: verrà segnalato come anomalia.",
+    "photo": "Foto (facoltativa)",
+    "note": "Nota",
+    "save": "Salva lettura",
+    "saved": "Lettura {{code}} salvata."
+  }
+}

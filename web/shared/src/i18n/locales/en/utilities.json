@@ -1,0 +1,140 @@
+{
+  "nav": {
+    "utilities": "Utilities and meters",
+    "sections": "Utilities sections",
+    "meters": "Meters",
+    "readings": "Readings",
+    "consumptions": "Consumption",
+    "settings": "Settings"
+  },
+  "all": "All",
+  "none": "None",
+  "meters": {
+    "title": "Utilities and meters",
+    "description": "Pedestal, water and power meters, readings and consumption charging.",
+    "pending": "This section will be available soon.",
+    "new": "New meter",
+    "edit": "Edit",
+    "save": "Save",
+    "search": "Search",
+    "empty": "No meter.",
+    "inactive": "Inactive",
+    "notChargeable": "Not chargeable",
+    "prefillHint": "Pick a pedestal socket: kind, code and the berth it feeds are proposed.",
+    "chooseSocket": "Choose the socket…",
+    "noSocket": "No socket."
+  },
+  "readings": {
+    "title": "Readings",
+    "description": "Meter readings, anomalies to confirm or void.",
+    "empty": "No reading.",
+    "confirm": "Confirm",
+    "void": "Void reading",
+    "voidHint": "A reading used by a charged consumption cannot be voided.",
+    "photo": "Photo"
+  },
+  "consumptions": {
+    "title": "Consumption",
+    "description": "Consumption split by nights among the occupants; unassigned shares stay with the marina.",
+    "empty": "No consumption.",
+    "run": "Charge consumption",
+    "assign": "Assign to a contract",
+    "exclude": "Exclude",
+    "assignHint": "The consumption will be charged to the chosen contract.",
+    "chooseContract": "Choose the contract…",
+    "noContract": "No contract.",
+    "runCharges_one": "{{count}} charge created, total",
+    "runCharges_other": "{{count}} charges created, total",
+    "runSkipped_one": "{{count}} consumption postponed (missing price or not due yet).",
+    "runSkipped_other": "{{count}} consumptions postponed (missing price or not due yet)."
+  },
+  "settings": {
+    "title": "Utility settings",
+    "description": "Tariff items, charging mode and daily thresholds.",
+    "charging": "Charging",
+    "save": "Save"
+  },
+  "fields": {
+    "code": "Code",
+    "kind": "Kind",
+    "socket": "Socket",
+    "lastReading": "Last reading",
+    "status": "Status",
+    "map": "Map",
+    "serial": "Serial number",
+    "multiplier": "Multiplier",
+    "active": "Active",
+    "meter": "Meter",
+    "readAt": "Read at",
+    "value": "Index",
+    "delta": "Difference",
+    "contract": "Contract",
+    "nights": "Nights",
+    "quantity": "Quantity",
+    "mode": "Mode",
+    "powerItem": "Power item",
+    "waterItem": "Water item",
+    "powerThreshold": "Daily power threshold (kWh)",
+    "waterThreshold": "Daily water threshold (m³)"
+  },
+  "enums": {
+    "kind": {
+      "power": "Power",
+      "water": "Water",
+      "hours": "Hours",
+      "cycles": "Cycles"
+    },
+    "unit": {
+      "kwh": "kWh",
+      "m3": "m³",
+      "h": "h",
+      "cycle": "cycles"
+    },
+    "readingStatus": {
+      "valid": "Valid",
+      "anomaly": "Anomaly",
+      "confirmed": "Confirmed",
+      "void": "Void"
+    },
+    "anomaly": {
+      "negative": "Lower index",
+      "rollover": "Rollover",
+      "over_threshold": "Over threshold",
+      "out_of_order": "Out of order",
+      "gap": "Long gap"
+    },
+    "consumptionStatus": {
+      "pending": "To charge",
+      "anomaly": "Anomaly",
+      "unassigned": "Unassigned",
+      "charged": "Charged",
+      "excluded": "Excluded"
+    },
+    "mode": {
+      "with_installment": "With the next instalment",
+      "monthly": "Monthly"
+    }
+  },
+  "queue": {
+    "reading": "Reading {{code}}",
+    "photo": "Reading photo {{code}}"
+  },
+  "dock": {
+    "readings": "Readings",
+    "search": "Search meter (code, socket, serial)",
+    "noMeters": "No meter.",
+    "queued_one": "{{count}} reading waiting to be sent.",
+    "queued_other": "{{count}} readings waiting to be sent.",
+    "back": "Back",
+    "previous": "Previous reading: {{value}} {{unit}} on {{date}}",
+    "first": "First reading of this meter.",
+    "value": "Index ({{unit}})",
+    "range": "Expected between {{min}} and {{max}} {{unit}}",
+    "rangeMin": "Expected at least {{min}} {{unit}}",
+    "outOfRange": "Value outside the expected range: it will be flagged as an anomaly.",
+    "photo": "Photo (optional)",
+    "note": "Note",
+    "save": "Save reading",
+    "saved": "Reading {{code}} saved."
+  }
+}

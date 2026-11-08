@@ -73,6 +73,8 @@ func Get(cfg *config.Config, version, edition string) Meta {
 			"payment_requests", "reminders", "payments.providers", "payments.sepa", "imports.xlsx", "opening_balances",
 			// M7 (m7-plan §8): reports, manager dashboard and comparison; yard and rental reports are M10/M11.
 			"reports",
+			// M9 (m9-plan §15.1): storage planner and scenarios, maintenance, utility meters and charging.
+			"storage", "maintenance", "utilities",
 		},
 		DemoPairing:          cfg != nil && cfg.DemoPairingEnabled(),
 		PricingEngineVersion: pricing.EngineVersion,

@@ -150,6 +150,21 @@ export const PROBLEM_TYPES = [
   'cancellation_not_allowed',
   'nothing_due',
   'idempotency_mismatch',
+  // M9 (m9-plan §15.1)
+  'storage_target_invalid',
+  'storage_no_space',
+  'area_exits_invalid',
+  'pinned_invalid',
+  'too_many_items',
+  'scenario_window_invalid',
+  'scenario_not_draft',
+  'scenario_conflicts',
+  'movement_not_pending',
+  'element_invalid',
+  'maintenance_conflicts',
+  'task_already_done',
+  'reading_charged',
+  'consumption_frozen',
 ] as const;
 
 export type ProblemType = (typeof PROBLEM_TYPES)[number];

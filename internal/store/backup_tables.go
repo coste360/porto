@@ -160,6 +160,24 @@ func BackupTables() []string {
 		"online_quota_claims",
 		"channel_connections",
 		"channel_reservations",
+		// M9 storage (00018_storage) and maintenance and utilities (00019_maintenance_utilities). scenario_items and
+		// scenario_moves follow their scenario; maintenance_tasks.follows_task_id points to an older task (UUIDv7
+		// order); utility_billings.charge_id points to an older charge, so neither needs deferral.
+		"storage_contract_details",
+		"storage_scenarios",
+		"scenario_items",
+		"scenario_moves",
+		"storage_movements",
+		"equipment",
+		"utility_meters",
+		"maintenance_plans",
+		"maintenance_plan_targets",
+		"maintenance_tasks",
+		"maintenance_task_files",
+		"utility_settings",
+		"meter_readings",
+		"utility_billings",
+		"utility_consumptions",
 	}
 }
 

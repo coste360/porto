@@ -43,9 +43,11 @@ var qualifyingStatuses = map[string][]string{
 	ContractMooring: {"active", "expired", "renewed", "terminated", "suspended"},
 	ContractCharter: {"active", "expired", "renewed", "terminated", "suspended"},
 	ContractTransit: {"confirmed", "arrived", "departed"},
+	// Storage contracts count from M9 (m9-plan §11), with the mooring state table (D1).
+	ContractStorage: {"active", "expired", "renewed", "terminated", "suspended"},
 }
 
-// Qualifying reports whether a contract of kind with status counts as production (storage is M9).
+// Qualifying reports whether a contract of kind with status counts as production.
 func Qualifying(kind, status string) bool { return slices.Contains(qualifyingStatuses[kind], status) }
 
 // QualifyingStatuses returns the qualifying statuses of a kind (for the SQL filter).

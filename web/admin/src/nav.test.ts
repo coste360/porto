@@ -27,6 +27,8 @@ describe('nav', () => {
       'charges.export',
       'payments.collect',
       'reports.all',
+      'storage.read',
+      'maintenance.manage',
     ]).map((i) => i.id);
     expect(ids).toEqual(NAV_ITEMS.map((i) => i.id));
   });
@@ -75,6 +77,7 @@ describe('nav', () => {
 
   it('shows the M5 billing pages by permission', () => {
     expect(visibleNavItems(['charges.manage']).map((i) => i.id)).toEqual([
+      'utilities',
       'charges',
       'payments',
       'receivables',
@@ -101,6 +104,13 @@ describe('nav', () => {
       'worklist',
     ]);
     expect(visibleNavItems(['presence.write']).map((i) => i.id)).toEqual(['dock']);
+  });
+
+  it('shows the M9 storage, maintenance and utilities pages by permission', () => {
+    expect(visibleNavItems(['storage.read']).map((i) => i.id)).toEqual(['storage']);
+    expect(visibleNavItems(['maintenance.manage']).map((i) => i.id)).toEqual(['maintenance']);
+    expect(visibleNavItems(['maintenance.report']).map((i) => i.id)).toEqual([]);
+    expect(UPCOMING_MODULES).not.toContain('common:nav.modules.storage');
   });
 
   it('lists the future modules without the M1 ones', () => {

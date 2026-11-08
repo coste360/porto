@@ -56,6 +56,7 @@ const ENGINE_KINDS = [
   'waitlist_offer',
   'document_failed',
   'signature_expiring',
+  'maintenance_due',
 ] as const satisfies readonly Schemas['DeadlineKind'][];
 const ALL_DEADLINE_KINDS: readonly Schemas['DeadlineKind'][] = [...DEADLINE_KINDS, ...ENGINE_KINDS];
 const CHANNELS: readonly Schemas['DeadlineChannel'][] = ['panel', 'customer_email', 'office_email'];
