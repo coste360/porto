@@ -25,6 +25,7 @@ describe('nav', () => {
       'charges.manage',
       'charges.export',
       'payments.collect',
+      'reports.all',
     ]).map((i) => i.id);
     expect(ids).toEqual(NAV_ITEMS.map((i) => i.id));
   });
@@ -58,6 +59,12 @@ describe('nav', () => {
       'pricing-simulator',
     ]);
     expect(visibleNavItems(['pricing.configure']).map((i) => i.id)).toEqual(['pricing-settings']);
+  });
+
+  it('shows the M7 reports to both report permissions', () => {
+    expect(visibleNavItems(['reports.operational']).map((i) => i.id)).toEqual(['reports']);
+    expect(visibleNavItems(['reports.all']).map((i) => i.id)).toEqual(['reports', 'direction']);
+    expect(UPCOMING_MODULES).not.toContain('common:nav.modules.reports');
   });
 
   it('lists contracts from M3 and charges from M5', () => {

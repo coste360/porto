@@ -40,10 +40,15 @@ function spdx(license) {
   return 'UNKNOWN';
 }
 
-/** Splits simple SPDX expressions: `(MIT OR Apache-2.0)` passes when any part passes. */
+/**
+ * Splits simple SPDX expressions without nesting: `(MIT OR Apache-2.0)` passes when any alternative passes, and an
+ * alternative `MIT AND ISC` passes when every licence it combines is allowed (e.g. victory-vendor, M7 charts).
+ */
 function allowed(name, license) {
-  const parts = license.replace(/[()]/g, '').split(/\s+OR\s+/);
-  return parts.some((id) => ALLOWED.has(id) || (FONT_ONLY[id] ?? []).includes(name));
+  const alternatives = license.replace(/[()]/g, '').split(/\s+OR\s+/);
+  return alternatives.some((alt) =>
+    alt.split(/\s+AND\s+/).every((id) => ALLOWED.has(id) || (FONT_ONLY[id] ?? []).includes(name)),
+  );
 }
 
 export function check(packages) {

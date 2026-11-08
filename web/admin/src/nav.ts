@@ -55,7 +55,8 @@ export type MarinaRoutePath =
   | '/m/$marinaId/opening-balances'
   | '/m/$marinaId/worklist'
   | '/m/$marinaId/settings/billing'
-  | '/m/$marinaId/settings/payments';
+  | '/m/$marinaId/settings/payments'
+  | '/m/$marinaId/reports';
 
 export type NavItem = {
   id: string;
@@ -274,6 +275,13 @@ export const NAV_ITEMS: NavItem[] = [
     labelKey: 'common:nav.paymentSettings',
     anyOf: ['providers.configure'],
   },
+  // M7 (m7-plan §10.1), group "Analisi"
+  {
+    id: 'reports',
+    to: '/m/$marinaId/reports',
+    labelKey: 'common:nav.reports',
+    anyOf: ['reports.operational', 'reports.all'],
+  },
   { id: 'dock', to: '/m/$marinaId/dock', labelKey: 'common:nav.dock', anyOf: ['presence.write'] },
   {
     id: 'direction',
@@ -371,7 +379,6 @@ export const UPCOMING_MODULES = [
   'common:nav.modules.yard',
   'common:nav.modules.rental',
   'common:nav.modules.booking',
-  'common:nav.modules.reports',
 ] as const;
 
 export function visibleNavItems(permissions: readonly Permission[]): NavItem[] {

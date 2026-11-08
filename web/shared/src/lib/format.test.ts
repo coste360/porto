@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  formatCm2,
+  formatInteger,
+  formatReportValue,
   formatCents,
   formatCm,
   formatDateTime,
@@ -123,5 +126,24 @@ describe('format: pricing inputs', () => {
     expect(parseQtyToMilli('1,5,0', 'it')).toBeNull();
     expect(parseQtyToMilli('12.34', 'it')).toBeNull();
     expect(parseQtyToMilli('1,', 'it')).toBeNull();
+  });
+});
+
+describe('report formats (M7)', () => {
+  it('formats square centimetres as square metres, half-even', () => {
+    expect(formatCm2(125000)).toBe('12,50 m²');
+    expect(formatCm2(150)).toBe('0,02 m²'); // 1.5 hundredths → 2 (half-even)
+    expect(formatCm2(250)).toBe('0,02 m²'); // 2.5 hundredths → 2 (half-even)
+    expect(formatCm2(0)).toBe('0,00 m²');
+    expect(formatCm2(-125000)).toBe('-12,50 m²');
+  });
+
+  it('formats integers and values by unit', () => {
+    expect(formatInteger(1234567)).toBe('1.234.567');
+    expect(formatReportValue(null, 'bp')).toBe('—');
+    expect(formatReportValue(8250, 'bp')).toBe('82,5%');
+    expect(formatReportValue(123456, 'cents')).toBe('1.234,56 €');
+    expect(formatReportValue(1250, 'cm')).toBe('12,50 m');
+    expect(formatReportValue(42, 'berth_night')).toBe('42');
   });
 });

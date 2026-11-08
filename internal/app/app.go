@@ -49,6 +49,7 @@ import (
 	"github.com/coste360/porto/internal/domain/payment"
 	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
+	"github.com/coste360/porto/internal/domain/report"
 	"github.com/coste360/porto/internal/domain/rights"
 	"github.com/coste360/porto/internal/domain/signature"
 	"github.com/coste360/porto/internal/domain/team"
@@ -168,6 +169,9 @@ type App struct {
 
 	// M6a
 	Desktop desktopport.Runtime
+
+	// M7
+	Reports *report.Service
 
 	ownDB     bool
 	restartMu sync.Mutex
@@ -308,6 +312,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		x.FiscalDrivers = append(append([]ext.FiscalDriver(nil), x.FiscalDrivers...), desktopFiscal{peripherals: periph})
 	}
 	a.wireBilling(x)
+	a.Reports = report.NewService(report.Deps{DB: db, Clock: clk, Prices: a.PriceLists, Log: log})
 	a.Presence = presence.NewService(presence.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
 		Contracts: a.Contracts, Occupancy: a.Occupancy,
@@ -339,7 +344,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			Occupancy: a.Occupancy, Contracts: a.Contracts, Presence: a.Presence,
 			Rights: a.Rights, Docs: a.Docs, Signatures: a.Signatures, Links: a.Links, Comms: a.Comms, Imports: a.Imports,
 			Charges: a.Charges, Payments: a.Payments, Cash: a.Cash, Fiscal: a.Fiscal, Collect: a.Collect,
-			PayDrivers: a.PayDrivers,
+			PayDrivers: a.PayDrivers, Reports: a.Reports,
 		},
 		Device: &httpdevice.Handler{
 			Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String(), SecureCookies: cfg.SecureCookies(),

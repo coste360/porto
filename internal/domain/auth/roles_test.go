@@ -157,3 +157,59 @@ func TestPrincipal_IsOwnerAnywhere(t *testing.T) {
 		}
 	}
 }
+
+// reportRoutePermissions lists the M7 operations (m7-plan §1.1, §8, D17) and the permissions that open them: any
+// of reports.operational or reports.all for the operational reports, the dashboard and the comparison (which
+// then narrow to what the principal may see), reports.all for the money reports.
+var reportRoutePermissions = map[string][]Permission{
+	"getDashboard":             {PermReportsOperational, PermReportsAll},
+	"getReportComparison":      {PermReportsOperational, PermReportsAll},
+	"getOccupancyReport":       {PermReportsOperational, PermReportsAll},
+	"getEfficiencyReport":      {PermReportsOperational, PermReportsAll},
+	"getAllocationWasteReport": {PermReportsOperational, PermReportsAll},
+	"getLostDemandReport":      {PermReportsOperational, PermReportsAll},
+	"getPresencesReport":       {PermReportsOperational, PermReportsAll},
+	"getVesselsReport":         {PermReportsOperational, PermReportsAll},
+	"getCustomersReport":       {PermReportsAll},
+	"getProductionReport":      {PermReportsAll},
+	"getAccrualsReport":        {PermReportsAll},
+	"getChargesReport":         {PermReportsAll},
+	"getPaymentsReport":        {PermReportsAll},
+	"getRevenueClassesReport":  {PermReportsAll},
+	"getReceivablesReport":     {PermReportsAll},
+	"getRightsReport":          {PermReportsAll},
+	"getCashReport":            {PermReportsAll},
+	"getBerthRevenueReport":    {PermReportsAll},
+}
+
+// TestReports_RouteTableMatchesContract: every M7 operation is in the contract with known permissions, and the
+// role matrix of spec 26.1 holds (office operational only; dock, yard and rental without reports).
+func TestReports_RouteTableMatchesContract(t *testing.T) {
+	src := string(apispec.OpenAPI)
+	for op, perms := range reportRoutePermissions {
+		if !regexp.MustCompile(`operationId: ` + op + `\n`).MatchString(src) {
+			t.Errorf("%s is not in api/openapi.yaml", op)
+		}
+		for _, p := range perms {
+			if !p.Valid() {
+				t.Errorf("%s: unknown permission %s", op, p)
+			}
+		}
+	}
+	if n := len(regexp.MustCompile(`/reports/[a-z-]+:\n`).FindAllString(src, -1)); n != len(reportRoutePermissions)-1 {
+		t.Errorf("%d report paths in the contract, want %d", n, len(reportRoutePermissions)-1)
+	}
+	for _, r := range []Role{RoleOwner, RoleDirector, RoleAccounting, RoleViewer} {
+		if !Can(r, PermReportsAll) || !Can(r, PermReportsOperational) {
+			t.Errorf("role %s lacks the reports permissions", r)
+		}
+	}
+	if !Can(RoleOffice, PermReportsOperational) || Can(RoleOffice, PermReportsAll) {
+		t.Error("office must have reports.operational only")
+	}
+	for _, r := range []Role{RoleDock, RoleYard, RoleYardMgr, RoleRental} {
+		if Can(r, PermReportsAll) || Can(r, PermReportsOperational) {
+			t.Errorf("role %s must not see the M7 reports", r)
+		}
+	}
+}

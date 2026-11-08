@@ -231,6 +231,16 @@ export const queryKeys = {
   // M4 customer magic-link pages (booking SPA): never under a marina id, the token is the only credential.
   publicLink: (slug: string, token: string) => ['public', slug, 'link', token] as const,
 
+  // M7 reports and dashboard: everything under ['marina', id, 'reports'] (m7-plan §10.2). Not invalidated by
+  // SSE (a report reads every area): the hooks use a short staleTime and refetch on focus instead.
+  reports: (marinaId: string) => ['marina', marinaId, 'reports'] as const,
+  report: (marinaId: string, key: string, params: Record<string, string | undefined> = {}) =>
+    ['marina', marinaId, 'reports', 'report', key, params] as const,
+  dashboard: (marinaId: string, params: Record<string, string | undefined> = {}) =>
+    ['marina', marinaId, 'reports', 'dashboard', params] as const,
+  comparison: (marinaId: string, params: Record<string, string | undefined> = {}) =>
+    ['marina', marinaId, 'reports', 'comparison', params] as const,
+
   // M5 billing: everything under ['marina', id, 'billing'] (invalidated by billing.changed, m5-plan §9.2).
   billing: (marinaId: string) => ['marina', marinaId, 'billing'] as const,
   // M6b: open charges to collect at the dock on a date (under billing: refreshed by billing.changed; cached

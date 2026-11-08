@@ -120,5 +120,9 @@
   "remote_pin_mismatch": "The online Porto presented a certificate different from the expected one: connection stopped for safety.",
   "peripheral_unavailable": "The peripheral is not configured or not ready.",
   "claim_expired": "The claim of the fiscal document expired: it will be retried.",
-  "app_pin_invalid": "Wrong app PIN."
+  "app_pin_invalid": "Wrong app PIN.",
+  "invalid_period": "Invalid period: the end date must follow the start date and the period cannot exceed 400 days.",
+  "invalid_report_filter": "One of the report filters is not valid.",
+  "report_too_large": "Too many rows for one export: shorten the period or add filters.",
+  "unknown_indicator": "This indicator cannot be compared."
 }

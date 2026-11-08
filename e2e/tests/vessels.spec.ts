@@ -21,7 +21,7 @@ test('adds a vessel with two owners and a billing company', async ({ page }) => 
     company_name: `Charter ${tag} SRL`,
   });
 
-  await page.getByRole('link', { name: 'Imbarcazioni' }).click();
+  await page.getByRole('link', { name: 'Imbarcazioni', exact: true }).click();
   await page.getByRole('link', { name: 'Nuova barca' }).click();
   await page.getByLabel('Nome', { exact: true }).fill(`Maestrale ${tag}`);
   await page.getByLabel('Matricola o numero di iscrizione').fill(`GE${tag}`);

@@ -22,6 +22,7 @@ import (
 	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/pricing"
+	"github.com/coste360/porto/internal/domain/report"
 	"github.com/coste360/porto/internal/domain/vessel"
 	"github.com/coste360/porto/internal/http/problem"
 
@@ -303,5 +304,25 @@ func TestMapError_M5Details(t *testing.T) {
 		if !ok || typ != c.want || len(opts) != 1 {
 			t.Errorf("%v: %q %d %v, want %q with details", c.err, typ, len(opts), ok, c.want)
 		}
+	}
+}
+
+func TestMapError_M7(t *testing.T) {
+	cases := map[error]problem.Type{
+		report.ErrInvalidPeriod:    problem.InvalidPeriod,
+		report.ErrInvalidFilter:    problem.InvalidReportFilter,
+		report.ErrTooLarge:         problem.ReportTooLarge,
+		report.ErrUnknownIndicator: problem.UnknownIndicator,
+		report.ErrNotImplemented:   problem.NotImplemented,
+	}
+	for err, want := range cases {
+		got, _, ok := MapError(fmt.Errorf("wrapped: %w", err))
+		if !ok || got != want {
+			t.Errorf("%v: %q, %v; want %q", err, got, ok, want)
+		}
+	}
+	typ, opts, ok := MapError(fmt.Errorf("x: %w", &report.FilterError{Param: "group_by"}))
+	if !ok || typ != problem.InvalidReportFilter || len(opts) != 1 {
+		t.Errorf("FilterError: %q %d %v", typ, len(opts), ok)
 	}
 }

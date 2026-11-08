@@ -134,6 +134,11 @@ export const PROBLEM_TYPES = [
   'peripheral_unavailable',
   'claim_expired',
   'app_pin_invalid',
+  // M7 (m7-plan §8)
+  'invalid_period',
+  'invalid_report_filter',
+  'report_too_large',
+  'unknown_indicator',
 ] as const;
 
 export type ProblemType = (typeof PROBLEM_TYPES)[number];

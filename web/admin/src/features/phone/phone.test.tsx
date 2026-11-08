@@ -7,6 +7,7 @@ import type { NewOp, QueuedOp } from '@porto/shared/offline';
 import { renderWithProviders } from '@porto/shared/testing';
 
 import { renderApp } from '../../test/renderApp';
+import { makeDashboard, productionTile, yardTile } from '../dashboard/test/fixtures';
 import { baseRoutes, mapDoc } from '../desk/test/fixtures';
 import { TransitQrButton } from './components/TransitQrButton';
 import { setPreferFullVersion } from './lib/fullVersion';
@@ -396,12 +397,18 @@ describe('direction phone screen', () => {
       'accounting',
     );
 
-  it('dashboard placeholder with today counts, deadlines grouped by week', async () => {
+  it('dashboard tiles with today counts, deadlines grouped by week', async () => {
     phone();
     const { calls } = renderApp(`/m/${MARINA_ID}/direction`, [
       ...baseRoutes(directionMe()),
       { path: `${API}/movements`, body: movements },
       { path: `${API}/maps/${MAP_ID}/day`, body: dayView },
+      {
+        path: `${API}/dashboard`,
+        body: makeDashboard([productionTile, yardTile], {
+          period: { from: '2026-07-01', to: '2026-07-10' },
+        }),
+      },
       {
         path: `${API}/deadlines`,
         body: {
@@ -428,9 +435,16 @@ describe('direction phone screen', () => {
     const page = await screen.findByTestId('direction-page');
     for (const name of ['Cruscotto', 'Mappa', 'Scadenze'])
       expect(within(page).getByRole('tab', { name })).toHaveClass('min-h-11');
-    expect(screen.getByTestId('direction-placeholder')).toHaveTextContent(
-      'Cruscotto completo con M7',
+    // Month to date by default; only available tiles, compact, opening the report with the same period.
+    const tile = await screen.findByTestId('dashboard-tile');
+    expect(tile).toHaveAttribute('data-tile', 'production');
+    expect(screen.queryByTestId('tile-sparkline')).not.toBeInTheDocument();
+    expect(within(tile).getByTestId('tile-value')).toHaveAttribute(
+      'href',
+      `/admin/m/${MARINA_ID}/reports/production?from=2026-07-01&to=2026-07-10`,
     );
+    const dash = calls.find((c) => c.url.pathname.endsWith('/dashboard'))!.url.searchParams;
+    expect(dash.get('from')).toMatch(/^\d{4}-\d{2}-01$/);
     await waitFor(() =>
       expect(screen.getAllByTestId('direction-count').map((c) => c.textContent)).toEqual([
         'Arrivi1',

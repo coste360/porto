@@ -34,6 +34,7 @@ import (
 	"github.com/coste360/porto/internal/domain/payment"
 	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
+	"github.com/coste360/porto/internal/domain/report"
 	"github.com/coste360/porto/internal/domain/rights"
 	"github.com/coste360/porto/internal/domain/signature"
 	"github.com/coste360/porto/internal/domain/team"
@@ -94,6 +95,9 @@ type Handler struct {
 	Fiscal     *fiscal.Service
 	Collect    *collect.Service
 	PayDrivers *paydriver.Registry
+
+	// M7 (m7-plan §8): reports, dashboard and comparison.
+	Reports *report.Service
 }
 
 func principal(r *http.Request) *auth.Principal {

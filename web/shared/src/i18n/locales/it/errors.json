@@ -120,5 +120,9 @@
   "remote_pin_mismatch": "Il Porto online ha presentato un certificato diverso da quello atteso: collegamento interrotto per sicurezza.",
   "peripheral_unavailable": "La periferica non è configurata o non è pronta.",
   "claim_expired": "La presa in carico del documento fiscale è scaduta: verrà ritentata.",
-  "app_pin_invalid": "PIN dell'app errato."
+  "app_pin_invalid": "PIN dell'app errato.",
+  "invalid_period": "Periodo non valido: la data finale deve seguire quella iniziale e il periodo non può superare 400 giorni.",
+  "invalid_report_filter": "Uno dei filtri del report non è valido.",
+  "report_too_large": "Troppe righe per una sola esportazione: riduci il periodo o aggiungi filtri.",
+  "unknown_indicator": "Indicatore non disponibile per il confronto."
 }

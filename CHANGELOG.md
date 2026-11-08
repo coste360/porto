@@ -8,6 +8,38 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M7 "Report e cruscotto" (spec 21, 13.2, 26.1, 27, m7-plan, ADR 0012):
+
+- Reports (`GET /marinas/{id}/reports/{key}`, tag `reports`): occupancy (physical and contractual, berths, land and
+  dynamic areas in cm-nights / cm²-nights), occupancy efficiency, allocation waste with lost potential revenue and
+  read-only swap/move suggestions (fit + occupancy engine), lost demand (unanswered and refused inquiries),
+  customers and renewals, production (contract competence), accruals and deferrals (`accrual.Allocate`), detailed
+  charges (competence or issue basis) and payments (receipt basis), revenue classes, receivables ageing and
+  reminders, presences, rights and condominium, cash and fiscal receipts, hosted vessels, revenue per berth metre.
+  Raw rows from `internal/store/report_*.go` (always `marina_id` first, no money or ratio in SQL), pure
+  `internal/domain/report/{calc,align,swap,export}` (integer cents/cm/basis points, ratios recomputed from sums),
+  one read transaction per request, no writes (INV-61). Migration `00015_report_indexes` (indexes only, SQLite and
+  PostgreSQL).
+- Permissions: `reports.operational` (occupancy, efficiency, waste without money, lost demand without value,
+  presences without revenue, vessels) and `reports.all` (everything with money); customer names only with
+  `customers.read`; another marina is 404.
+- Manager dashboard (`GET /marinas/{id}/dashboard`, spec 21.2) replacing the overview placeholder: tiles with
+  period value, same period last year, change and trend, sparkline and breakdowns; every tile opens its report
+  with the same filter, and its value is the fold of the very records of that report (INV-62, acceptance test on
+  the demo data). Period presets (month/year to date, last 30 days, last 12 months, custom up to 400 days), date or
+  weekday alignment, and map / pier / group / category selectors (carried into every tile drill). The direction
+  phone screen shows the tiles in one column.
+- Period comparison (`GET /marinas/{id}/reports/comparison`): up to 5 years back, day/week/month buckets, date or
+  weekday alignment (364 days per year), line chart and change table.
+- Exports: every report and the comparison as Italian CSV (BOM, `;`, CRLF, decimal comma, GG/MM/AAAA, formula
+  injection guard) and Excel (`internal/xlsx`, sheets "Dati" and "Riepilogo"), built from the same rows as the JSON
+  with the `Totale` row from the totals (INV-63); cap 200 000 rows (`report_too_large`).
+- Web: nav entry "Report" (group Analisi), report index filtered by permission, report page with filter bar
+  (search params, so a tile link reproduces the filter), summary cards, shadcn chart, groups and paginated records
+  with links, export buttons; responsive down to phone width. i18n namespaces `reports` and `dashboard` (it, en).
+- Out of M7 (seams): yard reports and tiles (M10), rental reports and tiles (M11), shown as "Disponibile con
+  M10/M11"; storage-specific reports (M9).
+
 M6b "Offline, telefono e desktop remoto" (spec 29.2, 31.2, 31.3, m6b-plan, ADR 0011):
 
 - PWA: installable admin panel with a hand-written service worker (`web/admin/src/sw/sw.ts`, precache list written
@@ -385,6 +417,10 @@ M4 review, fix round 1:
   only by the `desktop.yml` jobs; the Linux AppImage step needs `APPIMAGETOOL_SHA256` (repository variable) or a
   local `APPIMAGETOOL`. Signing and notarisation need Coste360 certificates. M6b (PWA offline queue, per-role phone
   screens, remote mode, kiosk, local peripherals bridge) is not built.
+- M7: the demo seed has no activity in the previous year, so the previous-year tiles are zero and the
+  drill-down equality is exercised for real on the current year only; seeded inquiries all arrive in the future,
+  so lost demand is zero for periods ending today. The dashboard page offers only period, comparison and
+  alignment (the API also accepts map/structure filters).
 - Demo seed: the 2 tacit-renewal contracts and the charter fleet of 8 vessels on pier E (m4-plan §10) are not
   seeded yet.
 - Public quote and renewal acceptance do not return `signature_link` (m4-plan §15 D33, open for a product

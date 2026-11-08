@@ -71,6 +71,8 @@ func Get(cfg *config.Config, version, edition string) Meta {
 			// (payments.providers) but disabled until a marina enables it.
 			"charges", "charge_exports", "payments", "credits", "cash", "fiscal.none", "fiscal.export",
 			"payment_requests", "reminders", "payments.providers", "payments.sepa", "imports.xlsx", "opening_balances",
+			// M7 (m7-plan §8): reports, manager dashboard and comparison; yard and rental reports are M10/M11.
+			"reports",
 		},
 		DemoPairing:          cfg != nil && cfg.DemoPairingEnabled(),
 		PricingEngineVersion: pricing.EngineVersion,

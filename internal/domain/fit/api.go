@@ -99,6 +99,10 @@ func Check(v Vessel, t Target, lastNight calendar.Date, r Rules) Result {
 	return res
 }
 
+// FillBP is the fill ratio Check reports (LOA×Beam over Length×Width in bp, half-even, capped at 10000; 10000 for
+// areas): the allocation waste of the reports is 10000 − FillBP (m7-plan §3.3).
+func FillBP(v Vessel, t Target) int64 { return fillBP(v, t) }
+
 // fillBP is LOA×Beam over Length×Width in basis points (half-even), capped at 10000; areas are always full.
 func fillBP(v Vessel, t Target) int64 {
 	if t.Kind == TargetLinearArea || t.Kind == TargetSurfaceArea {

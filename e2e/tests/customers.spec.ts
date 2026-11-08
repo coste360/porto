@@ -12,7 +12,7 @@ test('creates, edits and searches a customer', async ({ page }) => {
   const last = `Ormeggi${uniq()}`;
   const fiscal = fakeFiscalCode();
   await login(page);
-  await page.getByRole('link', { name: 'Clienti' }).click();
+  await page.getByRole('link', { name: 'Clienti', exact: true }).click();
   await page.getByRole('link', { name: 'Nuovo cliente' }).click();
 
   await page.getByLabel('Nome', { exact: true }).fill('Marta');
@@ -34,7 +34,7 @@ test('creates, edits and searches a customer', async ({ page }) => {
   await page.getByRole('button', { name: 'Salva' }).click();
   await expect(page.getByText('Cliente aggiornato.')).toBeVisible();
 
-  await page.getByRole('link', { name: 'Clienti' }).click();
+  await page.getByRole('link', { name: 'Clienti', exact: true }).click();
   await page.getByLabel('Cerca').fill(fiscal.toLowerCase());
   await expect(page.getByRole('link', { name: `${last} Marta` })).toBeVisible();
 

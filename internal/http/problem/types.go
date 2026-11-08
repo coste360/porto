@@ -144,6 +144,12 @@ const (
 	PeripheralUnavailable Type = "peripheral_unavailable"
 	ClaimExpired          Type = "claim_expired"
 	AppPinInvalid         Type = "app_pin_invalid"
+
+	// M7 (m7-plan §8).
+	InvalidPeriod       Type = "invalid_period"
+	InvalidReportFilter Type = "invalid_report_filter"
+	ReportTooLarge      Type = "report_too_large"
+	UnknownIndicator    Type = "unknown_indicator"
 )
 
 type typeInfo struct {
@@ -275,6 +281,10 @@ var registry = map[Type]typeInfo{
 	PeripheralUnavailable:     {http.StatusServiceUnavailable, "The peripheral is not configured or not ready"},
 	ClaimExpired:              {http.StatusConflict, "The fiscal claim expired"},
 	AppPinInvalid:             {http.StatusUnauthorized, "Wrong app PIN"},
+	InvalidPeriod:             {http.StatusUnprocessableEntity, "Invalid report period"},
+	InvalidReportFilter:       {http.StatusUnprocessableEntity, "Invalid report filter"},
+	ReportTooLarge:            {http.StatusUnprocessableEntity, "Too many records to export"},
+	UnknownIndicator:          {http.StatusUnprocessableEntity, "Unknown or not comparable indicator"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

@@ -75,6 +75,7 @@ oppure PostgreSQL (`DATABASE_URL`). Stesso schema logico sui due dialetti.
 | `internal/desktop/remote` | modalità remota (M6b): proxy loopback verso un Porto online che custodisce il token di dispositivo, fissaggio del certificato, cache della shell, agente fiscale bridge; senza database né `app.App` |
 | `internal/peripheral` | driver delle periferiche locali (M6b): finti, ESC/POS generico, ZPL, trasporti tcp/cups/file; Go puro, solo `desktopport` e `pkg/ext` |
 | `internal/http/bridge` | handler di `/api/bridge/v1` (M6b), solo su loopback come l'API desktop (INV-85) |
+| `internal/domain/report` | report, cruscotto e comparazione (M7): permessi `reports.operational`/`reports.all`, lettura in `ReadTx` (INV-61), righe grezze da `internal/store/report_*.go`; sotto-package puri `calc` (record, totali come fold, riquadri), `align` (periodi e allineamento data/giorno della settimana), `swap` (suggerimenti di scambio), `export` (CSV italiano ed Excel dalla stessa tabella) |
 | `pkg/ext` | interfacce pubbliche delle estensioni (sottoinsieme M0 di spec [27.5](spec/27-api-eventi-estensioni.md)) |
 | `web/shared`, `web/admin`, `web/booking` | workspace npm: libreria condivisa (client generato, shadcn/ui, tema, i18n, marchio), pannello, pagina pubblica |
 | `e2e/` | Playwright sul binario reale |
@@ -225,6 +226,7 @@ con le stesse regole: servizio con controllo dei permessi, scope di marina, tran
 | M4 | `contract` completo, `schedule`, `rights`, `allot`, `accrual`, `docs` (+ `tmpl`, `markdown`, `layout`, `pdf`), `signature`, `magiclink`, `comms`, `csvimport`, motore scadenze in `deadline` (niente AI, ADR 0008) | [13](spec/13-contrattualistica.md), [14](spec/14-cessioni-oneri-condominio.md), [15](spec/15-modelli-di-stampa-e-firma.md) |
 | M5 | `chargeplan` (puro), `charge`, `payment`, `collect`, `paydriver` (`manual`, `stripe` opzionale e disattivato di default), `cash` (+ `summary` puro), `fiscal`, `collect/levels` (puro), `internal/xlsx`; nessuna fatturazione: gli addebiti si esportano (spec 33 D4) | [16](spec/16-addebiti-e-incassi.md) |
 | M6a | edizione desktop: `cmd/porto-desktop`, `desktopport`, `desktop`, `lan`, `http/desktop`; sessioni di dispositivo per i browser abbinati via QR | [31](spec/31-multipiattaforma.md) |
-| successive | `storage`, `optimizer` (puro), `yard`, `formula` (puro), `rental`, `maintenance`, `sensor`, `profile`, `online`, `checkout`, `report` | [16](spec/16-addebiti-e-incassi.md)–[25](spec/25-scheda-pubblica.md) |
+| M7 | `report` (+ `calc`, `align`, `swap`, `export` puri): report di 21.3 sui domini esistenti, cruscotto del manager con drill-down ai record, CSV ed Excel; cantiere e noleggio restano agganci per M10/M11 (ADR 0012) | [21](spec/21-report-e-cruscotto.md) |
+| successive | `storage`, `optimizer` (puro), `yard`, `formula` (puro), `rental`, `maintenance`, `sensor`, `profile`, `online`, `checkout` | [16](spec/16-addebiti-e-incassi.md)–[25](spec/25-scheda-pubblica.md) |
 
 Le regole che nessuna sequenza di operazioni può violare sono in [`invariants.md`](invariants.md).

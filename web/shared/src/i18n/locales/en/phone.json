@@ -120,7 +120,6 @@
       "map": "Map",
       "deadlines": "Deadlines"
     },
-    "dashboardPlaceholder": "Full dashboard with M7",
     "arrivals": "Arrivals",
     "departures": "Departures",
     "inPort": "In port",
@@ -128,7 +127,8 @@
     "openFull": "Open the full page",
     "deadlinesNone": "No deadlines in the next 30 days.",
     "week": "Week of {{date}}",
-    "notAllowed": "Your role cannot see deadlines."
+    "notAllowed": "Your role cannot see deadlines.",
+    "indicators": "Period indicators"
   },
   "scan": {
     "start": "Frame the transit QR",

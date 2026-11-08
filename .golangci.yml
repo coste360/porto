@@ -298,6 +298,11 @@ linters:
             - "**/internal/domain/cash/summary/**"
             - "**/internal/domain/collect/levels/**"
             - "**/internal/xlsx/**"
+            # M7 (m7-plan §0.4)
+            - "**/internal/domain/report/calc/**"
+            - "**/internal/domain/report/align/**"
+            - "**/internal/domain/report/swap/**"
+            - "**/internal/domain/report/export/**"
           deny:
             - pkg: github.com/coste360/porto/internal/store
               desc: pure engines must not touch the database (INV-21)
@@ -313,6 +318,29 @@ linters:
               desc: pure engines are deterministic
             - pkg: os
               desc: pure engines do no I/O
+        # Reports are read-only (INV-61, m7-plan §0.2): no audit row, no outbox event; the pure report packages
+        # never import the report service either (calc/align/swap/export → report is a cycle in spirit).
+        report-readonly:
+          list-mode: lax
+          files:
+            - "**/internal/domain/report/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/domain/event
+              desc: reports are read-only and write no outbox event (INV-61)
+            - pkg: github.com/coste360/porto/internal/domain/audit
+              desc: reports are read-only and write no audit row (INV-61)
+            - pkg: github.com/coste360/porto/internal/domain/auditlog
+              desc: reports are read-only and write no audit row (INV-61)
+        report-pure:
+          list-mode: lax
+          files:
+            - "**/internal/domain/report/calc/**"
+            - "**/internal/domain/report/align/**"
+            - "**/internal/domain/report/swap/**"
+            - "**/internal/domain/report/export/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/domain/report$
+              desc: the pure report packages do not depend on the report service (m7-plan §2)
         # The engines without a seed take no randomness at all, not even math/rand (INV-21); the optimizer is
         # left out because it takes an explicit seed.
         pure-engines-no-rand:
@@ -333,6 +361,10 @@ linters:
             - "**/internal/domain/cash/summary/**"
             - "**/internal/domain/collect/levels/**"
             - "**/internal/xlsx/**"
+            - "**/internal/domain/report/calc/**"
+            - "**/internal/domain/report/align/**"
+            - "**/internal/domain/report/swap/**"
+            - "**/internal/domain/report/export/**"
             # Seeded generators of the layout and fit parity vectors (test data, not the engines).
             - "!**/internal/domain/layout/internal/vectors/**"
             - "!**/internal/domain/fit/internal/genvectors/**"

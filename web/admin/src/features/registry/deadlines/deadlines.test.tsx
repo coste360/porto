@@ -121,7 +121,7 @@ describe('Dashboard deadlines card', () => {
 
   it('is not shown without customers.read', async () => {
     renderApp(`/m/${MARINA_ID}`, [meRoute(makeMe())]);
-    expect(await screen.findByText(/La panoramica operativa/)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Marina Prova' })).toBeInTheDocument();
     expect(screen.queryByText('Vedi tutte')).toBeNull();
   });
 });

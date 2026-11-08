@@ -414,6 +414,11 @@ func TestLogs_NoPII(t *testing.T) {
 	key := c.expect(t, 201, "POST", A+"/marinas/"+o.MarinaID+"/api-keys", map[string]any{"name": "k", "scopes": []string{"marina.read"}})
 	h.bearerClient(str(key, "secret")).expect(t, 200, "GET", A+"/marinas/"+o.MarinaID, nil)
 	h.bearerClient("po_live_abcdefgh_forged").expect(t, 401, "GET", A+"/marinas/"+o.MarinaID, nil)
+	// M7: a dashboard, a report with customer names and its CSV/Excel exports log only keys, sizes and durations.
+	c.expect(t, 200, "GET", A+"/marinas/"+o.MarinaID+"/dashboard", nil)
+	c.expect(t, 200, "GET", A+"/marinas/"+o.MarinaID+"/reports/customers", nil)
+	c.expect(t, 200, "GET", A+"/marinas/"+o.MarinaID+"/reports/customers?format=csv", nil)
+	c.expect(t, 200, "GET", A+"/marinas/"+o.MarinaID+"/reports/payments?format=xlsx", nil)
 	h.runJobs("outbox.dispatch", "email.deliver")
 	logs := h.logs.String()
 	for _, name := range []string{"Mario Rossi", "Anna Bianchi"} {

@@ -1,0 +1,113 @@
+{
+  "title": "Dashboard",
+  "description": "Period indicators compared with the same period of the previous year.",
+  "tiles": {
+    "production": "Production",
+    "charged": "Charged",
+    "collected": "Collected",
+    "receivables_open": "Open receivables",
+    "receivables_overdue": "Overdue receivables",
+    "occupancy": "Occupancy",
+    "efficiency": "Allocation efficiency",
+    "berth_revenue_per_m": "Revenue per berth metre",
+    "transit_avg_night": "Average transit night",
+    "new_customers": "New customers",
+    "renewal_rate": "Renewal rate",
+    "vessels_hosted": "Hosted vessels",
+    "vessels_avg_loa": "Average length",
+    "yard_open_orders": "Open work orders",
+    "yard_hours": "Hours worked",
+    "yard_margin": "Boatyard margin",
+    "rental_utilisation": "Rental fleet utilisation",
+    "rental_revenue": "Rental revenue"
+  },
+  "periods": {
+    "mtd": "Month to date",
+    "ytd": "Year to date",
+    "last_30": "Last 30 days",
+    "last_12m": "Last 12 months",
+    "custom": "Custom"
+  },
+  "previous": "Previous year",
+  "unavailable": "Available with {{milestone}}",
+  "comparison": {
+    "title": "Period comparison",
+    "description": "An indicator compared with previous years, aligned by date or by weekday.",
+    "open": "Comparison",
+    "indicator": "Indicator",
+    "yearsBack": "Years compared",
+    "yearsBackOption_one": "{{count}} year",
+    "yearsBackOption_other": "{{count}} years",
+    "granularity": {
+      "label": "Grouping",
+      "auto": "Automatic",
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    },
+    "chartTitle": "Current and previous period",
+    "current": "Current period",
+    "previous": "Previous period",
+    "bucket": "Period",
+    "delta": "Change",
+    "deltaBp": "Change %",
+    "total": "Total",
+    "exportCsv": "Export CSV",
+    "exportXlsx": "Export Excel",
+    "exportFailed": "Export failed.",
+    "range": "{{from}} – {{to}}",
+    "noData": "No data in the period.",
+    "indicators": {
+      "production": "Production",
+      "charged": "Charged",
+      "collected": "Collected",
+      "occupancy": "Occupancy",
+      "efficiency": "Allocation efficiency",
+      "berth_revenue_per_m": "Revenue per berth metre",
+      "transit_avg_night": "Average transit night",
+      "new_customers": "New customers",
+      "renewal_rate": "Renewal rate",
+      "arrivals": "Arrivals",
+      "departures": "Departures",
+      "lost_demand_count": "Lost requests",
+      "lost_demand_value": "Lost demand value"
+    }
+  },
+  "sectionTitle": "Indicators",
+  "period": "Period",
+  "from": "From",
+  "to": "To",
+  "invalidPeriod": "The period must last from 1 to 400 days.",
+  "compare": {
+    "label": "Comparison",
+    "previous_year": "Previous year",
+    "none": "No comparison"
+  },
+  "align": {
+    "label": "Alignment",
+    "date": "By date",
+    "weekday": "By weekday"
+  },
+  "previousValue": "Previous year: {{value}}",
+  "trend": {
+    "up": "Rising",
+    "down": "Falling",
+    "flat": "Stable",
+    "none": "No comparison"
+  },
+  "deltaLabel": "Change: {{value}}",
+  "openReport": "Open the report",
+  "compareIndicator": "Compare over the years",
+  "dimsApplied": "Map filters applied",
+  "empty": "No indicator available for your role.",
+  "seriesLabel": "Trend of {{tile}}",
+  "breakdown": "Breakdown",
+  "outOfScope": "Boatyard and rentals",
+  "dims": {
+    "map": "Map",
+    "structure": "Pier",
+    "group": "Group",
+    "category": "Category",
+    "all": "All"
+  }
+}

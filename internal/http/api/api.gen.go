@@ -14,6 +14,27 @@ import (
 	"github.com/oapi-codegen/runtime"
 )
 
+// Defines values for AccrualsRecordSection.
+const (
+	AccrualsRecordSectionAccrual    AccrualsRecordSection = "accrual"
+	AccrualsRecordSectionCompetence AccrualsRecordSection = "competence"
+	AccrualsRecordSectionDeferral   AccrualsRecordSection = "deferral"
+)
+
+// Valid indicates whether the value is a known member of the AccrualsRecordSection enum.
+func (e AccrualsRecordSection) Valid() bool {
+	switch e {
+	case AccrualsRecordSectionAccrual:
+		return true
+	case AccrualsRecordSectionCompetence:
+		return true
+	case AccrualsRecordSectionDeferral:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AddendumKind.
 const (
 	AddendumKindBillingCustomer AddendumKind = "billing_customer"
@@ -536,6 +557,24 @@ func (e CashMovementInputKind) Valid() bool {
 	}
 }
 
+// Defines values for CashRecordSection.
+const (
+	CashRecordSectionFiscal   CashRecordSection = "fiscal"
+	CashRecordSectionSessions CashRecordSection = "sessions"
+)
+
+// Valid indicates whether the value is a known member of the CashRecordSection enum.
+func (e CashRecordSection) Valid() bool {
+	switch e {
+	case CashRecordSectionFiscal:
+		return true
+	case CashRecordSectionSessions:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CashSessionStatus.
 const (
 	CashSessionStatusClosed CashSessionStatus = "closed"
@@ -863,6 +902,24 @@ func (e ChargePaymentStatus) Valid() bool {
 	}
 }
 
+// Defines values for ChargesReportBasis.
+const (
+	ChargesReportBasisCompetence ChargesReportBasis = "competence"
+	ChargesReportBasisIssued     ChargesReportBasis = "issued"
+)
+
+// Valid indicates whether the value is a known member of the ChargesReportBasis enum.
+func (e ChargesReportBasis) Valid() bool {
+	switch e {
+	case ChargesReportBasisCompetence:
+		return true
+	case ChargesReportBasisIssued:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for CharterPricingMode.
 const (
 	CharterPricingModeFlat      CharterPricingMode = "flat"
@@ -1043,6 +1100,57 @@ func (e CommonRunKind) Valid() bool {
 	case Advance:
 		return true
 	case Balance:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ComparisonIndicator.
+const (
+	ComparisonIndicatorArrivals         ComparisonIndicator = "arrivals"
+	ComparisonIndicatorBerthRevenuePerM ComparisonIndicator = "berth_revenue_per_m"
+	ComparisonIndicatorCharged          ComparisonIndicator = "charged"
+	ComparisonIndicatorCollected        ComparisonIndicator = "collected"
+	ComparisonIndicatorDepartures       ComparisonIndicator = "departures"
+	ComparisonIndicatorEfficiency       ComparisonIndicator = "efficiency"
+	ComparisonIndicatorLostDemandCount  ComparisonIndicator = "lost_demand_count"
+	ComparisonIndicatorLostDemandValue  ComparisonIndicator = "lost_demand_value"
+	ComparisonIndicatorNewCustomers     ComparisonIndicator = "new_customers"
+	ComparisonIndicatorOccupancy        ComparisonIndicator = "occupancy"
+	ComparisonIndicatorProduction       ComparisonIndicator = "production"
+	ComparisonIndicatorRenewalRate      ComparisonIndicator = "renewal_rate"
+	ComparisonIndicatorTransitAvgNight  ComparisonIndicator = "transit_avg_night"
+)
+
+// Valid indicates whether the value is a known member of the ComparisonIndicator enum.
+func (e ComparisonIndicator) Valid() bool {
+	switch e {
+	case ComparisonIndicatorArrivals:
+		return true
+	case ComparisonIndicatorBerthRevenuePerM:
+		return true
+	case ComparisonIndicatorCharged:
+		return true
+	case ComparisonIndicatorCollected:
+		return true
+	case ComparisonIndicatorDepartures:
+		return true
+	case ComparisonIndicatorEfficiency:
+		return true
+	case ComparisonIndicatorLostDemandCount:
+		return true
+	case ComparisonIndicatorLostDemandValue:
+		return true
+	case ComparisonIndicatorNewCustomers:
+		return true
+	case ComparisonIndicatorOccupancy:
+		return true
+	case ComparisonIndicatorProduction:
+		return true
+	case ComparisonIndicatorRenewalRate:
+		return true
+	case ComparisonIndicatorTransitAvgNight:
 		return true
 	default:
 		return false
@@ -1613,6 +1721,69 @@ func (e CustomerMessageStatus) Valid() bool {
 	case CustomerMessageStatusSending:
 		return true
 	case CustomerMessageStatusSent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CustomersRecordSection.
+const (
+	CustomersRecordSectionCustomers CustomersRecordSection = "customers"
+	CustomersRecordSectionRenewals  CustomersRecordSection = "renewals"
+)
+
+// Valid indicates whether the value is a known member of the CustomersRecordSection enum.
+func (e CustomersRecordSection) Valid() bool {
+	switch e {
+	case CustomersRecordSectionCustomers:
+		return true
+	case CustomersRecordSectionRenewals:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CustomersRecordSeniorityBand.
+const (
+	Ge10 CustomersRecordSeniorityBand = "ge10"
+	Y0   CustomersRecordSeniorityBand = "y0"
+	Y12  CustomersRecordSeniorityBand = "y1_2"
+	Y34  CustomersRecordSeniorityBand = "y3_4"
+	Y59  CustomersRecordSeniorityBand = "y5_9"
+)
+
+// Valid indicates whether the value is a known member of the CustomersRecordSeniorityBand enum.
+func (e CustomersRecordSeniorityBand) Valid() bool {
+	switch e {
+	case Ge10:
+		return true
+	case Y0:
+		return true
+	case Y12:
+		return true
+	case Y34:
+		return true
+	case Y59:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for DashboardCompare.
+const (
+	DashboardCompareNone         DashboardCompare = "none"
+	DashboardComparePreviousYear DashboardCompare = "previous_year"
+)
+
+// Valid indicates whether the value is a known member of the DashboardCompare enum.
+func (e DashboardCompare) Valid() bool {
+	switch e {
+	case DashboardCompareNone:
+		return true
+	case DashboardComparePreviousYear:
 		return true
 	default:
 		return false
@@ -2291,6 +2462,27 @@ func (e DynamicAreaSupports) Valid() bool {
 	}
 }
 
+// Defines values for EfficiencyRecordKind.
+const (
+	EfficiencyRecordKindContract EfficiencyRecordKind = "contract"
+	EfficiencyRecordKindOwner    EfficiencyRecordKind = "owner"
+	EfficiencyRecordKindTransit  EfficiencyRecordKind = "transit"
+)
+
+// Valid indicates whether the value is a known member of the EfficiencyRecordKind enum.
+func (e EfficiencyRecordKind) Valid() bool {
+	switch e {
+	case EfficiencyRecordKindContract:
+		return true
+	case EfficiencyRecordKindOwner:
+		return true
+	case EfficiencyRecordKindTransit:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ExportWarningCode.
 const (
 	CustomerFiscalIncomplete ExportWarningCode = "customer_fiscal_incomplete"
@@ -2770,22 +2962,22 @@ func (e HullType) Valid() bool {
 
 // Defines values for ImportEntity.
 const (
-	Contracts        ImportEntity = "contracts"
-	CustomersVessels ImportEntity = "customers_vessels"
-	Deadlines        ImportEntity = "deadlines"
-	Rights           ImportEntity = "rights"
+	ImportEntityContracts        ImportEntity = "contracts"
+	ImportEntityCustomersVessels ImportEntity = "customers_vessels"
+	ImportEntityDeadlines        ImportEntity = "deadlines"
+	ImportEntityRights           ImportEntity = "rights"
 )
 
 // Valid indicates whether the value is a known member of the ImportEntity enum.
 func (e ImportEntity) Valid() bool {
 	switch e {
-	case Contracts:
+	case ImportEntityContracts:
 		return true
-	case CustomersVessels:
+	case ImportEntityCustomersVessels:
 		return true
-	case Deadlines:
+	case ImportEntityDeadlines:
 		return true
-	case Rights:
+	case ImportEntityRights:
 		return true
 	default:
 		return false
@@ -3196,16 +3388,16 @@ func (e LandKind) Valid() bool {
 
 // Defines values for LengthRoundingMode.
 const (
-	HalfEven LengthRoundingMode = "half_even"
-	Up       LengthRoundingMode = "up"
+	LengthRoundingModeHalfEven LengthRoundingMode = "half_even"
+	LengthRoundingModeUp       LengthRoundingMode = "up"
 )
 
 // Valid indicates whether the value is a known member of the LengthRoundingMode enum.
 func (e LengthRoundingMode) Valid() bool {
 	switch e {
-	case HalfEven:
+	case LengthRoundingModeHalfEven:
 		return true
-	case Up:
+	case LengthRoundingModeUp:
 		return true
 	default:
 		return false
@@ -3788,6 +3980,66 @@ func (e ObligationKind) Valid() bool {
 	}
 }
 
+// Defines values for OccupancyRecordKind.
+const (
+	OccupancyRecordKindContract OccupancyRecordKind = "contract"
+	OccupancyRecordKindOwner    OccupancyRecordKind = "owner"
+	OccupancyRecordKindRelease  OccupancyRecordKind = "release"
+	OccupancyRecordKindTransit  OccupancyRecordKind = "transit"
+)
+
+// Valid indicates whether the value is a known member of the OccupancyRecordKind enum.
+func (e OccupancyRecordKind) Valid() bool {
+	switch e {
+	case OccupancyRecordKindContract:
+		return true
+	case OccupancyRecordKindOwner:
+		return true
+	case OccupancyRecordKindRelease:
+		return true
+	case OccupancyRecordKindTransit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OccupancyRecordRole.
+const (
+	Denominator OccupancyRecordRole = "denominator"
+	Numerator   OccupancyRecordRole = "numerator"
+)
+
+// Valid indicates whether the value is a known member of the OccupancyRecordRole enum.
+func (e OccupancyRecordRole) Valid() bool {
+	switch e {
+	case Denominator:
+		return true
+	case Numerator:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OccupancyReportVariant.
+const (
+	OccupancyReportVariantContractual OccupancyReportVariant = "contractual"
+	OccupancyReportVariantPhysical    OccupancyReportVariant = "physical"
+)
+
+// Valid indicates whether the value is a known member of the OccupancyReportVariant enum.
+func (e OccupancyReportVariant) Valid() bool {
+	switch e {
+	case OccupancyReportVariantContractual:
+		return true
+	case OccupancyReportVariantPhysical:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for OccupancySearchRequestChannel.
 const (
 	OccupancySearchRequestChannelApi  OccupancySearchRequestChannel = "api"
@@ -4202,6 +4454,48 @@ func (e PaymentSource) Valid() bool {
 	}
 }
 
+// Defines values for PaymentsRecordKind.
+const (
+	PaymentsRecordKindDeposit PaymentsRecordKind = "deposit"
+	PaymentsRecordKindPayment PaymentsRecordKind = "payment"
+	PaymentsRecordKindPayout  PaymentsRecordKind = "payout"
+	PaymentsRecordKindRefund  PaymentsRecordKind = "refund"
+)
+
+// Valid indicates whether the value is a known member of the PaymentsRecordKind enum.
+func (e PaymentsRecordKind) Valid() bool {
+	switch e {
+	case PaymentsRecordKindDeposit:
+		return true
+	case PaymentsRecordKindPayment:
+		return true
+	case PaymentsRecordKindPayout:
+		return true
+	case PaymentsRecordKindRefund:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PaymentsRecordSection.
+const (
+	PaymentsRecordSectionMain    PaymentsRecordSection = "main"
+	PaymentsRecordSectionPayouts PaymentsRecordSection = "payouts"
+)
+
+// Valid indicates whether the value is a known member of the PaymentsRecordSection enum.
+func (e PaymentsRecordSection) Valid() bool {
+	switch e {
+	case PaymentsRecordSectionMain:
+		return true
+	case PaymentsRecordSectionPayouts:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for PedestalSocketAmps.
 const (
 	PedestalSocketAmpsN125 PedestalSocketAmps = 125
@@ -4541,6 +4835,45 @@ func (e PresenceState) Valid() bool {
 	}
 }
 
+// Defines values for PresencesRecordEvent.
+const (
+	PresencesRecordEventArrived  PresencesRecordEvent = "arrived"
+	PresencesRecordEventDeparted PresencesRecordEvent = "departed"
+)
+
+// Valid indicates whether the value is a known member of the PresencesRecordEvent enum.
+func (e PresencesRecordEvent) Valid() bool {
+	switch e {
+	case PresencesRecordEventArrived:
+		return true
+	case PresencesRecordEventDeparted:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for PresencesRecordSection.
+const (
+	PresencesRecordSectionAbsences  PresencesRecordSection = "absences"
+	PresencesRecordSectionMovements PresencesRecordSection = "movements"
+	PresencesRecordSectionReleases  PresencesRecordSection = "releases"
+)
+
+// Valid indicates whether the value is a known member of the PresencesRecordSection enum.
+func (e PresencesRecordSection) Valid() bool {
+	switch e {
+	case PresencesRecordSectionAbsences:
+		return true
+	case PresencesRecordSectionMovements:
+		return true
+	case PresencesRecordSectionReleases:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for PriceClassRuleBasis.
 const (
 	Width PriceClassRuleBasis = "width"
@@ -4770,6 +5103,8 @@ const (
 	ProblemTypeInternalError             ProblemType = "internal_error"
 	ProblemTypeInvalidCredentials        ProblemType = "invalid_credentials"
 	ProblemTypeInvalidFile               ProblemType = "invalid_file"
+	ProblemTypeInvalidPeriod             ProblemType = "invalid_period"
+	ProblemTypeInvalidReportFilter       ProblemType = "invalid_report_filter"
 	ProblemTypeInvalidResetToken         ProblemType = "invalid_reset_token"
 	ProblemTypeInvalidScope              ProblemType = "invalid_scope"
 	ProblemTypeInvalidSignature          ProblemType = "invalid_signature"
@@ -4821,6 +5156,7 @@ const (
 	ProblemTypeRemotePinMismatch         ProblemType = "remote_pin_mismatch"
 	ProblemTypeRemoteUnreachable         ProblemType = "remote_unreachable"
 	ProblemTypeRenewalExists             ProblemType = "renewal_exists"
+	ProblemTypeReportTooLarge            ProblemType = "report_too_large"
 	ProblemTypeResourceTaken             ProblemType = "resource_taken"
 	ProblemTypeRestoreBackupNewer        ProblemType = "restore_backup_newer"
 	ProblemTypeRestoreFailed             ProblemType = "restore_failed"
@@ -4840,6 +5176,7 @@ const (
 	ProblemTypeUnauthorized              ProblemType = "unauthorized"
 	ProblemTypeUndoUnavailable           ProblemType = "undo_unavailable"
 	ProblemTypeUnknownEventType          ProblemType = "unknown_event_type"
+	ProblemTypeUnknownIndicator          ProblemType = "unknown_indicator"
 	ProblemTypeUnsupportedMediaType      ProblemType = "unsupported_media_type"
 	ProblemTypeUseEdit                   ProblemType = "use_edit"
 	ProblemTypeValidationFailed          ProblemType = "validation_failed"
@@ -4939,6 +5276,10 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeInvalidCredentials:
 		return true
 	case ProblemTypeInvalidFile:
+		return true
+	case ProblemTypeInvalidPeriod:
+		return true
+	case ProblemTypeInvalidReportFilter:
 		return true
 	case ProblemTypeInvalidResetToken:
 		return true
@@ -5042,6 +5383,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeRenewalExists:
 		return true
+	case ProblemTypeReportTooLarge:
+		return true
 	case ProblemTypeResourceTaken:
 		return true
 	case ProblemTypeRestoreBackupNewer:
@@ -5079,6 +5422,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeUndoUnavailable:
 		return true
 	case ProblemTypeUnknownEventType:
+		return true
+	case ProblemTypeUnknownIndicator:
 		return true
 	case ProblemTypeUnsupportedMediaType:
 		return true
@@ -5309,6 +5654,51 @@ func (e ReceivableKind) Valid() bool {
 	case ReceivableKindCharge:
 		return true
 	case ReceivableKindScheduledInstallment:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReceivablesRecordKind.
+const (
+	ReceivablesRecordKindCharge            ReceivablesRecordKind = "charge"
+	ReceivablesRecordKindHolderInstallment ReceivablesRecordKind = "holder_installment"
+	ReceivablesRecordKindInstallment       ReceivablesRecordKind = "installment"
+	ReceivablesRecordKindReminder          ReceivablesRecordKind = "reminder"
+)
+
+// Valid indicates whether the value is a known member of the ReceivablesRecordKind enum.
+func (e ReceivablesRecordKind) Valid() bool {
+	switch e {
+	case ReceivablesRecordKindCharge:
+		return true
+	case ReceivablesRecordKindHolderInstallment:
+		return true
+	case ReceivablesRecordKindInstallment:
+		return true
+	case ReceivablesRecordKindReminder:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReceivablesRecordSection.
+const (
+	ReceivablesRecordSectionFuture    ReceivablesRecordSection = "future"
+	ReceivablesRecordSectionOpen      ReceivablesRecordSection = "open"
+	ReceivablesRecordSectionReminders ReceivablesRecordSection = "reminders"
+)
+
+// Valid indicates whether the value is a known member of the ReceivablesRecordSection enum.
+func (e ReceivablesRecordSection) Valid() bool {
+	switch e {
+	case ReceivablesRecordSectionFuture:
+		return true
+	case ReceivablesRecordSectionOpen:
+		return true
+	case ReceivablesRecordSectionReminders:
 		return true
 	default:
 		return false
@@ -5777,6 +6167,303 @@ func (e RenewalProposalStatus) Valid() bool {
 	}
 }
 
+// Defines values for ReportAlign.
+const (
+	ReportAlignDate    ReportAlign = "date"
+	ReportAlignWeekday ReportAlign = "weekday"
+)
+
+// Valid indicates whether the value is a known member of the ReportAlign enum.
+func (e ReportAlign) Valid() bool {
+	switch e {
+	case ReportAlignDate:
+		return true
+	case ReportAlignWeekday:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportFamily.
+const (
+	ReportFamilyBerth       ReportFamily = "berth"
+	ReportFamilyLand        ReportFamily = "land"
+	ReportFamilyLinearArea  ReportFamily = "linear_area"
+	ReportFamilySurfaceArea ReportFamily = "surface_area"
+)
+
+// Valid indicates whether the value is a known member of the ReportFamily enum.
+func (e ReportFamily) Valid() bool {
+	switch e {
+	case ReportFamilyBerth:
+		return true
+	case ReportFamilyLand:
+		return true
+	case ReportFamilyLinearArea:
+		return true
+	case ReportFamilySurfaceArea:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportFormat.
+const (
+	ReportFormatCsv  ReportFormat = "csv"
+	ReportFormatJson ReportFormat = "json"
+	ReportFormatXlsx ReportFormat = "xlsx"
+)
+
+// Valid indicates whether the value is a known member of the ReportFormat enum.
+func (e ReportFormat) Valid() bool {
+	switch e {
+	case ReportFormatCsv:
+		return true
+	case ReportFormatJson:
+		return true
+	case ReportFormatXlsx:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportGranularity.
+const (
+	ReportGranularityDay   ReportGranularity = "day"
+	ReportGranularityMonth ReportGranularity = "month"
+	ReportGranularityWeek  ReportGranularity = "week"
+)
+
+// Valid indicates whether the value is a known member of the ReportGranularity enum.
+func (e ReportGranularity) Valid() bool {
+	switch e {
+	case ReportGranularityDay:
+		return true
+	case ReportGranularityMonth:
+		return true
+	case ReportGranularityWeek:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportKey.
+const (
+	ReportKeyAccruals        ReportKey = "accruals"
+	ReportKeyAllocationWaste ReportKey = "allocation-waste"
+	ReportKeyBerthRevenue    ReportKey = "berth-revenue"
+	ReportKeyCash            ReportKey = "cash"
+	ReportKeyCharges         ReportKey = "charges"
+	ReportKeyComparison      ReportKey = "comparison"
+	ReportKeyCustomers       ReportKey = "customers"
+	ReportKeyEfficiency      ReportKey = "efficiency"
+	ReportKeyLostDemand      ReportKey = "lost-demand"
+	ReportKeyOccupancy       ReportKey = "occupancy"
+	ReportKeyPayments        ReportKey = "payments"
+	ReportKeyPresences       ReportKey = "presences"
+	ReportKeyProduction      ReportKey = "production"
+	ReportKeyReceivables     ReportKey = "receivables"
+	ReportKeyRevenueClasses  ReportKey = "revenue-classes"
+	ReportKeyRights          ReportKey = "rights"
+	ReportKeyVessels         ReportKey = "vessels"
+)
+
+// Valid indicates whether the value is a known member of the ReportKey enum.
+func (e ReportKey) Valid() bool {
+	switch e {
+	case ReportKeyAccruals:
+		return true
+	case ReportKeyAllocationWaste:
+		return true
+	case ReportKeyBerthRevenue:
+		return true
+	case ReportKeyCash:
+		return true
+	case ReportKeyCharges:
+		return true
+	case ReportKeyComparison:
+		return true
+	case ReportKeyCustomers:
+		return true
+	case ReportKeyEfficiency:
+		return true
+	case ReportKeyLostDemand:
+		return true
+	case ReportKeyOccupancy:
+		return true
+	case ReportKeyPayments:
+		return true
+	case ReportKeyPresences:
+		return true
+	case ReportKeyProduction:
+		return true
+	case ReportKeyReceivables:
+		return true
+	case ReportKeyRevenueClasses:
+		return true
+	case ReportKeyRights:
+		return true
+	case ReportKeyVessels:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportLengthBand.
+const (
+	Ge25  ReportLengthBand = "ge25"
+	Lt8   ReportLengthBand = "lt8"
+	M1012 ReportLengthBand = "m10_12"
+	M1215 ReportLengthBand = "m12_15"
+	M1520 ReportLengthBand = "m15_20"
+	M2025 ReportLengthBand = "m20_25"
+	M810  ReportLengthBand = "m8_10"
+)
+
+// Valid indicates whether the value is a known member of the ReportLengthBand enum.
+func (e ReportLengthBand) Valid() bool {
+	switch e {
+	case Ge25:
+		return true
+	case Lt8:
+		return true
+	case M1012:
+		return true
+	case M1215:
+		return true
+	case M1520:
+		return true
+	case M2025:
+		return true
+	case M810:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportRefType.
+const (
+	ReportRefTypeAllocation        ReportRefType = "allocation"
+	ReportRefTypeArea              ReportRefType = "area"
+	ReportRefTypeBerth             ReportRefType = "berth"
+	ReportRefTypeCashSession       ReportRefType = "cash_session"
+	ReportRefTypeCharge            ReportRefType = "charge"
+	ReportRefTypeCommonChargeRun   ReportRefType = "common_charge_run"
+	ReportRefTypeContract          ReportRefType = "contract"
+	ReportRefTypeCustomer          ReportRefType = "customer"
+	ReportRefTypeFiscalDocument    ReportRefType = "fiscal_document"
+	ReportRefTypeHolderInstallment ReportRefType = "holder_installment"
+	ReportRefTypeInquiry           ReportRefType = "inquiry"
+	ReportRefTypeInstallment       ReportRefType = "installment"
+	ReportRefTypeLandResource      ReportRefType = "land_resource"
+	ReportRefTypeMandate           ReportRefType = "mandate"
+	ReportRefTypePayment           ReportRefType = "payment"
+	ReportRefTypePresence          ReportRefType = "presence"
+	ReportRefTypeRefund            ReportRefType = "refund"
+	ReportRefTypeRelease           ReportRefType = "release"
+	ReportRefTypeRight             ReportRefType = "right"
+	ReportRefTypeTransit           ReportRefType = "transit"
+	ReportRefTypeVessel            ReportRefType = "vessel"
+)
+
+// Valid indicates whether the value is a known member of the ReportRefType enum.
+func (e ReportRefType) Valid() bool {
+	switch e {
+	case ReportRefTypeAllocation:
+		return true
+	case ReportRefTypeArea:
+		return true
+	case ReportRefTypeBerth:
+		return true
+	case ReportRefTypeCashSession:
+		return true
+	case ReportRefTypeCharge:
+		return true
+	case ReportRefTypeCommonChargeRun:
+		return true
+	case ReportRefTypeContract:
+		return true
+	case ReportRefTypeCustomer:
+		return true
+	case ReportRefTypeFiscalDocument:
+		return true
+	case ReportRefTypeHolderInstallment:
+		return true
+	case ReportRefTypeInquiry:
+		return true
+	case ReportRefTypeInstallment:
+		return true
+	case ReportRefTypeLandResource:
+		return true
+	case ReportRefTypeMandate:
+		return true
+	case ReportRefTypePayment:
+		return true
+	case ReportRefTypePresence:
+		return true
+	case ReportRefTypeRefund:
+		return true
+	case ReportRefTypeRelease:
+		return true
+	case ReportRefTypeRight:
+		return true
+	case ReportRefTypeTransit:
+		return true
+	case ReportRefTypeVessel:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportUnit.
+const (
+	ReportUnitBerthNight    ReportUnit = "berth_night"
+	ReportUnitBp            ReportUnit = "bp"
+	ReportUnitCents         ReportUnit = "cents"
+	ReportUnitCentsPerM     ReportUnit = "cents_per_m"
+	ReportUnitCentsPerNight ReportUnit = "cents_per_night"
+	ReportUnitCm            ReportUnit = "cm"
+	ReportUnitCm2           ReportUnit = "cm2"
+	ReportUnitCm2Night      ReportUnit = "cm2_night"
+	ReportUnitCmNight       ReportUnit = "cm_night"
+	ReportUnitCount         ReportUnit = "count"
+)
+
+// Valid indicates whether the value is a known member of the ReportUnit enum.
+func (e ReportUnit) Valid() bool {
+	switch e {
+	case ReportUnitBerthNight:
+		return true
+	case ReportUnitBp:
+		return true
+	case ReportUnitCents:
+		return true
+	case ReportUnitCentsPerM:
+		return true
+	case ReportUnitCentsPerNight:
+		return true
+	case ReportUnitCm:
+		return true
+	case ReportUnitCm2:
+		return true
+	case ReportUnitCm2Night:
+		return true
+	case ReportUnitCmNight:
+		return true
+	case ReportUnitCount:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for RequiredField.
 const (
 	RequiredFieldAddress            RequiredField = "address"
@@ -5825,6 +6512,24 @@ func (e ResourceType) Valid() bool {
 	case ResourceTypeDynamicArea:
 		return true
 	case ResourceTypeLandResource:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RevenueClassesReportBasis.
+const (
+	RevenueClassesReportBasisCompetence RevenueClassesReportBasis = "competence"
+	RevenueClassesReportBasisIssued     RevenueClassesReportBasis = "issued"
+)
+
+// Valid indicates whether the value is a known member of the RevenueClassesReportBasis enum.
+func (e RevenueClassesReportBasis) Valid() bool {
+	switch e {
+	case RevenueClassesReportBasisCompetence:
+		return true
+	case RevenueClassesReportBasisIssued:
 		return true
 	default:
 		return false
@@ -5924,6 +6629,51 @@ func (e RightTransferInputFeesPolicy) Valid() bool {
 	case RightTransferInputFeesPolicyProrata:
 		return true
 	case RightTransferInputFeesPolicyReassign:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RightsRecordKind.
+const (
+	RightsRecordKindCredit  RightsRecordKind = "credit"
+	RightsRecordKindPayout  RightsRecordKind = "payout"
+	RightsRecordKindRevenue RightsRecordKind = "revenue"
+)
+
+// Valid indicates whether the value is a known member of the RightsRecordKind enum.
+func (e RightsRecordKind) Valid() bool {
+	switch e {
+	case RightsRecordKindCredit:
+		return true
+	case RightsRecordKindPayout:
+		return true
+	case RightsRecordKindRevenue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RightsRecordSection.
+const (
+	RightsRecordSectionAllotments RightsRecordSection = "allotments"
+	RightsRecordSectionCharges    RightsRecordSection = "charges"
+	RightsRecordSectionHolders    RightsRecordSection = "holders"
+	RightsRecordSectionMandates   RightsRecordSection = "mandates"
+)
+
+// Valid indicates whether the value is a known member of the RightsRecordSection enum.
+func (e RightsRecordSection) Valid() bool {
+	switch e {
+	case RightsRecordSectionAllotments:
+		return true
+	case RightsRecordSectionCharges:
+		return true
+	case RightsRecordSectionHolders:
+		return true
+	case RightsRecordSectionMandates:
 		return true
 	default:
 		return false
@@ -6494,6 +7244,114 @@ func (e TemplateVersionStatus) Valid() bool {
 	}
 }
 
+// Defines values for TileReason.
+const (
+	MilestoneM10 TileReason = "milestone_m10"
+	MilestoneM11 TileReason = "milestone_m11"
+)
+
+// Valid indicates whether the value is a known member of the TileReason enum.
+func (e TileReason) Valid() bool {
+	switch e {
+	case MilestoneM10:
+		return true
+	case MilestoneM11:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TileKey.
+const (
+	TileKeyBerthRevenuePerM   TileKey = "berth_revenue_per_m"
+	TileKeyCharged            TileKey = "charged"
+	TileKeyCollected          TileKey = "collected"
+	TileKeyEfficiency         TileKey = "efficiency"
+	TileKeyNewCustomers       TileKey = "new_customers"
+	TileKeyOccupancy          TileKey = "occupancy"
+	TileKeyProduction         TileKey = "production"
+	TileKeyReceivablesOpen    TileKey = "receivables_open"
+	TileKeyReceivablesOverdue TileKey = "receivables_overdue"
+	TileKeyRenewalRate        TileKey = "renewal_rate"
+	TileKeyRentalRevenue      TileKey = "rental_revenue"
+	TileKeyRentalUtilisation  TileKey = "rental_utilisation"
+	TileKeyTransitAvgNight    TileKey = "transit_avg_night"
+	TileKeyVesselsAvgLoa      TileKey = "vessels_avg_loa"
+	TileKeyVesselsHosted      TileKey = "vessels_hosted"
+	TileKeyYardHours          TileKey = "yard_hours"
+	TileKeyYardMargin         TileKey = "yard_margin"
+	TileKeyYardOpenOrders     TileKey = "yard_open_orders"
+)
+
+// Valid indicates whether the value is a known member of the TileKey enum.
+func (e TileKey) Valid() bool {
+	switch e {
+	case TileKeyBerthRevenuePerM:
+		return true
+	case TileKeyCharged:
+		return true
+	case TileKeyCollected:
+		return true
+	case TileKeyEfficiency:
+		return true
+	case TileKeyNewCustomers:
+		return true
+	case TileKeyOccupancy:
+		return true
+	case TileKeyProduction:
+		return true
+	case TileKeyReceivablesOpen:
+		return true
+	case TileKeyReceivablesOverdue:
+		return true
+	case TileKeyRenewalRate:
+		return true
+	case TileKeyRentalRevenue:
+		return true
+	case TileKeyRentalUtilisation:
+		return true
+	case TileKeyTransitAvgNight:
+		return true
+	case TileKeyVesselsAvgLoa:
+		return true
+	case TileKeyVesselsHosted:
+		return true
+	case TileKeyYardHours:
+		return true
+	case TileKeyYardMargin:
+		return true
+	case TileKeyYardOpenOrders:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TileTrend.
+const (
+	TileTrendDown TileTrend = "down"
+	TileTrendFlat TileTrend = "flat"
+	TileTrendNone TileTrend = "none"
+	TileTrendUp   TileTrend = "up"
+)
+
+// Valid indicates whether the value is a known member of the TileTrend enum.
+func (e TileTrend) Valid() bool {
+	switch e {
+	case TileTrendDown:
+		return true
+	case TileTrendFlat:
+		return true
+	case TileTrendNone:
+		return true
+	case TileTrendUp:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for TimeUnit.
 const (
 	TimeUnitMonth  TimeUnit = "month"
@@ -6812,6 +7670,27 @@ func (e VesselPartyRole) Valid() bool {
 	}
 }
 
+// Defines values for VesselsRecordKind.
+const (
+	VesselsRecordKindContract VesselsRecordKind = "contract"
+	VesselsRecordKindOwner    VesselsRecordKind = "owner"
+	VesselsRecordKindTransit  VesselsRecordKind = "transit"
+)
+
+// Valid indicates whether the value is a known member of the VesselsRecordKind enum.
+func (e VesselsRecordKind) Valid() bool {
+	switch e {
+	case VesselsRecordKindContract:
+		return true
+	case VesselsRecordKindOwner:
+		return true
+	case VesselsRecordKindTransit:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for WaitlistPatchStatus.
 const (
 	WaitlistPatchStatusWaiting   WaitlistPatchStatus = "waiting"
@@ -6848,6 +7727,45 @@ func (e WaitlistStatus) Valid() bool {
 	case WaitlistStatusWaiting:
 		return true
 	case WaitlistStatusWithdrawn:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WasteRecordKind.
+const (
+	WasteRecordKindContract WasteRecordKind = "contract"
+	WasteRecordKindOwner    WasteRecordKind = "owner"
+	WasteRecordKindTransit  WasteRecordKind = "transit"
+)
+
+// Valid indicates whether the value is a known member of the WasteRecordKind enum.
+func (e WasteRecordKind) Valid() bool {
+	switch e {
+	case WasteRecordKindContract:
+		return true
+	case WasteRecordKindOwner:
+		return true
+	case WasteRecordKindTransit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for WasteSuggestionKind.
+const (
+	Move WasteSuggestionKind = "move"
+	Swap WasteSuggestionKind = "swap"
+)
+
+// Valid indicates whether the value is a known member of the WasteSuggestionKind enum.
+func (e WasteSuggestionKind) Valid() bool {
+	switch e {
+	case Move:
+		return true
+	case Swap:
 		return true
 	default:
 		return false
@@ -7157,6 +8075,24 @@ func (e GetCustomerStatementParamsFormat) Valid() bool {
 	}
 }
 
+// Defines values for GetDashboardParamsCompare.
+const (
+	GetDashboardParamsCompareNone         GetDashboardParamsCompare = "none"
+	GetDashboardParamsComparePreviousYear GetDashboardParamsCompare = "previous_year"
+)
+
+// Valid indicates whether the value is a known member of the GetDashboardParamsCompare enum.
+func (e GetDashboardParamsCompare) Valid() bool {
+	switch e {
+	case GetDashboardParamsCompareNone:
+		return true
+	case GetDashboardParamsComparePreviousYear:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ListFeeRunLinesParamsFormat.
 const (
 	ListFeeRunLinesParamsFormatCsv  ListFeeRunLinesParamsFormat = "csv"
@@ -7448,6 +8384,728 @@ func (e ListCampaignProposalsParamsFormat) Valid() bool {
 	}
 }
 
+// Defines values for GetAccrualsReportParamsGroupBy.
+const (
+	GetAccrualsReportParamsGroupByCustomer GetAccrualsReportParamsGroupBy = "customer"
+	GetAccrualsReportParamsGroupByMonth    GetAccrualsReportParamsGroupBy = "month"
+	GetAccrualsReportParamsGroupByOrigin   GetAccrualsReportParamsGroupBy = "origin"
+	GetAccrualsReportParamsGroupBySection  GetAccrualsReportParamsGroupBy = "section"
+)
+
+// Valid indicates whether the value is a known member of the GetAccrualsReportParamsGroupBy enum.
+func (e GetAccrualsReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetAccrualsReportParamsGroupByCustomer:
+		return true
+	case GetAccrualsReportParamsGroupByMonth:
+		return true
+	case GetAccrualsReportParamsGroupByOrigin:
+		return true
+	case GetAccrualsReportParamsGroupBySection:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetAccrualsReportParamsSection.
+const (
+	GetAccrualsReportParamsSectionAccrual    GetAccrualsReportParamsSection = "accrual"
+	GetAccrualsReportParamsSectionCompetence GetAccrualsReportParamsSection = "competence"
+	GetAccrualsReportParamsSectionDeferral   GetAccrualsReportParamsSection = "deferral"
+)
+
+// Valid indicates whether the value is a known member of the GetAccrualsReportParamsSection enum.
+func (e GetAccrualsReportParamsSection) Valid() bool {
+	switch e {
+	case GetAccrualsReportParamsSectionAccrual:
+		return true
+	case GetAccrualsReportParamsSectionCompetence:
+		return true
+	case GetAccrualsReportParamsSectionDeferral:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetAllocationWasteReportParamsGroupBy.
+const (
+	GetAllocationWasteReportParamsGroupByCategory  GetAllocationWasteReportParamsGroupBy = "category"
+	GetAllocationWasteReportParamsGroupByGroup     GetAllocationWasteReportParamsGroupBy = "group"
+	GetAllocationWasteReportParamsGroupByKind      GetAllocationWasteReportParamsGroupBy = "kind"
+	GetAllocationWasteReportParamsGroupByMap       GetAllocationWasteReportParamsGroupBy = "map"
+	GetAllocationWasteReportParamsGroupByStructure GetAllocationWasteReportParamsGroupBy = "structure"
+)
+
+// Valid indicates whether the value is a known member of the GetAllocationWasteReportParamsGroupBy enum.
+func (e GetAllocationWasteReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetAllocationWasteReportParamsGroupByCategory:
+		return true
+	case GetAllocationWasteReportParamsGroupByGroup:
+		return true
+	case GetAllocationWasteReportParamsGroupByKind:
+		return true
+	case GetAllocationWasteReportParamsGroupByMap:
+		return true
+	case GetAllocationWasteReportParamsGroupByStructure:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetBerthRevenueReportParamsGroupBy.
+const (
+	GetBerthRevenueReportParamsGroupByCategory  GetBerthRevenueReportParamsGroupBy = "category"
+	GetBerthRevenueReportParamsGroupByGroup     GetBerthRevenueReportParamsGroupBy = "group"
+	GetBerthRevenueReportParamsGroupByMap       GetBerthRevenueReportParamsGroupBy = "map"
+	GetBerthRevenueReportParamsGroupByStructure GetBerthRevenueReportParamsGroupBy = "structure"
+)
+
+// Valid indicates whether the value is a known member of the GetBerthRevenueReportParamsGroupBy enum.
+func (e GetBerthRevenueReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetBerthRevenueReportParamsGroupByCategory:
+		return true
+	case GetBerthRevenueReportParamsGroupByGroup:
+		return true
+	case GetBerthRevenueReportParamsGroupByMap:
+		return true
+	case GetBerthRevenueReportParamsGroupByStructure:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetCashReportParamsGroupBy.
+const (
+	GetCashReportParamsGroupByDay      GetCashReportParamsGroupBy = "day"
+	GetCashReportParamsGroupByMethod   GetCashReportParamsGroupBy = "method"
+	GetCashReportParamsGroupByMonth    GetCashReportParamsGroupBy = "month"
+	GetCashReportParamsGroupByRegister GetCashReportParamsGroupBy = "register"
+	GetCashReportParamsGroupByVatRate  GetCashReportParamsGroupBy = "vat_rate"
+)
+
+// Valid indicates whether the value is a known member of the GetCashReportParamsGroupBy enum.
+func (e GetCashReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetCashReportParamsGroupByDay:
+		return true
+	case GetCashReportParamsGroupByMethod:
+		return true
+	case GetCashReportParamsGroupByMonth:
+		return true
+	case GetCashReportParamsGroupByRegister:
+		return true
+	case GetCashReportParamsGroupByVatRate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetCashReportParamsSection.
+const (
+	GetCashReportParamsSectionFiscal   GetCashReportParamsSection = "fiscal"
+	GetCashReportParamsSectionSessions GetCashReportParamsSection = "sessions"
+)
+
+// Valid indicates whether the value is a known member of the GetCashReportParamsSection enum.
+func (e GetCashReportParamsSection) Valid() bool {
+	switch e {
+	case GetCashReportParamsSectionFiscal:
+		return true
+	case GetCashReportParamsSectionSessions:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetChargesReportParamsBasis.
+const (
+	GetChargesReportParamsBasisCompetence GetChargesReportParamsBasis = "competence"
+	GetChargesReportParamsBasisIssued     GetChargesReportParamsBasis = "issued"
+)
+
+// Valid indicates whether the value is a known member of the GetChargesReportParamsBasis enum.
+func (e GetChargesReportParamsBasis) Valid() bool {
+	switch e {
+	case GetChargesReportParamsBasisCompetence:
+		return true
+	case GetChargesReportParamsBasisIssued:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetChargesReportParamsGroupBy.
+const (
+	GetChargesReportParamsGroupByCustomer        GetChargesReportParamsGroupBy = "customer"
+	GetChargesReportParamsGroupByInvoicingStatus GetChargesReportParamsGroupBy = "invoicing_status"
+	GetChargesReportParamsGroupByItem            GetChargesReportParamsGroupBy = "item"
+	GetChargesReportParamsGroupByMonth           GetChargesReportParamsGroupBy = "month"
+	GetChargesReportParamsGroupByOrigin          GetChargesReportParamsGroupBy = "origin"
+	GetChargesReportParamsGroupByPaymentStatus   GetChargesReportParamsGroupBy = "payment_status"
+	GetChargesReportParamsGroupByRevenueClass    GetChargesReportParamsGroupBy = "revenue_class"
+	GetChargesReportParamsGroupByVatRate         GetChargesReportParamsGroupBy = "vat_rate"
+)
+
+// Valid indicates whether the value is a known member of the GetChargesReportParamsGroupBy enum.
+func (e GetChargesReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetChargesReportParamsGroupByCustomer:
+		return true
+	case GetChargesReportParamsGroupByInvoicingStatus:
+		return true
+	case GetChargesReportParamsGroupByItem:
+		return true
+	case GetChargesReportParamsGroupByMonth:
+		return true
+	case GetChargesReportParamsGroupByOrigin:
+		return true
+	case GetChargesReportParamsGroupByPaymentStatus:
+		return true
+	case GetChargesReportParamsGroupByRevenueClass:
+		return true
+	case GetChargesReportParamsGroupByVatRate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetCustomersReportParamsGroupBy.
+const (
+	GetCustomersReportParamsGroupByCategory    GetCustomersReportParamsGroupBy = "category"
+	GetCustomersReportParamsGroupByChannel     GetCustomersReportParamsGroupBy = "channel"
+	GetCustomersReportParamsGroupByNationality GetCustomersReportParamsGroupBy = "nationality"
+	GetCustomersReportParamsGroupBySeniority   GetCustomersReportParamsGroupBy = "seniority"
+	GetCustomersReportParamsGroupByValueBand   GetCustomersReportParamsGroupBy = "value_band"
+)
+
+// Valid indicates whether the value is a known member of the GetCustomersReportParamsGroupBy enum.
+func (e GetCustomersReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetCustomersReportParamsGroupByCategory:
+		return true
+	case GetCustomersReportParamsGroupByChannel:
+		return true
+	case GetCustomersReportParamsGroupByNationality:
+		return true
+	case GetCustomersReportParamsGroupBySeniority:
+		return true
+	case GetCustomersReportParamsGroupByValueBand:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetCustomersReportParamsSection.
+const (
+	GetCustomersReportParamsSectionCustomers GetCustomersReportParamsSection = "customers"
+	GetCustomersReportParamsSectionRenewals  GetCustomersReportParamsSection = "renewals"
+)
+
+// Valid indicates whether the value is a known member of the GetCustomersReportParamsSection enum.
+func (e GetCustomersReportParamsSection) Valid() bool {
+	switch e {
+	case GetCustomersReportParamsSectionCustomers:
+		return true
+	case GetCustomersReportParamsSectionRenewals:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetEfficiencyReportParamsGroupBy.
+const (
+	GetEfficiencyReportParamsGroupByCategory  GetEfficiencyReportParamsGroupBy = "category"
+	GetEfficiencyReportParamsGroupByGroup     GetEfficiencyReportParamsGroupBy = "group"
+	GetEfficiencyReportParamsGroupByMap       GetEfficiencyReportParamsGroupBy = "map"
+	GetEfficiencyReportParamsGroupByMonth     GetEfficiencyReportParamsGroupBy = "month"
+	GetEfficiencyReportParamsGroupByNight     GetEfficiencyReportParamsGroupBy = "night"
+	GetEfficiencyReportParamsGroupByResource  GetEfficiencyReportParamsGroupBy = "resource"
+	GetEfficiencyReportParamsGroupByStructure GetEfficiencyReportParamsGroupBy = "structure"
+	GetEfficiencyReportParamsGroupByWeek      GetEfficiencyReportParamsGroupBy = "week"
+)
+
+// Valid indicates whether the value is a known member of the GetEfficiencyReportParamsGroupBy enum.
+func (e GetEfficiencyReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetEfficiencyReportParamsGroupByCategory:
+		return true
+	case GetEfficiencyReportParamsGroupByGroup:
+		return true
+	case GetEfficiencyReportParamsGroupByMap:
+		return true
+	case GetEfficiencyReportParamsGroupByMonth:
+		return true
+	case GetEfficiencyReportParamsGroupByNight:
+		return true
+	case GetEfficiencyReportParamsGroupByResource:
+		return true
+	case GetEfficiencyReportParamsGroupByStructure:
+		return true
+	case GetEfficiencyReportParamsGroupByWeek:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetLostDemandReportParamsGroupBy.
+const (
+	GetLostDemandReportParamsGroupByChannel    GetLostDemandReportParamsGroupBy = "channel"
+	GetLostDemandReportParamsGroupByLengthBand GetLostDemandReportParamsGroupBy = "length_band"
+	GetLostDemandReportParamsGroupByMonth      GetLostDemandReportParamsGroupBy = "month"
+	GetLostDemandReportParamsGroupByPurpose    GetLostDemandReportParamsGroupBy = "purpose"
+	GetLostDemandReportParamsGroupByReason     GetLostDemandReportParamsGroupBy = "reason"
+	GetLostDemandReportParamsGroupBySource     GetLostDemandReportParamsGroupBy = "source"
+	GetLostDemandReportParamsGroupByWeek       GetLostDemandReportParamsGroupBy = "week"
+)
+
+// Valid indicates whether the value is a known member of the GetLostDemandReportParamsGroupBy enum.
+func (e GetLostDemandReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetLostDemandReportParamsGroupByChannel:
+		return true
+	case GetLostDemandReportParamsGroupByLengthBand:
+		return true
+	case GetLostDemandReportParamsGroupByMonth:
+		return true
+	case GetLostDemandReportParamsGroupByPurpose:
+		return true
+	case GetLostDemandReportParamsGroupByReason:
+		return true
+	case GetLostDemandReportParamsGroupBySource:
+		return true
+	case GetLostDemandReportParamsGroupByWeek:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetOccupancyReportParamsVariant.
+const (
+	GetOccupancyReportParamsVariantContractual GetOccupancyReportParamsVariant = "contractual"
+	GetOccupancyReportParamsVariantPhysical    GetOccupancyReportParamsVariant = "physical"
+)
+
+// Valid indicates whether the value is a known member of the GetOccupancyReportParamsVariant enum.
+func (e GetOccupancyReportParamsVariant) Valid() bool {
+	switch e {
+	case GetOccupancyReportParamsVariantContractual:
+		return true
+	case GetOccupancyReportParamsVariantPhysical:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetOccupancyReportParamsGroupBy.
+const (
+	GetOccupancyReportParamsGroupByCategory  GetOccupancyReportParamsGroupBy = "category"
+	GetOccupancyReportParamsGroupByGroup     GetOccupancyReportParamsGroupBy = "group"
+	GetOccupancyReportParamsGroupByMap       GetOccupancyReportParamsGroupBy = "map"
+	GetOccupancyReportParamsGroupByMonth     GetOccupancyReportParamsGroupBy = "month"
+	GetOccupancyReportParamsGroupByNight     GetOccupancyReportParamsGroupBy = "night"
+	GetOccupancyReportParamsGroupByResource  GetOccupancyReportParamsGroupBy = "resource"
+	GetOccupancyReportParamsGroupByStructure GetOccupancyReportParamsGroupBy = "structure"
+	GetOccupancyReportParamsGroupByWeek      GetOccupancyReportParamsGroupBy = "week"
+)
+
+// Valid indicates whether the value is a known member of the GetOccupancyReportParamsGroupBy enum.
+func (e GetOccupancyReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetOccupancyReportParamsGroupByCategory:
+		return true
+	case GetOccupancyReportParamsGroupByGroup:
+		return true
+	case GetOccupancyReportParamsGroupByMap:
+		return true
+	case GetOccupancyReportParamsGroupByMonth:
+		return true
+	case GetOccupancyReportParamsGroupByNight:
+		return true
+	case GetOccupancyReportParamsGroupByResource:
+		return true
+	case GetOccupancyReportParamsGroupByStructure:
+		return true
+	case GetOccupancyReportParamsGroupByWeek:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetPaymentsReportParamsGroupBy.
+const (
+	GetPaymentsReportParamsGroupByCustomer GetPaymentsReportParamsGroupBy = "customer"
+	GetPaymentsReportParamsGroupByMethod   GetPaymentsReportParamsGroupBy = "method"
+	GetPaymentsReportParamsGroupByMonth    GetPaymentsReportParamsGroupBy = "month"
+	GetPaymentsReportParamsGroupByProvider GetPaymentsReportParamsGroupBy = "provider"
+	GetPaymentsReportParamsGroupBySource   GetPaymentsReportParamsGroupBy = "source"
+)
+
+// Valid indicates whether the value is a known member of the GetPaymentsReportParamsGroupBy enum.
+func (e GetPaymentsReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetPaymentsReportParamsGroupByCustomer:
+		return true
+	case GetPaymentsReportParamsGroupByMethod:
+		return true
+	case GetPaymentsReportParamsGroupByMonth:
+		return true
+	case GetPaymentsReportParamsGroupByProvider:
+		return true
+	case GetPaymentsReportParamsGroupBySource:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetPaymentsReportParamsSection.
+const (
+	GetPaymentsReportParamsSectionMain    GetPaymentsReportParamsSection = "main"
+	GetPaymentsReportParamsSectionPayouts GetPaymentsReportParamsSection = "payouts"
+)
+
+// Valid indicates whether the value is a known member of the GetPaymentsReportParamsSection enum.
+func (e GetPaymentsReportParamsSection) Valid() bool {
+	switch e {
+	case GetPaymentsReportParamsSectionMain:
+		return true
+	case GetPaymentsReportParamsSectionPayouts:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetPresencesReportParamsGroupBy.
+const (
+	GetPresencesReportParamsGroupByContractKind GetPresencesReportParamsGroupBy = "contract_kind"
+	GetPresencesReportParamsGroupByDay          GetPresencesReportParamsGroupBy = "day"
+	GetPresencesReportParamsGroupByMonth        GetPresencesReportParamsGroupBy = "month"
+	GetPresencesReportParamsGroupByWeek         GetPresencesReportParamsGroupBy = "week"
+)
+
+// Valid indicates whether the value is a known member of the GetPresencesReportParamsGroupBy enum.
+func (e GetPresencesReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetPresencesReportParamsGroupByContractKind:
+		return true
+	case GetPresencesReportParamsGroupByDay:
+		return true
+	case GetPresencesReportParamsGroupByMonth:
+		return true
+	case GetPresencesReportParamsGroupByWeek:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetPresencesReportParamsSection.
+const (
+	GetPresencesReportParamsSectionAbsences  GetPresencesReportParamsSection = "absences"
+	GetPresencesReportParamsSectionMovements GetPresencesReportParamsSection = "movements"
+	GetPresencesReportParamsSectionReleases  GetPresencesReportParamsSection = "releases"
+)
+
+// Valid indicates whether the value is a known member of the GetPresencesReportParamsSection enum.
+func (e GetPresencesReportParamsSection) Valid() bool {
+	switch e {
+	case GetPresencesReportParamsSectionAbsences:
+		return true
+	case GetPresencesReportParamsSectionMovements:
+		return true
+	case GetPresencesReportParamsSectionReleases:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetProductionReportParamsGroupBy.
+const (
+	GetProductionReportParamsGroupByCategory GetProductionReportParamsGroupBy = "category"
+	GetProductionReportParamsGroupByChannel  GetProductionReportParamsGroupBy = "channel"
+	GetProductionReportParamsGroupByCustomer GetProductionReportParamsGroupBy = "customer"
+	GetProductionReportParamsGroupByKind     GetProductionReportParamsGroupBy = "kind"
+	GetProductionReportParamsGroupByMonth    GetProductionReportParamsGroupBy = "month"
+	GetProductionReportParamsGroupByTerm     GetProductionReportParamsGroupBy = "term"
+)
+
+// Valid indicates whether the value is a known member of the GetProductionReportParamsGroupBy enum.
+func (e GetProductionReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetProductionReportParamsGroupByCategory:
+		return true
+	case GetProductionReportParamsGroupByChannel:
+		return true
+	case GetProductionReportParamsGroupByCustomer:
+		return true
+	case GetProductionReportParamsGroupByKind:
+		return true
+	case GetProductionReportParamsGroupByMonth:
+		return true
+	case GetProductionReportParamsGroupByTerm:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetReceivablesReportParamsGroupBy.
+const (
+	GetReceivablesReportParamsGroupByBucket   GetReceivablesReportParamsGroupBy = "bucket"
+	GetReceivablesReportParamsGroupByCustomer GetReceivablesReportParamsGroupBy = "customer"
+	GetReceivablesReportParamsGroupByOrigin   GetReceivablesReportParamsGroupBy = "origin"
+)
+
+// Valid indicates whether the value is a known member of the GetReceivablesReportParamsGroupBy enum.
+func (e GetReceivablesReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetReceivablesReportParamsGroupByBucket:
+		return true
+	case GetReceivablesReportParamsGroupByCustomer:
+		return true
+	case GetReceivablesReportParamsGroupByOrigin:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetReceivablesReportParamsSection.
+const (
+	GetReceivablesReportParamsSectionFuture    GetReceivablesReportParamsSection = "future"
+	GetReceivablesReportParamsSectionOpen      GetReceivablesReportParamsSection = "open"
+	GetReceivablesReportParamsSectionReminders GetReceivablesReportParamsSection = "reminders"
+)
+
+// Valid indicates whether the value is a known member of the GetReceivablesReportParamsSection enum.
+func (e GetReceivablesReportParamsSection) Valid() bool {
+	switch e {
+	case GetReceivablesReportParamsSectionFuture:
+		return true
+	case GetReceivablesReportParamsSectionOpen:
+		return true
+	case GetReceivablesReportParamsSectionReminders:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetRevenueClassesReportParamsBasis.
+const (
+	GetRevenueClassesReportParamsBasisCompetence GetRevenueClassesReportParamsBasis = "competence"
+	GetRevenueClassesReportParamsBasisIssued     GetRevenueClassesReportParamsBasis = "issued"
+)
+
+// Valid indicates whether the value is a known member of the GetRevenueClassesReportParamsBasis enum.
+func (e GetRevenueClassesReportParamsBasis) Valid() bool {
+	switch e {
+	case GetRevenueClassesReportParamsBasisCompetence:
+		return true
+	case GetRevenueClassesReportParamsBasisIssued:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetRightsReportParamsGroupBy.
+const (
+	GetRightsReportParamsGroupByHolder  GetRightsReportParamsGroupBy = "holder"
+	GetRightsReportParamsGroupByItem    GetRightsReportParamsGroupBy = "item"
+	GetRightsReportParamsGroupByMonth   GetRightsReportParamsGroupBy = "month"
+	GetRightsReportParamsGroupByRunKind GetRightsReportParamsGroupBy = "run_kind"
+)
+
+// Valid indicates whether the value is a known member of the GetRightsReportParamsGroupBy enum.
+func (e GetRightsReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetRightsReportParamsGroupByHolder:
+		return true
+	case GetRightsReportParamsGroupByItem:
+		return true
+	case GetRightsReportParamsGroupByMonth:
+		return true
+	case GetRightsReportParamsGroupByRunKind:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetRightsReportParamsSection.
+const (
+	GetRightsReportParamsSectionAllotments GetRightsReportParamsSection = "allotments"
+	GetRightsReportParamsSectionCharges    GetRightsReportParamsSection = "charges"
+	GetRightsReportParamsSectionHolders    GetRightsReportParamsSection = "holders"
+	GetRightsReportParamsSectionMandates   GetRightsReportParamsSection = "mandates"
+)
+
+// Valid indicates whether the value is a known member of the GetRightsReportParamsSection enum.
+func (e GetRightsReportParamsSection) Valid() bool {
+	switch e {
+	case GetRightsReportParamsSectionAllotments:
+		return true
+	case GetRightsReportParamsSectionCharges:
+		return true
+	case GetRightsReportParamsSectionHolders:
+		return true
+	case GetRightsReportParamsSectionMandates:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetVesselsReportParamsGroupBy.
+const (
+	GetVesselsReportParamsGroupByFlag       GetVesselsReportParamsGroupBy = "flag"
+	GetVesselsReportParamsGroupByHullType   GetVesselsReportParamsGroupBy = "hull_type"
+	GetVesselsReportParamsGroupByKind       GetVesselsReportParamsGroupBy = "kind"
+	GetVesselsReportParamsGroupByLengthBand GetVesselsReportParamsGroupBy = "length_band"
+)
+
+// Valid indicates whether the value is a known member of the GetVesselsReportParamsGroupBy enum.
+func (e GetVesselsReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetVesselsReportParamsGroupByFlag:
+		return true
+	case GetVesselsReportParamsGroupByHullType:
+		return true
+	case GetVesselsReportParamsGroupByKind:
+		return true
+	case GetVesselsReportParamsGroupByLengthBand:
+		return true
+	default:
+		return false
+	}
+}
+
+// AccrualsGroup defines model for AccrualsGroup.
+type AccrualsGroup struct {
+	Key    string         `json:"key"`
+	Label  string         `json:"label"`
+	Totals AccrualsTotals `json:"totals"`
+}
+
+// AccrualsRecord defines model for AccrualsRecord.
+type AccrualsRecord struct {
+	// AccrualCents Amount in integer cents of the marina currency
+	AccrualCents *Cents `json:"accrual_cents,omitempty"`
+
+	// AmountGrossCents Amount in integer cents of the marina currency
+	AmountGrossCents *Cents `json:"amount_gross_cents,omitempty"`
+
+	// AmountNetCents Amount in integer cents of the marina currency
+	AmountNetCents *Cents  `json:"amount_net_cents,omitempty"`
+	ChargeId       *string `json:"charge_id,omitempty"`
+	ChargeNumber   *string `json:"charge_number,omitempty"`
+
+	// ChargedCents Amount in integer cents of the marina currency
+	ChargedCents *Cents `json:"charged_cents,omitempty"`
+
+	// CompetenceGrossCents Amount in integer cents of the marina currency
+	CompetenceGrossCents *Cents `json:"competence_gross_cents,omitempty"`
+
+	// CompetenceNetCents Amount in integer cents of the marina currency
+	CompetenceNetCents *Cents  `json:"competence_net_cents,omitempty"`
+	ContractId         *string `json:"contract_id,omitempty"`
+	ContractNumber     *string `json:"contract_number,omitempty"`
+	CustomerId         *string `json:"customer_id,omitempty"`
+	CustomerName       *string `json:"customer_name,omitempty"`
+
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date IsoDate `json:"date"`
+
+	// DeferralGrossCents Amount in integer cents of the marina currency
+	DeferralGrossCents *Cents `json:"deferral_gross_cents,omitempty"`
+
+	// DeferralNetCents Amount in integer cents of the marina currency
+	DeferralNetCents *Cents  `json:"deferral_net_cents,omitempty"`
+	Description      *string `json:"description,omitempty"`
+	LineSeq          *int    `json:"line_seq,omitempty"`
+
+	// MaturedCents Amount in integer cents of the marina currency
+	MaturedCents *Cents `json:"matured_cents,omitempty"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref     ReportRef             `json:"ref"`
+	Section AccrualsRecordSection `json:"section"`
+
+	// ServiceFrom Calendar date YYYY-MM-DD in the marina timezone
+	ServiceFrom *IsoDate `json:"service_from,omitempty"`
+
+	// ServiceTo Calendar date YYYY-MM-DD in the marina timezone
+	ServiceTo *IsoDate `json:"service_to,omitempty"`
+}
+
+// AccrualsRecordSection defines model for AccrualsRecord.Section.
+type AccrualsRecordSection string
+
+// AccrualsReport defines model for AccrualsReport.
+type AccrualsReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []AccrualsGroup   `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod     `json:"period"`
+	Records []AccrualsRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate        `json:"today"`
+	Totals AccrualsTotals `json:"totals"`
+}
+
+// AccrualsTotals defines model for AccrualsTotals.
+type AccrualsTotals struct {
+	// AccrualCents Rateo (gross, contracts carry gross values)
+	AccrualCents Cents `json:"accrual_cents"`
+
+	// ClosingDate Calendar date YYYY-MM-DD in the marina timezone
+	ClosingDate IsoDate `json:"closing_date"`
+
+	// CompetenceGrossCents Amount in integer cents of the marina currency
+	CompetenceGrossCents Cents `json:"competence_gross_cents"`
+
+	// CompetenceNetCents Amount in integer cents of the marina currency
+	CompetenceNetCents Cents `json:"competence_net_cents"`
+
+	// DeferralGrossCents Amount in integer cents of the marina currency
+	DeferralGrossCents Cents `json:"deferral_gross_cents"`
+
+	// DeferralNetCents Amount in integer cents of the marina currency
+	DeferralNetCents Cents `json:"deferral_net_cents"`
+}
+
 // AccrueResult defines model for AccrueResult.
 type AccrueResult struct {
 	Rows int `json:"rows"`
@@ -7698,6 +9356,35 @@ type AllocationList struct {
 
 // AllocationStatus defines model for AllocationStatus.
 type AllocationStatus string
+
+// AllocationWasteReport defines model for AllocationWasteReport.
+type AllocationWasteReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []WasteGroup      `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod  `json:"period"`
+	Records []WasteRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report      ReportKey         `json:"report"`
+	Section     *string           `json:"section,omitempty"`
+	Suggestions []WasteSuggestion `json:"suggestions"`
+	ThresholdBp int64             `json:"threshold_bp"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today IsoDate `json:"today"`
+
+	// Totals Money fields are null without reports.all
+	Totals WasteTotals `json:"totals"`
+}
 
 // AmountRounding defines model for AmountRounding.
 type AmountRounding string
@@ -8096,6 +9783,70 @@ type BerthPage struct {
 	NextCursor *string        `json:"next_cursor"`
 }
 
+// BerthRevenueGroup defines model for BerthRevenueGroup.
+type BerthRevenueGroup struct {
+	Key    string             `json:"key"`
+	Label  string             `json:"label"`
+	Totals BerthRevenueTotals `json:"totals"`
+}
+
+// BerthRevenueRecord defines model for BerthRevenueRecord.
+type BerthRevenueRecord struct {
+	BerthCode string  `json:"berth_code"`
+	BerthId   string  `json:"berth_id"`
+	Category  *string `json:"category,omitempty"`
+
+	// LengthCm Length in integer centimetres
+	LengthCm       Cm    `json:"length_cm"`
+	OccupiedNights int64 `json:"occupied_nights"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref ReportRef `json:"ref"`
+
+	// RevenueCents Amount in integer cents of the marina currency
+	RevenueCents     Cents  `json:"revenue_cents"`
+	RevenuePerMCents *int64 `json:"revenue_per_m_cents"`
+}
+
+// BerthRevenueReport defines model for BerthRevenueReport.
+type BerthRevenueReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string   `json:"filters"`
+	GroupBy *string             `json:"group_by,omitempty"`
+	Groups  []BerthRevenueGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod         `json:"period"`
+	Records []BerthRevenueRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate            `json:"today"`
+	Totals BerthRevenueTotals `json:"totals"`
+}
+
+// BerthRevenueTotals defines model for BerthRevenueTotals.
+type BerthRevenueTotals struct {
+	Berths int64 `json:"berths"`
+
+	// LengthCm Denominator
+	LengthCm Cm `json:"length_cm"`
+
+	// RevenueCents Numerator
+	RevenueCents Cents `json:"revenue_cents"`
+
+	// RevenuePerMCents Σ revenue × 100 / Σ length_cm, half-even
+	RevenuePerMCents *int64 `json:"revenue_per_m_cents"`
+}
+
 // BerthSummary defines model for BerthSummary.
 type BerthSummary struct {
 	Active  bool   `json:"active"`
@@ -8336,6 +10087,21 @@ type CancellationPolicy struct {
 // CancellationPolicyRefund defines model for CancellationPolicy.Refund.
 type CancellationPolicyRefund string
 
+// CashGroup defines model for CashGroup.
+type CashGroup struct {
+	Key    string     `json:"key"`
+	Label  string     `json:"label"`
+	Totals CashTotals `json:"totals"`
+}
+
+// CashMethodTotal defines model for CashMethodTotal.
+type CashMethodTotal struct {
+	Method PaymentMethod `json:"method"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents `json:"total_cents"`
+}
+
 // CashMovement defines model for CashMovement.
 type CashMovement struct {
 	// AmountCents Amount in integer cents of the marina currency
@@ -8359,6 +10125,43 @@ type CashMovementInput struct {
 
 // CashMovementInputKind defines model for CashMovementInput.Kind.
 type CashMovementInputKind string
+
+// CashRecord defines model for CashRecord.
+type CashRecord struct {
+	// BusinessDate Calendar date YYYY-MM-DD in the marina timezone
+	BusinessDate IsoDate `json:"business_date"`
+
+	// CountedCents Amount in integer cents of the marina currency
+	CountedCents *Cents `json:"counted_cents,omitempty"`
+
+	// DifferenceCents Amount in integer cents of the marina currency
+	DifferenceCents *Cents  `json:"difference_cents,omitempty"`
+	DocumentId      *string `json:"document_id,omitempty"`
+
+	// ExpectedCents Amount in integer cents of the marina currency
+	ExpectedCents *Cents `json:"expected_cents,omitempty"`
+
+	// FloatCents Amount in integer cents of the marina currency
+	FloatCents *Cents         `json:"float_cents,omitempty"`
+	Method     *PaymentMethod `json:"method,omitempty"`
+	Number     *string        `json:"number,omitempty"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref          ReportRef         `json:"ref"`
+	RegisterCode *string           `json:"register_code,omitempty"`
+	Section      CashRecordSection `json:"section"`
+	SessionId    *string           `json:"session_id,omitempty"`
+	Status       *string           `json:"status,omitempty"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents *Cents `json:"total_cents,omitempty"`
+
+	// VoidCents Amount in integer cents of the marina currency
+	VoidCents *Cents `json:"void_cents,omitempty"`
+}
+
+// CashRecordSection defines model for CashRecord.Section.
+type CashRecordSection string
 
 // CashRegister defines model for CashRegister.
 type CashRegister struct {
@@ -8388,6 +10191,31 @@ type CashRegisterPatch struct {
 	Active    *bool   `json:"active,omitempty"`
 	IsDefault *bool   `json:"is_default,omitempty"`
 	Name      *string `json:"name,omitempty"`
+}
+
+// CashReport defines model for CashReport.
+type CashReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []CashGroup       `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod `json:"period"`
+	Records []CashRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate    `json:"today"`
+	Totals CashTotals `json:"totals"`
 }
 
 // CashSession defines model for CashSession.
@@ -8439,6 +10267,38 @@ type CashSummary struct {
 
 	// RefundsCents Amount in integer cents of the marina currency
 	RefundsCents Cents `json:"refunds_cents"`
+}
+
+// CashTotals defines model for CashTotals.
+type CashTotals struct {
+	// DifferenceCents Amount in integer cents of the marina currency
+	DifferenceCents Cents `json:"difference_cents"`
+	Documents       int64 `json:"documents"`
+
+	// FiscalTotalCents Issued documents only
+	FiscalTotalCents Cents `json:"fiscal_total_cents"`
+
+	// FiscalVoidCents Voided documents
+	FiscalVoidCents Cents             `json:"fiscal_void_cents"`
+	Methods         []CashMethodTotal `json:"methods"`
+	Sessions        int64             `json:"sessions"`
+	Vat             []CashVatTotal    `json:"vat"`
+}
+
+// CashVatTotal defines model for CashVatTotal.
+type CashVatTotal struct {
+	// GrossCents Amount in integer cents of the marina currency
+	GrossCents Cents   `json:"gross_cents"`
+	Nature     *string `json:"nature,omitempty"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents Cents `json:"net_cents"`
+
+	// RateBp Percentage in integer basis points (1 % = 100)
+	RateBp BasisPoints `json:"rate_bp"`
+
+	// VatCents Amount in integer cents of the marina currency
+	VatCents Cents `json:"vat_cents"`
 }
 
 // CategoryTarget defines model for CategoryTarget.
@@ -8794,6 +10654,108 @@ type ChargeReminderRef struct {
 	CreatedAt time.Time          `json:"created_at"`
 	Level     ReminderLevel      `json:"level"`
 	Status    ReminderItemStatus `json:"status"`
+}
+
+// ChargesGroup defines model for ChargesGroup.
+type ChargesGroup struct {
+	Key    string        `json:"key"`
+	Label  string        `json:"label"`
+	Totals ChargesTotals `json:"totals"`
+}
+
+// ChargesRecord One per charge line (competence basis: its quota in the period; month set by revenue classes)
+type ChargesRecord struct {
+	ChargeId     string  `json:"charge_id"`
+	CustomerId   *string `json:"customer_id,omitempty"`
+	CustomerName *string `json:"customer_name,omitempty"`
+	Description  *string `json:"description,omitempty"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn      *IsoDate    `json:"due_on,omitempty"`
+	FiscalMode *FiscalMode `json:"fiscal_mode,omitempty"`
+
+	// GrossCents Amount in integer cents of the marina currency
+	GrossCents      Cents                 `json:"gross_cents"`
+	InvoicingStatus ChargeInvoicingStatus `json:"invoicing_status"`
+
+	// IssuedOn Calendar date YYYY-MM-DD in the marina timezone
+	IssuedOn IsoDate `json:"issued_on"`
+	ItemCode *string `json:"item_code,omitempty"`
+	ItemId   *string `json:"item_id,omitempty"`
+
+	// Month YYYY-MM (revenue classes and group_by=month)
+	Month *string `json:"month,omitempty"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents      Cents               `json:"net_cents"`
+	Number        string              `json:"number"`
+	OriginType    ChargeOriginType    `json:"origin_type"`
+	PaymentStatus ChargePaymentStatus `json:"payment_status"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref          ReportRef `json:"ref"`
+	RevenueClass *string   `json:"revenue_class,omitempty"`
+	Seq          int       `json:"seq"`
+
+	// ServiceFrom Calendar date YYYY-MM-DD in the marina timezone
+	ServiceFrom *IsoDate `json:"service_from,omitempty"`
+
+	// ServiceTo Calendar date YYYY-MM-DD in the marina timezone
+	ServiceTo *IsoDate `json:"service_to,omitempty"`
+
+	// VatCents Amount in integer cents of the marina currency
+	VatCents  Cents   `json:"vat_cents"`
+	VatNature *string `json:"vat_nature,omitempty"`
+
+	// VatRateBp Percentage in integer basis points (1 % = 100)
+	VatRateBp *BasisPoints `json:"vat_rate_bp,omitempty"`
+}
+
+// ChargesReport defines model for ChargesReport.
+type ChargesReport struct {
+	Basis ChargesReportBasis `json:"basis"`
+
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []ChargesGroup    `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod    `json:"period"`
+	Records []ChargesRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate       `json:"today"`
+	Totals ChargesTotals `json:"totals"`
+}
+
+// ChargesReportBasis defines model for ChargesReport.Basis.
+type ChargesReportBasis string
+
+// ChargesTotals defines model for ChargesTotals.
+type ChargesTotals struct {
+	// ChargedCents Σ charge total_cents (issued basis); equals gross_cents
+	ChargedCents Cents `json:"charged_cents"`
+	Charges      int64 `json:"charges"`
+
+	// GrossCents Amount in integer cents of the marina currency
+	GrossCents Cents `json:"gross_cents"`
+	Lines      int64 `json:"lines"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents Cents `json:"net_cents"`
+
+	// VatCents Amount in integer cents of the marina currency
+	VatCents Cents `json:"vat_cents"`
 }
 
 // CharterAssignment defines model for CharterAssignment.
@@ -9206,6 +11168,52 @@ type CompactionRequest struct {
 
 	// To Calendar date YYYY-MM-DD in the marina timezone
 	To IsoDate `json:"to"`
+}
+
+// ComparisonIndicator defines model for ComparisonIndicator.
+type ComparisonIndicator string
+
+// ComparisonPeriodValue defines model for ComparisonPeriodValue.
+type ComparisonPeriodValue struct {
+	Denominator *int64 `json:"denominator,omitempty"`
+
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From      IsoDate `json:"from"`
+	Numerator *int64  `json:"numerator,omitempty"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To    IsoDate `json:"to"`
+	Value *int64  `json:"value"`
+}
+
+// ComparisonPoint A bucket of the current period; previous values are aligned by date or weekday, never by index
+type ComparisonPoint struct {
+	// Bucket Calendar date YYYY-MM-DD in the marina timezone
+	Bucket              IsoDate `json:"bucket"`
+	Current             *int64  `json:"current"`
+	CurrentDenominator  *int64  `json:"current_denominator,omitempty"`
+	CurrentNumerator    *int64  `json:"current_numerator,omitempty"`
+	Previous            *int64  `json:"previous"`
+	PreviousDenominator *int64  `json:"previous_denominator,omitempty"`
+	PreviousNumerator   *int64  `json:"previous_numerator,omitempty"`
+}
+
+// ComparisonResult defines model for ComparisonResult.
+type ComparisonResult struct {
+	// Align Alignment of the previous period (date = same calendar dates; weekday = shift by whole weeks)
+	Align       ReportAlign           `json:"align"`
+	Current     ComparisonPeriodValue `json:"current"`
+	Delta       *int64                `json:"delta"`
+	DeltaBp     *int64                `json:"delta_bp"`
+	Filters     map[string]string     `json:"filters"`
+	Granularity ReportGranularity     `json:"granularity"`
+	Indicator   ComparisonIndicator   `json:"indicator"`
+	Previous    ComparisonPeriodValue `json:"previous"`
+	Series      []ComparisonPoint     `json:"series"`
+
+	// Unit Unit of an integer value: cents, bp (basis points), count, cm, cm2, cents_per_m, cents_per_night, berth_night (berth or land nights), cm_night (linear dynamic areas), cm2_night (surface dynamic areas)
+	Unit      ReportUnit `json:"unit"`
+	YearsBack int        `json:"years_back"`
 }
 
 // Concession defines model for Concession.
@@ -9992,6 +12000,121 @@ type CustomerVesselLink struct {
 	Vessel      VesselSummary     `json:"vessel"`
 }
 
+// CustomersGroup defines model for CustomersGroup.
+type CustomersGroup struct {
+	Key    string          `json:"key"`
+	Label  string          `json:"label"`
+	Totals CustomersTotals `json:"totals"`
+}
+
+// CustomersRecord section customers: one per customer (display name only, and only with customers.read); section renewals: one per eligible contract with renewed 0/1
+type CustomersRecord struct {
+	AcquisitionChannel *Channel `json:"acquisition_channel,omitempty"`
+
+	// ArrearsCents Amount in integer cents of the marina currency
+	ArrearsCents   *Cents  `json:"arrears_cents,omitempty"`
+	Category       *string `json:"category,omitempty"`
+	ContractId     *string `json:"contract_id,omitempty"`
+	ContractNumber *string `json:"contract_number,omitempty"`
+	Contracts      *int64  `json:"contracts,omitempty"`
+	CustomerId     string  `json:"customer_id"`
+	CustomerName   *string `json:"customer_name,omitempty"`
+
+	// FirstContractOn Calendar date YYYY-MM-DD in the marina timezone
+	FirstContractOn *IsoDate `json:"first_contract_on,omitempty"`
+
+	// LastNight Calendar date YYYY-MM-DD in the marina timezone
+	LastNight   *IsoDate `json:"last_night,omitempty"`
+	Nationality *string  `json:"nationality,omitempty"`
+
+	// New 1 when the first qualifying contract starts in the period
+	New           *int64  `json:"new,omitempty"`
+	NewContractId *string `json:"new_contract_id,omitempty"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref            ReportRef                     `json:"ref"`
+	Renewed        *int64                        `json:"renewed,omitempty"`
+	Section        CustomersRecordSection        `json:"section"`
+	SeniorityBand  *CustomersRecordSeniorityBand `json:"seniority_band,omitempty"`
+	SeniorityYears *int64                        `json:"seniority_years,omitempty"`
+	Term           *ContractTerm                 `json:"term,omitempty"`
+
+	// ValueCents Amount in integer cents of the marina currency
+	ValueCents *Cents `json:"value_cents,omitempty"`
+}
+
+// CustomersRecordSection defines model for CustomersRecord.Section.
+type CustomersRecordSection string
+
+// CustomersRecordSeniorityBand defines model for CustomersRecord.SeniorityBand.
+type CustomersRecordSeniorityBand string
+
+// CustomersReport defines model for CustomersReport.
+type CustomersReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []CustomersGroup  `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod      `json:"period"`
+	Records []CustomersRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate         `json:"today"`
+	Totals CustomersTotals `json:"totals"`
+}
+
+// CustomersTotals defines model for CustomersTotals.
+type CustomersTotals struct {
+	// ArrearsCents Amount in integer cents of the marina currency
+	ArrearsCents Cents `json:"arrears_cents"`
+	Contracts    int64 `json:"contracts"`
+	Customers    int64 `json:"customers"`
+	NewCustomers int64 `json:"new_customers"`
+
+	// RenewalEligible Denominator of renewal_rate_bp
+	RenewalEligible int64  `json:"renewal_eligible"`
+	RenewalRateBp   *int64 `json:"renewal_rate_bp"`
+
+	// RenewalRenewed Numerator of renewal_rate_bp
+	RenewalRenewed int64 `json:"renewal_renewed"`
+
+	// ValueCents Amount in integer cents of the marina currency
+	ValueCents Cents `json:"value_cents"`
+}
+
+// Dashboard defines model for Dashboard.
+type Dashboard struct {
+	// Align Alignment of the previous period (date = same calendar dates; weekday = shift by whole weeks)
+	Align       ReportAlign       `json:"align"`
+	Compare     DashboardCompare  `json:"compare"`
+	Filters     map[string]string `json:"filters"`
+	Granularity ReportGranularity `json:"granularity"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period ReportPeriod `json:"period"`
+
+	// PreviousPeriod Inclusive period in the marina time zone (at most 400 days)
+	PreviousPeriod *ReportPeriod `json:"previous_period,omitempty"`
+	Tiles          []Tile        `json:"tiles"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today IsoDate `json:"today"`
+}
+
+// DashboardCompare defines model for Dashboard.Compare.
+type DashboardCompare string
+
 // DashboardContract defines model for DashboardContract.
 type DashboardContract struct {
 	Code string `json:"code"`
@@ -10631,6 +12754,85 @@ type DynamicAreaSupports string
 type EarlyPayment struct {
 	DiscountBp      int64 `json:"discount_bp"`
 	PayByOffsetDays int   `json:"pay_by_offset_days"`
+}
+
+// EfficiencyGroup defines model for EfficiencyGroup.
+type EfficiencyGroup struct {
+	Key    string           `json:"key"`
+	Label  string           `json:"label"`
+	Totals EfficiencyTotals `json:"totals"`
+}
+
+// EfficiencyRecord defines model for EfficiencyRecord.
+type EfficiencyRecord struct {
+	AllocationId string `json:"allocation_id"`
+
+	// BeamCm Length in integer centimetres
+	BeamCm         *Cm                  `json:"beam_cm,omitempty"`
+	ContractId     *string              `json:"contract_id,omitempty"`
+	ContractNumber *string              `json:"contract_number,omitempty"`
+	EfficiencyBp   *int64               `json:"efficiency_bp"`
+	Kind           EfficiencyRecordKind `json:"kind"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm  *Cm   `json:"loa_cm,omitempty"`
+	Nights int64 `json:"nights"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref           ReportRef    `json:"ref"`
+	ResourceCode  string       `json:"resource_code"`
+	ResourceId    string       `json:"resource_id"`
+	ResourceType  ResourceType `json:"resource_type"`
+	ResourceUnits int64        `json:"resource_units"`
+	VesselId      *string      `json:"vessel_id,omitempty"`
+	VesselName    *string      `json:"vessel_name,omitempty"`
+	VesselUnits   int64        `json:"vessel_units"`
+}
+
+// EfficiencyRecordKind defines model for EfficiencyRecord.Kind.
+type EfficiencyRecordKind string
+
+// EfficiencyReport defines model for EfficiencyReport.
+type EfficiencyReport struct {
+	// Family Resource family; families are never summed together (m7-plan D6)
+	Family ReportFamily `json:"family"`
+
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []EfficiencyGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod       `json:"period"`
+	Records []EfficiencyRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate          `json:"today"`
+	Totals EfficiencyTotals `json:"totals"`
+}
+
+// EfficiencyTotals defines model for EfficiencyTotals.
+type EfficiencyTotals struct {
+	EfficiencyBp *int64 `json:"efficiency_bp"`
+	Nights       int64  `json:"nights"`
+
+	// ResourceUnits Denominator
+	ResourceUnits int64 `json:"resource_units"`
+
+	// Unit Unit of an integer value: cents, bp (basis points), count, cm, cm2, cents_per_m, cents_per_night, berth_night (berth or land nights), cm_night (linear dynamic areas), cm2_night (surface dynamic areas)
+	Unit ReportUnit `json:"unit"`
+
+	// VesselUnits Numerator
+	VesselUnits int64 `json:"vessel_units"`
 }
 
 // ElementKey Client key of a new element, unique in the request
@@ -11821,6 +14023,82 @@ type LoginRequest struct {
 	TotpCode     *string `json:"totp_code,omitempty"`
 }
 
+// LostDemandGroup defines model for LostDemandGroup.
+type LostDemandGroup struct {
+	Key    string           `json:"key"`
+	Label  string           `json:"label"`
+	Totals LostDemandTotals `json:"totals"`
+}
+
+// LostDemandRecord defines model for LostDemandRecord.
+type LostDemandRecord struct {
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival IsoDate `json:"arrival"`
+
+	// BeamCm Length in integer centimetres
+	BeamCm  Cm      `json:"beam_cm"`
+	Channel Channel `json:"channel"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure IsoDate `json:"departure"`
+	InquiryId string  `json:"inquiry_id"`
+
+	// LengthBand LOA bands in cm (m7-plan D8)
+	LengthBand ReportLengthBand `json:"length_band"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm          Cm             `json:"loa_cm"`
+	NightsInPeriod int64          `json:"nights_in_period"`
+	Outcome        InquiryOutcome `json:"outcome"`
+
+	// PricedCategory Category of the smallest compatible berth used for the value
+	PricedCategory *string       `json:"priced_category,omitempty"`
+	Purpose        SearchPurpose `json:"purpose"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref    ReportRef     `json:"ref"`
+	Source InquirySource `json:"source"`
+	Term   *ContractTerm `json:"term,omitempty"`
+
+	// ValueCents Null when unpriced or without reports.all
+	ValueCents *int64 `json:"value_cents"`
+}
+
+// LostDemandReport defines model for LostDemandReport.
+type LostDemandReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []LostDemandGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod       `json:"period"`
+	Records []LostDemandRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate          `json:"today"`
+	Totals LostDemandTotals `json:"totals"`
+}
+
+// LostDemandTotals defines model for LostDemandTotals.
+type LostDemandTotals struct {
+	Count    int64 `json:"count"`
+	Nights   int64 `json:"nights"`
+	Unpriced int64 `json:"unpriced"`
+
+	// ValueCents Null without reports.all
+	ValueCents *int64 `json:"value_cents"`
+}
+
 // Mandate defines model for Mandate.
 type Mandate struct {
 	Berth     *ResourceRef     `json:"berth,omitempty"`
@@ -12606,6 +14884,72 @@ type ObligationDoneInput struct {
 // ObligationKind defines model for ObligationKind.
 type ObligationKind string
 
+// OccupancyGroup defines model for OccupancyGroup.
+type OccupancyGroup struct {
+	Key    string          `json:"key"`
+	Label  string          `json:"label"`
+	Totals OccupancyTotals `json:"totals"`
+}
+
+// OccupancyRecord role numerator: one per (resource, allocation) with occupied_units (contractual: kind release adds the released units); role denominator: one per resource with available, closed and out-of-service units
+type OccupancyRecord struct {
+	AllocationId      *string              `json:"allocation_id,omitempty"`
+	AvailableUnits    int64                `json:"available_units"`
+	Category          *string              `json:"category,omitempty"`
+	ClosedUnits       int64                `json:"closed_units"`
+	ContractId        *string              `json:"contract_id,omitempty"`
+	ContractNumber    *string              `json:"contract_number,omitempty"`
+	Kind              *OccupancyRecordKind `json:"kind,omitempty"`
+	MapId             *string              `json:"map_id,omitempty"`
+	OccupiedUnits     int64                `json:"occupied_units"`
+	OutOfServiceUnits int64                `json:"out_of_service_units"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref          ReportRef           `json:"ref"`
+	ResourceCode string              `json:"resource_code"`
+	ResourceId   string              `json:"resource_id"`
+	ResourceType ResourceType        `json:"resource_type"`
+	Role         OccupancyRecordRole `json:"role"`
+}
+
+// OccupancyRecordKind defines model for OccupancyRecord.Kind.
+type OccupancyRecordKind string
+
+// OccupancyRecordRole defines model for OccupancyRecord.Role.
+type OccupancyRecordRole string
+
+// OccupancyReport defines model for OccupancyReport.
+type OccupancyReport struct {
+	// Family Resource family; families are never summed together (m7-plan D6)
+	Family ReportFamily `json:"family"`
+
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []OccupancyGroup  `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod      `json:"period"`
+	Records []OccupancyRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today   IsoDate                `json:"today"`
+	Totals  OccupancyTotals        `json:"totals"`
+	Variant OccupancyReportVariant `json:"variant"`
+}
+
+// OccupancyReportVariant defines model for OccupancyReport.Variant.
+type OccupancyReportVariant string
+
 // OccupancySearchRequest vessel_id or vessel; nights are [arrival, departure)
 type OccupancySearchRequest struct {
 	// Arrival Calendar date YYYY-MM-DD in the marina timezone
@@ -12694,6 +15038,24 @@ type OccupancySolution struct {
 	} `json:"requires_release,omitempty"`
 	Score    int64             `json:"score"`
 	Segments []SolutionSegment `json:"segments"`
+}
+
+// OccupancyTotals defines model for OccupancyTotals.
+type OccupancyTotals struct {
+	// AvailableUnits Denominator
+	AvailableUnits int64 `json:"available_units"`
+	ClosedUnits    int64 `json:"closed_units"`
+
+	// OccupancyBp null when available_units is 0
+	OccupancyBp *int64 `json:"occupancy_bp"`
+
+	// OccupiedUnits Numerator (contractual: includes released_units)
+	OccupiedUnits     int64 `json:"occupied_units"`
+	OutOfServiceUnits int64 `json:"out_of_service_units"`
+	ReleasedUnits     int64 `json:"released_units"`
+
+	// Unit Unit of an integer value: cents, bp (basis points), count, cm, cm2, cents_per_m, cents_per_night, berth_night (berth or land nights), cm_night (linear dynamic areas), cm2_night (surface dynamic areas)
+	Unit ReportUnit `json:"unit"`
 }
 
 // OpenCashSessionInput defines model for OpenCashSessionInput.
@@ -13206,6 +15568,89 @@ type PaymentTerms struct {
 	EndOfMonth bool `json:"end_of_month"`
 }
 
+// PaymentsGroup defines model for PaymentsGroup.
+type PaymentsGroup struct {
+	Key    string         `json:"key"`
+	Label  string         `json:"label"`
+	Totals PaymentsTotals `json:"totals"`
+}
+
+// PaymentsRecord defines model for PaymentsRecord.
+type PaymentsRecord struct {
+	// AmountCents Signed (refunds negative)
+	AmountCents  Cents   `json:"amount_cents"`
+	CustomerId   *string `json:"customer_id,omitempty"`
+	CustomerName *string `json:"customer_name,omitempty"`
+
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date IsoDate `json:"date"`
+
+	// FeeCents Amount in integer cents of the marina currency
+	FeeCents     *Cents             `json:"fee_cents,omitempty"`
+	Id           string             `json:"id"`
+	Kind         PaymentsRecordKind `json:"kind"`
+	Method       PaymentMethod      `json:"method"`
+	Number       string             `json:"number"`
+	ProviderCode *string            `json:"provider_code,omitempty"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref     ReportRef             `json:"ref"`
+	Section PaymentsRecordSection `json:"section"`
+	Source  *string               `json:"source,omitempty"`
+}
+
+// PaymentsRecordKind defines model for PaymentsRecord.Kind.
+type PaymentsRecordKind string
+
+// PaymentsRecordSection defines model for PaymentsRecord.Section.
+type PaymentsRecordSection string
+
+// PaymentsReport defines model for PaymentsReport.
+type PaymentsReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []PaymentsGroup   `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod     `json:"period"`
+	Records []PaymentsRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate        `json:"today"`
+	Totals PaymentsTotals `json:"totals"`
+}
+
+// PaymentsTotals defines model for PaymentsTotals.
+type PaymentsTotals struct {
+	// CollectedCents payments_cents − refunds_cents
+	CollectedCents Cents `json:"collected_cents"`
+
+	// Count Records of the main section
+	Count int64 `json:"count"`
+
+	// FeesCents Shown
+	FeesCents Cents `json:"fees_cents"`
+
+	// PaymentsCents Amount in integer cents of the marina currency
+	PaymentsCents Cents `json:"payments_cents"`
+
+	// PayoutsCents Mandate payouts
+	PayoutsCents Cents `json:"payouts_cents"`
+
+	// RefundsCents Amount in integer cents of the marina currency
+	RefundsCents Cents `json:"refunds_cents"`
+}
+
 // Pedestal defines model for Pedestal.
 type Pedestal struct {
 	Code Code `json:"code"`
@@ -13459,6 +15904,91 @@ type PresenceSource string
 
 // PresenceState defines model for PresenceState.
 type PresenceState string
+
+// PresencesGroup defines model for PresencesGroup.
+type PresencesGroup struct {
+	Key    string          `json:"key"`
+	Label  string          `json:"label"`
+	Totals PresencesTotals `json:"totals"`
+}
+
+// PresencesRecord defines model for PresencesRecord.
+type PresencesRecord struct {
+	AbsenceNights  *int64                `json:"absence_nights,omitempty"`
+	BerthCode      *string               `json:"berth_code,omitempty"`
+	ContractId     *string               `json:"contract_id,omitempty"`
+	ContractKind   *ContractKind         `json:"contract_kind,omitempty"`
+	ContractNumber *string               `json:"contract_number,omitempty"`
+	CreditCents    *int64                `json:"credit_cents,omitempty"`
+	Event          *PresencesRecordEvent `json:"event,omitempty"`
+
+	// Night Calendar date YYYY-MM-DD in the marina timezone
+	Night      *IsoDate `json:"night,omitempty"`
+	PresenceId *string  `json:"presence_id,omitempty"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref ReportRef `json:"ref"`
+
+	// ReleaseFrom Calendar date YYYY-MM-DD in the marina timezone
+	ReleaseFrom *IsoDate `json:"release_from,omitempty"`
+	ReleaseId   *string  `json:"release_id,omitempty"`
+
+	// ReleaseTo Calendar date YYYY-MM-DD in the marina timezone
+	ReleaseTo      *IsoDate               `json:"release_to,omitempty"`
+	ReleasedNights *int64                 `json:"released_nights,omitempty"`
+	ResoldNights   *int64                 `json:"resold_nights,omitempty"`
+	RevenueCents   *int64                 `json:"revenue_cents,omitempty"`
+	Section        PresencesRecordSection `json:"section"`
+	VesselId       *string                `json:"vessel_id,omitempty"`
+	VesselName     *string                `json:"vessel_name,omitempty"`
+}
+
+// PresencesRecordEvent defines model for PresencesRecord.Event.
+type PresencesRecordEvent string
+
+// PresencesRecordSection defines model for PresencesRecord.Section.
+type PresencesRecordSection string
+
+// PresencesReport defines model for PresencesReport.
+type PresencesReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []PresencesGroup  `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod      `json:"period"`
+	Records []PresencesRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate         `json:"today"`
+	Totals PresencesTotals `json:"totals"`
+}
+
+// PresencesTotals defines model for PresencesTotals.
+type PresencesTotals struct {
+	AbsenceNights int64 `json:"absence_nights"`
+	Arrivals      int64 `json:"arrivals"`
+	Departures    int64 `json:"departures"`
+
+	// ReleaseCreditCents Null without reports.all
+	ReleaseCreditCents *int64 `json:"release_credit_cents"`
+
+	// ReleaseRevenueCents Null without reports.all
+	ReleaseRevenueCents *int64 `json:"release_revenue_cents"`
+	ReleasedNights      int64  `json:"released_nights"`
+	Releases            int64  `json:"releases"`
+	ResoldNights        int64  `json:"resold_nights"`
+}
 
 // PriceApplied defines model for PriceApplied.
 type PriceApplied struct {
@@ -13993,6 +16523,85 @@ type Problem struct {
 
 // ProblemType defines model for ProblemType.
 type ProblemType string
+
+// ProductionGroup defines model for ProductionGroup.
+type ProductionGroup struct {
+	Key    string           `json:"key"`
+	Label  string           `json:"label"`
+	Totals ProductionTotals `json:"totals"`
+}
+
+// ProductionRecord defines model for ProductionRecord.
+type ProductionRecord struct {
+	Category *string  `json:"category,omitempty"`
+	Channel  *Channel `json:"channel,omitempty"`
+
+	// CompetenceCents Amount in integer cents of the marina currency
+	CompetenceCents Cents   `json:"competence_cents"`
+	ContractId      string  `json:"contract_id"`
+	CustomerId      *string `json:"customer_id,omitempty"`
+	CustomerName    *string `json:"customer_name,omitempty"`
+
+	// EndsOn Calendar date YYYY-MM-DD in the marina timezone
+	EndsOn         IsoDate      `json:"ends_on"`
+	Kind           ContractKind `json:"kind"`
+	NightsInPeriod int64        `json:"nights_in_period"`
+	Number         string       `json:"number"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref ReportRef `json:"ref"`
+
+	// StartsOn Calendar date YYYY-MM-DD in the marina timezone
+	StartsOn IsoDate `json:"starts_on"`
+
+	// Status Mooring statuses (draft..suspended) and transit statuses (held..awaiting_approval)
+	Status ContractStatus `json:"status"`
+	Term   *ContractTerm  `json:"term,omitempty"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents `json:"total_cents"`
+}
+
+// ProductionReport defines model for ProductionReport.
+type ProductionReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []ProductionGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod       `json:"period"`
+	Records []ProductionRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate          `json:"today"`
+	Totals ProductionTotals `json:"totals"`
+}
+
+// ProductionTotals defines model for ProductionTotals.
+type ProductionTotals struct {
+	// CompetenceCents Amount in integer cents of the marina currency
+	CompetenceCents Cents `json:"competence_cents"`
+	Contracts       int64 `json:"contracts"`
+	Nights          int64 `json:"nights"`
+
+	// TransitAvgNightCents Half-even
+	TransitAvgNightCents *int64 `json:"transit_avg_night_cents"`
+
+	// TransitCompetenceCents Amount in integer cents of the marina currency
+	TransitCompetenceCents Cents `json:"transit_competence_cents"`
+	TransitNights          int64 `json:"transit_nights"`
+	Transits               int64 `json:"transits"`
+}
 
 // ProviderTestResult defines model for ProviderTestResult.
 type ProviderTestResult struct {
@@ -14581,6 +17190,102 @@ type ReceivablePage struct {
 	Totals AgeingAmounts `json:"totals"`
 }
 
+// ReceivablesGroup defines model for ReceivablesGroup.
+type ReceivablesGroup struct {
+	Key    string            `json:"key"`
+	Label  string            `json:"label"`
+	Totals ReceivablesTotals `json:"totals"`
+}
+
+// ReceivablesRecord defines model for ReceivablesRecord.
+type ReceivablesRecord struct {
+	Bucket *AgeingBucket `json:"bucket,omitempty"`
+
+	// CreditedCents Amount in integer cents of the marina currency
+	CreditedCents *Cents  `json:"credited_cents,omitempty"`
+	CustomerId    *string `json:"customer_id,omitempty"`
+	CustomerName  *string `json:"customer_name,omitempty"`
+
+	// DueOn Calendar date YYYY-MM-DD in the marina timezone
+	DueOn *IsoDate `json:"due_on,omitempty"`
+	Id    string   `json:"id"`
+
+	// IssuedOn Calendar date YYYY-MM-DD in the marina timezone
+	IssuedOn   *IsoDate              `json:"issued_on,omitempty"`
+	Kind       ReceivablesRecordKind `json:"kind"`
+	Number     *string               `json:"number,omitempty"`
+	OriginType *ChargeOriginType     `json:"origin_type,omitempty"`
+	Overdue    *bool                 `json:"overdue,omitempty"`
+
+	// PaidCents Amount in integer cents of the marina currency
+	PaidCents *Cents `json:"paid_cents,omitempty"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref           ReportRef      `json:"ref"`
+	ReminderLevel *ReminderLevel `json:"reminder_level,omitempty"`
+
+	// ResidualCents Amount in integer cents of the marina currency
+	ResidualCents *Cents                   `json:"residual_cents,omitempty"`
+	Section       ReceivablesRecordSection `json:"section"`
+
+	// SentOn Calendar date YYYY-MM-DD in the marina timezone
+	SentOn *IsoDate `json:"sent_on,omitempty"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents *Cents `json:"total_cents,omitempty"`
+}
+
+// ReceivablesRecordKind defines model for ReceivablesRecord.Kind.
+type ReceivablesRecordKind string
+
+// ReceivablesRecordSection defines model for ReceivablesRecord.Section.
+type ReceivablesRecordSection string
+
+// ReceivablesReport defines model for ReceivablesReport.
+type ReceivablesReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string  `json:"filters"`
+	GroupBy *string            `json:"group_by,omitempty"`
+	Groups  []ReceivablesGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod        `json:"period"`
+	Records []ReceivablesRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate           `json:"today"`
+	Totals ReceivablesTotals `json:"totals"`
+}
+
+// ReceivablesTotals defines model for ReceivablesTotals.
+type ReceivablesTotals struct {
+	// AsOf Calendar date YYYY-MM-DD in the marina timezone
+	AsOf IsoDate `json:"as_of"`
+
+	// Buckets Residuals of open charges by age bucket (AgeingBucket)
+	Buckets AgeingAmounts `json:"buckets"`
+	Count   int64         `json:"count"`
+
+	// FutureCents Scheduled instalments (not in open_cents)
+	FutureCents Cents `json:"future_cents"`
+
+	// OpenCents Amount in integer cents of the marina currency
+	OpenCents Cents `json:"open_cents"`
+
+	// OverdueCents Residuals with due_on < as_of
+	OverdueCents  Cents `json:"overdue_cents"`
+	RemindersSent int64 `json:"reminders_sent"`
+}
+
 // RecordPayment defines model for RecordPayment.
 type RecordPayment struct {
 	AmountCents    int64                   `json:"amount_cents"`
@@ -15075,6 +17780,89 @@ type ReplanInput struct {
 	Plan    PlanChoice     `json:"plan"`
 }
 
+// ReportAlign Alignment of the previous period (date = same calendar dates; weekday = shift by whole weeks)
+type ReportAlign string
+
+// ReportEnvelope Fields common to every report response (m7-plan §3.0). totals are over all records of every section (not the page); groups follow group_by; records are the page of the selected section.
+type ReportEnvelope struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period ReportPeriod `json:"period"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today IsoDate `json:"today"`
+}
+
+// ReportFamily Resource family; families are never summed together (m7-plan D6)
+type ReportFamily string
+
+// ReportFormat json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
+type ReportFormat string
+
+// ReportGranularity defines model for ReportGranularity.
+type ReportGranularity string
+
+// ReportKey Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+type ReportKey string
+
+// ReportLengthBand LOA bands in cm (m7-plan D8)
+type ReportLengthBand string
+
+// ReportNote A counted remark about the result (codes: unpriced, no_vessel, no_compatible_berth, inactive_resource, truncated_suggestions, ...)
+type ReportNote struct {
+	Code  string `json:"code"`
+	Count int64  `json:"count"`
+}
+
+// ReportPageInfo defines model for ReportPageInfo.
+type ReportPageInfo struct {
+	Page     int `json:"page"`
+	PageSize int `json:"page_size"`
+
+	// TotalRecords Records of the selected section (all pages)
+	TotalRecords int64 `json:"total_records"`
+}
+
+// ReportPeriod Inclusive period in the marina time zone (at most 400 days)
+type ReportPeriod struct {
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From IsoDate `json:"from"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To IsoDate `json:"to"`
+}
+
+// ReportRef Link from a record to its entity page (ids and display codes only)
+type ReportRef struct {
+	Id    string        `json:"id"`
+	Label *string       `json:"label,omitempty"`
+	Type  ReportRefType `json:"type"`
+}
+
+// ReportRefType defines model for ReportRef.Type.
+type ReportRefType string
+
+// ReportResourceBrief defines model for ReportResourceBrief.
+type ReportResourceBrief struct {
+	Code string `json:"code"`
+	Id   string `json:"id"`
+}
+
+// ReportUnit Unit of an integer value: cents, bp (basis points), count, cm, cm2, cents_per_m, cents_per_night, berth_night (berth or land nights), cm_night (linear dynamic areas), cm2_night (surface dynamic areas)
+type ReportUnit string
+
 // RequiredField Data the customer must provide on the public acceptance page
 type RequiredField string
 
@@ -15114,9 +17902,32 @@ type RevenueClassCreate struct {
 	SortOrder *int     `json:"sort_order,omitempty"`
 }
 
+// RevenueClassGroup One per class (unclassified for an empty code); parents roll up their children (one level)
+type RevenueClassGroup struct {
+	Key    string              `json:"key"`
+	Label  string              `json:"label"`
+	Months []RevenueClassMonth `json:"months"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents  Cents   `json:"net_cents"`
+	ParentKey *string `json:"parent_key,omitempty"`
+
+	// ShareBp Display only
+	ShareBp *int64 `json:"share_bp"`
+}
+
 // RevenueClassList defines model for RevenueClassList.
 type RevenueClassList struct {
 	Items []RevenueClass `json:"items"`
+}
+
+// RevenueClassMonth defines model for RevenueClassMonth.
+type RevenueClassMonth struct {
+	// Month YYYY-MM
+	Month string `json:"month"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents Cents `json:"net_cents"`
 }
 
 // RevenueClassPatch Absent fields are unchanged; parent_id null makes it a top-level class; archived archives or restores it.
@@ -15126,6 +17937,47 @@ type RevenueClassPatch struct {
 	Name      *I18nText `json:"name,omitempty"`
 	ParentId  *string   `json:"parent_id,omitempty"`
 	SortOrder *int      `json:"sort_order,omitempty"`
+}
+
+// RevenueClassesReport defines model for RevenueClassesReport.
+type RevenueClassesReport struct {
+	Basis RevenueClassesReportBasis `json:"basis"`
+
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string   `json:"filters"`
+	GroupBy *string             `json:"group_by,omitempty"`
+	Groups  []RevenueClassGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod    `json:"period"`
+	Records []ChargesRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate              `json:"today"`
+	Totals RevenueClassesTotals `json:"totals"`
+}
+
+// RevenueClassesReportBasis defines model for RevenueClassesReport.Basis.
+type RevenueClassesReportBasis string
+
+// RevenueClassesTotals defines model for RevenueClassesTotals.
+type RevenueClassesTotals struct {
+	Lines int64 `json:"lines"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents Cents `json:"net_cents"`
+
+	// UnclassifiedCents Amount in integer cents of the marina currency
+	UnclassifiedCents Cents `json:"unclassified_cents"`
 }
 
 // RevokeRequest Without from_night/to_night the whole release is revoked
@@ -15330,6 +18182,113 @@ type RightVesselsInput struct {
 	// FromNight Calendar date YYYY-MM-DD in the marina timezone
 	FromNight *IsoDate           `json:"from_night,omitempty"`
 	Vessels   []RightVesselInput `json:"vessels"`
+}
+
+// RightsGroup defines model for RightsGroup.
+type RightsGroup struct {
+	Key    string       `json:"key"`
+	Label  string       `json:"label"`
+	Totals RightsTotals `json:"totals"`
+}
+
+// RightsRecord defines model for RightsRecord.
+type RightsRecord struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents *Cents  `json:"amount_cents,omitempty"`
+	BerthCode   *string `json:"berth_code,omitempty"`
+	BerthId     *string `json:"berth_id,omitempty"`
+	ChargeId    *string `json:"charge_id,omitempty"`
+
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date       *IsoDate `json:"date,omitempty"`
+	HolderId   *string  `json:"holder_id,omitempty"`
+	HolderName *string  `json:"holder_name,omitempty"`
+
+	// IssuedCents Amount in integer cents of the marina currency
+	IssuedCents *Cents `json:"issued_cents,omitempty"`
+
+	// IssuedOn Calendar date YYYY-MM-DD in the marina timezone
+	IssuedOn  *IsoDate          `json:"issued_on,omitempty"`
+	ItemCode  *string           `json:"item_code,omitempty"`
+	Kind      *RightsRecordKind `json:"kind,omitempty"`
+	MandateId *string           `json:"mandate_id,omitempty"`
+	Number    *string           `json:"number,omitempty"`
+
+	// PaidCents Amount in integer cents of the marina currency
+	PaidCents *Cents `json:"paid_cents,omitempty"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref ReportRef `json:"ref"`
+
+	// ResidualCents Amount in integer cents of the marina currency
+	ResidualCents *Cents              `json:"residual_cents,omitempty"`
+	RightId       *string             `json:"right_id,omitempty"`
+	RightNumber   *string             `json:"right_number,omitempty"`
+	RunId         *string             `json:"run_id,omitempty"`
+	RunKind       *CommonRunKind      `json:"run_kind,omitempty"`
+	Section       RightsRecordSection `json:"section"`
+	ShareMillis   *int64              `json:"share_millis,omitempty"`
+}
+
+// RightsRecordKind defines model for RightsRecord.Kind.
+type RightsRecordKind string
+
+// RightsRecordSection defines model for RightsRecord.Section.
+type RightsRecordSection string
+
+// RightsReport defines model for RightsReport.
+type RightsReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []RightsGroup     `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod   `json:"period"`
+	Records []RightsRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate      `json:"today"`
+	Totals RightsTotals `json:"totals"`
+}
+
+// RightsTotals defines model for RightsTotals.
+type RightsTotals struct {
+	// AdvanceCents Ripartizioni (common_charge_runs kind advance)
+	AdvanceCents Cents `json:"advance_cents"`
+
+	// BalanceCents Conguagli (kind balance)
+	BalanceCents Cents `json:"balance_cents"`
+	Berths       int64 `json:"berths"`
+
+	// ChargesCollectedCents Amount in integer cents of the marina currency
+	ChargesCollectedCents Cents `json:"charges_collected_cents"`
+
+	// ChargesIssuedCents Amount in integer cents of the marina currency
+	ChargesIssuedCents Cents `json:"charges_issued_cents"`
+
+	// ChargesResidualCents Amount in integer cents of the marina currency
+	ChargesResidualCents Cents `json:"charges_residual_cents"`
+	Holders              int64 `json:"holders"`
+
+	// MandatePayoutCents Amount in integer cents of the marina currency
+	MandatePayoutCents Cents `json:"mandate_payout_cents"`
+
+	// MandateRevenueCents Amount in integer cents of the marina currency
+	MandateRevenueCents Cents `json:"mandate_revenue_cents"`
+
+	// MarinaShareCents Amount in integer cents of the marina currency
+	MarinaShareCents Cents `json:"marina_share_cents"`
+	Rights           int64 `json:"rights"`
 }
 
 // Role defines model for Role.
@@ -15910,6 +18869,74 @@ type TerminateInput struct {
 	Reason      string  `json:"reason"`
 }
 
+// Tile defines model for Tile.
+type Tile struct {
+	Available   bool             `json:"available"`
+	Breakdown   *[]TileBreakdown `json:"breakdown,omitempty"`
+	Delta       *int64           `json:"delta,omitempty"`
+	DeltaBp     *int64           `json:"delta_bp,omitempty"`
+	Denominator *int64           `json:"denominator,omitempty"`
+
+	// DimsApplied The dimension filters of the request apply to this tile
+	DimsApplied bool `json:"dims_applied"`
+
+	// Drill The report that lists the records of the tile and its parameters (without from/to, which are the dashboard period); generated by the same code that parses the report request (m7-plan §6)
+	Drill *TileDrill `json:"drill,omitempty"`
+
+	// Key Manager dashboard tiles (m7-plan §4). yard_* (M10) and rental_* (M11) are returned with available=false.
+	Key       TileKey    `json:"key"`
+	Numerator *int64     `json:"numerator,omitempty"`
+	Previous  *TileValue `json:"previous,omitempty"`
+
+	// Reason Why the tile is not available
+	Reason *TileReason       `json:"reason,omitempty"`
+	Series []TileSeriesPoint `json:"series"`
+	Trend  TileTrend         `json:"trend"`
+
+	// Unit Unit of an integer value: cents, bp (basis points), count, cm, cm2, cents_per_m, cents_per_night, berth_night (berth or land nights), cm_night (linear dynamic areas), cm2_night (surface dynamic areas)
+	Unit  ReportUnit `json:"unit"`
+	Value *int64     `json:"value"`
+}
+
+// TileReason Why the tile is not available
+type TileReason string
+
+// TileBreakdown defines model for TileBreakdown.
+type TileBreakdown struct {
+	Key   string  `json:"key"`
+	Label *string `json:"label,omitempty"`
+	Value int64   `json:"value"`
+}
+
+// TileDrill The report that lists the records of the tile and its parameters (without from/to, which are the dashboard period); generated by the same code that parses the report request (m7-plan §6)
+type TileDrill struct {
+	Params map[string]string `json:"params"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report ReportKey `json:"report"`
+}
+
+// TileKey Manager dashboard tiles (m7-plan §4). yard_* (M10) and rental_* (M11) are returned with available=false.
+type TileKey string
+
+// TileSeriesPoint defines model for TileSeriesPoint.
+type TileSeriesPoint struct {
+	// Bucket First day of the bucket (day
+	Bucket   IsoDate `json:"bucket"`
+	Previous *int64  `json:"previous,omitempty"`
+	Value    *int64  `json:"value"`
+}
+
+// TileTrend defines model for TileTrend.
+type TileTrend string
+
+// TileValue defines model for TileValue.
+type TileValue struct {
+	Denominator *int64 `json:"denominator,omitempty"`
+	Numerator   *int64 `json:"numerator,omitempty"`
+	Value       *int64 `json:"value"`
+}
+
 // TimeUnit defines model for TimeUnit.
 type TimeUnit string
 
@@ -16314,6 +19341,75 @@ type VesselSummary struct {
 	UnitClass UnitClass `json:"unit_class"`
 }
 
+// VesselsGroup defines model for VesselsGroup.
+type VesselsGroup struct {
+	Key    string        `json:"key"`
+	Label  string        `json:"label"`
+	Totals VesselsTotals `json:"totals"`
+}
+
+// VesselsRecord defines model for VesselsRecord.
+type VesselsRecord struct {
+	// BeamCm Length in integer centimetres
+	BeamCm   Cm        `json:"beam_cm"`
+	Flag     *string   `json:"flag,omitempty"`
+	HullType *HullType `json:"hull_type,omitempty"`
+
+	// Kind Kind with the most nights in the period
+	Kind *VesselsRecordKind `json:"kind,omitempty"`
+
+	// LengthBand LOA bands in cm (m7-plan D8)
+	LengthBand ReportLengthBand `json:"length_band"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm  Cm     `json:"loa_cm"`
+	Name   string `json:"name"`
+	Nights int64  `json:"nights"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref      ReportRef `json:"ref"`
+	VesselId string    `json:"vessel_id"`
+}
+
+// VesselsRecordKind Kind with the most nights in the period
+type VesselsRecordKind string
+
+// VesselsReport defines model for VesselsReport.
+type VesselsReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string `json:"filters"`
+	GroupBy *string           `json:"group_by,omitempty"`
+	Groups  []VesselsGroup    `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod    `json:"period"`
+	Records []VesselsRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate       `json:"today"`
+	Totals VesselsTotals `json:"totals"`
+}
+
+// VesselsTotals defines model for VesselsTotals.
+type VesselsTotals struct {
+	// AvgLoaCm Half-even
+	AvgLoaCm *int64 `json:"avg_loa_cm"`
+
+	// LoaSumCm Length in integer centimetres
+	LoaSumCm Cm    `json:"loa_sum_cm"`
+	Nights   int64 `json:"nights"`
+	Vessels  int64 `json:"vessels"`
+}
+
 // WaitlistEntry defines model for WaitlistEntry.
 type WaitlistEntry struct {
 	// BeamCm Length in integer centimetres
@@ -16387,6 +19483,83 @@ type WaitlistPatchStatus string
 
 // WaitlistStatus defines model for WaitlistStatus.
 type WaitlistStatus string
+
+// WasteGroup defines model for WasteGroup.
+type WasteGroup struct {
+	Key   string `json:"key"`
+	Label string `json:"label"`
+
+	// Totals Money fields are null without reports.all
+	Totals WasteTotals `json:"totals"`
+}
+
+// WasteRecord defines model for WasteRecord.
+type WasteRecord struct {
+	AllocationId string `json:"allocation_id"`
+
+	// AppliedCents Null without reports.all
+	AppliedCents *int64 `json:"applied_cents"`
+
+	// BeamCm Length in integer centimetres
+	BeamCm    Cm     `json:"beam_cm"`
+	BerthCode string `json:"berth_code"`
+	BerthId   string `json:"berth_id"`
+
+	// BerthLengthCm Length in integer centimetres
+	BerthLengthCm Cm `json:"berth_length_cm"`
+
+	// BerthWidthCm Length in integer centimetres
+	BerthWidthCm   Cm              `json:"berth_width_cm"`
+	Category       *string         `json:"category,omitempty"`
+	ContractId     *string         `json:"contract_id,omitempty"`
+	ContractNumber *string         `json:"contract_number,omitempty"`
+	FillBp         int64           `json:"fill_bp"`
+	Kind           WasteRecordKind `json:"kind"`
+
+	// ListCents Null when unpriced
+	ListCents *int64 `json:"list_cents"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm          Cm     `json:"loa_cm"`
+	LostCents      *int64 `json:"lost_cents"`
+	NightsInPeriod int64  `json:"nights_in_period"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref        ReportRef `json:"ref"`
+	VesselId   string    `json:"vessel_id"`
+	VesselName *string   `json:"vessel_name,omitempty"`
+	WasteBp    int64     `json:"waste_bp"`
+}
+
+// WasteRecordKind defines model for WasteRecord.Kind.
+type WasteRecordKind string
+
+// WasteSuggestion Advisory, read-only swap or move (m7-plan D21); applied only through the map's move/swap
+type WasteSuggestion struct {
+	AllocationIds []string              `json:"allocation_ids"`
+	FromBerths    []ReportResourceBrief `json:"from_berths"`
+	GainCm2Nights int64                 `json:"gain_cm2_nights"`
+	Kind          WasteSuggestionKind   `json:"kind"`
+	ToBerths      []ReportResourceBrief `json:"to_berths"`
+	WasteAfterBp  int64                 `json:"waste_after_bp"`
+	WasteBeforeBp int64                 `json:"waste_before_bp"`
+}
+
+// WasteSuggestionKind defines model for WasteSuggestion.Kind.
+type WasteSuggestionKind string
+
+// WasteTotals Money fields are null without reports.all
+type WasteTotals struct {
+	AppliedCents *int64 `json:"applied_cents"`
+	Count        int64  `json:"count"`
+	ListCents    *int64 `json:"list_cents"`
+	LostCents    *int64 `json:"lost_cents"`
+	Nights       int64  `json:"nights"`
+	Unpriced     int64  `json:"unpriced"`
+
+	// WasteBpNights Σ waste_bp × nights_in_period
+	WasteBpNights int64 `json:"waste_bp_nights"`
+}
 
 // WebhookDelivery defines model for WebhookDelivery.
 type WebhookDelivery struct {
@@ -16688,6 +19861,48 @@ type ReminderItemId = string
 // ReminderRunId defines model for ReminderRunId.
 type ReminderRunId = string
 
+// ReportAlignParam Alignment of the previous period (date = same calendar dates; weekday = shift by whole weeks)
+type ReportAlignParam = ReportAlign
+
+// ReportCategory defines model for ReportCategory.
+type ReportCategory = string
+
+// ReportCustomerId defines model for ReportCustomerId.
+type ReportCustomerId = string
+
+// ReportFamilyParam Resource family; families are never summed together (m7-plan D6)
+type ReportFamilyParam = ReportFamily
+
+// ReportFormatParam json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
+type ReportFormatParam = ReportFormat
+
+// ReportFrom Calendar date YYYY-MM-DD in the marina timezone
+type ReportFrom = IsoDate
+
+// ReportGroupId defines model for ReportGroupId.
+type ReportGroupId = string
+
+// ReportLang defines model for ReportLang.
+type ReportLang = Locale
+
+// ReportMapId defines model for ReportMapId.
+type ReportMapId = string
+
+// ReportMapKind defines model for ReportMapKind.
+type ReportMapKind = MapKind
+
+// ReportPageNumber defines model for ReportPageNumber.
+type ReportPageNumber = int
+
+// ReportPageSize defines model for ReportPageSize.
+type ReportPageSize = int
+
+// ReportStructureId defines model for ReportStructureId.
+type ReportStructureId = string
+
+// ReportTo Calendar date YYYY-MM-DD in the marina timezone
+type ReportTo = IsoDate
+
 // RevenueClassId defines model for RevenueClassId.
 type RevenueClassId = string
 
@@ -16771,6 +19986,9 @@ type PreconditionRequired = Problem
 
 // PricingUnprocessable defines model for PricingUnprocessable.
 type PricingUnprocessable = Problem
+
+// ReportUnprocessable defines model for ReportUnprocessable.
+type ReportUnprocessable = Problem
 
 // ServiceUnavailable defines model for ServiceUnavailable.
 type ServiceUnavailable = Problem
@@ -17517,6 +20735,33 @@ type GetCustomerStatementParams struct {
 
 // GetCustomerStatementParamsFormat defines parameters for GetCustomerStatement.
 type GetCustomerStatementParamsFormat string
+
+// GetDashboardParams defines parameters for GetDashboard.
+type GetDashboardParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To      *ReportTo                  `form:"to,omitempty" json:"to,omitempty"`
+	Compare *GetDashboardParamsCompare `form:"compare,omitempty" json:"compare,omitempty"`
+
+	// Align Alignment of the previous period (default date)
+	Align   *ReportAlignParam `form:"align,omitempty" json:"align,omitempty"`
+	MapId   *ReportMapId      `form:"map_id,omitempty" json:"map_id,omitempty"`
+	MapKind *ReportMapKind    `form:"map_kind,omitempty" json:"map_kind,omitempty"`
+
+	// StructureId Pontile (structure) id
+	StructureId *ReportStructureId `form:"structure_id,omitempty" json:"structure_id,omitempty"`
+
+	// GroupId Berth group id
+	GroupId *ReportGroupId `form:"group_id,omitempty" json:"group_id,omitempty"`
+
+	// Category Berth category (price_class code)
+	Category *ReportCategory `form:"category,omitempty" json:"category,omitempty"`
+}
+
+// GetDashboardParamsCompare defines parameters for GetDashboard.
+type GetDashboardParamsCompare string
 
 // ListDeadlinesParams defines parameters for ListDeadlines.
 type ListDeadlinesParams struct {
@@ -18577,6 +21822,487 @@ type SendRenewalProposalParams struct {
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
+
+// GetAccrualsReportParams defines parameters for GetAccrualsReport.
+type GetAccrualsReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang       *ReportLang                     `form:"lang,omitempty" json:"lang,omitempty"`
+	Page       *ReportPageNumber               `form:"page,omitempty" json:"page,omitempty"`
+	PageSize   *ReportPageSize                 `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy    *GetAccrualsReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	CustomerId *ReportCustomerId               `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+
+	// Section Record section listed in records and exports
+	Section *GetAccrualsReportParamsSection `form:"section,omitempty" json:"section,omitempty"`
+}
+
+// GetAccrualsReportParamsGroupBy defines parameters for GetAccrualsReport.
+type GetAccrualsReportParamsGroupBy string
+
+// GetAccrualsReportParamsSection defines parameters for GetAccrualsReport.
+type GetAccrualsReportParamsSection string
+
+// GetAllocationWasteReportParams defines parameters for GetAllocationWasteReport.
+type GetAllocationWasteReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang       `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize   `form:"page_size,omitempty" json:"page_size,omitempty"`
+
+	// ThresholdBp Listed when waste_bp > threshold_bp (default 10000 - occupancy_settings.waste_threshold_bp)
+	ThresholdBp *int64                                 `form:"threshold_bp,omitempty" json:"threshold_bp,omitempty"`
+	Suggestions *bool                                  `form:"suggestions,omitempty" json:"suggestions,omitempty"`
+	GroupBy     *GetAllocationWasteReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	MapId       *ReportMapId                           `form:"map_id,omitempty" json:"map_id,omitempty"`
+	MapKind     *ReportMapKind                         `form:"map_kind,omitempty" json:"map_kind,omitempty"`
+
+	// StructureId Pontile (structure) id
+	StructureId *ReportStructureId `form:"structure_id,omitempty" json:"structure_id,omitempty"`
+
+	// GroupId Berth group id
+	GroupId *ReportGroupId `form:"group_id,omitempty" json:"group_id,omitempty"`
+
+	// Category Berth category (price_class code)
+	Category *ReportCategory `form:"category,omitempty" json:"category,omitempty"`
+}
+
+// GetAllocationWasteReportParamsGroupBy defines parameters for GetAllocationWasteReport.
+type GetAllocationWasteReportParamsGroupBy string
+
+// GetBerthRevenueReportParams defines parameters for GetBerthRevenueReport.
+type GetBerthRevenueReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang                         `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber                   `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize                     `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy  *GetBerthRevenueReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	MapId    *ReportMapId                        `form:"map_id,omitempty" json:"map_id,omitempty"`
+	MapKind  *ReportMapKind                      `form:"map_kind,omitempty" json:"map_kind,omitempty"`
+
+	// StructureId Pontile (structure) id
+	StructureId *ReportStructureId `form:"structure_id,omitempty" json:"structure_id,omitempty"`
+
+	// GroupId Berth group id
+	GroupId *ReportGroupId `form:"group_id,omitempty" json:"group_id,omitempty"`
+
+	// Category Berth category (price_class code)
+	Category *ReportCategory `form:"category,omitempty" json:"category,omitempty"`
+}
+
+// GetBerthRevenueReportParamsGroupBy defines parameters for GetBerthRevenueReport.
+type GetBerthRevenueReportParamsGroupBy string
+
+// GetCashReportParams defines parameters for GetCashReport.
+type GetCashReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang                 `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber           `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize             `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy  *GetCashReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Section Record section listed in records and exports
+	Section *GetCashReportParamsSection `form:"section,omitempty" json:"section,omitempty"`
+}
+
+// GetCashReportParamsGroupBy defines parameters for GetCashReport.
+type GetCashReportParamsGroupBy string
+
+// GetCashReportParamsSection defines parameters for GetCashReport.
+type GetCashReportParamsSection string
+
+// GetChargesReportParams defines parameters for GetChargesReport.
+type GetChargesReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang       *ReportLang                    `form:"lang,omitempty" json:"lang,omitempty"`
+	Page       *ReportPageNumber              `form:"page,omitempty" json:"page,omitempty"`
+	PageSize   *ReportPageSize                `form:"page_size,omitempty" json:"page_size,omitempty"`
+	Basis      *GetChargesReportParamsBasis   `form:"basis,omitempty" json:"basis,omitempty"`
+	GroupBy    *GetChargesReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	CustomerId *ReportCustomerId              `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+	ItemId     *string                        `form:"item_id,omitempty" json:"item_id,omitempty"`
+
+	// Origin Origins (default every origin except opening_balance)
+	Origin          *[]ChargeOriginType    `form:"origin,omitempty" json:"origin,omitempty"`
+	PaymentStatus   *ChargePaymentStatus   `form:"payment_status,omitempty" json:"payment_status,omitempty"`
+	InvoicingStatus *ChargeInvoicingStatus `form:"invoicing_status,omitempty" json:"invoicing_status,omitempty"`
+	FiscalMode      *FiscalMode            `form:"fiscal_mode,omitempty" json:"fiscal_mode,omitempty"`
+}
+
+// GetChargesReportParamsBasis defines parameters for GetChargesReport.
+type GetChargesReportParamsBasis string
+
+// GetChargesReportParamsGroupBy defines parameters for GetChargesReport.
+type GetChargesReportParamsGroupBy string
+
+// GetReportComparisonParams defines parameters for GetReportComparison.
+type GetReportComparisonParams struct {
+	// Indicator Required; optional in the contract only so that another marina is 404 first (missing or not comparable: 422 unknown_indicator)
+	Indicator *ComparisonIndicator `form:"indicator,omitempty" json:"indicator,omitempty"`
+
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To        *ReportTo `form:"to,omitempty" json:"to,omitempty"`
+	YearsBack *int      `form:"years_back,omitempty" json:"years_back,omitempty"`
+
+	// Align Alignment of the previous period (default date)
+	Align *ReportAlignParam `form:"align,omitempty" json:"align,omitempty"`
+
+	// Granularity Default: day up to 31 days, week up to 120, else month
+	Granularity *ReportGranularity `form:"granularity,omitempty" json:"granularity,omitempty"`
+	Format      *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang    *ReportLang    `form:"lang,omitempty" json:"lang,omitempty"`
+	MapId   *ReportMapId   `form:"map_id,omitempty" json:"map_id,omitempty"`
+	MapKind *ReportMapKind `form:"map_kind,omitempty" json:"map_kind,omitempty"`
+
+	// StructureId Pontile (structure) id
+	StructureId *ReportStructureId `form:"structure_id,omitempty" json:"structure_id,omitempty"`
+
+	// GroupId Berth group id
+	GroupId *ReportGroupId `form:"group_id,omitempty" json:"group_id,omitempty"`
+
+	// Category Berth category (price_class code)
+	Category *ReportCategory `form:"category,omitempty" json:"category,omitempty"`
+}
+
+// GetCustomersReportParams defines parameters for GetCustomersReport.
+type GetCustomersReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang                      `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber                `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize                  `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy  *GetCustomersReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// New Only customers new in the period
+	New *bool `form:"new,omitempty" json:"new,omitempty"`
+
+	// Section Record section listed in records and exports
+	Section *GetCustomersReportParamsSection `form:"section,omitempty" json:"section,omitempty"`
+}
+
+// GetCustomersReportParamsGroupBy defines parameters for GetCustomersReport.
+type GetCustomersReportParamsGroupBy string
+
+// GetCustomersReportParamsSection defines parameters for GetCustomersReport.
+type GetCustomersReportParamsSection string
+
+// GetEfficiencyReportParams defines parameters for GetEfficiencyReport.
+type GetEfficiencyReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang       `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize   `form:"page_size,omitempty" json:"page_size,omitempty"`
+
+	// Family Resource family (default berth)
+	Family       *ReportFamilyParam                `form:"family,omitempty" json:"family,omitempty"`
+	GroupBy      *GetEfficiencyReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	ResourceType *ResourceType                     `form:"resource_type,omitempty" json:"resource_type,omitempty"`
+	MapId        *ReportMapId                      `form:"map_id,omitempty" json:"map_id,omitempty"`
+	MapKind      *ReportMapKind                    `form:"map_kind,omitempty" json:"map_kind,omitempty"`
+
+	// StructureId Pontile (structure) id
+	StructureId *ReportStructureId `form:"structure_id,omitempty" json:"structure_id,omitempty"`
+
+	// GroupId Berth group id
+	GroupId *ReportGroupId `form:"group_id,omitempty" json:"group_id,omitempty"`
+
+	// Category Berth category (price_class code)
+	Category *ReportCategory `form:"category,omitempty" json:"category,omitempty"`
+}
+
+// GetEfficiencyReportParamsGroupBy defines parameters for GetEfficiencyReport.
+type GetEfficiencyReportParamsGroupBy string
+
+// GetLostDemandReportParams defines parameters for GetLostDemandReport.
+type GetLostDemandReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang                       `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber                 `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize                   `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy  *GetLostDemandReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	Channel  *Channel                          `form:"channel,omitempty" json:"channel,omitempty"`
+	Purpose  *SearchPurpose                    `form:"purpose,omitempty" json:"purpose,omitempty"`
+}
+
+// GetLostDemandReportParamsGroupBy defines parameters for GetLostDemandReport.
+type GetLostDemandReportParamsGroupBy string
+
+// GetOccupancyReportParams defines parameters for GetOccupancyReport.
+type GetOccupancyReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang                      `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber                `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize                  `form:"page_size,omitempty" json:"page_size,omitempty"`
+	Variant  *GetOccupancyReportParamsVariant `form:"variant,omitempty" json:"variant,omitempty"`
+
+	// Family Resource family (default berth)
+	Family       *ReportFamilyParam               `form:"family,omitempty" json:"family,omitempty"`
+	GroupBy      *GetOccupancyReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	ResourceType *ResourceType                    `form:"resource_type,omitempty" json:"resource_type,omitempty"`
+	MapId        *ReportMapId                     `form:"map_id,omitempty" json:"map_id,omitempty"`
+	MapKind      *ReportMapKind                   `form:"map_kind,omitempty" json:"map_kind,omitempty"`
+
+	// StructureId Pontile (structure) id
+	StructureId *ReportStructureId `form:"structure_id,omitempty" json:"structure_id,omitempty"`
+
+	// GroupId Berth group id
+	GroupId *ReportGroupId `form:"group_id,omitempty" json:"group_id,omitempty"`
+
+	// Category Berth category (price_class code)
+	Category *ReportCategory `form:"category,omitempty" json:"category,omitempty"`
+}
+
+// GetOccupancyReportParamsVariant defines parameters for GetOccupancyReport.
+type GetOccupancyReportParamsVariant string
+
+// GetOccupancyReportParamsGroupBy defines parameters for GetOccupancyReport.
+type GetOccupancyReportParamsGroupBy string
+
+// GetPaymentsReportParams defines parameters for GetPaymentsReport.
+type GetPaymentsReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang       *ReportLang                     `form:"lang,omitempty" json:"lang,omitempty"`
+	Page       *ReportPageNumber               `form:"page,omitempty" json:"page,omitempty"`
+	PageSize   *ReportPageSize                 `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy    *GetPaymentsReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	Method     *PaymentMethod                  `form:"method,omitempty" json:"method,omitempty"`
+	CustomerId *ReportCustomerId               `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+
+	// Section Record section listed in records and exports
+	Section *GetPaymentsReportParamsSection `form:"section,omitempty" json:"section,omitempty"`
+}
+
+// GetPaymentsReportParamsGroupBy defines parameters for GetPaymentsReport.
+type GetPaymentsReportParamsGroupBy string
+
+// GetPaymentsReportParamsSection defines parameters for GetPaymentsReport.
+type GetPaymentsReportParamsSection string
+
+// GetPresencesReportParams defines parameters for GetPresencesReport.
+type GetPresencesReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang                      `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber                `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize                  `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy  *GetPresencesReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Section Record section listed in records and exports
+	Section *GetPresencesReportParamsSection `form:"section,omitempty" json:"section,omitempty"`
+}
+
+// GetPresencesReportParamsGroupBy defines parameters for GetPresencesReport.
+type GetPresencesReportParamsGroupBy string
+
+// GetPresencesReportParamsSection defines parameters for GetPresencesReport.
+type GetPresencesReportParamsSection string
+
+// GetProductionReportParams defines parameters for GetProductionReport.
+type GetProductionReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang       *ReportLang                       `form:"lang,omitempty" json:"lang,omitempty"`
+	Page       *ReportPageNumber                 `form:"page,omitempty" json:"page,omitempty"`
+	PageSize   *ReportPageSize                   `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy    *GetProductionReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	Kind       *ContractKind                     `form:"kind,omitempty" json:"kind,omitempty"`
+	CustomerId *ReportCustomerId                 `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+}
+
+// GetProductionReportParamsGroupBy defines parameters for GetProductionReport.
+type GetProductionReportParamsGroupBy string
+
+// GetReceivablesReportParams defines parameters for GetReceivablesReport.
+type GetReceivablesReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang       `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize   `form:"page_size,omitempty" json:"page_size,omitempty"`
+
+	// AsOf Ageing date, at most today (default today)
+	AsOf *IsoDate `form:"as_of,omitempty" json:"as_of,omitempty"`
+
+	// Overdue Only charges with due_on before as_of
+	Overdue    *bool                              `form:"overdue,omitempty" json:"overdue,omitempty"`
+	GroupBy    *GetReceivablesReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	CustomerId *ReportCustomerId                  `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+	Origin     *ChargeOriginType                  `form:"origin,omitempty" json:"origin,omitempty"`
+
+	// Section Record section listed in records and exports
+	Section *GetReceivablesReportParamsSection `form:"section,omitempty" json:"section,omitempty"`
+}
+
+// GetReceivablesReportParamsGroupBy defines parameters for GetReceivablesReport.
+type GetReceivablesReportParamsGroupBy string
+
+// GetReceivablesReportParamsSection defines parameters for GetReceivablesReport.
+type GetReceivablesReportParamsSection string
+
+// GetRevenueClassesReportParams defines parameters for GetRevenueClassesReport.
+type GetRevenueClassesReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang                         `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber                   `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize                     `form:"page_size,omitempty" json:"page_size,omitempty"`
+	Basis    *GetRevenueClassesReportParamsBasis `form:"basis,omitempty" json:"basis,omitempty"`
+}
+
+// GetRevenueClassesReportParamsBasis defines parameters for GetRevenueClassesReport.
+type GetRevenueClassesReportParamsBasis string
+
+// GetRightsReportParams defines parameters for GetRightsReport.
+type GetRightsReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang                   `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber             `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize               `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy  *GetRightsReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+
+	// Section Record section listed in records and exports
+	Section *GetRightsReportParamsSection `form:"section,omitempty" json:"section,omitempty"`
+}
+
+// GetRightsReportParamsGroupBy defines parameters for GetRightsReport.
+type GetRightsReportParamsGroupBy string
+
+// GetRightsReportParamsSection defines parameters for GetRightsReport.
+type GetRightsReportParamsSection string
+
+// GetVesselsReportParams defines parameters for GetVesselsReport.
+type GetVesselsReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang                    `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber              `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize                `form:"page_size,omitempty" json:"page_size,omitempty"`
+	GroupBy  *GetVesselsReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	MapId    *ReportMapId                   `form:"map_id,omitempty" json:"map_id,omitempty"`
+	MapKind  *ReportMapKind                 `form:"map_kind,omitempty" json:"map_kind,omitempty"`
+
+	// StructureId Pontile (structure) id
+	StructureId *ReportStructureId `form:"structure_id,omitempty" json:"structure_id,omitempty"`
+
+	// GroupId Berth group id
+	GroupId *ReportGroupId `form:"group_id,omitempty" json:"group_id,omitempty"`
+
+	// Category Berth category (price_class code)
+	Category *ReportCategory `form:"category,omitempty" json:"category,omitempty"`
+}
+
+// GetVesselsReportParamsGroupBy defines parameters for GetVesselsReport.
+type GetVesselsReportParamsGroupBy string
 
 // ListRevenueClassesParams defines parameters for ListRevenueClasses.
 type ListRevenueClassesParams struct {
@@ -20388,6 +24114,9 @@ type ServerInterface interface {
 	// UnarchiveCustomer Restore an archived customer (customers.write)
 	// (POST /api/admin/v1/marinas/{marinaId}/customers/{customerId}/unarchive)
 	UnarchiveCustomer(w http.ResponseWriter, r *http.Request, marinaId MarinaId, customerId CustomerId)
+	// GetDashboard Manager dashboard tiles with the previous year and trend; only the tiles the principal may see (reports.operational or reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/dashboard)
+	GetDashboard(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetDashboardParams)
 	// ListDeadlinePolicies Lead days per deadline kind, defaults included (customers.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/deadline-policies)
 	ListDeadlinePolicies(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -20961,6 +24690,57 @@ type ServerInterface interface {
 	// SendRenewalProposal Send (or resend, rotating the link) the proposal email (contracts.write)
 	// (POST /api/admin/v1/marinas/{marinaId}/renewal-proposals/{proposalId}/send)
 	SendRenewalProposal(w http.ResponseWriter, r *http.Request, marinaId MarinaId, proposalId ProposalId, params SendRenewalProposalParams)
+	// GetAccrualsReport R7 competence, deferrals (risconti) and accruals (ratei) at the closing date to (reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/accruals)
+	GetAccrualsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetAccrualsReportParams)
+	// GetAllocationWasteReport R3 allocation waste on berths with lost potential revenue (reports.all) and swap/move suggestions (reports.operational or reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/allocation-waste)
+	GetAllocationWasteReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetAllocationWasteReportParams)
+	// GetBerthRevenueReport R17 revenue per linear metre of berth (reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/berth-revenue)
+	GetBerthRevenueReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetBerthRevenueReportParams)
+	// GetCashReport R15 cash sessions and fiscal receipts (corrispettivi) by VAT rate and method (reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/cash)
+	GetCashReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetCashReportParams)
+	// GetChargesReport R8 detailed charges on the issued or competence basis (reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/charges)
+	GetChargesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetChargesReportParams)
+	// GetReportComparison R11 an indicator compared with 1 to 5 previous years, aligned by date or weekday (permission of the indicator)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/comparison)
+	GetReportComparison(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetReportComparisonParams)
+	// GetCustomersReport R5 customers and renewals (reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/customers)
+	GetCustomersReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetCustomersReportParams)
+	// GetEfficiencyReport R2 occupancy efficiency, vessel over resource area on occupied nights (reports.operational or reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/efficiency)
+	GetEfficiencyReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetEfficiencyReportParams)
+	// GetLostDemandReport R4 lost demand from unserved inquiries; values only with reports.all (reports.operational or reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/lost-demand)
+	GetLostDemandReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetLostDemandReportParams)
+	// GetOccupancyReport R1 occupancy, physical or contractual, berths, land or dynamic areas (reports.operational or reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/occupancy)
+	GetOccupancyReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetOccupancyReportParams)
+	// GetPaymentsReport R9 detailed payments on the cash basis (base incasso), refunds negative, payouts apart (reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/payments)
+	GetPaymentsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetPaymentsReportParams)
+	// GetPresencesReport R13 arrivals, departures, absence nights, releases and resales; revenue only with reports.all (reports.operational or reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/presences)
+	GetPresencesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetPresencesReportParams)
+	// GetProductionReport R6 production (competenze) of contracts and transits on the contract value (reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/production)
+	GetProductionReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetProductionReportParams)
+	// GetReceivablesReport R12 receivables by age as of a date, scheduled instalments and reminders sent (reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/receivables)
+	GetReceivablesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetReceivablesReportParams)
+	// GetRevenueClassesReport R10 net revenue by revenue class and month (reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/revenue-classes)
+	GetRevenueClassesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRevenueClassesReportParams)
+	// GetRightsReport R14 rights of use, holder charges, common-charge allotments and mandates (reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/rights)
+	GetRightsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRightsReportParams)
+	// GetVesselsReport R16 vessels hosted in the period (reports.operational or reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/vessels)
+	GetVesselsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetVesselsReportParams)
 	// ListRevenueClasses Revenue classes (two levels); the spec defaults are created on first use (pricing.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/revenue-classes)
 	ListRevenueClasses(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRevenueClassesParams)
@@ -22236,6 +26016,12 @@ func (_ Unimplemented) UnarchiveCustomer(w http.ResponseWriter, r *http.Request,
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// GetDashboard Manager dashboard tiles with the previous year and trend; only the tiles the principal may see (reports.operational or reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/dashboard)
+func (_ Unimplemented) GetDashboard(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetDashboardParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListDeadlinePolicies Lead days per deadline kind, defaults included (customers.read)
 // (GET /api/admin/v1/marinas/{marinaId}/deadline-policies)
 func (_ Unimplemented) ListDeadlinePolicies(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
@@ -23379,6 +27165,108 @@ func (_ Unimplemented) IncludeRenewalProposal(w http.ResponseWriter, r *http.Req
 // SendRenewalProposal Send (or resend, rotating the link) the proposal email (contracts.write)
 // (POST /api/admin/v1/marinas/{marinaId}/renewal-proposals/{proposalId}/send)
 func (_ Unimplemented) SendRenewalProposal(w http.ResponseWriter, r *http.Request, marinaId MarinaId, proposalId ProposalId, params SendRenewalProposalParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetAccrualsReport R7 competence, deferrals (risconti) and accruals (ratei) at the closing date to (reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/accruals)
+func (_ Unimplemented) GetAccrualsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetAccrualsReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetAllocationWasteReport R3 allocation waste on berths with lost potential revenue (reports.all) and swap/move suggestions (reports.operational or reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/allocation-waste)
+func (_ Unimplemented) GetAllocationWasteReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetAllocationWasteReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetBerthRevenueReport R17 revenue per linear metre of berth (reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/berth-revenue)
+func (_ Unimplemented) GetBerthRevenueReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetBerthRevenueReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetCashReport R15 cash sessions and fiscal receipts (corrispettivi) by VAT rate and method (reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/cash)
+func (_ Unimplemented) GetCashReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetCashReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetChargesReport R8 detailed charges on the issued or competence basis (reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/charges)
+func (_ Unimplemented) GetChargesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetChargesReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetReportComparison R11 an indicator compared with 1 to 5 previous years, aligned by date or weekday (permission of the indicator)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/comparison)
+func (_ Unimplemented) GetReportComparison(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetReportComparisonParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetCustomersReport R5 customers and renewals (reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/customers)
+func (_ Unimplemented) GetCustomersReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetCustomersReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetEfficiencyReport R2 occupancy efficiency, vessel over resource area on occupied nights (reports.operational or reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/efficiency)
+func (_ Unimplemented) GetEfficiencyReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetEfficiencyReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetLostDemandReport R4 lost demand from unserved inquiries; values only with reports.all (reports.operational or reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/lost-demand)
+func (_ Unimplemented) GetLostDemandReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetLostDemandReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetOccupancyReport R1 occupancy, physical or contractual, berths, land or dynamic areas (reports.operational or reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/occupancy)
+func (_ Unimplemented) GetOccupancyReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetOccupancyReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPaymentsReport R9 detailed payments on the cash basis (base incasso), refunds negative, payouts apart (reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/payments)
+func (_ Unimplemented) GetPaymentsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetPaymentsReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPresencesReport R13 arrivals, departures, absence nights, releases and resales; revenue only with reports.all (reports.operational or reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/presences)
+func (_ Unimplemented) GetPresencesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetPresencesReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetProductionReport R6 production (competenze) of contracts and transits on the contract value (reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/production)
+func (_ Unimplemented) GetProductionReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetProductionReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetReceivablesReport R12 receivables by age as of a date, scheduled instalments and reminders sent (reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/receivables)
+func (_ Unimplemented) GetReceivablesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetReceivablesReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRevenueClassesReport R10 net revenue by revenue class and month (reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/revenue-classes)
+func (_ Unimplemented) GetRevenueClassesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRevenueClassesReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRightsReport R14 rights of use, holder charges, common-charge allotments and mandates (reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/rights)
+func (_ Unimplemented) GetRightsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRightsReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetVesselsReport R16 vessels hosted in the period (reports.operational or reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/vessels)
+func (_ Unimplemented) GetVesselsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetVesselsReportParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -32051,6 +35939,152 @@ func (siw *ServerInterfaceWrapper) UnarchiveCustomer(w http.ResponseWriter, r *h
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UnarchiveCustomer(w, r, marinaId, customerId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetDashboard operation middleware
+func (siw *ServerInterfaceWrapper) GetDashboard(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetDashboardParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "compare" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "compare", r.URL.Query(), &params.Compare, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "compare"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "compare", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "align" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "align", r.URL.Query(), &params.Align, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "align"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "align", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_kind", r.URL.Query(), &params.MapKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "structure_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "structure_id", r.URL.Query(), &params.StructureId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "structure_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "structure_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_id", r.URL.Query(), &params.GroupId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetDashboard(w, r, marinaId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -43174,6 +47208,2878 @@ func (siw *ServerInterfaceWrapper) SendRenewalProposal(w http.ResponseWriter, r 
 	handler.ServeHTTP(w, r)
 }
 
+// GetAccrualsReport operation middleware
+func (siw *ServerInterfaceWrapper) GetAccrualsReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetAccrualsReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "section" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "section", r.URL.Query(), &params.Section, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "section"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "section", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetAccrualsReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetAllocationWasteReport operation middleware
+func (siw *ServerInterfaceWrapper) GetAllocationWasteReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetAllocationWasteReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "threshold_bp" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "threshold_bp", r.URL.Query(), &params.ThresholdBp, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "threshold_bp"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "threshold_bp", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "suggestions" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "suggestions", r.URL.Query(), &params.Suggestions, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "suggestions"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "suggestions", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_kind", r.URL.Query(), &params.MapKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "structure_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "structure_id", r.URL.Query(), &params.StructureId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "structure_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "structure_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_id", r.URL.Query(), &params.GroupId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetAllocationWasteReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetBerthRevenueReport operation middleware
+func (siw *ServerInterfaceWrapper) GetBerthRevenueReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetBerthRevenueReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_kind", r.URL.Query(), &params.MapKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "structure_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "structure_id", r.URL.Query(), &params.StructureId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "structure_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "structure_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_id", r.URL.Query(), &params.GroupId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetBerthRevenueReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCashReport operation middleware
+func (siw *ServerInterfaceWrapper) GetCashReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetCashReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "section" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "section", r.URL.Query(), &params.Section, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "section"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "section", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCashReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetChargesReport operation middleware
+func (siw *ServerInterfaceWrapper) GetChargesReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetChargesReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "basis" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "basis", r.URL.Query(), &params.Basis, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "basis"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "basis", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "item_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "item_id", r.URL.Query(), &params.ItemId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "item_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "item_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "origin" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "origin", r.URL.Query(), &params.Origin, runtime.BindQueryParameterOptions{Type: "array", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "origin"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "origin", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "payment_status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "payment_status", r.URL.Query(), &params.PaymentStatus, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "payment_status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "payment_status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "invoicing_status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "invoicing_status", r.URL.Query(), &params.InvoicingStatus, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "invoicing_status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "invoicing_status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "fiscal_mode" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "fiscal_mode", r.URL.Query(), &params.FiscalMode, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "fiscal_mode"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fiscal_mode", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetChargesReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetReportComparison operation middleware
+func (siw *ServerInterfaceWrapper) GetReportComparison(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetReportComparisonParams
+
+	// ------------- Optional query parameter "indicator" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "indicator", r.URL.Query(), &params.Indicator, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "indicator"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "indicator", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "years_back" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "years_back", r.URL.Query(), &params.YearsBack, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "years_back"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "years_back", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "align" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "align", r.URL.Query(), &params.Align, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "align"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "align", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "granularity" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "granularity", r.URL.Query(), &params.Granularity, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "granularity"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "granularity", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_kind", r.URL.Query(), &params.MapKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "structure_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "structure_id", r.URL.Query(), &params.StructureId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "structure_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "structure_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_id", r.URL.Query(), &params.GroupId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetReportComparison(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCustomersReport operation middleware
+func (siw *ServerInterfaceWrapper) GetCustomersReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetCustomersReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "new" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "new", r.URL.Query(), &params.New, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "new"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "new", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "section" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "section", r.URL.Query(), &params.Section, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "section"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "section", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCustomersReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetEfficiencyReport operation middleware
+func (siw *ServerInterfaceWrapper) GetEfficiencyReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetEfficiencyReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "family" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "family", r.URL.Query(), &params.Family, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "family"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "family", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "resource_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "resource_type", r.URL.Query(), &params.ResourceType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "resource_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resource_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_kind", r.URL.Query(), &params.MapKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "structure_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "structure_id", r.URL.Query(), &params.StructureId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "structure_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "structure_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_id", r.URL.Query(), &params.GroupId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetEfficiencyReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetLostDemandReport operation middleware
+func (siw *ServerInterfaceWrapper) GetLostDemandReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetLostDemandReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "channel" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "channel", r.URL.Query(), &params.Channel, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "channel"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "purpose" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "purpose", r.URL.Query(), &params.Purpose, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "purpose"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "purpose", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetLostDemandReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetOccupancyReport operation middleware
+func (siw *ServerInterfaceWrapper) GetOccupancyReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetOccupancyReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "variant" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "variant", r.URL.Query(), &params.Variant, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "variant"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "variant", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "family" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "family", r.URL.Query(), &params.Family, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "family"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "family", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "resource_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "resource_type", r.URL.Query(), &params.ResourceType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "resource_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resource_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_kind", r.URL.Query(), &params.MapKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "structure_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "structure_id", r.URL.Query(), &params.StructureId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "structure_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "structure_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_id", r.URL.Query(), &params.GroupId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetOccupancyReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPaymentsReport operation middleware
+func (siw *ServerInterfaceWrapper) GetPaymentsReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPaymentsReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "method" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "method", r.URL.Query(), &params.Method, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "method"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "method", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "section" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "section", r.URL.Query(), &params.Section, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "section"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "section", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPaymentsReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPresencesReport operation middleware
+func (siw *ServerInterfaceWrapper) GetPresencesReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPresencesReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "section" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "section", r.URL.Query(), &params.Section, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "section"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "section", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPresencesReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetProductionReport operation middleware
+func (siw *ServerInterfaceWrapper) GetProductionReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetProductionReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetProductionReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetReceivablesReport operation middleware
+func (siw *ServerInterfaceWrapper) GetReceivablesReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetReceivablesReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "as_of" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "as_of", r.URL.Query(), &params.AsOf, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "as_of"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "as_of", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "overdue" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "overdue", r.URL.Query(), &params.Overdue, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "overdue"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "overdue", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "origin" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "origin", r.URL.Query(), &params.Origin, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "origin"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "origin", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "section" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "section", r.URL.Query(), &params.Section, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "section"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "section", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetReceivablesReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRevenueClassesReport operation middleware
+func (siw *ServerInterfaceWrapper) GetRevenueClassesReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetRevenueClassesReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "basis" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "basis", r.URL.Query(), &params.Basis, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "basis"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "basis", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRevenueClassesReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRightsReport operation middleware
+func (siw *ServerInterfaceWrapper) GetRightsReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetRightsReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "section" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "section", r.URL.Query(), &params.Section, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "section"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "section", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRightsReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetVesselsReport operation middleware
+func (siw *ServerInterfaceWrapper) GetVesselsReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetVesselsReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_kind", r.URL.Query(), &params.MapKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "structure_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "structure_id", r.URL.Query(), &params.StructureId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "structure_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "structure_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_id", r.URL.Query(), &params.GroupId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetVesselsReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListRevenueClasses operation middleware
 func (siw *ServerInterfaceWrapper) ListRevenueClasses(w http.ResponseWriter, r *http.Request) {
 
@@ -50178,6 +57084,60 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/public/v1/{slug}/pay/{payToken}/status", wrapper.GetPayStatus)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/dashboard", wrapper.GetDashboard)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/comparison", wrapper.GetReportComparison)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/occupancy", wrapper.GetOccupancyReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/efficiency", wrapper.GetEfficiencyReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/allocation-waste", wrapper.GetAllocationWasteReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/lost-demand", wrapper.GetLostDemandReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/customers", wrapper.GetCustomersReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/production", wrapper.GetProductionReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/accruals", wrapper.GetAccrualsReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/charges", wrapper.GetChargesReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/payments", wrapper.GetPaymentsReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/revenue-classes", wrapper.GetRevenueClassesReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/receivables", wrapper.GetReceivablesReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/presences", wrapper.GetPresencesReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/rights", wrapper.GetRightsReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/cash", wrapper.GetCashReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/vessels", wrapper.GetVesselsReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/berth-revenue", wrapper.GetBerthRevenueReport)
 	})
 
 	return r

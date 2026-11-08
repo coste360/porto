@@ -35,6 +35,7 @@ import (
 	"github.com/coste360/porto/internal/domain/fiscal"
 	"github.com/coste360/porto/internal/domain/magiclink"
 	"github.com/coste360/porto/internal/domain/payment"
+	"github.com/coste360/porto/internal/domain/report"
 	"github.com/coste360/porto/internal/domain/rights"
 	"github.com/coste360/porto/internal/domain/signature"
 )
@@ -222,6 +223,12 @@ var sentinels = []struct {
 	{collect.ErrNotImplemented, problem.NotImplemented},
 	{contract.ErrNotImplementedM5, problem.NotImplemented},
 	{docs.ErrNotImplemented, problem.NotImplemented},
+	// M7 (m7-plan §8); report.FilterError (invalid_report_filter with the parameter) is mapped in MapError.
+	{report.ErrInvalidPeriod, problem.InvalidPeriod},
+	{report.ErrInvalidFilter, problem.InvalidReportFilter},
+	{report.ErrTooLarge, problem.ReportTooLarge},
+	{report.ErrUnknownIndicator, problem.UnknownIndicator},
+	{report.ErrNotImplemented, problem.NotImplemented},
 	{ErrBadJSON, problem.BadRequest},
 	{errUnsupportedMedia, problem.UnsupportedMediaType},
 }
@@ -247,6 +254,9 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 	}
 	if t, opts, ok := mapM5(err); ok {
 		return t, opts, true
+	}
+	if fe, ok := errors.AsType[*report.FilterError](err); ok {
+		return problem.InvalidReportFilter, []problem.Option{problem.Fields(problem.FieldError{Field: fe.Param, Code: "invalid"})}, true
 	}
 	if se, ok := errors.AsType[*desktopport.SettingsError](err); ok {
 		fields := make([]problem.FieldError, 0, len(se.Fields))

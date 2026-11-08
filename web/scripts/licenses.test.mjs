@@ -15,6 +15,15 @@ describe('licenses', () => {
     ).toEqual(['c@1: GPL-3.0']);
   });
 
+  it('accepts AND only when every combined licence is allowed', () => {
+    expect(
+      check([
+        { name: 'e', version: '1', license: 'MIT AND ISC AND BSD-3-Clause' },
+        { name: 'f', version: '1', license: 'MIT AND GPL-3.0' },
+      ]),
+    ).toEqual(['f@1: MIT AND GPL-3.0']);
+  });
+
   it('allows OFL-1.1 only for the font', () => {
     expect(
       check([{ name: '@fontsource/titillium-web', version: '5', license: 'OFL-1.1' }]),

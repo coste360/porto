@@ -220,3 +220,68 @@ export function parseQtyToMilli(text: string, locale = 'it'): number | null {
   const n = normaliseLocaleDecimal(text, 3, locale);
   return n === null ? null : parseScaled(n, 3);
 }
+
+// ---- M7 reports (m7-plan §10.2): integers only. ----
+
+/** Integer square centimetres as square metres with two decimals, half-even: 125000 → "12,50 m²" (it). */
+export function formatCm2(cm2: number, locale = 'it'): string {
+  if (!Number.isSafeInteger(cm2)) throw new RangeError(`not an integer: ${cm2}`);
+  // 1 m² = 10 000 cm²: keep two decimals (hundredths of m² = 100 cm²), rounding half-even on the rest.
+  const negative = cm2 < 0;
+  const abs = BigInt(Math.abs(cm2));
+  let q = abs / 100n;
+  const r = abs % 100n;
+  if (r > 50n || (r === 50n && q % 2n === 1n)) q += 1n;
+  const { whole, frac } = splitInt(Number(q), 100);
+  const { decimal, group } = separators(locale);
+  return `${negative && q > 0n ? '-' : ''}${groupThousands(whole, group)}${decimal}${frac} m²`;
+}
+
+/** A whole number with the locale's grouping: 12345 → "12.345" (it). */
+export function formatInteger(value: number, locale = 'it'): string {
+  const { negative, whole } = splitInt(value, 1);
+  const { group } = separators(locale);
+  return `${negative ? '-' : ''}${groupThousands(whole, group)}`;
+}
+
+/** Units of report and tile values (OpenAPI ReportUnit). */
+export type ReportValueUnit =
+  | 'cents'
+  | 'bp'
+  | 'count'
+  | 'cm'
+  | 'cm2'
+  | 'cents_per_m'
+  | 'cents_per_night'
+  | 'berth_night'
+  | 'cm_night'
+  | 'cm2_night';
+
+/**
+ * Formats a report or tile value by its unit; null (ratio without denominator, hidden or unpriced amount) → "—".
+ * Per-metre and per-night amounts and unit-nights carry no suffix: the column or tile label names the unit.
+ */
+export function formatReportValue(
+  value: number | null | undefined,
+  unit: ReportValueUnit,
+  locale = 'it',
+): string {
+  if (value === null || value === undefined) return '—';
+  switch (unit) {
+    case 'cents':
+    case 'cents_per_m':
+    case 'cents_per_night':
+      return formatCents(value, 'EUR', locale);
+    case 'bp':
+      return formatBp(value, locale);
+    case 'cm':
+    case 'cm_night':
+      return formatCm(value, locale);
+    case 'cm2':
+    case 'cm2_night':
+      return formatCm2(value, locale);
+    case 'count':
+    case 'berth_night':
+      return formatInteger(value, locale);
+  }
+}

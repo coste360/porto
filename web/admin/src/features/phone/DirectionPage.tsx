@@ -1,12 +1,11 @@
 import { getRouteApi, Link, useNavigate } from '@tanstack/react-router';
 import { CalendarClockIcon, LayoutDashboardIcon, MapIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
-import { useDayView, useDeadlines, useMaps, useMovements } from '@porto/shared/api';
+import { useDeadlines } from '@porto/shared/api';
 import { useT } from '@porto/shared/i18n';
 import { formatIsoDate } from '@porto/shared/lib/format';
 import { Button } from '@porto/shared/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@porto/shared/ui/card';
 import { Tabs, TabsContent } from '@porto/shared/ui/tabs';
 
 import { useCurrentMarina } from '../../auth/hooks';
@@ -14,6 +13,7 @@ import { LoadingState, QueryErrorState, RequirePermission } from '../../componen
 import { useMarinaToday } from '../registry/lib/today';
 import { addDays } from '../desk/lib/dates';
 import { DayMap, type MapSelection } from './components/DayMap';
+import { DirectionDashboardTab } from './components/DirectionDashboardTab';
 import { ElementSheet } from './components/ElementSheet';
 import { PhoneTabBar } from './components/PhoneTabBar';
 import { StaleSince } from './components/StaleSince';
@@ -23,7 +23,7 @@ import { DIRECTION_TABS, type DirectionTab } from './lib/tabs';
 
 const route = getRouteApi('/auth/m/$marinaId/direction');
 
-/** Direction phone screen (spec 31.3 Direzione, m6b-plan §6.3, D20): dashboard placeholder, map, deadlines. */
+/** Direction phone screen (spec 31.3 Direzione, m6b-plan §6.3, D20, m7-plan §10.1): dashboard tiles, map, deadlines. */
 export function DirectionPage() {
   const { t } = useT();
   const { marinaId, marina, can } = useCurrentMarina();
@@ -56,7 +56,7 @@ export function DirectionPage() {
       >
         <h1 className="sr-only">{t('phone:direction.title')}</h1>
         <TabsContent value="dashboard">
-          <DashboardTab date={today} />
+          <DirectionDashboardTab date={today} />
         </TabsContent>
         <TabsContent value="map">
           {can('map.view') ? (
@@ -78,52 +78,6 @@ export function DirectionPage() {
       </Tabs>
       <ElementSheet selection={selection} onClose={() => setSelection(null)} />
     </RequirePermission>
-  );
-}
-
-function DashboardTab({ date }: { date: string }) {
-  const { t } = useT();
-  const { marinaId, can } = useCurrentMarina();
-  const movements = useMovements(marinaId, date);
-  const maps = useMaps(marinaId);
-  const day = useDayView(marinaId, can('map.view') ? maps.data?.[0]?.id : undefined, date);
-  const inPort = useMemo(
-    () => day.data?.elements.filter((e) => e.vessel && e.presence?.state === 'in_port').length,
-    [day.data],
-  );
-  const counts: [string, number | undefined][] = [
-    [t('phone:direction.arrivals'), movements.data?.arrivals_expected.length],
-    [t('phone:direction.departures'), movements.data?.departures_expected.length],
-    [t('phone:direction.inPort'), inPort],
-  ];
-  return (
-    <div className="flex flex-col gap-4" data-testid="direction-dashboard">
-      <StaleSince updatedAt={movements.dataUpdatedAt} />
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('phone:direction.today')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid grid-cols-3 gap-2 text-center">
-            {counts.map(([label, n]) => (
-              <div key={label} className="flex flex-col gap-1" data-testid="direction-count">
-                <dt className="text-muted-foreground text-xs">{label}</dt>
-                <dd className="text-2xl font-semibold tabular-nums">{n ?? '–'}</dd>
-              </div>
-            ))}
-          </dl>
-        </CardContent>
-      </Card>
-      <Card data-testid="direction-placeholder">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <LayoutDashboardIcon />
-            {t('phone:direction.tabs.dashboard')}
-          </CardTitle>
-          <CardDescription>{t('phone:direction.dashboardPlaceholder')}</CardDescription>
-        </CardHeader>
-      </Card>
-    </div>
   );
 }
 

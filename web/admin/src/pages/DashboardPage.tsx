@@ -1,13 +1,14 @@
 import { Link, Navigate } from '@tanstack/react-router';
-import { AnchorIcon, SmartphoneIcon } from 'lucide-react';
+import { SmartphoneIcon } from 'lucide-react';
 
 import { useIsMobile } from '@porto/shared/hooks/use-mobile';
 import { useT } from '@porto/shared/i18n';
 import { Button } from '@porto/shared/ui/button';
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@porto/shared/ui/card';
-import { EmptyState, PageHeader } from '@porto/shared/ui/patterns';
+import { PageHeader } from '@porto/shared/ui/patterns';
 
 import { useCurrentMarina } from '../auth/hooks';
+import { ManagerDashboard } from '../features/dashboard/ManagerDashboard';
 import { LocalModeCard } from '../features/desktop/LocalModeCard';
 import { DeadlinesCard } from '../features/registry/deadlines/DeadlinesCard';
 import { preferFullVersion } from '../features/phone/lib/fullVersion';
@@ -38,6 +39,7 @@ export function DashboardPage() {
         description={t('common:dashboard.description')}
       />
       <div className="flex flex-col gap-6">
+        <ManagerDashboard />
         <div className="grid gap-4 lg:grid-cols-2">
           {can('presence.write') ? (
             <Card data-testid="dashboard-dock-card">
@@ -60,7 +62,6 @@ export function DashboardPage() {
           {can('customers.read') ? <DeadlinesCard /> : null}
           <LocalModeCard />
         </div>
-        <EmptyState icon={<AnchorIcon />} title={t('common:dashboard.comingSoon')} />
       </div>
     </>
   );

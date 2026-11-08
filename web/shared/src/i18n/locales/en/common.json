@@ -125,7 +125,8 @@
     "openingBalances": "Opening balances",
     "worklist": "Office worklist",
     "billingSettings": "Billing settings",
-    "paymentSettings": "Online payments"
+    "paymentSettings": "Online payments",
+    "reports": "Reports"
   },
   "user": {
     "menu": "User menu",
@@ -153,7 +154,6 @@
   },
   "dashboard": {
     "title": "Overview",
-    "comingSoon": "The operational overview is coming in a future release.",
     "description": "From here you manage the team, integrations and marina settings."
   },
   "picker": {

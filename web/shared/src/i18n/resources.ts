@@ -98,6 +98,10 @@ import enOffline from './locales/en/offline.json';
 import itOffline from './locales/it/offline.json';
 import enPhone from './locales/en/phone.json';
 import itPhone from './locales/it/phone.json';
+import enReports from './locales/en/reports.json';
+import itReports from './locales/it/reports.json';
+import enDashboard from './locales/en/dashboard.json';
+import itDashboard from './locales/it/dashboard.json';
 
 export const SUPPORTED_LOCALES = ['it', 'en'] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -157,6 +161,9 @@ export const NAMESPACES = [
   'desktop',
   'offline',
   'phone',
+  // M7 (m7-plan §10.2)
+  'reports',
+  'dashboard',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -212,6 +219,8 @@ export const resources = {
     desktop: itDesktop,
     offline: itOffline,
     phone: itPhone,
+    reports: itReports,
+    dashboard: itDashboard,
   },
   en: {
     common: enCommon,
@@ -264,5 +273,7 @@ export const resources = {
     desktop: enDesktop,
     offline: enOffline,
     phone: enPhone,
+    reports: enReports,
+    dashboard: enDashboard,
   },
 } as const;

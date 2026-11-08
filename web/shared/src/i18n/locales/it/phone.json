@@ -120,7 +120,6 @@
       "map": "Mappa",
       "deadlines": "Scadenze"
     },
-    "dashboardPlaceholder": "Cruscotto completo con M7",
     "arrivals": "Arrivi",
     "departures": "Partenze",
     "inPort": "In porto",
@@ -128,7 +127,8 @@
     "openFull": "Apri la pagina completa",
     "deadlinesNone": "Nessuna scadenza nei prossimi 30 giorni.",
     "week": "Settimana dal {{date}}",
-    "notAllowed": "Il tuo ruolo non vede le scadenze."
+    "notAllowed": "Il tuo ruolo non vede le scadenze.",
+    "indicators": "Indicatori del periodo"
   },
   "scan": {
     "start": "Inquadra il QR del transito",

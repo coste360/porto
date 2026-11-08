@@ -7246,12 +7246,354 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/marinas/{marinaId}/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Manager dashboard tiles with the previous year and trend; only the tiles the principal may see (reports.operational or reports.all) */
+        get: operations["getDashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/comparison": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R11 an indicator compared with 1 to 5 previous years, aligned by date or weekday (permission of the indicator) */
+        get: operations["getReportComparison"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/occupancy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R1 occupancy, physical or contractual, berths, land or dynamic areas (reports.operational or reports.all) */
+        get: operations["getOccupancyReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/efficiency": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R2 occupancy efficiency, vessel over resource area on occupied nights (reports.operational or reports.all) */
+        get: operations["getEfficiencyReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/allocation-waste": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R3 allocation waste on berths with lost potential revenue (reports.all) and swap/move suggestions (reports.operational or reports.all) */
+        get: operations["getAllocationWasteReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/lost-demand": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R4 lost demand from unserved inquiries; values only with reports.all (reports.operational or reports.all) */
+        get: operations["getLostDemandReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R5 customers and renewals (reports.all) */
+        get: operations["getCustomersReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/production": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R6 production (competenze) of contracts and transits on the contract value (reports.all) */
+        get: operations["getProductionReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/accruals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R7 competence, deferrals (risconti) and accruals (ratei) at the closing date to (reports.all) */
+        get: operations["getAccrualsReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/charges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R8 detailed charges on the issued or competence basis (reports.all) */
+        get: operations["getChargesReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R9 detailed payments on the cash basis (base incasso), refunds negative, payouts apart (reports.all) */
+        get: operations["getPaymentsReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/revenue-classes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R10 net revenue by revenue class and month (reports.all) */
+        get: operations["getRevenueClassesReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/receivables": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R12 receivables by age as of a date, scheduled instalments and reminders sent (reports.all) */
+        get: operations["getReceivablesReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/presences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R13 arrivals, departures, absence nights, releases and resales; revenue only with reports.all (reports.operational or reports.all) */
+        get: operations["getPresencesReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/rights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R14 rights of use, holder charges, common-charge allotments and mandates (reports.all) */
+        get: operations["getRightsReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/cash": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R15 cash sessions and fiscal receipts (corrispettivi) by VAT rate and method (reports.all) */
+        get: operations["getCashReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/vessels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R16 vessels hosted in the period (reports.operational or reports.all) */
+        get: operations["getVesselsReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/berth-revenue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R17 revenue per linear metre of berth (reports.all) */
+        get: operations["getBerthRevenueReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid" | "invalid_period" | "invalid_report_filter" | "report_too_large" | "unknown_indicator";
         FieldError: {
             field: string;
             code: string;
@@ -13581,6 +13923,1012 @@ export interface components {
             /** @description An online payment is in progress (pagamento in verifica) */
             verifying: boolean;
         };
+        /**
+         * @description Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are reserved and not served yet.
+         * @enum {string}
+         */
+        ReportKey: "occupancy" | "efficiency" | "allocation-waste" | "lost-demand" | "customers" | "production" | "accruals" | "charges" | "payments" | "revenue-classes" | "comparison" | "receivables" | "presences" | "rights" | "cash" | "vessels" | "berth-revenue";
+        /**
+         * @description json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
+         * @enum {string}
+         */
+        ReportFormat: "json" | "csv" | "xlsx";
+        /**
+         * @description Unit of an integer value: cents, bp (basis points), count, cm, cm2, cents_per_m, cents_per_night, berth_night (berth or land nights), cm_night (linear dynamic areas), cm2_night (surface dynamic areas)
+         * @enum {string}
+         */
+        ReportUnit: "cents" | "bp" | "count" | "cm" | "cm2" | "cents_per_m" | "cents_per_night" | "berth_night" | "cm_night" | "cm2_night";
+        /**
+         * @description LOA bands in cm (m7-plan D8)
+         * @enum {string}
+         */
+        ReportLengthBand: "lt8" | "m8_10" | "m10_12" | "m12_15" | "m15_20" | "m20_25" | "ge25";
+        /** @description Inclusive period in the marina time zone (at most 400 days) */
+        ReportPeriod: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+        };
+        ReportPageInfo: {
+            page: number;
+            page_size: number;
+            /**
+             * Format: int64
+             * @description Records of the selected section (all pages)
+             */
+            total_records: number;
+        };
+        /** @description Link from a record to its entity page (ids and display codes only) */
+        ReportRef: {
+            /** @enum {string} */
+            type: "contract" | "transit" | "charge" | "payment" | "refund" | "allocation" | "berth" | "area" | "land_resource" | "customer" | "vessel" | "inquiry" | "release" | "presence" | "cash_session" | "fiscal_document" | "right" | "common_charge_run" | "mandate" | "installment" | "holder_installment";
+            id: string;
+            label?: string;
+        };
+        /** @description A counted remark about the result (codes: unpriced, no_vessel, no_compatible_berth, inactive_resource, truncated_suggestions, ...) */
+        ReportNote: {
+            code: string;
+            /** Format: int64 */
+            count: number;
+        };
+        /** @description Fields common to every report response (m7-plan §3.0). totals are over all records of every section (not the page); groups follow group_by; records are the page of the selected section. */
+        ReportEnvelope: {
+            report: components["schemas"]["ReportKey"];
+            period: components["schemas"]["ReportPeriod"];
+            today: components["schemas"]["IsoDate"];
+            /** @description The applied filters as query parameters (round-trip of the request) */
+            filters: {
+                [key: string]: string;
+            };
+            /** @description Filters accepted by the API but meaningless for this report */
+            ignored_filters: string[];
+            group_by?: string;
+            section?: string;
+            page: components["schemas"]["ReportPageInfo"];
+            notes: components["schemas"]["ReportNote"][];
+        };
+        ReportResourceBrief: {
+            id: string;
+            code: string;
+        };
+        OccupancyTotals: {
+            unit: components["schemas"]["ReportUnit"];
+            /**
+             * Format: int64
+             * @description Numerator (contractual: includes released_units)
+             */
+            occupied_units: number;
+            /**
+             * Format: int64
+             * @description Denominator
+             */
+            available_units: number;
+            /** Format: int64 */
+            closed_units: number;
+            /** Format: int64 */
+            out_of_service_units: number;
+            /** Format: int64 */
+            released_units: number;
+            /**
+             * Format: int64
+             * @description null when available_units is 0
+             */
+            occupancy_bp: number | null;
+        };
+        OccupancyGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["OccupancyTotals"];
+        };
+        /** @description role numerator: one per (resource, allocation) with occupied_units (contractual: kind release adds the released units); role denominator: one per resource with available, closed and out-of-service units */
+        OccupancyRecord: {
+            /** @enum {string} */
+            role: "numerator" | "denominator";
+            resource_id: string;
+            resource_code: string;
+            resource_type: components["schemas"]["ResourceType"];
+            map_id?: string;
+            category?: string;
+            /** @enum {string} */
+            kind?: "contract" | "transit" | "owner" | "release";
+            allocation_id?: string;
+            contract_id?: string;
+            contract_number?: string;
+            /** Format: int64 */
+            occupied_units: number;
+            /** Format: int64 */
+            available_units: number;
+            /** Format: int64 */
+            closed_units: number;
+            /** Format: int64 */
+            out_of_service_units: number;
+            ref: components["schemas"]["ReportRef"];
+        };
+        OccupancyReport: components["schemas"]["ReportEnvelope"] & {
+            /** @enum {string} */
+            variant: "physical" | "contractual";
+            family: components["schemas"]["ReportFamily"];
+            totals: components["schemas"]["OccupancyTotals"];
+            groups: components["schemas"]["OccupancyGroup"][];
+            records: components["schemas"]["OccupancyRecord"][];
+        };
+        /**
+         * @description Resource family; families are never summed together (m7-plan D6)
+         * @enum {string}
+         */
+        ReportFamily: "berth" | "land" | "linear_area" | "surface_area";
+        EfficiencyTotals: {
+            unit: components["schemas"]["ReportUnit"];
+            /** Format: int64 */
+            nights: number;
+            /**
+             * Format: int64
+             * @description Numerator
+             */
+            vessel_units: number;
+            /**
+             * Format: int64
+             * @description Denominator
+             */
+            resource_units: number;
+            /** Format: int64 */
+            efficiency_bp: number | null;
+        };
+        EfficiencyGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["EfficiencyTotals"];
+        };
+        EfficiencyRecord: {
+            resource_id: string;
+            resource_code: string;
+            resource_type: components["schemas"]["ResourceType"];
+            allocation_id: string;
+            /** @enum {string} */
+            kind: "contract" | "transit" | "owner";
+            contract_id?: string;
+            contract_number?: string;
+            vessel_id?: string;
+            vessel_name?: string;
+            loa_cm?: components["schemas"]["Cm"];
+            beam_cm?: components["schemas"]["Cm"];
+            /** Format: int64 */
+            nights: number;
+            /** Format: int64 */
+            vessel_units: number;
+            /** Format: int64 */
+            resource_units: number;
+            /** Format: int64 */
+            efficiency_bp: number | null;
+            ref: components["schemas"]["ReportRef"];
+        };
+        EfficiencyReport: components["schemas"]["ReportEnvelope"] & {
+            family: components["schemas"]["ReportFamily"];
+            totals: components["schemas"]["EfficiencyTotals"];
+            groups: components["schemas"]["EfficiencyGroup"][];
+            records: components["schemas"]["EfficiencyRecord"][];
+        };
+        /** @description Money fields are null without reports.all */
+        WasteTotals: {
+            /** Format: int64 */
+            count: number;
+            /** Format: int64 */
+            nights: number;
+            /**
+             * Format: int64
+             * @description Σ waste_bp × nights_in_period
+             */
+            waste_bp_nights: number;
+            /** Format: int64 */
+            applied_cents: number | null;
+            /** Format: int64 */
+            list_cents: number | null;
+            /** Format: int64 */
+            lost_cents: number | null;
+            /** Format: int64 */
+            unpriced: number;
+        };
+        WasteGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["WasteTotals"];
+        };
+        WasteRecord: {
+            allocation_id: string;
+            /** @enum {string} */
+            kind: "contract" | "transit" | "owner";
+            contract_id?: string;
+            contract_number?: string;
+            berth_id: string;
+            berth_code: string;
+            category?: string;
+            vessel_id: string;
+            vessel_name?: string;
+            loa_cm: components["schemas"]["Cm"];
+            beam_cm: components["schemas"]["Cm"];
+            berth_length_cm: components["schemas"]["Cm"];
+            berth_width_cm: components["schemas"]["Cm"];
+            /** Format: int64 */
+            fill_bp: number;
+            /** Format: int64 */
+            waste_bp: number;
+            /** Format: int64 */
+            nights_in_period: number;
+            /**
+             * Format: int64
+             * @description Null without reports.all
+             */
+            applied_cents: number | null;
+            /**
+             * Format: int64
+             * @description Null when unpriced
+             */
+            list_cents: number | null;
+            /** Format: int64 */
+            lost_cents: number | null;
+            ref: components["schemas"]["ReportRef"];
+        };
+        /** @description Advisory, read-only swap or move (m7-plan D21); applied only through the map's move/swap */
+        WasteSuggestion: {
+            /** @enum {string} */
+            kind: "swap" | "move";
+            allocation_ids: string[];
+            from_berths: components["schemas"]["ReportResourceBrief"][];
+            to_berths: components["schemas"]["ReportResourceBrief"][];
+            /** Format: int64 */
+            waste_before_bp: number;
+            /** Format: int64 */
+            waste_after_bp: number;
+            /** Format: int64 */
+            gain_cm2_nights: number;
+        };
+        AllocationWasteReport: components["schemas"]["ReportEnvelope"] & {
+            /** Format: int64 */
+            threshold_bp: number;
+            totals: components["schemas"]["WasteTotals"];
+            groups: components["schemas"]["WasteGroup"][];
+            records: components["schemas"]["WasteRecord"][];
+            suggestions: components["schemas"]["WasteSuggestion"][];
+        };
+        LostDemandTotals: {
+            /** Format: int64 */
+            count: number;
+            /** Format: int64 */
+            nights: number;
+            /**
+             * Format: int64
+             * @description Null without reports.all
+             */
+            value_cents: number | null;
+            /** Format: int64 */
+            unpriced: number;
+        };
+        LostDemandGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["LostDemandTotals"];
+        };
+        LostDemandRecord: {
+            inquiry_id: string;
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            nights_in_period: number;
+            outcome: components["schemas"]["InquiryOutcome"];
+            purpose: components["schemas"]["SearchPurpose"];
+            term?: components["schemas"]["ContractTerm"];
+            channel: components["schemas"]["Channel"];
+            source: components["schemas"]["InquirySource"];
+            loa_cm: components["schemas"]["Cm"];
+            beam_cm: components["schemas"]["Cm"];
+            length_band: components["schemas"]["ReportLengthBand"];
+            /** @description Category of the smallest compatible berth used for the value */
+            priced_category?: string;
+            /**
+             * Format: int64
+             * @description Null when unpriced or without reports.all
+             */
+            value_cents: number | null;
+            ref: components["schemas"]["ReportRef"];
+        };
+        LostDemandReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["LostDemandTotals"];
+            groups: components["schemas"]["LostDemandGroup"][];
+            records: components["schemas"]["LostDemandRecord"][];
+        };
+        CustomersTotals: {
+            /** Format: int64 */
+            customers: number;
+            /** Format: int64 */
+            new_customers: number;
+            /** Format: int64 */
+            contracts: number;
+            value_cents: components["schemas"]["Cents"];
+            arrears_cents: components["schemas"]["Cents"];
+            /**
+             * Format: int64
+             * @description Denominator of renewal_rate_bp
+             */
+            renewal_eligible: number;
+            /**
+             * Format: int64
+             * @description Numerator of renewal_rate_bp
+             */
+            renewal_renewed: number;
+            /** Format: int64 */
+            renewal_rate_bp: number | null;
+        };
+        CustomersGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["CustomersTotals"];
+        };
+        /** @description section customers: one per customer (display name only, and only with customers.read); section renewals: one per eligible contract with renewed 0/1 */
+        CustomersRecord: {
+            /** @enum {string} */
+            section: "customers" | "renewals";
+            customer_id: string;
+            customer_name?: string;
+            category?: string;
+            nationality?: string;
+            first_contract_on?: components["schemas"]["IsoDate"];
+            acquisition_channel?: components["schemas"]["Channel"];
+            /** Format: int64 */
+            seniority_years?: number;
+            /** @enum {string} */
+            seniority_band?: "y0" | "y1_2" | "y3_4" | "y5_9" | "ge10";
+            /**
+             * Format: int64
+             * @description 1 when the first qualifying contract starts in the period
+             */
+            new?: number;
+            value_cents?: components["schemas"]["Cents"];
+            arrears_cents?: components["schemas"]["Cents"];
+            /** Format: int64 */
+            contracts?: number;
+            contract_id?: string;
+            contract_number?: string;
+            term?: components["schemas"]["ContractTerm"];
+            last_night?: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            renewed?: number;
+            new_contract_id?: string;
+            ref: components["schemas"]["ReportRef"];
+        };
+        CustomersReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["CustomersTotals"];
+            groups: components["schemas"]["CustomersGroup"][];
+            records: components["schemas"]["CustomersRecord"][];
+        };
+        ProductionTotals: {
+            /** Format: int64 */
+            contracts: number;
+            /** Format: int64 */
+            nights: number;
+            competence_cents: components["schemas"]["Cents"];
+            /** Format: int64 */
+            transits: number;
+            /** Format: int64 */
+            transit_nights: number;
+            transit_competence_cents: components["schemas"]["Cents"];
+            /**
+             * Format: int64
+             * @description Half-even
+             */
+            transit_avg_night_cents: number | null;
+        };
+        ProductionGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["ProductionTotals"];
+        };
+        ProductionRecord: {
+            contract_id: string;
+            number: string;
+            kind: components["schemas"]["ContractKind"];
+            term?: components["schemas"]["ContractTerm"];
+            status: components["schemas"]["ContractStatus"];
+            channel?: components["schemas"]["Channel"];
+            customer_id?: string;
+            customer_name?: string;
+            category?: string;
+            starts_on: components["schemas"]["IsoDate"];
+            ends_on: components["schemas"]["IsoDate"];
+            total_cents: components["schemas"]["Cents"];
+            /** Format: int64 */
+            nights_in_period: number;
+            competence_cents: components["schemas"]["Cents"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        ProductionReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["ProductionTotals"];
+            groups: components["schemas"]["ProductionGroup"][];
+            records: components["schemas"]["ProductionRecord"][];
+        };
+        AccrualsTotals: {
+            closing_date: components["schemas"]["IsoDate"];
+            competence_net_cents: components["schemas"]["Cents"];
+            competence_gross_cents: components["schemas"]["Cents"];
+            deferral_net_cents: components["schemas"]["Cents"];
+            deferral_gross_cents: components["schemas"]["Cents"];
+            /** @description Rateo (gross, contracts carry gross values) */
+            accrual_cents: components["schemas"]["Cents"];
+        };
+        AccrualsGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["AccrualsTotals"];
+        };
+        AccrualsRecord: {
+            /** @enum {string} */
+            section: "competence" | "deferral" | "accrual";
+            date: components["schemas"]["IsoDate"];
+            charge_id?: string;
+            charge_number?: string;
+            line_seq?: number;
+            contract_id?: string;
+            contract_number?: string;
+            customer_id?: string;
+            customer_name?: string;
+            description?: string;
+            service_from?: components["schemas"]["IsoDate"];
+            service_to?: components["schemas"]["IsoDate"];
+            amount_net_cents?: components["schemas"]["Cents"];
+            amount_gross_cents?: components["schemas"]["Cents"];
+            competence_net_cents?: components["schemas"]["Cents"];
+            competence_gross_cents?: components["schemas"]["Cents"];
+            deferral_net_cents?: components["schemas"]["Cents"];
+            deferral_gross_cents?: components["schemas"]["Cents"];
+            matured_cents?: components["schemas"]["Cents"];
+            charged_cents?: components["schemas"]["Cents"];
+            accrual_cents?: components["schemas"]["Cents"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        AccrualsReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["AccrualsTotals"];
+            groups: components["schemas"]["AccrualsGroup"][];
+            records: components["schemas"]["AccrualsRecord"][];
+        };
+        ChargesTotals: {
+            /** Format: int64 */
+            charges: number;
+            /** Format: int64 */
+            lines: number;
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+            /** @description Σ charge total_cents (issued basis); equals gross_cents */
+            charged_cents: components["schemas"]["Cents"];
+        };
+        ChargesGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["ChargesTotals"];
+        };
+        /** @description One per charge line (competence basis: its quota in the period; month set by revenue classes) */
+        ChargesRecord: {
+            charge_id: string;
+            number: string;
+            seq: number;
+            issued_on: components["schemas"]["IsoDate"];
+            due_on?: components["schemas"]["IsoDate"];
+            /** @description YYYY-MM (revenue classes and group_by=month) */
+            month?: string;
+            origin_type: components["schemas"]["ChargeOriginType"];
+            customer_id?: string;
+            customer_name?: string;
+            item_id?: string;
+            item_code?: string;
+            description?: string;
+            revenue_class?: string;
+            vat_rate_bp?: components["schemas"]["BasisPoints"];
+            vat_nature?: string;
+            service_from?: components["schemas"]["IsoDate"];
+            service_to?: components["schemas"]["IsoDate"];
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+            payment_status: components["schemas"]["ChargePaymentStatus"];
+            invoicing_status: components["schemas"]["ChargeInvoicingStatus"];
+            fiscal_mode?: components["schemas"]["FiscalMode"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        ChargesReport: components["schemas"]["ReportEnvelope"] & {
+            /** @enum {string} */
+            basis: "issued" | "competence";
+            totals: components["schemas"]["ChargesTotals"];
+            groups: components["schemas"]["ChargesGroup"][];
+            records: components["schemas"]["ChargesRecord"][];
+        };
+        PaymentsTotals: {
+            /**
+             * Format: int64
+             * @description Records of the main section
+             */
+            count: number;
+            /** @description payments_cents − refunds_cents */
+            collected_cents: components["schemas"]["Cents"];
+            payments_cents: components["schemas"]["Cents"];
+            refunds_cents: components["schemas"]["Cents"];
+            /** @description Shown */
+            fees_cents: components["schemas"]["Cents"];
+            /** @description Mandate payouts */
+            payouts_cents: components["schemas"]["Cents"];
+        };
+        PaymentsGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["PaymentsTotals"];
+        };
+        PaymentsRecord: {
+            /** @enum {string} */
+            section: "main" | "payouts";
+            /** @enum {string} */
+            kind: "payment" | "deposit" | "refund" | "payout";
+            id: string;
+            number: string;
+            date: components["schemas"]["IsoDate"];
+            method: components["schemas"]["PaymentMethod"];
+            source?: string;
+            provider_code?: string;
+            customer_id?: string;
+            customer_name?: string;
+            /** @description Signed (refunds negative) */
+            amount_cents: components["schemas"]["Cents"];
+            fee_cents?: components["schemas"]["Cents"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        PaymentsReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["PaymentsTotals"];
+            groups: components["schemas"]["PaymentsGroup"][];
+            records: components["schemas"]["PaymentsRecord"][];
+        };
+        RevenueClassMonth: {
+            /** @description YYYY-MM */
+            month: string;
+            net_cents: components["schemas"]["Cents"];
+        };
+        /** @description One per class (unclassified for an empty code); parents roll up their children (one level) */
+        RevenueClassGroup: {
+            key: string;
+            label: string;
+            parent_key?: string;
+            net_cents: components["schemas"]["Cents"];
+            /**
+             * Format: int64
+             * @description Display only
+             */
+            share_bp: number | null;
+            months: components["schemas"]["RevenueClassMonth"][];
+        };
+        RevenueClassesTotals: {
+            /** Format: int64 */
+            lines: number;
+            net_cents: components["schemas"]["Cents"];
+            unclassified_cents: components["schemas"]["Cents"];
+        };
+        RevenueClassesReport: components["schemas"]["ReportEnvelope"] & {
+            /** @enum {string} */
+            basis: "issued" | "competence";
+            totals: components["schemas"]["RevenueClassesTotals"];
+            groups: components["schemas"]["RevenueClassGroup"][];
+            records: components["schemas"]["ChargesRecord"][];
+        };
+        ReceivablesTotals: {
+            as_of: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            count: number;
+            open_cents: components["schemas"]["Cents"];
+            /** @description Residuals with due_on < as_of */
+            overdue_cents: components["schemas"]["Cents"];
+            buckets: components["schemas"]["AgeingAmounts"];
+            /** @description Scheduled instalments (not in open_cents) */
+            future_cents: components["schemas"]["Cents"];
+            /** Format: int64 */
+            reminders_sent: number;
+        };
+        ReceivablesGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["ReceivablesTotals"];
+        };
+        ReceivablesRecord: {
+            /** @enum {string} */
+            section: "open" | "future" | "reminders";
+            /** @enum {string} */
+            kind: "charge" | "installment" | "holder_installment" | "reminder";
+            id: string;
+            number?: string;
+            customer_id?: string;
+            customer_name?: string;
+            origin_type?: components["schemas"]["ChargeOriginType"];
+            issued_on?: components["schemas"]["IsoDate"];
+            due_on?: components["schemas"]["IsoDate"];
+            total_cents?: components["schemas"]["Cents"];
+            paid_cents?: components["schemas"]["Cents"];
+            credited_cents?: components["schemas"]["Cents"];
+            residual_cents?: components["schemas"]["Cents"];
+            overdue?: boolean;
+            bucket?: components["schemas"]["AgeingBucket"];
+            reminder_level?: components["schemas"]["ReminderLevel"];
+            sent_on?: components["schemas"]["IsoDate"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        ReceivablesReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["ReceivablesTotals"];
+            groups: components["schemas"]["ReceivablesGroup"][];
+            records: components["schemas"]["ReceivablesRecord"][];
+        };
+        PresencesTotals: {
+            /** Format: int64 */
+            arrivals: number;
+            /** Format: int64 */
+            departures: number;
+            /** Format: int64 */
+            absence_nights: number;
+            /** Format: int64 */
+            releases: number;
+            /** Format: int64 */
+            released_nights: number;
+            /** Format: int64 */
+            resold_nights: number;
+            /**
+             * Format: int64
+             * @description Null without reports.all
+             */
+            release_credit_cents: number | null;
+            /**
+             * Format: int64
+             * @description Null without reports.all
+             */
+            release_revenue_cents: number | null;
+        };
+        PresencesGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["PresencesTotals"];
+        };
+        PresencesRecord: {
+            /** @enum {string} */
+            section: "movements" | "absences" | "releases";
+            presence_id?: string;
+            /** @enum {string} */
+            event?: "arrived" | "departed";
+            night?: components["schemas"]["IsoDate"];
+            contract_id?: string;
+            contract_number?: string;
+            contract_kind?: components["schemas"]["ContractKind"];
+            vessel_id?: string;
+            vessel_name?: string;
+            berth_code?: string;
+            /** Format: int64 */
+            absence_nights?: number;
+            release_id?: string;
+            release_from?: components["schemas"]["IsoDate"];
+            release_to?: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            released_nights?: number;
+            /** Format: int64 */
+            resold_nights?: number;
+            /** Format: int64 */
+            credit_cents?: number | null;
+            /** Format: int64 */
+            revenue_cents?: number | null;
+            ref: components["schemas"]["ReportRef"];
+        };
+        PresencesReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["PresencesTotals"];
+            groups: components["schemas"]["PresencesGroup"][];
+            records: components["schemas"]["PresencesRecord"][];
+        };
+        RightsTotals: {
+            /** Format: int64 */
+            rights: number;
+            /** Format: int64 */
+            holders: number;
+            /** Format: int64 */
+            berths: number;
+            charges_issued_cents: components["schemas"]["Cents"];
+            charges_collected_cents: components["schemas"]["Cents"];
+            charges_residual_cents: components["schemas"]["Cents"];
+            /** @description Ripartizioni (common_charge_runs kind advance) */
+            advance_cents: components["schemas"]["Cents"];
+            /** @description Conguagli (kind balance) */
+            balance_cents: components["schemas"]["Cents"];
+            marina_share_cents: components["schemas"]["Cents"];
+            mandate_revenue_cents: components["schemas"]["Cents"];
+            mandate_payout_cents: components["schemas"]["Cents"];
+        };
+        RightsGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["RightsTotals"];
+        };
+        RightsRecord: {
+            /** @enum {string} */
+            section: "holders" | "charges" | "allotments" | "mandates";
+            right_id?: string;
+            right_number?: string;
+            berth_id?: string;
+            berth_code?: string;
+            holder_id?: string;
+            holder_name?: string;
+            /** Format: int64 */
+            share_millis?: number;
+            charge_id?: string;
+            number?: string;
+            issued_on?: components["schemas"]["IsoDate"];
+            issued_cents?: components["schemas"]["Cents"];
+            paid_cents?: components["schemas"]["Cents"];
+            residual_cents?: components["schemas"]["Cents"];
+            run_id?: string;
+            run_kind?: components["schemas"]["CommonRunKind"];
+            item_code?: string;
+            mandate_id?: string;
+            /** @enum {string} */
+            kind?: "revenue" | "payout" | "credit";
+            date?: components["schemas"]["IsoDate"];
+            amount_cents?: components["schemas"]["Cents"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        RightsReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["RightsTotals"];
+            groups: components["schemas"]["RightsGroup"][];
+            records: components["schemas"]["RightsRecord"][];
+        };
+        CashVatTotal: {
+            rate_bp: components["schemas"]["BasisPoints"];
+            nature?: string;
+            net_cents: components["schemas"]["Cents"];
+            vat_cents: components["schemas"]["Cents"];
+            gross_cents: components["schemas"]["Cents"];
+        };
+        CashMethodTotal: {
+            method: components["schemas"]["PaymentMethod"];
+            total_cents: components["schemas"]["Cents"];
+        };
+        CashTotals: {
+            /** Format: int64 */
+            sessions: number;
+            difference_cents: components["schemas"]["Cents"];
+            /** Format: int64 */
+            documents: number;
+            /** @description Issued documents only */
+            fiscal_total_cents: components["schemas"]["Cents"];
+            /** @description Voided documents */
+            fiscal_void_cents: components["schemas"]["Cents"];
+            vat: components["schemas"]["CashVatTotal"][];
+            methods: components["schemas"]["CashMethodTotal"][];
+        };
+        CashGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["CashTotals"];
+        };
+        CashRecord: {
+            /** @enum {string} */
+            section: "sessions" | "fiscal";
+            business_date: components["schemas"]["IsoDate"];
+            session_id?: string;
+            register_code?: string;
+            status?: string;
+            float_cents?: components["schemas"]["Cents"];
+            expected_cents?: components["schemas"]["Cents"];
+            counted_cents?: components["schemas"]["Cents"];
+            difference_cents?: components["schemas"]["Cents"];
+            document_id?: string;
+            number?: string;
+            method?: components["schemas"]["PaymentMethod"];
+            total_cents?: components["schemas"]["Cents"];
+            void_cents?: components["schemas"]["Cents"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        CashReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["CashTotals"];
+            groups: components["schemas"]["CashGroup"][];
+            records: components["schemas"]["CashRecord"][];
+        };
+        VesselsTotals: {
+            /** Format: int64 */
+            vessels: number;
+            /** Format: int64 */
+            nights: number;
+            loa_sum_cm: components["schemas"]["Cm"];
+            /**
+             * Format: int64
+             * @description Half-even
+             */
+            avg_loa_cm: number | null;
+        };
+        VesselsGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["VesselsTotals"];
+        };
+        VesselsRecord: {
+            vessel_id: string;
+            name: string;
+            /** Format: int64 */
+            nights: number;
+            loa_cm: components["schemas"]["Cm"];
+            beam_cm: components["schemas"]["Cm"];
+            hull_type?: components["schemas"]["HullType"];
+            flag?: string;
+            length_band: components["schemas"]["ReportLengthBand"];
+            /**
+             * @description Kind with the most nights in the period
+             * @enum {string}
+             */
+            kind?: "contract" | "transit" | "owner";
+            ref: components["schemas"]["ReportRef"];
+        };
+        VesselsReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["VesselsTotals"];
+            groups: components["schemas"]["VesselsGroup"][];
+            records: components["schemas"]["VesselsRecord"][];
+        };
+        BerthRevenueTotals: {
+            /** Format: int64 */
+            berths: number;
+            /** @description Denominator */
+            length_cm: components["schemas"]["Cm"];
+            /** @description Numerator */
+            revenue_cents: components["schemas"]["Cents"];
+            /**
+             * Format: int64
+             * @description Σ revenue × 100 / Σ length_cm, half-even
+             */
+            revenue_per_m_cents: number | null;
+        };
+        BerthRevenueGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["BerthRevenueTotals"];
+        };
+        BerthRevenueRecord: {
+            berth_id: string;
+            berth_code: string;
+            category?: string;
+            length_cm: components["schemas"]["Cm"];
+            /** Format: int64 */
+            occupied_nights: number;
+            revenue_cents: components["schemas"]["Cents"];
+            /** Format: int64 */
+            revenue_per_m_cents: number | null;
+            ref: components["schemas"]["ReportRef"];
+        };
+        BerthRevenueReport: components["schemas"]["ReportEnvelope"] & {
+            totals: components["schemas"]["BerthRevenueTotals"];
+            groups: components["schemas"]["BerthRevenueGroup"][];
+            records: components["schemas"]["BerthRevenueRecord"][];
+        };
+        /**
+         * @description Manager dashboard tiles (m7-plan §4). yard_* (M10) and rental_* (M11) are returned with available=false.
+         * @enum {string}
+         */
+        TileKey: "production" | "charged" | "collected" | "receivables_open" | "receivables_overdue" | "occupancy" | "efficiency" | "berth_revenue_per_m" | "transit_avg_night" | "new_customers" | "renewal_rate" | "vessels_hosted" | "vessels_avg_loa" | "yard_open_orders" | "yard_hours" | "yard_margin" | "rental_utilisation" | "rental_revenue";
+        /** @enum {string} */
+        TileTrend: "up" | "down" | "flat" | "none";
+        TileValue: {
+            /** Format: int64 */
+            value: number | null;
+            /** Format: int64 */
+            numerator?: number;
+            /** Format: int64 */
+            denominator?: number;
+        };
+        TileSeriesPoint: {
+            /** @description First day of the bucket (day */
+            bucket: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            value: number | null;
+            /** Format: int64 */
+            previous?: number | null;
+        };
+        TileBreakdown: {
+            key: string;
+            label?: string;
+            /** Format: int64 */
+            value: number;
+        };
+        /** @description The report that lists the records of the tile and its parameters (without from/to, which are the dashboard period); generated by the same code that parses the report request (m7-plan §6) */
+        TileDrill: {
+            report: components["schemas"]["ReportKey"];
+            params: {
+                [key: string]: string;
+            };
+        };
+        Tile: {
+            key: components["schemas"]["TileKey"];
+            unit: components["schemas"]["ReportUnit"];
+            available: boolean;
+            /**
+             * @description Why the tile is not available
+             * @enum {string}
+             */
+            reason?: "milestone_m10" | "milestone_m11";
+            /** Format: int64 */
+            value: number | null;
+            /** Format: int64 */
+            numerator?: number;
+            /** Format: int64 */
+            denominator?: number;
+            previous?: components["schemas"]["TileValue"];
+            /** Format: int64 */
+            delta?: number | null;
+            /** Format: int64 */
+            delta_bp?: number | null;
+            trend: components["schemas"]["TileTrend"];
+            series: components["schemas"]["TileSeriesPoint"][];
+            breakdown?: components["schemas"]["TileBreakdown"][];
+            /** @description The dimension filters of the request apply to this tile */
+            dims_applied: boolean;
+            drill?: components["schemas"]["TileDrill"];
+        };
+        /**
+         * @description Alignment of the previous period (date = same calendar dates; weekday = shift by whole weeks)
+         * @enum {string}
+         */
+        ReportAlign: "date" | "weekday";
+        /** @enum {string} */
+        ReportGranularity: "day" | "week" | "month";
+        Dashboard: {
+            period: components["schemas"]["ReportPeriod"];
+            previous_period?: components["schemas"]["ReportPeriod"];
+            today: components["schemas"]["IsoDate"];
+            /** @enum {string} */
+            compare: "previous_year" | "none";
+            align: components["schemas"]["ReportAlign"];
+            granularity: components["schemas"]["ReportGranularity"];
+            filters: {
+                [key: string]: string;
+            };
+            tiles: components["schemas"]["Tile"][];
+        };
+        /** @enum {string} */
+        ComparisonIndicator: "production" | "charged" | "collected" | "occupancy" | "efficiency" | "berth_revenue_per_m" | "transit_avg_night" | "new_customers" | "renewal_rate" | "arrivals" | "departures" | "lost_demand_count" | "lost_demand_value";
+        ComparisonPeriodValue: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            value: number | null;
+            /** Format: int64 */
+            numerator?: number;
+            /** Format: int64 */
+            denominator?: number;
+        };
+        /** @description A bucket of the current period; previous values are aligned by date or weekday, never by index */
+        ComparisonPoint: {
+            bucket: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            current: number | null;
+            /** Format: int64 */
+            previous: number | null;
+            /** Format: int64 */
+            current_numerator?: number;
+            /** Format: int64 */
+            current_denominator?: number;
+            /** Format: int64 */
+            previous_numerator?: number;
+            /** Format: int64 */
+            previous_denominator?: number;
+        };
+        ComparisonResult: {
+            indicator: components["schemas"]["ComparisonIndicator"];
+            unit: components["schemas"]["ReportUnit"];
+            align: components["schemas"]["ReportAlign"];
+            granularity: components["schemas"]["ReportGranularity"];
+            years_back: number;
+            filters: {
+                [key: string]: string;
+            };
+            current: components["schemas"]["ComparisonPeriodValue"];
+            previous: components["schemas"]["ComparisonPeriodValue"];
+            /** Format: int64 */
+            delta: number | null;
+            /** Format: int64 */
+            delta_bp: number | null;
+            series: components["schemas"]["ComparisonPoint"][];
+        };
     };
     responses: {
         /** @description A domain rule refused the request (m4-plan §7.4: insurance_required, customer_email_missing, paper_scan_required, shares_invalid, table_incomplete, transfer_requirements, template_invalid, template_limits, otp_invalid, vessel_not_in_fleet, provider_unknown, fit_blocked, no_price, ...), a validation failure, or an idempotency key was reused */
@@ -13746,6 +15094,15 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description The report request is invalid (m7-plan §8: invalid_period, invalid_report_filter, report_too_large, unknown_indicator) */
+        ReportUnprocessable: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
     };
     parameters: {
         ChargeId: string;
@@ -13828,6 +15185,28 @@ export interface components {
         AreaId: string;
         /** @description Value of the porto_csrf cookie; required on cookie-authenticated unsafe requests. */
         CSRFToken: string;
+        /** @description First night of the period (default January 1 of the current year) */
+        ReportFrom: components["schemas"]["IsoDate"];
+        /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+        ReportTo: components["schemas"]["IsoDate"];
+        ReportFormatParam: components["schemas"]["ReportFormat"];
+        /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+        ReportLang: components["schemas"]["Locale"];
+        ReportPageNumber: number;
+        ReportPageSize: number;
+        ReportMapId: string;
+        ReportMapKind: components["schemas"]["MapKind"];
+        /** @description Pontile (structure) id */
+        ReportStructureId: string;
+        /** @description Berth group id */
+        ReportGroupId: string;
+        /** @description Berth category (price_class code) */
+        ReportCategory: string;
+        ReportCustomerId: string;
+        /** @description Resource family (default berth) */
+        ReportFamilyParam: components["schemas"]["ReportFamily"];
+        /** @description Alignment of the previous period (default date) */
+        ReportAlignParam: components["schemas"]["ReportAlign"];
     };
     requestBodies: never;
     headers: {
@@ -28675,6 +30054,828 @@ export interface operations {
             };
             404: components["responses"]["NotFound"];
             429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getDashboard: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                compare?: "previous_year" | "none";
+                /** @description Alignment of the previous period (default date) */
+                align?: components["parameters"]["ReportAlignParam"];
+                map_id?: components["parameters"]["ReportMapId"];
+                map_kind?: components["parameters"]["ReportMapKind"];
+                /** @description Pontile (structure) id */
+                structure_id?: components["parameters"]["ReportStructureId"];
+                /** @description Berth group id */
+                group_id?: components["parameters"]["ReportGroupId"];
+                /** @description Berth category (price_class code) */
+                category?: components["parameters"]["ReportCategory"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Dashboard"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getReportComparison: {
+        parameters: {
+            query?: {
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing or not comparable: 422 unknown_indicator) */
+                indicator?: components["schemas"]["ComparisonIndicator"];
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                years_back?: number;
+                /** @description Alignment of the previous period (default date) */
+                align?: components["parameters"]["ReportAlignParam"];
+                /** @description Default: day up to 31 days, week up to 120, else month */
+                granularity?: components["schemas"]["ReportGranularity"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                map_id?: components["parameters"]["ReportMapId"];
+                map_kind?: components["parameters"]["ReportMapKind"];
+                /** @description Pontile (structure) id */
+                structure_id?: components["parameters"]["ReportStructureId"];
+                /** @description Berth group id */
+                group_id?: components["parameters"]["ReportGroupId"];
+                /** @description Berth category (price_class code) */
+                category?: components["parameters"]["ReportCategory"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ComparisonResult"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getOccupancyReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                variant?: "physical" | "contractual";
+                /** @description Resource family (default berth) */
+                family?: components["parameters"]["ReportFamilyParam"];
+                group_by?: "resource" | "structure" | "group" | "category" | "map" | "month" | "week" | "night";
+                resource_type?: components["schemas"]["ResourceType"];
+                map_id?: components["parameters"]["ReportMapId"];
+                map_kind?: components["parameters"]["ReportMapKind"];
+                /** @description Pontile (structure) id */
+                structure_id?: components["parameters"]["ReportStructureId"];
+                /** @description Berth group id */
+                group_id?: components["parameters"]["ReportGroupId"];
+                /** @description Berth category (price_class code) */
+                category?: components["parameters"]["ReportCategory"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OccupancyReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getEfficiencyReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                /** @description Resource family (default berth) */
+                family?: components["parameters"]["ReportFamilyParam"];
+                group_by?: "resource" | "structure" | "group" | "category" | "map" | "month" | "week" | "night";
+                resource_type?: components["schemas"]["ResourceType"];
+                map_id?: components["parameters"]["ReportMapId"];
+                map_kind?: components["parameters"]["ReportMapKind"];
+                /** @description Pontile (structure) id */
+                structure_id?: components["parameters"]["ReportStructureId"];
+                /** @description Berth group id */
+                group_id?: components["parameters"]["ReportGroupId"];
+                /** @description Berth category (price_class code) */
+                category?: components["parameters"]["ReportCategory"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EfficiencyReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getAllocationWasteReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                /** @description Listed when waste_bp > threshold_bp (default 10000 - occupancy_settings.waste_threshold_bp) */
+                threshold_bp?: number;
+                suggestions?: boolean;
+                group_by?: "structure" | "group" | "category" | "map" | "kind";
+                map_id?: components["parameters"]["ReportMapId"];
+                map_kind?: components["parameters"]["ReportMapKind"];
+                /** @description Pontile (structure) id */
+                structure_id?: components["parameters"]["ReportStructureId"];
+                /** @description Berth group id */
+                group_id?: components["parameters"]["ReportGroupId"];
+                /** @description Berth category (price_class code) */
+                category?: components["parameters"]["ReportCategory"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AllocationWasteReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getLostDemandReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "reason" | "month" | "week" | "length_band" | "channel" | "source" | "purpose";
+                channel?: components["schemas"]["Channel"];
+                purpose?: components["schemas"]["SearchPurpose"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LostDemandReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getCustomersReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "category" | "nationality" | "seniority" | "channel" | "value_band";
+                /** @description Only customers new in the period */
+                new?: boolean;
+                /** @description Record section listed in records and exports */
+                section?: "customers" | "renewals";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomersReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getProductionReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "kind" | "term" | "month" | "category" | "channel" | "customer";
+                kind?: components["schemas"]["ContractKind"];
+                customer_id?: components["parameters"]["ReportCustomerId"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductionReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getAccrualsReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "section" | "month" | "customer" | "origin";
+                customer_id?: components["parameters"]["ReportCustomerId"];
+                /** @description Record section listed in records and exports */
+                section?: "competence" | "deferral" | "accrual";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccrualsReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getChargesReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                basis?: "issued" | "competence";
+                group_by?: "origin" | "customer" | "item" | "revenue_class" | "payment_status" | "invoicing_status" | "month" | "vat_rate";
+                customer_id?: components["parameters"]["ReportCustomerId"];
+                item_id?: string;
+                /** @description Origins (default every origin except opening_balance) */
+                origin?: components["schemas"]["ChargeOriginType"][];
+                payment_status?: components["schemas"]["ChargePaymentStatus"];
+                invoicing_status?: components["schemas"]["ChargeInvoicingStatus"];
+                fiscal_mode?: components["schemas"]["FiscalMode"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChargesReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getPaymentsReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "method" | "provider" | "source" | "month" | "customer";
+                method?: components["schemas"]["PaymentMethod"];
+                customer_id?: components["parameters"]["ReportCustomerId"];
+                /** @description Record section listed in records and exports */
+                section?: "main" | "payouts";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentsReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getRevenueClassesReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                basis?: "issued" | "competence";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RevenueClassesReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getReceivablesReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                /** @description Ageing date, at most today (default today) */
+                as_of?: components["schemas"]["IsoDate"];
+                /** @description Only charges with due_on before as_of */
+                overdue?: boolean;
+                group_by?: "bucket" | "customer" | "origin";
+                customer_id?: components["parameters"]["ReportCustomerId"];
+                origin?: components["schemas"]["ChargeOriginType"];
+                /** @description Record section listed in records and exports */
+                section?: "open" | "future" | "reminders";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceivablesReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getPresencesReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "day" | "week" | "month" | "contract_kind";
+                /** @description Record section listed in records and exports */
+                section?: "movements" | "absences" | "releases";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresencesReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getRightsReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "item" | "holder" | "run_kind" | "month";
+                /** @description Record section listed in records and exports */
+                section?: "holders" | "charges" | "allotments" | "mandates";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RightsReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getCashReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "register" | "day" | "month" | "vat_rate" | "method";
+                /** @description Record section listed in records and exports */
+                section?: "sessions" | "fiscal";
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CashReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getVesselsReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "hull_type" | "length_band" | "flag" | "kind";
+                map_id?: components["parameters"]["ReportMapId"];
+                map_kind?: components["parameters"]["ReportMapKind"];
+                /** @description Pontile (structure) id */
+                structure_id?: components["parameters"]["ReportStructureId"];
+                /** @description Berth group id */
+                group_id?: components["parameters"]["ReportGroupId"];
+                /** @description Berth category (price_class code) */
+                category?: components["parameters"]["ReportCategory"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VesselsReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getBerthRevenueReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                group_by?: "structure" | "group" | "category" | "map";
+                map_id?: components["parameters"]["ReportMapId"];
+                map_kind?: components["parameters"]["ReportMapKind"];
+                /** @description Pontile (structure) id */
+                structure_id?: components["parameters"]["ReportStructureId"];
+                /** @description Berth group id */
+                group_id?: components["parameters"]["ReportGroupId"];
+                /** @description Berth category (price_class code) */
+                category?: components["parameters"]["ReportCategory"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK (CSV and Excel carry every record of the section, Content-Disposition attachment) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BerthRevenueReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
         };
     };
 }

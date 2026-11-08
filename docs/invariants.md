@@ -288,8 +288,24 @@ apertura positivi e negativi). Stato: implemented.
 giornaliere è uguale all'importo (resto sull'ultimo giorno). In M4 la usano il pro rata degli oneri e i ricavi dei
 mandati. Verificata da: `TestAccrual_SumsToAmount` (property test). Stato: implemented.
 
-**INV-61 — Report senza scritture.** Il package `report` non scrive e non emette eventi. Verificata da:
-`TestReport_ReadOnly`. Stato: planned.
+**INV-61 — Report senza scritture.** Il package `report` non scrive e non emette eventi: ogni report e il cruscotto
+girano in `store.DB.ReadTx`; `internal/domain/report/**` non importa `domain/event`, `domain/audit`,
+`domain/auditlog` (depguard `report-readonly`, M7). Verificata da: `TestReport_ReadOnly`. Stato: implemented.
+
+**INV-62 — Un riquadro del cruscotto è la somma dei suoi record.** Il valore di ogni riquadro (numeratore e
+denominatore per i rapporti) è il fold dei record del report che il suo drill-down apre con gli stessi parametri e lo
+stesso periodo; idem per l'anno precedente. Verificata da: `TestCalc_TileEqualsFold`,
+`TestDashboard_DrillParamsRoundTrip`, `TestReport_DashboardDrillDown`, `TestAcceptance_M7_DashboardDrillDown`. Stato:
+implemented.
+
+**INV-63 — Esportazioni uguali al JSON.** Le righe del CSV e dell'Excel di un report sono i suoi record JSON (stesso
+ordine) e la riga `Totale` sono i suoi totali. Verificata da: `TestExport_SameRowsAsJSON` (property test),
+`TestExport_EveryReport`, `TestAcceptance_M7_DashboardDrillDown` (somma della colonna del CSV e dell'Excel uguale al
+riquadro). Stato: implemented.
+
+**INV-64 — Valori dei report interi, rapporti ricalcolati.** I valori dei report sono interi (centesimi, cm, cm²,
+punti base); i rapporti di gruppi, bucket e periodi si ricalcolano da Σ numeratori / Σ denominatori, mai come media.
+Verificata da: `TestCalc_DailyEqualsTile`, `TestBP_HalfEvenAndNil`, depguard `pure-engines`. Stato: implemented.
 
 ## Altri
 

@@ -37,6 +37,20 @@ for (const scheme of ['light', 'dark'] as const) {
       await expectNoSeriousViolations(page, `team/${scheme}`);
     });
 
+    test('manager dashboard and comparison (M7)', async ({ page }) => {
+      await login(page);
+      const shell = new URL(page.url()).pathname.replace(/\/$/, '');
+      await expect(page.getByTestId('manager-dashboard')).toBeVisible();
+      await expect(page.getByTestId('dashboard-tile').first()).toBeVisible();
+      await expectNoSeriousViolations(page, `dashboard/${scheme}`);
+      await page.goto(`${shell}/reports/comparison?indicator=occupancy`);
+      await expect(page.getByTestId('comparison-total')).toBeVisible();
+      await expectNoSeriousViolations(page, `comparison/${scheme}`);
+      await page.goto(`${shell}/reports/production`);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      await expectNoSeriousViolations(page, `report/${scheme}`);
+    });
+
     test('booking page', async ({ page }) => {
       await page.goto(`/b/${OWNER.slug}`);
       await expect(page.getByRole('heading', { name: OWNER.marina })).toBeVisible();

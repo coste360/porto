@@ -46,3 +46,5 @@ export * from './hooks/publicLinks';
 export * from './hooks/billing';
 export * from './hooks/payPublic';
 export * from './hooks/desktop';
+export * from './hooks/reports';
+export * from './hooks/dashboard';

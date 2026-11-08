@@ -125,7 +125,8 @@
     "openingBalances": "Saldi di apertura",
     "worklist": "Attività ufficio",
     "billingSettings": "Impostazioni addebiti",
-    "paymentSettings": "Pagamenti online"
+    "paymentSettings": "Pagamenti online",
+    "reports": "Report"
   },
   "user": {
     "menu": "Menu utente",
@@ -153,7 +154,6 @@
   },
   "dashboard": {
     "title": "Panoramica",
-    "comingSoon": "La panoramica operativa arriverà nelle prossime versioni.",
     "description": "Da qui gestisci il team, le integrazioni e le impostazioni del porto."
   },
   "picker": {

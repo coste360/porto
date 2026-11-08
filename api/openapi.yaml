@@ -158,6 +158,9 @@ tags:
     description: Local peripherals of the desktop app (receipt and label printers, QR reader, fiscal), loopback only (M6b)
   - name: collectibles
     description: Open charges to collect at the dock (M6b)
+  - name: reports
+    description: >-
+      Read-only reports, manager dashboard and period comparison (M7, spec 21); CSV and Excel exports
 
 paths:
   /healthz:
@@ -11922,6 +11925,678 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "429": { $ref: "#/components/responses/TooManyRequests" }
 
+  # ---- M7 reports and manager dashboard (m7-plan §8). GET only: read-only, no Idempotency-Key, no CSRF. ----
+
+  /api/admin/v1/marinas/{marinaId}/dashboard:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getDashboard
+      summary: >-
+        Manager dashboard tiles with the previous year and trend; only the tiles the principal may see
+        (reports.operational or reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - { name: compare, in: query, required: false, schema: { type: string, enum: [previous_year, none], default: previous_year } }
+        - $ref: "#/components/parameters/ReportAlignParam"
+        - $ref: "#/components/parameters/ReportMapId"
+        - $ref: "#/components/parameters/ReportMapKind"
+        - $ref: "#/components/parameters/ReportStructureId"
+        - $ref: "#/components/parameters/ReportGroupId"
+        - $ref: "#/components/parameters/ReportCategory"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Dashboard" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/comparison:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getReportComparison
+      summary: >-
+        R11 an indicator compared with 1 to 5 previous years, aligned by date or weekday (permission of the
+        indicator)
+      security: *readSecurity
+      parameters:
+        - name: indicator
+          in: query
+          required: false
+          description: >-
+            Required; optional in the contract only so that another marina is 404 first (missing or not comparable:
+            422 unknown_indicator)
+          schema: { $ref: "#/components/schemas/ComparisonIndicator" }
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - { name: years_back, in: query, required: false, schema: { type: integer, minimum: 1, maximum: 5, default: 1 } }
+        - $ref: "#/components/parameters/ReportAlignParam"
+        - { name: granularity, in: query, required: false, description: "Default: day up to 31 days, week up to 120, else month", schema: { $ref: "#/components/schemas/ReportGranularity" } }
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportMapId"
+        - $ref: "#/components/parameters/ReportMapKind"
+        - $ref: "#/components/parameters/ReportStructureId"
+        - $ref: "#/components/parameters/ReportGroupId"
+        - $ref: "#/components/parameters/ReportCategory"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ComparisonResult" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/occupancy:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getOccupancyReport
+      summary: >-
+        R1 occupancy, physical or contractual, berths, land or dynamic areas (reports.operational or reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: variant, in: query, required: false, schema: { type: string, enum: [physical, contractual], default: physical } }
+        - $ref: "#/components/parameters/ReportFamilyParam"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [resource, structure, group, category, map, month, week, night] } }
+        - { name: resource_type, in: query, required: false, schema: { $ref: "#/components/schemas/ResourceType" } }
+        - $ref: "#/components/parameters/ReportMapId"
+        - $ref: "#/components/parameters/ReportMapKind"
+        - $ref: "#/components/parameters/ReportStructureId"
+        - $ref: "#/components/parameters/ReportGroupId"
+        - $ref: "#/components/parameters/ReportCategory"
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OccupancyReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/efficiency:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getEfficiencyReport
+      summary: >-
+        R2 occupancy efficiency, vessel over resource area on occupied nights (reports.operational or reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - $ref: "#/components/parameters/ReportFamilyParam"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [resource, structure, group, category, map, month, week, night] } }
+        - { name: resource_type, in: query, required: false, schema: { $ref: "#/components/schemas/ResourceType" } }
+        - $ref: "#/components/parameters/ReportMapId"
+        - $ref: "#/components/parameters/ReportMapKind"
+        - $ref: "#/components/parameters/ReportStructureId"
+        - $ref: "#/components/parameters/ReportGroupId"
+        - $ref: "#/components/parameters/ReportCategory"
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EfficiencyReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/allocation-waste:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getAllocationWasteReport
+      summary: >-
+        R3 allocation waste on berths with lost potential revenue (reports.all) and swap/move suggestions (reports.operational or reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: threshold_bp, in: query, required: false, description: "Listed when waste_bp > threshold_bp (default 10000 - occupancy_settings.waste_threshold_bp)", schema: { type: integer, format: int64, minimum: 0, maximum: 10000 } }
+        - { name: suggestions, in: query, required: false, schema: { type: boolean, default: true } }
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [structure, group, category, map, kind] } }
+        - $ref: "#/components/parameters/ReportMapId"
+        - $ref: "#/components/parameters/ReportMapKind"
+        - $ref: "#/components/parameters/ReportStructureId"
+        - $ref: "#/components/parameters/ReportGroupId"
+        - $ref: "#/components/parameters/ReportCategory"
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AllocationWasteReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/lost-demand:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getLostDemandReport
+      summary: >-
+        R4 lost demand from unserved inquiries; values only with reports.all (reports.operational or reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [reason, month, week, length_band, channel, source, purpose] } }
+        - { name: channel, in: query, required: false, schema: { $ref: "#/components/schemas/Channel" } }
+        - { name: purpose, in: query, required: false, schema: { $ref: "#/components/schemas/SearchPurpose" } }
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LostDemandReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/customers:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getCustomersReport
+      summary: >-
+        R5 customers and renewals (reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [category, nationality, seniority, channel, value_band] } }
+        - { name: new, in: query, required: false, description: "Only customers new in the period", schema: { type: boolean } }
+        - { name: section, in: query, required: false, description: "Record section listed in records and exports", schema: { type: string, enum: [customers, renewals], default: customers } }
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CustomersReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/production:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getProductionReport
+      summary: >-
+        R6 production (competenze) of contracts and transits on the contract value (reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [kind, term, month, category, channel, customer] } }
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/ContractKind" } }
+        - $ref: "#/components/parameters/ReportCustomerId"
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProductionReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/accruals:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getAccrualsReport
+      summary: >-
+        R7 competence, deferrals (risconti) and accruals (ratei) at the closing date to (reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [section, month, customer, origin] } }
+        - $ref: "#/components/parameters/ReportCustomerId"
+        - { name: section, in: query, required: false, description: "Record section listed in records and exports", schema: { type: string, enum: [competence, deferral, accrual], default: competence } }
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccrualsReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/charges:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getChargesReport
+      summary: >-
+        R8 detailed charges on the issued or competence basis (reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: basis, in: query, required: false, schema: { type: string, enum: [issued, competence], default: issued } }
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [origin, customer, item, revenue_class, payment_status, invoicing_status, month, vat_rate] } }
+        - $ref: "#/components/parameters/ReportCustomerId"
+        - { name: item_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - name: origin
+          in: query
+          required: false
+          description: Origins (default every origin except opening_balance)
+          style: form
+          explode: true
+          schema: { type: array, maxItems: 13, items: { $ref: "#/components/schemas/ChargeOriginType" } }
+        - { name: payment_status, in: query, required: false, schema: { $ref: "#/components/schemas/ChargePaymentStatus" } }
+        - { name: invoicing_status, in: query, required: false, schema: { $ref: "#/components/schemas/ChargeInvoicingStatus" } }
+        - { name: fiscal_mode, in: query, required: false, schema: { $ref: "#/components/schemas/FiscalMode" } }
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChargesReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/payments:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getPaymentsReport
+      summary: >-
+        R9 detailed payments on the cash basis (base incasso), refunds negative, payouts apart (reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [method, provider, source, month, customer] } }
+        - { name: method, in: query, required: false, schema: { $ref: "#/components/schemas/PaymentMethod" } }
+        - $ref: "#/components/parameters/ReportCustomerId"
+        - { name: section, in: query, required: false, description: "Record section listed in records and exports", schema: { type: string, enum: [main, payouts], default: main } }
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PaymentsReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/revenue-classes:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getRevenueClassesReport
+      summary: >-
+        R10 net revenue by revenue class and month (reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: basis, in: query, required: false, schema: { type: string, enum: [issued, competence], default: competence } }
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RevenueClassesReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/receivables:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getReceivablesReport
+      summary: >-
+        R12 receivables by age as of a date, scheduled instalments and reminders sent (reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: as_of, in: query, required: false, description: "Ageing date, at most today (default today)", schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: overdue, in: query, required: false, description: "Only charges with due_on before as_of", schema: { type: boolean } }
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [bucket, customer, origin] } }
+        - $ref: "#/components/parameters/ReportCustomerId"
+        - { name: origin, in: query, required: false, schema: { $ref: "#/components/schemas/ChargeOriginType" } }
+        - { name: section, in: query, required: false, description: "Record section listed in records and exports", schema: { type: string, enum: [open, future, reminders], default: open } }
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReceivablesReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/presences:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getPresencesReport
+      summary: >-
+        R13 arrivals, departures, absence nights, releases and resales; revenue only with reports.all (reports.operational or reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [day, week, month, contract_kind] } }
+        - { name: section, in: query, required: false, description: "Record section listed in records and exports", schema: { type: string, enum: [movements, absences, releases], default: movements } }
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PresencesReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/rights:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getRightsReport
+      summary: >-
+        R14 rights of use, holder charges, common-charge allotments and mandates (reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [item, holder, run_kind, month] } }
+        - { name: section, in: query, required: false, description: "Record section listed in records and exports", schema: { type: string, enum: [holders, charges, allotments, mandates], default: holders } }
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RightsReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/cash:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getCashReport
+      summary: >-
+        R15 cash sessions and fiscal receipts (corrispettivi) by VAT rate and method (reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [register, day, month, vat_rate, method] } }
+        - { name: section, in: query, required: false, description: "Record section listed in records and exports", schema: { type: string, enum: [sessions, fiscal], default: sessions } }
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CashReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/vessels:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getVesselsReport
+      summary: >-
+        R16 vessels hosted in the period (reports.operational or reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [hull_type, length_band, flag, kind] } }
+        - $ref: "#/components/parameters/ReportMapId"
+        - $ref: "#/components/parameters/ReportMapKind"
+        - $ref: "#/components/parameters/ReportStructureId"
+        - $ref: "#/components/parameters/ReportGroupId"
+        - $ref: "#/components/parameters/ReportCategory"
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/VesselsReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/berth-revenue:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getBerthRevenueReport
+      summary: >-
+        R17 revenue per linear metre of berth (reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [structure, group, category, map] } }
+        - $ref: "#/components/parameters/ReportMapId"
+        - $ref: "#/components/parameters/ReportMapKind"
+        - $ref: "#/components/parameters/ReportStructureId"
+        - $ref: "#/components/parameters/ReportGroupId"
+        - $ref: "#/components/parameters/ReportCategory"
+      responses:
+        "200":
+          description: OK (CSV and Excel carry every record of the section, Content-Disposition attachment)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BerthRevenueReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
 components:
   securitySchemes:
     cookieAuth:
@@ -12355,6 +13030,86 @@ components:
       description: Value of the porto_csrf cookie; required on cookie-authenticated unsafe requests.
       schema: { type: string }
 
+    # M7 reports (m7-plan §8)
+    ReportFrom:
+      name: from
+      in: query
+      required: false
+      description: First night of the period (default January 1 of the current year)
+      schema: { $ref: "#/components/schemas/IsoDate" }
+    ReportTo:
+      name: to
+      in: query
+      required: false
+      description: Last night of the period, inclusive (default today); at most 400 days after from
+      schema: { $ref: "#/components/schemas/IsoDate" }
+    ReportFormatParam:
+      name: format
+      in: query
+      required: false
+      schema: { $ref: "#/components/schemas/ReportFormat" }
+    ReportLang:
+      name: lang
+      in: query
+      required: false
+      description: Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+      schema: { $ref: "#/components/schemas/Locale" }
+    ReportPageNumber:
+      name: page
+      in: query
+      required: false
+      schema: { type: integer, minimum: 1, default: 1 }
+    ReportPageSize:
+      name: page_size
+      in: query
+      required: false
+      schema: { type: integer, minimum: 1, maximum: 1000, default: 100 }
+    ReportMapId:
+      name: map_id
+      in: query
+      required: false
+      schema: { type: string, maxLength: 36 }
+    ReportMapKind:
+      name: map_kind
+      in: query
+      required: false
+      schema: { $ref: "#/components/schemas/MapKind" }
+    ReportStructureId:
+      name: structure_id
+      in: query
+      required: false
+      description: Pontile (structure) id
+      schema: { type: string, maxLength: 36 }
+    ReportGroupId:
+      name: group_id
+      in: query
+      required: false
+      description: Berth group id
+      schema: { type: string, maxLength: 36 }
+    ReportCategory:
+      name: category
+      in: query
+      required: false
+      description: Berth category (price_class code)
+      schema: { type: string, maxLength: 64 }
+    ReportCustomerId:
+      name: customer_id
+      in: query
+      required: false
+      schema: { type: string, maxLength: 36 }
+    ReportFamilyParam:
+      name: family
+      in: query
+      required: false
+      description: Resource family (default berth)
+      schema: { $ref: "#/components/schemas/ReportFamily" }
+    ReportAlignParam:
+      name: align
+      in: query
+      required: false
+      description: Alignment of the previous period (default date)
+      schema: { $ref: "#/components/schemas/ReportAlign" }
+
   responses:
     M4Unprocessable:
       description: >-
@@ -12464,6 +13219,13 @@ components:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
 
+    ReportUnprocessable:
+      description: >-
+        The report request is invalid (m7-plan §8: invalid_period, invalid_report_filter, report_too_large,
+        unknown_indicator)
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
   schemas:
     ProblemType:
       type: string
@@ -12589,6 +13351,10 @@ components:
         - peripheral_unavailable
         - claim_expired
         - app_pin_invalid
+        - invalid_period
+        - invalid_report_filter
+        - report_too_large
+        - unknown_indicator
 
     FieldError:
       type: object
@@ -21861,3 +22627,1138 @@ components:
       properties:
         status: { $ref: "#/components/schemas/PaymentRequestStatus" }
         verifying: { type: boolean, description: An online payment is in progress (pagamento in verifica) }
+
+    # ---- M7 reports and manager dashboard (m7-plan §3-§8) ----
+
+    ReportKey:
+      description: >-
+        Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard (M10) and rental (M11) are
+        reserved and not served yet.
+      type: string
+      enum: [occupancy, efficiency, allocation-waste, lost-demand, customers, production, accruals, charges, payments,
+             revenue-classes, comparison, receivables, presences, rights, cash, vessels, berth-revenue]
+
+    ReportFormat:
+      description: json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
+      type: string
+      enum: [json, csv, xlsx]
+
+    ReportUnit:
+      description: >-
+        Unit of an integer value: cents, bp (basis points), count, cm, cm2, cents_per_m, cents_per_night,
+        berth_night (berth or land nights), cm_night (linear dynamic areas), cm2_night (surface dynamic areas)
+      type: string
+      enum: [cents, bp, count, cm, cm2, cents_per_m, cents_per_night, berth_night, cm_night, cm2_night]
+
+    ReportLengthBand:
+      description: LOA bands in cm (m7-plan D8)
+      type: string
+      enum: [lt8, m8_10, m10_12, m12_15, m15_20, m20_25, ge25]
+
+    ReportPeriod:
+      description: Inclusive period in the marina time zone (at most 400 days)
+      type: object
+      required: [from, to]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+
+    ReportPageInfo:
+      type: object
+      required: [page, page_size, total_records]
+      properties:
+        page: { type: integer, minimum: 1 }
+        page_size: { type: integer }
+        total_records: { type: integer, format: int64, description: Records of the selected section (all pages) }
+
+    ReportRef:
+      description: Link from a record to its entity page (ids and display codes only)
+      type: object
+      required: [type, id]
+      properties:
+        type:
+          type: string
+          enum: [contract, transit, charge, payment, refund, allocation, berth, area, land_resource, customer, vessel,
+                 inquiry, release, presence, cash_session, fiscal_document, right, common_charge_run, mandate,
+                 installment, holder_installment]
+        id: { type: string }
+        label: { type: string }
+
+    ReportNote:
+      description: >-
+        A counted remark about the result (codes: unpriced, no_vessel, no_compatible_berth, inactive_resource,
+        truncated_suggestions, ...)
+      type: object
+      required: [code, count]
+      properties:
+        code: { type: string }
+        count: { type: integer, format: int64 }
+
+    ReportEnvelope:
+      description: >-
+        Fields common to every report response (m7-plan §3.0). totals are over all records of every section (not
+        the page); groups follow group_by; records are the page of the selected section.
+      type: object
+      required: [report, period, today, filters, ignored_filters, page, notes]
+      properties:
+        report: { $ref: "#/components/schemas/ReportKey" }
+        period: { $ref: "#/components/schemas/ReportPeriod" }
+        today: { $ref: "#/components/schemas/IsoDate" }
+        filters:
+          description: The applied filters as query parameters (round-trip of the request)
+          type: object
+          additionalProperties: { type: string }
+        ignored_filters:
+          description: Filters accepted by the API but meaningless for this report
+          type: array
+          items: { type: string }
+        group_by: { type: string }
+        section: { type: string }
+        page: { $ref: "#/components/schemas/ReportPageInfo" }
+        notes: { type: array, items: { $ref: "#/components/schemas/ReportNote" } }
+
+    ReportResourceBrief:
+      type: object
+      required: [id, code]
+      properties:
+        id: { type: string }
+        code: { type: string }
+
+    # R1 occupancy
+
+    OccupancyTotals:
+      type: object
+      required: [unit, occupied_units, available_units, closed_units, out_of_service_units, released_units, occupancy_bp]
+      properties:
+        unit: { $ref: "#/components/schemas/ReportUnit" }
+        occupied_units: { type: integer, format: int64, description: "Numerator (contractual: includes released_units)" }
+        available_units: { type: integer, format: int64, description: Denominator }
+        closed_units: { type: integer, format: int64 }
+        out_of_service_units: { type: integer, format: int64 }
+        released_units: { type: integer, format: int64 }
+        occupancy_bp: { type: [integer, "null"], format: int64, description: null when available_units is 0 }
+
+    OccupancyGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/OccupancyTotals" }
+
+    OccupancyRecord:
+      description: >-
+        role numerator: one per (resource, allocation) with occupied_units (contractual: kind release adds the
+        released units); role denominator: one per resource with available, closed and out-of-service units
+      type: object
+      required: [role, resource_id, resource_code, resource_type, occupied_units, available_units, closed_units,
+                 out_of_service_units, ref]
+      properties:
+        role: { type: string, enum: [numerator, denominator] }
+        resource_id: { type: string }
+        resource_code: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        map_id: { type: string }
+        category: { type: string }
+        kind: { type: string, enum: [contract, transit, owner, release] }
+        allocation_id: { type: string }
+        contract_id: { type: string }
+        contract_number: { type: string }
+        occupied_units: { type: integer, format: int64 }
+        available_units: { type: integer, format: int64 }
+        closed_units: { type: integer, format: int64 }
+        out_of_service_units: { type: integer, format: int64 }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    OccupancyReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [variant, family, totals, groups, records]
+          properties:
+            variant: { type: string, enum: [physical, contractual] }
+            family: { $ref: "#/components/schemas/ReportFamily" }
+            totals: { $ref: "#/components/schemas/OccupancyTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/OccupancyGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/OccupancyRecord" } }
+
+    ReportFamily:
+      description: Resource family; families are never summed together (m7-plan D6)
+      type: string
+      enum: [berth, land, linear_area, surface_area]
+
+    # R2 efficiency
+
+    EfficiencyTotals:
+      type: object
+      required: [unit, nights, vessel_units, resource_units, efficiency_bp]
+      properties:
+        unit: { $ref: "#/components/schemas/ReportUnit" }
+        nights: { type: integer, format: int64 }
+        vessel_units: { type: integer, format: int64, description: Numerator }
+        resource_units: { type: integer, format: int64, description: Denominator }
+        efficiency_bp: { type: [integer, "null"], format: int64 }
+
+    EfficiencyGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/EfficiencyTotals" }
+
+    EfficiencyRecord:
+      type: object
+      required: [resource_id, resource_code, resource_type, allocation_id, kind, nights, vessel_units, resource_units,
+                 efficiency_bp, ref]
+      properties:
+        resource_id: { type: string }
+        resource_code: { type: string }
+        resource_type: { $ref: "#/components/schemas/ResourceType" }
+        allocation_id: { type: string }
+        kind: { type: string, enum: [contract, transit, owner] }
+        contract_id: { type: string }
+        contract_number: { type: string }
+        vessel_id: { type: string }
+        vessel_name: { type: string }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        nights: { type: integer, format: int64 }
+        vessel_units: { type: integer, format: int64 }
+        resource_units: { type: integer, format: int64 }
+        efficiency_bp: { type: [integer, "null"], format: int64 }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    EfficiencyReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [family, totals, groups, records]
+          properties:
+            family: { $ref: "#/components/schemas/ReportFamily" }
+            totals: { $ref: "#/components/schemas/EfficiencyTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/EfficiencyGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/EfficiencyRecord" } }
+
+    # R3 allocation waste
+
+    WasteTotals:
+      description: Money fields are null without reports.all
+      type: object
+      required: [count, nights, waste_bp_nights, applied_cents, list_cents, lost_cents, unpriced]
+      properties:
+        count: { type: integer, format: int64 }
+        nights: { type: integer, format: int64 }
+        waste_bp_nights: { type: integer, format: int64, description: "Σ waste_bp × nights_in_period" }
+        applied_cents: { type: [integer, "null"], format: int64 }
+        list_cents: { type: [integer, "null"], format: int64 }
+        lost_cents: { type: [integer, "null"], format: int64 }
+        unpriced: { type: integer, format: int64 }
+
+    WasteGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/WasteTotals" }
+
+    WasteRecord:
+      type: object
+      required: [allocation_id, kind, berth_id, berth_code, vessel_id, loa_cm, beam_cm, berth_length_cm, berth_width_cm,
+                 fill_bp, waste_bp, nights_in_period, applied_cents, list_cents, lost_cents, ref]
+      properties:
+        allocation_id: { type: string }
+        kind: { type: string, enum: [contract, transit, owner] }
+        contract_id: { type: string }
+        contract_number: { type: string }
+        berth_id: { type: string }
+        berth_code: { type: string }
+        category: { type: string }
+        vessel_id: { type: string }
+        vessel_name: { type: string }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        berth_length_cm: { $ref: "#/components/schemas/Cm" }
+        berth_width_cm: { $ref: "#/components/schemas/Cm" }
+        fill_bp: { type: integer, format: int64 }
+        waste_bp: { type: integer, format: int64 }
+        nights_in_period: { type: integer, format: int64 }
+        applied_cents: { type: [integer, "null"], format: int64, description: Null without reports.all }
+        list_cents: { type: [integer, "null"], format: int64, description: Null when unpriced, owner or without reports.all }
+        lost_cents: { type: [integer, "null"], format: int64 }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    WasteSuggestion:
+      description: Advisory, read-only swap or move (m7-plan D21); applied only through the map's move/swap
+      type: object
+      required: [kind, allocation_ids, from_berths, to_berths, waste_before_bp, waste_after_bp, gain_cm2_nights]
+      properties:
+        kind: { type: string, enum: [swap, move] }
+        allocation_ids: { type: array, items: { type: string } }
+        from_berths: { type: array, items: { $ref: "#/components/schemas/ReportResourceBrief" } }
+        to_berths: { type: array, items: { $ref: "#/components/schemas/ReportResourceBrief" } }
+        waste_before_bp: { type: integer, format: int64 }
+        waste_after_bp: { type: integer, format: int64 }
+        gain_cm2_nights: { type: integer, format: int64 }
+
+    AllocationWasteReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [threshold_bp, totals, groups, records, suggestions]
+          properties:
+            threshold_bp: { type: integer, format: int64 }
+            totals: { $ref: "#/components/schemas/WasteTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/WasteGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/WasteRecord" } }
+            suggestions: { type: array, items: { $ref: "#/components/schemas/WasteSuggestion" } }
+
+    # R4 lost demand
+
+    LostDemandTotals:
+      type: object
+      required: [count, nights, value_cents, unpriced]
+      properties:
+        count: { type: integer, format: int64 }
+        nights: { type: integer, format: int64 }
+        value_cents: { type: [integer, "null"], format: int64, description: Null without reports.all }
+        unpriced: { type: integer, format: int64 }
+
+    LostDemandGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/LostDemandTotals" }
+
+    LostDemandRecord:
+      type: object
+      required: [inquiry_id, arrival, departure, nights_in_period, outcome, purpose, channel, source, loa_cm, beam_cm,
+                 length_band, value_cents, ref]
+      properties:
+        inquiry_id: { type: string }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        nights_in_period: { type: integer, format: int64 }
+        outcome: { $ref: "#/components/schemas/InquiryOutcome" }
+        purpose: { $ref: "#/components/schemas/SearchPurpose" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        channel: { $ref: "#/components/schemas/Channel" }
+        source: { $ref: "#/components/schemas/InquirySource" }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        length_band: { $ref: "#/components/schemas/ReportLengthBand" }
+        priced_category: { type: string, description: Category of the smallest compatible berth used for the value }
+        value_cents: { type: [integer, "null"], format: int64, description: Null when unpriced or without reports.all }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    LostDemandReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/LostDemandTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/LostDemandGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/LostDemandRecord" } }
+
+    # R5 customers (+ renewals section)
+
+    CustomersTotals:
+      type: object
+      required: [customers, new_customers, contracts, value_cents, arrears_cents, renewal_eligible, renewal_renewed,
+                 renewal_rate_bp]
+      properties:
+        customers: { type: integer, format: int64 }
+        new_customers: { type: integer, format: int64 }
+        contracts: { type: integer, format: int64 }
+        value_cents: { $ref: "#/components/schemas/Cents" }
+        arrears_cents: { $ref: "#/components/schemas/Cents" }
+        renewal_eligible: { type: integer, format: int64, description: Denominator of renewal_rate_bp }
+        renewal_renewed: { type: integer, format: int64, description: Numerator of renewal_rate_bp }
+        renewal_rate_bp: { type: [integer, "null"], format: int64 }
+
+    CustomersGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/CustomersTotals" }
+
+    CustomersRecord:
+      description: >-
+        section customers: one per customer (display name only, and only with customers.read); section renewals:
+        one per eligible contract with renewed 0/1
+      type: object
+      required: [section, customer_id, ref]
+      properties:
+        section: { type: string, enum: [customers, renewals] }
+        customer_id: { type: string }
+        customer_name: { type: string }
+        category: { type: string }
+        nationality: { type: string }
+        first_contract_on: { $ref: "#/components/schemas/IsoDate" }
+        acquisition_channel: { $ref: "#/components/schemas/Channel" }
+        seniority_years: { type: integer, format: int64 }
+        seniority_band: { type: string, enum: [y0, y1_2, y3_4, y5_9, ge10] }
+        new: { type: integer, format: int64, description: 1 when the first qualifying contract starts in the period }
+        value_cents: { $ref: "#/components/schemas/Cents" }
+        arrears_cents: { $ref: "#/components/schemas/Cents" }
+        contracts: { type: integer, format: int64 }
+        contract_id: { type: string }
+        contract_number: { type: string }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        last_night: { $ref: "#/components/schemas/IsoDate" }
+        renewed: { type: integer, format: int64 }
+        new_contract_id: { type: string }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    CustomersReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/CustomersTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/CustomersGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/CustomersRecord" } }
+
+    # R6 production
+
+    ProductionTotals:
+      type: object
+      required: [contracts, nights, competence_cents, transits, transit_nights, transit_competence_cents,
+                 transit_avg_night_cents]
+      properties:
+        contracts: { type: integer, format: int64 }
+        nights: { type: integer, format: int64 }
+        competence_cents: { $ref: "#/components/schemas/Cents" }
+        transits: { type: integer, format: int64 }
+        transit_nights: { type: integer, format: int64 }
+        transit_competence_cents: { $ref: "#/components/schemas/Cents" }
+        transit_avg_night_cents: { type: [integer, "null"], format: int64, description: Half-even, null with no transit night }
+
+    ProductionGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/ProductionTotals" }
+
+    ProductionRecord:
+      type: object
+      required: [contract_id, number, kind, status, starts_on, ends_on, total_cents, nights_in_period, competence_cents,
+                 ref]
+      properties:
+        contract_id: { type: string }
+        number: { type: string }
+        kind: { $ref: "#/components/schemas/ContractKind" }
+        term: { $ref: "#/components/schemas/ContractTerm" }
+        status: { $ref: "#/components/schemas/ContractStatus" }
+        channel: { $ref: "#/components/schemas/Channel" }
+        customer_id: { type: string }
+        customer_name: { type: string }
+        category: { type: string }
+        starts_on: { $ref: "#/components/schemas/IsoDate" }
+        ends_on: { $ref: "#/components/schemas/IsoDate" }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        nights_in_period: { type: integer, format: int64 }
+        competence_cents: { $ref: "#/components/schemas/Cents" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    ProductionReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/ProductionTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/ProductionGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/ProductionRecord" } }
+
+    # R7 accruals and deferrals
+
+    AccrualsTotals:
+      type: object
+      required: [closing_date, competence_net_cents, competence_gross_cents, deferral_net_cents, deferral_gross_cents,
+                 accrual_cents]
+      properties:
+        closing_date: { $ref: "#/components/schemas/IsoDate" }
+        competence_net_cents: { $ref: "#/components/schemas/Cents" }
+        competence_gross_cents: { $ref: "#/components/schemas/Cents" }
+        deferral_net_cents: { $ref: "#/components/schemas/Cents" }
+        deferral_gross_cents: { $ref: "#/components/schemas/Cents" }
+        accrual_cents: { $ref: "#/components/schemas/Cents", description: "Rateo (gross, contracts carry gross values)" }
+
+    AccrualsGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/AccrualsTotals" }
+
+    AccrualsRecord:
+      type: object
+      required: [section, date, ref]
+      properties:
+        section: { type: string, enum: [competence, deferral, accrual] }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        charge_id: { type: string }
+        charge_number: { type: string }
+        line_seq: { type: integer }
+        contract_id: { type: string }
+        contract_number: { type: string }
+        customer_id: { type: string }
+        customer_name: { type: string }
+        description: { type: string }
+        service_from: { $ref: "#/components/schemas/IsoDate" }
+        service_to: { $ref: "#/components/schemas/IsoDate" }
+        amount_net_cents: { $ref: "#/components/schemas/Cents" }
+        amount_gross_cents: { $ref: "#/components/schemas/Cents" }
+        competence_net_cents: { $ref: "#/components/schemas/Cents" }
+        competence_gross_cents: { $ref: "#/components/schemas/Cents" }
+        deferral_net_cents: { $ref: "#/components/schemas/Cents" }
+        deferral_gross_cents: { $ref: "#/components/schemas/Cents" }
+        matured_cents: { $ref: "#/components/schemas/Cents" }
+        charged_cents: { $ref: "#/components/schemas/Cents" }
+        accrual_cents: { $ref: "#/components/schemas/Cents" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    AccrualsReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/AccrualsTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/AccrualsGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/AccrualsRecord" } }
+
+    # R8 charges (and R10 records)
+
+    ChargesTotals:
+      type: object
+      required: [charges, lines, net_cents, vat_cents, gross_cents, charged_cents]
+      properties:
+        charges: { type: integer, format: int64 }
+        lines: { type: integer, format: int64 }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        charged_cents: { $ref: "#/components/schemas/Cents", description: "Σ charge total_cents (issued basis); equals gross_cents" }
+
+    ChargesGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/ChargesTotals" }
+
+    ChargesRecord:
+      description: "One per charge line (competence basis: its quota in the period; month set by revenue classes)"
+      type: object
+      required: [charge_id, number, seq, issued_on, origin_type, net_cents, vat_cents, gross_cents, payment_status,
+                 invoicing_status, ref]
+      properties:
+        charge_id: { type: string }
+        number: { type: string }
+        seq: { type: integer }
+        issued_on: { $ref: "#/components/schemas/IsoDate" }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        month: { type: string, description: "YYYY-MM (revenue classes and group_by=month)" }
+        origin_type: { $ref: "#/components/schemas/ChargeOriginType" }
+        customer_id: { type: string }
+        customer_name: { type: string }
+        item_id: { type: string }
+        item_code: { type: string }
+        description: { type: string }
+        revenue_class: { type: string }
+        vat_rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+        vat_nature: { type: string }
+        service_from: { $ref: "#/components/schemas/IsoDate" }
+        service_to: { $ref: "#/components/schemas/IsoDate" }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        payment_status: { $ref: "#/components/schemas/ChargePaymentStatus" }
+        invoicing_status: { $ref: "#/components/schemas/ChargeInvoicingStatus" }
+        fiscal_mode: { $ref: "#/components/schemas/FiscalMode" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    ChargesReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [basis, totals, groups, records]
+          properties:
+            basis: { type: string, enum: [issued, competence] }
+            totals: { $ref: "#/components/schemas/ChargesTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/ChargesGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/ChargesRecord" } }
+
+    # R9 payments (base incasso)
+
+    PaymentsTotals:
+      type: object
+      required: [count, collected_cents, payments_cents, refunds_cents, fees_cents, payouts_cents]
+      properties:
+        count: { type: integer, format: int64, description: Records of the main section }
+        collected_cents: { $ref: "#/components/schemas/Cents", description: "payments_cents − refunds_cents" }
+        payments_cents: { $ref: "#/components/schemas/Cents" }
+        refunds_cents: { $ref: "#/components/schemas/Cents" }
+        fees_cents: { $ref: "#/components/schemas/Cents", description: Shown, not deducted }
+        payouts_cents: { $ref: "#/components/schemas/Cents", description: Mandate payouts, excluded from collected }
+
+    PaymentsGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/PaymentsTotals" }
+
+    PaymentsRecord:
+      type: object
+      required: [section, kind, id, number, date, method, amount_cents, ref]
+      properties:
+        section: { type: string, enum: [main, payouts] }
+        kind: { type: string, enum: [payment, deposit, refund, payout] }
+        id: { type: string }
+        number: { type: string }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        method: { $ref: "#/components/schemas/PaymentMethod" }
+        source: { type: string }
+        provider_code: { type: string }
+        customer_id: { type: string }
+        customer_name: { type: string }
+        amount_cents: { $ref: "#/components/schemas/Cents", description: Signed (refunds negative) }
+        fee_cents: { $ref: "#/components/schemas/Cents" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    PaymentsReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/PaymentsTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/PaymentsGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/PaymentsRecord" } }
+
+    # R10 revenue classes
+
+    RevenueClassMonth:
+      type: object
+      required: [month, net_cents]
+      properties:
+        month: { type: string, description: YYYY-MM }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+
+    RevenueClassGroup:
+      description: One per class (unclassified for an empty code); parents roll up their children (one level)
+      type: object
+      required: [key, label, net_cents, share_bp, months]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        parent_key: { type: string }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        share_bp: { type: [integer, "null"], format: int64, description: Display only, not forced to sum to 10000 }
+        months: { type: array, items: { $ref: "#/components/schemas/RevenueClassMonth" } }
+
+    RevenueClassesTotals:
+      type: object
+      required: [lines, net_cents, unclassified_cents]
+      properties:
+        lines: { type: integer, format: int64 }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        unclassified_cents: { $ref: "#/components/schemas/Cents" }
+
+    RevenueClassesReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [basis, totals, groups, records]
+          properties:
+            basis: { type: string, enum: [issued, competence] }
+            totals: { $ref: "#/components/schemas/RevenueClassesTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/RevenueClassGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/ChargesRecord" } }
+
+    # R12 receivables
+
+    ReceivablesTotals:
+      type: object
+      required: [as_of, count, open_cents, overdue_cents, buckets, future_cents, reminders_sent]
+      properties:
+        as_of: { $ref: "#/components/schemas/IsoDate" }
+        count: { type: integer, format: int64 }
+        open_cents: { $ref: "#/components/schemas/Cents" }
+        overdue_cents: { $ref: "#/components/schemas/Cents", description: "Residuals with due_on < as_of" }
+        buckets: { $ref: "#/components/schemas/AgeingAmounts" }
+        future_cents: { $ref: "#/components/schemas/Cents", description: Scheduled instalments (not in open_cents) }
+        reminders_sent: { type: integer, format: int64 }
+
+    ReceivablesGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/ReceivablesTotals" }
+
+    ReceivablesRecord:
+      type: object
+      required: [section, kind, id, ref]
+      properties:
+        section: { type: string, enum: [open, future, reminders] }
+        kind: { type: string, enum: [charge, installment, holder_installment, reminder] }
+        id: { type: string }
+        number: { type: string }
+        customer_id: { type: string }
+        customer_name: { type: string }
+        origin_type: { $ref: "#/components/schemas/ChargeOriginType" }
+        issued_on: { $ref: "#/components/schemas/IsoDate" }
+        due_on: { $ref: "#/components/schemas/IsoDate" }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        paid_cents: { $ref: "#/components/schemas/Cents" }
+        credited_cents: { $ref: "#/components/schemas/Cents" }
+        residual_cents: { $ref: "#/components/schemas/Cents" }
+        overdue: { type: boolean }
+        bucket: { $ref: "#/components/schemas/AgeingBucket" }
+        reminder_level: { $ref: "#/components/schemas/ReminderLevel" }
+        sent_on: { $ref: "#/components/schemas/IsoDate" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    ReceivablesReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/ReceivablesTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/ReceivablesGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/ReceivablesRecord" } }
+
+    # R13 presences
+
+    PresencesTotals:
+      type: object
+      required: [arrivals, departures, absence_nights, releases, released_nights, resold_nights, release_credit_cents,
+                 release_revenue_cents]
+      properties:
+        arrivals: { type: integer, format: int64 }
+        departures: { type: integer, format: int64 }
+        absence_nights: { type: integer, format: int64 }
+        releases: { type: integer, format: int64 }
+        released_nights: { type: integer, format: int64 }
+        resold_nights: { type: integer, format: int64 }
+        release_credit_cents: { type: [integer, "null"], format: int64, description: Null without reports.all }
+        release_revenue_cents: { type: [integer, "null"], format: int64, description: Null without reports.all }
+
+    PresencesGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/PresencesTotals" }
+
+    PresencesRecord:
+      type: object
+      required: [section, ref]
+      properties:
+        section: { type: string, enum: [movements, absences, releases] }
+        presence_id: { type: string }
+        event: { type: string, enum: [arrived, departed] }
+        night: { $ref: "#/components/schemas/IsoDate" }
+        contract_id: { type: string }
+        contract_number: { type: string }
+        contract_kind: { $ref: "#/components/schemas/ContractKind" }
+        vessel_id: { type: string }
+        vessel_name: { type: string }
+        berth_code: { type: string }
+        absence_nights: { type: integer, format: int64 }
+        release_id: { type: string }
+        release_from: { $ref: "#/components/schemas/IsoDate" }
+        release_to: { $ref: "#/components/schemas/IsoDate" }
+        released_nights: { type: integer, format: int64 }
+        resold_nights: { type: integer, format: int64 }
+        credit_cents: { type: [integer, "null"], format: int64 }
+        revenue_cents: { type: [integer, "null"], format: int64 }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    PresencesReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/PresencesTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/PresencesGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/PresencesRecord" } }
+
+    # R14 rights and condominium
+
+    RightsTotals:
+      type: object
+      required: [rights, holders, berths, charges_issued_cents, charges_collected_cents, charges_residual_cents,
+                 advance_cents, balance_cents, marina_share_cents, mandate_revenue_cents, mandate_payout_cents]
+      properties:
+        rights: { type: integer, format: int64 }
+        holders: { type: integer, format: int64 }
+        berths: { type: integer, format: int64 }
+        charges_issued_cents: { $ref: "#/components/schemas/Cents" }
+        charges_collected_cents: { $ref: "#/components/schemas/Cents" }
+        charges_residual_cents: { $ref: "#/components/schemas/Cents" }
+        advance_cents: { $ref: "#/components/schemas/Cents", description: Ripartizioni (common_charge_runs kind advance) }
+        balance_cents: { $ref: "#/components/schemas/Cents", description: Conguagli (kind balance) }
+        marina_share_cents: { $ref: "#/components/schemas/Cents" }
+        mandate_revenue_cents: { $ref: "#/components/schemas/Cents" }
+        mandate_payout_cents: { $ref: "#/components/schemas/Cents" }
+
+    RightsGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/RightsTotals" }
+
+    RightsRecord:
+      type: object
+      required: [section, ref]
+      properties:
+        section: { type: string, enum: [holders, charges, allotments, mandates] }
+        right_id: { type: string }
+        right_number: { type: string }
+        berth_id: { type: string }
+        berth_code: { type: string }
+        holder_id: { type: string }
+        holder_name: { type: string }
+        share_millis: { type: integer, format: int64 }
+        charge_id: { type: string }
+        number: { type: string }
+        issued_on: { $ref: "#/components/schemas/IsoDate" }
+        issued_cents: { $ref: "#/components/schemas/Cents" }
+        paid_cents: { $ref: "#/components/schemas/Cents" }
+        residual_cents: { $ref: "#/components/schemas/Cents" }
+        run_id: { type: string }
+        run_kind: { $ref: "#/components/schemas/CommonRunKind" }
+        item_code: { type: string }
+        mandate_id: { type: string }
+        kind: { type: string, enum: [revenue, payout, credit] }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    RightsReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/RightsTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/RightsGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/RightsRecord" } }
+
+    # R15 cash and fiscal receipts
+
+    CashVatTotal:
+      type: object
+      required: [rate_bp, net_cents, vat_cents, gross_cents]
+      properties:
+        rate_bp: { $ref: "#/components/schemas/BasisPoints" }
+        nature: { type: string }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+
+    CashMethodTotal:
+      type: object
+      required: [method, total_cents]
+      properties:
+        method: { $ref: "#/components/schemas/PaymentMethod" }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+
+    CashTotals:
+      type: object
+      required: [sessions, difference_cents, documents, fiscal_total_cents, fiscal_void_cents, vat, methods]
+      properties:
+        sessions: { type: integer, format: int64 }
+        difference_cents: { $ref: "#/components/schemas/Cents" }
+        documents: { type: integer, format: int64 }
+        fiscal_total_cents: { $ref: "#/components/schemas/Cents", description: Issued documents only }
+        fiscal_void_cents: { $ref: "#/components/schemas/Cents", description: Voided documents, listed apart (D15) }
+        vat: { type: array, items: { $ref: "#/components/schemas/CashVatTotal" } }
+        methods: { type: array, items: { $ref: "#/components/schemas/CashMethodTotal" } }
+
+    CashGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/CashTotals" }
+
+    CashRecord:
+      type: object
+      required: [section, business_date, ref]
+      properties:
+        section: { type: string, enum: [sessions, fiscal] }
+        business_date: { $ref: "#/components/schemas/IsoDate" }
+        session_id: { type: string }
+        register_code: { type: string }
+        status: { type: string }
+        float_cents: { $ref: "#/components/schemas/Cents" }
+        expected_cents: { $ref: "#/components/schemas/Cents" }
+        counted_cents: { $ref: "#/components/schemas/Cents" }
+        difference_cents: { $ref: "#/components/schemas/Cents" }
+        document_id: { type: string }
+        number: { type: string }
+        method: { $ref: "#/components/schemas/PaymentMethod" }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        void_cents: { $ref: "#/components/schemas/Cents" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    CashReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/CashTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/CashGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/CashRecord" } }
+
+    # R16 hosted vessels
+
+    VesselsTotals:
+      type: object
+      required: [vessels, nights, loa_sum_cm, avg_loa_cm]
+      properties:
+        vessels: { type: integer, format: int64 }
+        nights: { type: integer, format: int64 }
+        loa_sum_cm: { $ref: "#/components/schemas/Cm" }
+        avg_loa_cm: { type: [integer, "null"], format: int64, description: Half-even, null with no vessel }
+
+    VesselsGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/VesselsTotals" }
+
+    VesselsRecord:
+      type: object
+      required: [vessel_id, name, nights, loa_cm, beam_cm, length_band, ref]
+      properties:
+        vessel_id: { type: string }
+        name: { type: string }
+        nights: { type: integer, format: int64 }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+        flag: { type: string }
+        length_band: { $ref: "#/components/schemas/ReportLengthBand" }
+        kind: { type: string, enum: [contract, transit, owner], description: Kind with the most nights in the period }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    VesselsReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/VesselsTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/VesselsGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/VesselsRecord" } }
+
+    # R17 berth revenue
+
+    BerthRevenueTotals:
+      type: object
+      required: [berths, length_cm, revenue_cents, revenue_per_m_cents]
+      properties:
+        berths: { type: integer, format: int64 }
+        length_cm: { $ref: "#/components/schemas/Cm", description: Denominator }
+        revenue_cents: { $ref: "#/components/schemas/Cents", description: Numerator }
+        revenue_per_m_cents: { type: [integer, "null"], format: int64, description: "Σ revenue × 100 / Σ length_cm, half-even" }
+
+    BerthRevenueGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/BerthRevenueTotals" }
+
+    BerthRevenueRecord:
+      type: object
+      required: [berth_id, berth_code, length_cm, occupied_nights, revenue_cents, revenue_per_m_cents, ref]
+      properties:
+        berth_id: { type: string }
+        berth_code: { type: string }
+        category: { type: string }
+        length_cm: { $ref: "#/components/schemas/Cm" }
+        occupied_nights: { type: integer, format: int64 }
+        revenue_cents: { $ref: "#/components/schemas/Cents" }
+        revenue_per_m_cents: { type: [integer, "null"], format: int64 }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    BerthRevenueReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [totals, groups, records]
+          properties:
+            totals: { $ref: "#/components/schemas/BerthRevenueTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/BerthRevenueGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/BerthRevenueRecord" } }
+
+    # Dashboard (21.2) and comparison (R11)
+
+    TileKey:
+      description: >-
+        Manager dashboard tiles (m7-plan §4). yard_* (M10) and rental_* (M11) are returned with available=false.
+      type: string
+      enum: [production, charged, collected, receivables_open, receivables_overdue, occupancy, efficiency,
+             berth_revenue_per_m, transit_avg_night, new_customers, renewal_rate, vessels_hosted, vessels_avg_loa,
+             yard_open_orders, yard_hours, yard_margin, rental_utilisation, rental_revenue]
+
+    TileTrend:
+      type: string
+      enum: [up, down, flat, none]
+
+    TileValue:
+      type: object
+      required: [value]
+      properties:
+        value: { type: [integer, "null"], format: int64 }
+        numerator: { type: integer, format: int64 }
+        denominator: { type: integer, format: int64 }
+
+    TileSeriesPoint:
+      type: object
+      required: [bucket, value]
+      properties:
+        bucket: { $ref: "#/components/schemas/IsoDate", description: First day of the bucket (day, ISO week or month) }
+        value: { type: [integer, "null"], format: int64 }
+        previous: { type: [integer, "null"], format: int64 }
+
+    TileBreakdown:
+      type: object
+      required: [key, value]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        value: { type: integer, format: int64 }
+
+    TileDrill:
+      description: >-
+        The report that lists the records of the tile and its parameters (without from/to, which are the
+        dashboard period); generated by the same code that parses the report request (m7-plan §6)
+      type: object
+      required: [report, params]
+      properties:
+        report: { $ref: "#/components/schemas/ReportKey" }
+        params:
+          type: object
+          additionalProperties: { type: string }
+
+    Tile:
+      type: object
+      required: [key, unit, available, value, trend, series, dims_applied]
+      properties:
+        key: { $ref: "#/components/schemas/TileKey" }
+        unit: { $ref: "#/components/schemas/ReportUnit" }
+        available: { type: boolean }
+        reason: { type: string, enum: [milestone_m10, milestone_m11], description: Why the tile is not available }
+        value: { type: [integer, "null"], format: int64 }
+        numerator: { type: integer, format: int64 }
+        denominator: { type: integer, format: int64 }
+        previous: { $ref: "#/components/schemas/TileValue" }
+        delta: { type: [integer, "null"], format: int64 }
+        delta_bp: { type: [integer, "null"], format: int64 }
+        trend: { $ref: "#/components/schemas/TileTrend" }
+        series: { type: array, items: { $ref: "#/components/schemas/TileSeriesPoint" } }
+        breakdown: { type: array, items: { $ref: "#/components/schemas/TileBreakdown" } }
+        dims_applied: { type: boolean, description: The dimension filters of the request apply to this tile }
+        drill: { $ref: "#/components/schemas/TileDrill" }
+
+    ReportAlign:
+      description: Alignment of the previous period (date = same calendar dates; weekday = shift by whole weeks)
+      type: string
+      enum: [date, weekday]
+
+    ReportGranularity:
+      type: string
+      enum: [day, week, month]
+
+    Dashboard:
+      type: object
+      required: [period, today, compare, align, granularity, filters, tiles]
+      properties:
+        period: { $ref: "#/components/schemas/ReportPeriod" }
+        previous_period: { $ref: "#/components/schemas/ReportPeriod" }
+        today: { $ref: "#/components/schemas/IsoDate" }
+        compare: { type: string, enum: [previous_year, none] }
+        align: { $ref: "#/components/schemas/ReportAlign" }
+        granularity: { $ref: "#/components/schemas/ReportGranularity" }
+        filters:
+          type: object
+          additionalProperties: { type: string }
+        tiles: { type: array, items: { $ref: "#/components/schemas/Tile" } }
+
+    ComparisonIndicator:
+      type: string
+      enum: [production, charged, collected, occupancy, efficiency, berth_revenue_per_m, transit_avg_night,
+             new_customers, renewal_rate, arrivals, departures, lost_demand_count, lost_demand_value]
+
+    ComparisonPeriodValue:
+      type: object
+      required: [from, to, value]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        value: { type: [integer, "null"], format: int64 }
+        numerator: { type: integer, format: int64 }
+        denominator: { type: integer, format: int64 }
+
+    ComparisonPoint:
+      description: A bucket of the current period; previous values are aligned by date or weekday, never by index
+      type: object
+      required: [bucket, current, previous]
+      properties:
+        bucket: { $ref: "#/components/schemas/IsoDate" }
+        current: { type: [integer, "null"], format: int64 }
+        previous: { type: [integer, "null"], format: int64 }
+        current_numerator: { type: integer, format: int64 }
+        current_denominator: { type: integer, format: int64 }
+        previous_numerator: { type: integer, format: int64 }
+        previous_denominator: { type: integer, format: int64 }
+
+    ComparisonResult:
+      type: object
+      required: [indicator, unit, align, granularity, years_back, filters, current, previous, delta, delta_bp, series]
+      properties:
+        indicator: { $ref: "#/components/schemas/ComparisonIndicator" }
+        unit: { $ref: "#/components/schemas/ReportUnit" }
+        align: { $ref: "#/components/schemas/ReportAlign" }
+        granularity: { $ref: "#/components/schemas/ReportGranularity" }
+        years_back: { type: integer, minimum: 1, maximum: 5 }
+        filters:
+          type: object
+          additionalProperties: { type: string }
+        current: { $ref: "#/components/schemas/ComparisonPeriodValue" }
+        previous: { $ref: "#/components/schemas/ComparisonPeriodValue" }
+        delta: { type: [integer, "null"], format: int64 }
+        delta_bp: { type: [integer, "null"], format: int64 }
+        series: { type: array, items: { $ref: "#/components/schemas/ComparisonPoint" } }

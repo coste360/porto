@@ -1,0 +1,113 @@
+{
+  "title": "Cruscotto",
+  "description": "Indicatori del periodo confrontati con lo stesso periodo dell'anno precedente.",
+  "tiles": {
+    "production": "Produzione",
+    "charged": "Addebitato",
+    "collected": "Incassato",
+    "receivables_open": "Sospesi aperti",
+    "receivables_overdue": "Sospesi scaduti",
+    "occupancy": "Occupazione",
+    "efficiency": "Efficienza allocativa",
+    "berth_revenue_per_m": "Ricavo per metro lineare",
+    "transit_avg_night": "Ricavo medio per notte dei transiti",
+    "new_customers": "Nuovi clienti",
+    "renewal_rate": "Tasso di rinnovo",
+    "vessels_hosted": "Imbarcazioni ospitate",
+    "vessels_avg_loa": "Lunghezza media",
+    "yard_open_orders": "Commesse aperte",
+    "yard_hours": "Ore lavorate",
+    "yard_margin": "Margine del cantiere",
+    "rental_utilisation": "Utilizzo della flotta a noleggio",
+    "rental_revenue": "Ricavi del noleggio"
+  },
+  "periods": {
+    "mtd": "Mese in corso",
+    "ytd": "Da inizio anno",
+    "last_30": "Ultimi 30 giorni",
+    "last_12m": "Ultimi 12 mesi",
+    "custom": "Personalizzato"
+  },
+  "previous": "Anno precedente",
+  "unavailable": "Disponibile con {{milestone}}",
+  "comparison": {
+    "title": "Comparazione delle statistiche",
+    "description": "Un indicatore confrontato con gli anni precedenti, allineato per data o per giorno della settimana.",
+    "open": "Comparazione",
+    "indicator": "Indicatore",
+    "yearsBack": "Anni a confronto",
+    "yearsBackOption_one": "{{count}} anno",
+    "yearsBackOption_other": "{{count}} anni",
+    "granularity": {
+      "label": "Raggruppamento",
+      "auto": "Automatico",
+      "day": "Giorno",
+      "week": "Settimana",
+      "month": "Mese"
+    },
+    "chartTitle": "Periodo corrente e precedente",
+    "current": "Periodo corrente",
+    "previous": "Periodo precedente",
+    "bucket": "Periodo",
+    "delta": "Variazione",
+    "deltaBp": "Variazione %",
+    "total": "Totale",
+    "exportCsv": "Esporta CSV",
+    "exportXlsx": "Esporta Excel",
+    "exportFailed": "Esportazione non riuscita.",
+    "range": "{{from}} – {{to}}",
+    "noData": "Nessun dato nel periodo.",
+    "indicators": {
+      "production": "Produzione",
+      "charged": "Addebitato",
+      "collected": "Incassato",
+      "occupancy": "Occupazione",
+      "efficiency": "Efficienza allocativa",
+      "berth_revenue_per_m": "Ricavo per metro lineare",
+      "transit_avg_night": "Ricavo medio per notte dei transiti",
+      "new_customers": "Nuovi clienti",
+      "renewal_rate": "Tasso di rinnovo",
+      "arrivals": "Arrivi",
+      "departures": "Partenze",
+      "lost_demand_count": "Richieste perse",
+      "lost_demand_value": "Valore della domanda persa"
+    }
+  },
+  "sectionTitle": "Indicatori",
+  "period": "Periodo",
+  "from": "Dal",
+  "to": "Al",
+  "invalidPeriod": "Il periodo deve durare da 1 a 400 giorni.",
+  "compare": {
+    "label": "Confronto",
+    "previous_year": "Anno precedente",
+    "none": "Nessun confronto"
+  },
+  "align": {
+    "label": "Allineamento",
+    "date": "Per data",
+    "weekday": "Per giorno della settimana"
+  },
+  "previousValue": "Anno precedente: {{value}}",
+  "trend": {
+    "up": "In aumento",
+    "down": "In calo",
+    "flat": "Stabile",
+    "none": "Senza confronto"
+  },
+  "deltaLabel": "Variazione: {{value}}",
+  "openReport": "Apri il report",
+  "compareIndicator": "Confronta negli anni",
+  "dimsApplied": "Filtri della mappa applicati",
+  "empty": "Nessun indicatore disponibile per il tuo ruolo.",
+  "seriesLabel": "Andamento di {{tile}}",
+  "breakdown": "Dettaglio",
+  "outOfScope": "Cantiere e noleggio",
+  "dims": {
+    "map": "Mappa",
+    "structure": "Pontile",
+    "group": "Gruppo",
+    "category": "Categoria",
+    "all": "Tutti"
+  }
+}

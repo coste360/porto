@@ -4,8 +4,8 @@ import { archiveOpsHarbour } from "../support/occupancy";
 import { expectPhoneLayout, loginOnPhone, seedDockDay } from "../support/phone";
 import { expectNoSeriousViolations } from "../support/registry";
 
-// Direction phone screen (spec 31.3 Direzione, m6b-plan §6.3, §10.2): dashboard placeholder with today's counts,
-// the day map, deadlines of the next 30 days; and the phone landing after sign-in.
+// Direction phone screen (spec 31.3 Direzione, m6b-plan §6.3, §10.2, m7-plan §10.1): dashboard tiles with today's
+// counts, the day map, deadlines of the next 30 days; and the phone landing after sign-in.
 
 let harbour: string | null = null;
 test.afterEach(async ({ page }) => {
@@ -36,9 +36,10 @@ test("direction screen: dashboard, map, deadlines", async ({ page }) => {
   const screen = page.getByTestId("direction-page");
   await expect(screen).toBeVisible();
   await expectPhoneLayout(page, "direction-page");
-  await expect(page.getByTestId("direction-placeholder")).toContainText(
-    "Cruscotto completo con M7",
-  );
+  // Dashboard tiles of the month in one column; a tap opens the report (AppShell) without horizontal scroll.
+  const tiles = page.getByTestId("direction-tiles");
+  await expect(tiles.getByTestId("dashboard-tile").first()).toBeVisible();
+  await expectPhoneLayout(page, "direction-page");
   // Arrivals today: the transit and the annual contract starting today.
   await expect(page.getByTestId("direction-count").first()).toContainText("2");
 
@@ -57,4 +58,14 @@ test("direction screen: dashboard, map, deadlines", async ({ page }) => {
 
   await page.goto(`/admin/m/${day.marinaId}/direction`);
   await expectNoSeriousViolations(page, "phone direction");
+
+  await page
+    .getByTestId("direction-tiles")
+    .locator('[data-testid="dashboard-tile"][data-tile="occupancy"]')
+    .getByTestId("tile-value")
+    .click();
+  await expect(page).toHaveURL(/\/reports\/occupancy\?.*from=\d{4}-\d{2}-01/);
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(page.viewportSize()!.width);
 });

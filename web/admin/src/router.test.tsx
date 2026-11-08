@@ -22,9 +22,7 @@ describe('router guards', () => {
   it('redirects a single-marina user from the picker to the marina', async () => {
     const { router } = renderApp('/', [meRoute(makeMe())]);
     await waitFor(() => expect(router.state.location.pathname).toBe(`/m/${MARINA_ID}`));
-    expect(
-      await screen.findByText('La panoramica operativa arriverà nelle prossime versioni.'),
-    ).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Marina Prova' })).toBeInTheDocument();
   });
 
   it('shows not found for a marina the user cannot access', async () => {
