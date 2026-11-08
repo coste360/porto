@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
-import { subscribeMarinaStream } from '@porto/shared/api';
+import { subscribeMarinaStream } from '@porto/shared/api/sse';
 import { useT } from '@porto/shared/i18n';
 import { BrandLogo, MadeByCoste360 } from '@porto/shared/ui/patterns';
 import { Separator } from '@porto/shared/ui/separator';

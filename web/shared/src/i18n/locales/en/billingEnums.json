@@ -196,7 +196,9 @@
     "billing_target_mismatch": "Inconsistent contract amounts",
     "arrears_paid": "Arrears paid",
     "deadline": "Deadline",
-    "dispute": "Dispute"
+    "dispute": "Dispute",
+    "capture_failed": "Card capture failed",
+    "channel_modify": "Channel change refused"
   },
   "workItemStatus": {
     "open": "To do",

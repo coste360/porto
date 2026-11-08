@@ -82,10 +82,15 @@ type PaymentIntent struct {
 	LastCheckedAt      time.Time `bun:"last_checked_at,nullzero"`
 	FailureCode        string    `bun:"failure_code,nullzero"`
 	SucceededAt        time.Time `bun:"succeeded_at,nullzero"`
-	CreatedByActor     string    `bun:"created_by_actor"`
-	Version            int       `bun:"version"`
-	CreatedAt          time.Time `bun:"created_at"`
-	UpdatedAt          time.Time `bun:"updated_at"`
+	// M8 manual capture (m8-plan §6, §16 D6): an authorised intent stays processing with AuthorizedAt set.
+	CaptureMethod  string    `bun:"capture_method,default:'automatic'"` // automatic, manual
+	AuthorizedAt   time.Time `bun:"authorized_at,nullzero"`
+	CapturedAt     time.Time `bun:"captured_at,nullzero"`
+	VoidedAt       time.Time `bun:"voided_at,nullzero"`
+	CreatedByActor string    `bun:"created_by_actor"`
+	Version        int       `bun:"version"`
+	CreatedAt      time.Time `bun:"created_at"`
+	UpdatedAt      time.Time `bun:"updated_at"`
 }
 
 // PaymentIntentCharge is a row of payment_intent_charges. OpenFlag is true while the intent is open or processing

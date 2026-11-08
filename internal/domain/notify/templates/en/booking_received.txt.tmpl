@@ -1,0 +1,23 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+we have received your booking request. The marina will review it and answer as soon as possible.
+
+{{with v . "reference"}}Reference: {{.}}
+{{end}}{{with v . "starts_on"}}Arrival: {{.}}
+{{end}}{{with v . "ends_on"}}Departure: {{.}}
+{{end}}{{with v . "amount"}}Amount: {{.}}
+{{end}}{{with v . "refund"}}Refund: {{.}}
+{{end}}{{with v . "deadline_on"}}Answer by: {{.}}
+{{end}}{{with v . "reason"}}Reason: {{.}}
+{{end}}{{with v . "berth"}}Berth: {{.}}
+{{end}}{{with v . "vhf_channel"}}VHF channel: {{.}}
+{{end}}{{with v . "marina_phone"}}Berthing master phone: {{.}}
+{{end}}{{with v . "qr"}}Transit code: {{.}}
+{{end}}{{with v . "rules_url"}}Harbour rules: {{.}}
+{{end}}{{with v . "arrival_text"}}
+{{.}}
+{{end}}{{with v . "link"}}
+View your booking: {{.}}
+{{end}}
+--
+{{v . "marina_name"}}

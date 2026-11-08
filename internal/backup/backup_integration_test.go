@@ -72,6 +72,7 @@ func seeded(t *testing.T, db *store.DB) {
 	seedOccupancyRows(t, db, res.MarinaID, me.ID)
 	seedM4Rows(t, db, res.MarinaID, me.ID)
 	seedM5Rows(t, db, res.MarinaID, me.ID)
+	seedM8Rows(t, db, res.MarinaID, me.ID)
 }
 
 // seedOccupancyRows adds one row of every M3 table (m3-plan §5.3): an inquiry, a quote with an option and a

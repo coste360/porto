@@ -89,14 +89,38 @@ func (s StoreIdempotency) Release(ctx context.Context, id string) error {
 	return store.ReleaseIdempotencyKey(ctx, s.DB, id)
 }
 
+// publicCredentialHeaders are the bearer headers of the token-authenticated public writes (booking token, customer
+// area session, status token). They are not principals, so the anonymous scope binds them by hash: a replay is
+// answered only to the holder of the same credential, never to another client of the same IP prefix.
+var publicCredentialHeaders = []string{"Porto-Booking-Token", "Porto-Customer-Session", "Porto-Status-Token"}
+
+// credentialScope is "|cred:<sha256>" of the public credential headers of r, or "" when it carries none. Only the
+// hash enters the stored scope, never the credential.
+func credentialScope(h http.Header) string {
+	sum := sha256.New()
+	found := false
+	for _, name := range publicCredentialHeaders {
+		if v := h.Get(name); v != "" {
+			found = true
+			sum.Write([]byte(name + "\n" + v + "\n"))
+		}
+	}
+	if !found {
+		return ""
+	}
+	return "|cred:" + hex.EncodeToString(sum.Sum(nil))
+}
+
 // IdempotencyOptions configure Idempotency.
 type IdempotencyOptions struct {
 	Store IdempotencyStore
 	Clock clock.Clock
+	// Policies, when set, exempt the operations flagged x-porto-idempotency: domain (M8 createBooking).
+	Policies Policies
 }
 
 // Idempotency makes POSTs carrying Idempotency-Key safe to retry. The scope is the principal (or, for anonymous
-// requests, the client IP prefix) plus method and route; the request hash covers method, route and body. The
+// requests, the client IP prefix and the hash of the public credential headers) plus method and route; the request hash covers method, route and body. The
 // first request runs and its response (up to 1 MiB, status < 500, no Retry-After) is stored for 24 hours, 7 days
 // on the operations flagged x-porto-offline; a retry with the same hash replays it (Idempotent-Replayed: true); a
 // different hash is 422 idempotency_key_reused; a retry while the first is still running is 409
@@ -108,6 +132,10 @@ func Idempotency(o IdempotencyOptions) func(http.Handler) http.Handler {
 			key := r.Header.Get(IdempotencyHeader)
 			info := reqctx.From(r.Context())
 			if key == "" || r.Method != http.MethodPost || strings.Contains(info.Route, "/auth/") {
+				next.ServeHTTP(w, r)
+				return
+			}
+			if p, ok := o.Policies.Lookup(r.Method, info.Route); ok && p.DomainIdempotency {
 				next.ServeHTTP(w, r)
 				return
 			}
@@ -123,7 +151,7 @@ func Idempotency(o IdempotencyOptions) func(http.Handler) http.Handler {
 			}
 			r.Body = io.NopCloser(bytes.NewReader(body))
 
-			scope := "anon:" + auth.IPPrefixKey(info.ClientIP)
+			scope := "anon:" + auth.IPPrefixKey(info.ClientIP) + credentialScope(r.Header)
 			if p, ok := auth.PrincipalFrom(r.Context()); ok {
 				scope = p.ID()
 			}

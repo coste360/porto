@@ -21,6 +21,10 @@ import enBillingEnums from '../../shared/src/i18n/locales/en/billingEnums.json';
 import enPayPublic from '../../shared/src/i18n/locales/en/payPublic.json';
 import itBillingEnums from '../../shared/src/i18n/locales/it/billingEnums.json';
 import itPayPublic from '../../shared/src/i18n/locales/it/payPublic.json';
+import enAccount from '../../shared/src/i18n/locales/en/account.json';
+import enCheckout from '../../shared/src/i18n/locales/en/checkout.json';
+import itAccount from '../../shared/src/i18n/locales/it/account.json';
+import itCheckout from '../../shared/src/i18n/locales/it/checkout.json';
 
 export const BOOKING_NAMESPACES = [
   'common',
@@ -31,6 +35,9 @@ export const BOOKING_NAMESPACES = [
   // M5 public pay page (m5-plan §9.3)
   'payPublic',
   'billingEnums',
+  // M8 booking flow and customer area (m8-plan §12)
+  'checkout',
+  'account',
 ] as const;
 
 const resources = {
@@ -42,6 +49,8 @@ const resources = {
     docsEnums: itDocsEnums,
     payPublic: itPayPublic,
     billingEnums: itBillingEnums,
+    checkout: itCheckout,
+    account: itAccount,
   },
   en: {
     common: enCommon,
@@ -51,6 +60,8 @@ const resources = {
     docsEnums: enDocsEnums,
     payPublic: enPayPublic,
     billingEnums: enBillingEnums,
+    checkout: enCheckout,
+    account: enAccount,
   },
 };
 

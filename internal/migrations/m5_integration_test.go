@@ -175,9 +175,25 @@ func TestMigrations_M5Constraints(t *testing.T) {
 		wantTrigger(t, "match edit", store.InsertOnlyMessage, err)
 		rev := &store.PaymentMatch{ID: store.NewID(), MarinaID: f.marinaID, PaymentID: pay.ID, ChargeID: corr.ID, AmountCents: -100, ReversesMatchID: m.ID, CreatedAt: now}
 		mustInsert(t, db, rev)
+		// 00017: a match may be reversed in several parts; reversed_cents (the sum of its reversals) only grows and
+		// never exceeds the match (payment_matches_reversed_check); a reversal row keeps 0.
 		rev2 := *rev
 		rev2.ID = store.NewID()
-		wantUnique(t, "second reversal", insertRow(t, db, &rev2))
+		mustInsert(t, db, &rev2)
+		if _, err := db.NewUpdate().Table("payment_matches").Set("reversed_cents = 60").Where("id = ?", m.ID).Exec(ctx); err != nil {
+			t.Fatalf("partial reversal: %v", err)
+		}
+		if _, err := db.NewUpdate().Table("payment_matches").Set("reversed_cents = 101").Where("id = ?", m.ID).Exec(ctx); err == nil {
+			t.Fatal("reversed above the match accepted")
+		}
+		if _, err := db.NewUpdate().Table("payment_matches").Set("reversed_cents = 10").Where("id = ?", rev.ID).Exec(ctx); err == nil {
+			t.Fatal("reversed_cents on a reversal row accepted")
+		}
+		_, err = db.NewUpdate().Table("payment_matches").Set("reversed_cents = 50").Where("id = ?", m.ID).Exec(ctx)
+		wantTrigger(t, "reversed_cents decrease", store.InsertOnlyMessage, err)
+		if _, err := db.NewDelete().Table("payment_matches").Where("id = ?", rev2.ID).Exec(ctx); err == nil {
+			t.Fatal("match delete accepted")
+		}
 
 		// Fiscal documents: issued → void only.
 		fd := &store.FiscalDocument{

@@ -66,7 +66,7 @@ func (s *Service) SettleInstallment(ctx context.Context, p *auth.Principal, mari
 	if err := s.checkSettle(ctx, scope, &in); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		r, err := store.GetInstallment(ctx, tx, scope, id)
 		if err != nil {
@@ -123,7 +123,7 @@ func (s *Service) SettleInstallments(ctx context.Context, p *auth.Principal, mar
 	if err := s.checkSettle(ctx, scope, &in); err != nil {
 		return 0, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	n := 0
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		n = 0

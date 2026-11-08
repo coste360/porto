@@ -148,7 +148,7 @@ func (s *Service) CreateTransit(ctx context.Context, p *auth.Principal, marinaID
 		return nil, err
 	}
 	s.priced()
-	a := actor{p}
+	a := actor{p: p}
 	var id string
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := s.createTransitTx(ctx, tx, scope, a, in, price, st, true, nil)
@@ -246,7 +246,7 @@ func (s *Service) endTransit(ctx context.Context, p *auth.Principal, marinaID, i
 		v.Add("reason", "too_long")
 		return nil, v
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, id, KindTransit, ifMatch)
 		if err != nil {
@@ -264,6 +264,10 @@ func (s *Service) endTransit(ctx context.Context, p *auth.Principal, marinaID, i
 			return err
 		}
 		if err := s.cancelAllocs(ctx, tx, scope, allocs, occupancy.StatusCancelled, event.ReleasedCancel); err != nil {
+			return err
+		}
+		// M8 (m8-plan §3.3, §16 D4): cancellation and no-show give the online quota back.
+		if err := s.releaseQuotaTx(ctx, tx, scope, c); err != nil {
 			return err
 		}
 		from := c.Status
@@ -389,7 +393,7 @@ func (s *Service) ChangeStay(ctx context.Context, p *auth.Principal, marinaID, i
 		return nil, PriceEffect{}, err
 	}
 	effect := PriceEffect{OldTotalCents: c.TotalCents, NewTotalCents: price.total(), DeltaCents: price.total() - c.TotalCents, Applied: true}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, id, KindTransit, ifMatch)
 		if err != nil {
@@ -414,6 +418,16 @@ func (s *Service) ChangeStay(ctx context.Context, p *auth.Principal, marinaID, i
 		changed, err := s.resizeStayTx(ctx, tx, scope, a, now, c, active, na, nd, in)
 		if err != nil {
 			return err
+		}
+		// M8 (m8-plan §3.3): a shortened online stay gives the removed nights back to the quota (the desk never
+		// claims added nights: desk changes ignore quotas).
+		if IsOnline(c) && s.d.Occupancy != nil {
+			if err := s.d.Occupancy.ReleaseQuotaTx(ctx, tx, scope, c.ID, &nd); err != nil {
+				return err
+			}
+			if err := s.d.Occupancy.ReleaseQuotaNightsTx(ctx, tx, scope, c.ID, na); err != nil {
+				return err
+			}
 		}
 		old := map[string]any{"from": c.StartsOn, "to": c.EndsOn, "total_cents": c.TotalCents}
 		c.StartsOn, c.EndsOn = na, nd
@@ -542,7 +556,7 @@ func (s *Service) UpdateTransit(ctx context.Context, p *auth.Principal, marinaID
 	if err := v.Err(); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, id, KindTransit, ifMatch)
 		if err != nil {

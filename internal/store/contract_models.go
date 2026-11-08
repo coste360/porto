@@ -177,7 +177,7 @@ type Contract struct {
 	SignedOnPaper         bool          `bun:"signed_on_paper"`
 	ConfirmedAt           time.Time     `bun:"confirmed_at,nullzero"`
 	ConfirmedByUserID     string        `bun:"confirmed_by_user_id,nullzero"`
-	ConfirmationSource    string        `bun:"confirmation_source,nullzero"` // manual, provider
+	ConfirmationSource    string        `bun:"confirmation_source,nullzero"` // manual, provider, channel (M8)
 	ConfirmationRef       string        `bun:"confirmation_ref,nullzero"`    // never logged
 	PayAtDeparture        bool          `bun:"pay_at_departure"`
 	CancelledAt           time.Time     `bun:"cancelled_at,nullzero"`

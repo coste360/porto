@@ -143,6 +143,9 @@ type Snapshot struct {
 	OutOK    map[string]OutCand                      // berth id → contract allocation whose vessel is out
 	Closures []Closure
 	Previous map[string]string // vessel id → last resource id (continuity)
+	// QuotaFull holds the groups whose online quota is used up on some night of the request (M8, m8-plan §3.2):
+	// with channel online or external, resources of these groups are not proposed.
+	QuotaFull map[string]bool
 }
 
 // Search purposes.
@@ -159,7 +162,7 @@ type Request struct {
 	Purpose            string        // transit, contract
 	ResourceTypes      []ResourceType
 	Prefs              Prefs
-	Channel            string // desk, api (online in M8)
+	Channel            string // desk, api, online, external (M8: only online_sellable berths and areas)
 	MaxSegments        int
 	ConsiderOut        bool
 	Limit              int // default 20

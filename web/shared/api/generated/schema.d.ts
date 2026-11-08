@@ -7588,12 +7588,762 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/public/v1/{slug}/booking/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        /** Booking page configuration: rules, categories, online services, payment mode, approval threshold, required fields, current texts, payability, theme, arrival info, units (Cache-Control public, max-age=60) */
+        get: operations["getBookingConfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/booking/availability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        /** Availability per category for dates and vessel dimensions (yes/no and a "from" price only); an anonymous search with no availability is recorded as lost demand */
+        get: operations["getBookingAvailability"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/booking/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Price of a stay in a category with services and promo code (pricing channel online); writes nothing */
+        post: operations["quoteBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Hold a berth of a category: held transit with a concrete hold allocation, quota claims, audit and outbox in one transaction. Idempotency-Key is required and handled by the domain (no response with a token is ever stored by the idempotency middleware); a replay with the same key and body returns the same booking */
+        post: operations["createBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/bookings/{bookingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        /** The booking of the token holder (Porto-Booking-Token) */
+        get: operations["getBooking"];
+        put?: never;
+        post?: never;
+        /** Abandon a held booking (cancels the transit and releases the hold); held only */
+        delete: operations["abandonBooking"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/bookings/{bookingId}/details": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Customer and vessel details, people on board, arrival time and consents of a held booking */
+        put: operations["submitBookingDetails"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/bookings/{bookingId}/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload a document of the booking (licence, insurance, registration, identity; PDF, PNG or JPEG, at most 10 MiB, raw body like the M4 customer links), encrypted at rest and verified by the office */
+        post: operations["uploadBookingDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/bookings/{bookingId}/pay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start the advance payment (provider hosted page, top-level navigation) or send the request for approval; confirmation comes only from the provider webhook or the manual driver (INV-09) */
+        post: operations["startBookingPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/bookings/{bookingId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        /** Status of the booking for the return page, with the booking token or the read-only status token; no personal data (the browser return never confirms, INV-09) */
+        get: operations["getBookingStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a login link to the customer area; always 202 with the same body and comparable work, whether the email is known or not (no enumeration) */
+        post: operations["requestAccountLink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Exchange a link token (from the URL fragment) for a customer-area session token */
+        post: operations["openAccountSession"];
+        /** Revoke the customer-area session (logout) */
+        delete: operations["closeAccountSession"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/vessels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        /** The customer's vessels (name and dimensions) to prefill the search */
+        get: operations["listAccountVessels"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        /** The customer's transits of the marina (any channel), newest first */
+        get: operations["listAccountBookings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/bookings/{contractId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        /** Detail of one of the customer's transits (QR when confirmed, arrival info, documents, receipts) */
+        get: operations["getAccountBooking"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/bookings/{contractId}/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload a document for one of the customer's transits (same rules as uploadBookingDocument) */
+        post: operations["uploadAccountDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/documents/{documentId}/url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        /** Short-lived signed URL of one of the customer's own documents */
+        get: operations["getAccountDocumentURL"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/documents/{documentId}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        /** Download one of the customer's own documents through a signed link from getAccountDocumentURL (c, exp and sig are checked in the service; served inline, no-store, sandbox CSP, nosniff; rate limited) */
+        get: operations["getAccountDocumentFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/bookings/{contractId}/pay-balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pay the open residual of the transit (creates or reuses a payment request, returns the checkout URL) */
+        post: operations["payAccountBalance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/bookings/{contractId}/cancellation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        /** Cancellation preview with the refund from the contract's policy snapshot */
+        get: operations["previewAccountCancellation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/bookings/{contractId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel within the policy; 409 refund_changed when the refund differs from the previewed one */
+        post: operations["cancelAccountBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/bookings/{contractId}/change-dates/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Availability and price effect of new dates for a confirmed transit before arrival; writes nothing */
+        post: operations["previewAccountDateChange"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/account/bookings/{contractId}/change-dates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Change the dates (online rules, same category); 409 price_changed when the total differs from expected_total_cents */
+        post: operations["changeAccountDates"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/online-booking/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Online booking settings of the marina (defaults when never saved) (marina.configure) */
+        get: operations["getOnlineBookingSettings"];
+        /** Replace the online booking settings (marina.configure, If-Match) */
+        put: operations["updateOnlineBookingSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/online-booking/texts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Published versions of the terms, privacy and marketing texts, newest first (marina.configure) */
+        get: operations["listBookingTexts"];
+        put?: never;
+        /** Publish a new version of a text (published versions are immutable) (marina.configure) */
+        post: operations["publishBookingText"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/online-booking/quotas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Online quota of every berth group (harbor.configure) */
+        get: operations["getOnlineQuotas"];
+        /** Set the online quotas of the listed groups; caps of future nights become max(new cap, used) (harbor.configure) */
+        put: operations["updateOnlineQuotas"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/online-booking/quotas/usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Used and cap per group and night, at most 92 nights (harbor.configure) */
+        get: operations["getOnlineQuotaUsage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/online-bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Online and channel bookings, newest first (transits.desk) */
+        get: operations["listOnlineBookings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        /** Online booking detail: contact (customers.read), documents, consents, payment state, approval deadline (transits.desk); the ETag is the transit version */
+        get: operations["getOnlineBooking"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve a booking awaiting approval: capture the authorisation, or send the payment link (transits.desk, If-Match) */
+        post: operations["approveOnlineBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reject a booking awaiting approval (voids the authorisation, releases the hold) (transits.desk, If-Match) */
+        post: operations["rejectOnlineBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/payment-link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve without the authorisation and email a payment link (after a capture failure) (transits.desk, If-Match) */
+        post: operations["sendOnlineBookingPaymentLink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/documents/{documentId}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark a document as verified by the office, or clear the mark (customers.write) */
+        post: operations["verifyDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/booking-channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Registered booking channels and the marina's connection to each (providers.configure) */
+        get: operations["listBookingChannels"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                channelCode: components["parameters"]["ChannelCode"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Create or update the connection to a channel; credentials and webhook secret are write-only (providers.configure, If-Match when the connection exists) */
+        put: operations["updateBookingChannel"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                channelCode: components["parameters"]["ChannelCode"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check the connection's credentials against the channel (providers.configure) */
+        post: operations["testBookingChannel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                channelCode: components["parameters"]["ChannelCode"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pull reservations and push availability and rates now (providers.configure) */
+        post: operations["syncBookingChannel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/channel-reservations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Reservations received from channels, newest first (transits.desk) */
+        get: operations["listChannelReservations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/webhooks/channels/{channel}/{marinaId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channel: components["parameters"]["ChannelPathCode"];
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Booking channel callback, verified with the connection's webhook secret; events are applied once (INV-89); unknown channel or connection is 404, invalid signature 401 */
+        post: operations["receiveChannelWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid" | "invalid_period" | "invalid_report_filter" | "report_too_large" | "unknown_indicator";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid" | "invalid_period" | "invalid_report_filter" | "report_too_large" | "unknown_indicator" | "booking_unavailable" | "booking_rules" | "booking_busy" | "consent_required" | "text_outdated" | "refund_changed" | "price_changed" | "cancellation_not_allowed" | "nothing_due" | "idempotency_mismatch";
         FieldError: {
             field: string;
             code: string;
@@ -8398,6 +9148,8 @@ export interface components {
             default_locale: components["schemas"]["Locale"];
             locales: components["schemas"]["Locale"][];
             booking_enabled: boolean;
+            /** @description Origins allowed to embed the booking page (marinas.allowed_embed_origins, M8); the SPA posts messages only to a parent origin in this list that also matches the referrer */
+            embed_origins?: string[];
         };
         /**
          * Format: int64
@@ -8645,6 +9397,8 @@ export interface components {
              */
             readonly cell_count?: number;
             price_class?: string;
+            /** @description The area is offered by the public booking page and the channels (default false) */
+            online_sellable?: boolean;
             active: boolean;
             group_ids: string[];
         };
@@ -9220,7 +9974,7 @@ export interface components {
             deadlines: components["schemas"]["Deadline"][];
         };
         /** @enum {string} */
-        ConsentKind: "privacy" | "marketing" | "third_party";
+        ConsentKind: "terms" | "privacy" | "marketing" | "third_party";
         /** @enum {string} */
         ConsentSource: "desk" | "online" | "import" | "api";
         Consent: {
@@ -13206,7 +13960,9 @@ export interface components {
             charge_number: string;
             amount_cents: components["schemas"]["Cents"];
             reverses_match_id?: string;
+            /** @description True when the whole match was reversed (reversed_cents equals amount_cents). */
             reversed?: boolean;
+            reversed_cents?: components["schemas"]["Cents"];
             /** Format: date-time */
             created_at: string;
         };
@@ -13466,7 +14222,7 @@ export interface components {
             paid_out_cents: components["schemas"]["Cents"];
         };
         /** @enum {string} */
-        WorkItemKind: "reminder_approval" | "charges_to_export" | "payment_failed" | "late_payment" | "overpayment" | "sepa_failed" | "billing_item_missing" | "billing_target_mismatch" | "arrears_paid" | "deadline" | "dispute";
+        WorkItemKind: "reminder_approval" | "charges_to_export" | "payment_failed" | "late_payment" | "overpayment" | "sepa_failed" | "billing_item_missing" | "billing_target_mismatch" | "arrears_paid" | "deadline" | "dispute" | "capture_failed" | "channel_modify";
         /** @enum {string} */
         WorkItemStatus: "open" | "in_progress" | "done" | "dismissed";
         WorkItem: {
@@ -14929,6 +15685,715 @@ export interface components {
             delta_bp: number | null;
             series: components["schemas"]["ComparisonPoint"][];
         };
+        /** @description Long localised text (booking texts, arrival information); it is the source language */
+        BookingI18nText: {
+            it: string;
+            en?: string;
+        };
+        /** @enum {string} */
+        OnlineChannel: "online" | "external";
+        /**
+         * @description Transit statuses an online or channel booking goes through
+         * @enum {string}
+         */
+        OnlineBookingStatus: "held" | "pending_payment" | "awaiting_approval" | "confirmed" | "arrived" | "departed" | "cancelled" | "expired" | "no_show";
+        /** @enum {string} */
+        OnlinePaymentMode: "deposit" | "full";
+        /** @enum {string} */
+        RefundAs: "refund" | "credit";
+        /** @enum {string} */
+        RevealBerth: "never" | "after_confirmation";
+        /** @enum {string} */
+        ApprovalReason: "loa" | "group" | "always" | "no_provider";
+        /** @enum {string} */
+        BookingTextKind: "terms" | "privacy" | "marketing";
+        /** @enum {string} */
+        BookingDocumentType: "boating_licence" | "navigation_licence" | "insurance_policy" | "registration_certificate" | "identity_card";
+        /**
+         * @description Why a whole search is blocked by the online rules
+         * @enum {string}
+         */
+        BookingBlockReason: "closed" | "min_nights" | "max_nights" | "advance" | "weekday" | "too_large";
+        /** @description Refund of the paid amount when cancelling at least min_days_before days before arrival */
+        CancellationTier: {
+            min_days_before: number;
+            refund_bp: number;
+        };
+        BookingRules: {
+            min_nights: number;
+            max_nights: number;
+            min_advance_hours: number;
+            max_advance_days: number;
+            arrival_from: components["schemas"]["LocalTime"];
+            arrival_to: components["schemas"]["LocalTime"];
+            /** @description Weekdays without arrivals, 0 = Sunday */
+            closed_weekdays: number[];
+        };
+        BookingRequiredFields: {
+            documents: components["schemas"]["BookingDocumentType"][];
+            people_on_board: boolean;
+            phone: boolean;
+            /** @description Required documents may be uploaded after payment */
+            documents_later: boolean;
+        };
+        ArrivalInfo: {
+            vhf_channel?: string;
+            /** @description Berthing-master phone (marina contact */
+            phone?: string;
+            rules_url?: string;
+            text?: components["schemas"]["BookingI18nText"];
+        };
+        OnlineApprovalRules: {
+            /** Format: int64 */
+            loa_over_cm?: number | null;
+            group_ids: string[];
+            always: boolean;
+            hold_hours: number;
+        };
+        BookingCategory: {
+            /** @description price_class (M2 berth category), or standard */
+            code: string;
+            name: components["schemas"]["I18nText"];
+            max_loa_cm?: components["schemas"]["Cm"];
+            max_beam_cm?: components["schemas"]["Cm"];
+        };
+        BookingServiceOption: {
+            item_id: string;
+            name: components["schemas"]["I18nText"];
+            description?: components["schemas"]["I18nTextOptional"];
+            unit: components["schemas"]["ItemUnit"];
+            /**
+             * Format: int64
+             * @description Indicative price per unit (the quote is binding)
+             */
+            unit_price_cents?: number;
+            max_qty_milli?: components["schemas"]["QtyMilli"];
+            default_selected: boolean;
+        };
+        BookingTextRef: {
+            kind: components["schemas"]["BookingTextKind"];
+            version: number;
+            text: components["schemas"]["BookingI18nText"];
+        };
+        BookingTheme: {
+            preset: string;
+            hide_header_in_embed: boolean;
+        };
+        BookingConfig: {
+            /** @description marinas.booking_enabled; when false every other field is a default */
+            enabled: boolean;
+            /** @description An online provider with checkout is enabled and the terms and privacy texts are published (without them details are refused with booking_rules consents texts_unpublished) */
+            payable: boolean;
+            currency: string;
+            rules: components["schemas"]["BookingRules"];
+            categories: components["schemas"]["BookingCategory"][];
+            services: components["schemas"]["BookingServiceOption"][];
+            payment_mode: components["schemas"]["OnlinePaymentMode"];
+            deposit_bp: components["schemas"]["BasisPoints"];
+            cancellation_tiers: components["schemas"]["CancellationTier"][];
+            /** Format: int64 */
+            approval_loa_over_cm?: number | null;
+            approval_always: boolean;
+            required_fields: components["schemas"]["BookingRequiredFields"];
+            /** @description Current published version of each text kind */
+            texts: components["schemas"]["BookingTextRef"][];
+            theme: components["schemas"]["BookingTheme"];
+            arrival_info?: components["schemas"]["ArrivalInfo"];
+            show_feet: boolean;
+        };
+        BookingCategoryAvailability: {
+            code: string;
+            name: components["schemas"]["I18nText"];
+            available: boolean;
+            /**
+             * Format: int64
+             * @description Price of the best solution with default services only
+             */
+            from_cents?: number;
+            approval_required: boolean;
+        };
+        BookingAvailability: {
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            nights: number;
+            reason?: components["schemas"]["BookingBlockReason"];
+            categories: components["schemas"]["BookingCategoryAvailability"][];
+        };
+        BookingVesselInput: {
+            /** Format: int64 */
+            loa_cm: number;
+            /** Format: int64 */
+            beam_cm: number;
+            /** Format: int64 */
+            draft_cm?: number;
+            hull_type?: components["schemas"]["HullType"];
+        };
+        BookingServiceInput: {
+            item_id: string;
+            /** Format: int64 */
+            qty_milli: number;
+        };
+        BookingQuoteInput: {
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            vessel: components["schemas"]["BookingVesselInput"];
+            category: string;
+            services?: components["schemas"]["BookingServiceInput"][];
+            promo_code?: string;
+        };
+        BookingPriceLine: {
+            /** @enum {string} */
+            kind: "berth" | "service" | "discount" | "rounding";
+            label: components["schemas"]["I18nText"];
+            item_id?: string;
+            qty_milli: components["schemas"]["QtyMilli"];
+            /** Format: int64 */
+            total_cents: number;
+        };
+        BookingQuote: {
+            category: string;
+            nights: number;
+            lines: components["schemas"]["BookingPriceLine"][];
+            /** Format: int64 */
+            total_cents: number;
+            /** Format: int64 */
+            net_cents: number;
+            /** Format: int64 */
+            vat_cents: number;
+            /**
+             * Format: int64
+             * @description Deposit or total
+             */
+            due_now_cents: number;
+            payment_mode: components["schemas"]["OnlinePaymentMode"];
+            cancellation_tiers: components["schemas"]["CancellationTier"][];
+            promo_applied: boolean;
+            approval_required: boolean;
+            currency: string;
+        };
+        BookingCreate: {
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            vessel?: components["schemas"]["BookingVesselInput"];
+            /** @description A saved vessel of the session's customer (instead of vessel) */
+            vessel_id?: string;
+            category: string;
+            services?: components["schemas"]["BookingServiceInput"][];
+            promo_code?: string;
+            locale: components["schemas"]["Locale"];
+            /** @description Verified parent origin in embed mode */
+            embed_parent_origin?: string;
+        };
+        BookingCreated: {
+            booking_id: string;
+            reference: string;
+            booking_token: string;
+            status: components["schemas"]["OnlineBookingStatus"];
+            /** Format: date-time */
+            hold_expires_at: string;
+            quote: components["schemas"]["BookingQuote"];
+            approval_required: boolean;
+            /** Format: int64 */
+            amount_due_now_cents: number;
+        };
+        BookingVesselView: {
+            name?: string;
+            loa_cm: components["schemas"]["Cm"];
+            beam_cm: components["schemas"]["Cm"];
+            draft_cm?: components["schemas"]["Cm"];
+            hull_type?: components["schemas"]["HullType"];
+        };
+        BookingDocument: {
+            id: string;
+            type: components["schemas"]["BookingDocumentType"];
+            /** Format: date-time */
+            uploaded_at: string;
+            verified: boolean;
+        };
+        Booking: {
+            booking_id: string;
+            reference: string;
+            status: components["schemas"]["OnlineBookingStatus"];
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            category: string;
+            vessel: components["schemas"]["BookingVesselView"];
+            /** Format: date-time */
+            hold_expires_at?: string;
+            quote: components["schemas"]["BookingQuote"];
+            approval_required: boolean;
+            /** Format: date-time */
+            approval_deadline?: string;
+            /** Format: int64 */
+            amount_due_now_cents: number;
+            details_complete: boolean;
+            documents: components["schemas"]["BookingDocument"][];
+            missing_documents: components["schemas"]["BookingDocumentType"][];
+        };
+        BookingCustomerInput: {
+            first_name: string;
+            last_name: string;
+            /** Format: email */
+            email: string;
+            phone?: string;
+            /** @description ISO 3166-1 alpha-2 */
+            country: string;
+            locale: components["schemas"]["Locale"];
+        };
+        BookingVesselDetailsInput: {
+            name: string;
+            registration?: string;
+            flag?: string;
+            hull_type: components["schemas"]["HullType"];
+            /** Format: int64 */
+            draft_cm?: number;
+        };
+        BookingConsentsInput: {
+            terms_version: number;
+            privacy_version: number;
+            marketing: boolean;
+            /** @description Required when marketing is true */
+            marketing_version?: number;
+        };
+        BookingDetailsInput: {
+            customer: components["schemas"]["BookingCustomerInput"];
+            vessel: components["schemas"]["BookingVesselDetailsInput"];
+            people_on_board?: number;
+            expected_arrival_time?: components["schemas"]["LocalTime"];
+            notes?: string;
+            consents: components["schemas"]["BookingConsentsInput"];
+        };
+        BookingPayInput: {
+            /** @description Parent page to go back to; kept only when its origin is allowed */
+            return_to?: string;
+        };
+        BookingPayResult: {
+            status: components["schemas"]["OnlineBookingStatus"];
+            /** @description Provider hosted page */
+            redirect_url?: string;
+            status_token: string;
+        };
+        BookingStatusView: {
+            booking_id: string;
+            reference: string;
+            status: components["schemas"]["OnlineBookingStatus"];
+            /** @description A payment is being processed by the provider */
+            verifying: boolean;
+            /** Format: date-time */
+            hold_expires_at?: string;
+        };
+        AccountLoginInput: {
+            /** Format: email */
+            email: string;
+            locale: components["schemas"]["Locale"];
+        };
+        AccountLoginAccepted: {
+            /** @enum {string} */
+            status: "accepted";
+        };
+        AccountSessionInput: {
+            token: string;
+        };
+        AccountSession: {
+            session_token: string;
+            /**
+             * Format: date-time
+             * @description Absolute expiry; idle sessions end earlier
+             */
+            expires_at: string;
+        };
+        AccountVessel: {
+            id: string;
+            name: string;
+            loa_cm: components["schemas"]["Cm"];
+            beam_cm: components["schemas"]["Cm"];
+            draft_cm?: components["schemas"]["Cm"];
+            hull_type?: components["schemas"]["HullType"];
+        };
+        AccountVesselList: {
+            items: components["schemas"]["AccountVessel"][];
+        };
+        AccountBookingSummary: {
+            contract_id: string;
+            /** @description Online booking reference (online and channel bookings) */
+            reference?: string;
+            /** @description TRN-2026-0001 */
+            code: string;
+            status: components["schemas"]["OnlineBookingStatus"];
+            channel: components["schemas"]["Channel"];
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            vessel_name: string;
+            category?: components["schemas"]["I18nText"];
+            /** Format: int64 */
+            total_cents: number;
+            /** Format: int64 */
+            paid_cents: number;
+            /** Format: int64 */
+            residual_cents: number;
+            approval_pending: boolean;
+            /** @description Only when the reveal policy allows it */
+            berth_code?: string;
+        };
+        AccountBookingList: {
+            items: components["schemas"]["AccountBookingSummary"][];
+        };
+        AccountReceipt: {
+            payment_id: string;
+            received_on: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            amount_cents: number;
+            method: components["schemas"]["PaymentMethod"];
+        };
+        CancellationPreview: {
+            allowed: boolean;
+            /**
+             * @description Why cancellation is not allowed
+             * @enum {string}
+             */
+            reason?: "status" | "arrival_passed";
+            /** Format: int64 */
+            paid_cents: number;
+            /** Format: int64 */
+            refund_cents: number;
+            refund_as: components["schemas"]["RefundAs"];
+            tier?: components["schemas"]["CancellationTier"];
+        };
+        AccountBooking: components["schemas"]["AccountBookingSummary"] & {
+            /** @description PT1:<contract_id>, only when confirmed or arrived */
+            qr_payload?: string;
+            arrival_info?: components["schemas"]["ArrivalInfo"];
+            vessel?: components["schemas"]["BookingVesselView"];
+            documents: components["schemas"]["BookingDocument"][];
+            missing_documents: components["schemas"]["BookingDocumentType"][];
+            receipts: components["schemas"]["AccountReceipt"][];
+            cancellation?: components["schemas"]["CancellationPreview"];
+            can_cancel: boolean;
+            can_change_dates: boolean;
+            can_pay_balance: boolean;
+        };
+        AccountPayBalanceResult: {
+            checkout_url: string;
+            /** Format: int64 */
+            amount_cents: number;
+        };
+        AccountCancelInput: {
+            /** Format: int64 */
+            expected_refund_cents: number;
+        };
+        AccountCancelResult: {
+            status: components["schemas"]["OnlineBookingStatus"];
+            /** Format: int64 */
+            refund_cents: number;
+            refund_as: components["schemas"]["RefundAs"];
+        };
+        DateChangeInput: {
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            /**
+             * Format: int64
+             * @description Required by changeAccountDates
+             */
+            expected_total_cents?: number;
+        };
+        DateChangePreview: {
+            available: boolean;
+            reason?: components["schemas"]["BookingBlockReason"];
+            /** Format: int64 */
+            old_total_cents: number;
+            /** Format: int64 */
+            new_total_cents: number;
+            /** Format: int64 */
+            delta_cents: number;
+            /**
+             * Format: int64
+             * @description Refund of a decrease
+             */
+            refund_cents: number;
+            /**
+             * Format: int64
+             * @description Increase to pay with pay-balance
+             */
+            supplement_cents: number;
+        };
+        DateChangeResult: {
+            status: components["schemas"]["OnlineBookingStatus"];
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            /** Format: int64 */
+            new_total_cents: number;
+            /** Format: int64 */
+            delta_cents: number;
+            /** Format: int64 */
+            refund_cents: number;
+            /** Format: int64 */
+            supplement_cents: number;
+        };
+        OnlineBookingSettingsInput: {
+            rules: components["schemas"]["BookingRules"];
+            payment_mode: components["schemas"]["OnlinePaymentMode"];
+            deposit_bp: number;
+            cancellation_tiers: components["schemas"]["CancellationTier"][];
+            refund_as: components["schemas"]["RefundAs"];
+            approval: components["schemas"]["OnlineApprovalRules"];
+            required_fields: components["schemas"]["BookingRequiredFields"];
+            reveal_berth: components["schemas"]["RevealBerth"];
+            late_payment_recovery: boolean;
+            allow_without_provider: boolean;
+            max_live_holds: number;
+            arrival_info?: components["schemas"]["ArrivalInfo"];
+            theme_preset: string;
+            hide_header_in_embed: boolean;
+            show_feet: boolean;
+        };
+        OnlineBookingSettings: components["schemas"]["OnlineBookingSettingsInput"] & {
+            version: number;
+            /** @description marinas.booking_enabled (edited on the marina) */
+            booking_enabled: boolean;
+            /** @description marinas.allowed_embed_origins (edited on the marina) */
+            embed_origins: string[];
+            /** @description False while the defaults were never saved */
+            saved: boolean;
+        };
+        BookingText: {
+            id: string;
+            kind: components["schemas"]["BookingTextKind"];
+            version: number;
+            texts: components["schemas"]["BookingI18nText"];
+            sha256: string;
+            /** Format: date-time */
+            published_at: string;
+            published_by?: components["schemas"]["UserRef"];
+        };
+        BookingTextList: {
+            items: components["schemas"]["BookingText"][];
+        };
+        BookingTextPublish: {
+            kind: components["schemas"]["BookingTextKind"];
+            texts: components["schemas"]["BookingI18nText"];
+        };
+        /** @enum {string} */
+        OnlineQuotaKind: "none" | "count" | "percent";
+        OnlineQuota: {
+            group_id: string;
+            group_code: string;
+            group_name: components["schemas"]["I18nText"];
+            kind: components["schemas"]["OnlineQuotaKind"];
+            /**
+             * Format: int64
+             * @description Units (count) or 0..100 (percent)
+             */
+            value: number;
+            /** @description Active member berths (the percent base) */
+            member_berths: number;
+            /** @description Groups with dynamic areas accept only count quotas */
+            has_areas: boolean;
+        };
+        OnlineQuotaList: {
+            items: components["schemas"]["OnlineQuota"][];
+        };
+        OnlineQuotaSet: {
+            group_id: string;
+            kind: components["schemas"]["OnlineQuotaKind"];
+            /** Format: int64 */
+            value: number;
+        };
+        OnlineQuotasUpdate: {
+            items: components["schemas"]["OnlineQuotaSet"][];
+        };
+        OnlineQuotaNight: {
+            night: components["schemas"]["IsoDate"];
+            cap: number;
+            used: number;
+        };
+        OnlineQuotaGroupUsage: {
+            group_id: string;
+            nights: components["schemas"]["OnlineQuotaNight"][];
+        };
+        OnlineQuotaUsage: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            groups: components["schemas"]["OnlineQuotaGroupUsage"][];
+        };
+        OnlineBookingSummary: {
+            contract_id: string;
+            reference: string;
+            code: string;
+            status: components["schemas"]["OnlineBookingStatus"];
+            channel: components["schemas"]["OnlineChannel"];
+            /** @description Booking channel code (channel external) */
+            channel_code?: string;
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+            loa_cm: components["schemas"]["Cm"];
+            beam_cm: components["schemas"]["Cm"];
+            category?: string;
+            approval_reason?: components["schemas"]["ApprovalReason"];
+            /** Format: date-time */
+            approval_deadline?: string;
+            /** Format: date-time */
+            hold_expires_at?: string;
+            /** Format: int64 */
+            total_cents: number;
+            /** Format: int64 */
+            due_now_cents?: number;
+            /** Format: date-time */
+            created_at: string;
+            /** @description Transit version (If-Match of approve and reject) */
+            version: number;
+        };
+        OnlineBookingPage: {
+            items: components["schemas"]["OnlineBookingSummary"][];
+            next_cursor: string | null;
+        };
+        /** @description Contact submitted with the booking (decrypted only with customers.read) */
+        OnlineContact: {
+            first_name: string;
+            last_name: string;
+            email: string;
+            phone?: string;
+            country: string;
+            locale: components["schemas"]["Locale"];
+        };
+        OnlineBookingDocument: {
+            id: string;
+            type: components["schemas"]["DocumentType"];
+            file_name?: string;
+            expires_on?: components["schemas"]["IsoDate"];
+            /** Format: date-time */
+            uploaded_at: string;
+            /** Format: date-time */
+            verified_at?: string;
+            verified_by?: components["schemas"]["UserRef"];
+        };
+        OnlineBookingConsent: {
+            kind: components["schemas"]["ConsentKind"];
+            version: string;
+            granted: boolean;
+            /** Format: date-time */
+            recorded_at: string;
+        };
+        OnlinePaymentState: {
+            /** @enum {string} */
+            state: "none" | "open" | "authorized" | "processing" | "succeeded" | "failed" | "expired" | "voided";
+            intent_id?: string;
+            provider_code?: string;
+            /** Format: int64 */
+            amount_cents?: number;
+            /** @enum {string} */
+            capture_method?: "automatic" | "manual";
+            /** Format: date-time */
+            authorized_at?: string;
+            /** Format: date-time */
+            captured_at?: string;
+            capture_failed?: boolean;
+        };
+        OnlineBookingDetail: components["schemas"]["OnlineBookingSummary"] & {
+            transit: components["schemas"]["ContractBrief"];
+            customer?: components["schemas"]["CustomerBrief"];
+            vessel?: components["schemas"]["VesselBrief"];
+            contact?: components["schemas"]["OnlineContact"] | null;
+            people_on_board?: number;
+            expected_arrival_time?: components["schemas"]["LocalTime"];
+            notes?: string;
+            locale?: components["schemas"]["Locale"];
+            documents: components["schemas"]["OnlineBookingDocument"][];
+            consents: components["schemas"]["OnlineBookingConsent"][];
+            payment: components["schemas"]["OnlinePaymentState"];
+            /** Format: date-time */
+            approved_at?: string;
+            approved_by?: components["schemas"]["UserRef"];
+            /** Format: date-time */
+            rejected_at?: string;
+            reject_reason?: string;
+        };
+        OnlineBookingReject: {
+            reason: string;
+            /** @description Email the customer */
+            notify: boolean;
+        };
+        DocumentVerify: {
+            verified: boolean;
+        };
+        DocumentVerification: {
+            document_id: string;
+            verified: boolean;
+            /** Format: date-time */
+            verified_at?: string;
+            verified_by?: components["schemas"]["UserRef"];
+        };
+        ChannelCapabilities: {
+            push: boolean;
+            pull: boolean;
+            webhook: boolean;
+            ack: boolean;
+        };
+        BookingChannelConnection: {
+            enabled: boolean;
+            push_enabled: boolean;
+            /** @description External category code to Porto category code */
+            category_map: {
+                [key: string]: string;
+            };
+            has_credentials: boolean;
+            has_webhook_secret: boolean;
+            webhook_url: string;
+            /** Format: date-time */
+            last_push_at?: string;
+            /** Format: date-time */
+            last_pull_at?: string;
+            /** @description Error code only */
+            last_error?: string;
+            version: number;
+        };
+        BookingChannel: {
+            code: string;
+            capabilities: components["schemas"]["ChannelCapabilities"];
+            connection?: components["schemas"]["BookingChannelConnection"] | null;
+        };
+        BookingChannelList: {
+            items: components["schemas"]["BookingChannel"][];
+        };
+        BookingChannelUpdate: {
+            enabled: boolean;
+            push_enabled: boolean;
+            category_map: {
+                [key: string]: string;
+            };
+            /** @description Write-only; omitted keeps the stored credentials */
+            credentials?: {
+                [key: string]: string;
+            };
+            /** @description Write-only; omitted keeps the stored secret */
+            webhook_secret?: string;
+        };
+        ChannelTestResult: {
+            ok: boolean;
+            error_code?: string;
+        };
+        ChannelSyncResult: {
+            pulled: number;
+            booked: number;
+            rejected: number;
+            pushed: boolean;
+        };
+        /** @enum {string} */
+        ChannelReservationStatus: "received" | "booked" | "rejected" | "cancelled";
+        ChannelReservation: {
+            id: string;
+            channel_code: string;
+            external_ref: string;
+            status: components["schemas"]["ChannelReservationStatus"];
+            /** @enum {string} */
+            reject_reason?: "no_space" | "rules" | "unmapped_category" | "modify_unsupported" | "invalid" | "not_found";
+            transit?: components["schemas"]["ContractBrief"];
+            /** Format: date-time */
+            created_at: string;
+        };
+        ChannelReservationPage: {
+            items: components["schemas"]["ChannelReservation"][];
+            next_cursor: string | null;
+        };
     };
     responses: {
         /** @description A domain rule refused the request (m4-plan §7.4: insurance_required, customer_email_missing, paper_scan_required, shares_invalid, table_incomplete, transfer_requirements, template_invalid, template_limits, otp_invalid, vessel_not_in_fleet, provider_unknown, fit_blocked, no_price, ...), a validation failure, or an idempotency key was reused */
@@ -15103,6 +16568,15 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description A booking rule refused the request (m8-plan §11: booking_rules with the field and code, consent_required, cancellation_not_allowed, nothing_due, idempotency_mismatch, provider_disabled, fit_blocked), or a validation failure */
+        BookingUnprocessable: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
     };
     parameters: {
         ChargeId: string;
@@ -15207,6 +16681,19 @@ export interface components {
         ReportFamilyParam: components["schemas"]["ReportFamily"];
         /** @description Alignment of the previous period (default date) */
         ReportAlignParam: components["schemas"]["ReportAlign"];
+        BookingId: string;
+        ChannelCode: string;
+        ChannelPathCode: string;
+        /** @description The booking token returned by createBooking (never in the path or the query; missing = 404) */
+        BookingTokenHeader: string;
+        /** @description Read-only status token of the return page (from the URL fragment) */
+        StatusTokenHeader: string;
+        /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+        CustomerSessionHeader: string;
+        /** @description Challenge token verified by the BotProtection extension when one is registered */
+        BotTokenHeader: string;
+        /** @description Required on createBooking; handled by the domain (online_bookings.idempotency_hash): same key and body returns the same booking and token, a different body is 422 idempotency_mismatch */
+        BookingIdempotencyKey: string;
     };
     requestBodies: never;
     headers: {
@@ -30876,6 +32363,1366 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getBookingConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingConfig"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getBookingAvailability: {
+        parameters: {
+            query: {
+                arrival: components["schemas"]["IsoDate"];
+                departure: components["schemas"]["IsoDate"];
+                loa_cm?: number;
+                beam_cm?: number;
+                draft_cm?: number;
+                hull_type?: components["schemas"]["HullType"];
+                /** @description A saved vessel; needs Porto-Customer-Session */
+                vessel_id?: string;
+            };
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingAvailability"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["BookingUnprocessable"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    quoteBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BookingQuoteInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingQuote"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["BookingUnprocessable"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    createBooking: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Required on createBooking; handled by the domain (online_bookings.idempotency_hash): same key and body returns the same booking and token, a different body is 422 idempotency_mismatch */
+                "Idempotency-Key": components["parameters"]["BookingIdempotencyKey"];
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+                /** @description Challenge token verified by the BotProtection extension when one is registered */
+                "Porto-Bot-Token"?: components["parameters"]["BotTokenHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BookingCreate"];
+            };
+        };
+        responses: {
+            /** @description Created (or the replay of the same request) */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingCreated"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["BookingUnprocessable"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    getBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The booking token returned by createBooking (never in the path or the query; missing = 404) */
+                "Porto-Booking-Token"?: components["parameters"]["BookingTokenHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Booking"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    abandonBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The booking token returned by createBooking (never in the path or the query; missing = 404) */
+                "Porto-Booking-Token"?: components["parameters"]["BookingTokenHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Abandoned */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    submitBookingDetails: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The booking token returned by createBooking (never in the path or the query; missing = 404) */
+                "Porto-Booking-Token"?: components["parameters"]["BookingTokenHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BookingDetailsInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Booking"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["BookingUnprocessable"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    uploadBookingDocument: {
+        parameters: {
+            query: {
+                type: components["schemas"]["BookingDocumentType"];
+                expires_on?: components["schemas"]["IsoDate"];
+            };
+            header?: {
+                /** @description The booking token returned by createBooking (never in the path or the query; missing = 404) */
+                "Porto-Booking-Token"?: components["parameters"]["BookingTokenHeader"];
+                /** @description Original file name (sanitised) */
+                "X-File-Name"?: string;
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/pdf": string;
+                "image/png": string;
+                "image/jpeg": string;
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingDocument"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    startBookingPayment: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The booking token returned by createBooking (never in the path or the query; missing = 404) */
+                "Porto-Booking-Token"?: components["parameters"]["BookingTokenHeader"];
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BookingPayInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingPayResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["BookingUnprocessable"];
+            429: components["responses"]["TooManyRequests"];
+            502: components["responses"]["BadGateway"];
+        };
+    };
+    getBookingStatus: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The booking token returned by createBooking (never in the path or the query; missing = 404) */
+                "Porto-Booking-Token"?: components["parameters"]["BookingTokenHeader"];
+                /** @description Read-only status token of the return page (from the URL fragment) */
+                "Porto-Status-Token"?: components["parameters"]["StatusTokenHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                bookingId: components["parameters"]["BookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingStatusView"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    requestAccountLink: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Challenge token verified by the BotProtection extension when one is registered */
+                "Porto-Bot-Token"?: components["parameters"]["BotTokenHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountLoginInput"];
+            };
+        };
+        responses: {
+            /** @description Accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountLoginAccepted"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    openAccountSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountSessionInput"];
+            };
+        };
+        responses: {
+            /** @description Session opened */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountSession"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    closeAccountSession: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Revoked */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    listAccountVessels: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountVesselList"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    listAccountBookings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountBookingList"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getAccountBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountBooking"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    uploadAccountDocument: {
+        parameters: {
+            query: {
+                type: components["schemas"]["BookingDocumentType"];
+                expires_on?: components["schemas"]["IsoDate"];
+            };
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+                /** @description Original file name (sanitised) */
+                "X-File-Name"?: string;
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/pdf": string;
+                "image/png": string;
+                "image/jpeg": string;
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingDocument"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getAccountDocumentURL: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentFileUrl"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getAccountDocumentFile: {
+        parameters: {
+            query: {
+                c: string;
+                exp: number;
+                sig: string;
+            };
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description File bytes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                    "image/png": string;
+                    "image/jpeg": string;
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    payAccountBalance: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountPayBalanceResult"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["BookingUnprocessable"];
+            429: components["responses"]["TooManyRequests"];
+            502: components["responses"]["BadGateway"];
+        };
+    };
+    previewAccountCancellation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CancellationPreview"];
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    cancelAccountBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountCancelInput"];
+            };
+        };
+        responses: {
+            /** @description Cancelled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountCancelResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["BookingUnprocessable"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    previewAccountDateChange: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DateChangeInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DateChangePreview"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["BookingUnprocessable"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    changeAccountDates: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Customer-area session token (openAccountSession); missing or invalid = 404 on account operations */
+                "Porto-Customer-Session"?: components["parameters"]["CustomerSessionHeader"];
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DateChangeInput"];
+            };
+        };
+        responses: {
+            /** @description Changed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DateChangeResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["BookingUnprocessable"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getOnlineBookingSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnlineBookingSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateOnlineBookingSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OnlineBookingSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnlineBookingSettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["UnprocessableEntity"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listBookingTexts: {
+        parameters: {
+            query?: {
+                kind?: components["schemas"]["BookingTextKind"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingTextList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    publishBookingText: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BookingTextPublish"];
+            };
+        };
+        responses: {
+            /** @description Published */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingText"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    getOnlineQuotas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnlineQuotaList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateOnlineQuotas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OnlineQuotasUpdate"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnlineQuotaList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    getOnlineQuotaUsage: {
+        parameters: {
+            query?: {
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing: 422) */
+                from?: components["schemas"]["IsoDate"];
+                /** @description Inclusive; required like from */
+                to?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnlineQuotaUsage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    listOnlineBookings: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["OnlineBookingStatus"];
+                channel?: components["schemas"]["OnlineChannel"];
+                /** @description Arrival on or after */
+                from?: components["schemas"]["IsoDate"];
+                /** @description Arrival on or before */
+                to?: components["schemas"]["IsoDate"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnlineBookingPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getOnlineBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnlineBookingDetail"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    approveOnlineBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Approved */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnlineBookingDetail"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+            502: components["responses"]["BadGateway"];
+        };
+    };
+    rejectOnlineBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OnlineBookingReject"];
+            };
+        };
+        responses: {
+            /** @description Rejected */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnlineBookingDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    sendOnlineBookingPaymentLink: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                contractId: components["parameters"]["ContractId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sent */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnlineBookingDetail"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["M5Unprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+            502: components["responses"]["BadGateway"];
+        };
+    };
+    verifyDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                documentId: components["parameters"]["DocumentId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocumentVerify"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentVerification"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listBookingChannels: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingChannelList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateBookingChannel: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                channelCode: components["parameters"]["ChannelCode"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BookingChannelUpdate"];
+            };
+        };
+        responses: {
+            /** @description Saved */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingChannel"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["UnprocessableEntity"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    testBookingChannel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                channelCode: components["parameters"]["ChannelCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelTestResult"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    syncBookingChannel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                channelCode: components["parameters"]["ChannelCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelSyncResult"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            502: components["responses"]["BadGateway"];
+        };
+    };
+    listChannelReservations: {
+        parameters: {
+            query?: {
+                channel?: string;
+                status?: components["schemas"]["ChannelReservationStatus"];
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelReservationPage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    receiveChannelWebhook: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                channel: components["parameters"]["ChannelPathCode"];
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/octet-stream": string;
+            };
+        };
+        responses: {
+            /** @description Applied */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
         };
     };
 }

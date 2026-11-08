@@ -31,16 +31,21 @@ const (
 )
 
 // Confirmation sources: M3 confirms with the manual driver only; the M5/M8 payment webhook calls the same
-// ConfirmTransit with SourceProvider (INV-09).
+// ConfirmTransit with SourceProvider (INV-09). SourceChannel (M8, ADR 0013) is a verified channel reservation
+// flagged as paid: the channel is the merchant of record (m8-plan §8.3).
 const (
 	SourceManual   = "manual"
 	SourceProvider = "provider"
+	SourceChannel  = "channel"
 )
 
-// Channels accepted in M3 (online is M8).
+// Channels of contracts.channel. Desk and API create transits through TransitInput; online and external (M8)
+// only through CreateOnlineTransitTx (m8-plan §4.3, §8.2).
 const (
-	ChannelDesk = "desk"
-	ChannelAPI  = "api"
+	ChannelDesk     = "desk"
+	ChannelAPI      = "api"
+	ChannelOnline   = "online"
+	ChannelExternal = "external"
 )
 
 // ManualConfirmation is the manual driver input of a transit confirmation (m3-plan §4.2). Reference is free

@@ -1,0 +1,263 @@
+{
+  "nav": {
+    "bookings": "Prenotazioni online",
+    "settings": "Prenotazione online"
+  },
+  "bookings": {
+    "description": "Prenotazioni dalla pagina pubblica e dai canali: approvazioni, documenti e pagamenti.",
+    "empty": "Nessuna prenotazione online.",
+    "loadMore": "Mostra altre"
+  },
+  "filters": {
+    "status": "Stato",
+    "channel": "Canale",
+    "from": "Arrivo dal",
+    "to": "Arrivo al",
+    "all": "Tutti"
+  },
+  "columns": {
+    "reference": "Riferimento",
+    "dates": "Date",
+    "vessel": "Barca (L × B)",
+    "status": "Stato",
+    "channel": "Canale",
+    "deadline": "Scadenza",
+    "amount": "Importo"
+  },
+  "status": {
+    "held": "Bloccata",
+    "pending_payment": "In attesa di pagamento",
+    "awaiting_approval": "Da approvare",
+    "confirmed": "Confermata",
+    "arrived": "Arrivata",
+    "departed": "Partita",
+    "cancelled": "Annullata",
+    "expired": "Scaduta",
+    "no_show": "Mancato arrivo"
+  },
+  "channel": {
+    "online": "Pagina pubblica",
+    "external": "Canale esterno"
+  },
+  "approvalReason": {
+    "loa": "Lunghezza oltre la soglia",
+    "group": "Gruppo di posti su richiesta",
+    "always": "Approvazione sempre richiesta",
+    "no_provider": "Pagamento offline"
+  },
+  "deadline": {
+    "left": "{{time}} rimasti",
+    "past": "Scaduta"
+  },
+  "detail": {
+    "title": "Prenotazione {{reference}}",
+    "contact": "Contatto",
+    "contactHidden": "I dati di contatto richiedono il permesso di lettura clienti.",
+    "vessel": "Barca",
+    "dimensions": "{{loa}} × {{beam}}",
+    "people": "Persone a bordo",
+    "arrivalTime": "Arrivo previsto",
+    "notes": "Note",
+    "documents": "Documenti",
+    "noDocuments": "Nessun documento.",
+    "verified": "Verificato",
+    "preview": "Apri",
+    "consents": "Consensi",
+    "noConsents": "Nessun consenso registrato.",
+    "consentGranted": "versione {{version}} accettata",
+    "consentDenied": "versione {{version}} rifiutata",
+    "payment": "Pagamento",
+    "approvalReason": "Motivo dell'approvazione",
+    "deadline": "Scadenza approvazione",
+    "openTransit": "Apri il transito",
+    "approved": "Approvata il {{at}}",
+    "rejected": "Rifiutata il {{at}}: {{reason}}",
+    "captureFailed": "L'incasso della preautorizzazione non è riuscito: invia un link di pagamento.",
+    "email": "Email",
+    "phone": "Telefono"
+  },
+  "payment": {
+    "none": "Nessun pagamento",
+    "open": "Pagamento aperto",
+    "authorized": "Preautorizzato",
+    "processing": "In elaborazione",
+    "succeeded": "Pagato",
+    "failed": "Fallito",
+    "expired": "Scaduto",
+    "voided": "Preautorizzazione annullata"
+  },
+  "consentKind": {
+    "terms": "Condizioni",
+    "privacy": "Privacy",
+    "marketing": "Marketing"
+  },
+  "actions": {
+    "approve": "Approva",
+    "approved": "Prenotazione approvata.",
+    "reject": "Rifiuta",
+    "rejectTitle": "Rifiutare la prenotazione?",
+    "rejectReason": "Motivo",
+    "notify": "Notifica il cliente via email",
+    "rejectConfirm": "Rifiuta prenotazione",
+    "rejected": "Prenotazione rifiutata.",
+    "paymentLink": "Invia link di pagamento",
+    "paymentLinkSent": "Link di pagamento inviato.",
+    "cancel": "Annulla"
+  },
+  "documentTypes": {
+    "boating_licence": "Patente nautica",
+    "navigation_licence": "Licenza di navigazione",
+    "insurance_policy": "Polizza assicurativa",
+    "registration_certificate": "Certificato di iscrizione",
+    "identity_card": "Documento d'identità"
+  },
+  "settings": {
+    "description": "Regole, pagamenti, approvazione, testi, quote e incorporamento della pagina di prenotazione.",
+    "notSaved": "Sono attive le impostazioni predefinite: salva per renderle tue.",
+    "disabled": "La prenotazione online è disattivata nelle impostazioni del marina.",
+    "save": "Salva",
+    "saved": "Impostazioni salvate.",
+    "tabs": {
+      "rules": "Regole",
+      "payment": "Pagamento e cancellazione",
+      "approval": "Approvazione",
+      "texts": "Testi",
+      "arrival": "Arrivo",
+      "quotas": "Quote",
+      "embed": "Incorpora",
+      "channels": "Canali"
+    },
+    "rules": {
+      "minNights": "Notti minime",
+      "maxNights": "Notti massime",
+      "minAdvanceHours": "Preavviso minimo (ore)",
+      "maxAdvanceDays": "Prenotabile fino a (giorni)",
+      "arrivalFrom": "Arrivo dalle",
+      "arrivalTo": "Arrivo entro le",
+      "closedWeekdays": "Giorni senza arrivi",
+      "maxLiveHolds": "Blocchi contemporanei al massimo",
+      "revealBerth": "Mostra il posto al cliente",
+      "revealNever": "Mai",
+      "revealAfter": "Dopo la conferma",
+      "showFeet": "Mostra anche i piedi",
+      "people": "Chiedi le persone a bordo",
+      "phone": "Telefono obbligatorio",
+      "documents": "Documenti richiesti",
+      "documentsLater": "I documenti si possono caricare dopo il pagamento"
+    },
+    "weekdays": {
+      "0": "Dom",
+      "1": "Lun",
+      "2": "Mar",
+      "3": "Mer",
+      "4": "Gio",
+      "5": "Ven",
+      "6": "Sab"
+    },
+    "payment": {
+      "mode": "Pagamento online",
+      "full": "Intero importo",
+      "deposit": "Acconto",
+      "depositBp": "Acconto (%)",
+      "refundAs": "Rimborso alla cancellazione",
+      "refund": "Rimborso sul metodo di pagamento",
+      "credit": "Credito presso il marina",
+      "latePayment": "Recupera i pagamenti arrivati dopo la scadenza del blocco",
+      "withoutProvider": "Accetta prenotazioni senza pagamento online (bonifico, con approvazione)",
+      "tiers": "Fasce di cancellazione",
+      "tierDays": "Almeno giorni prima",
+      "tierRefund": "Rimborso (%)",
+      "addTier": "Aggiungi fascia",
+      "removeTier": "Rimuovi fascia"
+    },
+    "approval": {
+      "always": "Approva sempre ogni prenotazione",
+      "loaOver": "Approva le barche più lunghe di (m)",
+      "groups": "Gruppi di posti su richiesta",
+      "holdHours": "Tempo per decidere (ore)"
+    },
+    "arrival": {
+      "vhf": "Canale VHF",
+      "phone": "Telefono ormeggiatori",
+      "rulesUrl": "Link al regolamento",
+      "textIt": "Istruzioni di arrivo (italiano)",
+      "textEn": "Istruzioni di arrivo (inglese)",
+      "theme": "Tema",
+      "hideHeader": "Nascondi l'intestazione quando la pagina è incorporata"
+    },
+    "texts": {
+      "kind": "Testo",
+      "current": "Versione in vigore: {{version}} del {{at}}",
+      "none": "Nessuna versione pubblicata.",
+      "textIt": "Testo (italiano)",
+      "textEn": "Testo (inglese)",
+      "publish": "Pubblica nuova versione",
+      "published": "Nuova versione pubblicata.",
+      "immutable": "Le versioni pubblicate non si modificano: ogni modifica è una nuova versione.",
+      "history": "Versioni precedenti"
+    },
+    "textKind": {
+      "terms": "Condizioni di prenotazione",
+      "privacy": "Informativa privacy",
+      "marketing": "Consenso marketing"
+    },
+    "quotas": {
+      "description": "Quanti posti di ogni gruppo si possono vendere online per notte. Banchina e API non sono limitate.",
+      "group": "Gruppo",
+      "kind": "Quota",
+      "value": "Valore",
+      "members": "Posti attivi",
+      "none": "Nessuna",
+      "count": "Numero di posti",
+      "percent": "Percentuale",
+      "areasOnlyCount": "Gruppo con aree: solo quota a numero",
+      "empty": "Nessun gruppo di posti: creali nell'editor della mappa.",
+      "save": "Salva quote",
+      "saved": "Quote salvate.",
+      "usage": "Occupazione online (30 notti)",
+      "night": "Notte"
+    },
+    "embed": {
+      "origins": "Siti autorizzati a incorporare la pagina",
+      "originsHelp": "Si modificano nelle impostazioni del marina (campo «Origini consentite»).",
+      "noOrigins": "Nessun sito autorizzato: la pagina si può incorporare solo da Porto.",
+      "script": "Codice con script",
+      "iframe": "Codice iframe",
+      "link": "Link diretto",
+      "copy": "Copia",
+      "copied": "Copiato.",
+      "preview": "Anteprima"
+    },
+    "channels": {
+      "description": "Marketplace esterni collegati: ricevono disponibilità e tariffe e inviano prenotazioni.",
+      "empty": "Nessun canale installato.",
+      "enabled": "Attivo",
+      "push": "Invia disponibilità e tariffe",
+      "credentials": "Credenziali (chiave=valore, una per riga)",
+      "credentialsSet": "Credenziali salvate (non visibili)",
+      "secret": "Segreto del webhook",
+      "secretSet": "Segreto salvato (non visibile)",
+      "categoryMap": "Corrispondenza categorie (codice esterno=categoria Porto, una per riga)",
+      "webhookUrl": "Indirizzo webhook",
+      "lastPull": "Ultima lettura: {{at}}",
+      "lastPush": "Ultimo invio: {{at}}",
+      "lastError": "Ultimo errore: {{code}}",
+      "save": "Salva",
+      "saved": "Canale salvato.",
+      "test": "Prova connessione",
+      "testOk": "Connessione riuscita.",
+      "testFailed": "Connessione non riuscita: {{code}}",
+      "sync": "Sincronizza ora",
+      "synced": "Lette {{pulled}}, prenotate {{booked}}, rifiutate {{rejected}}.",
+      "reservations": "Prenotazioni ricevute",
+      "noReservations": "Nessuna prenotazione ricevuta.",
+      "capabilities": "Funzioni: {{list}}"
+    },
+    "reservationStatus": {
+      "received": "Ricevuta",
+      "booked": "Prenotata",
+      "rejected": "Rifiutata",
+      "cancelled": "Annullata"
+    }
+  }
+}

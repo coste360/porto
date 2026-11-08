@@ -35,4 +35,30 @@ describe('booking routes', () => {
       ret: true,
     });
   });
+
+  it('routes the M8 return page, customer area and login link', () => {
+    expect(
+      routeFromPath('/b/porto-demo/r/0192f0c4-1111-7000-8000-000000000001', slugFromPath),
+    ).toEqual({
+      page: 'return',
+      slug: 'porto-demo',
+      bookingId: '0192f0c4-1111-7000-8000-000000000001',
+    });
+    expect(routeFromPath('/b/porto-demo/account', slugFromPath)).toEqual({
+      page: 'account',
+      slug: 'porto-demo',
+      contractId: null,
+    });
+    expect(
+      routeFromPath('/b/porto-demo/account/0192f0c4-1111-7000-8000-000000000002', slugFromPath),
+    ).toEqual({
+      page: 'account',
+      slug: 'porto-demo',
+      contractId: '0192f0c4-1111-7000-8000-000000000002',
+    });
+    expect(routeFromPath('/b/porto-demo/a', slugFromPath)).toEqual({
+      page: 'accountLink',
+      slug: 'porto-demo',
+    });
+  });
 });

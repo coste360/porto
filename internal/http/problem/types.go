@@ -150,6 +150,18 @@ const (
 	InvalidReportFilter Type = "invalid_report_filter"
 	ReportTooLarge      Type = "report_too_large"
 	UnknownIndicator    Type = "unknown_indicator"
+
+	// M8 (m8-plan §11).
+	BookingUnavailable     Type = "booking_unavailable"
+	BookingRules           Type = "booking_rules"
+	BookingBusy            Type = "booking_busy"
+	ConsentRequired        Type = "consent_required"
+	TextOutdated           Type = "text_outdated"
+	RefundChanged          Type = "refund_changed"
+	PriceChanged           Type = "price_changed"
+	CancellationNotAllowed Type = "cancellation_not_allowed"
+	NothingDue             Type = "nothing_due"
+	IdempotencyMismatch    Type = "idempotency_mismatch"
 )
 
 type typeInfo struct {
@@ -285,6 +297,17 @@ var registry = map[Type]typeInfo{
 	InvalidReportFilter:       {http.StatusUnprocessableEntity, "Invalid report filter"},
 	ReportTooLarge:            {http.StatusUnprocessableEntity, "Too many records to export"},
 	UnknownIndicator:          {http.StatusUnprocessableEntity, "Unknown or not comparable indicator"},
+	// M8
+	BookingUnavailable:     {http.StatusConflict, "No place of the category is available any more"},
+	BookingRules:           {http.StatusUnprocessableEntity, "The request breaks an online booking rule"},
+	BookingBusy:            {http.StatusServiceUnavailable, "Too many bookings in progress, retry shortly"},
+	ConsentRequired:        {http.StatusUnprocessableEntity, "Terms and privacy must be accepted"},
+	TextOutdated:           {http.StatusConflict, "The accepted text is not the current version"},
+	RefundChanged:          {http.StatusConflict, "The refund changed since the preview"},
+	PriceChanged:           {http.StatusConflict, "The price changed since the preview"},
+	CancellationNotAllowed: {http.StatusUnprocessableEntity, "The booking cannot be cancelled online"},
+	NothingDue:             {http.StatusUnprocessableEntity, "Nothing is due"},
+	IdempotencyMismatch:    {http.StatusUnprocessableEntity, "The idempotency key was used with a different request"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

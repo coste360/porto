@@ -87,7 +87,8 @@ type Payment struct {
 // UnallocatedCents is the part of the payment neither matched nor refunded.
 func (p *Payment) UnallocatedCents() int64 { return p.AmountCents - p.AllocatedCents - p.RefundedCents }
 
-// PaymentMatch is a row of payment_matches (insert-only; a reversal is a row with the opposite amount).
+// PaymentMatch is a row of payment_matches (insert-only but for reversed_cents; a reversal is a row with the
+// opposite amount, and a match may have several partial reversals up to its amount).
 type PaymentMatch struct {
 	bun.BaseModel `bun:"table:payment_matches"`
 
@@ -97,6 +98,7 @@ type PaymentMatch struct {
 	ChargeID        string    `bun:"charge_id"`
 	AmountCents     int64     `bun:"amount_cents"`
 	ReversesMatchID string    `bun:"reverses_match_id,nullzero"`
+	ReversedCents   int64     `bun:"reversed_cents"` // Σ of its reversals, only via AddMatchReversed; 0 on reversal rows
 	CreatedByUserID string    `bun:"created_by_user_id,nullzero"`
 	CreatedByActor  string    `bun:"created_by_actor"`
 	CreatedAt       time.Time `bun:"created_at"`

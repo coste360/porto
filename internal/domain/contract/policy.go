@@ -34,6 +34,24 @@ type Policy struct {
 	Payment      *PaymentPolicy      `json:"payment,omitempty"`
 	Renewal      *RenewalPolicy      `json:"renewal,omitempty"`
 	Cancellation *CancellationPolicy `json:"cancellation,omitempty"`
+	// Online is the snapshot of the online booking terms of an online or channel transit (M8, m8-plan §4.3, §7.2):
+	// cancellations from the customer area apply these tiers, never the current settings.
+	Online *OnlinePolicy `json:"online,omitempty"`
+}
+
+// OnlinePolicy is the online part of a transit's policy snapshot (M8).
+type OnlinePolicy struct {
+	CancellationTiers []OnlineTier `json:"cancellation_tiers"`
+	PaymentMode       string       `json:"payment_mode"` // deposit, full
+	DepositBP         int          `json:"deposit_bp"`
+	RefundAs          string       `json:"refund_as"`    // refund, credit
+	RevealBerth       string       `json:"reveal_berth"` // never, after_confirmation
+}
+
+// OnlineTier is a cancellation tier of an online policy snapshot.
+type OnlineTier struct {
+	MinDaysBefore int `json:"min_days_before"`
+	RefundBP      int `json:"refund_bp"`
 }
 
 // PaymentPolicy is the payment part of a policy (JSON form of schedule.PaymentPolicy).

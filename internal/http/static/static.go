@@ -79,10 +79,20 @@ func (a *App) ServeFile(w http.ResponseWriter, r *http.Request, rel string, fall
 					w.Header().Set("Cache-Control", "no-cache")
 					w.Header().Set("Service-Worker-Allowed", a.prefix)
 					w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
+				case rel == EmbedScriptFile:
+					// The widget loader (M8, m8-plan §10) is loaded by third-party pages: cacheable for an hour and
+					// readable cross-origin. It carries no credentials and no per-marina data.
+					w.Header().Set("Cache-Control", "public, max-age=3600")
+					w.Header().Set("Cross-Origin-Resource-Policy", "cross-origin")
+					w.Header().Set("Access-Control-Allow-Origin", "*")
+					w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
 				case strings.HasPrefix(rel, "assets/"):
 					w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 				default:
 					w.Header().Set("Cache-Control", "public, max-age=3600")
+					if path.Ext(rel) == ".webmanifest" {
+						w.Header().Set("Content-Type", "application/manifest+json")
+					}
 				}
 				http.ServeContent(w, r, st.Name(), time.Time{}, rs)
 				return
@@ -96,8 +106,12 @@ func (a *App) ServeFile(w http.ResponseWriter, r *http.Request, rel string, fall
 	http.NotFound(w, r)
 }
 
-// ServiceWorkerFile is the service worker of the admin panel (m6b-plan §3.1), built without a hash.
+// ServiceWorkerFile is the service worker of the admin panel (m6b-plan §3.1) and of the booking pages (M8),
+// built or copied without a hash.
 const ServiceWorkerFile = "sw.js"
+
+// EmbedScriptFile is the booking widget loader (M8), served at /embed.js and /b/embed.js.
+const EmbedScriptFile = "embed.js"
 
 type readSeeker interface {
 	Read(p []byte) (int, error)

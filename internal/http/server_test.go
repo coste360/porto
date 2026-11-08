@@ -82,10 +82,31 @@ func TestPolicies_SecurityOfKeyOperations(t *testing.T) {
 		{"PUT", "/api/desktop/v1/lan", false, true},
 		{"POST", "/api/desktop/v1/secret-key/reveal", false, true},
 		{"POST", "/api/desktop/v1/restore-upload", false, true},
+		// M8
+		{"GET", "/api/public/v1/{slug}/booking/config", true, false},
+		{"POST", "/api/public/v1/{slug}/bookings", true, false},
+		{"POST", "/api/public/v1/{slug}/account/login", true, false},
+		{"POST", "/webhooks/channels/{channel}/{marinaId}", true, false},
+		{"POST", "/api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/approve", false, true},
+		{"PUT", "/api/admin/v1/marinas/{marinaId}/online-booking/settings", false, true},
 	} {
 		p, ok := ps.Lookup(c.method, c.route)
 		if !ok || p.Public() != c.public || p.CSRF != c.csrf {
 			t.Errorf("%s %s: %+v", c.method, c.route, p)
+		}
+	}
+}
+
+// TestPolicies_DomainIdempotency: createBooking handles Idempotency-Key in the domain (m8-plan §4.3), so the
+// middleware never stores a response carrying a booking token; every other operation keeps the middleware.
+func TestPolicies_DomainIdempotency(t *testing.T) {
+	ps, err := Policies()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for key, p := range ps {
+		if want := key == "POST /api/public/v1/{slug}/bookings"; p.DomainIdempotency != want {
+			t.Errorf("%s: DomainIdempotency %v, want %v", key, p.DomainIdempotency, want)
 		}
 	}
 }

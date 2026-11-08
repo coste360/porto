@@ -129,6 +129,12 @@ const (
 	BillingChanged        = "billing.changed"
 )
 
+// M8 event types (version 1, m8-plan §6, §11). transit.approval_requested is public (webhook catalogue) and maps
+// to the contract SSE topic.
+const (
+	TransitApprovalRequested = "transit.approval_requested"
+)
+
 // SSE topics.
 const (
 	TopicMarina = "marina.changed"
@@ -252,6 +258,8 @@ var catalogue = []TypeInfo{
 	{PaymentRequestChanged, TopicBilling, false},
 	{ReminderChanged, TopicBilling, false},
 	{BillingChanged, TopicBilling, false},
+	// M8
+	{TransitApprovalRequested, TopicContract, true},
 }
 
 // Types returns the catalogue of event types.

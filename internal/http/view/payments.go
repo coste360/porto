@@ -91,10 +91,10 @@ func Payment(d payment.Detail, full bool) api.Payment {
 	if full {
 		ms := make([]api.PaymentMatch, 0, len(d.Matches))
 		for _, m := range d.Matches {
-			rev := m.Reversed
+			rev, part := m.Reversed, m.ReversedCents
 			ms = append(ms, api.PaymentMatch{
 				Id: m.ID, ChargeId: m.ChargeID, ChargeNumber: m.ChargeNumber, AmountCents: m.AmountCents,
-				ReversesMatchId: String(m.ReversesMatchID), Reversed: &rev, CreatedAt: m.CreatedAt.UTC(),
+				ReversesMatchId: String(m.ReversesMatchID), Reversed: &rev, ReversedCents: &part, CreatedAt: m.CreatedAt.UTC(),
 			})
 		}
 		rs := PaymentRefunds(d.Refunds)

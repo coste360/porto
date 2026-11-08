@@ -109,7 +109,11 @@ type SearchInput struct {
 	ConsiderOut        bool
 	MaxSegments        *int
 	Limit              int
-	Channel            string // desk (default), api
+	// Channel is desk (default), api, or online and external (M8, m8-plan §3.2): with online or external the
+	// candidates are restricted to online_sellable resources, fit overrides are never applied, MaxSegments is 0
+	// and the online quotas filter the solutions (used < cap on every night, read in the same read transaction).
+	// Public callers (booking, channel) search through SearchScoped; Search keeps transits.desk.
+	Channel string
 }
 
 // SearchResult is the outcome of a search.
@@ -144,13 +148,17 @@ func (s *Service) Search(ctx context.Context, p *auth.Principal, marinaID string
 	if in.Channel == "" {
 		in.Channel = "desk"
 	}
-	if in.Channel != "desk" && in.Channel != "api" {
+	if !validSearchChannel(in.Channel) {
 		v.Add("channel", "invalid")
 	}
 	if len(v.Fields) > 0 {
 		return nil, v
 	}
 	return s.search(ctx, scope, in)
+}
+
+func validSearchChannel(c string) bool {
+	return c == "desk" || c == "api" || c == ChannelOnline || c == ChannelExternal
 }
 
 // search runs a search in scope without authorisation (the callers authorised).
@@ -179,6 +187,13 @@ func (s *Service) search(ctx context.Context, scope store.MarinaScope, in Search
 		snap, considered, err := loadSnapshot(ctx, tx, scope, in, now, loc, cfg)
 		if err != nil {
 			return err
+		}
+		if QuotaChannel(in.Channel) {
+			// Online quotas are read in the same read transaction as the occupancy rows (m8-plan §3.2); the claim
+			// at booking time is the authority (conditional increment, INV-12).
+			if snap.QuotaFull, err = fullQuotaGroups(ctx, tx, scope, in.Arrival, in.Departure.AddDays(-1)); err != nil {
+				return err
+			}
 		}
 		maxSeg := cfg.MaxSegments
 		if in.MaxSegments != nil {
@@ -270,7 +285,7 @@ func loadSnapshot(ctx context.Context, tx bun.IDB, scope store.MarinaScope, in S
 		snap.Areas = append(snap.Areas, engine.AreaCand{
 			ID: a.ID, Code: a.Code, MapID: a.MapID, StructureID: a.StructureID, GroupIDs: raw.Groups[a.ID], Target: res.Target,
 			Mode: res.Area.Mode, CellCm: res.Area.Cell, MarginCm: res.Area.Margin, LengthCm: res.Area.Length,
-			CellCount: layout.CellCount(*res.Area), DepthProfile: res.Depth,
+			CellCount: layout.CellCount(*res.Area), DepthProfile: res.Depth, OnlineSellable: a.OnlineSellable,
 		})
 	}
 	nights := map[string][]calendar.Date{}

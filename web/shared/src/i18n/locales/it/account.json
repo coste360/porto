@@ -1,0 +1,119 @@
+{
+  "title": "Area cliente",
+  "login": {
+    "title": "Accedi alle tue prenotazioni",
+    "description": "Inserisci l'email usata per prenotare: ti mandiamo un link per entrare, senza password.",
+    "email": "Email",
+    "submit": "Inviami il link",
+    "sent": "Se l'indirizzo è registrato, riceverai a breve un link di accesso. Il link vale 30 minuti.",
+    "again": "Usa un'altra email"
+  },
+  "link": {
+    "opening": "Accesso in corso…",
+    "invalidTitle": "Link non valido",
+    "invalidDescription": "Il link è scaduto o è già stato usato. Chiedine uno nuovo.",
+    "requestNew": "Chiedi un nuovo link"
+  },
+  "expired": "La sessione è scaduta: accedi di nuovo.",
+  "logout": "Esci",
+  "list": {
+    "title": "Le mie prenotazioni",
+    "empty": "Non ci sono prenotazioni.",
+    "open": "Dettagli"
+  },
+  "back": "Tutte le prenotazioni",
+  "status": {
+    "held": "In attesa dei dati",
+    "pending_payment": "In attesa di pagamento",
+    "awaiting_approval": "In attesa di conferma del marina",
+    "confirmed": "Confermata",
+    "arrived": "In porto",
+    "departed": "Conclusa",
+    "cancelled": "Annullata",
+    "expired": "Scaduta",
+    "no_show": "Mancato arrivo"
+  },
+  "fields": {
+    "reference": "Riferimento",
+    "dates": "Date",
+    "vessel": "Barca",
+    "berth": "Posto",
+    "category": "Tipo di posto",
+    "total": "Totale",
+    "paid": "Pagato",
+    "residual": "Da pagare"
+  },
+  "dates": "{{arrival}} – {{departure}}",
+  "qr": {
+    "title": "Codice per l'arrivo",
+    "description": "Mostra questo codice all'ormeggiatore."
+  },
+  "documents": {
+    "title": "Documenti",
+    "empty": "Nessun documento caricato.",
+    "verified": "Verificato",
+    "toVerify": "Da verificare",
+    "missing": "Mancano: {{list}}",
+    "upload": "Carica documento",
+    "type": "Tipo di documento",
+    "file": "File (PDF, PNG o JPEG, max 10 MB)",
+    "badType": "Formato non accettato: usa PDF, PNG o JPEG.",
+    "tooLarge": "Il file supera i 10 MB.",
+    "uploaded": "Documento caricato.",
+    "view": "Apri"
+  },
+  "documentTypes": {
+    "boating_licence": "Patente nautica",
+    "navigation_licence": "Licenza di navigazione",
+    "insurance_policy": "Polizza assicurativa",
+    "registration_certificate": "Certificato di iscrizione",
+    "identity_card": "Documento d'identità"
+  },
+  "receipts": {
+    "title": "Pagamenti",
+    "empty": "Nessun pagamento registrato."
+  },
+  "approval": "La richiesta è in attesa di conferma da parte del marina.",
+  "payBalance": {
+    "button": "Paga il saldo",
+    "redirecting": "Apertura del pagamento…"
+  },
+  "cancel": {
+    "button": "Annulla prenotazione",
+    "title": "Annullare la prenotazione?",
+    "refund": "Rimborso: {{amount}}",
+    "credit": "Credito presso il marina: {{amount}}",
+    "noRefund": "Nessun rimborso previsto dalle condizioni.",
+    "paid": "Pagato finora: {{amount}}",
+    "tier": "Annullando almeno {{days}} giorni prima dell'arrivo il rimborso è del {{percent}}.",
+    "notAllowed": "La prenotazione non può più essere annullata online: contatta il marina.",
+    "confirm": "Annulla prenotazione",
+    "keep": "Mantieni",
+    "done": "Prenotazione annullata.",
+    "changed": "Il rimborso è cambiato: controlla il nuovo importo e conferma di nuovo."
+  },
+  "changeDates": {
+    "button": "Cambia date",
+    "title": "Cambia le date",
+    "arrival": "Arrivo",
+    "departure": "Partenza",
+    "preview": "Verifica disponibilità",
+    "unavailable": "Le nuove date non sono disponibili.",
+    "oldTotal": "Totale attuale",
+    "newTotal": "Nuovo totale",
+    "supplement": "Da pagare in più: {{amount}}",
+    "refund": "Rimborso: {{amount}}",
+    "confirm": "Conferma le nuove date",
+    "done": "Date aggiornate.",
+    "changed": "Il prezzo è cambiato: controlla il nuovo totale e conferma di nuovo.",
+    "invalid": "La partenza deve essere dopo l'arrivo."
+  },
+  "blockReason": {
+    "closed": "Il marina è chiuso in quelle date.",
+    "min_nights": "Il soggiorno è troppo breve.",
+    "max_nights": "Il soggiorno è troppo lungo.",
+    "advance": "Le date sono fuori dal periodo prenotabile online.",
+    "weekday": "Non si può arrivare in quel giorno della settimana.",
+    "too_large": "La barca è troppo grande per i posti disponibili online."
+  }
+}

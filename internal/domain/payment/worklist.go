@@ -33,6 +33,10 @@ const (
 	WorkArrearsPaid           = "arrears_paid"
 	WorkDeadline              = "deadline"
 	WorkDispute               = "dispute"
+	// M8 (m8-plan §6, §8.2): raised by collect (card capture refused after approval) and by the channels (a
+	// refused modification); same names as collect.WorkCaptureFailed and channel.WorkModifyUnsupported.
+	WorkCaptureFailed = "capture_failed"
+	WorkChannelModify = "channel_modify"
 )
 
 // computedKinds maps the source types with a table of their own to their kind and permission.
@@ -50,7 +54,7 @@ var computedKinds = map[string]struct {
 // storedKinds are recorded with store.RaiseWorkItem (source_type = kind) by the services that detect them.
 var storedKinds = []string{
 	WorkLatePayment, WorkOverpayment, WorkBillingItemMissing, WorkBillingTargetMismatch, WorkArrearsPaid, WorkDispute,
-	WorkPaymentFailed,
+	WorkPaymentFailed, WorkCaptureFailed, WorkChannelModify,
 }
 
 // WorkItem is one worklist item.

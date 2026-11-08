@@ -58,6 +58,11 @@ var (
 		"billing_settings.auto_payment_request", "charge_lines.price_includes_vat", "charge_export_items.is_first",
 		"invoice_reconciliations.dry_run", "cash_registers.active", "cash_registers.is_default",
 		"payment_provider_settings.enabled", "payment_provider_settings.sepa_enabled", "payment_intent_charges.open_flag",
+		// M8 (00016_online_booking)
+		"dynamic_areas.online_sellable", "online_booking_settings.late_payment_recovery",
+		"online_booking_settings.allow_without_provider", "online_booking_settings.hide_header_in_embed",
+		"online_booking_settings.show_feet", "channel_connections.enabled",
+		"channel_connections.push_enabled", "channel_connections.push_dirty",
 	}
 	sqliteJSONColumns = []string{
 		"organizations.billing_address", "marinas.locales", "marinas.contacts", "marinas.address", "marinas.geo",
@@ -92,6 +97,10 @@ var (
 		"charge_exports.totals", "invoice_reconciliations.report", "charge_imports.mapping", "charge_imports.report",
 		"cash_sessions.expected", "cash_sessions.counted", "payments.vat_split", "fiscal_documents.lines",
 		"fiscal_documents.vat", "payment_provider_settings.methods", "reminder_runs.counts",
+		// M8 (00016_online_booking)
+		"online_booking_settings.closed_weekdays", "online_booking_settings.cancellation_tiers",
+		"online_booking_settings.approval", "online_booking_settings.required_fields",
+		"online_booking_settings.arrival_info", "booking_texts.texts", "channel_connections.category_map",
 	}
 )
 
@@ -218,6 +227,10 @@ var dumpOrder = map[string]string{
 	"billing_settings":  "marina_id",
 	"billing_sequences": "marina_id, series, period",
 	"fiscal_sequences":  "marina_id, day",
+	// M8
+	"online_booking_settings": "marina_id",
+	"online_quota_usage":      "group_id, night",
+	"online_quota_claims":     "contract_id, group_id, night",
 }
 
 // DumpTable calls fn with every row of table (ordered by id, or by its primary key when it has no id), converted

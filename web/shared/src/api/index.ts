@@ -29,7 +29,8 @@ export {
   NARROWED_TOPICS,
   type StreamMessage,
 } from './queryKeys';
-export { subscribeMarinaStream, SSE_TOPICS, SSE_DEBOUNCE_MS } from './sse';
+// The SSE stream is not re-exported (it pulls the offline queue into the booking bundle, m8-plan §12.1): the admin
+// app imports it from '@porto/shared/api/sse'.
 export type * from './schema';
 export { ApiProvider, useApi } from './context';
 export * from './hooks/maps';
@@ -48,3 +49,6 @@ export * from './hooks/payPublic';
 export * from './hooks/desktop';
 export * from './hooks/reports';
 export * from './hooks/dashboard';
+export * from './hooks/onlineBooking';
+export * from './hooks/account';
+export * from './hooks/onlineAdmin';

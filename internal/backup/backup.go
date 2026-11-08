@@ -141,6 +141,15 @@ func Backup(ctx context.Context, db *store.DB, out io.Writer, version, filesDir 
 	}
 	err = db.ReadTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		for _, name := range store.BackupTables() {
+			// A database at an older schema than this binary lacks the newer tables: they are not in its archive
+			// (restore treats a table missing from the manifest as empty).
+			exists, err := store.TableExists(ctx, tx, db.Kind, name)
+			if err != nil {
+				return err
+			}
+			if !exists {
+				continue
+			}
 			t, err := dumpTable(ctx, tx, db.Kind, name, tmp)
 			if err != nil {
 				return err

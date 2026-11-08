@@ -3,7 +3,7 @@ import { Link, Outlet } from '@tanstack/react-router';
 import { MonitorIcon } from 'lucide-react';
 import { useEffect } from 'react';
 
-import { subscribeMarinaStream } from '@porto/shared/api';
+import { subscribeMarinaStream } from '@porto/shared/api/sse';
 import { useT } from '@porto/shared/i18n';
 import { Button } from '@porto/shared/ui/button';
 import { BrandLogo } from '@porto/shared/ui/patterns';

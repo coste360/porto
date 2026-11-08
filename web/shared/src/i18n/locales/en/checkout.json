@@ -1,0 +1,223 @@
+{
+  "steps": {
+    "label": "Booking steps",
+    "search": "Dates and boat",
+    "berth": "Berth",
+    "extras": "Extras and summary",
+    "details": "Details",
+    "payment": "Payment"
+  },
+  "search": {
+    "arrival": "Arrival",
+    "departure": "Departure",
+    "nightsHint": "From {{min}} to {{max}} nights.",
+    "loa": "Length overall",
+    "beam": "Beam",
+    "draft": "Draft",
+    "metres": "m",
+    "feet": "{{value}} ft",
+    "optional": "(optional)",
+    "hullType": "Hull type",
+    "hullTypePlaceholder": "Select the hull type",
+    "submit": "Search"
+  },
+  "hullTypes": {
+    "monohull_motor": "Motor monohull",
+    "monohull_sail": "Sailing monohull",
+    "catamaran": "Catamaran",
+    "trimaran": "Trimaran",
+    "rib": "RIB",
+    "gozzo": "Gozzo",
+    "other": "Other"
+  },
+  "validation": {
+    "length": "Enter a valid length in metres.",
+    "arrivalPast": "The arrival cannot be in the past.",
+    "departureAfter": "The departure must be after the arrival.",
+    "minNights": "The stay is shorter than the minimum allowed.",
+    "maxNights": "The stay is longer than the maximum allowed.",
+    "phone": "Enter a valid phone number.",
+    "country": "Enter the two-letter country code (e.g. GB).",
+    "time": "Enter a valid time (hh:mm).",
+    "consent": "This consent is required to book."
+  },
+  "berth": {
+    "summary": "From {{arrival}} to {{departure}}, {{loa}} boat",
+    "editSearch": "Change",
+    "searching": "Searching for available berths…",
+    "listLabel": "Berth categories",
+    "from": "from",
+    "available": "Available",
+    "unavailable": "Not available for these dates",
+    "onRequest": "On request",
+    "emptyTitle": "No berth available",
+    "reason": {
+      "no_space": "There are no free berths for these dates and dimensions. Try other dates or contact the marina.",
+      "closed": "The marina is closed to arrivals on these dates.",
+      "min_nights": "The minimum stay is {{min}} nights.",
+      "max_nights": "The maximum stay is {{max}} nights.",
+      "advance": "The dates are outside the period bookable online.",
+      "weekday": "No arrivals are planned on this day of the week.",
+      "too_large": "No berth bookable online fits a boat of these dimensions. Please contact the marina."
+    },
+    "contact": "Call the marina ({{phone}})",
+    "taken": "The berth you chose has just been taken: please choose again among those still available."
+  },
+  "extras": {
+    "services": "Additional services",
+    "quantity": "Quantity of {{name}}",
+    "unit": {
+      "night": "per night",
+      "month": "per month",
+      "season": "per season",
+      "year": "per year",
+      "m": "per metre",
+      "m2": "per square metre",
+      "kwh": "per kWh",
+      "m3": "per cubic metre",
+      "hour": "per hour",
+      "piece": "each",
+      "lump": "flat rate"
+    },
+    "promo": "Promo code",
+    "applyPromo": "Apply",
+    "promoRejected": "The code is not valid for this booking.",
+    "summary": "Summary: {{category}}",
+    "pricing": "Calculating the price…",
+    "approvalNotice": "For this boat the marina confirms the booking on request: the berth stays held until it answers.",
+    "notPayable": "Online booking is not available right now: please contact the marina.",
+    "hold": "Hold the berth",
+    "holding": "Holding the berth…"
+  },
+  "price": {
+    "qty": "× {{qty}}",
+    "net": "Net amount",
+    "vat": "VAT",
+    "total": "Total",
+    "dueNow": {
+      "deposit": "Deposit due now",
+      "full": "Due now"
+    }
+  },
+  "cancellation": {
+    "title": "Cancellation",
+    "tier_zero": "Until the arrival day: {{percent}} refund",
+    "tier_one": "Up to {{count}} day before arrival: {{percent}} refund",
+    "tier_other": "Up to {{count}} days before arrival: {{percent}} refund",
+    "noRefund_zero": "Afterwards: no refund",
+    "noRefund_one": "From {{count}} day before arrival: no refund",
+    "noRefund_other": "From {{count}} days before arrival: no refund"
+  },
+  "hold": {
+    "countdown": "Berth held for another {{time}}",
+    "expiredTitle": "The berth hold has expired",
+    "expiredDescription": "The berth has been released. You can search again with the same details.",
+    "searchAgain": "Search again"
+  },
+  "details": {
+    "customer": "Your details",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone",
+    "country": "Country",
+    "countryHint": "Two-letter code, e.g. GB, FR, DE.",
+    "vessel": "The boat",
+    "vesselName": "Boat name",
+    "registration": "Registration number",
+    "peopleOnBoard": "People on board",
+    "arrivalTime": "Expected arrival time",
+    "arrivalWindow": "Arrivals from {{from}} to {{to}}.",
+    "notes": "Notes for the marina",
+    "continue": "Continue",
+    "saving": "Saving…"
+  },
+  "documents": {
+    "title": "Documents",
+    "hint": "Upload a photo or a PDF of the required documents: the marina office will check them.",
+    "laterHint": "You can upload the documents now or after paying, from the customer area.",
+    "upload": "Take a photo or upload",
+    "replace": "Replace",
+    "uploading": "Uploading…",
+    "uploaded": "Uploaded",
+    "badType": "Format not accepted: use PDF, PNG or JPEG.",
+    "tooLarge": "The file is larger than 10 MB.",
+    "missing": "Upload the required documents to continue."
+  },
+  "documentTypes": {
+    "boating_licence": "Boating licence",
+    "navigation_licence": "Navigation licence",
+    "insurance_policy": "Insurance policy",
+    "registration_certificate": "Registration certificate",
+    "identity_card": "Identity document"
+  },
+  "consents": {
+    "title": "Consents",
+    "terms": "I accept the booking terms",
+    "privacy": "I have read the privacy notice",
+    "marketing": "I would like to receive promotional messages from the marina (optional)",
+    "read": "Read the text",
+    "missingTexts": "The marina has not published its terms yet: online booking is not possible.",
+    "dialog": {
+      "terms": "Booking terms",
+      "privacy": "Privacy notice",
+      "marketing": "Promotional messages"
+    }
+  },
+  "payment": {
+    "title": "Booking {{reference}}",
+    "stay": "From {{arrival}} to {{departure}}",
+    "dueNow": "Due now",
+    "dueAfterApproval": "Due after confirmation",
+    "approvalNotice": "The marina confirms this booking on request. When the payment method allows it, the amount is only authorised and charged upon confirmation.",
+    "detailsMissing": "Please complete your details first.",
+    "pay": "Pay",
+    "sendRequest": "Send request",
+    "starting": "Please wait…",
+    "redirectNotice": "Payment takes place on the secure page of the payment provider."
+  },
+  "arrival": {
+    "title": "Arrival instructions",
+    "vhf": "VHF channel {{channel}}",
+    "phone": "Berthing master: {{phone}}",
+    "rules": "Marina rules"
+  },
+  "outcome": {
+    "reference": "Booking code:",
+    "accountHint": "You will receive an email with the confirmation, the QR code for the berthing master and the link to the customer area.",
+    "addToCalendar": "Add to calendar",
+    "icsSummary": "Berth at {{marina}} ({{reference}})",
+    "newBooking": "New booking",
+    "verifying": {
+      "title": "Verifying the payment…",
+      "description": "We are receiving the confirmation from the payment provider. Please do not close this page."
+    },
+    "timeout": {
+      "title": "Verification in progress",
+      "description": "The confirmation is taking longer than expected: you will receive an email as soon as the payment is verified."
+    },
+    "confirmed": {
+      "title": "Booking confirmed",
+      "description": "We look forward to seeing you!"
+    },
+    "received": {
+      "title": "Request received",
+      "description": "The marina will answer by email. The berth stays held until then."
+    },
+    "failed": {
+      "title": "Payment not completed",
+      "description": "The payment was not completed. You can try again while the berth is still held."
+    },
+    "cancelled": {
+      "title": "Booking not completed",
+      "description": "The payment was cancelled or the berth hold expired."
+    }
+  },
+  "return": {
+    "loading": "Loading the booking status…",
+    "invalidTitle": "Booking not found",
+    "invalidDescription": "The link is invalid or has expired.",
+    "backToSite": "Back to the website",
+    "backToMarina": "Back to the marina page"
+  }
+}

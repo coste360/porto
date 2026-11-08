@@ -5,6 +5,8 @@ package webhooks
 import (
 	"net/http"
 
+	"github.com/coste360/porto/internal/domain/channel"
+
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/domain/collect"
 	"github.com/coste360/porto/internal/domain/signature"
@@ -22,6 +24,9 @@ type Handler struct {
 	// M5 (m5-plan §5.4): payment provider callbacks (payments.go); the signature tolerance is checked against Clock.
 	Collect *collect.Service
 	Clock   clock.Clock
+
+	// M8 (m8-plan §8.2): booking channel callbacks (channels.go).
+	Channels *channel.Service
 }
 
 // SignatureWebhook implements api.ServerInterface (POST /webhooks/signature/{provider}/{marinaId}). An unknown

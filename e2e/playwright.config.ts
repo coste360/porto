@@ -1,6 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
 
-import { BASE_URL, BINARY, OWNER, portoEnv } from "./support/env";
+import {
+  BASE_URL,
+  BINARY,
+  HOST_PORT,
+  HOST_URL,
+  OWNER,
+  STRIPE_STUB_PORT,
+  STRIPE_STUB_URL,
+  portoEnv,
+} from "./support/env";
 
 // The server runs the binary built by `make build` (make e2e builds it first) on an empty data directory.
 // The bootstrap owner is created by the CLI before `serve` starts, so the suite never races the server for
@@ -47,13 +56,35 @@ export default defineConfig({
       use: { ...devices["Pixel 7"], serviceWorkers: "allow" },
     },
   ],
-  webServer: {
-    command: `${adminCreate} && exec "${BINARY}" serve`,
-    url: `${BASE_URL}/readyz`,
-    env: { ...portoEnv(), PORTO_ADMIN_PASSWORD: OWNER.password },
-    reuseExistingServer: false,
-    timeout: 60_000,
-    stdout: "ignore",
-    stderr: "pipe",
-  },
+  webServer: [
+    // M8 (m8-plan §14.5): the Stripe API stub (PORTO_STRIPE_API_BASE) and the embedding host page on another
+    // origin; both start before Porto.
+    {
+      command: "node support/stripe-stub.mjs",
+      url: `${STRIPE_STUB_URL}/healthz`,
+      env: { PORTO_E2E_STRIPE_PORT: String(STRIPE_STUB_PORT) },
+      reuseExistingServer: false,
+      timeout: 15_000,
+      stdout: "ignore",
+      stderr: "pipe",
+    },
+    {
+      command: "node support/host-server.mjs",
+      url: `${HOST_URL}/healthz`,
+      env: { PORTO_E2E_HOST_PORT: String(HOST_PORT), PORTO_E2E_BASE_URL: BASE_URL, PORTO_E2E_SLUG: OWNER.slug },
+      reuseExistingServer: false,
+      timeout: 15_000,
+      stdout: "ignore",
+      stderr: "pipe",
+    },
+    {
+      command: `${adminCreate} && exec "${BINARY}" serve`,
+      url: `${BASE_URL}/readyz`,
+      env: { ...portoEnv(), PORTO_ADMIN_PASSWORD: OWNER.password },
+      reuseExistingServer: false,
+      timeout: 60_000,
+      stdout: "ignore",
+      stderr: "pipe",
+    },
+  ],
 });

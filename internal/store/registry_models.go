@@ -52,12 +52,13 @@ type Consent struct {
 	ID               string    `bun:"id,pk"`
 	MarinaID         string    `bun:"marina_id"`
 	CustomerID       string    `bun:"customer_id"`
-	Kind             string    `bun:"kind"` // privacy, marketing, third_party
+	Kind             string    `bun:"kind"` // terms (M8), privacy, marketing, third_party
 	PolicyVersion    string    `bun:"policy_version"`
 	Granted          bool      `bun:"granted"`
 	Source           string    `bun:"source"` // desk, online, import, api
 	RecordedByUserID string    `bun:"recorded_by_user_id,nullzero"`
 	RecordedAt       time.Time `bun:"recorded_at"`
+	TextSHA256       string    `bun:"text_sha256,nullzero"` // M8: SHA-256 of the accepted booking text
 	CreatedAt        time.Time `bun:"created_at"`
 }
 
@@ -134,9 +135,12 @@ type Document struct {
 	FileName       string        `bun:"file_name,nullzero"`
 	Notes          string        `bun:"notes"`
 	RetentionUntil calendar.Date `bun:"retention_until,nullzero"`
-	Version        int           `bun:"version"`
-	CreatedAt      time.Time     `bun:"created_at"`
-	UpdatedAt      time.Time     `bun:"updated_at"`
+	// M8 office verification of documents uploaded online (m8-plan §5.2); not in documentColumns.
+	VerifiedAt       time.Time `bun:"verified_at,nullzero"`
+	VerifiedByUserID string    `bun:"verified_by_user_id,nullzero"`
+	Version          int       `bun:"version"`
+	CreatedAt        time.Time `bun:"created_at"`
+	UpdatedAt        time.Time `bun:"updated_at"`
 }
 
 // Deadline is a row of deadlines (fed by document expiries in M1).

@@ -20,7 +20,7 @@ const (
 )
 
 // Transit statuses (m3-plan §4.2). pending_payment is reached from M5 (payment link, m5-plan §8.1);
-// awaiting_approval (M8) is in the CHECK only. StatusConfirmed is assigned only by confirmTx, called by the manual
+// awaiting_approval from M8 (approval flow, m8-plan §4.1). StatusConfirmed is assigned only by confirmTx, called by the manual
 // driver or by the provider webhook (INV-09).
 const (
 	StatusHeld             Status = "held"
@@ -80,6 +80,14 @@ const (
 	// M5 (m5-plan §8.1): a payment link puts a held transit in pending_payment; an expired payment brings it back.
 	ActionRequestPayment Action = "request_payment"
 	ActionPaymentExpired Action = "payment_expired"
+
+	// M8 (m8-plan §4.1): approval flow of online and channel bookings, and the late confirmation of an expired
+	// online transit paid after its hold (only confirmTx with source provider, late_payment_recovery on).
+	ActionRequestApproval   Action = "request_approval"
+	ActionPaymentAuthorized Action = "payment_authorized"
+	ActionApprove           Action = "approve"
+	ActionReject            Action = "reject"
+	ActionConfirmLate       Action = "confirm_late"
 )
 
 // Transition is one row of a state table: Events are the outbox types written by the transition, in order.
@@ -316,6 +324,17 @@ var TransitTransitions = []Transition{
 	{StatusPendingPayment, ActionPaymentExpired, StatusHeld, []string{event.TransitChanged}},
 	{StatusPendingPayment, ActionExpire, StatusExpired, []string{event.TransitChanged, event.OccupancyHoldExpired}},
 	{StatusPendingPayment, ActionCancel, StatusCancelled, []string{event.TransitCancelled}},
+	// M8 (m8-plan §4.1): approval flow. awaiting_approval → confirmed only through confirmTx (capture webhook or
+	// manual driver); expired → confirmed only through confirmTx with confirm_late (provider, online, recovery on).
+	{StatusHeld, ActionRequestApproval, StatusAwaitingApproval, []string{event.TransitChanged, event.TransitApprovalRequested}},
+	{StatusPendingPayment, ActionPaymentAuthorized, StatusAwaitingApproval, []string{event.TransitChanged, event.TransitApprovalRequested}},
+	{StatusAwaitingApproval, ActionApprove, StatusPendingPayment, []string{event.TransitChanged}},
+	{StatusAwaitingApproval, ActionConfirm, StatusConfirmed, []string{event.TransitConfirmed}},
+	{StatusAwaitingApproval, ActionReject, StatusCancelled, []string{event.TransitCancelled}},
+	{StatusAwaitingApproval, ActionExpire, StatusCancelled, []string{event.TransitCancelled}},
+	{StatusAwaitingApproval, ActionCancel, StatusCancelled, []string{event.TransitCancelled}},
+	{StatusAwaitingApproval, ActionUpdate, StatusAwaitingApproval, []string{event.TransitChanged}},
+	{StatusExpired, ActionConfirmLate, StatusConfirmed, []string{event.TransitConfirmed}},
 }
 
 // QuoteTransitions is the table of m3-plan §4.3. Anything else is ErrInvalidTransition.

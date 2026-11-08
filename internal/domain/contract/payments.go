@@ -114,7 +114,7 @@ func (s *Service) ApplyChargeSettlementTx(ctx context.Context, tx bun.IDB, scope
 	if r.Status == store.InstallmentCancelled {
 		return nil // a cancelled row keeps its status; its charge is corrected by the billing hooks
 	}
-	a := actor{p}
+	a := actor{p: p}
 	switch chargeStatus {
 	case store.ChargePaid:
 		if r.Status == store.InstallmentPaid {
@@ -168,8 +168,9 @@ func (s *Service) unsettleTx(ctx context.Context, tx bun.IDB, scope store.Marina
 	})
 }
 
-// ConfirmTransitPaidTx confirms a held or pending_payment transit paid at the desk (source manual) or through the
-// provider webhook (source provider), through confirmTx (INV-09); the billing hook creates its charge. A transit
+// ConfirmTransitPaidTx confirms a held, pending_payment or awaiting_approval transit paid at the desk (source
+// manual), through the provider webhook (source provider; an expired online transit with confirm_late when the
+// caller checked late recovery) or by a paid channel reservation (source channel, M8), through confirmTx (INV-09); the billing hook creates its charge. A transit
 // already confirmed (or further) is returned as it is, so a duplicate webhook changes nothing.
 func (s *Service) ConfirmTransitPaidTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, p *auth.Principal,
 	contractID, source string,
@@ -177,7 +178,7 @@ func (s *Service) ConfirmTransitPaidTx(ctx context.Context, tx bun.IDB, scope st
 	if err := s.requireAllocator(); err != nil {
 		return nil, err
 	}
-	if source != SourceManual && source != SourceProvider {
+	if source != SourceManual && source != SourceProvider && source != SourceChannel {
 		return nil, errors.New("contract: unknown confirmation source")
 	}
 	c, err := lockContract(ctx, tx, scope, contractID, KindTransit, 0)
@@ -188,7 +189,28 @@ func (s *Service) ConfirmTransitPaidTx(ctx context.Context, tx bun.IDB, scope st
 	case StatusConfirmed, StatusArrived, StatusDeparted:
 		return c, nil
 	}
-	if err := s.confirmTx(ctx, tx, scope, actor{p}, c, source, ManualConfirmation{}); err != nil {
+	if err := s.confirmTx(ctx, tx, scope, actor{p: p}, c, source, ManualConfirmation{}); err != nil {
+		return nil, err
+	}
+	return store.GetContract(ctx, tx, scope, contractID)
+}
+
+// ConfirmChannelPaidTx confirms a transit of a verified reservation paid to the channel (source channel, ADR 0013)
+// with the channel as audit actor (system/"channel:<code>", INV-30). Like ConfirmTransitPaidTx, a transit already
+// confirmed is returned as it is.
+func (s *Service) ConfirmChannelPaidTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, who Who, contractID string) (*store.Contract, error) {
+	if err := s.requireAllocator(); err != nil {
+		return nil, err
+	}
+	c, err := lockContract(ctx, tx, scope, contractID, KindTransit, 0)
+	if err != nil {
+		return nil, err
+	}
+	switch Status(c.Status) {
+	case StatusConfirmed, StatusArrived, StatusDeparted:
+		return c, nil
+	}
+	if err := s.confirmTx(ctx, tx, scope, who.actor(), c, SourceChannel, ManualConfirmation{}); err != nil {
 		return nil, err
 	}
 	return store.GetContract(ctx, tx, scope, contractID)
@@ -226,7 +248,7 @@ func (s *Service) RequestTransitPaymentTx(ctx context.Context, tx bun.IDB, scope
 	}
 	from := c.Status
 	c.Status = string(t.To)
-	a := actor{p}
+	a := actor{p: p}
 	if err := updateContract(ctx, tx, scope, c.Version, c, now); err != nil {
 		return nil, err
 	}
@@ -282,7 +304,7 @@ func (s *Service) RevertTransitPaymentTx(ctx context.Context, tx bun.IDB, scope 
 	if err := updateContract(ctx, tx, scope, c.Version, c, now); err != nil {
 		return nil, err
 	}
-	if err := s.writeAudit(ctx, tx, scope, actor{p}, "transit.payment_expired", entityTransit, c.ID, map[string]any{
+	if err := s.writeAudit(ctx, tx, scope, actor{p: p}, "transit.payment_expired", entityTransit, c.ID, map[string]any{
 		"from_status": from, "status": c.Status,
 	}); err != nil {
 		return nil, err

@@ -124,5 +124,15 @@
   "invalid_period": "Periodo non valido: la data finale deve seguire quella iniziale e il periodo non può superare 400 giorni.",
   "invalid_report_filter": "Uno dei filtri del report non è valido.",
   "report_too_large": "Troppe righe per una sola esportazione: riduci il periodo o aggiungi filtri.",
-  "unknown_indicator": "Indicatore non disponibile per il confronto."
+  "unknown_indicator": "Indicatore non disponibile per il confronto.",
+  "booking_unavailable": "Il posto non è più disponibile in questa categoria: scegli un'altra categoria o altre date.",
+  "booking_rules": "Le date o la barca non rispettano le regole di prenotazione online del porto.",
+  "booking_busy": "Troppe prenotazioni in corso: riprova tra qualche istante.",
+  "consent_required": "Per continuare devi accettare le condizioni e l'informativa privacy.",
+  "text_outdated": "Le condizioni sono state aggiornate: rileggile e accettale di nuovo.",
+  "refund_changed": "Il rimborso è cambiato rispetto all'anteprima: controlla il nuovo importo.",
+  "price_changed": "Il prezzo è cambiato rispetto all'anteprima: controlla il nuovo importo.",
+  "cancellation_not_allowed": "Questa prenotazione non può essere annullata online: contatta il porto.",
+  "nothing_due": "Non c'è nulla da pagare.",
+  "idempotency_mismatch": "La richiesta è già stata inviata con dati diversi: ricarica la pagina e riprova."
 }

@@ -63,7 +63,7 @@ func (s *Service) NewVesselTx(ctx context.Context, tx bun.IDB, scope store.Marin
 	if err := store.InsertVessel(ctx, tx, v); err != nil {
 		return nil, err
 	}
-	if err := s.d.Audit.Write(ctx, tx, auditEntry(scope, actor{p}, "vessel.create", "vessel", v.ID,
+	if err := s.d.Audit.Write(ctx, tx, auditEntry(scope, actor{p: p}, "vessel.create", "vessel", v.ID,
 		map[string]any{"fields": []string{"name", "loa_cm", "beam_cm", "hull_type", "draft_cm"}, "origin": "desk"})); err != nil {
 		return nil, err
 	}

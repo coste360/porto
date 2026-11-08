@@ -128,7 +128,7 @@ func (s *Service) UpdateContractSettings(ctx context.Context, p *auth.Principal,
 		}
 	}
 	var out *store.ContractSettings
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		row, err := store.GetContractSettings(ctx, tx, scope, s.now())
 		if err != nil {

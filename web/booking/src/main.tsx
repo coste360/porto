@@ -1,17 +1,16 @@
 import '@porto/shared/styles/globals.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { StrictMode } from 'react';
+import { StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { ApiProvider, createApiClient } from '@porto/shared/api';
 import { I18nextProvider, detectLocale } from '@porto/shared/i18n';
 import { ThemeProvider } from '@porto/shared/theme';
 
-import { BookingPage } from './BookingPage';
 import { initBookingI18n } from './i18n';
-import { LinkPage } from './links';
-import { PayPage } from './pay';
+import { Page } from './Page';
+import { registerBookingServiceWorker } from './pwa';
 import { routeFromPath } from './routes';
 import { slugFromPath } from './slug';
 
@@ -29,13 +28,9 @@ if (root) {
         <ThemeProvider>
           <QueryClientProvider client={queryClient}>
             <ApiProvider client={api}>
-              {route.page === 'link' ? (
-                <LinkPage slug={route.slug} purpose={route.purpose} token={route.token} />
-              ) : route.page === 'pay' ? (
-                <PayPage slug={route.slug} token={route.token} ret={route.ret} />
-              ) : (
-                <BookingPage slug={route.slug} />
-              )}
+              <Suspense fallback={null}>
+                <Page route={route} />
+              </Suspense>
             </ApiProvider>
           </QueryClientProvider>
         </ThemeProvider>
@@ -43,3 +38,5 @@ if (root) {
     </StrictMode>,
   );
 }
+
+if (import.meta.env.PROD) registerBookingServiceWorker();

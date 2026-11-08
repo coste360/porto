@@ -227,7 +227,7 @@ func (s *Service) RequestContractSignature(ctx context.Context, p *auth.Principa
 	if err := validateSignatureInput(in); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, id, KindMooring, ifMatch)
 		if err != nil {
@@ -436,7 +436,7 @@ func (s *Service) simpleTransition(ctx context.Context, p *auth.Principal, marin
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, id, KindMooring, ifMatch)
 		if err != nil {

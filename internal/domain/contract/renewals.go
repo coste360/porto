@@ -300,7 +300,7 @@ func (s *Service) RenewContract(ctx context.Context, p *auth.Principal, marinaID
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	var pid string
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		pr, err := s.proposeTx(ctx, tx, scope, a, rd, "", deadlineOn, ProposalActionPropose)

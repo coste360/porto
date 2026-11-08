@@ -34,7 +34,7 @@ func (s *Service) OnArrivalTx(ctx context.Context, tx bun.IDB, scope store.Marin
 	if c.Kind != KindTransit || c.Status != string(StatusConfirmed) {
 		return c, nil
 	}
-	if err := s.arriveTx(ctx, tx, scope, actor{p}, c); err != nil {
+	if err := s.arriveTx(ctx, tx, scope, actor{p: p}, c); err != nil {
 		return nil, err
 	}
 	return c, nil
@@ -111,7 +111,7 @@ func (s *Service) OnDepartureTx(ctx context.Context, tx bun.IDB, scope store.Mar
 	if err := updateContract(ctx, tx, scope, c.Version, c, s.now()); err != nil {
 		return nil, err
 	}
-	if err := s.writeAudit(ctx, tx, scope, actor{p}, "transit.depart", entityTransit, c.ID, map[string]any{
+	if err := s.writeAudit(ctx, tx, scope, actor{p: p}, "transit.depart", entityTransit, c.ID, map[string]any{
 		"from_status": prev, "status": c.Status, "night": d, "freed": freed,
 	}); err != nil {
 		return nil, err

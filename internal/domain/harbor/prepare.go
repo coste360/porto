@@ -608,7 +608,8 @@ func (p *prepared) rows(now time.Time) (*store.MapElements, []store.BerthGroupMe
 			MaxHeightCm: a.MaxHeightCm, MaxWeightKg: a.MaxWeightKg, Supports: store.Strings(nonNilStrings(a.Supports)),
 			DepthProfile: store.MustJSON(nonNilSpans(a.DepthProfile)), BlockedCells: store.MustJSON(nonNilInts(a.BlockedCells)),
 			Exits: store.MustJSON(nonNilInts(a.Exits)), GridRotationDd: a.GridRotationDd, CellCount: int64(layout.CellCount(la)),
-			PriceClass: a.PriceClass, Active: a.Active, CreatedAt: now, UpdatedAt: now,
+			PriceClass: a.PriceClass, OnlineSellable: a.OnlineSellable && a.Kind == string(layout.AreaLinear), Active: a.Active,
+			CreatedAt: now, UpdatedAt: now,
 		}
 		if a.Kind == string(layout.AreaSurface) {
 			row.Outline = store.MustJSON(a.Outline)

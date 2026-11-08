@@ -58,6 +58,26 @@ var publicLinkOperations = []string{
 	"publicUnsubscribe",
 }
 
+// bookingRateLimits are the per-IP-prefix limits of the M8 public booking, customer-area and channel operations
+// (m8-plan §10): requests per window. Operations listed together share one bucket.
+var bookingRateLimits = []struct {
+	ops    []string
+	n      int
+	window time.Duration
+}{
+	{[]string{"getBookingConfig"}, 120, time.Minute},
+	{[]string{"getBookingAvailability"}, 60, time.Minute},
+	{[]string{"quoteBooking"}, 60, time.Minute},
+	{[]string{"createBooking"}, 10, time.Minute},
+	{[]string{"getBooking", "abandonBooking", "submitBookingDetails", "uploadBookingDocument", "startBookingPayment"}, 20, time.Minute},
+	{[]string{"getBookingStatus"}, 60, time.Minute},
+	{[]string{"requestAccountLink"}, 5, 15 * time.Minute},
+	{[]string{"openAccountSession", "closeAccountSession"}, 10, time.Minute},
+	{[]string{"listAccountVessels", "listAccountBookings", "getAccountBooking", "getAccountDocumentURL", "getAccountDocumentFile", "previewAccountCancellation"}, 60, time.Minute},
+	{[]string{"uploadAccountDocument", "payAccountBalance", "cancelAccountBooking", "previewAccountDateChange", "changeAccountDates"}, 20, time.Minute},
+	{[]string{"receiveChannelWebhook"}, 600, time.Minute},
+}
+
 // Deps are the collaborators of the router.
 type Deps struct {
 	Log   *slog.Logger
@@ -81,6 +101,10 @@ type Deps struct {
 	TrustedProxies       []netip.Prefix
 	HSTS                 bool
 	PublicReadsPerMinute int
+
+	// EmbedOrigins resolves the allowed embed origins of a booking slug for the framing headers of /b/{slug} (M8,
+	// m8-plan §10); nil = no marina allows embedding.
+	EmbedOrigins middleware.EmbedOriginsResolver
 
 	// AdminApp and BookingApp default to the embedded builds.
 	AdminApp, BookingApp *static.App
@@ -177,7 +201,7 @@ func NewRouter(d Deps) (http.Handler, error) {
 		problem.Write(w, r, problem.MethodNotAllowed)
 	})
 
-	mountStatic(r, d.AdminApp, d.BookingApp)
+	mountStatic(r, d.AdminApp, d.BookingApp, middleware.EmbedFraming(d.EmbedOrigins))
 
 	// Customer magic-link pages (M4, m4-plan §6.6): one limiter per IP prefix shared by every link operation. The
 	// per-token limit is applied by the link services.
@@ -199,6 +223,12 @@ func NewRouter(d Deps) (http.Handler, error) {
 		byIP[op] = pay
 	}
 	byIP["paymentWebhook"] = middleware.NewLimiter(d.Clock, paymentWebhooksPerMinute, time.Minute)
+	for _, rl := range bookingRateLimits {
+		l := middleware.NewLimiter(d.Clock, rl.n, rl.window)
+		for _, op := range rl.ops {
+			byIP[op] = l
+		}
+	}
 
 	// Per-operation middleware, outermost first; the generated wrapper applies the list in reverse.
 	perOp := []func(http.Handler) http.Handler{
@@ -213,7 +243,7 @@ func NewRouter(d Deps) (http.Handler, error) {
 		middleware.RequireJSON(policies),
 		// M6b: replays of the offline queue only on x-porto-offline operations (INV-71).
 		middleware.OfflineGuard(policies, d.Clock),
-		middleware.Idempotency(middleware.IdempotencyOptions{Store: d.Idempotency, Clock: d.Clock}),
+		middleware.Idempotency(middleware.IdempotencyOptions{Store: d.Idempotency, Clock: d.Clock, Policies: policies}),
 	}
 	slices.Reverse(perOp)
 
@@ -256,8 +286,9 @@ func toMiddlewares(in []func(http.Handler) http.Handler) []api.MiddlewareFunc {
 	return out
 }
 
-// mountStatic serves the SPAs: /admin/* (client-side routing), /b/{slug} (booking), favicon.
-func mountStatic(r chi.Router, adminApp, bookingApp *static.App) {
+// mountStatic serves the SPAs: /admin/* (client-side routing), /b/{slug} (booking, behind embedFraming), favicon
+// and the widget loader /embed.js (M8; its caching and CORS headers are set by PUBLIC).
+func mountStatic(r chi.Router, adminApp, bookingApp *static.App, embedFraming func(http.Handler) http.Handler) {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/admin/", http.StatusFound)
 	})
@@ -277,6 +308,10 @@ func mountStatic(r chi.Router, adminApp, bookingApp *static.App) {
 		}
 		bookingApp.ServeIndex(w, r)
 	}
-	r.Get("/b/*", booking)
-	r.Head("/b/*", booking)
+	framed := embedFraming(http.HandlerFunc(booking))
+	r.Get("/b/*", framed.ServeHTTP)
+	r.Head("/b/*", framed.ServeHTTP)
+	embedJS := func(w http.ResponseWriter, r *http.Request) { bookingApp.ServeFile(w, r, "embed.js", false) }
+	r.Get("/embed.js", embedJS)
+	r.Head("/embed.js", embedJS)
 }

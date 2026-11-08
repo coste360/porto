@@ -1,0 +1,263 @@
+{
+  "nav": {
+    "bookings": "Online bookings",
+    "settings": "Online booking"
+  },
+  "bookings": {
+    "description": "Bookings from the public page and the channels: approvals, documents and payments.",
+    "empty": "No online bookings.",
+    "loadMore": "Show more"
+  },
+  "filters": {
+    "status": "Status",
+    "channel": "Channel",
+    "from": "Arrival from",
+    "to": "Arrival to",
+    "all": "All"
+  },
+  "columns": {
+    "reference": "Reference",
+    "dates": "Dates",
+    "vessel": "Boat (L × B)",
+    "status": "Status",
+    "channel": "Channel",
+    "deadline": "Deadline",
+    "amount": "Amount"
+  },
+  "status": {
+    "held": "Held",
+    "pending_payment": "Waiting for payment",
+    "awaiting_approval": "To approve",
+    "confirmed": "Confirmed",
+    "arrived": "Arrived",
+    "departed": "Departed",
+    "cancelled": "Cancelled",
+    "expired": "Expired",
+    "no_show": "No show"
+  },
+  "channel": {
+    "online": "Public page",
+    "external": "External channel"
+  },
+  "approvalReason": {
+    "loa": "Length over the threshold",
+    "group": "Berth group on request",
+    "always": "Approval always required",
+    "no_provider": "Offline payment"
+  },
+  "deadline": {
+    "left": "{{time}} left",
+    "past": "Expired"
+  },
+  "detail": {
+    "title": "Booking {{reference}}",
+    "contact": "Contact",
+    "contactHidden": "Contact details need the customers read permission.",
+    "vessel": "Boat",
+    "dimensions": "{{loa}} × {{beam}}",
+    "people": "People on board",
+    "arrivalTime": "Expected arrival",
+    "notes": "Notes",
+    "documents": "Documents",
+    "noDocuments": "No documents.",
+    "verified": "Verified",
+    "preview": "Open",
+    "consents": "Consents",
+    "noConsents": "No consents recorded.",
+    "consentGranted": "version {{version}} accepted",
+    "consentDenied": "version {{version}} declined",
+    "payment": "Payment",
+    "approvalReason": "Approval reason",
+    "deadline": "Approval deadline",
+    "openTransit": "Open the transit",
+    "approved": "Approved on {{at}}",
+    "rejected": "Rejected on {{at}}: {{reason}}",
+    "captureFailed": "Capturing the pre-authorisation failed: send a payment link.",
+    "email": "Email",
+    "phone": "Phone"
+  },
+  "payment": {
+    "none": "No payment",
+    "open": "Payment open",
+    "authorized": "Pre-authorised",
+    "processing": "Processing",
+    "succeeded": "Paid",
+    "failed": "Failed",
+    "expired": "Expired",
+    "voided": "Pre-authorisation voided"
+  },
+  "consentKind": {
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "marketing": "Marketing"
+  },
+  "actions": {
+    "approve": "Approve",
+    "approved": "Booking approved.",
+    "reject": "Reject",
+    "rejectTitle": "Reject the booking?",
+    "rejectReason": "Reason",
+    "notify": "Notify the customer by email",
+    "rejectConfirm": "Reject booking",
+    "rejected": "Booking rejected.",
+    "paymentLink": "Send payment link",
+    "paymentLinkSent": "Payment link sent.",
+    "cancel": "Cancel"
+  },
+  "documentTypes": {
+    "boating_licence": "Boating licence",
+    "navigation_licence": "Navigation licence",
+    "insurance_policy": "Insurance policy",
+    "registration_certificate": "Registration certificate",
+    "identity_card": "Identity document"
+  },
+  "settings": {
+    "description": "Rules, payments, approval, texts, quotas and embedding of the booking page.",
+    "notSaved": "The default settings are in use: save to make them yours.",
+    "disabled": "Online booking is switched off in the marina settings.",
+    "save": "Save",
+    "saved": "Settings saved.",
+    "tabs": {
+      "rules": "Rules",
+      "payment": "Payment and cancellation",
+      "approval": "Approval",
+      "texts": "Texts",
+      "arrival": "Arrival",
+      "quotas": "Quotas",
+      "embed": "Embed",
+      "channels": "Channels"
+    },
+    "rules": {
+      "minNights": "Minimum nights",
+      "maxNights": "Maximum nights",
+      "minAdvanceHours": "Minimum notice (hours)",
+      "maxAdvanceDays": "Bookable up to (days)",
+      "arrivalFrom": "Arrival from",
+      "arrivalTo": "Arrival until",
+      "closedWeekdays": "Days without arrivals",
+      "maxLiveHolds": "Maximum simultaneous holds",
+      "revealBerth": "Show the berth to the customer",
+      "revealNever": "Never",
+      "revealAfter": "After confirmation",
+      "showFeet": "Also show feet",
+      "people": "Ask for people on board",
+      "phone": "Phone required",
+      "documents": "Required documents",
+      "documentsLater": "Documents can be uploaded after payment"
+    },
+    "weekdays": {
+      "0": "Sun",
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat"
+    },
+    "payment": {
+      "mode": "Online payment",
+      "full": "Full amount",
+      "deposit": "Deposit",
+      "depositBp": "Deposit (%)",
+      "refundAs": "Refund on cancellation",
+      "refund": "Refund to the payment method",
+      "credit": "Credit with the marina",
+      "latePayment": "Recover payments that arrive after the hold expired",
+      "withoutProvider": "Accept bookings without online payment (bank transfer, with approval)",
+      "tiers": "Cancellation tiers",
+      "tierDays": "At least days before",
+      "tierRefund": "Refund (%)",
+      "addTier": "Add tier",
+      "removeTier": "Remove tier"
+    },
+    "approval": {
+      "always": "Always approve every booking",
+      "loaOver": "Approve boats longer than (m)",
+      "groups": "Berth groups on request",
+      "holdHours": "Time to decide (hours)"
+    },
+    "arrival": {
+      "vhf": "VHF channel",
+      "phone": "Berthing master phone",
+      "rulesUrl": "Link to the rules",
+      "textIt": "Arrival instructions (Italian)",
+      "textEn": "Arrival instructions (English)",
+      "theme": "Theme",
+      "hideHeader": "Hide the header when the page is embedded"
+    },
+    "texts": {
+      "kind": "Text",
+      "current": "Version in force: {{version}} of {{at}}",
+      "none": "No version published.",
+      "textIt": "Text (Italian)",
+      "textEn": "Text (English)",
+      "publish": "Publish new version",
+      "published": "New version published.",
+      "immutable": "Published versions never change: every edit is a new version.",
+      "history": "Previous versions"
+    },
+    "textKind": {
+      "terms": "Booking terms",
+      "privacy": "Privacy notice",
+      "marketing": "Marketing consent"
+    },
+    "quotas": {
+      "description": "How many berths of each group can be sold online per night. Desk and API are not limited.",
+      "group": "Group",
+      "kind": "Quota",
+      "value": "Value",
+      "members": "Active berths",
+      "none": "None",
+      "count": "Number of berths",
+      "percent": "Percentage",
+      "areasOnlyCount": "Group with areas: count quotas only",
+      "empty": "No berth groups: create them in the map editor.",
+      "save": "Save quotas",
+      "saved": "Quotas saved.",
+      "usage": "Online usage (30 nights)",
+      "night": "Night"
+    },
+    "embed": {
+      "origins": "Sites allowed to embed the page",
+      "originsHelp": "Edit them in the marina settings (field \"Allowed origins\").",
+      "noOrigins": "No site allowed: the page can be embedded only by Porto.",
+      "script": "Script code",
+      "iframe": "Iframe code",
+      "link": "Direct link",
+      "copy": "Copy",
+      "copied": "Copied.",
+      "preview": "Preview"
+    },
+    "channels": {
+      "description": "Connected external marketplaces: they receive availability and rates and send bookings.",
+      "empty": "No channel installed.",
+      "enabled": "Enabled",
+      "push": "Send availability and rates",
+      "credentials": "Credentials (key=value, one per line)",
+      "credentialsSet": "Credentials saved (not shown)",
+      "secret": "Webhook secret",
+      "secretSet": "Secret saved (not shown)",
+      "categoryMap": "Category map (external code=Porto category, one per line)",
+      "webhookUrl": "Webhook address",
+      "lastPull": "Last pull: {{at}}",
+      "lastPush": "Last push: {{at}}",
+      "lastError": "Last error: {{code}}",
+      "save": "Save",
+      "saved": "Channel saved.",
+      "test": "Test connection",
+      "testOk": "Connection works.",
+      "testFailed": "Connection failed: {{code}}",
+      "sync": "Sync now",
+      "synced": "Pulled {{pulled}}, booked {{booked}}, rejected {{rejected}}.",
+      "reservations": "Received reservations",
+      "noReservations": "No reservations received.",
+      "capabilities": "Features: {{list}}"
+    },
+    "reservationStatus": {
+      "received": "Received",
+      "booked": "Booked",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled"
+    }
+  }
+}

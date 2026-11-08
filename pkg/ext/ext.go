@@ -174,6 +174,9 @@ type Extensions struct {
 	FiscalDrivers []FiscalDriver
 	// ChargeExporters send charges to an external invoicing software (M5, spec 16.5); none ships with Porto.
 	ChargeExporters []ChargeExporter
+	// BookingChannels connect external berth marketplaces (M8, spec 23.2, 27.5); none ships with Porto (the
+	// fake channel of internal/domain/channel/fakechannel is for tests and development only).
+	BookingChannels []BookingChannel
 	// HTTPRoutes mounts extra routes on the root router.
 	HTTPRoutes func(r chi.Router)
 }

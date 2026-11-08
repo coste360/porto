@@ -1,0 +1,10 @@
+Ciao,
+
+hai chiesto di accedere all'area clienti di {{v . "marina_name"}}. Apri questo link per vedere le tue prenotazioni:
+
+{{v . "link"}}
+
+Il link vale {{with v . "expires_at"}}{{.}}{{else}}30{{end}} minuti e si può usare una sola volta. Se non hai chiesto l'accesso, ignora questa email.
+
+--
+{{v . "marina_name"}}

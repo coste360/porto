@@ -133,6 +133,10 @@ func CheckoutForm(req ext.CheckoutRequest) url.Values {
 	}
 	setMetadata(f, "metadata", req.MarinaID, req.IntentID)
 	setMetadata(f, "payment_intent_data[metadata]", req.MarinaID, req.IntentID)
+	if req.CaptureManual {
+		// M8 approval flow (m8-plan §6): authorise only; the host captures or cancels after the office decides.
+		f.Set("payment_intent_data[capture_method]", "manual")
+	}
 	return f
 }
 
@@ -235,6 +239,7 @@ type paymentIntentObject struct {
 	Status             string            `json:"status"`
 	Amount             int64             `json:"amount"`
 	AmountReceived     int64             `json:"amount_received"`
+	AmountCapturable   int64             `json:"amount_capturable"`
 	Currency           string            `json:"currency"`
 	PaymentMethodTypes []string          `json:"payment_method_types"`
 	Metadata           map[string]string `json:"metadata"`
@@ -274,6 +279,8 @@ func piStatus(s string) string {
 		return ext.PaymentEventSucceeded
 	case "processing":
 		return ext.PaymentEventProcessing
+	case "requires_capture":
+		return ext.PaymentEventAuthorized
 	case "canceled", "requires_payment_method":
 		return ext.PaymentEventFailed
 	}
@@ -366,6 +373,32 @@ func sessionKind(s *sessionObject) string {
 		return ext.PaymentEventProcessing
 	}
 	return ""
+}
+
+// Capture implements ext.PaymentAuthorizer: captures an authorised payment intent (the whole authorised amount
+// unless AmountCents is set). The payment_intent.succeeded webhook confirms the transit.
+func (d *Driver) Capture(ctx context.Context, req ext.CaptureRequest) (*ext.ProviderPayment, error) {
+	if req.PaymentRef == "" {
+		return nil, errors.New("stripe: capture without payment reference")
+	}
+	f := url.Values{}
+	if req.AmountCents > 0 {
+		f.Set("amount_to_capture", strconv.FormatInt(req.AmountCents, 10))
+	}
+	var pi paymentIntentObject
+	if err := d.call(ctx, http.MethodPost, "/v1/payment_intents/"+url.PathEscape(req.PaymentRef)+"/capture", f, req.IdempotencyKey, &pi); err != nil {
+		return nil, err
+	}
+	return &ext.ProviderPayment{PaymentRef: pi.ID, Status: piStatus(pi.Status)}, nil
+}
+
+// VoidAuthorization implements ext.PaymentAuthorizer: cancels an authorised payment intent (the hold on the card is
+// released; the payment_intent.canceled webhook confirms it).
+func (d *Driver) VoidAuthorization(ctx context.Context, req ext.VoidRequest) error {
+	if req.PaymentRef == "" {
+		return errors.New("stripe: void without payment reference")
+	}
+	return d.call(ctx, http.MethodPost, "/v1/payment_intents/"+url.PathEscape(req.PaymentRef)+"/cancel", url.Values{}, req.IdempotencyKey, nil)
 }
 
 // CloseCheckout implements ext.PaymentProvider.

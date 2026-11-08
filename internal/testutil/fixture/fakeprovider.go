@@ -38,6 +38,11 @@ type FakeProvider struct {
 	FailCheckout bool
 	// RefundStatus is the status Refund answers (default pending).
 	RefundStatus string
+	// M8 manual capture (ext.PaymentAuthorizer): recorded captures and voids; FailCapture makes Capture fail with
+	// ext.ErrNotSupported (an expired authorisation).
+	Captures    []ext.CaptureRequest
+	Voids       []ext.VoidRequest
+	FailCapture bool
 }
 
 // NewFakeProvider returns a fake provider.
@@ -167,4 +172,27 @@ func SignedBody(ev ext.PaymentEvent, secret string, t time.Time) ([]byte, string
 	return body, stripe.Sign(body, t, secret)
 }
 
-var _ ext.PaymentProvider = (*FakeProvider)(nil)
+// Capture implements ext.PaymentAuthorizer (M8): records the capture; the outcome arrives by webhook
+// (PaymentEventSucceeded built by the test).
+func (f *FakeProvider) Capture(_ context.Context, req ext.CaptureRequest) (*ext.ProviderPayment, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.FailCapture {
+		return nil, ext.ErrNotSupported
+	}
+	f.Captures = append(f.Captures, req)
+	return &ext.ProviderPayment{PaymentRef: req.PaymentRef, Status: ext.PaymentEventProcessing}, nil
+}
+
+// VoidAuthorization implements ext.PaymentAuthorizer (M8): records the void.
+func (f *FakeProvider) VoidAuthorization(_ context.Context, req ext.VoidRequest) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.Voids = append(f.Voids, req)
+	return nil
+}
+
+var (
+	_ ext.PaymentProvider   = (*FakeProvider)(nil)
+	_ ext.PaymentAuthorizer = (*FakeProvider)(nil)
+)

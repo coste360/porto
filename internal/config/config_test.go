@@ -124,6 +124,7 @@ func TestConfig_Invalid(t *testing.T) {
 		{"demo pairing half", "PORTO_DEMO_PAIRING_USER", "a@b.c", "PORTO_DEMO_PAIRING_MARINA"},
 		{"dev", "PORTO_DEV", "sometimes", "PORTO_DEV"},
 		{"stripe base without dev", "PORTO_STRIPE_API_BASE", "http://127.0.0.1:9999", "PORTO_STRIPE_API_BASE"},
+		{"fake channel without dev", "PORTO_DEV_FAKE_CHANNEL", "true", "PORTO_DEV_FAKE_CHANNEL"},
 		{"allow private", "PORTO_WEBHOOKS_ALLOW_PRIVATE", "2", "PORTO_WEBHOOKS_ALLOW_PRIVATE"},
 		{"public reads", "PORTO_PUBLIC_READS_PER_MINUTE", "0", "PORTO_PUBLIC_READS_PER_MINUTE"},
 		{"bootstrap half", "PORTO_BOOTSTRAP_OWNER_EMAIL", "a@b.c", "PORTO_BOOTSTRAP_OWNER_NAME"},

@@ -54,7 +54,7 @@ func (s *Service) UnexpectedTransit(ctx context.Context, p *auth.Principal, mari
 		}
 		price = nil
 	}
-	a := actor{p}
+	a := actor{p: p}
 	return s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := s.createTransitTx(ctx, tx, scope, a, in, price, st, false, nil)
 		if err != nil {

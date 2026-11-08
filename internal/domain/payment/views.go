@@ -13,7 +13,8 @@ import (
 // Read side of payments and refunds (payments.collect or charges.manage). Customer names only with
 // customers.read (PII gating as M3); the staff reference is never returned.
 
-// MatchView is a match with its charge number and whether it was reversed.
+// MatchView is a match with its charge number and whether it was wholly reversed (partial reversals leave it
+// reversible for the rest, see ReversedCents).
 type MatchView struct {
 	store.PaymentMatch
 	ChargeNumber string
@@ -83,19 +84,15 @@ func (s *Service) details(ctx context.Context, db bun.IDB, scope store.MarinaSco
 			return nil, err
 		}
 		chargeIDs := make([]string, 0, len(ms))
-		reversed := map[string]bool{}
 		for _, m := range ms {
 			chargeIDs = append(chargeIDs, m.ChargeID)
-			if m.ReversesMatchID != "" {
-				reversed[m.ReversesMatchID] = true
-			}
 		}
 		numbers, err := store.LedgerChargeNumbers(ctx, db, scope, chargeIDs)
 		if err != nil {
 			return nil, err
 		}
 		for _, m := range ms {
-			matches[m.PaymentID] = append(matches[m.PaymentID], MatchView{PaymentMatch: m, ChargeNumber: numbers[m.ChargeID], Reversed: reversed[m.ID]})
+			matches[m.PaymentID] = append(matches[m.PaymentID], MatchView{PaymentMatch: m, ChargeNumber: numbers[m.ChargeID], Reversed: m.AmountCents > 0 && m.ReversedCents >= m.AmountCents})
 		}
 		rs, err := store.RefundsOfPayments(ctx, db, scope, ids)
 		if err != nil {

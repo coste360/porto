@@ -42,7 +42,9 @@ momento del conflitto anche se il job non è passato. Il recupero non scade mai 
 (conferma o attivazione concorrente): l'aggiornamento ricontrolla tipo `hold` e scadenza e cancella le righe solo
 delle allocazioni effettivamente scadute. Verificata da: `TestOccupancy_ExpiredHoldIsReclaimed`,
 `TestConcurrency_ExpiredHoldReclaim`, `TestConcurrency_ConvertVsReclaim` (conferma a T−ε contro allocazione a T+ε
-sullo stesso posto, 100 goroutine, SQLite e PostgreSQL, `-race`). Stato: implemented.
+sullo stesso posto, 100 goroutine, SQLite e PostgreSQL, `-race`); M8: `TestConcurrency_ConfirmVsExpireOnline`
+(webhook tardivo con `late_payment_recovery` contro `contracts.expire` e transiti di banco sullo stesso posto e
+notti: al più un vincitore, rimborso integrale del pagamento tardivo se vince il banco). Stato: implemented.
 
 **INV-06 — Spostamenti e ipotesi sono atomici.** Uno spostamento, uno scambio o l'applicazione di un'ipotesi o la
 modifica completa o lascia tutto invariato. Verificata da: `TestConcurrency_SwapVessels`,
@@ -54,13 +56,20 @@ bloccanti oppure ha `fit_override` con utente e motivazione (per una chiave API:
 creata). Verificata da: `TestAllocation_FitOrOverride`, query Q14 di `store.CheckOccupancyInvariants` (deroga senza
 motivazione o senza autore). Stato: implemented.
 
-**INV-08 — Una prenotazione online occupa sempre una risorsa concreta.** Ogni transito in `held`, `pending_payment`
-o `confirmed` ha almeno un'allocazione attiva; solo un transito ancora `held` può avere invece un'allocazione
+**INV-08 — Una prenotazione online occupa sempre una risorsa concreta.** Ogni transito in `held`, `pending_payment`,
+`awaiting_approval` (M8) o `confirmed` ha almeno un'allocazione attiva; solo un transito ancora `held` può avere invece un'allocazione
 `expired` finché il job non lo chiude (un hold scaduto recuperato al momento del conflitto, INV-05), e la conferma
 di un hold perso rialloca o fallisce con `resource_taken`. Ogni preventivo `draft` o `sent` ancora valido ha un hold
 attivo per ogni posizionamento delle opzioni con opzione; un hold di preventivo spostato resta l'hold dell'opzione.
 Verificata da: `TestContract_HoldTransitHasAllocation` (banco e API, M3), `TestInvariants_Q8QuoteHold`, query Q8;
-`TestCheckout_HoldHasAllocation` (online, M8). Stato: partial.
+`TestAcceptance_M8_OnlineBookingHappyPath`, `TestCheckout_HoldHasAllocation`, `TestApproval_AuthorizeCaptureConfirm`,
+`TestAcceptance_M8_ApprovalFlow` (online e `awaiting_approval`, M8; query Q8 estesa ad `awaiting_approval`),
+`TestBooking_CreateHoldsConcreteResource` (un posto concreto della categoria per ogni notte, hold con la scadenza
+della prenotazione) e `TestBooking_RetryNextSolutionOnConflict` (un tentativo perso torna indietro per intero e si
+prenota la soluzione successiva). Una prenotazione approvata dal banco che
+resta `awaiting_approval` (cattura o conferma manuale in attesa) ha l'hold esteso alla finestra del link di
+pagamento e il job della scadenza approvazione non la rifiuta mai (lock poi ricontrollo di `approved_at`):
+`TestApproval_ApprovedNotTimedOut`, `TestConcurrency_ApproveVsDeadline`. Stato: implemented.
 
 **INV-09 — Conferma solo dal pagamento.** Un transito online passa a `confirmed` solo dal webhook del provider o dal
 driver manuale. Da M5 un transito con link di pagamento è `pending_payment` e arriva a `confirmed` solo tramite
@@ -68,7 +77,14 @@ driver manuale. Da M5 un transito con link di pagamento è `pending_payment` e a
 ritorno del browser non conferma mai. Verificata da: `TestContract_TransitConfirmOnlyManualDriver`,
 `TestContract_ConfirmedOnlyInConfirmTransit` (la tabella degli stati entra in `confirmed` solo da `held` o
 `pending_payment` con `confirm`); `TestPaymentWebhook_ConfirmsTransit` (che verifica
-anche che il ritorno del browser non conferma; webhook, M5; checkout online M8). Stato: partial (checkout online M8).
+anche che il ritorno del browser non conferma; webhook, M5; checkout online M8). M8 (ADR 0013): `confirmTx` entra in
+`confirmed` anche da `awaiting_approval` (webhook della cattura o driver manuale) e, con `confirm_late`, da `expired`
+(solo webhook del provider per un transito online con `late_payment_recovery`); una prenotazione verificata di un
+canale esterno segnata come pagata al canale (firma del webhook o pull autenticato) conferma con `source = channel`,
+perché il canale è il merchant of record. Nessun'altra via: il ritorno del browser non conferma mai. Verificata anche
+da: `TestCheckout_BrowserReturnDoesNotConfirm`, `TestCheckout_ConfirmOnlyFromWebhook`,
+`TestChannel_ApplyNewPaidConfirms`, `TestCheckout_LatePaymentRecoveredOrRefunded`, `TestApproval_AuthorizeCaptureConfirm`,
+`TestConcurrency_ConfirmVsExpireOnline` (M8). Stato: implemented.
 
 **INV-10 — Le allocazioni di una riga di contratto non si sovrappongono e coprono il periodo.** Per ogni riga di
 risorsa di un contratto o transito vivo ogni notte del periodo è coperta da esattamente un'allocazione attiva
@@ -88,6 +104,25 @@ ridimensionamento) porta un'allocazione prima di un predecessore attivo o dopo l
 (`ResizeTx` rifiuta questi intervalli come `validation_failed`). Verificata da: query Q12 di
 `store.CheckOccupancyInvariants`, `TestAllocation_RowsMatchFootprint` (property test, anche con
 `-rapid.checks=2000`). Stato: implemented.
+
+**INV-12 — Le quote online sono contatori nel database.** Per ogni `(gruppo, notte)` di `online_quota_usage`:
+`used` = numero delle righe di `online_quota_claims` e `0 <= used <= cap`, anche con 100 prenotazioni online
+parallele, su SQLite e PostgreSQL. Garantita dal CHECK `online_quota_usage_limit_check` e dall'incremento
+condizionale (`UPDATE … SET used = used + 1 WHERE used < cap`, zero righe = quota esaurita), mai da un controllo
+applicativo; solo i canali `online` ed `external` consumano quota, banco e API la ignorano. Le quote seguono il
+contratto: annullamento, scadenza, rifiuto, no-show e accorciamento le rilasciano; gli spostamenti dal banco no.
+Verificata da: `TestMigrations_M8Constraints`, `TestConcurrency_OnlineQuotaNeverExceeded`, query Q19 di
+`store.CheckOccupancyInvariants`, `TestBooking_AvailabilityFiltersOnlineSellableAndQuota`,
+`TestBooking_HoldExpiryReleasesQuotaAndMarksLost`, `TestPortal_ChangeDatesQuotaAndPrice` (il cambio date sposta le
+quote con il soggiorno e le rifiuta oltre il cap), `TestChannel_CancelReleases` (l'annullamento del canale rilascia
+quote e notti). Stato: implemented.
+
+**INV-13 — Nessuna doppia vendita tra canali.** Su ogni `(risorsa, notte)` vince al più una tra banco, prenotazione
+online e canale esterno, perché tutti passano da `occupancy.AllocateTx` (INV-01); chi perde riceve
+`resource_taken`, `booking_unavailable` o il rifiuto del canale, e il numero dei vincitori è quello delle
+risorse-notte libere consumate. Verificata da: `TestConcurrency_NoDoubleSaleDeskOnlineChannel` (120 goroutine,
+entrambi i dialetti, `-race`; le prenotazioni online e dei canali passano per il motore e le quote, quelle del banco
+con il posizionamento esplicito). Stato: implemented.
 
 ## Prezzi (spec 12)
 
@@ -141,7 +176,10 @@ request_signature, signature_failed, addendum, change_vessel), `TestContract_Sus
 `TestQuote_AcceptRunsAllSteps` (sign), `TestContract_ExpireMarksRenewed` (expire, expire_renewed) e
 `TestContract_TacitRenewal` (tacit_renew); le righe M5 da `TestContract_M5StateChangesWriteAuditAndOutbox`
 (request_payment, payment_expired, pending_payment → confirmed/cancelled/expired, suspend per morosità con
-`SuspendForArrearsTx`). Stato: implemented.
+`SuspendForArrearsTx`); le righe M8 da `TestContract_M8StateChangesWriteAuditAndOutbox` (create e update dalla
+pagina pubblica, conferma dal provider e dal canale con attore `channel:<codice>`, payment_authorized, approve,
+reject, expire dal job `bookings.approval_expire`, change_stay e cancel dall'area cliente con attore
+`customer:<id>`, rollback che non lascia né audit né evento). Stato: implemented.
 
 **INV-31 — Le rate sommano il totale.** Per ogni piano rate `Σ rate = totale del contratto` al centesimo (sulle
 rate vive, `status <> 'cancelled'`; con rate già emesse o pagate, il ripiano copre `totale − Σ emesse/pagate`); lo
@@ -218,8 +256,8 @@ da: `TestMillesimal_ActiveImmutable`, `TestMigrations_M4Constraints`. Stato: imp
 
 **INV-50 — Saldo coerente.** Per ogni addebito `paid_amount_cents = Σ payment_matches.amount_cents` dell'addebito
 (gli storni sono righe negative) e per ogni pagamento `allocated_cents = Σ` dei suoi abbinamenti, aggiornati nella
-stessa transazione (solo `internal/domain/payment`; gli abbinamenti accettano solo inserimenti, trigger su entrambi
-i dialetti). I rimborsi escono solo dal denaro non abbinato, quindi "Σ incassi − Σ rimborsi" di un addebito è il suo
+stessa transazione (solo `internal/domain/payment`; gli abbinamenti accettano solo inserimenti, salvo la crescita di
+`reversed_cents` (`00017`, INV-52), trigger su entrambi i dialetti). I rimborsi escono solo dal denaro non abbinato, quindi "Σ incassi − Σ rimborsi" di un addebito è il suo
 abbinato (m5-plan §4.1). Verificata da: `TestCharge_PaidAmountMatchesLedger` (property test, tag `integration`),
 query B50 di `store.CheckBillingInvariants`. Stato: implemented.
 
@@ -236,7 +274,15 @@ inseriscono, modificano o cancellano più). Si corregge con un addebito di retti
 con abbinamenti e rimborsi concorrenti: UPDATE condizionali con il numero di righe controllato, lock in ordine
 contratto/titolo → pagamento → addebiti per id, anche dal webhook del provider. Verificata da:
 `TestConcurrency_PaymentMatching`, `TestConcurrency_RefundVsMatch`, `TestConcurrency_WebhookVsDeskSettle`,
-`TestMigrations_M5Constraints`, query B52. Stato: implemented.
+`TestMigrations_M5Constraints`, query B52. Uno storno di abbinamento può essere parziale e ripetuto, mai oltre
+l'importo dell'abbinamento (migrazione `00017`, ADR 0013 decisione 8): `payment_matches.reversed_cents` è la somma
+dei suoi storni, si muove solo con l'UPDATE condizionale `reversed_cents + Δ <= amount_cents` (lock del pagamento,
+poi ricontrollo) ed è limitato dal CHECK `payment_matches_reversed_check`; il trigger degli abbinamenti ammette solo
+la sua crescita. Verificata da: `TestConcurrency_PartialReversals` (100 goroutine sullo stesso abbinamento, entrambi
+i dialetti, `-race`), `TestPayment_RecordMatchReverseRefund`, query B52r, `TestPortal_ChangeDatesThenCancelRefundsTheRest`
+(rimborso del cambio date e poi dell'annullamento: la somma dei rimborsi è il pagato),
+`TestPortal_ChangeDatesBackAndForthRefundsEachTime` (tornare a date già avute è un nuovo rimborso, mai il replay
+del primo: la chiave d'idempotenza contiene la versione del contratto). Stato: implemented.
 
 **INV-53 — Esportazione completa e senza doppioni.** Ogni addebito non annullato compare in una sola prima
 esportazione `to_invoice → exported` (indice unico parziale `charge_export_items_first_uidx`), salvo riesportazione
@@ -317,7 +363,9 @@ pagamenti, rimborsi, cassa, documenti commerciali, richieste di pagamento, solle
 date, importi e conteggi), `TestSSE_PayloadHasNoPII` (con `map_id`, `resource_ids`, `nights` di M3),
 `TestSSE_M4Topics`, `TestSSE_M5Topics`, `TestLogs_NoPII` (anche webhook di pagamento ed esportazioni, M5);
 da M6a `TestAcceptance_M6aLanPairing` e `TestAcceptance_M6aPairTOTPRotatesSession` (codice di abbinamento, token
-della sessione del dispositivo e token di primo avvio assenti dai log) e `TestLauncher_StartStop` (log del
+della sessione del dispositivo e token di primo avvio assenti dai log); da M8 `TestBooking_AvailabilityNoPII` (la
+disponibilità pubblica non espone codici posto, id, clienti, barche, riferimenti né conteggi) e
+`TestLostDemand_AnonymousRowDeduped` (domanda persa senza cliente, barca né dati del client); e `TestLauncher_StartStop` (log del
 launcher senza token, email o password); da M6b `TestConcurrency_OfflineReplay_Presence` (`assertNoPII` sui log e
 payload degli eventi `presence.arrived` senza note né nomi), `TestRemoteProxy_TokenNeverReachesPage` (token di
 dispositivo assente da risposte e log del proxy remoto) e `TestFiscalAgent_LostOutcomeNoReissue` (log dell'agente
@@ -439,3 +487,26 @@ ogni abbinamento positivo e non oltre il residuo dell'addebito (INV-52), nessun 
 (422 `offline_not_allowed` altrimenti); il client lo rifiuta già all'accodamento. Verificata da:
 `TestPayment_OfflineAmountEqualsMatches`, `TestPayment_OfflineReceiptModeRefused`, `queue.test.ts` e
 `hooks.test.tsx` (Vitest). Stato: implemented (M6b).
+
+**INV-88 — Token del portale e delle prenotazioni solo per il proprio soggetto.** Un link o una sessione dell'area
+cliente risolve solo il suo porto e il suo cliente; un token di prenotazione (HMAC dell'id con il nonce salvato) o di
+stato risolve solo la sua prenotazione. Qualunque altro porto, cliente, prenotazione o id è `404 link_invalid`, senza
+distinguere sconosciuto, scaduto o altrui (nessuna enumerazione); i token viaggiano solo in header o nel frammento
+dell'URL, mai nel percorso o nei log. Estende INV-75 ai token del portale (M8). Verificata da:
+`TestPortal_TokenScoped`, `TestPortal_LinkSingleUse`, `TestPortal_SessionExpiry` (token del portale) e
+`TestBooking_TokenScoped` (token di prenotazione: token altrui, mancante, alterato, id sconosciuto e slug di un altro
+porto sono tutti `404 link_invalid`), `TestBooking_CrossMarina404` (prenotazione, sessione dell'area cliente e
+ufficio di un altro porto esistente: sempre 404, mai nelle sue liste). Le superfici a solo token (pagina della prenotazione, controllo dei documenti
+richiesti a `/pay`) mostrano e contano solo i documenti caricati tramite quella prenotazione
+(`online_booking_documents`), mai quelli di un cliente esistente collegato per email:
+`TestBooking_TokenSurfaceHidesCustomerDocuments`. Le risposte memorizzate dall'idempotenza delle scritture anonime
+sono legate all'hash del token o della sessione: `TestIdempotency_AnonymousScopeBindsCredential`. Stato:
+implemented.
+
+**INV-89 — Prenotazioni ed eventi dei canali applicati una volta.** Un evento di un canale è applicato al più una
+volta (`channel_events_uidx` su porto, canale, id evento) e una prenotazione esterna esiste una sola volta
+(`channel_reservations_uidx` su porto, canale, riferimento esterno), anche con lo stesso evento ricevuto 100 volte in
+parallelo da webhook e pull. Verificata da: `TestMigrations_M8Constraints`, `TestConcurrency_ChannelReservationOnce`,
+`TestChannel_CancelReleases` (lo stesso annullamento ricevuto due volte annulla una sola volta),
+`TestAcceptance_M8_ChannelFlow`.
+Stato: implemented.

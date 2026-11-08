@@ -150,7 +150,7 @@ func (s *Service) onProposal(ctx context.Context, p *auth.Principal, marinaID, i
 	if err := s.requireAllocator(); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		pr, err := store.LockRenewalProposal(ctx, tx, scope, id)
 		if err != nil {
@@ -288,7 +288,7 @@ func (s *Service) IncludeRenewalProposal(ctx context.Context, p *auth.Principal,
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		if err := lockSourceActive(ctx, tx, scope, src); err != nil {
 			return err

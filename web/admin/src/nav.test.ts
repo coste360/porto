@@ -16,6 +16,7 @@ describe('nav', () => {
       'pricing.read',
       'pricing.configure',
       'contracts.read',
+      'transits.desk',
       'presence.write',
       'contracts.write',
       'rights.manage',

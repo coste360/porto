@@ -8,6 +8,49 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M8 "Prenotazione online" (spec 23, 13, 10.7, m8-plan, ADR 0013):
+
+- Public booking page `/b/{slug}` and embeddable widget (`/embed.js`, iframe that resizes itself and emits
+  `porto:booking` events): search by dates and vessel dimensions on online-sellable berths and linear areas, online
+  quotas, price from the pricing engine, hold with countdown, customer and vessel details with versioned terms and
+  privacy consents, document upload, checkout with advance payment through the payment drivers (Stripe manual
+  capture for the approval flow), return page with `.ics`. Framing only for the marina's allowed origins
+  (`frame-ancestors`, cached 60 s); API and admin keep `DENY`. Installable shell (manifest, service worker outside
+  embed mode).
+- Transits are confirmed only by the payment webhook or the manual driver (INV-09); approval flow with a hold until
+  the deadline, approve/reject from the desk, automatic rejection at the deadline, capture retry; late payment
+  recovered on the same berth or refunded in full.
+- Online quotas as database counters with a conditional increment (INV-12, query Q19); no double sale between desk,
+  online and channels (INV-13), all through `occupancy.AllocateTx`.
+- Customer area: magic-link login (token in the URL fragment, same answer for unknown emails), sessions in a
+  header, bookings, documents (signed 5-minute download links), receipts, pay balance, change dates and cancel
+  within the policy snapshot with a refund preview (INV-88). A cancellation or a shorter stay commits together with
+  its refund rows. Booking-token pages list only the documents uploaded through that booking
+  (`online_booking_documents`), never those of an existing customer matched by email. Without published terms and
+  privacy the page is not payable and details are refused.
+- Desk (`Prenotazioni online`): list with filters and approval countdown, detail sheet (approve, reject, payment
+  link, document verification); settings for rules, payment and cancellation tiers, approval, texts, arrival
+  information, quotas with usage, embed snippets and channels. Dynamic areas get the "Prenotabile online" switch.
+- `pkg/ext.BookingChannel` with the host service (signed webhook, pull and push jobs, reservations and events applied
+  once, INV-89) and an in-memory fake channel (`PORTO_DEV_FAKE_CHANNEL`, development only); optional
+  `PaymentAuthorizer` (manual capture) and `CheckoutRequest.CaptureManual`. No real third-party channel is shipped.
+- Lost demand: searches with no answer are recorded as anonymous inquiries (channel `online`, deduped 30 min) and
+  appear in report R4; expired unpaid bookings are `lost`, rejections `declined_other`.
+- A payment match can be reversed several times, in parts, up to its amount (migration `00017`,
+  `payment_matches.reversed_cents` with a CHECK and a conditional update; the API adds `reversed_cents`): a
+  cancellation after a date change that refunded part of the payment now refunds the rest instead of being refused.
+  Pay balance reuses the open payment request of the same charges.
+- Worklist kinds `capture_failed` and `channel_modify`; jobs `bookings.approval_expire`, `bookings.capture`,
+  `channels.pull`, `channels.push`, `portal.cleanup`; e-mail templates `booking_*` and `portal_login` (it, en).
+- API: tags `booking-public`, `account`, `online-admin`, `channels`; webhook `/webhooks/channels/{channel}/{marinaId}`;
+  problem types `booking_unavailable`, `booking_rules`, `booking_busy`, `consent_required`, `text_outdated`,
+  `refund_changed`, `price_changed`, `cancellation_not_allowed`, `nothing_due`, `idempotency_mismatch`; event
+  `transit.approval_requested`. Public endpoints are rate limited per IP prefix and answer `404 link_invalid`
+  without enumeration.
+- Migration `00016_online_booking` (SQLite and PostgreSQL): online settings, versioned texts, online bookings,
+  quota counters and claims, portal links and sessions, channel connections, reservations and events;
+  `consents.kind` accepts `terms`, `contracts.confirmation_source` accepts `channel`.
+
 M7 "Report e cruscotto" (spec 21, 13.2, 26.1, 27, m7-plan, ADR 0012):
 
 - Reports (`GET /marinas/{id}/reports/{key}`, tag `reports`): occupancy (physical and contractual, berths, land and

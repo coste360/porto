@@ -13,5 +13,12 @@ export default defineConfig({
     strictPort: true,
     proxy: { '/api': { target: apiTarget, changeOrigin: false } },
   },
-  build: { outDir: 'dist', emptyOutDir: true, sourcemap: true },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    sourcemap: true,
+    // dist/.vite/manifest.json feeds scripts/budget.mjs (entry plus static imports, m8-plan §12.1, §16 D19); the
+    // server never serves .vite/ (internal/http/static).
+    manifest: true,
+  },
 });

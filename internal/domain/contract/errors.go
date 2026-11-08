@@ -54,6 +54,8 @@ var (
 	ErrNotInArrears = errors.New("contract: not in arrears")
 	// ErrNotImplementedM4 is returned by the CONTRACT skeleton (m4_skeleton.go) until CONTRACTS lands M4.
 	ErrNotImplementedM4 = errors.New("contract: not implemented (M4)")
+	// ErrNotImplementedM8 is returned by the M8 signatures of online.go until ENGINE lands them.
+	ErrNotImplementedM8 = errors.New("contract: not implemented (M8)")
 	// ErrNotImplementedM5 is returned by the M5 entry points of payments.go until PAYMENTS lands them.
 	ErrNotImplementedM5 = errors.New("contract: not implemented (M5)")
 )

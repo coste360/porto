@@ -458,8 +458,10 @@ json (frozen per (rate, nature) of what it paid, filled at match time for fiscal
 CHECK `allocated_cents ≥ 0`, `refunded_cents ≥ 0`, `allocated_cents + refunded_cents ≤ amount_cents`;
 `kind = 'credit'` ⇒ method `credit_note` and no cash session; `kind = 'deposit'` ⇒ allocations only through retention.
 
-`payment_matches` (insert-only, trigger): `payment_id`, `charge_id`, `amount_cents` (≠ 0), `reverses_match_id?`
-(unique: a match is reversed at most once), `created_by`. **Credit** of a customer = Σ (`amount − allocated −
+`payment_matches` (insert-only, trigger): `payment_id`, `charge_id`, `amount_cents` (≠ 0), `reverses_match_id?`,
+`created_by`. Since M8 (migration `00017`, ADR 0013 decision 8) a match may be reversed several times, in parts, up
+to its amount: `reversed_cents` (the sum of its reversals, the only column the trigger lets grow) is moved by a
+conditional UPDATE and bounded by `payment_matches_reversed_check`; until M8 an unique index allowed one reversal. **Credit** of a customer = Σ (`amount − allocated −
 refunded`) of their `payment` and `credit` payments (deposits are listed separately and are not credit).
 
 **INV-50** (restated precisely): for every charge `paid_amount_cents = Σ payment_matches.amount_cents` of the charge
@@ -491,8 +493,9 @@ cash_session_required`); insert; then `MatchTx` for each requested match; fiscal
    ApplyChargeSettlementTx`; others nothing. (§8.2)
 6. Audit `payment.match`, event `charge.paid` when it reached `paid`, `payment.changed`.
 
-`ReverseMatch(match)` (refunds.issue): inserts the opposite row, decrements both sides with conditional UPDATEs
-(`paid_amount_cents - :a >= 0`), callback (instalment back to `partially_paid`/`issued` through
+`ReverseMatch(match)` (refunds.issue): locks, re-reads the match, adds the amount (default: what is left) to
+`reversed_cents` with `UPDATE … WHERE reversed_cents + :a <= amount_cents` (zero rows = `already_reversed`), inserts
+the opposite row, decrements both sides with conditional UPDATEs (`paid_amount_cents - :a >= 0`), callback (instalment back to `partially_paid`/`issued` through
 `ApplyChargeSettlementTx`), audit `payment.unmatch`.
 
 Auto-match `oldest_due_first`: the customer's open charges ordered by `due_on, number`, filled until the payment is
@@ -795,7 +798,7 @@ Existing tables only get `ADD COLUMN` without FK and new indexes.
 | Table | Constraints (columns in §4–§5) |
 |---|---|
 | `payments` | unique (marina_id, number); unique (marina_id, idempotency_key) WHERE not null; unique (marina_id, provider_code, provider_ref) WHERE provider_ref not null; CHECKs §4.1; FK (cash_session_id, marina_id) cash_sessions; idx (marina_id, customer_id, received_on); idx (marina_id, cash_session_id) |
-| `payment_matches` | idx (payment_id), idx (charge_id); unique (reverses_match_id) WHERE not null; CHECK amount ≠ 0; insert-only trigger |
+| `payment_matches` | idx (payment_id), idx (charge_id); idx (reverses_match_id) WHERE not null (unique until `00017`); CHECK amount ≠ 0; CHECK `payment_matches_reversed_check` (0 ≤ reversed ≤ amount, 0 on reversal rows, `00017`); insert-only trigger (only `reversed_cents` may grow) |
 | `refunds` | CHECK amount > 0; kind/status/source CHECKs; CHECK kind = 'payout' ⇒ payment_id NULL; idx (marina_id, payment_id) |
 | `fiscal_documents` | `payment_id`, `charge_id`, `driver`, `number`, `status` CHECK (pending, issued, failed, void), `lines` json, `vat` json, `external_ref`, `error_code`, `issued_at`, `voided_at`; unique (marina_id, number); trigger: issued rows immutable except → void |
 | `payment_provider_settings` | unique (marina_id, provider_code) |
@@ -897,7 +900,7 @@ asserts the table above route by route.
 | POST `M/payments` | recordPayment | payments.collect / collect_cash (cash only) | `RecordPayment` (Idempotency-Key) → 201 `Payment` | 409 match_exceeds/cash_session_required, 422 idempotency_mismatch |
 | GET `M/payments/{paymentId}` | getPayment | as list | matches, refunds, fiscal docs | 404 |
 | POST `M/payments/{paymentId}/matches` | matchPayment | payments.collect | `{matches[{charge_id, amount_cents}]}` → 200 | 409 match_exceeds |
-| POST `M/payments/{paymentId}/matches/{matchId}/reverse` | reverseMatch | refunds.issue | → 200 | 409 already_reversed |
+| POST `M/payments/{paymentId}/matches/{matchId}/reverse` | reverseMatch | refunds.issue | → 200 (reverses what is left) | 409 already_reversed (nothing left) |
 | POST `M/payments/{paymentId}/refunds` | refundPayment | refunds.issue | `{amount_cents, via_provider?, method?, reason, unmatch?[]}` (Idempotency-Key) → 201 `Refund` | 409 refund_exceeds, 422 provider_refund_unsupported |
 | POST `M/payments/{paymentId}/retain` | retainDeposit | charges.manage | `{amount_cents, item_id?, reason}` → 201 `Charge` | 409 not_deposit/refund_exceeds |
 | GET `M/refunds` | listRefunds | payments.collect or charges.manage | filters | – |

@@ -161,7 +161,7 @@ func (s *Service) PriceMove(ctx context.Context, p *auth.Principal, marinaID str
 		out.Undo = raw
 		out.ApplyTx = func(ctx context.Context, tx bun.IDB, scope store.MarinaScope, now time.Time) error {
 			for _, mp := range toApply {
-				if err := s.applyMovePriceTx(ctx, tx, scope, actor{p}, now, mp); err != nil {
+				if err := s.applyMovePriceTx(ctx, tx, scope, actor{p: p}, now, mp); err != nil {
 					return err
 				}
 			}
@@ -279,7 +279,7 @@ func (s *Service) UndoMovePriceTx(ctx context.Context, tx bun.IDB, scope store.M
 		if len(reverse) == 0 {
 			continue
 		}
-		if err := s.adjustPriceTx(ctx, tx, scope, actor{p}, now, c, u.Transit, reverse, true); err != nil {
+		if err := s.adjustPriceTx(ctx, tx, scope, actor{p: p}, now, c, u.Transit, reverse, true); err != nil {
 			return err
 		}
 	}

@@ -110,7 +110,7 @@ func (s *Service) CreateCharterFleet(ctx context.Context, p *auth.Principal, mar
 	if err := v.Err(); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	now := s.now()
 	f := &store.CharterFleet{ID: store.NewID(), MarinaID: scope.ID(), CustomerID: in.CustomerID, Name: strings.TrimSpace(in.Name), Version: 1, CreatedAt: now, UpdatedAt: now}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
@@ -145,7 +145,7 @@ func (s *Service) UpdateCharterFleet(ctx context.Context, p *auth.Principal, mar
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		f, err := store.GetCharterFleet(ctx, tx, scope, id)
 		if err != nil {
@@ -373,7 +373,7 @@ func (s *Service) CreateCharter(ctx context.Context, p *auth.Principal, marinaID
 		flat = money.Cents(*in.FlatCents)
 	}
 	total := CharterPrice(in.PricingMode, quotes, spares, flat)
-	a := actor{p}
+	a := actor{p: p}
 	var id string
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := s.createCharterTx(ctx, tx, scope, a, in, fl, policy, total, flatReason, st)
@@ -507,7 +507,7 @@ func (s *Service) RotateCharter(ctx context.Context, p *auth.Principal, marinaID
 		return nil, err
 	}
 	v := &auth.ValidationError{}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, id, KindMooring, ifMatch)
 		if err != nil {

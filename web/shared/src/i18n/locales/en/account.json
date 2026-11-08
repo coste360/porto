@@ -1,0 +1,119 @@
+{
+  "title": "Customer area",
+  "login": {
+    "title": "Sign in to your bookings",
+    "description": "Enter the email you booked with: we send you a link to sign in, no password needed.",
+    "email": "Email",
+    "submit": "Send me the link",
+    "sent": "If the address is registered, you will soon receive a sign-in link. The link is valid for 30 minutes.",
+    "again": "Use another email"
+  },
+  "link": {
+    "opening": "Signing in…",
+    "invalidTitle": "Invalid link",
+    "invalidDescription": "The link has expired or was already used. Ask for a new one.",
+    "requestNew": "Ask for a new link"
+  },
+  "expired": "Your session has expired: sign in again.",
+  "logout": "Sign out",
+  "list": {
+    "title": "My bookings",
+    "empty": "There are no bookings.",
+    "open": "Details"
+  },
+  "back": "All bookings",
+  "status": {
+    "held": "Waiting for details",
+    "pending_payment": "Waiting for payment",
+    "awaiting_approval": "Waiting for the marina's confirmation",
+    "confirmed": "Confirmed",
+    "arrived": "In the marina",
+    "departed": "Completed",
+    "cancelled": "Cancelled",
+    "expired": "Expired",
+    "no_show": "No show"
+  },
+  "fields": {
+    "reference": "Reference",
+    "dates": "Dates",
+    "vessel": "Boat",
+    "berth": "Berth",
+    "category": "Berth type",
+    "total": "Total",
+    "paid": "Paid",
+    "residual": "Balance due"
+  },
+  "dates": "{{arrival}} – {{departure}}",
+  "qr": {
+    "title": "Arrival code",
+    "description": "Show this code to the berthing master."
+  },
+  "documents": {
+    "title": "Documents",
+    "empty": "No documents uploaded.",
+    "verified": "Verified",
+    "toVerify": "To be verified",
+    "missing": "Missing: {{list}}",
+    "upload": "Upload document",
+    "type": "Document type",
+    "file": "File (PDF, PNG or JPEG, max 10 MB)",
+    "badType": "Format not accepted: use PDF, PNG or JPEG.",
+    "tooLarge": "The file is larger than 10 MB.",
+    "uploaded": "Document uploaded.",
+    "view": "Open"
+  },
+  "documentTypes": {
+    "boating_licence": "Boating licence",
+    "navigation_licence": "Navigation licence",
+    "insurance_policy": "Insurance policy",
+    "registration_certificate": "Registration certificate",
+    "identity_card": "Identity document"
+  },
+  "receipts": {
+    "title": "Payments",
+    "empty": "No payments recorded."
+  },
+  "approval": "The request is waiting for the marina's confirmation.",
+  "payBalance": {
+    "button": "Pay the balance",
+    "redirecting": "Opening the payment…"
+  },
+  "cancel": {
+    "button": "Cancel booking",
+    "title": "Cancel the booking?",
+    "refund": "Refund: {{amount}}",
+    "credit": "Credit with the marina: {{amount}}",
+    "noRefund": "The conditions provide no refund.",
+    "paid": "Paid so far: {{amount}}",
+    "tier": "Cancelling at least {{days}} days before arrival refunds {{percent}}.",
+    "notAllowed": "The booking can no longer be cancelled online: contact the marina.",
+    "confirm": "Cancel booking",
+    "keep": "Keep it",
+    "done": "Booking cancelled.",
+    "changed": "The refund has changed: check the new amount and confirm again."
+  },
+  "changeDates": {
+    "button": "Change dates",
+    "title": "Change the dates",
+    "arrival": "Arrival",
+    "departure": "Departure",
+    "preview": "Check availability",
+    "unavailable": "The new dates are not available.",
+    "oldTotal": "Current total",
+    "newTotal": "New total",
+    "supplement": "Extra to pay: {{amount}}",
+    "refund": "Refund: {{amount}}",
+    "confirm": "Confirm the new dates",
+    "done": "Dates updated.",
+    "changed": "The price has changed: check the new total and confirm again.",
+    "invalid": "The departure must be after the arrival."
+  },
+  "blockReason": {
+    "closed": "The marina is closed on those dates.",
+    "min_nights": "The stay is too short.",
+    "max_nights": "The stay is too long.",
+    "advance": "The dates are outside the period bookable online.",
+    "weekday": "Arrivals are not possible on that weekday.",
+    "too_large": "The boat is too large for the berths available online."
+  }
+}

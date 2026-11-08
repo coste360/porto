@@ -37,6 +37,10 @@ type Policy struct {
 	// proxy (appPin, remoteCookie, M6b): this router treats it as public and its handler answers 404, because the
 	// operation exists only in remote mode where no Porto server runs in the app.
 	ProxyOnly bool
+	// DomainIdempotency is true when the domain handles Idempotency-Key itself (x-porto-idempotency: domain, M8
+	// createBooking): the idempotency middleware lets the request through untouched and stores nothing, so no
+	// response carrying a token is persisted.
+	DomainIdempotency bool
 }
 
 // BinaryBody reports whether the operation takes a raw (non-JSON) body: it declares request content types and
@@ -83,6 +87,7 @@ type specOperation struct {
 	MaxBodyBytes   int64                  `yaml:"x-porto-max-body-bytes"`
 	MaxStreamBytes int64                  `yaml:"x-porto-max-stream-bytes"`
 	Offline        bool                   `yaml:"x-porto-offline"`
+	Idempotency    string                 `yaml:"x-porto-idempotency"`
 	RequestBody    *struct {
 		Content map[string]yaml.Node `yaml:"content"`
 	} `yaml:"requestBody"`
@@ -121,7 +126,10 @@ func ParsePolicies(spec []byte) (Policies, error) {
 			}
 			p := Policy{
 				OperationID: op.OperationID, MaxBodyBytes: op.MaxBodyBytes, MaxStreamBytes: op.MaxStreamBytes,
-				Offline: op.Offline,
+				Offline: op.Offline, DomainIdempotency: op.Idempotency == "domain",
+			}
+			if op.Idempotency != "" && op.Idempotency != "domain" {
+				return nil, fmt.Errorf("middleware: %s %s: x-porto-idempotency must be domain", name, path)
 			}
 			if op.RequestBody != nil {
 				for ct := range op.RequestBody.Content {

@@ -36,7 +36,7 @@ func (s *Service) SendQuote(ctx context.Context, p *auth.Principal, marinaID, id
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	res := &SendResult{}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		q, err := lockQuote(ctx, tx, scope, id, ifMatch)

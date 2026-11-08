@@ -142,6 +142,23 @@ func MapEvent(body []byte) (*ext.PaymentEvent, error) {
 			"payment_intent.payment_failed": ext.PaymentEventFailed,
 		}[env.Type]
 		ev = piEvent(&pi, kind)
+	case "payment_intent.amount_capturable_updated", "payment_intent.canceled":
+		// M8 manual capture (m8-plan §6): an authorisation, and its release.
+		var pi paymentIntentObject
+		if json.Unmarshal(obj, &pi) != nil {
+			return ignored, ext.ErrIgnoredEvent
+		}
+		kind := ext.PaymentEventAuthorizationVoided
+		if env.Type == "payment_intent.amount_capturable_updated" {
+			if pi.Status != "requires_capture" {
+				return ignored, ext.ErrIgnoredEvent
+			}
+			kind = ext.PaymentEventAuthorized
+		}
+		ev = piEvent(&pi, kind)
+		if kind == ext.PaymentEventAuthorized && pi.AmountCapturable > 0 {
+			ev.AmountCents = pi.AmountCapturable
+		}
 	case "charge.refunded":
 		var c struct {
 			PaymentIntent  json.RawMessage `json:"payment_intent"`
@@ -290,4 +307,7 @@ func ibanLast4(raw json.RawMessage) string {
 	return pm.SEPADebit.Last4
 }
 
-var _ ext.PaymentProvider = (*Driver)(nil)
+var (
+	_ ext.PaymentProvider   = (*Driver)(nil)
+	_ ext.PaymentAuthorizer = (*Driver)(nil)
+)

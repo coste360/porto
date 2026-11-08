@@ -139,6 +139,17 @@ export const PROBLEM_TYPES = [
   'invalid_report_filter',
   'report_too_large',
   'unknown_indicator',
+  // M8 (m8-plan §11)
+  'booking_unavailable',
+  'booking_rules',
+  'booking_busy',
+  'consent_required',
+  'text_outdated',
+  'refund_changed',
+  'price_changed',
+  'cancellation_not_allowed',
+  'nothing_due',
+  'idempotency_mismatch',
 ] as const;
 
 export type ProblemType = (typeof PROBLEM_TYPES)[number];

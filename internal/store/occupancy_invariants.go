@@ -14,7 +14,7 @@ import (
 
 // Violation is a row (or group of rows) that breaks an occupancy invariant query of m3-plan §6.
 type Violation struct {
-	Query  string   // Q1..Q16
+	Query  string   // Q1..Q17, Q19 (Q18 is CheckContractInvariants)
 	IDs    []string // allocation, release, contract or resource ids involved
 	Detail string   // ids, dates and codes only (no personal data)
 }
@@ -134,11 +134,11 @@ func CheckOccupancyInvariants(ctx context.Context, db bun.IDB, marinaID string, 
 	if err := checkContractCoverage(ctx, db, marinaID, add); err != nil {
 		return nil, err
 	}
-	// Q8 transits in held/pending_payment/confirmed/arrived have at least one active allocation (a held transit
+	// Q8 transits in held/pending_payment/awaiting_approval/confirmed/arrived have at least one active allocation (a held transit
 	// whose hold was reclaimed lazily keeps an expired one until the contracts.expire job reconciles it, §3.3)
 	ids = nil
 	if err := db.NewRaw(`SELECT c.id FROM contracts AS c WHERE c.marina_id = ? AND c.kind = 'transit'
-			AND c.status IN ('held','pending_payment','confirmed','arrived')
+			AND c.status IN ('held','pending_payment','awaiting_approval','confirmed','arrived')
 			AND NOT EXISTS (SELECT 1 FROM contract_lines AS l JOIN allocations AS a ON a.contract_line_id = l.id
 				WHERE l.contract_id = c.id AND (a.status = 'active' OR (c.status = 'held' AND a.status = 'expired')))`, marinaID).Scan(ctx, &ids); err != nil {
 		return nil, fmt.Errorf("Q8: %w", err)
@@ -224,6 +224,9 @@ func CheckOccupancyInvariants(ctx context.Context, db bun.IDB, marinaID string, 
 	}
 	for _, id := range ids {
 		add("Q16", "resold allocation not on the released resource", id)
+	}
+	if err := checkOnlineQuotas(ctx, db, marinaID, add); err != nil {
+		return nil, err
 	}
 	if err := checkRightsOccupancy(ctx, db, marinaID, add); err != nil {
 		return nil, err
@@ -472,6 +475,39 @@ func checkRightsOccupancy(ctx context.Context, db bun.IDB, marinaID string, add 
 		if !next.After(r.ToOn) {
 			add("Q17", "active right not covered from "+next.String(), r.ID)
 		}
+	}
+	return nil
+}
+
+// checkOnlineQuotas is Q19 (INV-12, m8-plan §3.3): for every (group, night) of online_quota_usage, used equals the
+// number of claims and 0 <= used <= cap; no claim exists without its usage row.
+func checkOnlineQuotas(ctx context.Context, db bun.IDB, marinaID string, add func(string, string, ...string)) error {
+	type row struct {
+		GroupID string        `bun:"group_id"`
+		Night   calendar.Date `bun:"night"`
+		Used    int           `bun:"used"`
+		Cap     int           `bun:"cap"`
+		Claims  int           `bun:"claims"`
+	}
+	var rows []row
+	if err := db.NewRaw(`SELECT u.group_id, u.night, u.used, u.cap,
+			(SELECT count(*) FROM online_quota_claims AS q WHERE q.group_id = u.group_id AND q.night = u.night) AS claims
+		FROM online_quota_usage AS u WHERE u.marina_id = ?
+			AND (u.used < 0 OR u.used > u.cap OR u.used <> (SELECT count(*) FROM online_quota_claims AS q
+				WHERE q.group_id = u.group_id AND q.night = u.night))`, marinaID).Scan(ctx, &rows); err != nil {
+		return fmt.Errorf("Q19: %w", err)
+	}
+	for _, r := range rows {
+		add("Q19", fmt.Sprintf("online quota %s used %d cap %d claims %d", r.Night, r.Used, r.Cap, r.Claims), r.GroupID)
+	}
+	var orphans []string
+	if err := db.NewRaw(`SELECT q.contract_id FROM online_quota_claims AS q WHERE q.marina_id = ?
+			AND NOT EXISTS (SELECT 1 FROM online_quota_usage AS u WHERE u.group_id = q.group_id AND u.night = q.night)`,
+		marinaID).Scan(ctx, &orphans); err != nil {
+		return fmt.Errorf("Q19: %w", err)
+	}
+	for _, id := range orphans {
+		add("Q19", "online quota claim without usage row", id)
 	}
 	return nil
 }

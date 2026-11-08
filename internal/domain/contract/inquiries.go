@@ -117,13 +117,13 @@ func (s *Service) CreateInquiry(ctx context.Context, p *auth.Principal, marinaID
 		ID: store.NewID(), MarinaID: scope.ID(), Channel: in.Channel, Source: in.Source, Purpose: in.Purpose, Term: in.Term,
 		VesselID: in.VesselID, CustomerID: in.CustomerID, LOACm: in.LOACm, BeamCm: in.BeamCm, DraftCm: in.DraftCm,
 		Arrival: in.Arrival, Departure: in.Departure, Outcome: in.Outcome, Notes: notes,
-		CreatedByUserID: actor{p}.userID(), Version: 1, CreatedAt: now, UpdatedAt: now,
+		CreatedByUserID: actor{p: p}.userID(), Version: 1, CreatedAt: now, UpdatedAt: now,
 	}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		if err := store.InsertInquiry(ctx, tx, row); err != nil {
 			return err
 		}
-		if err := s.writeAudit(ctx, tx, scope, actor{p}, "inquiry.create", entityInquiry, row.ID, map[string]any{
+		if err := s.writeAudit(ctx, tx, scope, actor{p: p}, "inquiry.create", entityInquiry, row.ID, map[string]any{
 			"purpose": row.Purpose, "outcome": row.Outcome, "arrival": row.Arrival, "departure": row.Departure,
 		}); err != nil {
 			return err
@@ -193,7 +193,7 @@ func (s *Service) UpdateInquiry(ctx context.Context, p *auth.Principal, marinaID
 		if err := store.UpdateInquiry(ctx, tx, scope, ifMatch, r); err != nil {
 			return versionErr(err)
 		}
-		if err := s.writeAudit(ctx, tx, scope, actor{p}, "inquiry.update", entityInquiry, r.ID, map[string]any{"fields": fields, "outcome": r.Outcome}); err != nil {
+		if err := s.writeAudit(ctx, tx, scope, actor{p: p}, "inquiry.update", entityInquiry, r.ID, map[string]any{"fields": fields, "outcome": r.Outcome}); err != nil {
 			return err
 		}
 		row = r

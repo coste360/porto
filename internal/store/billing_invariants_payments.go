@@ -13,6 +13,8 @@ import (
 //	     payment is the sum of its matches (reversals negative);
 //	B52  (INV-52) the refunded amount of every payment is the sum of its refunds that did not fail, and
 //	     allocated + refunded never exceed the amount (also CHECKs); deposits are matched only to retentions;
+//	B52r a match is reversed by one or more reversal rows whose sum is its reversed_cents and never above its amount
+//	     (00017; also payment_matches_reversed_check);
 //	B52c the credit of every customer is not negative;
 //	B32  (INV-32) an instalment or holder instalment with a charge follows it: paid ⇔ paid, partially_paid ⇔
 //	     partially_paid, open charge ⇔ issued instalment.
@@ -63,6 +65,24 @@ func checkPaymentsInvariants(ctx context.Context, db bun.IDB, s MarinaScope) ([]
 		}
 		if r.Allocated < 0 || r.Refunded < 0 || r.Allocated+r.Refunded > r.Amount {
 			add("B52", fmt.Sprintf("payment limits allocated %d refunded %d amount %d", r.Allocated, r.Refunded, r.Amount), r.ID)
+		}
+	}
+
+	var revs []struct {
+		ID       string `bun:"id"`
+		Amount   int64  `bun:"amount_cents"`
+		Reversed int64  `bun:"reversed_cents"`
+		Sum      int64  `bun:"sum_cents"`
+	}
+	if err := db.NewSelect().TableExpr("payment_matches AS m").
+		ColumnExpr("m.id, m.amount_cents, m.reversed_cents").
+		ColumnExpr("COALESCE((SELECT -SUM(r.amount_cents) FROM payment_matches AS r WHERE r.reverses_match_id = m.id AND r.marina_id = m.marina_id), 0) AS sum_cents").
+		Where("m.marina_id = ?", s.ID()).Where("m.reverses_match_id IS NULL").Scan(ctx, &revs); err != nil {
+		return nil, fmt.Errorf("B52r matches: %w", err)
+	}
+	for _, r := range revs {
+		if r.Reversed != r.Sum || r.Sum < 0 || r.Sum > r.Amount {
+			add("B52r", fmt.Sprintf("match amount %d reversed %d Σ reversals %d", r.Amount, r.Reversed, r.Sum), r.ID)
 		}
 	}
 

@@ -48,6 +48,26 @@ func (r Request) wants(t ResourceType) bool {
 
 func (r Request) lastNight() calendar.Date { return r.Departure.AddDays(-1) }
 
+// Online reports whether the request comes from the public booking page or a channel (m8-plan §3.2).
+func (r Request) Online() bool { return r.Channel == "online" || r.Channel == "external" }
+
+// sellable reports whether a resource may be offered to an online request: online_sellable and not in a group
+// whose online quota is used up.
+func (r Request) sellable(s Snapshot, onlineSellable bool, groups []string) bool {
+	if !r.Online() {
+		return true
+	}
+	if !onlineSellable {
+		return false
+	}
+	for _, g := range groups {
+		if s.QuotaFull[g] {
+			return false
+		}
+	}
+	return true
+}
+
 func candidates(s Snapshot, r Request) []candidate {
 	var out []candidate
 	closedFor := func(id string) []NightRange {
@@ -62,11 +82,14 @@ func candidates(s Snapshot, r Request) []candidate {
 	if r.wants(ResourceBerth) {
 		for i := range s.Berths {
 			b := &s.Berths[i]
+			if !r.sellable(s, b.OnlineSellable, b.GroupIDs) {
+				continue
+			}
 			c := candidate{
 				typ: ResourceBerth, id: b.ID, code: b.Code, target: b.Target, groups: b.GroupIDs, structure: b.StructureID,
 				water: b.Water, dedicated: b.TransitDedicated, busy: s.Busy[b.ID], closedDays: closedFor(b.ID),
 			}
-			if o, ok := s.OutOK[b.ID]; ok {
+			if o, ok := s.OutOK[b.ID]; ok && !r.Online() {
 				c.outOK = &o
 			}
 			out = append(out, c)
@@ -75,13 +98,16 @@ func candidates(s Snapshot, r Request) []candidate {
 	if r.wants(ResourceArea) {
 		for i := range s.Areas {
 			a := &s.Areas[i]
+			if !r.sellable(s, a.OnlineSellable, a.GroupIDs) {
+				continue
+			}
 			out = append(out, candidate{
 				typ: ResourceArea, id: a.ID, code: a.Code, target: a.Target, groups: a.GroupIDs, structure: a.StructureID,
 				dedicated: a.TransitDedicated, area: a, closedDays: closedFor(a.ID),
 			})
 		}
 	}
-	if r.wants(ResourceLand) {
+	if r.wants(ResourceLand) && !r.Online() {
 		for i := range s.Lands {
 			l := &s.Lands[i]
 			out = append(out, candidate{

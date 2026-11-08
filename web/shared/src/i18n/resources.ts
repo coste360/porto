@@ -1,4 +1,7 @@
+import enAccount from './locales/en/account.json';
 import enAudit from './locales/en/audit.json';
+import enCheckout from './locales/en/checkout.json';
+import enOnline from './locales/en/online.json';
 import enAuth from './locales/en/auth.json';
 import enBooking from './locales/en/booking.json';
 import enCommon from './locales/en/common.json';
@@ -22,7 +25,10 @@ import enDock from './locales/en/dock.json';
 import enDesk from './locales/en/desk.json';
 import enOpsMap from './locales/en/opsMap.json';
 import enOccupancyEnums from './locales/en/occupancyEnums.json';
+import itAccount from './locales/it/account.json';
 import itAudit from './locales/it/audit.json';
+import itCheckout from './locales/it/checkout.json';
+import itOnline from './locales/it/online.json';
 import itAuth from './locales/it/auth.json';
 import itBooking from './locales/it/booking.json';
 import itCommon from './locales/it/common.json';
@@ -164,6 +170,10 @@ export const NAMESPACES = [
   // M7 (m7-plan §10.2)
   'reports',
   'dashboard',
+  // M8 (m8-plan §12)
+  'checkout',
+  'account',
+  'online',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -221,6 +231,9 @@ export const resources = {
     phone: itPhone,
     reports: itReports,
     dashboard: itDashboard,
+    checkout: itCheckout,
+    account: itAccount,
+    online: itOnline,
   },
   en: {
     common: enCommon,
@@ -275,5 +288,8 @@ export const resources = {
     phone: enPhone,
     reports: enReports,
     dashboard: enDashboard,
+    checkout: enCheckout,
+    account: enAccount,
+    online: enOnline,
   },
 } as const;

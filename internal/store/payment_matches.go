@@ -53,13 +53,23 @@ func MatchesOfCharges(ctx context.Context, db bun.IDB, s MarinaScope, chargeIDs 
 	return out, err
 }
 
-// ReversalOf returns the reversal of a match (ErrNotFound when not reversed).
-func ReversalOf(ctx context.Context, db bun.IDB, s MarinaScope, matchID string) (*PaymentMatch, error) {
-	m := new(PaymentMatch)
-	if err := db.NewSelect().Model(m).Where("marina_id = ?", s.ID()).Where("reverses_match_id = ?", matchID).Scan(ctx); err != nil {
-		return nil, notFound(err)
+// AddMatchReversed adds delta (> 0) to reversed_cents of a positive, non-reversal match, conditional on the
+// result staying within the match amount (payment_matches_reversed_check backs it). Under READ COMMITTED the
+// UPDATE waits for a concurrent one on the same row and re-evaluates the condition on the committed value, so
+// concurrent partial reversals never exceed the match. It returns the new reversed amount; ok false means the
+// match is not reversible by delta (already reversed, or delta above what is left).
+func AddMatchReversed(ctx context.Context, db bun.IDB, s MarinaScope, matchID string, delta int64) (reversed int64, ok bool, err error) {
+	err = db.NewRaw(`UPDATE payment_matches SET reversed_cents = reversed_cents + ?
+		WHERE marina_id = ? AND id = ? AND reverses_match_id IS NULL AND amount_cents > 0
+		AND ? > 0 AND reversed_cents + ? <= amount_cents
+		RETURNING reversed_cents`, delta, s.ID(), matchID, delta, delta).Scan(ctx, &reversed)
+	if errors.Is(err, sql.ErrNoRows) {
+		return 0, false, nil
 	}
-	return m, nil
+	if err != nil {
+		return 0, false, err
+	}
+	return reversed, true, nil
 }
 
 // AddChargePaid moves paid_amount_cents of a positive charge by delta and recomputes its payment status from

@@ -156,7 +156,7 @@ func (s *Service) CreateContract(ctx context.Context, p *auth.Principal, marinaI
 	for _, x := range in.Extras {
 		extras = append(extras, extraLine(x))
 	}
-	a := actor{p}
+	a := actor{p: p}
 	var id string
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := s.createMooringTx(ctx, tx, scope, a, newContract{
@@ -254,7 +254,7 @@ func (s *Service) ActivateContractWith(ctx context.Context, p *auth.Principal, m
 	if err := s.requireAllocator(); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, id, KindMooring, ifMatch)
 		if err != nil {
@@ -315,7 +315,7 @@ func (s *Service) CancelContract(ctx context.Context, p *auth.Principal, marinaI
 		v.Add("reason", "too_long")
 		return nil, v
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, id, KindMooring, ifMatch)
 		if err != nil {
@@ -394,7 +394,7 @@ func (s *Service) TerminateContract(ctx context.Context, p *auth.Principal, mari
 	if err := v.Err(); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, id, KindMooring, ifMatch)
 		if err != nil {
@@ -491,7 +491,7 @@ func (s *Service) UpdateContract(ctx context.Context, p *auth.Principal, marinaI
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, id, KindMooring, ifMatch)
 		if err != nil {

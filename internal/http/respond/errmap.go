@@ -3,6 +3,7 @@ package respond
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/coste360/porto/internal/domain/apikey"
 	"github.com/coste360/porto/internal/domain/auth"
@@ -38,6 +39,12 @@ import (
 	"github.com/coste360/porto/internal/domain/report"
 	"github.com/coste360/porto/internal/domain/rights"
 	"github.com/coste360/porto/internal/domain/signature"
+
+	"github.com/coste360/porto/internal/domain/booking"
+	"github.com/coste360/porto/internal/domain/channel"
+	"github.com/coste360/porto/internal/domain/onlineconf"
+	"github.com/coste360/porto/internal/domain/portal"
+	"github.com/coste360/porto/pkg/ext"
 )
 
 // sentinels maps domain sentinel errors to problem types (m0-plan §4.4). Order matters only where one error
@@ -229,6 +236,28 @@ var sentinels = []struct {
 	{report.ErrTooLarge, problem.ReportTooLarge},
 	{report.ErrUnknownIndicator, problem.UnknownIndicator},
 	{report.ErrNotImplemented, problem.NotImplemented},
+	// M8 (m8-plan §11); booking.UnavailableError, booking.RulesError and booking.ErrBusy are mapped in mapM8.
+	{booking.ErrLinkInvalid, problem.LinkInvalid},
+	{portal.ErrLinkInvalid, problem.LinkInvalid},
+	{occupancy.ErrQuotaExhausted, problem.BookingUnavailable},
+	{booking.ErrConsentRequired, problem.ConsentRequired},
+	{onlineconf.ErrTextOutdated, problem.TextOutdated},
+	{booking.ErrRefundChanged, problem.RefundChanged},
+	{booking.ErrPriceChanged, problem.PriceChanged},
+	{booking.ErrCancellationNotAllowed, problem.CancellationNotAllowed},
+	{booking.ErrNothingDue, problem.NothingDue},
+	{booking.ErrIdempotencyMismatch, problem.IdempotencyMismatch},
+	{channel.ErrUnknownChannel, problem.NotFound},
+	{channel.ErrNoConnection, problem.NotFound},
+	{channel.ErrVersionMismatch, problem.VersionConflict},
+	{channel.ErrSyncRunning, problem.Conflict},
+	{ext.ErrInvalidSignature, problem.InvalidSignature},
+	{booking.ErrNotImplemented, problem.NotImplemented},
+	{portal.ErrNotImplemented, problem.NotImplemented},
+	{channel.ErrNotImplemented, problem.NotImplemented},
+	{onlineconf.ErrNotImplemented, problem.NotImplemented},
+	{contract.ErrNotImplementedM8, problem.NotImplemented},
+	{occupancy.ErrNotImplementedM8, problem.NotImplemented},
 	{ErrBadJSON, problem.BadRequest},
 	{errUnsupportedMedia, problem.UnsupportedMediaType},
 }
@@ -253,6 +282,9 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 		return t, opts, true
 	}
 	if t, opts, ok := mapM5(err); ok {
+		return t, opts, true
+	}
+	if t, opts, ok := mapM8(err); ok {
 		return t, opts, true
 	}
 	if fe, ok := errors.AsType[*report.FilterError](err); ok {
@@ -377,6 +409,33 @@ func mapM5(err error) (problem.Type, []problem.Option, bool) {
 	if pe, ok := errors.AsType[*desktopport.PinMismatchError](err); ok {
 		d := map[string]string{"expected_fingerprint": pe.Expected, "presented_fingerprint": pe.Presented}
 		return problem.RemotePinMismatch, []problem.Option{problem.WithDetails(d)}, true
+	}
+	return "", nil, false
+}
+
+// bookingBusyRetry is the Retry-After of booking_busy.
+const bookingBusyRetry = 30 * time.Second
+
+// mapM8 maps the typed errors of M8 that carry details (m8-plan §11). Details hold codes only.
+func mapM8(err error) (problem.Type, []problem.Option, bool) {
+	if ue, ok := errors.AsType[*booking.UnavailableError](err); ok {
+		cats := ue.AvailableCategories
+		if cats == nil {
+			cats = []string{}
+		}
+		return problem.BookingUnavailable, []problem.Option{problem.WithDetails(map[string]any{"available_categories": cats})}, true
+	}
+	if errors.Is(err, booking.ErrUnavailable) {
+		return problem.BookingUnavailable, nil, true
+	}
+	if re, ok := errors.AsType[*booking.RulesError](err); ok {
+		return problem.BookingRules, []problem.Option{problem.Fields(problem.FieldError{Field: re.Field, Code: re.Code})}, true
+	}
+	if errors.Is(err, booking.ErrRules) {
+		return problem.BookingRules, nil, true
+	}
+	if errors.Is(err, booking.ErrBusy) {
+		return problem.BookingBusy, []problem.Option{problem.RetryAfter(bookingBusyRetry)}, true
 	}
 	return "", nil, false
 }

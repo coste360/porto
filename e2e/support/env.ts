@@ -21,6 +21,11 @@ mkdirSync(MAIL_DIR, { recursive: true });
 
 export const PORT = Number(process.env.PORTO_E2E_PORT ?? 18080);
 export const BASE_URL = `http://127.0.0.1:${PORT}`;
+// M8 (m8-plan §14.5): the embedding host page (another origin) and the Stripe API stub.
+export const HOST_PORT = Number(process.env.PORTO_E2E_HOST_PORT ?? 18081);
+export const HOST_URL = `http://localhost:${HOST_PORT}`;
+export const STRIPE_STUB_PORT = Number(process.env.PORTO_E2E_STRIPE_PORT ?? 18082);
+export const STRIPE_STUB_URL = `http://127.0.0.1:${STRIPE_STUB_PORT}`;
 export const BINARY = path.resolve(import.meta.dirname, '..', '..', 'bin', 'porto');
 
 /** The bootstrap owner created before the server starts (see playwright.config.ts). */
@@ -44,5 +49,6 @@ export function portoEnv(): Record<string, string> {
     PORTO_AUTO_MIGRATE: 'true',
     PORTO_LOG_LEVEL: 'warn',
     PORTO_WEBHOOKS_ALLOW_PRIVATE: 'true',
+    PORTO_STRIPE_API_BASE: STRIPE_STUB_URL,
   };
 }

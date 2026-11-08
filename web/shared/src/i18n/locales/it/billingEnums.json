@@ -196,7 +196,9 @@
     "billing_target_mismatch": "Importi del contratto non coerenti",
     "arrears_paid": "Morosità saldata",
     "deadline": "Scadenza",
-    "dispute": "Contestazione"
+    "dispute": "Contestazione",
+    "capture_failed": "Carta non incassata",
+    "channel_modify": "Modifica da canale rifiutata"
   },
   "workItemStatus": {
     "open": "Da fare",

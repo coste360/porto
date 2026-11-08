@@ -66,6 +66,8 @@ export const WORK_KINDS: readonly WorkItemKind[] = [
   'arrears_paid',
   'deadline',
   'dispute',
+  'capture_failed',
+  'channel_modify',
 ];
 
 /** Groups work items by kind in the catalogue order (only kinds with items). */

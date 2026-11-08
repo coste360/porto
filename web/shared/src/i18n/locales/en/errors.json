@@ -124,5 +124,15 @@
   "invalid_period": "Invalid period: the end date must follow the start date and the period cannot exceed 400 days.",
   "invalid_report_filter": "One of the report filters is not valid.",
   "report_too_large": "Too many rows for one export: shorten the period or add filters.",
-  "unknown_indicator": "This indicator cannot be compared."
+  "unknown_indicator": "This indicator cannot be compared.",
+  "booking_unavailable": "No berth of this category is available any more: choose another category or other dates.",
+  "booking_rules": "The dates or the boat do not meet the marina's online booking rules.",
+  "booking_busy": "Too many bookings in progress: please retry in a moment.",
+  "consent_required": "You must accept the terms and the privacy notice to continue.",
+  "text_outdated": "The terms have been updated: read and accept them again.",
+  "refund_changed": "The refund changed since the preview: check the new amount.",
+  "price_changed": "The price changed since the preview: check the new amount.",
+  "cancellation_not_allowed": "This booking cannot be cancelled online: contact the marina.",
+  "nothing_due": "Nothing is due.",
+  "idempotency_mismatch": "The request was already sent with different data: reload the page and retry."
 }

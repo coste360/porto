@@ -26,7 +26,8 @@ var (
 		ActionConfirm, ActionNoShow, ActionArrive, ActionDepart, ActionChangeStay, ActionUpdate, ActionSend, ActionAccept,
 		ActionDecline, ActionRequestSignature, ActionSign, ActionSignatureFailed, ActionSuspend, ActionResume,
 		ActionExpireRenewed, ActionTacitRenew, ActionAddendum, ActionChangeVessel, ActionRequestPayment,
-		ActionPaymentExpired,
+		ActionPaymentExpired, ActionRequestApproval, ActionPaymentAuthorized, ActionApprove, ActionReject,
+		ActionConfirmLate,
 	}
 )
 
@@ -61,6 +62,12 @@ func TestContract_TransitionTable(t *testing.T) {
 			{"held", "request_payment"}: StatusPendingPayment, {"pending_payment", "confirm"}: StatusConfirmed,
 			{"pending_payment", "payment_expired"}: StatusHeld, {"pending_payment", "expire"}: StatusExpired,
 			{"pending_payment", "cancel"}: StatusCancelled,
+			// m8-plan §4.1
+			{"held", "request_approval"}: StatusAwaitingApproval, {"pending_payment", "payment_authorized"}: StatusAwaitingApproval,
+			{"awaiting_approval", "approve"}: StatusPendingPayment, {"awaiting_approval", "confirm"}: StatusConfirmed,
+			{"awaiting_approval", "reject"}: StatusCancelled, {"awaiting_approval", "expire"}: StatusCancelled,
+			{"awaiting_approval", "cancel"}: StatusCancelled, {"awaiting_approval", "update"}: StatusAwaitingApproval,
+			{"expired", "confirm_late"}: StatusConfirmed,
 		},
 		"quote": {
 			{"", "create"}: QuoteDraft, {"draft", "update"}: QuoteDraft, {"draft", "send"}: QuoteSent,
@@ -108,14 +115,10 @@ func TestContract_TransitionTable(t *testing.T) {
 			}
 		}
 	}
-	// Statuses reserved for later milestones are never reached (M8 awaiting_approval).
-	for _, s := range []Status{StatusAwaitingApproval} {
-		for _, table := range [][]Transition{MooringTransitions, TransitTransitions} {
-			for _, tr := range table {
-				if tr.To == s || tr.From == s {
-					t.Errorf("status %s appears in a transition", s)
-				}
-			}
+	// awaiting_approval (M8) is a transit status only.
+	for _, tr := range MooringTransitions {
+		if tr.To == StatusAwaitingApproval || tr.From == StatusAwaitingApproval {
+			t.Errorf("mooring status %s appears in a transition", StatusAwaitingApproval)
 		}
 	}
 }
@@ -133,11 +136,18 @@ func TestContract_ConfirmedOnlyInConfirmTransit(t *testing.T) {
 	root := filepath.Join(repoRoot(t), "internal")
 	assign := regexp.MustCompile(`(?i)\bstatus\s*(=|:)\s*(string\()?(contract\.)?(StatusConfirmed|"confirmed")`)
 	sqlSet := regexp.MustCompile(`(?i)status\s*=\s*'confirmed'`)
-	lookup := regexp.MustCompile(`\bActionConfirm\b`)
-	// The table itself: the only way into confirmed is confirm from held or pending_payment (INV-09, M5).
+	lookup := regexp.MustCompile(`\bActionConfirm(Late)?\b`)
+	// The table itself: the only ways into confirmed are confirm from held, pending_payment or awaiting_approval
+	// (INV-09, M5, M8) and confirm_late from expired (M8 late payment), both used only by confirmTx. Sources:
+	// manual driver, provider webhook, verified channel reservation (ADR 0013).
 	for _, tr := range TransitTransitions {
-		if tr.To == StatusConfirmed && tr.From != StatusConfirmed &&
-			((tr.From != StatusHeld && tr.From != StatusPendingPayment) || tr.Action != ActionConfirm) {
+		if tr.To != StatusConfirmed || tr.From == StatusConfirmed {
+			continue
+		}
+		okConfirm := tr.Action == ActionConfirm &&
+			(tr.From == StatusHeld || tr.From == StatusPendingPayment || tr.From == StatusAwaitingApproval)
+		okLate := tr.Action == ActionConfirmLate && tr.From == StatusExpired
+		if !okConfirm && !okLate {
 			t.Errorf("transition %s/%s reaches confirmed outside confirmTx", tr.From, tr.Action)
 		}
 	}

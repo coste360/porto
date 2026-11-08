@@ -398,7 +398,7 @@ func TestRenewal_StaleSourceRefused(t *testing.T) {
 			t.Fatal(err)
 		}
 		err = db.RunInTx(ctx, func(ctx context.Context, tx bunTx) error {
-			_, err := e.svc.proposeTx(ctx, tx, scope, actor{e.Owner}, rd, "", d("2027-07-25"), ProposalActionPropose)
+			_, err := e.svc.proposeTx(ctx, tx, scope, actor{p: e.Owner}, rd, "", d("2027-07-25"), ProposalActionPropose)
 			return err
 		})
 		if !errors.Is(err, ErrInvalidTransition) {

@@ -170,6 +170,7 @@ type DynamicArea struct {
 	CellCount      int64     `bun:"cell_count"`
 	PriceClass     string    `bun:"price_class,nullzero"`
 	Active         bool      `bun:"active"`
+	OnlineSellable bool      `bun:"online_sellable"` // M8: offered by the public booking page (m8-plan §3.2)
 	CreatedAt      time.Time `bun:"created_at"`
 	UpdatedAt      time.Time `bun:"updated_at"`
 }
@@ -216,15 +217,19 @@ type MapDecoration struct {
 type BerthGroup struct {
 	bun.BaseModel `bun:"table:berth_groups"`
 
-	ID        string    `bun:"id,pk"`
-	MarinaID  string    `bun:"marina_id"`
-	Code      string    `bun:"code"`
-	Name      JSON      `bun:"name"` // I18nText
-	Kind      string    `bun:"kind"` // structure, transit, area, custom
-	SortOrder int       `bun:"sort_order"`
-	Version   int       `bun:"version"`
-	CreatedAt time.Time `bun:"created_at"`
-	UpdatedAt time.Time `bun:"updated_at"`
+	ID        string `bun:"id,pk"`
+	MarinaID  string `bun:"marina_id"`
+	Code      string `bun:"code"`
+	Name      JSON   `bun:"name"` // I18nText
+	Kind      string `bun:"kind"` // structure, transit, area, custom
+	SortOrder int    `bun:"sort_order"`
+	// M8 online quota (m8-plan §3.3): none, count (value = units), percent (value 0..100 of active member berths).
+	// Written only by store.UpdateOnlineQuotas; UpdateBerthGroup leaves them alone.
+	OnlineQuotaKind  string    `bun:"online_quota_kind,default:'none'"`
+	OnlineQuotaValue int64     `bun:"online_quota_value"`
+	Version          int       `bun:"version"`
+	CreatedAt        time.Time `bun:"created_at"`
+	UpdatedAt        time.Time `bun:"updated_at"`
 }
 
 // BerthGroupMember is a row of berth_group_members.

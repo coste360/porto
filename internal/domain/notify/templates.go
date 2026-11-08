@@ -57,6 +57,25 @@ func M5Templates() []string {
 	}
 }
 
+// M8 templates (m8-plan §5-§7): online booking emails (ENGINE) and the customer-area login link (ACCOUNT).
+const (
+	TemplateBookingReceived    = "booking_received"
+	TemplateBookingConfirmed   = "booking_confirmed"
+	TemplateBookingApprovedPay = "booking_approved_pay"
+	TemplateBookingRejected    = "booking_rejected"
+	TemplateBookingCancelled   = "booking_cancelled"
+	TemplateBookingLateRefund  = "booking_late_refund"
+	TemplatePortalLogin        = "portal_login"
+)
+
+// M8Templates lists the M8 templates.
+func M8Templates() []string {
+	return []string{
+		TemplateBookingReceived, TemplateBookingConfirmed, TemplateBookingApprovedPay, TemplateBookingRejected,
+		TemplateBookingCancelled, TemplateBookingLateRefund, TemplatePortalLogin,
+	}
+}
+
 // M4Templates lists the M4 templates.
 func M4Templates() []string {
 	return []string{
@@ -132,7 +151,7 @@ var templates = func() map[string]templateSet {
 	out := map[string]templateSet{}
 	names := append([]string{TemplatePasswordReset, TemplateInvitation}, M4Templates()...)
 	optional := map[string]bool{}
-	for _, name := range M5Templates() {
+	for _, name := range append(M5Templates(), M8Templates()...) {
 		names, optional[name] = append(names, name), true
 	}
 	for _, loc := range locales {

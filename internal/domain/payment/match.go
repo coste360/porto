@@ -2,7 +2,6 @@ package payment
 
 import (
 	"context"
-	"errors"
 	"slices"
 	"sort"
 
@@ -304,9 +303,10 @@ func (s *Service) followOrigin(ctx context.Context, tx bun.IDB, scope store.Mari
 	return nil
 }
 
-// ReverseMatchTx reverses a match in tx: the opposite row (amount = the whole match, or part of it when amount is
-// set), both sides decremented with conditional updates, the origin follows, audit payment.unmatch. A match is
-// reversed at most once (unique index).
+// ReverseMatchTx reverses a match in tx, wholly or in part: the opposite row (amount = what is left of the match
+// when amount is 0, else amount), both sides decremented with conditional updates, the origin follows, audit
+// payment.unmatch. A match may be reversed several times, never beyond its amount: reversed_cents moves by a
+// conditional UPDATE under payment_matches_reversed_check (00017), so the limit holds in the DB even concurrently.
 func (s *Service) ReverseMatchTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, actor audit.Actor, matchID string, amount money.Cents) (*store.PaymentMatch, error) {
 	m, err := store.GetPaymentMatch(ctx, tx, scope, matchID)
 	if err != nil {
@@ -315,10 +315,7 @@ func (s *Service) ReverseMatchTx(ctx context.Context, tx bun.IDB, scope store.Ma
 	if m.ReversesMatchID != "" || m.AmountCents <= 0 {
 		return nil, ErrAlreadyReversed
 	}
-	if amount == 0 {
-		amount = money.Cents(m.AmountCents)
-	}
-	if amount < 0 || int64(amount) > m.AmountCents {
+	if amount < 0 {
 		return nil, invalid("amount_cents", "above_match")
 	}
 	pre, err := store.LedgerChargesByIDs(ctx, tx, scope, []string{m.ChargeID})
@@ -340,10 +337,24 @@ func (s *Service) ReverseMatchTx(ctx context.Context, tx bun.IDB, scope store.Ma
 		return nil, err
 	}
 	ch := &locked[0]
-	if _, err := store.ReversalOf(ctx, tx, scope, m.ID); err == nil {
-		return nil, ErrAlreadyReversed
-	} else if !errors.Is(err, store.ErrNotFound) {
+	// Re-read under the payment lock: what is left now, not what was left before waiting.
+	if m, err = store.GetPaymentMatch(ctx, tx, scope, matchID); err != nil {
 		return nil, err
+	}
+	left := money.Cents(m.AmountCents - m.ReversedCents)
+	if left <= 0 {
+		return nil, ErrAlreadyReversed
+	}
+	if amount == 0 {
+		amount = left
+	}
+	if amount > left {
+		return nil, invalid("amount_cents", "above_match")
+	}
+	if _, ok, err := store.AddMatchReversed(ctx, tx, scope, m.ID, int64(amount)); err != nil {
+		return nil, err
+	} else if !ok {
+		return nil, ErrAlreadyReversed
 	}
 	now := s.now()
 	ok, err := store.AddPaymentAllocated(ctx, tx, scope, p.ID, -int64(amount), now)
@@ -367,9 +378,6 @@ func (s *Service) ReverseMatchTx(ctx context.Context, tx bun.IDB, scope store.Ma
 		ReversesMatchID: m.ID, CreatedByUserID: userOf(actor), CreatedByActor: actorString(actor), CreatedAt: now,
 	}
 	if err := store.InsertPaymentMatch(ctx, tx, rev); err != nil {
-		if store.IsUniqueViolation(err) {
-			return nil, ErrAlreadyReversed
-		}
 		return nil, err
 	}
 	buckets, err := store.ChargeVATBuckets(ctx, tx, scope, []string{ch.ID})

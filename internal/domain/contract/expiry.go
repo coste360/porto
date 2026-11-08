@@ -142,6 +142,13 @@ func (s *Service) expireTransitsTx(ctx context.Context, tx bun.IDB, scope store.
 		if err := s.emitTransition(ctx, tx, scope, t, subject{contract: c, change: event.ChangeExpired, expired: ended}); err != nil {
 			return 0, err
 		}
+		// M8 (m8-plan §4.4): an expired online or channel transit gives its quota back and its inquiry is lost.
+		if err := s.releaseQuotaTx(ctx, tx, scope, c); err != nil {
+			return 0, err
+		}
+		if err := s.onlineInquiryTx(ctx, tx, scope, c, store.InquiryLost); err != nil {
+			return 0, err
+		}
 	}
 	return len(rows), nil
 }

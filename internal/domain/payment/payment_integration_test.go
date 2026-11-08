@@ -77,9 +77,15 @@ func TestPayment_RecordMatchReverseRefund(t *testing.T) {
 		if pp.AllocatedCents != 120_00 || pp.RefundedCents != 30_00 {
 			t.Fatalf("payment after refund %+v", pp)
 		}
-		// A match is reversed at most once.
+		// A partly reversed match can be reversed again, for what is left of it (20_00), and never beyond (00017).
+		if _, err := e.svc.ReverseMatch(ctx, e.Owner, e.MarinaID, p.ID, bMatch); err != nil {
+			t.Fatalf("second, partial reversal: %v", err)
+		}
+		if cb := e.charge(t, b.ID); cb.PaidAmountCents != 0 || cb.PaymentStatus != store.ChargeOpen {
+			t.Fatalf("charge b after the rest was reversed %+v", cb)
+		}
 		if _, err := e.svc.ReverseMatch(ctx, e.Owner, e.MarinaID, p.ID, bMatch); !errors.Is(err, ErrAlreadyReversed) {
-			t.Fatalf("second reversal: %v", err)
+			t.Fatalf("third reversal: %v", err)
 		}
 		// Reversing a's match reopens it.
 		var aMatch string
@@ -94,21 +100,21 @@ func TestPayment_RecordMatchReverseRefund(t *testing.T) {
 		if ca := e.charge(t, a.ID); ca.PaymentStatus != store.ChargeOpen || ca.PaidAmountCents != 0 {
 			t.Fatalf("charge a reopened %+v", ca)
 		}
-		if got := e.payment(t, p.ID).UnallocatedCents(); got != 100_00 {
+		if got := e.payment(t, p.ID).UnallocatedCents(); got != 120_00 {
 			t.Fatalf("unallocated %d", got)
 		}
 		// Matching above the charge residual or the payment fails with the limit.
-		_, err = e.svc.Match(ctx, e.Owner, e.MarinaID, p.ID, []MatchInput{{ChargeID: b.ID, Amount: 70_00}})
+		_, err = e.svc.Match(ctx, e.Owner, e.MarinaID, p.ID, []MatchInput{{ChargeID: b.ID, Amount: 90_00}})
 		var le *LimitError
 		if !errors.As(err, &le) || le.Limit != LimitCharge || le.ChargeID != b.ID {
 			t.Fatalf("match above charge: %v", err)
 		}
-		_, err = e.svc.Match(ctx, e.Owner, e.MarinaID, p.ID, []MatchInput{{ChargeID: a.ID, Amount: 100_00}, {ChargeID: b.ID, Amount: 10_00}})
+		_, err = e.svc.Match(ctx, e.Owner, e.MarinaID, p.ID, []MatchInput{{ChargeID: a.ID, Amount: 100_00}, {ChargeID: b.ID, Amount: 30_00}})
 		if !errors.As(err, &le) || le.Limit != LimitPayment {
 			t.Fatalf("match above payment: %v", err)
 		}
 		e.invariants(t)
-		if e.AuditCount(t, "payment.record") != 1 || e.AuditCount(t, "payment.unmatch") != 2 || e.AuditCount(t, "refund.create") != 1 {
+		if e.AuditCount(t, "payment.record") != 1 || e.AuditCount(t, "payment.unmatch") != 3 || e.AuditCount(t, "refund.create") != 1 {
 			t.Fatal("audit")
 		}
 	})
@@ -372,7 +378,7 @@ func TestCharge_PaidAmountMatchesLedger(t *testing.T) {
 					rt.Fatal(err)
 				}
 				for _, v := range vs {
-					if v.Query == "B50" || v.Query == "B52" || v.Query == "B52c" {
+					if v.Query == "B50" || v.Query == "B52" || v.Query == "B52c" || v.Query == "B52r" {
 						rt.Fatalf("violation %+v", v)
 					}
 				}

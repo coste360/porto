@@ -9,6 +9,9 @@ import (
 	"sync/atomic"
 	"testing"
 
+	"github.com/uptrace/bun"
+
+	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/money"
 	"github.com/coste360/porto/internal/store"
@@ -217,5 +220,94 @@ func TestConcurrency_InstallmentSettle(t *testing.T) {
 			t.Fatalf("payments %d", n)
 		}
 		e.invariants(t)
+	})
+}
+
+// TestConcurrency_PartialReversals (INV-52, 00017): 100 goroutines refund 3,00 each of the same match of 100,00
+// (partial reversals): exactly 33 succeed, Σ reversals = reversed_cents = 99,00, never above the match; then 100
+// raw conditional updates on another match prove the DB bound alone (no service lock) holds.
+func TestConcurrency_PartialReversals(t *testing.T) {
+	testdb.Run(t, func(t *testing.T, db *store.DB) {
+		e := newEnv(t, db)
+		ctx := fixture.Ctx()
+		ch := e.addCharge(t, chargeOpts{}, line{100_00, 2200})
+		p := e.record(t, RecordInput{Amount: 100_00, AutoMatch: AutoMatchOldestDueFirst})
+		if len(p.Matches) != 1 || p.Matches[0].AmountCents != 100_00 {
+			t.Fatalf("matches %+v", p.Matches)
+		}
+		matchID := p.Matches[0].ID
+		var wg sync.WaitGroup
+		var ok, refused atomic.Int64
+		for range 100 {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				_, err := e.svc.Refund(ctx, e.Owner, e.MarinaID, p.ID, RefundInput{
+					Amount: 3_00, Reason: "test", Unmatch: []UnmatchInput{{MatchID: matchID, Amount: 3_00}},
+				})
+				switch {
+				case err == nil:
+					ok.Add(1)
+				case errors.Is(err, ErrAlreadyReversed), errors.Is(err, auth.ErrInvalidInput):
+					refused.Add(1)
+				default:
+					t.Errorf("refund: %v", err)
+				}
+			}()
+		}
+		wg.Wait()
+		if ok.Load() != 33 || refused.Load() != 67 {
+			t.Fatalf("ok %d refused %d", ok.Load(), refused.Load())
+		}
+		m, err := store.GetPaymentMatch(ctx, db.DB, e.scope, matchID)
+		if err != nil || m.ReversedCents != 99_00 {
+			t.Fatalf("reversed %+v %v", m, err)
+		}
+		if c := e.charge(t, ch.ID); c.PaidAmountCents != 1_00 {
+			t.Fatalf("charge paid %d", c.PaidAmountCents)
+		}
+		if pp := e.payment(t, p.ID); pp.RefundedCents != 99_00 || pp.AllocatedCents != 1_00 {
+			t.Fatalf("payment %+v", pp)
+		}
+		// The rest (1,00) is still reversible; then nothing is.
+		if _, err := e.svc.ReverseMatch(ctx, e.Owner, e.MarinaID, p.ID, matchID); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := e.svc.ReverseMatch(ctx, e.Owner, e.MarinaID, p.ID, matchID); !errors.Is(err, ErrAlreadyReversed) {
+			t.Fatalf("over-reversal: %v", err)
+		}
+		e.invariants(t)
+
+		// The DB bound alone: 100 transactions adding 7,00 to reversed_cents of a fresh match of 100,00.
+		// No reversal rows are written here on purpose, so the ledger check (B52r) is not run afterwards.
+		ch2 := e.addCharge(t, chargeOpts{}, line{100_00, 0})
+		p2 := e.record(t, RecordInput{Amount: 100_00})
+		p2d, err := e.svc.Match(ctx, e.Owner, e.MarinaID, p2.ID, []MatchInput{{ChargeID: ch2.ID, Amount: 100_00}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		m2 := p2d.Matches[0].ID
+		ok.Store(0)
+		for range 100 {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				err := db.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
+					_, done, err := store.AddMatchReversed(ctx, tx, e.scope, m2, 7_00)
+					if done {
+						ok.Add(1)
+					}
+					return err
+				})
+				if err != nil {
+					t.Errorf("add reversed: %v", err)
+				}
+			}()
+		}
+		wg.Wait()
+		got, err := store.GetPaymentMatch(ctx, db.DB, e.scope, m2)
+		if err != nil || ok.Load() != 14 || got.ReversedCents != 98_00 {
+			t.Fatalf("ok %d reversed %+v %v", ok.Load(), got, err)
+		}
 	})
 }

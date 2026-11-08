@@ -63,6 +63,10 @@ type CheckoutRequest struct {
 	ExpiresAt      time.Time
 	CustomerRef    string // provider customer reference, when known
 	Locale         string
+	// CaptureManual asks for an authorisation only (card pre-authorisation, M8 approval flow); the host captures
+	// or voids it later through PaymentAuthorizer. Drivers that do not implement PaymentAuthorizer must return
+	// ErrNotSupported when it is set.
+	CaptureManual bool
 }
 
 // MandateSetupRequest asks for a hosted page that collects a direct debit mandate.
@@ -126,16 +130,49 @@ type ProviderRef struct {
 	RefundRef  string
 }
 
+// PaymentAuthorizer is optionally implemented by a PaymentProvider that supports manual capture (m8-plan §6,
+// §16 D6). The host checks it with a type assertion. Both calls are idempotent on IdempotencyKey, run outside any
+// database transaction, and their outcome is confirmed by webhook (PaymentEventSucceeded after a capture,
+// PaymentEventAuthorizationVoided after a void).
+type PaymentAuthorizer interface {
+	// Capture captures an authorised payment (the full authorised amount when AmountCents is 0).
+	Capture(ctx context.Context, req CaptureRequest) (*ProviderPayment, error)
+	// VoidAuthorization releases an authorisation that will not be captured.
+	VoidAuthorization(ctx context.Context, req VoidRequest) error
+}
+
+// CaptureRequest captures an authorised payment.
+type CaptureRequest struct {
+	MarinaID       string
+	IntentID       string
+	IdempotencyKey string // capture:<intent>
+	PaymentRef     string
+	AmountCents    int64
+	Currency       string
+}
+
+// VoidRequest releases an authorised payment.
+type VoidRequest struct {
+	MarinaID       string
+	IntentID       string
+	IdempotencyKey string // void:<intent>
+	PaymentRef     string
+}
+
 // Payment event kinds.
 const (
-	PaymentEventSucceeded       = "succeeded"
-	PaymentEventProcessing      = "processing"
-	PaymentEventFailed          = "failed"
-	PaymentEventExpired         = "expired"
-	PaymentEventRefundSucceeded = "refund_succeeded"
-	PaymentEventRefundFailed    = "refund_failed"
-	PaymentEventMandateActive   = "mandate_active"
-	PaymentEventMandateRevoked  = "mandate_revoked"
+	// PaymentEventAuthorized is a manual-capture payment authorised by the customer (funds held, not captured).
+	PaymentEventAuthorized = "authorized"
+	// PaymentEventAuthorizationVoided is an authorisation released without capture (voided or expired).
+	PaymentEventAuthorizationVoided = "authorization_voided"
+	PaymentEventSucceeded           = "succeeded"
+	PaymentEventProcessing          = "processing"
+	PaymentEventFailed              = "failed"
+	PaymentEventExpired             = "expired"
+	PaymentEventRefundSucceeded     = "refund_succeeded"
+	PaymentEventRefundFailed        = "refund_failed"
+	PaymentEventMandateActive       = "mandate_active"
+	PaymentEventMandateRevoked      = "mandate_revoked"
 	// PaymentEventDisputed is a dispute (chargeback) opened, updated or closed on a payment (PaymentRef). The host
 	// records it as ignored and raises a worklist item for the office; money is never moved automatically.
 	PaymentEventDisputed = "disputed"

@@ -110,7 +110,7 @@ func (s *Service) CreateRenewalCampaign(ctx context.Context, p *auth.Principal, 
 	if err := v.Err(); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	now := s.now()
 	c := &store.RenewalCampaign{
 		ID: store.NewID(), MarinaID: scope.ID(), Name: in.Name, Filter: store.MustJSON(in.Filter), PriceListID: in.PriceListID,
@@ -261,7 +261,7 @@ func (s *Service) UpdateRenewalCampaign(ctx context.Context, p *auth.Principal, 
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := s.lockCampaign(ctx, tx, scope, id, ifMatch)
 		if err != nil {
@@ -397,7 +397,7 @@ func (s *Service) PreviewRenewalCampaign(ctx context.Context, p *auth.Principal,
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	for i := range cands {
 		src := &cands[i]
 		if done[src.ID] {
@@ -506,7 +506,7 @@ func (s *Service) LaunchRenewalCampaign(ctx context.Context, p *auth.Principal, 
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := s.lockCampaign(ctx, tx, scope, id, ifMatch)
 		if err != nil {
@@ -559,7 +559,7 @@ func (s *Service) CloseRenewalCampaign(ctx context.Context, p *auth.Principal, m
 	if err := s.requireAllocator(); err != nil {
 		return nil, err
 	}
-	if err := s.closeCampaign(ctx, scope, actor{p}, id, ifMatch); err != nil {
+	if err := s.closeCampaign(ctx, scope, actor{p: p}, id, ifMatch); err != nil {
 		return nil, err
 	}
 	return s.campaign(ctx, s.d.DB.DB, scope, id)
@@ -607,7 +607,7 @@ func (s *Service) DiscardRenewalCampaign(ctx context.Context, p *auth.Principal,
 	if err := s.requireAllocator(); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := s.lockCampaign(ctx, tx, scope, id, ifMatch)
 		if err != nil {

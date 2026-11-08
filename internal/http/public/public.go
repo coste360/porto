@@ -5,13 +5,16 @@ package public
 
 import (
 	"net/http"
+	"slices"
 
+	"github.com/coste360/porto/internal/domain/booking"
 	"github.com/coste360/porto/internal/domain/collect"
 	"github.com/coste360/porto/internal/domain/comms"
 	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/docs"
 	"github.com/coste360/porto/internal/domain/magiclink"
 	"github.com/coste360/porto/internal/domain/marina"
+	"github.com/coste360/porto/internal/domain/portal"
 	"github.com/coste360/porto/internal/domain/signature"
 	"github.com/coste360/porto/internal/http/api"
 	"github.com/coste360/porto/internal/http/respond"
@@ -32,6 +35,10 @@ type Handler struct {
 
 	// M5 public pay page of payment requests (m5-plan §5.5, CASH-DRIVERS).
 	Collect *collect.Service
+
+	// M8 public booking page (booking.go, ENGINE/PUBLIC) and customer area (account.go, ACCOUNT) (m8-plan §11).
+	Booking *booking.Service
+	Portal  *portal.Service
 }
 
 // GetPublicMarina implements api.ServerInterface.
@@ -45,6 +52,10 @@ func (h *Handler) GetPublicMarina(w http.ResponseWriter, r *http.Request, slug s
 	body := api.PublicMarina{
 		Slug: m.Slug, Name: m.Name, DefaultLocale: api.Locale(m.DefaultLocale), Locales: view.Locales(m.Locales),
 		BookingEnabled: m.BookingEnabled,
+	}
+	if len(m.EmbedOrigins) > 0 {
+		origins := slices.Clone(m.EmbedOrigins)
+		body.EmbedOrigins = &origins
 	}
 	respond.JSON(w, http.StatusOK, body)
 }

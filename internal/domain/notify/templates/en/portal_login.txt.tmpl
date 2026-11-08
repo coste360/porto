@@ -1,0 +1,10 @@
+Hello,
+
+you asked to sign in to the customer area of {{v . "marina_name"}}. Open this link to see your bookings:
+
+{{v . "link"}}
+
+The link is valid for {{with v . "expires_at"}}{{.}}{{else}}30{{end}} minutes and can be used once. If you did not ask to sign in, ignore this email.
+
+--
+{{v . "marina_name"}}

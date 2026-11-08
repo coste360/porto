@@ -1,0 +1,223 @@
+{
+  "steps": {
+    "label": "Passaggi della prenotazione",
+    "search": "Quando e barca",
+    "berth": "Posto",
+    "extras": "Extra e riepilogo",
+    "details": "Dati",
+    "payment": "Pagamento"
+  },
+  "search": {
+    "arrival": "Arrivo",
+    "departure": "Partenza",
+    "nightsHint": "Da {{min}} a {{max}} notti.",
+    "loa": "Lunghezza fuori tutto",
+    "beam": "Larghezza",
+    "draft": "Pescaggio",
+    "metres": "m",
+    "feet": "{{value}} ft",
+    "optional": "(facoltativo)",
+    "hullType": "Tipo di scafo",
+    "hullTypePlaceholder": "Seleziona il tipo di scafo",
+    "submit": "Cerca"
+  },
+  "hullTypes": {
+    "monohull_motor": "Monoscafo a motore",
+    "monohull_sail": "Monoscafo a vela",
+    "catamaran": "Catamarano",
+    "trimaran": "Trimarano",
+    "rib": "Gommone",
+    "gozzo": "Gozzo",
+    "other": "Altro"
+  },
+  "validation": {
+    "length": "Inserisci una misura valida in metri.",
+    "arrivalPast": "L'arrivo non può essere nel passato.",
+    "departureAfter": "La partenza deve essere dopo l'arrivo.",
+    "minNights": "Il soggiorno è più breve del minimo consentito.",
+    "maxNights": "Il soggiorno supera il massimo consentito.",
+    "phone": "Inserisci un numero di telefono valido.",
+    "country": "Inserisci il codice del paese di due lettere (es. IT).",
+    "time": "Inserisci un orario valido (hh:mm).",
+    "consent": "Questo consenso è necessario per prenotare."
+  },
+  "berth": {
+    "summary": "Dal {{arrival}} al {{departure}}, barca di {{loa}}",
+    "editSearch": "Modifica",
+    "searching": "Ricerca dei posti disponibili…",
+    "listLabel": "Categorie di posto",
+    "from": "da",
+    "available": "Disponibile",
+    "unavailable": "Non disponibile per queste date",
+    "onRequest": "Su richiesta",
+    "emptyTitle": "Nessun posto disponibile",
+    "reason": {
+      "no_space": "Non ci sono posti liberi per queste date e queste misure. Prova con altre date o contatta il marina.",
+      "closed": "Il marina è chiuso per gli arrivi in queste date.",
+      "min_nights": "Il soggiorno minimo è di {{min}} notti.",
+      "max_nights": "Il soggiorno massimo è di {{max}} notti.",
+      "advance": "Le date sono fuori dal periodo prenotabile online.",
+      "weekday": "In questo giorno della settimana non sono previsti arrivi.",
+      "too_large": "Non ci sono posti prenotabili online per una barca di queste misure. Contatta il marina."
+    },
+    "contact": "Chiama il marina ({{phone}})",
+    "taken": "Il posto scelto è appena stato occupato: scegli di nuovo tra quelli ancora disponibili."
+  },
+  "extras": {
+    "services": "Servizi aggiuntivi",
+    "quantity": "Quantità di {{name}}",
+    "unit": {
+      "night": "a notte",
+      "month": "al mese",
+      "season": "a stagione",
+      "year": "all'anno",
+      "m": "al metro",
+      "m2": "al metro quadro",
+      "kwh": "al kWh",
+      "m3": "al metro cubo",
+      "hour": "all'ora",
+      "piece": "cad.",
+      "lump": "a forfait"
+    },
+    "promo": "Codice promozionale",
+    "applyPromo": "Applica",
+    "promoRejected": "Il codice non è valido per questa prenotazione.",
+    "summary": "Riepilogo: {{category}}",
+    "pricing": "Calcolo del prezzo…",
+    "approvalNotice": "Per questa barca il marina conferma la prenotazione su richiesta: il posto resta bloccato fino alla risposta.",
+    "notPayable": "La prenotazione online non è disponibile al momento: contatta il marina.",
+    "hold": "Blocca il posto",
+    "holding": "Blocco del posto…"
+  },
+  "price": {
+    "qty": "× {{qty}}",
+    "net": "Imponibile",
+    "vat": "IVA",
+    "total": "Totale",
+    "dueNow": {
+      "deposit": "Acconto da pagare ora",
+      "full": "Da pagare ora"
+    }
+  },
+  "cancellation": {
+    "title": "Cancellazione",
+    "tier_zero": "Fino al giorno dell'arrivo: rimborso del {{percent}}",
+    "tier_one": "Fino a {{count}} giorno prima dell'arrivo: rimborso del {{percent}}",
+    "tier_other": "Fino a {{count}} giorni prima dell'arrivo: rimborso del {{percent}}",
+    "noRefund_zero": "Dopo: nessun rimborso",
+    "noRefund_one": "Da {{count}} giorno prima dell'arrivo: nessun rimborso",
+    "noRefund_other": "Da {{count}} giorni prima dell'arrivo: nessun rimborso"
+  },
+  "hold": {
+    "countdown": "Posto bloccato per altri {{time}}",
+    "expiredTitle": "Il blocco del posto è scaduto",
+    "expiredDescription": "Il posto è stato liberato. Puoi cercare di nuovo con gli stessi dati.",
+    "searchAgain": "Cerca di nuovo"
+  },
+  "details": {
+    "customer": "I tuoi dati",
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "email": "Email",
+    "phone": "Telefono",
+    "country": "Paese",
+    "countryHint": "Codice di due lettere, es. IT, FR, DE.",
+    "vessel": "La barca",
+    "vesselName": "Nome della barca",
+    "registration": "Matricola o numero di registrazione",
+    "peopleOnBoard": "Persone a bordo",
+    "arrivalTime": "Orario di arrivo previsto",
+    "arrivalWindow": "Arrivi dalle {{from}} alle {{to}}.",
+    "notes": "Note per il marina",
+    "continue": "Continua",
+    "saving": "Salvataggio…"
+  },
+  "documents": {
+    "title": "Documenti",
+    "hint": "Carica una foto o un PDF dei documenti richiesti: li verificherà l'ufficio del marina.",
+    "laterHint": "Puoi caricare i documenti ora oppure dopo il pagamento, dall'area clienti.",
+    "upload": "Fotografa o carica",
+    "replace": "Sostituisci",
+    "uploading": "Caricamento…",
+    "uploaded": "Caricato",
+    "badType": "Formato non accettato: usa PDF, PNG o JPEG.",
+    "tooLarge": "Il file supera i 10 MB.",
+    "missing": "Carica i documenti richiesti per continuare."
+  },
+  "documentTypes": {
+    "boating_licence": "Patente nautica",
+    "navigation_licence": "Licenza di navigazione",
+    "insurance_policy": "Polizza assicurativa",
+    "registration_certificate": "Certificato di iscrizione",
+    "identity_card": "Documento d'identità"
+  },
+  "consents": {
+    "title": "Consensi",
+    "terms": "Accetto le condizioni di prenotazione",
+    "privacy": "Ho letto l'informativa sulla privacy",
+    "marketing": "Desidero ricevere comunicazioni promozionali dal marina (facoltativo)",
+    "read": "Leggi il testo",
+    "missingTexts": "Il marina non ha ancora pubblicato le condizioni: la prenotazione online non è possibile.",
+    "dialog": {
+      "terms": "Condizioni di prenotazione",
+      "privacy": "Informativa sulla privacy",
+      "marketing": "Comunicazioni promozionali"
+    }
+  },
+  "payment": {
+    "title": "Prenotazione {{reference}}",
+    "stay": "Dal {{arrival}} al {{departure}}",
+    "dueNow": "Da pagare ora",
+    "dueAfterApproval": "Da pagare dopo la conferma",
+    "approvalNotice": "Il marina conferma questa prenotazione su richiesta. Se il metodo di pagamento lo consente, l'importo viene solo autorizzato e addebitato alla conferma.",
+    "detailsMissing": "Completa prima i tuoi dati.",
+    "pay": "Paga",
+    "sendRequest": "Invia richiesta",
+    "starting": "Attendere…",
+    "redirectNotice": "Il pagamento avviene sulla pagina sicura del gestore dei pagamenti."
+  },
+  "arrival": {
+    "title": "Istruzioni per l'arrivo",
+    "vhf": "Canale VHF {{channel}}",
+    "phone": "Ormeggiatore: {{phone}}",
+    "rules": "Regolamento del marina"
+  },
+  "outcome": {
+    "reference": "Codice prenotazione:",
+    "accountHint": "Riceverai un'email con la conferma, il QR per l'ormeggiatore e il link all'area clienti.",
+    "addToCalendar": "Aggiungi al calendario",
+    "icsSummary": "Posto barca {{marina}} ({{reference}})",
+    "newBooking": "Nuova prenotazione",
+    "verifying": {
+      "title": "Pagamento in verifica…",
+      "description": "Stiamo ricevendo la conferma dal gestore dei pagamenti. Non chiudere questa pagina."
+    },
+    "timeout": {
+      "title": "Verifica in corso",
+      "description": "La conferma sta impiegando più del previsto: riceverai un'email appena il pagamento sarà verificato."
+    },
+    "confirmed": {
+      "title": "Prenotazione confermata",
+      "description": "Ti aspettiamo!"
+    },
+    "received": {
+      "title": "Richiesta ricevuta",
+      "description": "Il marina ti risponderà via email. Il posto resta bloccato fino alla risposta."
+    },
+    "failed": {
+      "title": "Pagamento non riuscito",
+      "description": "Il pagamento non è stato completato. Puoi riprovare finché il posto resta bloccato."
+    },
+    "cancelled": {
+      "title": "Prenotazione non completata",
+      "description": "Il pagamento è stato annullato o il blocco del posto è scaduto."
+    }
+  },
+  "return": {
+    "loading": "Caricamento dello stato della prenotazione…",
+    "invalidTitle": "Prenotazione non trovata",
+    "invalidDescription": "Il link non è valido o è scaduto.",
+    "backToSite": "Torna al sito",
+    "backToMarina": "Torna alla pagina del marina"
+  }
+}

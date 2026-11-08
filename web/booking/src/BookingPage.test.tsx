@@ -5,6 +5,7 @@ import { ApiProvider, createApiClient } from '@porto/shared/api';
 import { createFetchMock, problem, renderWithProviders } from '@porto/shared/testing';
 
 import { BookingPage } from './BookingPage';
+import { config } from './test/fixtures';
 
 function renderPage(slug: string | null, fetchMock: ReturnType<typeof createFetchMock>) {
   const api = createApiClient({ fetch: fetchMock.fetch, baseUrl: 'http://localhost' });
@@ -33,6 +34,28 @@ describe('BookingPage', () => {
     expect(await screen.findByRole('heading', { name: 'Marina Prova' })).toBeInTheDocument();
     expect(screen.getByText('La prenotazione online arriverà presto')).toBeInTheDocument();
     expect(screen.getByText('powered by Porto')).toBeInTheDocument();
+  });
+
+  it('loads the booking flow when online booking is enabled', async () => {
+    window.history.replaceState(null, '', '/b/prova');
+    const mock = createFetchMock([
+      {
+        path: '/api/public/v1/prova',
+        body: {
+          slug: 'prova',
+          name: 'Marina Prova',
+          default_locale: 'it',
+          locales: ['it'],
+          booking_enabled: true,
+          embed_origins: [],
+        },
+      },
+      { path: '/api/public/v1/prova/booking/config', body: config },
+    ]);
+    renderPage('prova', mock);
+    expect(await screen.findByRole('heading', { name: 'Marina Prova' })).toBeInTheDocument();
+    expect(await screen.findByTestId('booking-search')).toBeInTheDocument();
+    expect(screen.queryByText('La prenotazione online arriverà presto')).toBeNull();
   });
 
   it('shows the not-found page for an unknown marina', async () => {

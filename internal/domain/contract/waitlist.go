@@ -136,7 +136,7 @@ func (s *Service) CreateWaitlistEntry(ctx context.Context, p *auth.Principal, ma
 	if err := v.Err(); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	now := s.now()
 	e := &store.WaitlistEntry{
 		ID: store.NewID(), MarinaID: scope.ID(), CustomerID: in.CustomerID, VesselID: in.VesselID, LOACm: in.LOA,
@@ -174,7 +174,7 @@ func (s *Service) UpdateWaitlistEntry(ctx context.Context, p *auth.Principal, ma
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	var out *store.WaitlistEntry
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		e, err := store.GetWaitlistEntry(ctx, tx, scope, id)
@@ -262,7 +262,7 @@ func (s *Service) QuoteFromWaitlist(ctx context.Context, p *auth.Principal, mari
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		e, err := store.GetWaitlistEntry(ctx, tx, scope, id)
 		if err != nil {

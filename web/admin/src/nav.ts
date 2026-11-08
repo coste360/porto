@@ -56,7 +56,9 @@ export type MarinaRoutePath =
   | '/m/$marinaId/worklist'
   | '/m/$marinaId/settings/billing'
   | '/m/$marinaId/settings/payments'
-  | '/m/$marinaId/reports';
+  | '/m/$marinaId/reports'
+  | '/m/$marinaId/online'
+  | '/m/$marinaId/settings/online';
 
 export type NavItem = {
   id: string;
@@ -98,6 +100,13 @@ export const NAV_ITEMS: NavItem[] = [
     to: '/m/$marinaId/inquiries',
     labelKey: 'common:nav.inquiries',
     anyOf: ['contracts.read'],
+  },
+  // M8 (m8-plan §12.3), group "Operatività"
+  {
+    id: 'online-bookings',
+    to: '/m/$marinaId/online',
+    labelKey: 'online:nav.bookings',
+    anyOf: ['transits.desk'],
   },
   // M4 (m4-plan §8.1)
   {
@@ -275,6 +284,13 @@ export const NAV_ITEMS: NavItem[] = [
     labelKey: 'common:nav.paymentSettings',
     anyOf: ['providers.configure'],
   },
+  // M8 (m8-plan §12.3), settings group
+  {
+    id: 'online-settings',
+    to: '/m/$marinaId/settings/online',
+    labelKey: 'online:nav.settings',
+    anyOf: ['marina.configure'],
+  },
   // M7 (m7-plan §10.1), group "Analisi"
   {
     id: 'reports',
@@ -378,7 +394,6 @@ export const UPCOMING_MODULES = [
   'common:nav.modules.storage',
   'common:nav.modules.yard',
   'common:nav.modules.rental',
-  'common:nav.modules.booking',
 ] as const;
 
 export function visibleNavItems(permissions: readonly Permission[]): NavItem[] {

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>il porto ha approvato la tua richiesta. Completa il pagamento per confermare la prenotazione.</p>
+<table>
+{{with v . "reference"}}<tr><td>Riferimento</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "starts_on"}}<tr><td>Arrivo</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "ends_on"}}<tr><td>Partenza</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "amount"}}<tr><td>Importo</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "refund"}}<tr><td>Rimborso</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "deadline_on"}}<tr><td>Risposta entro</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "reason"}}<tr><td>Motivo</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "berth"}}<tr><td>Posto</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "vhf_channel"}}<tr><td>Canale VHF</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "marina_phone"}}<tr><td>Telefono ormeggiatori</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "qr"}}<tr><td>Codice transito</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "rules_url"}}<tr><td>Regolamento</td><td><a href="{{.}}">{{.}}</a></td></tr>{{end}}
+</table>
+{{with v . "arrival_text"}}<p>{{.}}</p>{{end}}
+{{with v . "link"}}<p><a href="{{.}}">Paga ora</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

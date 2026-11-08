@@ -258,7 +258,7 @@ func (s *Service) CreateAddendum(ctx context.Context, p *auth.Principal, marinaI
 	if c.TotalCents+delta < 0 {
 		return nil, ErrRepriceRefused
 	}
-	a := actor{p}
+	a := actor{p: p}
 	var out *store.ContractAddendum
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, contractID, KindMooring, 0)
@@ -313,7 +313,7 @@ func (s *Service) onAddendum(ctx context.Context, p *auth.Principal, marinaID, c
 	if err := s.requireAllocator(); err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	var out *store.ContractAddendum
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, contractID, KindMooring, 0)

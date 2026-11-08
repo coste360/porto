@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     "./api": "./src/api/index.ts",
+    "./api/sse": "./src/api/sse.ts",
     "./map": "./src/map/index.ts",
     "./ui": "./src/ui/index.ts",
     "./ui/patterns": "./src/ui/patterns/index.ts",

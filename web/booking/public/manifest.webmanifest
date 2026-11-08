@@ -1,0 +1,25 @@
+{
+  "name": "Porto – Prenota il posto barca",
+  "short_name": "Prenota",
+  "description": "Prenotazione online del posto barca",
+  "lang": "it",
+  "scope": "/b/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/b/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/b/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#0b2542",
+  "background_color": "#ffffff",
+  "orientation": "portrait"
+}

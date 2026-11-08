@@ -154,6 +154,7 @@ linters:
             - "!**/internal/domain/event/**"
             - "!**/internal/domain/notify/**"
             - "!**/internal/domain/paydriver/**"
+            - "!**/internal/domain/channel/fakechannel/**"
           deny:
             - pkg: net/http
               desc: domain services are transport independent
@@ -171,6 +172,7 @@ linters:
             - "**/internal/domain/event/**"
             - "**/internal/domain/notify/**"
             - "**/internal/domain/paydriver/**"
+            - "**/internal/domain/channel/fakechannel/**"
           deny:
             - pkg: github.com/coste360/porto/internal/http
               desc: domain must not depend on the HTTP layer
@@ -303,6 +305,8 @@ linters:
             - "**/internal/domain/report/align/**"
             - "**/internal/domain/report/swap/**"
             - "**/internal/domain/report/export/**"
+            # M8 (m8-plan §0.6)
+            - "**/internal/domain/booking/policy/**"
           deny:
             - pkg: github.com/coste360/porto/internal/store
               desc: pure engines must not touch the database (INV-21)
@@ -318,6 +322,37 @@ linters:
               desc: pure engines are deterministic
             - pkg: os
               desc: pure engines do no I/O
+        # M8 online booking (m8-plan §2): booking/policy imports only calendar, money and geo; booking never imports
+        # the packages that call it (portal, channel); the fake channel is a driver (pkg/ext only, no store).
+        booking-policy:
+          list-mode: lax
+          files:
+            - "**/internal/domain/booking/policy/**"
+          allow:
+            - github.com/coste360/porto/internal/calendar
+            - github.com/coste360/porto/internal/money
+            - github.com/coste360/porto/internal/geo
+          deny:
+            - pkg: github.com/coste360/porto/internal
+              desc: booking/policy imports only calendar, money and geo (m8-plan §2)
+        booking:
+          list-mode: lax
+          files:
+            - "**/internal/domain/booking/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/domain/portal
+              desc: portal calls booking, never the reverse (m8-plan §2)
+            - pkg: github.com/coste360/porto/internal/domain/channel
+              desc: channel calls booking, never the reverse (m8-plan §2)
+        fakechannel:
+          list-mode: lax
+          files:
+            - "**/internal/domain/channel/fakechannel/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/store
+              desc: channel drivers talk to channels, the store belongs to the domain services
+            - pkg: github.com/uptrace/bun
+              desc: channel drivers never touch the database
         # Reports are read-only (INV-61, m7-plan §0.2): no audit row, no outbox event; the pure report packages
         # never import the report service either (calc/align/swap/export → report is a cycle in spirit).
         report-readonly:

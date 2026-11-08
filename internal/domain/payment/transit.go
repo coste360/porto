@@ -26,8 +26,9 @@ type TransitPayment struct {
 	IdempotencyKey string
 }
 
-// ConfirmTransitWithPayment confirms a held transit and records its payment (transits.desk plus payments.collect,
-// or payments.collect_cash for cash). It returns the payment.
+// ConfirmTransitWithPayment confirms a held, pending_payment or awaiting_approval transit (M8: an online booking
+// approved without an online provider, m8-plan §5.6, §6) with the manual driver and records its payment
+// (transits.desk plus payments.collect, or payments.collect_cash for cash). It returns the payment.
 func (s *Service) ConfirmTransitWithPayment(ctx context.Context, p *auth.Principal, marinaID, contractID string, ifMatch int, in TransitPayment) (*store.Payment, error) {
 	scope, err := p.Authorize(ctx, s.d.DB.DB, marinaID, auth.PermTransitsDesk)
 	if err != nil {

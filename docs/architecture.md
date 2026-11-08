@@ -76,6 +76,10 @@ oppure PostgreSQL (`DATABASE_URL`). Stesso schema logico sui due dialetti.
 | `internal/peripheral` | driver delle periferiche locali (M6b): finti, ESC/POS generico, ZPL, trasporti tcp/cups/file; Go puro, solo `desktopport` e `pkg/ext` |
 | `internal/http/bridge` | handler di `/api/bridge/v1` (M6b), solo su loopback come l'API desktop (INV-85) |
 | `internal/domain/report` | report, cruscotto e comparazione (M7): permessi `reports.operational`/`reports.all`, lettura in `ReadTx` (INV-61), righe grezze da `internal/store/report_*.go`; sotto-package puri `calc` (record, totali come fold, riquadri), `align` (periodi e allineamento data/giorno della settimana), `swap` (suggerimenti di scambio), `export` (CSV italiano ed Excel dalla stessa tabella) |
+| `internal/domain/booking` | prenotazione online (M8): configurazione pubblica, disponibilità con regole e quote online, preventivo, creazione (transito `held` + hold concreto + quote nella stessa transazione), dati e consensi, documenti, checkout sugli intent di `collect`, approvazione, operazioni dell'area cliente sui transiti, prenotazioni dei canali, domanda persa, job `bookings.*`; non scrive mai `contracts.status` (passa da `contract`, INV-30); sotto-package puro `policy` (regole di soggiorno, approvazione, acconto, rimborso, cap delle quote) |
+| `internal/domain/onlineconf` | impostazioni della prenotazione online per marina (`If-Match`, default se mai salvate) e testi versionati immutabili (condizioni, privacy, marketing) |
+| `internal/domain/portal` | area cliente (M8): link di accesso con token nel frammento, sessioni in header, orchestrazione delle operazioni sui transiti del cliente tramite `booking` (INV-88) |
+| `internal/domain/channel` | canali di prenotazione esterni (M8): connessioni con segreti cifrati, mappa delle categorie, prenotazioni applicate una volta (INV-89) tramite `booking`, job `channels.pull`/`channels.push`; `fakechannel` in memoria per test e sviluppo |
 | `pkg/ext` | interfacce pubbliche delle estensioni (sottoinsieme M0 di spec [27.5](spec/27-api-eventi-estensioni.md)) |
 | `web/shared`, `web/admin`, `web/booking` | workspace npm: libreria condivisa (client generato, shadcn/ui, tema, i18n, marchio), pannello, pagina pubblica |
 | `e2e/` | Playwright sul binario reale |
@@ -158,7 +162,9 @@ servizio di dominio ── tx: modifica + audit_log + outbox_events ──► co
 
 Job nel processo ([m0-plan](m0-plan.md) §1.3): `outbox.dispatch` (1 s, risvegliabile),
 `webhooks.deliver` (5 s), `email.deliver` (5 s), `sessions.cleanup` (1 h), `idempotency.cleanup` (1 h),
-`webhooks.retention` (24 h).
+`webhooks.retention` (24 h). M8 aggiunge `bookings.approval_expire` (1 min), `bookings.capture` (1 min),
+`channels.pull` (5 min), `channels.push` (1 min), `portal.cleanup` (1 h) e l'evento pubblico `transit.approval_requested` (topic SSE
+`contract.changed`).
 
 ## 7. Dati
 
@@ -227,6 +233,7 @@ con le stesse regole: servizio con controllo dei permessi, scope di marina, tran
 | M5 | `chargeplan` (puro), `charge`, `payment`, `collect`, `paydriver` (`manual`, `stripe` opzionale e disattivato di default), `cash` (+ `summary` puro), `fiscal`, `collect/levels` (puro), `internal/xlsx`; nessuna fatturazione: gli addebiti si esportano (spec 33 D4) | [16](spec/16-addebiti-e-incassi.md) |
 | M6a | edizione desktop: `cmd/porto-desktop`, `desktopport`, `desktop`, `lan`, `http/desktop`; sessioni di dispositivo per i browser abbinati via QR | [31](spec/31-multipiattaforma.md) |
 | M7 | `report` (+ `calc`, `align`, `swap`, `export` puri): report di 21.3 sui domini esistenti, cruscotto del manager con drill-down ai record, CSV ed Excel; cantiere e noleggio restano agganci per M10/M11 (ADR 0012) | [21](spec/21-report-e-cruscotto.md) |
-| successive | `storage`, `optimizer` (puro), `yard`, `formula` (puro), `rental`, `maintenance`, `sensor`, `profile`, `online`, `checkout` | [16](spec/16-addebiti-e-incassi.md)–[25](spec/25-scheda-pubblica.md) |
+| M8 | `booking` (+ `policy` puro), `onlineconf`, `portal`, `channel` (+ `fakechannel`), `ext.BookingChannel` e `ext.PaymentAuthorizer`; pagina pubblica e widget in iframe (`/b/{slug}`, `/embed.js`, `frame-ancestors` per origine consentita), area cliente, quote online come contatori nel DB (INV-12), conferma anche da canale verificato (ADR 0013) | [23](spec/23-prenotazione-online.md) |
+| successive | `storage`, `optimizer` (puro), `yard`, `formula` (puro), `rental`, `maintenance`, `sensor`, `profile` | [16](spec/16-addebiti-e-incassi.md)–[25](spec/25-scheda-pubblica.md) |
 
 Le regole che nessuna sequenza di operazioni può violare sono in [`invariants.md`](invariants.md).

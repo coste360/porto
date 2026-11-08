@@ -109,6 +109,8 @@ type PublicMarina struct {
 	DefaultLocale  string
 	Locales        []string
 	BookingEnabled bool
+	// EmbedOrigins are the origins allowed to embed the booking page (M8, m8-plan §10).
+	EmbedOrigins []string
 }
 
 // Service manages organizations and marinas.
@@ -708,6 +710,6 @@ func (s *Service) PublicBySlug(ctx context.Context, slugValue string) (*PublicMa
 	}
 	return &PublicMarina{
 		Slug: m.Slug, Name: m.Name, DefaultLocale: m.DefaultLocale, Locales: slices.Clone([]string(m.Locales)),
-		BookingEnabled: m.BookingEnabled,
+		BookingEnabled: m.BookingEnabled, EmbedOrigins: slices.Clone([]string(m.AllowedEmbedOrigins)),
 	}, nil
 }

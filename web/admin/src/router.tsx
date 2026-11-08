@@ -47,6 +47,7 @@ import { desktopRoutes } from './features/desktop/routes';
 import { phoneRoutes } from './features/phone/routes';
 import { reportsRoutes } from './features/reports/routes';
 import { dashboardRoutes } from './features/dashboard/routes';
+import { onlineRoutes, onlineSettingsRoutes } from './features/online/routes';
 import { CertificateHelpPage } from './features/help/CertificateHelpPage';
 
 export type RouterContext = { queryClient: QueryClient; api: ApiClient };
@@ -239,6 +240,9 @@ export const routeTree = rootRoute.addChildren([
       // M7 (m7-plan §10.1)
       ...dashboardRoutes(marinaRoute),
       ...reportsRoutes(marinaRoute),
+      // M8 (m8-plan §12.3)
+      ...onlineRoutes(marinaRoute),
+      ...onlineSettingsRoutes(marinaRoute),
     ]),
   ]),
 ]);

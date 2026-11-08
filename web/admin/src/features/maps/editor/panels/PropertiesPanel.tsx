@@ -609,6 +609,14 @@ function AreaFields({
         value={c('active')}
         onCommit={(active) => set({ active })}
       />
+      {linear ? (
+        <BoolField
+          id="area-online"
+          label={t('editor:fields.onlineSellable')}
+          value={c('online_sellable')}
+          onCommit={(online_sellable) => set({ online_sellable })}
+        />
+      ) : null}
     </section>
   );
 }

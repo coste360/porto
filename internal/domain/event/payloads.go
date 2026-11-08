@@ -248,7 +248,7 @@ type TransitData struct {
 	Status             string        `json:"status"`
 	From               calendar.Date `json:"from"`
 	To                 calendar.Date `json:"to"`
-	ConfirmationSource string        `json:"confirmation_source,omitempty"` // manual, provider
+	ConfirmationSource string        `json:"confirmation_source,omitempty"` // manual, provider, channel (M8)
 }
 
 // QuoteChangedData is the data of quote.changed (internal).
@@ -261,6 +261,13 @@ type QuoteChangedData struct {
 type ContractChangedData struct {
 	ContractID string `json:"contract_id"`
 	Change     string `json:"change"` // updated, cancelled, expired
+}
+
+// TransitApprovalData is the data of transit.approval_requested (M8): an online or channel booking waits for the
+// office's approval. Reason is loa, group, always or no_provider.
+type TransitApprovalData struct {
+	ContractID string `json:"contract_id"`
+	Reason     string `json:"reason"`
 }
 
 // TransitChangedData is the data of transit.changed (internal).
@@ -721,5 +728,7 @@ func Samples() map[string]any {
 		PaymentRequestChanged: PaymentRequestChangedData{RequestID: sampleID, Status: "sent", ChargeCount: 3},
 		ReminderChanged:       ReminderChangedData{RunID: sampleID, Change: ChangeRun, Counts: map[string]int{"sent": 12, "awaiting_approval": 1}},
 		BillingChanged:        BillingChangedData{Entity: "settings", ID: sampleID, Change: ChangeUpdated},
+		// M8
+		TransitApprovalRequested: TransitApprovalData{ContractID: sampleID, Reason: "loa"},
 	}
 }

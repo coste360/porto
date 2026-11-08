@@ -60,6 +60,9 @@ type Config struct {
 	// StripeAPIBase overrides https://api.stripe.com for the optional Stripe driver (M5); honoured only with
 	// PORTO_DEV=true (local fake servers in tests and development).
 	StripeAPIBase string
+	// DevFakeChannel registers the in-memory fake booking channel (M8, m8-plan §8.4); honoured only with
+	// PORTO_DEV=true (PORTO_DEV_FAKE_CHANNEL).
+	DevFakeChannel bool
 
 	BootstrapOwnerEmail string
 	BootstrapOwnerName  string
@@ -314,6 +317,14 @@ func Load(env func(string) (string, bool)) (*Config, error) {
 			l.fail("PORTO_STRIPE_API_BASE", "must be an http(s) URL without query")
 		default:
 			c.StripeAPIBase = strings.TrimRight(base, "/")
+		}
+	}
+
+	if l.bool("PORTO_DEV_FAKE_CHANNEL", false) {
+		if c.Dev {
+			c.DevFakeChannel = true
+		} else {
+			l.fail("PORTO_DEV_FAKE_CHANNEL", "is allowed only with PORTO_DEV=true")
 		}
 	}
 

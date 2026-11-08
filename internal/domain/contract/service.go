@@ -124,9 +124,16 @@ func NewService(d Deps) *Service {
 // actor is who performs a state change: a principal or the system (jobs).
 type actor struct {
 	p *auth.Principal
+	// as, when set, is the audit actor of a non-principal caller (a booking channel, ADR 0013).
+	as audit.Actor
 }
 
-func (a actor) audit() audit.Actor { return a.p.Actor() }
+func (a actor) audit() audit.Actor {
+	if a.as.Type != "" {
+		return a.as
+	}
+	return a.p.Actor()
+}
 
 func (a actor) userID() string {
 	if a.p == nil || a.p.Kind != auth.KindUser {

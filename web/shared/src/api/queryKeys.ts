@@ -309,6 +309,41 @@ export const queryKeys = {
 
   // M5 public pay page (booking SPA): never under a marina id, the token is the only credential.
   publicPay: (slug: string, token: string) => ['public', slug, 'pay', token] as const,
+
+  // M8 public booking page and customer area (booking SPA, m8-plan §12): never under a marina id, nothing cached
+  // across tokens or sessions.
+  publicBooking: (slug: string) => ['public', slug, 'booking'] as const,
+  bookingConfig: (slug: string) => ['public', slug, 'booking', 'config'] as const,
+  bookingAvailability: (slug: string, params: Record<string, string | number | undefined> = {}) =>
+    ['public', slug, 'booking', 'availability', params] as const,
+  bookingQuote: (slug: string, params: Record<string, unknown> = {}) =>
+    ['public', slug, 'booking', 'quote', params] as const,
+  booking: (slug: string, bookingId: string) =>
+    ['public', slug, 'booking', 'item', bookingId] as const,
+  bookingStatus: (slug: string, bookingId: string) =>
+    ['public', slug, 'booking', 'item', bookingId, 'status'] as const,
+  account: (slug: string) => ['public', slug, 'account'] as const,
+  accountBookings: (slug: string) => ['public', slug, 'account', 'bookings'] as const,
+  accountBooking: (slug: string, contractId: string) =>
+    ['public', slug, 'account', 'bookings', contractId] as const,
+  accountVessels: (slug: string) => ['public', slug, 'account', 'vessels'] as const,
+
+  // M8 desk: online bookings and channel reservations under the desk root (invalidated by contract.changed);
+  // settings, texts, quotas and channels under ['marina', id, 'online'] (refetched after their mutations).
+  onlineBookings: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'desk', 'online-bookings', filters]),
+  onlineBooking: (marinaId: string, contractId?: string) =>
+    trim(['marina', marinaId, 'desk', 'online-booking', contractId]),
+  channelReservations: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'desk', 'channel-reservations', filters]),
+  onlineConfig: (marinaId: string) => ['marina', marinaId, 'online'] as const,
+  onlineSettings: (marinaId: string) => ['marina', marinaId, 'online', 'settings'] as const,
+  bookingTexts: (marinaId: string, kind?: string) =>
+    trim(['marina', marinaId, 'online', 'texts', kind]),
+  onlineQuotas: (marinaId: string) => ['marina', marinaId, 'online', 'quotas'] as const,
+  onlineQuotaUsage: (marinaId: string, from?: string, to?: string) =>
+    trim(['marina', marinaId, 'online', 'quota-usage', from, to]),
+  bookingChannels: (marinaId: string) => ['marina', marinaId, 'online', 'channels'] as const,
 };
 
 /** Drops the trailing undefined segments, so a key with fewer arguments is a prefix of the full one. */
@@ -381,6 +416,10 @@ export function keysForMessage(msg: StreamMessage, marinaId: string): QueryKey[]
         queryKeys.fleets(marinaId),
         queryKeys.fleet(marinaId),
         queryKeys.waitlist(marinaId),
+        // M8: online bookings and channel reservations (m8-plan §12.3).
+        queryKeys.onlineBookings(marinaId),
+        queryKeys.onlineBooking(marinaId),
+        queryKeys.channelReservations(marinaId),
       ];
     default:
       return keysForTopic(msg.topic, marinaId);

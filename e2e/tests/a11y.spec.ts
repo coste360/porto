@@ -51,6 +51,26 @@ for (const scheme of ['light', 'dark'] as const) {
       await expectNoSeriousViolations(page, `report/${scheme}`);
     });
 
+    test('online bookings desk and settings (M8)', async ({ page }) => {
+      await login(page);
+      const shell = new URL(page.url()).pathname.replace(/\/$/, '');
+      await page.goto(`${shell}/online`);
+      await expect(page.getByRole('heading', { level: 1, name: 'Prenotazioni online' })).toBeVisible();
+      await expectNoSeriousViolations(page, `online-bookings/${scheme}`);
+      await page.goto(`${shell}/settings/online`);
+      await expect(page.getByRole('tab', { name: 'Regole' })).toBeVisible();
+      await expectNoSeriousViolations(page, `online-settings/${scheme}`);
+      await page.getByRole('tab', { name: 'Incorpora' }).click();
+      await expect(page.getByLabel('Codice con script')).toBeVisible();
+      await expectNoSeriousViolations(page, `online-embed/${scheme}`);
+    });
+
+    test('customer area login (M8)', async ({ page }) => {
+      await page.goto(`/b/${OWNER.slug}/account`);
+      await expect(page.getByRole('heading', { name: 'Accedi alle tue prenotazioni' })).toBeVisible();
+      await expectNoSeriousViolations(page, `account/${scheme}`);
+    });
+
     test('booking page', async ({ page }) => {
       await page.goto(`/b/${OWNER.slug}`);
       await expect(page.getByRole('heading', { name: OWNER.marina })).toBeVisible();

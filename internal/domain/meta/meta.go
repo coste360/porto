@@ -80,6 +80,25 @@ func Get(cfg *config.Config, version, edition string) Meta {
 	if edition == EditionDesktop {
 		m.LocalMode = true
 		m.Capabilities = append(m.Capabilities, CapDesktopLocal)
+	} else {
+		// M8 (m8-plan §11): the public booking page, widget and customer area need an internet-reachable server.
+		m.Capabilities = append(m.Capabilities, CapOnlineBooking)
+	}
+	return m
+}
+
+// M8 capabilities: online_booking on the server edition, booking_channels when at least one ext.BookingChannel is
+// registered (WithBookingChannels).
+const (
+	CapOnlineBooking   = "online_booking"
+	CapBookingChannels = "booking_channels"
+)
+
+// WithBookingChannels adds booking_channels when booking channel extensions are registered (none ships with Porto;
+// the fake channel counts only in development and tests).
+func (m Meta) WithBookingChannels(registered int) Meta {
+	if registered > 0 {
+		m.Capabilities = append(append([]string(nil), m.Capabilities...), CapBookingChannels)
 	}
 	return m
 }

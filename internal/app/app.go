@@ -25,8 +25,11 @@ import (
 	"github.com/coste360/porto/internal/domain/audit"
 	"github.com/coste360/porto/internal/domain/auditlog"
 	"github.com/coste360/porto/internal/domain/auth"
+	"github.com/coste360/porto/internal/domain/booking"
 	"github.com/coste360/porto/internal/domain/cash"
 	"github.com/coste360/porto/internal/domain/catalog"
+	"github.com/coste360/porto/internal/domain/channel"
+	"github.com/coste360/porto/internal/domain/channel/fakechannel"
 	"github.com/coste360/porto/internal/domain/charge"
 	"github.com/coste360/porto/internal/domain/collect"
 	"github.com/coste360/porto/internal/domain/comms"
@@ -44,9 +47,11 @@ import (
 	"github.com/coste360/porto/internal/domain/meta"
 	"github.com/coste360/porto/internal/domain/notify"
 	"github.com/coste360/porto/internal/domain/occupancy"
+	"github.com/coste360/porto/internal/domain/onlineconf"
 	"github.com/coste360/porto/internal/domain/paydriver"
 	"github.com/coste360/porto/internal/domain/paydriver/stripe"
 	"github.com/coste360/porto/internal/domain/payment"
+	"github.com/coste360/porto/internal/domain/portal"
 	"github.com/coste360/porto/internal/domain/presence"
 	"github.com/coste360/porto/internal/domain/pricelist"
 	"github.com/coste360/porto/internal/domain/report"
@@ -172,6 +177,12 @@ type App struct {
 
 	// M7
 	Reports *report.Service
+
+	// M8 (m8-plan §2): online booking, settings and texts, customer area, booking channels.
+	Booking    *booking.Service
+	OnlineConf *onlineconf.Service
+	Portal     *portal.Service
+	Channels   *channel.Service
 
 	ownDB     bool
 	restartMu sync.Mutex
@@ -312,6 +323,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		x.FiscalDrivers = append(append([]ext.FiscalDriver(nil), x.FiscalDrivers...), desktopFiscal{peripherals: periph})
 	}
 	a.wireBilling(x)
+	a.wireBooking(x)
 	a.Reports = report.NewService(report.Deps{DB: db, Clock: clk, Prices: a.PriceLists, Log: log})
 	a.Presence = presence.NewService(presence.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
@@ -326,7 +338,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		inner = x.EventBus
 	}
 	a.Bus = sse.NewReplayBus(inner, sse.DefaultReplaySize)
-	sinks := append([]ext.EventSink{webhook.NewFanOutSink(db, clk, a.Webhooks)}, x.EventSinks...)
+	sinks := append([]ext.EventSink{webhook.NewFanOutSink(db, clk, a.Webhooks), a.Channels}, x.EventSinks...)
 	a.Dispatcher = event.NewDispatcher(db, clk, sinks, a.Bus, log)
 
 	if err := a.registerJobs(); err != nil {
@@ -345,6 +357,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			Rights: a.Rights, Docs: a.Docs, Signatures: a.Signatures, Links: a.Links, Comms: a.Comms, Imports: a.Imports,
 			Charges: a.Charges, Payments: a.Payments, Cash: a.Cash, Fiscal: a.Fiscal, Collect: a.Collect,
 			PayDrivers: a.PayDrivers, Reports: a.Reports,
+			Booking: a.Booking, OnlineConf: a.OnlineConf, Channels: a.Channels,
 		},
 		Device: &httpdevice.Handler{
 			Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String(), SecureCookies: cfg.SecureCookies(),
@@ -352,9 +365,11 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		},
 		Public: &public.Handler{
 			Marinas: a.Marinas, Contracts: a.Contracts, Links: a.Links, Signatures: a.Signatures, Comms: a.Comms, Docs: a.Docs,
-			Collect: a.Collect,
+			Collect: a.Collect, Booking: a.Booking, Portal: a.Portal,
 		},
-		Webhooks:             &webhooks.Handler{Signatures: a.Signatures, Collect: a.Collect, Clock: clk},
+		Webhooks: &webhooks.Handler{
+			Signatures: a.Signatures, Collect: a.Collect, Clock: clk, Channels: a.Channels,
+		},
 		Desktop:              &httpdesktop.Handler{Runtime: o.Desktop, SecureCookies: cfg.SecureCookies()},
 		Bridge:               &httpbridge.Handler{Runtime: o.Desktop},
 		Authenticator:        authSvc,
@@ -364,6 +379,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		HSTS:                 cfg.BaseURL.Scheme == "https",
 		PublicReadsPerMinute: cfg.PublicReadsPerMinute,
 		ExtraRoutes:          x.HTTPRoutes,
+		EmbedOrigins:         marina.NewEmbedOriginCache(a.Marinas, a.Clock).EmbedOrigins,
 	})
 	if err != nil {
 		return err
@@ -380,7 +396,7 @@ func (a *App) meta(x ext.Extensions) meta.Meta {
 		edition = meta.EditionDesktop
 	}
 	m := meta.Get(a.Config, a.Version, edition).WithSignatureProviders(len(x.SignatureProviders)).
-		WithBilling(len(x.FiscalDrivers), len(x.ChargeExporters))
+		WithBilling(len(x.FiscalDrivers), len(x.ChargeExporters)).WithBookingChannels(len(x.BookingChannels))
 	if rt := a.Desktop; rt != nil {
 		m.Dynamic = func() []string {
 			if lan := rt.LAN(); lan != nil && lan.Status().Listening {
@@ -425,6 +441,43 @@ func (a *App) wireBilling(x ext.Extensions) {
 	a.Payments.SetCash(a.Cash)
 	a.Payments.SetFiscal(a.Fiscal)
 	a.Payments.SetProviderRefunder(a.Collect)
+}
+
+// wireBooking builds the M8 services after billing (m8-plan §2): settings, booking (over occupancy, contracts,
+// collect and the payment drivers), then the customer area and the channels, which call booking. The fake channel
+// (internal/domain/channel/fakechannel, ENGINE) is added to the channels only with cfg.DevFakeChannel.
+func (a *App) wireBooking(x ext.Extensions) {
+	cfg, db, clk, log := a.Config, a.DB, a.Clock, a.Log
+	aw := audit.NewWriter(clk)
+	a.OnlineConf = onlineconf.NewService(onlineconf.Deps{DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log})
+	a.Booking = booking.NewService(booking.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Occupancy: a.Occupancy,
+		Contracts: a.Contracts, Prices: a.PriceLists, Collect: a.Collect, Drivers: a.PayDrivers, Documents: a.Documents,
+		Notify: a.Notify, BotProtection: x.BotProtection, BaseURL: cfg.BaseURL.String(), HoldTTL: cfg.HoldTTL,
+	})
+	a.Portal = portal.NewService(portal.Deps{
+		DB: db, Clock: clk, Log: log, Booking: a.Booking, Documents: a.Documents, Notify: a.Notify,
+		BotProtection: x.BotProtection, BaseURL: cfg.BaseURL.String(),
+	})
+	channels := append([]ext.BookingChannel(nil), x.BookingChannels...)
+	if cfg.DevFakeChannel && cfg.Dev {
+		channels = append(channels, fakechannel.New())
+	}
+	a.Channels = channel.NewService(channel.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Booking: a.Booking,
+		Channels: channels, BaseURL: cfg.BaseURL.String(),
+	})
+	// ENGINE (m8-plan §5.4, §7.1): the contract hooks of online transits, the customer-area link and session of
+	// the portal (injected: portal imports booking), and the payment service for customer refunds.
+	a.Contracts.SetOnlineHooks(a.Booking)
+	a.Booking.SetPayments(a.Payments)
+	a.Booking.SetPortal(a.Portal, func(ctx context.Context, slug, token string) (string, error) {
+		p, err := a.Portal.Resolve(ctx, slug, token)
+		if err != nil {
+			return "", err
+		}
+		return p.CustomerID, nil
+	})
 }
 
 func mailTransport(cfg *config.Config, log *slog.Logger) (notify.Transport, error) {
@@ -492,6 +545,12 @@ func (a *App) registerJobs() error {
 		{Name: "payments.reconcile", Every: 15 * time.Minute, Run: a.Collect.RunReconcile},
 		{Name: "payments.intents_expire", Every: time.Minute, RunAtStart: true, Run: a.Collect.RunIntentsExpire},
 		{Name: "fiscal.issue", Every: 30 * time.Second, Wake: a.Fiscal.Wake(), Run: a.Fiscal.RunIssue},
+		// M8 (m8-plan §4.4, §6, §8.2). The contract phase registers no-ops; ENGINE implements them.
+		{Name: booking.JobApprovalExpire, Every: time.Minute, RunAtStart: true, Run: a.Booking.RunApprovalExpiry},
+		{Name: booking.JobCapture, Every: time.Minute, Run: a.Booking.RunCaptureRetry},
+		{Name: channel.JobPull, Every: 5 * time.Minute, Run: a.Channels.RunPull},
+		{Name: channel.JobPush, Every: time.Minute, Run: a.Channels.RunPush},
+		{Name: "portal.cleanup", Every: time.Hour, Run: a.Portal.Cleanup},
 	}
 	for _, j := range defs {
 		if err := a.Jobs.Register(j); err != nil {

@@ -161,6 +161,14 @@ tags:
   - name: reports
     description: >-
       Read-only reports, manager dashboard and period comparison (M7, spec 21); CSV and Excel exports
+  - name: booking-public
+    description: Public booking page and embeddable widget (M8, spec 23)
+  - name: account
+    description: Customer area of the booking page, magic-link login (M8, spec 23.4)
+  - name: online-admin
+    description: Online booking settings, texts, quotas and the desk list of online bookings (M8)
+  - name: channels
+    description: Booking channel connections, reservations and callbacks (M8, spec 23.2)
 
 paths:
   /healthz:
@@ -12597,6 +12605,1079 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "422": { $ref: "#/components/responses/ReportUnprocessable" }
 
+  # ---------------------------------------------------------------------------------------------------------------
+  # M8 online booking (spec 23; m8-plan §11). Public operations have no auth and no cookies: the booking token
+  # (Porto-Booking-Token), the status token (Porto-Status-Token) and the customer session (Porto-Customer-Session)
+  # travel in headers, never in paths. An unknown, expired or foreign token or id is always 404 link_invalid, and
+  # when the marina has booking disabled every operation except getBookingConfig is 404 link_invalid.
+  # ---------------------------------------------------------------------------------------------------------------
+  /api/public/v1/{slug}/booking/config:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    get:
+      tags: [booking-public]
+      operationId: getBookingConfig
+      summary: >-
+        Booking page configuration: rules, categories, online services, payment mode, approval threshold, required
+        fields, current texts, payability, theme, arrival info, units (Cache-Control public, max-age=60)
+      security: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingConfig" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/booking/availability:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    get:
+      tags: [booking-public]
+      operationId: getBookingAvailability
+      summary: >-
+        Availability per category for dates and vessel dimensions (yes/no and a "from" price only); an anonymous
+        search with no availability is recorded as lost demand
+      security: []
+      parameters:
+        - { name: arrival, in: query, required: true, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: departure, in: query, required: true, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: loa_cm, in: query, required: false, schema: { type: integer, format: int64, minimum: 1, maximum: 10000 } }
+        - { name: beam_cm, in: query, required: false, schema: { type: integer, format: int64, minimum: 1, maximum: 5000 } }
+        - { name: draft_cm, in: query, required: false, schema: { type: integer, format: int64, minimum: 1, maximum: 2000 } }
+        - { name: hull_type, in: query, required: false, schema: { $ref: "#/components/schemas/HullType" } }
+        - { name: vessel_id, in: query, required: false, description: "A saved vessel; needs Porto-Customer-Session", schema: { type: string } }
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingAvailability" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/BookingUnprocessable" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/booking/quote:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    post:
+      tags: [booking-public]
+      operationId: quoteBooking
+      summary: Price of a stay in a category with services and promo code (pricing channel online); writes nothing
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookingQuoteInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingQuote" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/BookingUnprocessable" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/bookings:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    post:
+      tags: [booking-public]
+      operationId: createBooking
+      summary: >-
+        Hold a berth of a category: held transit with a concrete hold allocation, quota claims, audit and outbox in
+        one transaction. Idempotency-Key is required and handled by the domain (no response with a token is ever
+        stored by the idempotency middleware); a replay with the same key and body returns the same booking
+      security: []
+      x-porto-idempotency: domain
+      parameters:
+        - $ref: "#/components/parameters/BookingIdempotencyKey"
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+        - $ref: "#/components/parameters/BotTokenHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookingCreate" }
+      responses:
+        "201":
+          description: Created (or the replay of the same request)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingCreated" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/BookingUnprocessable" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+
+  /api/public/v1/{slug}/bookings/{bookingId}:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/BookingId"
+    get:
+      tags: [booking-public]
+      operationId: getBooking
+      summary: The booking of the token holder (Porto-Booking-Token)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/BookingTokenHeader"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Booking" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+    delete:
+      tags: [booking-public]
+      operationId: abandonBooking
+      summary: Abandon a held booking (cancels the transit and releases the hold); held only
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/BookingTokenHeader"
+      responses:
+        "204":
+          description: Abandoned
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/bookings/{bookingId}/details:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/BookingId"
+    put:
+      tags: [booking-public]
+      operationId: submitBookingDetails
+      summary: Customer and vessel details, people on board, arrival time and consents of a held booking
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/BookingTokenHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookingDetailsInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Booking" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/BookingUnprocessable" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/bookings/{bookingId}/documents:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/BookingId"
+    post:
+      tags: [booking-public]
+      operationId: uploadBookingDocument
+      summary: >-
+        Upload a document of the booking (licence, insurance, registration, identity; PDF, PNG or JPEG, at most
+        10 MiB, raw body like the M4 customer links), encrypted at rest and verified by the office
+      security: []
+      x-porto-max-body-bytes: 10485760
+      parameters:
+        - $ref: "#/components/parameters/BookingTokenHeader"
+        - { name: type, in: query, required: true, schema: { $ref: "#/components/schemas/BookingDocumentType" } }
+        - { name: expires_on, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - name: X-File-Name
+          in: header
+          required: false
+          description: Original file name (sanitised)
+          schema: { type: string, maxLength: 255 }
+      requestBody:
+        required: true
+        content:
+          application/pdf:
+            schema: { type: string, format: binary }
+          image/png:
+            schema: { type: string, format: binary }
+          image/jpeg:
+            schema: { type: string, format: binary }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingDocument" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/bookings/{bookingId}/pay:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/BookingId"
+    post:
+      tags: [booking-public]
+      operationId: startBookingPayment
+      summary: >-
+        Start the advance payment (provider hosted page, top-level navigation) or send the request for approval;
+        confirmation comes only from the provider webhook or the manual driver (INV-09)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/BookingTokenHeader"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookingPayInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingPayResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/BookingUnprocessable" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "502": { $ref: "#/components/responses/BadGateway" }
+
+  /api/public/v1/{slug}/bookings/{bookingId}/status:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/BookingId"
+    get:
+      tags: [booking-public]
+      operationId: getBookingStatus
+      summary: >-
+        Status of the booking for the return page, with the booking token or the read-only status token; no
+        personal data (the browser return never confirms, INV-09)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/BookingTokenHeader"
+        - $ref: "#/components/parameters/StatusTokenHeader"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingStatusView" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/login:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    post:
+      tags: [account]
+      operationId: requestAccountLink
+      summary: >-
+        Send a login link to the customer area; always 202 with the same body and comparable work, whether the email
+        is known or not (no enumeration)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/BotTokenHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AccountLoginInput" }
+      responses:
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountLoginAccepted" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/session:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    post:
+      tags: [account]
+      operationId: openAccountSession
+      summary: Exchange a link token (from the URL fragment) for a customer-area session token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AccountSessionInput" }
+      responses:
+        "201":
+          description: Session opened
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountSession" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+    delete:
+      tags: [account]
+      operationId: closeAccountSession
+      summary: Revoke the customer-area session (logout)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+      responses:
+        "204":
+          description: Revoked
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/vessels:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    get:
+      tags: [account]
+      operationId: listAccountVessels
+      summary: The customer's vessels (name and dimensions) to prefill the search
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountVesselList" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/bookings:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    get:
+      tags: [account]
+      operationId: listAccountBookings
+      summary: The customer's transits of the marina (any channel), newest first
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountBookingList" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/bookings/{contractId}:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/ContractId"
+    get:
+      tags: [account]
+      operationId: getAccountBooking
+      summary: Detail of one of the customer's transits (QR when confirmed, arrival info, documents, receipts)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountBooking" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/bookings/{contractId}/documents:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [account]
+      operationId: uploadAccountDocument
+      summary: Upload a document for one of the customer's transits (same rules as uploadBookingDocument)
+      security: []
+      x-porto-max-body-bytes: 10485760
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+        - { name: type, in: query, required: true, schema: { $ref: "#/components/schemas/BookingDocumentType" } }
+        - { name: expires_on, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - name: X-File-Name
+          in: header
+          required: false
+          description: Original file name (sanitised)
+          schema: { type: string, maxLength: 255 }
+      requestBody:
+        required: true
+        content:
+          application/pdf:
+            schema: { type: string, format: binary }
+          image/png:
+            schema: { type: string, format: binary }
+          image/jpeg:
+            schema: { type: string, format: binary }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingDocument" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/documents/{documentId}/url:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/DocumentId"
+    get:
+      tags: [account]
+      operationId: getAccountDocumentURL
+      summary: Short-lived signed URL of one of the customer's own documents
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DocumentFileUrl" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/documents/{documentId}/file:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/DocumentId"
+    get:
+      tags: [account]
+      operationId: getAccountDocumentFile
+      summary: >-
+        Download one of the customer's own documents through a signed link from getAccountDocumentURL (c, exp and
+        sig are checked in the service; served inline, no-store, sandbox CSP, nosniff; rate limited)
+      security: []
+      parameters:
+        - { name: c, in: query, required: true, schema: { type: string, maxLength: 64 } }
+        - { name: exp, in: query, required: true, schema: { type: integer, format: int64 } }
+        - { name: sig, in: query, required: true, schema: { type: string, maxLength: 128 } }
+      responses:
+        "200":
+          description: File bytes
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+            image/png:
+              schema: { type: string, format: binary }
+            image/jpeg:
+              schema: { type: string, format: binary }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/bookings/{contractId}/pay-balance:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [account]
+      operationId: payAccountBalance
+      summary: Pay the open residual of the transit (creates or reuses a payment request, returns the checkout URL)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountPayBalanceResult" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/BookingUnprocessable" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "502": { $ref: "#/components/responses/BadGateway" }
+
+  /api/public/v1/{slug}/account/bookings/{contractId}/cancellation:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/ContractId"
+    get:
+      tags: [account]
+      operationId: previewAccountCancellation
+      summary: Cancellation preview with the refund from the contract's policy snapshot
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CancellationPreview" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/bookings/{contractId}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [account]
+      operationId: cancelAccountBooking
+      summary: >-
+        Cancel within the policy; 409 refund_changed when the refund differs from the previewed one
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AccountCancelInput" }
+      responses:
+        "200":
+          description: Cancelled
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountCancelResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/BookingUnprocessable" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/bookings/{contractId}/change-dates/preview:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [account]
+      operationId: previewAccountDateChange
+      summary: Availability and price effect of new dates for a confirmed transit before arrival; writes nothing
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DateChangeInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DateChangePreview" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/BookingUnprocessable" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/account/bookings/{contractId}/change-dates:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [account]
+      operationId: changeAccountDates
+      summary: >-
+        Change the dates (online rules, same category); 409 price_changed when the total differs from
+        expected_total_cents
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/CustomerSessionHeader"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DateChangeInput" }
+      responses:
+        "200":
+          description: Changed
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DateChangeResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/BookingUnprocessable" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/admin/v1/marinas/{marinaId}/online-booking/settings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [online-admin]
+      operationId: getOnlineBookingSettings
+      summary: Online booking settings of the marina (defaults when never saved) (marina.configure)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnlineBookingSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [online-admin]
+      operationId: updateOnlineBookingSettings
+      summary: Replace the online booking settings (marina.configure, If-Match)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OnlineBookingSettingsInput" }
+      responses:
+        "200":
+          description: Updated
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnlineBookingSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/online-booking/texts:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [online-admin]
+      operationId: listBookingTexts
+      summary: Published versions of the terms, privacy and marketing texts, newest first (marina.configure)
+      security: *readSecurity
+      parameters:
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/BookingTextKind" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingTextList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [online-admin]
+      operationId: publishBookingText
+      summary: Publish a new version of a text (published versions are immutable) (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookingTextPublish" }
+      responses:
+        "201":
+          description: Published
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingText" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/online-booking/quotas:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [online-admin]
+      operationId: getOnlineQuotas
+      summary: Online quota of every berth group (harbor.configure)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnlineQuotaList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [online-admin]
+      operationId: updateOnlineQuotas
+      summary: >-
+        Set the online quotas of the listed groups; caps of future nights become max(new cap, used)
+        (harbor.configure)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OnlineQuotasUpdate" }
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnlineQuotaList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/online-booking/quotas/usage:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [online-admin]
+      operationId: getOnlineQuotaUsage
+      summary: Used and cap per group and night, at most 92 nights (harbor.configure)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, description: "Required; optional in the contract only so that another marina is 404 first (missing: 422)", schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, description: "Inclusive; required like from", schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnlineQuotaUsage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/admin/v1/marinas/{marinaId}/online-bookings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [online-admin]
+      operationId: listOnlineBookings
+      summary: Online and channel bookings, newest first (transits.desk)
+      security: *readSecurity
+      parameters:
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/OnlineBookingStatus" } }
+        - { name: channel, in: query, required: false, schema: { $ref: "#/components/schemas/OnlineChannel" } }
+        - { name: from, in: query, required: false, description: Arrival on or after, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, description: Arrival on or before, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnlineBookingPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    get:
+      tags: [online-admin]
+      operationId: getOnlineBooking
+      summary: >-
+        Online booking detail: contact (customers.read), documents, consents, payment state, approval deadline
+        (transits.desk); the ETag is the transit version
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnlineBookingDetail" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/approve:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [online-admin]
+      operationId: approveOnlineBooking
+      summary: >-
+        Approve a booking awaiting approval: capture the authorisation, or send the payment link (transits.desk,
+        If-Match)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: Approved
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnlineBookingDetail" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "502": { $ref: "#/components/responses/BadGateway" }
+
+  /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/reject:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [online-admin]
+      operationId: rejectOnlineBooking
+      summary: Reject a booking awaiting approval (voids the authorisation, releases the hold) (transits.desk, If-Match)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OnlineBookingReject" }
+      responses:
+        "200":
+          description: Rejected
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnlineBookingDetail" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/payment-link:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ContractId"
+    post:
+      tags: [online-admin]
+      operationId: sendOnlineBookingPaymentLink
+      summary: >-
+        Approve without the authorisation and email a payment link (after a capture failure) (transits.desk,
+        If-Match)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: Sent
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnlineBookingDetail" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/M5Unprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+        "502": { $ref: "#/components/responses/BadGateway" }
+
+  /api/admin/v1/marinas/{marinaId}/documents/{documentId}/verify:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/DocumentId"
+    post:
+      tags: [online-admin]
+      operationId: verifyDocument
+      summary: Mark a document as verified by the office, or clear the mark (customers.write)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DocumentVerify" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DocumentVerification" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/booking-channels:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [channels]
+      operationId: listBookingChannels
+      summary: Registered booking channels and the marina's connection to each (providers.configure)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingChannelList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ChannelCode"
+    put:
+      tags: [channels]
+      operationId: updateBookingChannel
+      summary: >-
+        Create or update the connection to a channel; credentials and webhook secret are write-only (providers.configure,
+        If-Match when the connection exists)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BookingChannelUpdate" }
+      responses:
+        "200":
+          description: Saved
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BookingChannel" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}/test:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ChannelCode"
+    post:
+      tags: [channels]
+      operationId: testBookingChannel
+      summary: Check the connection's credentials against the channel (providers.configure)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChannelTestResult" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}/sync:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/ChannelCode"
+    post:
+      tags: [channels]
+      operationId: syncBookingChannel
+      summary: Pull reservations and push availability and rates now (providers.configure)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChannelSyncResult" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "502": { $ref: "#/components/responses/BadGateway" }
+
+  /api/admin/v1/marinas/{marinaId}/channel-reservations:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [channels]
+      operationId: listChannelReservations
+      summary: Reservations received from channels, newest first (transits.desk)
+      security: *readSecurity
+      parameters:
+        - { name: channel, in: query, required: false, schema: { type: string, maxLength: 32 } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/ChannelReservationStatus" } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ChannelReservationPage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /webhooks/channels/{channel}/{marinaId}:
+    parameters:
+      - $ref: "#/components/parameters/ChannelPathCode"
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [channels]
+      operationId: receiveChannelWebhook
+      summary: >-
+        Booking channel callback, verified with the connection's webhook secret; events are applied once (INV-89);
+        unknown channel or connection is 404, invalid signature 401
+      security: []
+      x-porto-max-body-bytes: 262144
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema: { type: string, format: binary }
+      responses:
+        "200":
+          description: Applied
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+
 components:
   securitySchemes:
     cookieAuth:
@@ -13110,6 +14191,54 @@ components:
       description: Alignment of the previous period (default date)
       schema: { $ref: "#/components/schemas/ReportAlign" }
 
+    # ---- M8 online booking (m8-plan §11) ----
+    BookingId:
+      name: bookingId
+      in: path
+      required: true
+      schema: { type: string, maxLength: 64 }
+    ChannelCode:
+      name: channelCode
+      in: path
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 32, pattern: "^[a-z0-9_-]+$" }
+    ChannelPathCode:
+      name: channel
+      in: path
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 32, pattern: "^[a-z0-9_-]+$" }
+    BookingTokenHeader:
+      name: Porto-Booking-Token
+      in: header
+      required: false
+      description: The booking token returned by createBooking (never in the path or the query; missing = 404)
+      schema: { type: string, maxLength: 128 }
+    StatusTokenHeader:
+      name: Porto-Status-Token
+      in: header
+      required: false
+      description: Read-only status token of the return page (from the URL fragment)
+      schema: { type: string, maxLength: 256 }
+    CustomerSessionHeader:
+      name: Porto-Customer-Session
+      in: header
+      required: false
+      description: Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+      schema: { type: string, maxLength: 128 }
+    BotTokenHeader:
+      name: Porto-Bot-Token
+      in: header
+      required: false
+      description: Challenge token verified by the BotProtection extension when one is registered
+      schema: { type: string, maxLength: 4096 }
+    BookingIdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: >-
+        Required on createBooking; handled by the domain (online_bookings.idempotency_hash): same key and body
+        returns the same booking and token, a different body is 422 idempotency_mismatch
+      schema: { type: string, minLength: 8, maxLength: 128, pattern: "^[A-Za-z0-9_\\-:.]+$" }
   responses:
     M4Unprocessable:
       description: >-
@@ -13223,6 +14352,14 @@ components:
       description: >-
         The report request is invalid (m7-plan §8: invalid_period, invalid_report_filter, report_too_large,
         unknown_indicator)
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    BookingUnprocessable:
+      description: >-
+        A booking rule refused the request (m8-plan §11: booking_rules with the field and code, consent_required,
+        cancellation_not_allowed, nothing_due, idempotency_mismatch, provider_disabled, fit_blocked), or a validation
+        failure
       content:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
@@ -13355,6 +14492,16 @@ components:
         - invalid_report_filter
         - report_too_large
         - unknown_indicator
+        - booking_unavailable
+        - booking_rules
+        - booking_busy
+        - consent_required
+        - text_outdated
+        - refund_changed
+        - price_changed
+        - cancellation_not_allowed
+        - nothing_due
+        - idempotency_mismatch
 
     FieldError:
       type: object
@@ -14575,6 +15722,12 @@ components:
           type: array
           items: { $ref: "#/components/schemas/Locale" }
         booking_enabled: { type: boolean }
+        embed_origins:
+          description: >-
+            Origins allowed to embed the booking page (marinas.allowed_embed_origins, M8); the SPA posts messages
+            only to a parent origin in this list that also matches the referrer
+          type: array
+          items: { type: string }
 
     # ---- M1 shared geometry (integer cm, angles in tenths of a degree) ----
 
@@ -14928,6 +16081,9 @@ components:
         grid_rotation_dd: { type: integer, format: int64, enum: [0, 900, 1800, 2700] }
         cell_count: { type: integer, format: int64, readOnly: true, description: Computed at save }
         price_class: { type: string, maxLength: 16 }
+        online_sellable:
+          type: boolean
+          description: The area is offered by the public booking page and the channels (default false)
         active: { type: boolean }
         group_ids:
           type: array
@@ -15815,7 +16971,7 @@ components:
 
     ConsentKind:
       type: string
-      enum: [privacy, marketing, third_party]
+      enum: [terms, privacy, marketing, third_party]
 
     ConsentSource:
       type: string
@@ -21694,7 +22850,10 @@ components:
         charge_number: { type: string }
         amount_cents: { $ref: "#/components/schemas/Cents" }
         reverses_match_id: { type: string }
-        reversed: { type: boolean }
+        reversed:
+          type: boolean
+          description: True when the whole match was reversed (reversed_cents equals amount_cents).
+        reversed_cents: { $ref: "#/components/schemas/Cents" }  # reversed so far, by one or more partial reversals
         created_at: { type: string, format: date-time }
 
     Payment:
@@ -22027,7 +23186,8 @@ components:
     WorkItemKind:
       type: string
       enum: [reminder_approval, charges_to_export, payment_failed, late_payment, overpayment, sepa_failed,
-             billing_item_missing, billing_target_mismatch, arrears_paid, deadline, dispute]
+             billing_item_missing, billing_target_mismatch, arrears_paid, deadline, dispute, capture_failed,
+             channel_modify]
 
     WorkItemStatus:
       type: string
@@ -23762,3 +24922,932 @@ components:
         delta: { type: [integer, "null"], format: int64 }
         delta_bp: { type: [integer, "null"], format: int64 }
         series: { type: array, items: { $ref: "#/components/schemas/ComparisonPoint" } }
+
+    # ---- M8 online booking (spec 23; m8-plan §3-§11). Money in cents, lengths in cm, dates YYYY-MM-DD in the
+    # marina time zone. Public responses never carry other customers' data, counts or berth codes. ----
+
+    BookingI18nText:
+      description: Long localised text (booking texts, arrival information); it is the source language
+      type: object
+      required: [it]
+      properties:
+        it: { type: string, minLength: 1, maxLength: 50000 }
+        en: { type: string, maxLength: 50000 }
+
+    OnlineChannel:
+      type: string
+      enum: [online, external]
+
+    OnlineBookingStatus:
+      description: Transit statuses an online or channel booking goes through
+      type: string
+      enum: [held, pending_payment, awaiting_approval, confirmed, arrived, departed, cancelled, expired, no_show]
+
+    OnlinePaymentMode:
+      type: string
+      enum: [deposit, full]
+
+    RefundAs:
+      type: string
+      enum: [refund, credit]
+
+    RevealBerth:
+      type: string
+      enum: [never, after_confirmation]
+
+    ApprovalReason:
+      type: string
+      enum: [loa, group, always, no_provider]
+
+    BookingTextKind:
+      type: string
+      enum: [terms, privacy, marketing]
+
+    BookingDocumentType:
+      type: string
+      enum: [boating_licence, navigation_licence, insurance_policy, registration_certificate, identity_card]
+
+    BookingBlockReason:
+      description: Why a whole search is blocked by the online rules
+      type: string
+      enum: [closed, min_nights, max_nights, advance, weekday, too_large]
+
+    CancellationTier:
+      description: Refund of the paid amount when cancelling at least min_days_before days before arrival
+      type: object
+      required: [min_days_before, refund_bp]
+      properties:
+        min_days_before: { type: integer, minimum: 0, maximum: 366 }
+        refund_bp: { type: integer, minimum: 0, maximum: 10000 }
+
+    BookingRules:
+      type: object
+      required: [min_nights, max_nights, min_advance_hours, max_advance_days, arrival_from, arrival_to, closed_weekdays]
+      properties:
+        min_nights: { type: integer, minimum: 1 }
+        max_nights: { type: integer, minimum: 1, maximum: 366 }
+        min_advance_hours: { type: integer, minimum: 0 }
+        max_advance_days: { type: integer, minimum: 1, maximum: 1095 }
+        arrival_from: { $ref: "#/components/schemas/LocalTime" }
+        arrival_to: { $ref: "#/components/schemas/LocalTime" }
+        closed_weekdays:
+          description: Weekdays without arrivals, 0 = Sunday
+          type: array
+          items: { type: integer, minimum: 0, maximum: 6 }
+
+    BookingRequiredFields:
+      type: object
+      required: [documents, people_on_board, phone, documents_later]
+      properties:
+        documents:
+          type: array
+          items: { $ref: "#/components/schemas/BookingDocumentType" }
+        people_on_board: { type: boolean }
+        phone: { type: boolean }
+        documents_later: { type: boolean, description: Required documents may be uploaded after payment, in the customer area }
+
+    ArrivalInfo:
+      type: object
+      properties:
+        vhf_channel: { type: string, maxLength: 16 }
+        phone: { type: string, maxLength: 40, description: Berthing-master phone (marina contact, not personal data) }
+        rules_url: { type: string, maxLength: 500 }
+        text: { $ref: "#/components/schemas/BookingI18nText" }
+
+    OnlineApprovalRules:
+      type: object
+      required: [group_ids, always, hold_hours]
+      properties:
+        loa_over_cm: { type: [integer, "null"], format: int64, minimum: 1 }
+        group_ids:
+          type: array
+          items: { type: string }
+        always: { type: boolean }
+        hold_hours: { type: integer, minimum: 1, maximum: 144 }
+
+    BookingCategory:
+      type: object
+      required: [code, name]
+      properties:
+        code: { type: string, description: "price_class (M2 berth category), or standard" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        max_loa_cm: { $ref: "#/components/schemas/Cm" }
+        max_beam_cm: { $ref: "#/components/schemas/Cm" }
+
+    BookingServiceOption:
+      type: object
+      required: [item_id, name, unit, default_selected]
+      properties:
+        item_id: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        description: { $ref: "#/components/schemas/I18nTextOptional" }
+        unit: { $ref: "#/components/schemas/ItemUnit" }
+        unit_price_cents: { type: integer, format: int64, description: Indicative price per unit (the quote is binding) }
+        max_qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        default_selected: { type: boolean }
+
+    BookingTextRef:
+      type: object
+      required: [kind, version, text]
+      properties:
+        kind: { $ref: "#/components/schemas/BookingTextKind" }
+        version: { type: integer, minimum: 1 }
+        text: { $ref: "#/components/schemas/BookingI18nText" }
+
+    BookingTheme:
+      type: object
+      required: [preset, hide_header_in_embed]
+      properties:
+        preset: { type: string, maxLength: 32 }
+        hide_header_in_embed: { type: boolean }
+
+    BookingConfig:
+      type: object
+      required: [enabled, payable, currency, rules, categories, services, payment_mode, deposit_bp,
+                 cancellation_tiers, approval_always, required_fields, texts, theme, show_feet]
+      properties:
+        enabled: { type: boolean, description: "marinas.booking_enabled; when false every other field is a default" }
+        payable: { type: boolean, description: "An online provider with checkout is enabled and the terms and privacy texts are published (without them details are refused with booking_rules consents texts_unpublished)" }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        rules: { $ref: "#/components/schemas/BookingRules" }
+        categories:
+          type: array
+          items: { $ref: "#/components/schemas/BookingCategory" }
+        services:
+          type: array
+          items: { $ref: "#/components/schemas/BookingServiceOption" }
+        payment_mode: { $ref: "#/components/schemas/OnlinePaymentMode" }
+        deposit_bp: { $ref: "#/components/schemas/BasisPoints" }
+        cancellation_tiers:
+          type: array
+          items: { $ref: "#/components/schemas/CancellationTier" }
+        approval_loa_over_cm: { type: [integer, "null"], format: int64 }
+        approval_always: { type: boolean }
+        required_fields: { $ref: "#/components/schemas/BookingRequiredFields" }
+        texts:
+          description: Current published version of each text kind
+          type: array
+          items: { $ref: "#/components/schemas/BookingTextRef" }
+        theme: { $ref: "#/components/schemas/BookingTheme" }
+        arrival_info: { $ref: "#/components/schemas/ArrivalInfo" }
+        show_feet: { type: boolean }
+
+    BookingCategoryAvailability:
+      type: object
+      required: [code, name, available, approval_required]
+      properties:
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        available: { type: boolean }
+        from_cents: { type: integer, format: int64, description: Price of the best solution with default services only }
+        approval_required: { type: boolean }
+
+    BookingAvailability:
+      type: object
+      required: [arrival, departure, nights, categories]
+      properties:
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        nights: { type: integer }
+        reason: { $ref: "#/components/schemas/BookingBlockReason" }
+        categories:
+          type: array
+          items: { $ref: "#/components/schemas/BookingCategoryAvailability" }
+
+    BookingVesselInput:
+      type: object
+      required: [loa_cm, beam_cm]
+      properties:
+        loa_cm: { type: integer, format: int64, minimum: 1, maximum: 10000 }
+        beam_cm: { type: integer, format: int64, minimum: 1, maximum: 5000 }
+        draft_cm: { type: integer, format: int64, minimum: 1, maximum: 2000 }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+
+    BookingServiceInput:
+      type: object
+      required: [item_id, qty_milli]
+      properties:
+        item_id: { type: string }
+        qty_milli: { type: integer, format: int64, minimum: 1 }
+
+    BookingQuoteInput:
+      type: object
+      required: [arrival, departure, vessel, category]
+      properties:
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        vessel: { $ref: "#/components/schemas/BookingVesselInput" }
+        category: { type: string, maxLength: 64 }
+        services:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/BookingServiceInput" }
+        promo_code: { type: string, maxLength: 64 }
+
+    BookingPriceLine:
+      type: object
+      required: [kind, label, qty_milli, total_cents]
+      properties:
+        kind: { type: string, enum: [berth, service, discount, rounding] }
+        label: { $ref: "#/components/schemas/I18nText" }
+        item_id: { type: string }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        total_cents: { type: integer, format: int64 }
+
+    BookingQuote:
+      type: object
+      required: [category, nights, lines, total_cents, net_cents, vat_cents, due_now_cents, payment_mode,
+                 cancellation_tiers, promo_applied, approval_required, currency]
+      properties:
+        category: { type: string }
+        nights: { type: integer }
+        lines:
+          type: array
+          items: { $ref: "#/components/schemas/BookingPriceLine" }
+        total_cents: { type: integer, format: int64 }
+        net_cents: { type: integer, format: int64 }
+        vat_cents: { type: integer, format: int64 }
+        due_now_cents: { type: integer, format: int64, description: Deposit or total, per the payment mode }
+        payment_mode: { $ref: "#/components/schemas/OnlinePaymentMode" }
+        cancellation_tiers:
+          type: array
+          items: { $ref: "#/components/schemas/CancellationTier" }
+        promo_applied: { type: boolean }
+        approval_required: { type: boolean }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+
+    BookingCreate:
+      type: object
+      required: [arrival, departure, category, locale]
+      properties:
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        vessel: { $ref: "#/components/schemas/BookingVesselInput" }
+        vessel_id: { type: string, description: "A saved vessel of the session's customer (instead of vessel)" }
+        category: { type: string, maxLength: 64 }
+        services:
+          type: array
+          maxItems: 50
+          items: { $ref: "#/components/schemas/BookingServiceInput" }
+        promo_code: { type: string, maxLength: 64 }
+        locale: { $ref: "#/components/schemas/Locale" }
+        embed_parent_origin: { type: string, maxLength: 255, description: "Verified parent origin in embed mode" }
+
+    BookingCreated:
+      type: object
+      required: [booking_id, reference, booking_token, status, hold_expires_at, quote, approval_required, amount_due_now_cents]
+      properties:
+        booking_id: { type: string }
+        reference: { type: string, minLength: 8, maxLength: 8 }
+        booking_token: { type: string }
+        status: { $ref: "#/components/schemas/OnlineBookingStatus" }
+        hold_expires_at: { type: string, format: date-time }
+        quote: { $ref: "#/components/schemas/BookingQuote" }
+        approval_required: { type: boolean }
+        amount_due_now_cents: { type: integer, format: int64 }
+
+    BookingVesselView:
+      type: object
+      required: [loa_cm, beam_cm]
+      properties:
+        name: { type: string }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        draft_cm: { $ref: "#/components/schemas/Cm" }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+
+    BookingDocument:
+      type: object
+      required: [id, type, uploaded_at, verified]
+      properties:
+        id: { type: string }
+        type: { $ref: "#/components/schemas/BookingDocumentType" }
+        uploaded_at: { type: string, format: date-time }
+        verified: { type: boolean }
+
+    Booking:
+      type: object
+      required: [booking_id, reference, status, arrival, departure, category, vessel, quote, approval_required,
+                 amount_due_now_cents, details_complete, documents, missing_documents]
+      properties:
+        booking_id: { type: string }
+        reference: { type: string }
+        status: { $ref: "#/components/schemas/OnlineBookingStatus" }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        category: { type: string }
+        vessel: { $ref: "#/components/schemas/BookingVesselView" }
+        hold_expires_at: { type: string, format: date-time }
+        quote: { $ref: "#/components/schemas/BookingQuote" }
+        approval_required: { type: boolean }
+        approval_deadline: { type: string, format: date-time }
+        amount_due_now_cents: { type: integer, format: int64 }
+        details_complete: { type: boolean }
+        documents:
+          type: array
+          items: { $ref: "#/components/schemas/BookingDocument" }
+        missing_documents:
+          type: array
+          items: { $ref: "#/components/schemas/BookingDocumentType" }
+
+    BookingCustomerInput:
+      type: object
+      required: [first_name, last_name, email, country, locale]
+      properties:
+        first_name: { type: string, minLength: 1, maxLength: 100 }
+        last_name: { type: string, minLength: 1, maxLength: 100 }
+        email: { type: string, format: email, maxLength: 254 }
+        phone: { type: string, maxLength: 40 }
+        country: { type: string, minLength: 2, maxLength: 2, description: ISO 3166-1 alpha-2 }
+        locale: { $ref: "#/components/schemas/Locale" }
+
+    BookingVesselDetailsInput:
+      type: object
+      required: [name, hull_type]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        registration: { type: string, maxLength: 40 }
+        flag: { type: string, minLength: 2, maxLength: 2 }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+        draft_cm: { type: integer, format: int64, minimum: 1, maximum: 2000 }
+
+    BookingConsentsInput:
+      type: object
+      required: [terms_version, privacy_version, marketing]
+      properties:
+        terms_version: { type: integer, minimum: 1 }
+        privacy_version: { type: integer, minimum: 1 }
+        marketing: { type: boolean }
+        marketing_version: { type: integer, minimum: 1, description: Required when marketing is true }
+
+    BookingDetailsInput:
+      type: object
+      required: [customer, vessel, consents]
+      properties:
+        customer: { $ref: "#/components/schemas/BookingCustomerInput" }
+        vessel: { $ref: "#/components/schemas/BookingVesselDetailsInput" }
+        people_on_board: { type: integer, minimum: 1, maximum: 500 }
+        expected_arrival_time: { $ref: "#/components/schemas/LocalTime" }
+        notes: { type: string, maxLength: 2000 }
+        consents: { $ref: "#/components/schemas/BookingConsentsInput" }
+
+    BookingPayInput:
+      type: object
+      properties:
+        return_to: { type: string, maxLength: 2000, description: "Parent page to go back to; kept only when its origin is allowed" }
+
+    BookingPayResult:
+      type: object
+      required: [status, status_token]
+      properties:
+        status: { $ref: "#/components/schemas/OnlineBookingStatus" }
+        redirect_url: { type: string, description: Provider hosted page, opened in the top window }
+        status_token: { type: string }
+
+    BookingStatusView:
+      type: object
+      required: [booking_id, reference, status, verifying]
+      properties:
+        booking_id: { type: string }
+        reference: { type: string }
+        status: { $ref: "#/components/schemas/OnlineBookingStatus" }
+        verifying: { type: boolean, description: A payment is being processed by the provider }
+        hold_expires_at: { type: string, format: date-time }
+
+    AccountLoginInput:
+      type: object
+      required: [email, locale]
+      properties:
+        email: { type: string, format: email, maxLength: 254 }
+        locale: { $ref: "#/components/schemas/Locale" }
+
+    AccountLoginAccepted:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [accepted] }
+
+    AccountSessionInput:
+      type: object
+      required: [token]
+      properties:
+        token: { type: string, minLength: 16, maxLength: 128 }
+
+    AccountSession:
+      type: object
+      required: [session_token, expires_at]
+      properties:
+        session_token: { type: string }
+        expires_at: { type: string, format: date-time, description: Absolute expiry; idle sessions end earlier }
+
+    AccountVessel:
+      type: object
+      required: [id, name, loa_cm, beam_cm]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        draft_cm: { $ref: "#/components/schemas/Cm" }
+        hull_type: { $ref: "#/components/schemas/HullType" }
+
+    AccountVesselList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/AccountVessel" }
+
+    AccountBookingSummary:
+      type: object
+      required: [contract_id, code, status, channel, arrival, departure, vessel_name, total_cents, paid_cents,
+                 residual_cents, approval_pending]
+      properties:
+        contract_id: { type: string }
+        reference: { type: string, description: Online booking reference (online and channel bookings) }
+        code: { type: string, description: "TRN-2026-0001" }
+        status: { $ref: "#/components/schemas/OnlineBookingStatus" }
+        channel: { $ref: "#/components/schemas/Channel" }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        vessel_name: { type: string }
+        category: { $ref: "#/components/schemas/I18nText" }
+        total_cents: { type: integer, format: int64 }
+        paid_cents: { type: integer, format: int64 }
+        residual_cents: { type: integer, format: int64 }
+        approval_pending: { type: boolean }
+        berth_code: { type: string, description: Only when the reveal policy allows it }
+
+    AccountBookingList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/AccountBookingSummary" }
+
+    AccountReceipt:
+      type: object
+      required: [payment_id, received_on, amount_cents, method]
+      properties:
+        payment_id: { type: string }
+        received_on: { $ref: "#/components/schemas/IsoDate" }
+        amount_cents: { type: integer, format: int64 }
+        method: { $ref: "#/components/schemas/PaymentMethod" }
+
+    CancellationPreview:
+      type: object
+      required: [allowed, paid_cents, refund_cents, refund_as]
+      properties:
+        allowed: { type: boolean }
+        reason: { type: string, enum: [status, arrival_passed], description: Why cancellation is not allowed }
+        paid_cents: { type: integer, format: int64 }
+        refund_cents: { type: integer, format: int64 }
+        refund_as: { $ref: "#/components/schemas/RefundAs" }
+        tier: { $ref: "#/components/schemas/CancellationTier" }
+
+    AccountBooking:
+      allOf:
+        - $ref: "#/components/schemas/AccountBookingSummary"
+        - type: object
+          required: [documents, missing_documents, receipts, can_cancel, can_change_dates, can_pay_balance]
+          properties:
+            qr_payload: { type: string, description: "PT1:<contract_id>, only when confirmed or arrived" }
+            arrival_info: { $ref: "#/components/schemas/ArrivalInfo" }
+            vessel: { $ref: "#/components/schemas/BookingVesselView" }
+            documents:
+              type: array
+              items: { $ref: "#/components/schemas/BookingDocument" }
+            missing_documents:
+              type: array
+              items: { $ref: "#/components/schemas/BookingDocumentType" }
+            receipts:
+              type: array
+              items: { $ref: "#/components/schemas/AccountReceipt" }
+            cancellation: { $ref: "#/components/schemas/CancellationPreview" }
+            can_cancel: { type: boolean }
+            can_change_dates: { type: boolean }
+            can_pay_balance: { type: boolean }
+
+    AccountPayBalanceResult:
+      type: object
+      required: [checkout_url, amount_cents]
+      properties:
+        checkout_url: { type: string }
+        amount_cents: { type: integer, format: int64 }
+
+    AccountCancelInput:
+      type: object
+      required: [expected_refund_cents]
+      properties:
+        expected_refund_cents: { type: integer, format: int64, minimum: 0 }
+
+    AccountCancelResult:
+      type: object
+      required: [status, refund_cents, refund_as]
+      properties:
+        status: { $ref: "#/components/schemas/OnlineBookingStatus" }
+        refund_cents: { type: integer, format: int64 }
+        refund_as: { $ref: "#/components/schemas/RefundAs" }
+
+    DateChangeInput:
+      type: object
+      required: [arrival, departure]
+      properties:
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        expected_total_cents: { type: integer, format: int64, description: Required by changeAccountDates }
+
+    DateChangePreview:
+      type: object
+      required: [available, old_total_cents, new_total_cents, delta_cents, refund_cents, supplement_cents]
+      properties:
+        available: { type: boolean }
+        reason: { $ref: "#/components/schemas/BookingBlockReason" }
+        old_total_cents: { type: integer, format: int64 }
+        new_total_cents: { type: integer, format: int64 }
+        delta_cents: { type: integer, format: int64 }
+        refund_cents: { type: integer, format: int64, description: Refund of a decrease, per the cancellation tiers }
+        supplement_cents: { type: integer, format: int64, description: Increase to pay with pay-balance }
+
+    DateChangeResult:
+      type: object
+      required: [status, arrival, departure, new_total_cents, delta_cents, refund_cents, supplement_cents]
+      properties:
+        status: { $ref: "#/components/schemas/OnlineBookingStatus" }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        new_total_cents: { type: integer, format: int64 }
+        delta_cents: { type: integer, format: int64 }
+        refund_cents: { type: integer, format: int64 }
+        supplement_cents: { type: integer, format: int64 }
+
+    OnlineBookingSettingsInput:
+      type: object
+      required: [rules, payment_mode, deposit_bp, cancellation_tiers, refund_as, approval, required_fields,
+                 reveal_berth, late_payment_recovery, allow_without_provider, max_live_holds, theme_preset,
+                 hide_header_in_embed, show_feet]
+      properties:
+        rules: { $ref: "#/components/schemas/BookingRules" }
+        payment_mode: { $ref: "#/components/schemas/OnlinePaymentMode" }
+        deposit_bp: { type: integer, minimum: 1, maximum: 10000 }
+        cancellation_tiers:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items: { $ref: "#/components/schemas/CancellationTier" }
+        refund_as: { $ref: "#/components/schemas/RefundAs" }
+        approval: { $ref: "#/components/schemas/OnlineApprovalRules" }
+        required_fields: { $ref: "#/components/schemas/BookingRequiredFields" }
+        reveal_berth: { $ref: "#/components/schemas/RevealBerth" }
+        late_payment_recovery: { type: boolean }
+        allow_without_provider: { type: boolean }
+        max_live_holds: { type: integer, minimum: 1, maximum: 10000 }
+        arrival_info: { $ref: "#/components/schemas/ArrivalInfo" }
+        theme_preset: { type: string, minLength: 1, maxLength: 32 }
+        hide_header_in_embed: { type: boolean }
+        show_feet: { type: boolean }
+
+    OnlineBookingSettings:
+      allOf:
+        - $ref: "#/components/schemas/OnlineBookingSettingsInput"
+        - type: object
+          required: [version, booking_enabled, embed_origins, saved]
+          properties:
+            version: { type: integer }
+            booking_enabled: { type: boolean, description: "marinas.booking_enabled (edited on the marina)" }
+            embed_origins:
+              description: "marinas.allowed_embed_origins (edited on the marina)"
+              type: array
+              items: { type: string }
+            saved: { type: boolean, description: False while the defaults were never saved }
+
+    BookingText:
+      type: object
+      required: [id, kind, version, texts, sha256, published_at]
+      properties:
+        id: { type: string }
+        kind: { $ref: "#/components/schemas/BookingTextKind" }
+        version: { type: integer }
+        texts: { $ref: "#/components/schemas/BookingI18nText" }
+        sha256: { type: string }
+        published_at: { type: string, format: date-time }
+        published_by: { $ref: "#/components/schemas/UserRef" }
+
+    BookingTextList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/BookingText" }
+
+    BookingTextPublish:
+      type: object
+      required: [kind, texts]
+      properties:
+        kind: { $ref: "#/components/schemas/BookingTextKind" }
+        texts: { $ref: "#/components/schemas/BookingI18nText" }
+
+    OnlineQuotaKind:
+      type: string
+      enum: [none, count, percent]
+
+    OnlineQuota:
+      type: object
+      required: [group_id, group_code, group_name, kind, value, member_berths, has_areas]
+      properties:
+        group_id: { type: string }
+        group_code: { type: string }
+        group_name: { $ref: "#/components/schemas/I18nText" }
+        kind: { $ref: "#/components/schemas/OnlineQuotaKind" }
+        value: { type: integer, format: int64, minimum: 0, description: "Units (count) or 0..100 (percent)" }
+        member_berths: { type: integer, description: Active member berths (the percent base) }
+        has_areas: { type: boolean, description: Groups with dynamic areas accept only count quotas }
+
+    OnlineQuotaList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/OnlineQuota" }
+
+    OnlineQuotaSet:
+      type: object
+      required: [group_id, kind, value]
+      properties:
+        group_id: { type: string }
+        kind: { $ref: "#/components/schemas/OnlineQuotaKind" }
+        value: { type: integer, format: int64, minimum: 0 }
+
+    OnlineQuotasUpdate:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          maxItems: 500
+          items: { $ref: "#/components/schemas/OnlineQuotaSet" }
+
+    OnlineQuotaNight:
+      type: object
+      required: [night, cap, used]
+      properties:
+        night: { $ref: "#/components/schemas/IsoDate" }
+        cap: { type: integer }
+        used: { type: integer }
+
+    OnlineQuotaGroupUsage:
+      type: object
+      required: [group_id, nights]
+      properties:
+        group_id: { type: string }
+        nights:
+          type: array
+          items: { $ref: "#/components/schemas/OnlineQuotaNight" }
+
+    OnlineQuotaUsage:
+      type: object
+      required: [from, to, groups]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        groups:
+          type: array
+          items: { $ref: "#/components/schemas/OnlineQuotaGroupUsage" }
+
+    OnlineBookingSummary:
+      type: object
+      required: [contract_id, reference, code, status, channel, arrival, departure, loa_cm, beam_cm, total_cents,
+                 created_at, version]
+      properties:
+        contract_id: { type: string }
+        reference: { type: string }
+        code: { type: string }
+        status: { $ref: "#/components/schemas/OnlineBookingStatus" }
+        channel: { $ref: "#/components/schemas/OnlineChannel" }
+        channel_code: { type: string, description: Booking channel code (channel external) }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+        loa_cm: { $ref: "#/components/schemas/Cm" }
+        beam_cm: { $ref: "#/components/schemas/Cm" }
+        category: { type: string }
+        approval_reason: { $ref: "#/components/schemas/ApprovalReason" }
+        approval_deadline: { type: string, format: date-time }
+        hold_expires_at: { type: string, format: date-time }
+        total_cents: { type: integer, format: int64 }
+        due_now_cents: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        version: { type: integer, description: Transit version (If-Match of approve and reject) }
+
+    OnlineBookingPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/OnlineBookingSummary" }
+        next_cursor: { type: [string, "null"] }
+
+    OnlineContact:
+      description: Contact submitted with the booking (decrypted only with customers.read)
+      type: object
+      required: [first_name, last_name, email, country, locale]
+      properties:
+        first_name: { type: string }
+        last_name: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        country: { type: string }
+        locale: { $ref: "#/components/schemas/Locale" }
+
+    OnlineBookingDocument:
+      type: object
+      required: [id, type, uploaded_at]
+      properties:
+        id: { type: string }
+        type: { $ref: "#/components/schemas/DocumentType" }
+        file_name: { type: string }
+        expires_on: { $ref: "#/components/schemas/IsoDate" }
+        uploaded_at: { type: string, format: date-time }
+        verified_at: { type: string, format: date-time }
+        verified_by: { $ref: "#/components/schemas/UserRef" }
+
+    OnlineBookingConsent:
+      type: object
+      required: [kind, version, granted, recorded_at]
+      properties:
+        kind: { $ref: "#/components/schemas/ConsentKind" }
+        version: { type: string }
+        granted: { type: boolean }
+        recorded_at: { type: string, format: date-time }
+
+    OnlinePaymentState:
+      type: object
+      required: [state]
+      properties:
+        state: { type: string, enum: [none, open, authorized, processing, succeeded, failed, expired, voided] }
+        intent_id: { type: string }
+        provider_code: { type: string }
+        amount_cents: { type: integer, format: int64 }
+        capture_method: { type: string, enum: [automatic, manual] }
+        authorized_at: { type: string, format: date-time }
+        captured_at: { type: string, format: date-time }
+        capture_failed: { type: boolean }
+
+    OnlineBookingDetail:
+      allOf:
+        - $ref: "#/components/schemas/OnlineBookingSummary"
+        - type: object
+          required: [transit, documents, consents, payment]
+          properties:
+            transit: { $ref: "#/components/schemas/ContractBrief" }
+            customer: { $ref: "#/components/schemas/CustomerBrief" }
+            vessel: { $ref: "#/components/schemas/VesselBrief" }
+            contact:
+              oneOf:
+                - $ref: "#/components/schemas/OnlineContact"
+                - type: "null"
+            people_on_board: { type: integer }
+            expected_arrival_time: { $ref: "#/components/schemas/LocalTime" }
+            notes: { type: string }
+            locale: { $ref: "#/components/schemas/Locale" }
+            documents:
+              type: array
+              items: { $ref: "#/components/schemas/OnlineBookingDocument" }
+            consents:
+              type: array
+              items: { $ref: "#/components/schemas/OnlineBookingConsent" }
+            payment: { $ref: "#/components/schemas/OnlinePaymentState" }
+            approved_at: { type: string, format: date-time }
+            approved_by: { $ref: "#/components/schemas/UserRef" }
+            rejected_at: { type: string, format: date-time }
+            reject_reason: { type: string }
+
+    OnlineBookingReject:
+      type: object
+      required: [reason, notify]
+      properties:
+        reason: { type: string, minLength: 1, maxLength: 500 }
+        notify: { type: boolean, description: Email the customer }
+
+    DocumentVerify:
+      type: object
+      required: [verified]
+      properties:
+        verified: { type: boolean }
+
+    DocumentVerification:
+      type: object
+      required: [document_id, verified]
+      properties:
+        document_id: { type: string }
+        verified: { type: boolean }
+        verified_at: { type: string, format: date-time }
+        verified_by: { $ref: "#/components/schemas/UserRef" }
+
+    ChannelCapabilities:
+      type: object
+      required: [push, pull, webhook, ack]
+      properties:
+        push: { type: boolean }
+        pull: { type: boolean }
+        webhook: { type: boolean }
+        ack: { type: boolean }
+
+    BookingChannelConnection:
+      type: object
+      required: [enabled, push_enabled, category_map, has_credentials, has_webhook_secret, webhook_url, version]
+      properties:
+        enabled: { type: boolean }
+        push_enabled: { type: boolean }
+        category_map:
+          description: External category code to Porto category code
+          type: object
+          additionalProperties: { type: string }
+        has_credentials: { type: boolean }
+        has_webhook_secret: { type: boolean }
+        webhook_url: { type: string }
+        last_push_at: { type: string, format: date-time }
+        last_pull_at: { type: string, format: date-time }
+        last_error: { type: string, description: Error code only }
+        version: { type: integer }
+
+    BookingChannel:
+      type: object
+      required: [code, capabilities]
+      properties:
+        code: { type: string }
+        capabilities: { $ref: "#/components/schemas/ChannelCapabilities" }
+        connection:
+          oneOf:
+            - $ref: "#/components/schemas/BookingChannelConnection"
+            - type: "null"
+
+    BookingChannelList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/BookingChannel" }
+
+    BookingChannelUpdate:
+      type: object
+      required: [enabled, push_enabled, category_map]
+      properties:
+        enabled: { type: boolean }
+        push_enabled: { type: boolean }
+        category_map:
+          type: object
+          maxProperties: 100
+          additionalProperties: { type: string, maxLength: 64 }
+        credentials:
+          description: Write-only; omitted keeps the stored credentials
+          type: object
+          maxProperties: 20
+          additionalProperties: { type: string, maxLength: 2000 }
+        webhook_secret: { type: string, maxLength: 500, description: Write-only; omitted keeps the stored secret }
+
+    ChannelTestResult:
+      type: object
+      required: [ok]
+      properties:
+        ok: { type: boolean }
+        error_code: { type: string }
+
+    ChannelSyncResult:
+      type: object
+      required: [pulled, booked, rejected, pushed]
+      properties:
+        pulled: { type: integer }
+        booked: { type: integer }
+        rejected: { type: integer }
+        pushed: { type: boolean }
+
+    ChannelReservationStatus:
+      type: string
+      enum: [received, booked, rejected, cancelled]
+
+    ChannelReservation:
+      type: object
+      required: [id, channel_code, external_ref, status, created_at]
+      properties:
+        id: { type: string }
+        channel_code: { type: string }
+        external_ref: { type: string }
+        status: { $ref: "#/components/schemas/ChannelReservationStatus" }
+        reject_reason: { type: string, enum: [no_space, rules, unmapped_category, modify_unsupported, invalid, not_found] }
+        transit: { $ref: "#/components/schemas/ContractBrief" }
+        created_at: { type: string, format: date-time }
+
+    ChannelReservationPage:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/ChannelReservation" }
+        next_cursor: { type: [string, "null"] }

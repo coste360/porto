@@ -150,6 +150,16 @@ func BackupTables() []string {
 		"reminder_items",
 		"dunning_exclusions",
 		"work_item_states",
+		// M8 online booking (00016_online_booking). online_bookings.inquiry_id points to an older inquiry; channel
+		// reservations reference their contract. Portal links and sessions and channel events are excluded below.
+		"online_booking_settings",
+		"booking_texts",
+		"online_bookings",
+		"online_booking_documents",
+		"online_quota_usage",
+		"online_quota_claims",
+		"channel_connections",
+		"channel_reservations",
 	}
 }
 
@@ -159,7 +169,10 @@ func BackupExcludedTables() []string {
 	// signature_otps (M4): 10-minute codes, useless after a restore (signers request a new one).
 	// payment_provider_events (M5): dedupe cache of provider events; after a restore provider retries are harmless
 	// because payments and refunds are unique by provider reference.
+	// customer_portal_links, customer_portal_sessions (M8): short-lived customer credentials, like sessions.
+	// channel_events (M8): dedupe cache of channel events; channel_reservations stay unique by external reference.
 	return []string{
 		"sessions", "idempotency_keys", "goose_db_version", "move_undo_log", "signature_otps", "payment_provider_events",
+		"customer_portal_links", "customer_portal_sessions", "channel_events",
 	}
 }

@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Hello,</p>
+<p>you asked to sign in to the customer area of {{v . "marina_name"}}. Open this link to see your bookings:</p>
+<p><a href="{{v . "link"}}"><strong>Open my bookings</strong></a></p>
+<p>The link is valid for {{with v . "expires_at"}}{{.}}{{else}}30{{end}} minutes and can be used once. If you did not ask to sign in, ignore this email.</p>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

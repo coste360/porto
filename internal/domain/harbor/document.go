@@ -112,8 +112,10 @@ type DynamicArea struct {
 	GridRotationDd int64       `json:"grid_rotation_dd"`
 	CellCount      *int64      `json:"cell_count,omitempty"`
 	PriceClass     string      `json:"price_class,omitempty"`
-	Active         bool        `json:"active"`
-	GroupIDs       []string    `json:"group_ids"`
+	// OnlineSellable offers a linear area on the public booking page (M8, m8-plan §3.2, §12.3).
+	OnlineSellable bool     `json:"online_sellable,omitempty"`
+	Active         bool     `json:"active"`
+	GroupIDs       []string `json:"group_ids"`
 }
 
 // LandResource is a land resource.
@@ -374,7 +376,8 @@ func documentOf(m *store.Map, e *store.MapElements, members []store.BerthGroupMe
 			MaxLOACm: r.MaxLOACm, MaxBeamCm: r.MaxBeamCm, MaxHeightCm: r.MaxHeightCm, MaxWeightKg: r.MaxWeightKg,
 			Supports: []string(r.Supports), DepthProfile: unmarshal[[]DepthSpan](r.DepthProfile),
 			BlockedCells: nonNilInts(unmarshal[[]int](r.BlockedCells)), Exits: nonNilInts(unmarshal[[]int](r.Exits)),
-			GridRotationDd: r.GridRotationDd, CellCount: i64(r.CellCount), PriceClass: r.PriceClass, Active: r.Active, GroupIDs: gid(r.ID),
+			GridRotationDd: r.GridRotationDd, CellCount: i64(r.CellCount), PriceClass: r.PriceClass, OnlineSellable: r.OnlineSellable,
+			Active: r.Active, GroupIDs: gid(r.ID),
 		}
 		if len(a.Supports) == 0 {
 			a.Supports = nil

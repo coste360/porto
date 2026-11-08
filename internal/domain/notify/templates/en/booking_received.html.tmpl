@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},</p>
+<p>we have received your booking request. The marina will review it and answer as soon as possible.</p>
+<table>
+{{with v . "reference"}}<tr><td>Reference</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "starts_on"}}<tr><td>Arrival</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "ends_on"}}<tr><td>Departure</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "amount"}}<tr><td>Amount</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "refund"}}<tr><td>Refund</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "deadline_on"}}<tr><td>Answer by</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "reason"}}<tr><td>Reason</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "berth"}}<tr><td>Berth</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "vhf_channel"}}<tr><td>VHF channel</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "marina_phone"}}<tr><td>Berthing master phone</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "qr"}}<tr><td>Transit code</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "rules_url"}}<tr><td>Harbour rules</td><td><a href="{{.}}">{{.}}</a></td></tr>{{end}}
+</table>
+{{with v . "arrival_text"}}<p>{{.}}</p>{{end}}
+{{with v . "link"}}<p><a href="{{.}}">View your booking</a></p>{{end}}
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

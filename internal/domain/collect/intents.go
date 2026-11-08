@@ -17,6 +17,7 @@ import (
 	"github.com/coste360/porto/internal/domain/event"
 	"github.com/coste360/porto/internal/domain/notify"
 	"github.com/coste360/porto/internal/domain/occupancy"
+	"github.com/coste360/porto/internal/domain/onlineconf"
 	"github.com/coste360/porto/internal/domain/payment"
 	"github.com/coste360/porto/internal/money"
 	"github.com/coste360/porto/internal/store"
@@ -174,7 +175,8 @@ func (s *Service) dispatchTx(ctx context.Context, tx bun.IDB, scope store.Marina
 		return s.mandateRevokedTx(ctx, tx, scope, actor, provider, ev)
 	case ext.PaymentEventDisputed:
 		return s.disputeTx(ctx, tx, scope, provider, ev)
-	case ext.PaymentEventSucceeded, ext.PaymentEventProcessing, ext.PaymentEventFailed, ext.PaymentEventExpired, ext.PaymentEventMandateActive:
+	case ext.PaymentEventSucceeded, ext.PaymentEventProcessing, ext.PaymentEventFailed, ext.PaymentEventExpired, ext.PaymentEventMandateActive,
+		ext.PaymentEventAuthorized, ext.PaymentEventAuthorizationVoided:
 	default:
 		return EventIgnored, "", nil
 	}
@@ -202,6 +204,10 @@ func (s *Service) dispatchTx(ctx context.Context, tx bun.IDB, scope store.Marina
 		err = s.failedTx(ctx, tx, scope, actor, in, ev.FailureCode)
 	case ext.PaymentEventExpired:
 		err = s.expiredTx(ctx, tx, scope, actor, in)
+	case ext.PaymentEventAuthorized:
+		err = s.authorizedTx(ctx, tx, scope, actor, in, ev)
+	case ext.PaymentEventAuthorizationVoided:
+		err = s.voidedTx(ctx, tx, scope, actor, in)
 	}
 	return EventApplied, in.ID, err
 }
@@ -343,6 +349,7 @@ func (s *Service) succeededTx(ctx context.Context, tx bun.IDB, scope store.Marin
 		return err
 	}
 	// Money left unallocated is customer credit (never auto-refunded, §16 D14): the office sees it in the worklist.
+	// M8 (m8-plan §5.5): a late online payment that cannot confirm its transit is refunded in full instead.
 	if pay.AllocatedCents < pay.AmountCents {
 		kind := "overpayment"
 		if in.Purpose == PurposeTransit && len(rec.Matches) == 0 {
@@ -350,6 +357,11 @@ func (s *Service) succeededTx(ctx context.Context, tx bun.IDB, scope store.Marin
 		}
 		if err := store.RaiseWorkItem(ctx, tx, scope, kind, pay.ID, "", s.now()); err != nil {
 			return err
+		}
+		if kind == "late_payment" && s.onlineLateRefund(ctx, tx, scope, in) {
+			if err := s.refundLateTx(ctx, tx, scope, in, pay); err != nil {
+				return err
+			}
 		}
 	}
 	if err := s.audit(ctx, tx, scope, actor, "intent.apply", "payment_intent", in.ID, map[string]any{
@@ -427,16 +439,34 @@ func (s *Service) transitSucceededTx(ctx context.Context, tx bun.IDB, scope stor
 		return nil, err
 	}
 	switch contract.Status(c.Status) {
-	case contract.StatusPendingPayment, contract.StatusHeld:
+	case contract.StatusPendingPayment, contract.StatusHeld, contract.StatusAwaitingApproval:
 		if _, err := s.d.Contracts.ConfirmTransitPaidTx(ctx, tx, scope, nil, c.ID, "provider"); err != nil {
 			if !errors.Is(err, contract.ErrInvalidTransition) {
 				return nil, err
 			}
-			return nil, s.latePaymentTx(ctx, tx, scope, in, c, amount)
+			return nil, s.unconfirmableTx(ctx, tx, scope, in, c, amount)
+		}
+		if !in.AuthorizedAt.IsZero() {
+			if err := store.MarkIntentCaptured(ctx, tx, scope, in.ID, s.now()); err != nil {
+				return nil, err
+			}
 		}
 	case contract.StatusConfirmed, contract.StatusArrived, contract.StatusDeparted:
+	case contract.StatusExpired:
+		// M8 late payment (m8-plan §5.5): an online transit paid after its hold lapsed is confirmed again when the
+		// marina recovers late payments and its place is still free; otherwise the money is refunded in full.
+		ok, err := s.lateRecoveryTx(ctx, tx, scope, c)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			return nil, s.unconfirmableTx(ctx, tx, scope, in, c, amount)
+		}
+		if _, err := s.d.Contracts.ConfirmTransitPaidTx(ctx, tx, scope, nil, c.ID, "provider"); err != nil {
+			return nil, err
+		}
 	default:
-		return nil, s.latePaymentTx(ctx, tx, scope, in, c, amount)
+		return nil, s.unconfirmableTx(ctx, tx, scope, in, c, amount)
 	}
 	ch, err := store.LivePrimaryCharge(ctx, tx, scope, store.ChargeOriginTransit, c.ID)
 	if errors.Is(err, store.ErrNotFound) {
@@ -648,6 +678,8 @@ type checkoutPlan struct {
 	locale  string
 	success string
 	cancel  string
+	// captureManual asks the provider for an authorisation only (M8 approval flow).
+	captureManual bool
 }
 
 // startCheckout calls the provider for a planned intent (after commit) and applies its answer.
@@ -664,7 +696,7 @@ func (s *Service) startCheckout(ctx context.Context, scope store.MarinaScope, pl
 	sess, callErr := plan.e.drv.CreateCheckout(cctx, ext.CheckoutRequest{
 		MarinaID: scope.ID(), IntentID: in.ID, IdempotencyKey: in.IdempotencyKey, AmountCents: in.AmountCents, Currency: in.Currency,
 		Description: plan.desc, Methods: methodsFor(in.Method), SuccessURL: plan.success, CancelURL: plan.cancel, ExpiresAt: exp,
-		Locale: plan.locale,
+		Locale: plan.locale, CaptureManual: plan.captureManual,
 	})
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		if callErr != nil {
@@ -781,4 +813,510 @@ func (s *Service) transitMailTx(ctx context.Context, tx bun.IDB, scope store.Mar
 		DedupeKey: "payment_request:" + r.ID + ":1", SourceType: "payment_request", SourceID: r.ID, Values: vals,
 	})
 	return id, err
+}
+
+// ---- M8 online booking (m8-plan §5.3-§5.5, §6) ----
+
+// LatePaymentActor is the audit actor of the automatic refund of a late online payment.
+const LatePaymentActor = "bookings.late_payment"
+
+// WorkCaptureFailed is the worklist item of an approved booking whose card authorisation could not be captured.
+const WorkCaptureFailed = "capture_failed"
+
+// OnlineProvider is the provider the public booking page pays with.
+type OnlineProvider struct {
+	Code      string
+	Authorize bool // implements ext.PaymentAuthorizer (manual capture for the approval flow)
+}
+
+// OnlineCheckoutProvider returns the first enabled provider with checkout (ErrProviderDisabled when none).
+func (s *Service) OnlineCheckoutProvider(ctx context.Context, db bun.IDB, scope store.MarinaScope) (*OnlineProvider, error) {
+	e, err := s.enabledProvider(ctx, db, scope, needCheckout)
+	if err != nil {
+		return nil, err
+	}
+	_, auth := e.drv.(ext.PaymentAuthorizer)
+	return &OnlineProvider{Code: e.row.ProviderCode, Authorize: auth}, nil
+}
+
+// OnlineCheckoutInput opens the advance payment of an online booking (intent purpose transit).
+type OnlineCheckoutInput struct {
+	ContractID    string
+	CustomerID    string
+	AmountCents   int64
+	ExpiresAt     time.Time
+	CaptureManual bool
+	Description   string
+	Locale        string
+	SuccessURL    string
+	CancelURL     string
+	Actor         audit.Actor
+}
+
+// OnlineCheckout is a checkout planned in a transaction and started after commit with StartOnlineCheckout.
+type OnlineCheckout struct {
+	plan *checkoutPlan
+}
+
+// IntentID is the intent of the checkout.
+func (c *OnlineCheckout) IntentID() string {
+	if c == nil || c.plan == nil || c.plan.intent == nil {
+		return ""
+	}
+	return c.plan.intent.ID
+}
+
+// OnlineCheckoutTx writes (or reuses) the live intent of a transit in tx: one live intent per transit, a second
+// click gets the open session again (m5-plan behaviour). An authorised intent is ErrPaymentInFlight.
+func (s *Service) OnlineCheckoutTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, in OnlineCheckoutInput) (*OnlineCheckout, error) {
+	e, err := s.enabledProvider(ctx, tx, scope, needCheckout)
+	if err != nil {
+		return nil, err
+	}
+	if in.CaptureManual {
+		if _, ok := e.drv.(ext.PaymentAuthorizer); !ok {
+			return nil, ErrProviderDisabled
+		}
+	}
+	if in.AmountCents <= 0 {
+		return nil, invalid("amount_cents", "positive")
+	}
+	plan := &checkoutPlan{e: e, desc: in.Description, locale: in.Locale, success: in.SuccessURL, cancel: in.CancelURL, captureManual: in.CaptureManual}
+	live, err := store.LiveTransitIntent(ctx, tx, scope, in.ContractID)
+	switch {
+	case err == nil:
+		if !live.AuthorizedAt.IsZero() || live.Status == store.IntentProcessing {
+			return nil, ErrPaymentInFlight
+		}
+		if live.ProviderCode == e.row.ProviderCode && live.AmountCents == in.AmountCents &&
+			(live.CaptureMethod == store.CaptureManual) == in.CaptureManual {
+			plan.intent = live
+			if live.CheckoutURL != "" && (live.ExpiresAt.IsZero() || live.ExpiresAt.After(s.now())) {
+				plan.reuse = live.CheckoutURL
+			}
+			return &OnlineCheckout{plan: plan}, nil
+		}
+		// A stale intent (other amount or provider): close it before opening the new one.
+		if _, err := store.SetIntentStatus(ctx, tx, scope, live.ID, fromCreatedOpen, store.IntentCancelled, "", s.now()); err != nil {
+			return nil, err
+		}
+	case !errors.Is(err, store.ErrNotFound):
+		return nil, err
+	}
+	pi := &store.PaymentIntent{
+		Purpose: PurposeTransit, ProviderCode: e.row.ProviderCode, CustomerID: in.CustomerID, AmountCents: in.AmountCents,
+		ContractID: in.ContractID, ExpiresAt: store.UTC(in.ExpiresAt), CaptureMethod: store.CaptureAutomatic,
+	}
+	if in.CaptureManual {
+		pi.CaptureMethod = store.CaptureManual
+	}
+	out, err := s.newIntentTx(ctx, tx, scope, in.Actor, pi, in.ContractID, nil)
+	if err != nil {
+		return nil, err
+	}
+	plan.intent = out
+	return &OnlineCheckout{plan: plan}, nil
+}
+
+// StartOnlineCheckout calls the provider for a planned checkout after commit and returns the hosted page URL.
+func (s *Service) StartOnlineCheckout(ctx context.Context, scope store.MarinaScope, c *OnlineCheckout) (string, error) {
+	if c == nil || c.plan == nil {
+		return "", ErrProviderDisabled
+	}
+	return s.startCheckout(ctx, scope, c.plan)
+}
+
+// authorizedTx records a card authorisation (m8-plan §5.3): the intent stays processing with authorized_at, and a
+// pending_payment online transit waits for the office's approval (contract.PaymentAuthorizedTx). An authorisation
+// for a transit that can no longer be approved is voided by the bookings.capture job.
+func (s *Service) authorizedTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, actor audit.Actor, in *store.PaymentIntent, ev *ext.PaymentEvent) error {
+	changed, err := store.MarkIntentAuthorized(ctx, tx, scope, in.ID, ev.PaymentRef, s.now())
+	if err != nil || !changed {
+		return err
+	}
+	if err := s.audit(ctx, tx, scope, actor, "intent.apply", "payment_intent", in.ID, map[string]any{"status": store.IntentProcessing, "authorized": true}); err != nil {
+		return err
+	}
+	if in.Purpose != PurposeTransit || in.ContractID == "" {
+		return nil
+	}
+	c, err := store.GetContract(ctx, tx, scope, in.ContractID)
+	if err != nil || contract.Status(c.Status) != contract.StatusPendingPayment {
+		return err
+	}
+	ob, err := store.OnlineBookingByContract(ctx, tx, scope, c.ID)
+	if errors.Is(err, store.ErrNotFound) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	set, err := onlineconf.Load(ctx, tx, scope)
+	if err != nil {
+		return err
+	}
+	reason := ob.ApprovalReason
+	if reason == "" {
+		reason = store.ApprovalReasonAlways
+	}
+	hours := set.Approval.HoldHours
+	if hours <= 0 {
+		hours = 48
+	}
+	_, err = s.d.Contracts.PaymentAuthorizedTx(ctx, tx, scope, contract.Who{Actor: actor}, c.ID, reason, s.now().Add(time.Duration(hours)*time.Hour))
+	if errors.Is(err, contract.ErrInvalidTransition) || errors.Is(err, occupancy.ErrHoldExpired) {
+		return nil // the hold is gone: the authorisation is voided by the bookings.capture job
+	}
+	return err
+}
+
+// voidedTx records an authorisation released at the provider (voided, or expired without capture).
+func (s *Service) voidedTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, actor audit.Actor, in *store.PaymentIntent) error {
+	if in.AuthorizedAt.IsZero() {
+		return nil // a cancellation of an intent that was never authorised: the expiry path handles it
+	}
+	changed, err := store.MarkIntentVoided(ctx, tx, scope, in.ID, s.now())
+	if err != nil || !changed {
+		return err
+	}
+	return s.audit(ctx, tx, scope, actor, "intent.apply", "payment_intent", in.ID, map[string]any{"status": store.IntentCancelled, "voided": true})
+}
+
+// CaptureIntent captures an authorised intent after the approval committed (idempotency key capture:<intent>). The
+// succeeded webhook confirms the transit. A provider refusal raises the capture_failed worklist item and returns
+// the provider error (the desk can send a payment link instead).
+func (s *Service) CaptureIntent(ctx context.Context, scope store.MarinaScope, intentID string) error {
+	db := s.d.DB.DB
+	in, err := store.GetPaymentIntent(ctx, db, scope, intentID)
+	if err != nil {
+		return err
+	}
+	if in.AuthorizedAt.IsZero() || !in.CapturedAt.IsZero() || !in.VoidedAt.IsZero() || in.Status == store.IntentSucceeded {
+		return nil
+	}
+	e, err := s.providerByCode(ctx, db, scope, in.ProviderCode)
+	if err != nil {
+		return err
+	}
+	az, ok := e.drv.(ext.PaymentAuthorizer)
+	if !ok {
+		return ErrProviderDisabled
+	}
+	cctx, err := s.withCreds(ctx, scope, e.row)
+	if err != nil {
+		return err
+	}
+	_, callErr := az.Capture(cctx, ext.CaptureRequest{
+		MarinaID: scope.ID(), IntentID: in.ID, IdempotencyKey: "capture:" + in.ID, PaymentRef: in.ProviderPaymentRef,
+		AmountCents: in.AmountCents, Currency: in.Currency,
+	})
+	return s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
+		if callErr != nil {
+			var se interface{ ProviderCode() string }
+			if errors.As(callErr, &se) {
+				if err := store.RaiseWorkItem(ctx, tx, scope, WorkCaptureFailed, in.ID, "", s.now()); err != nil {
+					return err
+				}
+				return providerError(callErr)
+			}
+			return callErr // transport error: the bookings.capture job tries again (same idempotency key)
+		}
+		return store.MarkIntentCaptured(ctx, tx, scope, in.ID, s.now())
+	})
+}
+
+// VoidIntent releases an authorised intent after a rejection or a cancellation committed (idempotency key
+// void:<intent>); the voided webhook (or this call's success) marks it.
+func (s *Service) VoidIntent(ctx context.Context, scope store.MarinaScope, intentID string) error {
+	db := s.d.DB.DB
+	in, err := store.GetPaymentIntent(ctx, db, scope, intentID)
+	if err != nil {
+		return err
+	}
+	if in.AuthorizedAt.IsZero() || !in.CapturedAt.IsZero() || !in.VoidedAt.IsZero() || in.Status == store.IntentSucceeded {
+		return nil
+	}
+	e, err := s.providerByCode(ctx, db, scope, in.ProviderCode)
+	if err != nil {
+		return err
+	}
+	az, ok := e.drv.(ext.PaymentAuthorizer)
+	if !ok {
+		return ErrProviderDisabled
+	}
+	cctx, err := s.withCreds(ctx, scope, e.row)
+	if err != nil {
+		return err
+	}
+	if err := az.VoidAuthorization(cctx, ext.VoidRequest{
+		MarinaID: scope.ID(), IntentID: in.ID, IdempotencyKey: "void:" + in.ID, PaymentRef: in.ProviderPaymentRef,
+	}); err != nil {
+		return err
+	}
+	return s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
+		_, err := store.MarkIntentVoided(ctx, tx, scope, in.ID, s.now())
+		return err
+	})
+}
+
+// RunAuthorizations captures the authorised intents of approved bookings and voids those of cancelled or expired
+// ones, for every marina (called by the bookings.capture job). Errors of one intent do not stop the others.
+func (s *Service) RunAuthorizations(ctx context.Context) error {
+	ids, err := store.MarinaIDsForJobs(ctx, s.d.DB.DB)
+	if err != nil {
+		return err
+	}
+	var errs []error
+	for _, id := range ids {
+		scope, err := store.SystemMarinaScope(ctx, s.d.DB.DB, id)
+		if err != nil {
+			continue
+		}
+		pending, err := store.AuthorizedIntentsPending(ctx, s.d.DB.DB, scope, 100)
+		if err != nil {
+			errs = append(errs, err)
+			continue
+		}
+		for i := range pending {
+			p := &pending[i]
+			var err error
+			if p.ContractStatus == string(contract.StatusAwaitingApproval) {
+				if w, werr := store.GetWorkItemState(ctx, s.d.DB.DB, scope, WorkCaptureFailed, p.ID); werr == nil && w.Status == store.WorkItemOpen {
+					continue // a refused capture is not retried: the desk decides (payment link)
+				}
+				err = s.CaptureIntent(ctx, scope, p.ID)
+			} else {
+				err = s.VoidIntent(ctx, scope, p.ID)
+			}
+			if err != nil {
+				s.d.Log.WarnContext(ctx, "authorisation not settled", "marina_id", id, "intent_id", p.ID, "code", providerCode(err))
+			}
+		}
+	}
+	return errors.Join(errs...)
+}
+
+// lateRecoveryTx reports whether an expired transit paid late is recovered (m8-plan §5.5): online channel,
+// late_payment_recovery on, and its place still free.
+func (s *Service) lateRecoveryTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, c *store.Contract) (bool, error) {
+	if c.Channel != contract.ChannelOnline {
+		return false, nil
+	}
+	set, err := onlineconf.Load(ctx, tx, scope)
+	if err != nil || !set.LatePaymentRecovery {
+		return false, err
+	}
+	return s.d.Contracts.LateRecoverableTx(ctx, tx, scope, c.ID)
+}
+
+// unconfirmableTx handles provider money for a transit that cannot be confirmed: the office email of M5; for an
+// online booking also the customer email booking_late_refund (the refund itself follows the payment record).
+func (s *Service) unconfirmableTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, in *store.PaymentIntent, c *store.Contract, amount money.Cents) error {
+	if err := s.latePaymentTx(ctx, tx, scope, in, c, amount); err != nil {
+		return err
+	}
+	if c.Channel != contract.ChannelOnline || s.d.Notify == nil || in.CustomerID == "" {
+		return nil
+	}
+	to, locale, name, err := customerContact(ctx, tx, scope, in.CustomerID)
+	if err != nil || to == "" {
+		return err
+	}
+	_, marinaName, err := marinaSlug(ctx, tx, scope)
+	if err != nil {
+		return err
+	}
+	ref := contract.Code(c)
+	if ob, err := store.OnlineBookingByContract(ctx, tx, scope, c.ID); err == nil {
+		ref = ob.Reference
+	}
+	_, _, err = s.d.Notify.QueueMailTx(ctx, tx, notify.Mail{
+		Template: notify.TemplateBookingLateRefund, MarinaID: scope.ID(), CustomerID: in.CustomerID, To: to, Locale: locale,
+		DedupeKey: "booking-late-refund:" + in.ID, SourceType: "payment_intent", SourceID: in.ID,
+		Values: map[string]string{
+			notify.ValueMarinaName: marinaName, notify.ValueCustomerName: name, "reference": ref, "refund": euro(int64(amount)),
+		},
+	})
+	return err
+}
+
+// onlineLateRefund reports whether unallocated money of a transit intent is refunded automatically: the intent's
+// transit is an online one that is not confirmed (m8-plan §5.5, replaces the M5 credit for channel online only).
+func (s *Service) onlineLateRefund(ctx context.Context, tx bun.IDB, scope store.MarinaScope, in *store.PaymentIntent) bool {
+	if in.ContractID == "" {
+		return false
+	}
+	c, err := store.GetContract(ctx, tx, scope, in.ContractID)
+	if err != nil || c.Channel != contract.ChannelOnline {
+		return false
+	}
+	switch contract.Status(c.Status) {
+	case contract.StatusConfirmed, contract.StatusArrived, contract.StatusDeparted:
+		return false
+	}
+	return true
+}
+
+// refundLateTx refunds the unallocated amount of a late online payment through the provider (actor
+// system:bookings.late_payment); the refund is sent after commit.
+func (s *Service) refundLateTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, in *store.PaymentIntent, pay *store.Payment) error {
+	amount := money.Cents(pay.AmountCents - pay.AllocatedCents)
+	if amount <= 0 {
+		return nil
+	}
+	if !s.RefundSupported(ctx, scope, pay.ProviderCode) {
+		return nil // the office refunds by hand (late_payment worklist item)
+	}
+	r, err := s.d.Payments.RefundTx(ctx, tx, scope, jobActor(LatePaymentActor), pay.ID, payment.RefundInput{
+		Amount: amount, ViaProvider: true, Reason: "late_payment", IdempotencyKey: "late:" + in.ID,
+	})
+	if err != nil {
+		return err
+	}
+	if r.Status == store.RefundPending {
+		id := r.ID
+		store.AfterCommit(ctx, func() { s.SendRefund(context.WithoutCancel(ctx), scope, id) })
+	}
+	return nil
+}
+
+// OnlineTransitLinkTx opens the payment link of an online transit already moved to pending_payment by its
+// approval (m8-plan §6): a payment request of the amount and its transit intent, valid until expiresAt. It
+// returns the pay page URL (the checkout session opens on click, so the emailed link outlives it).
+func (s *Service) OnlineTransitLinkTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, actor audit.Actor,
+	contractID, customerID string, amount int64, expiresAt time.Time,
+) (string, error) {
+	e, err := s.enabledProvider(ctx, tx, scope, needCheckout)
+	if err != nil {
+		return "", err
+	}
+	if customerID == "" {
+		return "", ErrCustomerRequired
+	}
+	if amount <= 0 {
+		return "", invalid("amount_cents", "positive")
+	}
+	r, tok, err := s.createRequestTx(ctx, tx, scope, actor, customerID, RequestTransit, nil, amount, expiresAt)
+	if err != nil {
+		return "", err
+	}
+	if _, err := s.newIntentTx(ctx, tx, scope, actor, &store.PaymentIntent{
+		Purpose: PurposeTransit, ProviderCode: e.row.ProviderCode, CustomerID: customerID, AmountCents: amount,
+		RequestID: r.ID, ContractID: contractID, ExpiresAt: store.UTC(expiresAt), CaptureMethod: store.CaptureAutomatic,
+	}, contractID, nil); err != nil {
+		return "", err
+	}
+	slug, _, err := marinaSlug(ctx, tx, scope)
+	if err != nil {
+		return "", err
+	}
+	return s.PayURL(slug, tok), nil
+}
+
+// BalanceLink creates or reuses a payment request for the open charges of a transit (customer area "pay balance",
+// m8-plan §7.2) and returns the pay page URL and the amount. An open, unexpired request of the customer for exactly
+// the same charges is reused (amount refreshed to the residuals, expiry extended), so repeated clicks never leave
+// several open requests for the same money. No open charge is ErrChargesNotOpen.
+func (s *Service) BalanceLink(ctx context.Context, scope store.MarinaScope, actor audit.Actor, customerID string, chargeIDs []string) (string, int64, error) {
+	if _, err := s.enabledProvider(ctx, s.d.DB.DB, scope, needCheckout); err != nil {
+		return "", 0, err
+	}
+	var url string
+	var amount int64
+	err := s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
+		charges, err := store.LockChargesSorted(ctx, tx, scope, chargeIDs)
+		if err != nil {
+			return err
+		}
+		open := make([]store.Charge, 0, len(charges))
+		for _, c := range charges {
+			if c.ResidualCents() > 0 && c.CustomerID == customerID {
+				open = append(open, c)
+			}
+		}
+		if len(open) == 0 {
+			return ErrChargesNotOpen
+		}
+		slug, _, err := marinaSlug(ctx, tx, scope)
+		if err != nil {
+			return err
+		}
+		expires := s.now().Add(72 * time.Hour)
+		if r, tok, err := s.reusableRequestTx(ctx, tx, scope, actor, customerID, open, expires); err != nil {
+			return err
+		} else if r != nil {
+			url, amount = s.PayURL(slug, tok), r.AmountCents
+			return nil
+		}
+		r, tok, err := s.createRequestTx(ctx, tx, scope, actor, customerID, RequestManual, open, 0, expires)
+		if err != nil {
+			return err
+		}
+		url, amount = s.PayURL(slug, tok), r.AmountCents
+		return nil
+	})
+	return url, amount, err
+}
+
+// reusableRequestTx returns an open, unexpired request of the customer whose charges are exactly open (with its
+// current token), after refreshing its amount to their residuals and its expiry to expires (audit
+// payment_request.update); nil when none.
+func (s *Service) reusableRequestTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, actor audit.Actor, customerID string, open []store.Charge, expires time.Time) (*store.PaymentRequest, string, error) {
+	ids := make([]string, 0, len(open))
+	var total int64
+	for _, c := range open {
+		ids = append(ids, c.ID)
+		total += c.ResidualCents()
+	}
+	reqs, err := store.OpenRequestsOfCharges(ctx, tx, scope, ids)
+	if err != nil || len(reqs) == 0 {
+		return nil, "", err
+	}
+	reqIDs := make([]string, 0, len(reqs))
+	for _, r := range reqs {
+		reqIDs = append(reqIDs, r.ID)
+	}
+	charges, err := store.RequestChargeIDs(ctx, tx, scope, reqIDs)
+	if err != nil {
+		return nil, "", err
+	}
+	now := s.now()
+	for i := range reqs {
+		r := &reqs[i]
+		if r.CustomerID != customerID || (!r.ExpiresAt.IsZero() && !r.ExpiresAt.After(now)) || !sameIDs(charges[r.ID], ids) {
+			continue
+		}
+		tok, _ := s.currentToken(r)
+		if tok == "" {
+			continue // the key ring changed: a new request gets a fresh token
+		}
+		if err := store.SetRequestAmount(ctx, tx, scope, r.ID, total, expires, now); err != nil {
+			return nil, "", err
+		}
+		if err := s.audit(ctx, tx, scope, actor, "payment_request.update", "payment_request", r.ID, map[string]any{
+			"reused": true, "amount_cents": total, "previous_amount_cents": r.AmountCents,
+		}); err != nil {
+			return nil, "", err
+		}
+		r.AmountCents, r.ExpiresAt = total, expires
+		return r, tok, nil
+	}
+	return nil, "", nil
+}
+
+// sameIDs reports whether a and b hold the same ids (any order, no duplicates expected).
+func sameIDs(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	set := make(map[string]bool, len(a))
+	for _, x := range a {
+		set[x] = true
+	}
+	for _, x := range b {
+		if !set[x] {
+			return false
+		}
+	}
+	return true
 }

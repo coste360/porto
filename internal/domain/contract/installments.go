@@ -430,7 +430,7 @@ func (s *Service) ReplanInstallments(ctx context.Context, p *auth.Principal, mar
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		c, err := lockContract(ctx, tx, scope, contractID, KindMooring, ifMatch)
 		if err != nil {
@@ -665,7 +665,7 @@ func (s *Service) IssueInstallments(ctx context.Context, p *auth.Principal, mari
 	if err := checkBulkIDs(ids); err != nil {
 		return res, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		res = BulkResult{}
 		rows, err := store.InstallmentsByIDs(ctx, tx, scope, ids)
@@ -716,7 +716,7 @@ func (s *Service) RemindInstallments(ctx context.Context, p *auth.Principal, mar
 	if err := checkBulkIDs(ids); err != nil {
 		return res, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	day := s.now().Format(time.DateOnly)
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		res = RemindResult{}

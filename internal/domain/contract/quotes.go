@@ -229,7 +229,7 @@ func (s *Service) CreateQuote(ctx context.Context, p *auth.Principal, marinaID s
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	var id string
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		t, err := Next(QuoteTransitions, StatusNone, ActionCreate)
@@ -381,7 +381,7 @@ func (s *Service) UpdateQuote(ctx context.Context, p *auth.Principal, marinaID, 
 	if err != nil {
 		return nil, err
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		q, err := lockQuote(ctx, tx, scope, id, ifMatch)
 		if err != nil {
@@ -461,7 +461,7 @@ func (s *Service) quoteAction(ctx context.Context, p *auth.Principal, marinaID, 
 		v.Add("reason", "too_long")
 		return nil, v
 	}
-	a := actor{p}
+	a := actor{p: p}
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
 		q, err := lockQuote(ctx, tx, scope, id, ifMatch)
 		if err != nil {
@@ -571,7 +571,7 @@ func (s *Service) AcceptQuoteM4(ctx context.Context, p *auth.Principal, marinaID
 		if err != nil {
 			return err
 		}
-		res, err = s.acceptTx(ctx, tx, scope, actor{p}, q, in, ViaPanel)
+		res, err = s.acceptTx(ctx, tx, scope, actor{p: p}, q, in, ViaPanel)
 		return err
 	})
 	if err != nil {

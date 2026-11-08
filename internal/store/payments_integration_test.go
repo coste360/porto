@@ -89,14 +89,30 @@ func TestPaymentsStore_Limits(t *testing.T) {
 		if _, err := db.NewUpdate().TableExpr("payment_matches").Set("amount_cents = 1").Where("id = ?", m.ID).Exec(ctx); !store.IsTriggerViolation(err, store.InsertOnlyMessage) {
 			t.Fatalf("matches are insert-only: %v", err)
 		}
-		rev := &store.PaymentMatch{ID: store.NewID(), MarinaID: s.ID(), PaymentID: p.ID, ChargeID: ch.ID, AmountCents: -10_00, ReversesMatchID: m.ID, CreatedByActor: "test", CreatedAt: now}
-		if err := store.InsertPaymentMatch(ctx, db.DB, rev); err != nil {
-			t.Fatal(err)
+		// Partial reversals add up to the match amount, never beyond it (00017).
+		for _, part := range []int64{4_00, 6_00} {
+			if _, ok, err := store.AddMatchReversed(ctx, db.DB, s, m.ID, part); err != nil || !ok {
+				t.Fatalf("partial reversal %d: %v %v", part, ok, err)
+			}
+			rev := &store.PaymentMatch{ID: store.NewID(), MarinaID: s.ID(), PaymentID: p.ID, ChargeID: ch.ID, AmountCents: -part, ReversesMatchID: m.ID, CreatedByActor: "test", CreatedAt: now}
+			if err := store.InsertPaymentMatch(ctx, db.DB, rev); err != nil {
+				t.Fatal(err)
+			}
+			if _, ok, _ := store.AddMatchReversed(ctx, db.DB, s, rev.ID, 1); ok {
+				t.Fatal("a reversal row is not reversible")
+			}
 		}
-		rev2 := *rev
-		rev2.ID = store.NewID()
-		if err := store.InsertPaymentMatch(ctx, db.DB, &rev2); !store.IsUniqueViolation(err) {
-			t.Fatalf("a match is reversed once: %v", err)
+		if _, ok, err := store.AddMatchReversed(ctx, db.DB, s, m.ID, 1); err != nil || ok {
+			t.Fatalf("reversal beyond the match: %v %v", ok, err)
+		}
+		if _, err := db.NewUpdate().TableExpr("payment_matches").Set("reversed_cents = 1001").Where("id = ?", m.ID).Exec(ctx); err == nil {
+			t.Fatal("payment_matches_reversed_check: reversed above the amount")
+		}
+		if _, err := db.NewUpdate().TableExpr("payment_matches").Set("reversed_cents = 1").Where("id = ?", m.ID).Exec(ctx); !store.IsTriggerViolation(err, store.InsertOnlyMessage) {
+			t.Fatalf("reversed_cents never decreases: %v", err)
+		}
+		if _, err := db.NewUpdate().TableExpr("payment_matches").Set("reversed_cents = reversed_cents, created_by_actor = 'x'").Where("id = ?", m.ID).Exec(ctx); !store.IsTriggerViolation(err, store.InsertOnlyMessage) {
+			t.Fatalf("only reversed_cents may change: %v", err)
 		}
 		// Work item states: create, update, idempotent raise.
 		w := &store.WorkItemState{SourceType: "late_payment", SourceID: p.ID, Status: store.WorkItemInProgress}

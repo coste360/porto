@@ -12,7 +12,23 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
+
+// Defines values for AccountLoginAcceptedStatus.
+const (
+	AccountLoginAcceptedStatusAccepted AccountLoginAcceptedStatus = "accepted"
+)
+
+// Valid indicates whether the value is a known member of the AccountLoginAcceptedStatus enum.
+func (e AccountLoginAcceptedStatus) Valid() bool {
+	switch e {
+	case AccountLoginAcceptedStatusAccepted:
+		return true
+	default:
+		return false
+	}
+}
 
 // Defines values for AccrualsRecordSection.
 const (
@@ -221,6 +237,30 @@ func (e AnomalyCode) Valid() bool {
 	}
 }
 
+// Defines values for ApprovalReason.
+const (
+	ApprovalReasonAlways     ApprovalReason = "always"
+	ApprovalReasonGroup      ApprovalReason = "group"
+	ApprovalReasonLoa        ApprovalReason = "loa"
+	ApprovalReasonNoProvider ApprovalReason = "no_provider"
+)
+
+// Valid indicates whether the value is a known member of the ApprovalReason enum.
+func (e ApprovalReason) Valid() bool {
+	switch e {
+	case ApprovalReasonAlways:
+		return true
+	case ApprovalReasonGroup:
+		return true
+	case ApprovalReasonLoa:
+		return true
+	case ApprovalReasonNoProvider:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AreaKind.
 const (
 	Linear  AreaKind = "linear"
@@ -410,6 +450,108 @@ func (e BerthImportRequestUnits) Valid() bool {
 	}
 }
 
+// Defines values for BookingBlockReason.
+const (
+	BookingBlockReasonAdvance   BookingBlockReason = "advance"
+	BookingBlockReasonClosed    BookingBlockReason = "closed"
+	BookingBlockReasonMaxNights BookingBlockReason = "max_nights"
+	BookingBlockReasonMinNights BookingBlockReason = "min_nights"
+	BookingBlockReasonTooLarge  BookingBlockReason = "too_large"
+	BookingBlockReasonWeekday   BookingBlockReason = "weekday"
+)
+
+// Valid indicates whether the value is a known member of the BookingBlockReason enum.
+func (e BookingBlockReason) Valid() bool {
+	switch e {
+	case BookingBlockReasonAdvance:
+		return true
+	case BookingBlockReasonClosed:
+		return true
+	case BookingBlockReasonMaxNights:
+		return true
+	case BookingBlockReasonMinNights:
+		return true
+	case BookingBlockReasonTooLarge:
+		return true
+	case BookingBlockReasonWeekday:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BookingDocumentType.
+const (
+	BookingDocumentTypeBoatingLicence          BookingDocumentType = "boating_licence"
+	BookingDocumentTypeIdentityCard            BookingDocumentType = "identity_card"
+	BookingDocumentTypeInsurancePolicy         BookingDocumentType = "insurance_policy"
+	BookingDocumentTypeNavigationLicence       BookingDocumentType = "navigation_licence"
+	BookingDocumentTypeRegistrationCertificate BookingDocumentType = "registration_certificate"
+)
+
+// Valid indicates whether the value is a known member of the BookingDocumentType enum.
+func (e BookingDocumentType) Valid() bool {
+	switch e {
+	case BookingDocumentTypeBoatingLicence:
+		return true
+	case BookingDocumentTypeIdentityCard:
+		return true
+	case BookingDocumentTypeInsurancePolicy:
+		return true
+	case BookingDocumentTypeNavigationLicence:
+		return true
+	case BookingDocumentTypeRegistrationCertificate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BookingPriceLineKind.
+const (
+	BookingPriceLineKindBerth    BookingPriceLineKind = "berth"
+	BookingPriceLineKindDiscount BookingPriceLineKind = "discount"
+	BookingPriceLineKindRounding BookingPriceLineKind = "rounding"
+	BookingPriceLineKindService  BookingPriceLineKind = "service"
+)
+
+// Valid indicates whether the value is a known member of the BookingPriceLineKind enum.
+func (e BookingPriceLineKind) Valid() bool {
+	switch e {
+	case BookingPriceLineKindBerth:
+		return true
+	case BookingPriceLineKindDiscount:
+		return true
+	case BookingPriceLineKindRounding:
+		return true
+	case BookingPriceLineKindService:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for BookingTextKind.
+const (
+	BookingTextKindMarketing BookingTextKind = "marketing"
+	BookingTextKindPrivacy   BookingTextKind = "privacy"
+	BookingTextKindTerms     BookingTextKind = "terms"
+)
+
+// Valid indicates whether the value is a known member of the BookingTextKind enum.
+func (e BookingTextKind) Valid() bool {
+	switch e {
+	case BookingTextKindMarketing:
+		return true
+	case BookingTextKindPrivacy:
+		return true
+	case BookingTextKindTerms:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for BridgeReceiptRequestWidth.
 const (
 	BridgeReceiptRequestWidthN58 BridgeReceiptRequestWidth = 58
@@ -515,6 +657,24 @@ func (e CancellationPolicyRefund) Valid() bool {
 	case CancellationPolicyRefundNone:
 		return true
 	case CancellationPolicyRefundProRata:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CancellationPreviewReason.
+const (
+	ArrivalPassed CancellationPreviewReason = "arrival_passed"
+	Status        CancellationPreviewReason = "status"
+)
+
+// Valid indicates whether the value is a known member of the CancellationPreviewReason enum.
+func (e CancellationPreviewReason) Valid() bool {
+	switch e {
+	case ArrivalPassed:
+		return true
+	case Status:
 		return true
 	default:
 		return false
@@ -632,6 +792,60 @@ func (e Channel) Valid() bool {
 	case ChannelExternal:
 		return true
 	case ChannelOnline:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChannelReservationRejectReason.
+const (
+	ChannelReservationRejectReasonInvalid           ChannelReservationRejectReason = "invalid"
+	ChannelReservationRejectReasonModifyUnsupported ChannelReservationRejectReason = "modify_unsupported"
+	ChannelReservationRejectReasonNoSpace           ChannelReservationRejectReason = "no_space"
+	ChannelReservationRejectReasonNotFound          ChannelReservationRejectReason = "not_found"
+	ChannelReservationRejectReasonRules             ChannelReservationRejectReason = "rules"
+	ChannelReservationRejectReasonUnmappedCategory  ChannelReservationRejectReason = "unmapped_category"
+)
+
+// Valid indicates whether the value is a known member of the ChannelReservationRejectReason enum.
+func (e ChannelReservationRejectReason) Valid() bool {
+	switch e {
+	case ChannelReservationRejectReasonInvalid:
+		return true
+	case ChannelReservationRejectReasonModifyUnsupported:
+		return true
+	case ChannelReservationRejectReasonNoSpace:
+		return true
+	case ChannelReservationRejectReasonNotFound:
+		return true
+	case ChannelReservationRejectReasonRules:
+		return true
+	case ChannelReservationRejectReasonUnmappedCategory:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ChannelReservationStatus.
+const (
+	ChannelReservationStatusBooked    ChannelReservationStatus = "booked"
+	ChannelReservationStatusCancelled ChannelReservationStatus = "cancelled"
+	ChannelReservationStatusReceived  ChannelReservationStatus = "received"
+	ChannelReservationStatusRejected  ChannelReservationStatus = "rejected"
+)
+
+// Valid indicates whether the value is a known member of the ChannelReservationStatus enum.
+func (e ChannelReservationStatus) Valid() bool {
+	switch e {
+	case ChannelReservationStatusBooked:
+		return true
+	case ChannelReservationStatusCancelled:
+		return true
+	case ChannelReservationStatusReceived:
+		return true
+	case ChannelReservationStatusRejected:
 		return true
 	default:
 		return false
@@ -1090,16 +1304,16 @@ func (e CommonChargeRunStatus) Valid() bool {
 
 // Defines values for CommonRunKind.
 const (
-	Advance CommonRunKind = "advance"
-	Balance CommonRunKind = "balance"
+	CommonRunKindAdvance CommonRunKind = "advance"
+	CommonRunKindBalance CommonRunKind = "balance"
 )
 
 // Valid indicates whether the value is a known member of the CommonRunKind enum.
 func (e CommonRunKind) Valid() bool {
 	switch e {
-	case Advance:
+	case CommonRunKindAdvance:
 		return true
-	case Balance:
+	case CommonRunKindBalance:
 		return true
 	default:
 		return false
@@ -1261,19 +1475,22 @@ func (e ConcessionSurfaceKind) Valid() bool {
 
 // Defines values for ConsentKind.
 const (
-	Marketing  ConsentKind = "marketing"
-	Privacy    ConsentKind = "privacy"
-	ThirdParty ConsentKind = "third_party"
+	ConsentKindMarketing  ConsentKind = "marketing"
+	ConsentKindPrivacy    ConsentKind = "privacy"
+	ConsentKindTerms      ConsentKind = "terms"
+	ConsentKindThirdParty ConsentKind = "third_party"
 )
 
 // Valid indicates whether the value is a known member of the ConsentKind enum.
 func (e ConsentKind) Valid() bool {
 	switch e {
-	case Marketing:
+	case ConsentKindMarketing:
 		return true
-	case Privacy:
+	case ConsentKindPrivacy:
 		return true
-	case ThirdParty:
+	case ConsentKindTerms:
+		return true
+	case ConsentKindThirdParty:
 		return true
 	default:
 		return false
@@ -4058,6 +4275,156 @@ func (e OccupancySearchRequestChannel) Valid() bool {
 	}
 }
 
+// Defines values for OnlineBookingStatus.
+const (
+	OnlineBookingStatusArrived          OnlineBookingStatus = "arrived"
+	OnlineBookingStatusAwaitingApproval OnlineBookingStatus = "awaiting_approval"
+	OnlineBookingStatusCancelled        OnlineBookingStatus = "cancelled"
+	OnlineBookingStatusConfirmed        OnlineBookingStatus = "confirmed"
+	OnlineBookingStatusDeparted         OnlineBookingStatus = "departed"
+	OnlineBookingStatusExpired          OnlineBookingStatus = "expired"
+	OnlineBookingStatusHeld             OnlineBookingStatus = "held"
+	OnlineBookingStatusNoShow           OnlineBookingStatus = "no_show"
+	OnlineBookingStatusPendingPayment   OnlineBookingStatus = "pending_payment"
+)
+
+// Valid indicates whether the value is a known member of the OnlineBookingStatus enum.
+func (e OnlineBookingStatus) Valid() bool {
+	switch e {
+	case OnlineBookingStatusArrived:
+		return true
+	case OnlineBookingStatusAwaitingApproval:
+		return true
+	case OnlineBookingStatusCancelled:
+		return true
+	case OnlineBookingStatusConfirmed:
+		return true
+	case OnlineBookingStatusDeparted:
+		return true
+	case OnlineBookingStatusExpired:
+		return true
+	case OnlineBookingStatusHeld:
+		return true
+	case OnlineBookingStatusNoShow:
+		return true
+	case OnlineBookingStatusPendingPayment:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OnlineChannel.
+const (
+	OnlineChannelExternal OnlineChannel = "external"
+	OnlineChannelOnline   OnlineChannel = "online"
+)
+
+// Valid indicates whether the value is a known member of the OnlineChannel enum.
+func (e OnlineChannel) Valid() bool {
+	switch e {
+	case OnlineChannelExternal:
+		return true
+	case OnlineChannelOnline:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OnlinePaymentMode.
+const (
+	OnlinePaymentModeDeposit OnlinePaymentMode = "deposit"
+	OnlinePaymentModeFull    OnlinePaymentMode = "full"
+)
+
+// Valid indicates whether the value is a known member of the OnlinePaymentMode enum.
+func (e OnlinePaymentMode) Valid() bool {
+	switch e {
+	case OnlinePaymentModeDeposit:
+		return true
+	case OnlinePaymentModeFull:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OnlinePaymentStateCaptureMethod.
+const (
+	OnlinePaymentStateCaptureMethodAutomatic OnlinePaymentStateCaptureMethod = "automatic"
+	OnlinePaymentStateCaptureMethodManual    OnlinePaymentStateCaptureMethod = "manual"
+)
+
+// Valid indicates whether the value is a known member of the OnlinePaymentStateCaptureMethod enum.
+func (e OnlinePaymentStateCaptureMethod) Valid() bool {
+	switch e {
+	case OnlinePaymentStateCaptureMethodAutomatic:
+		return true
+	case OnlinePaymentStateCaptureMethodManual:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OnlinePaymentStateState.
+const (
+	OnlinePaymentStateStateAuthorized OnlinePaymentStateState = "authorized"
+	OnlinePaymentStateStateExpired    OnlinePaymentStateState = "expired"
+	OnlinePaymentStateStateFailed     OnlinePaymentStateState = "failed"
+	OnlinePaymentStateStateNone       OnlinePaymentStateState = "none"
+	OnlinePaymentStateStateOpen       OnlinePaymentStateState = "open"
+	OnlinePaymentStateStateProcessing OnlinePaymentStateState = "processing"
+	OnlinePaymentStateStateSucceeded  OnlinePaymentStateState = "succeeded"
+	OnlinePaymentStateStateVoided     OnlinePaymentStateState = "voided"
+)
+
+// Valid indicates whether the value is a known member of the OnlinePaymentStateState enum.
+func (e OnlinePaymentStateState) Valid() bool {
+	switch e {
+	case OnlinePaymentStateStateAuthorized:
+		return true
+	case OnlinePaymentStateStateExpired:
+		return true
+	case OnlinePaymentStateStateFailed:
+		return true
+	case OnlinePaymentStateStateNone:
+		return true
+	case OnlinePaymentStateStateOpen:
+		return true
+	case OnlinePaymentStateStateProcessing:
+		return true
+	case OnlinePaymentStateStateSucceeded:
+		return true
+	case OnlinePaymentStateStateVoided:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OnlineQuotaKind.
+const (
+	OnlineQuotaKindCount   OnlineQuotaKind = "count"
+	OnlineQuotaKindNone    OnlineQuotaKind = "none"
+	OnlineQuotaKindPercent OnlineQuotaKind = "percent"
+)
+
+// Valid indicates whether the value is a known member of the OnlineQuotaKind enum.
+func (e OnlineQuotaKind) Valid() bool {
+	switch e {
+	case OnlineQuotaKindCount:
+		return true
+	case OnlineQuotaKindNone:
+		return true
+	case OnlineQuotaKindPercent:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for OpeningBalanceImportInputDelimiter.
 const (
 	OpeningBalanceImportInputDelimiterComma     OpeningBalanceImportInputDelimiter = "comma"
@@ -5038,19 +5405,19 @@ func (e PricingBasis) Valid() bool {
 
 // Defines values for PricingStage.
 const (
-	Base     PricingStage = "base"
-	Discount PricingStage = "discount"
-	Modifier PricingStage = "modifier"
+	PricingStageBase     PricingStage = "base"
+	PricingStageDiscount PricingStage = "discount"
+	PricingStageModifier PricingStage = "modifier"
 )
 
 // Valid indicates whether the value is a known member of the PricingStage enum.
 func (e PricingStage) Valid() bool {
 	switch e {
-	case Base:
+	case PricingStageBase:
 		return true
-	case Discount:
+	case PricingStageDiscount:
 		return true
-	case Modifier:
+	case PricingStageModifier:
 		return true
 	default:
 		return false
@@ -5066,6 +5433,10 @@ const (
 	ProblemTypeBackupInProgress          ProblemType = "backup_in_progress"
 	ProblemTypeBadRequest                ProblemType = "bad_request"
 	ProblemTypeBillingItemMissing        ProblemType = "billing_item_missing"
+	ProblemTypeBookingBusy               ProblemType = "booking_busy"
+	ProblemTypeBookingRules              ProblemType = "booking_rules"
+	ProblemTypeBookingUnavailable        ProblemType = "booking_unavailable"
+	ProblemTypeCancellationNotAllowed    ProblemType = "cancellation_not_allowed"
 	ProblemTypeCashInsufficient          ProblemType = "cash_insufficient"
 	ProblemTypeCashSessionClosed         ProblemType = "cash_session_closed"
 	ProblemTypeCashSessionOpen           ProblemType = "cash_session_open"
@@ -5078,6 +5449,7 @@ const (
 	ProblemTypeClosureActive             ProblemType = "closure_active"
 	ProblemTypeCodeTaken                 ProblemType = "code_taken"
 	ProblemTypeConflict                  ProblemType = "conflict"
+	ProblemTypeConsentRequired           ProblemType = "consent_required"
 	ProblemTypeCreditInsufficient        ProblemType = "credit_insufficient"
 	ProblemTypeCsrfFailed                ProblemType = "csrf_failed"
 	ProblemTypeCsvInvalid                ProblemType = "csv_invalid"
@@ -5097,6 +5469,7 @@ const (
 	ProblemTypeHoldExpired               ProblemType = "hold_expired"
 	ProblemTypeIdempotencyInProgress     ProblemType = "idempotency_in_progress"
 	ProblemTypeIdempotencyKeyReused      ProblemType = "idempotency_key_reused"
+	ProblemTypeIdempotencyMismatch       ProblemType = "idempotency_mismatch"
 	ProblemTypeImportNotUndoable         ProblemType = "import_not_undoable"
 	ProblemTypeInUse                     ProblemType = "in_use"
 	ProblemTypeInsuranceRequired         ProblemType = "insurance_required"
@@ -5128,6 +5501,7 @@ const (
 	ProblemTypeNotFound                  ProblemType = "not_found"
 	ProblemTypeNotImplemented            ProblemType = "not_implemented"
 	ProblemTypeNotReady                  ProblemType = "not_ready"
+	ProblemTypeNothingDue                ProblemType = "nothing_due"
 	ProblemTypeNothingToSettle           ProblemType = "nothing_to_settle"
 	ProblemTypeOfflineNotAllowed         ProblemType = "offline_not_allowed"
 	ProblemTypeOtpInvalid                ProblemType = "otp_invalid"
@@ -5138,6 +5512,7 @@ const (
 	ProblemTypePeripheralUnavailable     ProblemType = "peripheral_unavailable"
 	ProblemTypePlacementInvalid          ProblemType = "placement_invalid"
 	ProblemTypePreconditionRequired      ProblemType = "precondition_required"
+	ProblemTypePriceChanged              ProblemType = "price_changed"
 	ProblemTypePriceListImmutable        ProblemType = "price_list_immutable"
 	ProblemTypePriceListInvalid          ProblemType = "price_list_invalid"
 	ProblemTypePriceListOverlap          ProblemType = "price_list_overlap"
@@ -5149,6 +5524,7 @@ const (
 	ProblemTypeProviderUnknown           ProblemType = "provider_unknown"
 	ProblemTypeQuoteExpired              ProblemType = "quote_expired"
 	ProblemTypeRateLimited               ProblemType = "rate_limited"
+	ProblemTypeRefundChanged             ProblemType = "refund_changed"
 	ProblemTypeRefundExceeds             ProblemType = "refund_exceeds"
 	ProblemTypeRegisterInUse             ProblemType = "register_in_use"
 	ProblemTypeReleaseInvalid            ProblemType = "release_invalid"
@@ -5167,6 +5543,7 @@ const (
 	ProblemTypeTableIncomplete           ProblemType = "table_incomplete"
 	ProblemTypeTemplateInvalid           ProblemType = "template_invalid"
 	ProblemTypeTemplateLimits            ProblemType = "template_limits"
+	ProblemTypeTextOutdated              ProblemType = "text_outdated"
 	ProblemTypeTotpAlreadyEnabled        ProblemType = "totp_already_enabled"
 	ProblemTypeTotpEnrolmentRequired     ProblemType = "totp_enrolment_required"
 	ProblemTypeTotpNotEnrolled           ProblemType = "totp_not_enrolled"
@@ -5203,6 +5580,14 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeBillingItemMissing:
 		return true
+	case ProblemTypeBookingBusy:
+		return true
+	case ProblemTypeBookingRules:
+		return true
+	case ProblemTypeBookingUnavailable:
+		return true
+	case ProblemTypeCancellationNotAllowed:
+		return true
 	case ProblemTypeCashInsufficient:
 		return true
 	case ProblemTypeCashSessionClosed:
@@ -5226,6 +5611,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeCodeTaken:
 		return true
 	case ProblemTypeConflict:
+		return true
+	case ProblemTypeConsentRequired:
 		return true
 	case ProblemTypeCreditInsufficient:
 		return true
@@ -5264,6 +5651,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeIdempotencyInProgress:
 		return true
 	case ProblemTypeIdempotencyKeyReused:
+		return true
+	case ProblemTypeIdempotencyMismatch:
 		return true
 	case ProblemTypeImportNotUndoable:
 		return true
@@ -5327,6 +5716,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeNotReady:
 		return true
+	case ProblemTypeNothingDue:
+		return true
 	case ProblemTypeNothingToSettle:
 		return true
 	case ProblemTypeOfflineNotAllowed:
@@ -5346,6 +5737,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypePlacementInvalid:
 		return true
 	case ProblemTypePreconditionRequired:
+		return true
+	case ProblemTypePriceChanged:
 		return true
 	case ProblemTypePriceListImmutable:
 		return true
@@ -5368,6 +5761,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeQuoteExpired:
 		return true
 	case ProblemTypeRateLimited:
+		return true
+	case ProblemTypeRefundChanged:
 		return true
 	case ProblemTypeRefundExceeds:
 		return true
@@ -5404,6 +5799,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeTemplateInvalid:
 		return true
 	case ProblemTypeTemplateLimits:
+		return true
+	case ProblemTypeTextOutdated:
 		return true
 	case ProblemTypeTotpAlreadyEnabled:
 		return true
@@ -5801,6 +6198,24 @@ func (e RefundSource) Valid() bool {
 	}
 }
 
+// Defines values for RefundAs.
+const (
+	RefundAsCredit RefundAs = "credit"
+	RefundAsRefund RefundAs = "refund"
+)
+
+// Valid indicates whether the value is a known member of the RefundAs enum.
+func (e RefundAs) Valid() bool {
+	switch e {
+	case RefundAsCredit:
+		return true
+	case RefundAsRefund:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for RefundInputMethod.
 const (
 	RefundInputMethodBankTransfer RefundInputMethod = "bank_transfer"
@@ -5851,16 +6266,16 @@ func (e RefundStatus) Valid() bool {
 
 // Defines values for ReleasePolicy.
 const (
-	Never       ReleasePolicy = "never"
-	WithConsent ReleasePolicy = "with_consent"
+	ReleasePolicyNever       ReleasePolicy = "never"
+	ReleasePolicyWithConsent ReleasePolicy = "with_consent"
 )
 
 // Valid indicates whether the value is a known member of the ReleasePolicy enum.
 func (e ReleasePolicy) Valid() bool {
 	switch e {
-	case Never:
+	case ReleasePolicyNever:
 		return true
-	case WithConsent:
+	case ReleasePolicyWithConsent:
 		return true
 	default:
 		return false
@@ -6512,6 +6927,24 @@ func (e ResourceType) Valid() bool {
 	case ResourceTypeDynamicArea:
 		return true
 	case ResourceTypeLandResource:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RevealBerth.
+const (
+	RevealBerthAfterConfirmation RevealBerth = "after_confirmation"
+	RevealBerthNever             RevealBerth = "never"
+)
+
+// Valid indicates whether the value is a known member of the RevealBerth enum.
+func (e RevealBerth) Valid() bool {
+	switch e {
+	case RevealBerthAfterConfirmation:
+		return true
+	case RevealBerthNever:
 		return true
 	default:
 		return false
@@ -7798,6 +8231,8 @@ const (
 	WorkItemKindArrearsPaid           WorkItemKind = "arrears_paid"
 	WorkItemKindBillingItemMissing    WorkItemKind = "billing_item_missing"
 	WorkItemKindBillingTargetMismatch WorkItemKind = "billing_target_mismatch"
+	WorkItemKindCaptureFailed         WorkItemKind = "capture_failed"
+	WorkItemKindChannelModify         WorkItemKind = "channel_modify"
 	WorkItemKindChargesToExport       WorkItemKind = "charges_to_export"
 	WorkItemKindDeadline              WorkItemKind = "deadline"
 	WorkItemKindDispute               WorkItemKind = "dispute"
@@ -7816,6 +8251,10 @@ func (e WorkItemKind) Valid() bool {
 	case WorkItemKindBillingItemMissing:
 		return true
 	case WorkItemKindBillingTargetMismatch:
+		return true
+	case WorkItemKindCaptureFailed:
+		return true
+	case WorkItemKindChannelModify:
 		return true
 	case WorkItemKindChargesToExport:
 		return true
@@ -8999,6 +9438,159 @@ func (e GetVesselsReportParamsGroupBy) Valid() bool {
 	}
 }
 
+// AccountBooking defines model for AccountBooking.
+type AccountBooking struct {
+	ApprovalPending bool `json:"approval_pending"`
+
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival     IsoDate      `json:"arrival"`
+	ArrivalInfo *ArrivalInfo `json:"arrival_info,omitempty"`
+
+	// BerthCode Only when the reveal policy allows it
+	BerthCode      *string              `json:"berth_code,omitempty"`
+	CanCancel      bool                 `json:"can_cancel"`
+	CanChangeDates bool                 `json:"can_change_dates"`
+	CanPayBalance  bool                 `json:"can_pay_balance"`
+	Cancellation   *CancellationPreview `json:"cancellation,omitempty"`
+	Category       *I18nText            `json:"category,omitempty"`
+	Channel        Channel              `json:"channel"`
+
+	// Code TRN-2026-0001
+	Code       string `json:"code"`
+	ContractId string `json:"contract_id"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure        IsoDate               `json:"departure"`
+	Documents        []BookingDocument     `json:"documents"`
+	MissingDocuments []BookingDocumentType `json:"missing_documents"`
+	PaidCents        int64                 `json:"paid_cents"`
+
+	// QrPayload PT1:<contract_id>, only when confirmed or arrived
+	QrPayload *string          `json:"qr_payload,omitempty"`
+	Receipts  []AccountReceipt `json:"receipts"`
+
+	// Reference Online booking reference (online and channel bookings)
+	Reference     *string `json:"reference,omitempty"`
+	ResidualCents int64   `json:"residual_cents"`
+
+	// Status Transit statuses an online or channel booking goes through
+	Status     OnlineBookingStatus `json:"status"`
+	TotalCents int64               `json:"total_cents"`
+	Vessel     *BookingVesselView  `json:"vessel,omitempty"`
+	VesselName string              `json:"vessel_name"`
+}
+
+// AccountBookingList defines model for AccountBookingList.
+type AccountBookingList struct {
+	Items []AccountBookingSummary `json:"items"`
+}
+
+// AccountBookingSummary defines model for AccountBookingSummary.
+type AccountBookingSummary struct {
+	ApprovalPending bool `json:"approval_pending"`
+
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival IsoDate `json:"arrival"`
+
+	// BerthCode Only when the reveal policy allows it
+	BerthCode *string   `json:"berth_code,omitempty"`
+	Category  *I18nText `json:"category,omitempty"`
+	Channel   Channel   `json:"channel"`
+
+	// Code TRN-2026-0001
+	Code       string `json:"code"`
+	ContractId string `json:"contract_id"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure IsoDate `json:"departure"`
+	PaidCents int64   `json:"paid_cents"`
+
+	// Reference Online booking reference (online and channel bookings)
+	Reference     *string `json:"reference,omitempty"`
+	ResidualCents int64   `json:"residual_cents"`
+
+	// Status Transit statuses an online or channel booking goes through
+	Status     OnlineBookingStatus `json:"status"`
+	TotalCents int64               `json:"total_cents"`
+	VesselName string              `json:"vessel_name"`
+}
+
+// AccountCancelInput defines model for AccountCancelInput.
+type AccountCancelInput struct {
+	ExpectedRefundCents int64 `json:"expected_refund_cents"`
+}
+
+// AccountCancelResult defines model for AccountCancelResult.
+type AccountCancelResult struct {
+	RefundAs    RefundAs `json:"refund_as"`
+	RefundCents int64    `json:"refund_cents"`
+
+	// Status Transit statuses an online or channel booking goes through
+	Status OnlineBookingStatus `json:"status"`
+}
+
+// AccountLoginAccepted defines model for AccountLoginAccepted.
+type AccountLoginAccepted struct {
+	Status AccountLoginAcceptedStatus `json:"status"`
+}
+
+// AccountLoginAcceptedStatus defines model for AccountLoginAccepted.Status.
+type AccountLoginAcceptedStatus string
+
+// AccountLoginInput defines model for AccountLoginInput.
+type AccountLoginInput struct {
+	Email  openapi_types.Email `json:"email"`
+	Locale Locale              `json:"locale"`
+}
+
+// AccountPayBalanceResult defines model for AccountPayBalanceResult.
+type AccountPayBalanceResult struct {
+	AmountCents int64  `json:"amount_cents"`
+	CheckoutUrl string `json:"checkout_url"`
+}
+
+// AccountReceipt defines model for AccountReceipt.
+type AccountReceipt struct {
+	AmountCents int64         `json:"amount_cents"`
+	Method      PaymentMethod `json:"method"`
+	PaymentId   string        `json:"payment_id"`
+
+	// ReceivedOn Calendar date YYYY-MM-DD in the marina timezone
+	ReceivedOn IsoDate `json:"received_on"`
+}
+
+// AccountSession defines model for AccountSession.
+type AccountSession struct {
+	// ExpiresAt Absolute expiry; idle sessions end earlier
+	ExpiresAt    time.Time `json:"expires_at"`
+	SessionToken string    `json:"session_token"`
+}
+
+// AccountSessionInput defines model for AccountSessionInput.
+type AccountSessionInput struct {
+	Token string `json:"token"`
+}
+
+// AccountVessel defines model for AccountVessel.
+type AccountVessel struct {
+	// BeamCm Length in integer centimetres
+	BeamCm Cm `json:"beam_cm"`
+
+	// DraftCm Length in integer centimetres
+	DraftCm  *Cm       `json:"draft_cm,omitempty"`
+	HullType *HullType `json:"hull_type,omitempty"`
+	Id       string    `json:"id"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm Cm     `json:"loa_cm"`
+	Name  string `json:"name"`
+}
+
+// AccountVesselList defines model for AccountVesselList.
+type AccountVesselList struct {
+	Items []AccountVessel `json:"items"`
+}
+
 // AccrualsGroup defines model for AccrualsGroup.
 type AccrualsGroup struct {
 	Key    string         `json:"key"`
@@ -9438,6 +10030,9 @@ type ApplyCreditResult struct {
 	MatchedCents Cents `json:"matched_cents"`
 }
 
+// ApprovalReason defines model for ApprovalReason.
+type ApprovalReason string
+
 // AreaKind defines model for AreaKind.
 type AreaKind string
 
@@ -9495,6 +10090,17 @@ type ArrearsPolicy struct {
 
 	// MinAmountCents Amount in integer cents of the marina currency
 	MinAmountCents Cents `json:"min_amount_cents"`
+}
+
+// ArrivalInfo defines model for ArrivalInfo.
+type ArrivalInfo struct {
+	// Phone Berthing-master phone (marina contact
+	Phone    *string `json:"phone,omitempty"`
+	RulesUrl *string `json:"rules_url,omitempty"`
+
+	// Text Long localised text (booking texts, arrival information); it is the source language
+	Text       *BookingI18nText `json:"text,omitempty"`
+	VhfChannel *string          `json:"vhf_channel,omitempty"`
 }
 
 // AuditActor defines model for AuditActor.
@@ -9928,6 +10534,424 @@ type BlockCreate struct {
 	To IsoDate `json:"to"`
 }
 
+// Booking defines model for Booking.
+type Booking struct {
+	AmountDueNowCents int64      `json:"amount_due_now_cents"`
+	ApprovalDeadline  *time.Time `json:"approval_deadline,omitempty"`
+	ApprovalRequired  bool       `json:"approval_required"`
+
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival   IsoDate `json:"arrival"`
+	BookingId string  `json:"booking_id"`
+	Category  string  `json:"category"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure        IsoDate               `json:"departure"`
+	DetailsComplete  bool                  `json:"details_complete"`
+	Documents        []BookingDocument     `json:"documents"`
+	HoldExpiresAt    *time.Time            `json:"hold_expires_at,omitempty"`
+	MissingDocuments []BookingDocumentType `json:"missing_documents"`
+	Quote            BookingQuote          `json:"quote"`
+	Reference        string                `json:"reference"`
+
+	// Status Transit statuses an online or channel booking goes through
+	Status OnlineBookingStatus `json:"status"`
+	Vessel BookingVesselView   `json:"vessel"`
+}
+
+// BookingAvailability defines model for BookingAvailability.
+type BookingAvailability struct {
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival    IsoDate                       `json:"arrival"`
+	Categories []BookingCategoryAvailability `json:"categories"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure IsoDate `json:"departure"`
+	Nights    int     `json:"nights"`
+
+	// Reason Why a whole search is blocked by the online rules
+	Reason *BookingBlockReason `json:"reason,omitempty"`
+}
+
+// BookingBlockReason Why a whole search is blocked by the online rules
+type BookingBlockReason string
+
+// BookingCategory defines model for BookingCategory.
+type BookingCategory struct {
+	// Code price_class (M2 berth category), or standard
+	Code string `json:"code"`
+
+	// MaxBeamCm Length in integer centimetres
+	MaxBeamCm *Cm `json:"max_beam_cm,omitempty"`
+
+	// MaxLoaCm Length in integer centimetres
+	MaxLoaCm *Cm      `json:"max_loa_cm,omitempty"`
+	Name     I18nText `json:"name"`
+}
+
+// BookingCategoryAvailability defines model for BookingCategoryAvailability.
+type BookingCategoryAvailability struct {
+	ApprovalRequired bool   `json:"approval_required"`
+	Available        bool   `json:"available"`
+	Code             string `json:"code"`
+
+	// FromCents Price of the best solution with default services only
+	FromCents *int64   `json:"from_cents,omitempty"`
+	Name      I18nText `json:"name"`
+}
+
+// BookingChannel defines model for BookingChannel.
+type BookingChannel struct {
+	Capabilities ChannelCapabilities       `json:"capabilities"`
+	Code         string                    `json:"code"`
+	Connection   *BookingChannelConnection `json:"connection,omitempty"`
+}
+
+// BookingChannelConnection defines model for BookingChannelConnection.
+type BookingChannelConnection struct {
+	// CategoryMap External category code to Porto category code
+	CategoryMap      map[string]string `json:"category_map"`
+	Enabled          bool              `json:"enabled"`
+	HasCredentials   bool              `json:"has_credentials"`
+	HasWebhookSecret bool              `json:"has_webhook_secret"`
+
+	// LastError Error code only
+	LastError   *string    `json:"last_error,omitempty"`
+	LastPullAt  *time.Time `json:"last_pull_at,omitempty"`
+	LastPushAt  *time.Time `json:"last_push_at,omitempty"`
+	PushEnabled bool       `json:"push_enabled"`
+	Version     int        `json:"version"`
+	WebhookUrl  string     `json:"webhook_url"`
+}
+
+// BookingChannelList defines model for BookingChannelList.
+type BookingChannelList struct {
+	Items []BookingChannel `json:"items"`
+}
+
+// BookingChannelUpdate defines model for BookingChannelUpdate.
+type BookingChannelUpdate struct {
+	CategoryMap map[string]string `json:"category_map"`
+
+	// Credentials Write-only; omitted keeps the stored credentials
+	Credentials *map[string]string `json:"credentials,omitempty"`
+	Enabled     bool               `json:"enabled"`
+	PushEnabled bool               `json:"push_enabled"`
+
+	// WebhookSecret Write-only; omitted keeps the stored secret
+	WebhookSecret *string `json:"webhook_secret,omitempty"`
+}
+
+// BookingConfig defines model for BookingConfig.
+type BookingConfig struct {
+	ApprovalAlways    bool               `json:"approval_always"`
+	ApprovalLoaOverCm *int64             `json:"approval_loa_over_cm,omitempty"`
+	ArrivalInfo       *ArrivalInfo       `json:"arrival_info,omitempty"`
+	CancellationTiers []CancellationTier `json:"cancellation_tiers"`
+	Categories        []BookingCategory  `json:"categories"`
+	Currency          string             `json:"currency"`
+
+	// DepositBp Percentage in integer basis points (1 % = 100)
+	DepositBp BasisPoints `json:"deposit_bp"`
+
+	// Enabled marinas.booking_enabled; when false every other field is a default
+	Enabled bool `json:"enabled"`
+
+	// Payable An online provider with checkout is enabled and the terms and privacy texts are published (without them details are refused with booking_rules consents texts_unpublished)
+	Payable        bool                   `json:"payable"`
+	PaymentMode    OnlinePaymentMode      `json:"payment_mode"`
+	RequiredFields BookingRequiredFields  `json:"required_fields"`
+	Rules          BookingRules           `json:"rules"`
+	Services       []BookingServiceOption `json:"services"`
+	ShowFeet       bool                   `json:"show_feet"`
+
+	// Texts Current published version of each text kind
+	Texts []BookingTextRef `json:"texts"`
+	Theme BookingTheme     `json:"theme"`
+}
+
+// BookingConsentsInput defines model for BookingConsentsInput.
+type BookingConsentsInput struct {
+	Marketing bool `json:"marketing"`
+
+	// MarketingVersion Required when marketing is true
+	MarketingVersion *int `json:"marketing_version,omitempty"`
+	PrivacyVersion   int  `json:"privacy_version"`
+	TermsVersion     int  `json:"terms_version"`
+}
+
+// BookingCreate defines model for BookingCreate.
+type BookingCreate struct {
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival  IsoDate `json:"arrival"`
+	Category string  `json:"category"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure IsoDate `json:"departure"`
+
+	// EmbedParentOrigin Verified parent origin in embed mode
+	EmbedParentOrigin *string                `json:"embed_parent_origin,omitempty"`
+	Locale            Locale                 `json:"locale"`
+	PromoCode         *string                `json:"promo_code,omitempty"`
+	Services          *[]BookingServiceInput `json:"services,omitempty"`
+	Vessel            *BookingVesselInput    `json:"vessel,omitempty"`
+
+	// VesselId A saved vessel of the session's customer (instead of vessel)
+	VesselId *string `json:"vessel_id,omitempty"`
+}
+
+// BookingCreated defines model for BookingCreated.
+type BookingCreated struct {
+	AmountDueNowCents int64        `json:"amount_due_now_cents"`
+	ApprovalRequired  bool         `json:"approval_required"`
+	BookingId         string       `json:"booking_id"`
+	BookingToken      string       `json:"booking_token"`
+	HoldExpiresAt     time.Time    `json:"hold_expires_at"`
+	Quote             BookingQuote `json:"quote"`
+	Reference         string       `json:"reference"`
+
+	// Status Transit statuses an online or channel booking goes through
+	Status OnlineBookingStatus `json:"status"`
+}
+
+// BookingCustomerInput defines model for BookingCustomerInput.
+type BookingCustomerInput struct {
+	// Country ISO 3166-1 alpha-2
+	Country   string              `json:"country"`
+	Email     openapi_types.Email `json:"email"`
+	FirstName string              `json:"first_name"`
+	LastName  string              `json:"last_name"`
+	Locale    Locale              `json:"locale"`
+	Phone     *string             `json:"phone,omitempty"`
+}
+
+// BookingDetailsInput defines model for BookingDetailsInput.
+type BookingDetailsInput struct {
+	Consents BookingConsentsInput `json:"consents"`
+	Customer BookingCustomerInput `json:"customer"`
+
+	// ExpectedArrivalTime Local time HH:MM in the marina timezone
+	ExpectedArrivalTime *LocalTime                `json:"expected_arrival_time,omitempty"`
+	Notes               *string                   `json:"notes,omitempty"`
+	PeopleOnBoard       *int                      `json:"people_on_board,omitempty"`
+	Vessel              BookingVesselDetailsInput `json:"vessel"`
+}
+
+// BookingDocument defines model for BookingDocument.
+type BookingDocument struct {
+	Id         string              `json:"id"`
+	Type       BookingDocumentType `json:"type"`
+	UploadedAt time.Time           `json:"uploaded_at"`
+	Verified   bool                `json:"verified"`
+}
+
+// BookingDocumentType defines model for BookingDocumentType.
+type BookingDocumentType string
+
+// BookingI18nText Long localised text (booking texts, arrival information); it is the source language
+type BookingI18nText struct {
+	En *string `json:"en,omitempty"`
+	It string  `json:"it"`
+}
+
+// BookingPayInput defines model for BookingPayInput.
+type BookingPayInput struct {
+	// ReturnTo Parent page to go back to; kept only when its origin is allowed
+	ReturnTo *string `json:"return_to,omitempty"`
+}
+
+// BookingPayResult defines model for BookingPayResult.
+type BookingPayResult struct {
+	// RedirectUrl Provider hosted page
+	RedirectUrl *string `json:"redirect_url,omitempty"`
+
+	// Status Transit statuses an online or channel booking goes through
+	Status      OnlineBookingStatus `json:"status"`
+	StatusToken string              `json:"status_token"`
+}
+
+// BookingPriceLine defines model for BookingPriceLine.
+type BookingPriceLine struct {
+	ItemId *string              `json:"item_id,omitempty"`
+	Kind   BookingPriceLineKind `json:"kind"`
+	Label  I18nText             `json:"label"`
+
+	// QtyMilli Quantity in thousandths (1.5 = 1500)
+	QtyMilli   QtyMilli `json:"qty_milli"`
+	TotalCents int64    `json:"total_cents"`
+}
+
+// BookingPriceLineKind defines model for BookingPriceLine.Kind.
+type BookingPriceLineKind string
+
+// BookingQuote defines model for BookingQuote.
+type BookingQuote struct {
+	ApprovalRequired  bool               `json:"approval_required"`
+	CancellationTiers []CancellationTier `json:"cancellation_tiers"`
+	Category          string             `json:"category"`
+	Currency          string             `json:"currency"`
+
+	// DueNowCents Deposit or total
+	DueNowCents  int64              `json:"due_now_cents"`
+	Lines        []BookingPriceLine `json:"lines"`
+	NetCents     int64              `json:"net_cents"`
+	Nights       int                `json:"nights"`
+	PaymentMode  OnlinePaymentMode  `json:"payment_mode"`
+	PromoApplied bool               `json:"promo_applied"`
+	TotalCents   int64              `json:"total_cents"`
+	VatCents     int64              `json:"vat_cents"`
+}
+
+// BookingQuoteInput defines model for BookingQuoteInput.
+type BookingQuoteInput struct {
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival  IsoDate `json:"arrival"`
+	Category string  `json:"category"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure IsoDate                `json:"departure"`
+	PromoCode *string                `json:"promo_code,omitempty"`
+	Services  *[]BookingServiceInput `json:"services,omitempty"`
+	Vessel    BookingVesselInput     `json:"vessel"`
+}
+
+// BookingRequiredFields defines model for BookingRequiredFields.
+type BookingRequiredFields struct {
+	Documents []BookingDocumentType `json:"documents"`
+
+	// DocumentsLater Required documents may be uploaded after payment
+	DocumentsLater bool `json:"documents_later"`
+	PeopleOnBoard  bool `json:"people_on_board"`
+	Phone          bool `json:"phone"`
+}
+
+// BookingRules defines model for BookingRules.
+type BookingRules struct {
+	// ArrivalFrom Local time HH:MM in the marina timezone
+	ArrivalFrom LocalTime `json:"arrival_from"`
+
+	// ArrivalTo Local time HH:MM in the marina timezone
+	ArrivalTo LocalTime `json:"arrival_to"`
+
+	// ClosedWeekdays Weekdays without arrivals, 0 = Sunday
+	ClosedWeekdays  []int `json:"closed_weekdays"`
+	MaxAdvanceDays  int   `json:"max_advance_days"`
+	MaxNights       int   `json:"max_nights"`
+	MinAdvanceHours int   `json:"min_advance_hours"`
+	MinNights       int   `json:"min_nights"`
+}
+
+// BookingServiceInput defines model for BookingServiceInput.
+type BookingServiceInput struct {
+	ItemId   string `json:"item_id"`
+	QtyMilli int64  `json:"qty_milli"`
+}
+
+// BookingServiceOption defines model for BookingServiceOption.
+type BookingServiceOption struct {
+	DefaultSelected bool `json:"default_selected"`
+
+	// Description Optional translated text (both languages may be empty)
+	Description *I18nTextOptional `json:"description,omitempty"`
+	ItemId      string            `json:"item_id"`
+
+	// MaxQtyMilli Quantity in thousandths (1.5 = 1500)
+	MaxQtyMilli *QtyMilli `json:"max_qty_milli,omitempty"`
+	Name        I18nText  `json:"name"`
+	Unit        ItemUnit  `json:"unit"`
+
+	// UnitPriceCents Indicative price per unit (the quote is binding)
+	UnitPriceCents *int64 `json:"unit_price_cents,omitempty"`
+}
+
+// BookingStatusView defines model for BookingStatusView.
+type BookingStatusView struct {
+	BookingId     string     `json:"booking_id"`
+	HoldExpiresAt *time.Time `json:"hold_expires_at,omitempty"`
+	Reference     string     `json:"reference"`
+
+	// Status Transit statuses an online or channel booking goes through
+	Status OnlineBookingStatus `json:"status"`
+
+	// Verifying A payment is being processed by the provider
+	Verifying bool `json:"verifying"`
+}
+
+// BookingText defines model for BookingText.
+type BookingText struct {
+	Id          string          `json:"id"`
+	Kind        BookingTextKind `json:"kind"`
+	PublishedAt time.Time       `json:"published_at"`
+	PublishedBy *UserRef        `json:"published_by,omitempty"`
+	Sha256      string          `json:"sha256"`
+
+	// Texts Long localised text (booking texts, arrival information); it is the source language
+	Texts   BookingI18nText `json:"texts"`
+	Version int             `json:"version"`
+}
+
+// BookingTextKind defines model for BookingTextKind.
+type BookingTextKind string
+
+// BookingTextList defines model for BookingTextList.
+type BookingTextList struct {
+	Items []BookingText `json:"items"`
+}
+
+// BookingTextPublish defines model for BookingTextPublish.
+type BookingTextPublish struct {
+	Kind BookingTextKind `json:"kind"`
+
+	// Texts Long localised text (booking texts, arrival information); it is the source language
+	Texts BookingI18nText `json:"texts"`
+}
+
+// BookingTextRef defines model for BookingTextRef.
+type BookingTextRef struct {
+	Kind BookingTextKind `json:"kind"`
+
+	// Text Long localised text (booking texts, arrival information); it is the source language
+	Text    BookingI18nText `json:"text"`
+	Version int             `json:"version"`
+}
+
+// BookingTheme defines model for BookingTheme.
+type BookingTheme struct {
+	HideHeaderInEmbed bool   `json:"hide_header_in_embed"`
+	Preset            string `json:"preset"`
+}
+
+// BookingVesselDetailsInput defines model for BookingVesselDetailsInput.
+type BookingVesselDetailsInput struct {
+	DraftCm      *int64   `json:"draft_cm,omitempty"`
+	Flag         *string  `json:"flag,omitempty"`
+	HullType     HullType `json:"hull_type"`
+	Name         string   `json:"name"`
+	Registration *string  `json:"registration,omitempty"`
+}
+
+// BookingVesselInput defines model for BookingVesselInput.
+type BookingVesselInput struct {
+	BeamCm   int64     `json:"beam_cm"`
+	DraftCm  *int64    `json:"draft_cm,omitempty"`
+	HullType *HullType `json:"hull_type,omitempty"`
+	LoaCm    int64     `json:"loa_cm"`
+}
+
+// BookingVesselView defines model for BookingVesselView.
+type BookingVesselView struct {
+	// BeamCm Length in integer centimetres
+	BeamCm Cm `json:"beam_cm"`
+
+	// DraftCm Length in integer centimetres
+	DraftCm  *Cm       `json:"draft_cm,omitempty"`
+	HullType *HullType `json:"hull_type,omitempty"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm Cm      `json:"loa_cm"`
+	Name  *string `json:"name,omitempty"`
+}
+
 // BridgeReceiptRequest defines model for BridgeReceiptRequest.
 type BridgeReceiptRequest struct {
 	PaymentId string                     `json:"payment_id"`
@@ -10086,6 +11110,29 @@ type CancellationPolicy struct {
 
 // CancellationPolicyRefund defines model for CancellationPolicy.Refund.
 type CancellationPolicyRefund string
+
+// CancellationPreview defines model for CancellationPreview.
+type CancellationPreview struct {
+	Allowed   bool  `json:"allowed"`
+	PaidCents int64 `json:"paid_cents"`
+
+	// Reason Why cancellation is not allowed
+	Reason      *CancellationPreviewReason `json:"reason,omitempty"`
+	RefundAs    RefundAs                   `json:"refund_as"`
+	RefundCents int64                      `json:"refund_cents"`
+
+	// Tier Refund of the paid amount when cancelling at least min_days_before days before arrival
+	Tier *CancellationTier `json:"tier,omitempty"`
+}
+
+// CancellationPreviewReason Why cancellation is not allowed
+type CancellationPreviewReason string
+
+// CancellationTier Refund of the paid amount when cancelling at least min_days_before days before arrival
+type CancellationTier struct {
+	MinDaysBefore int `json:"min_days_before"`
+	RefundBp      int `json:"refund_bp"`
+}
 
 // CashGroup defines model for CashGroup.
 type CashGroup struct {
@@ -10322,6 +11369,51 @@ type ChangePasswordRequest struct {
 
 // Channel defines model for Channel.
 type Channel string
+
+// ChannelCapabilities defines model for ChannelCapabilities.
+type ChannelCapabilities struct {
+	Ack     bool `json:"ack"`
+	Pull    bool `json:"pull"`
+	Push    bool `json:"push"`
+	Webhook bool `json:"webhook"`
+}
+
+// ChannelReservation defines model for ChannelReservation.
+type ChannelReservation struct {
+	ChannelCode  string                          `json:"channel_code"`
+	CreatedAt    time.Time                       `json:"created_at"`
+	ExternalRef  string                          `json:"external_ref"`
+	Id           string                          `json:"id"`
+	RejectReason *ChannelReservationRejectReason `json:"reject_reason,omitempty"`
+	Status       ChannelReservationStatus        `json:"status"`
+	Transit      *ContractBrief                  `json:"transit,omitempty"`
+}
+
+// ChannelReservationRejectReason defines model for ChannelReservation.RejectReason.
+type ChannelReservationRejectReason string
+
+// ChannelReservationPage defines model for ChannelReservationPage.
+type ChannelReservationPage struct {
+	Items      []ChannelReservation `json:"items"`
+	NextCursor *string              `json:"next_cursor"`
+}
+
+// ChannelReservationStatus defines model for ChannelReservationStatus.
+type ChannelReservationStatus string
+
+// ChannelSyncResult defines model for ChannelSyncResult.
+type ChannelSyncResult struct {
+	Booked   int  `json:"booked"`
+	Pulled   int  `json:"pulled"`
+	Pushed   bool `json:"pushed"`
+	Rejected int  `json:"rejected"`
+}
+
+// ChannelTestResult defines model for ChannelTestResult.
+type ChannelTestResult struct {
+	ErrorCode *string `json:"error_code,omitempty"`
+	Ok        bool    `json:"ok"`
+}
 
 // Charge defines model for Charge.
 type Charge struct {
@@ -12148,6 +13240,51 @@ type DashboardMessage struct {
 	Template  string    `json:"template"`
 }
 
+// DateChangeInput defines model for DateChangeInput.
+type DateChangeInput struct {
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival IsoDate `json:"arrival"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure IsoDate `json:"departure"`
+
+	// ExpectedTotalCents Required by changeAccountDates
+	ExpectedTotalCents *int64 `json:"expected_total_cents,omitempty"`
+}
+
+// DateChangePreview defines model for DateChangePreview.
+type DateChangePreview struct {
+	Available     bool  `json:"available"`
+	DeltaCents    int64 `json:"delta_cents"`
+	NewTotalCents int64 `json:"new_total_cents"`
+	OldTotalCents int64 `json:"old_total_cents"`
+
+	// Reason Why a whole search is blocked by the online rules
+	Reason *BookingBlockReason `json:"reason,omitempty"`
+
+	// RefundCents Refund of a decrease
+	RefundCents int64 `json:"refund_cents"`
+
+	// SupplementCents Increase to pay with pay-balance
+	SupplementCents int64 `json:"supplement_cents"`
+}
+
+// DateChangeResult defines model for DateChangeResult.
+type DateChangeResult struct {
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival    IsoDate `json:"arrival"`
+	DeltaCents int64   `json:"delta_cents"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure     IsoDate `json:"departure"`
+	NewTotalCents int64   `json:"new_total_cents"`
+	RefundCents   int64   `json:"refund_cents"`
+
+	// Status Transit statuses an online or channel booking goes through
+	Status          OnlineBookingStatus `json:"status"`
+	SupplementCents int64               `json:"supplement_cents"`
+}
+
 // DateRange Inclusive range of nights
 type DateRange struct {
 	// From Calendar date YYYY-MM-DD in the marina timezone
@@ -12658,6 +13795,19 @@ type DocumentSubjectType string
 // DocumentType defines model for DocumentType.
 type DocumentType string
 
+// DocumentVerification defines model for DocumentVerification.
+type DocumentVerification struct {
+	DocumentId string     `json:"document_id"`
+	Verified   bool       `json:"verified"`
+	VerifiedAt *time.Time `json:"verified_at,omitempty"`
+	VerifiedBy *UserRef   `json:"verified_by,omitempty"`
+}
+
+// DocumentVerify defines model for DocumentVerify.
+type DocumentVerify struct {
+	Verified bool `json:"verified"`
+}
+
 // DunningExclusion defines model for DunningExclusion.
 type DunningExclusion struct {
 	Active    bool      `json:"active"`
@@ -12730,6 +13880,9 @@ type DynamicArea struct {
 	MaxLoaCm    *PositiveCm  `json:"max_loa_cm,omitempty"`
 	MaxWeightKg *int64       `json:"max_weight_kg,omitempty"`
 	MooringMode *MooringMode `json:"mooring_mode,omitempty"`
+
+	// OnlineSellable The area is offered by the public booking page and the channels (default false)
+	OnlineSellable *bool `json:"online_sellable,omitempty"`
 
 	// Outline Simple polygon in map cm (3 to 10 000 vertices, not closed explicitly)
 	Outline    *Polygon `json:"outline,omitempty"`
@@ -15058,6 +16211,287 @@ type OccupancyTotals struct {
 	Unit ReportUnit `json:"unit"`
 }
 
+// OnlineApprovalRules defines model for OnlineApprovalRules.
+type OnlineApprovalRules struct {
+	Always    bool     `json:"always"`
+	GroupIds  []string `json:"group_ids"`
+	HoldHours int      `json:"hold_hours"`
+	LoaOverCm *int64   `json:"loa_over_cm,omitempty"`
+}
+
+// OnlineBookingConsent defines model for OnlineBookingConsent.
+type OnlineBookingConsent struct {
+	Granted    bool        `json:"granted"`
+	Kind       ConsentKind `json:"kind"`
+	RecordedAt time.Time   `json:"recorded_at"`
+	Version    string      `json:"version"`
+}
+
+// OnlineBookingDetail defines model for OnlineBookingDetail.
+type OnlineBookingDetail struct {
+	ApprovalDeadline *time.Time      `json:"approval_deadline,omitempty"`
+	ApprovalReason   *ApprovalReason `json:"approval_reason,omitempty"`
+	ApprovedAt       *time.Time      `json:"approved_at,omitempty"`
+	ApprovedBy       *UserRef        `json:"approved_by,omitempty"`
+
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival IsoDate `json:"arrival"`
+
+	// BeamCm Length in integer centimetres
+	BeamCm   Cm            `json:"beam_cm"`
+	Category *string       `json:"category,omitempty"`
+	Channel  OnlineChannel `json:"channel"`
+
+	// ChannelCode Booking channel code (channel external)
+	ChannelCode *string                `json:"channel_code,omitempty"`
+	Code        string                 `json:"code"`
+	Consents    []OnlineBookingConsent `json:"consents"`
+	Contact     *OnlineContact         `json:"contact,omitempty"`
+	ContractId  string                 `json:"contract_id"`
+	CreatedAt   time.Time              `json:"created_at"`
+
+	// Customer The customer embedded in views; display_name only with customers.read
+	Customer *CustomerBrief `json:"customer,omitempty"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure   IsoDate                 `json:"departure"`
+	Documents   []OnlineBookingDocument `json:"documents"`
+	DueNowCents *int64                  `json:"due_now_cents,omitempty"`
+
+	// ExpectedArrivalTime Local time HH:MM in the marina timezone
+	ExpectedArrivalTime *LocalTime `json:"expected_arrival_time,omitempty"`
+	HoldExpiresAt       *time.Time `json:"hold_expires_at,omitempty"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm         Cm                 `json:"loa_cm"`
+	Locale        *Locale            `json:"locale,omitempty"`
+	Notes         *string            `json:"notes,omitempty"`
+	Payment       OnlinePaymentState `json:"payment"`
+	PeopleOnBoard *int               `json:"people_on_board,omitempty"`
+	Reference     string             `json:"reference"`
+	RejectReason  *string            `json:"reject_reason,omitempty"`
+	RejectedAt    *time.Time         `json:"rejected_at,omitempty"`
+
+	// Status Transit statuses an online or channel booking goes through
+	Status     OnlineBookingStatus `json:"status"`
+	TotalCents int64               `json:"total_cents"`
+	Transit    ContractBrief       `json:"transit"`
+
+	// Version Transit version (If-Match of approve and reject)
+	Version int `json:"version"`
+
+	// Vessel The vessel embedded in occupancy and contract views (no registration, no owner)
+	Vessel *VesselBrief `json:"vessel,omitempty"`
+}
+
+// OnlineBookingDocument defines model for OnlineBookingDocument.
+type OnlineBookingDocument struct {
+	// ExpiresOn Calendar date YYYY-MM-DD in the marina timezone
+	ExpiresOn  *IsoDate     `json:"expires_on,omitempty"`
+	FileName   *string      `json:"file_name,omitempty"`
+	Id         string       `json:"id"`
+	Type       DocumentType `json:"type"`
+	UploadedAt time.Time    `json:"uploaded_at"`
+	VerifiedAt *time.Time   `json:"verified_at,omitempty"`
+	VerifiedBy *UserRef     `json:"verified_by,omitempty"`
+}
+
+// OnlineBookingPage defines model for OnlineBookingPage.
+type OnlineBookingPage struct {
+	Items      []OnlineBookingSummary `json:"items"`
+	NextCursor *string                `json:"next_cursor"`
+}
+
+// OnlineBookingReject defines model for OnlineBookingReject.
+type OnlineBookingReject struct {
+	// Notify Email the customer
+	Notify bool   `json:"notify"`
+	Reason string `json:"reason"`
+}
+
+// OnlineBookingSettings defines model for OnlineBookingSettings.
+type OnlineBookingSettings struct {
+	AllowWithoutProvider bool                `json:"allow_without_provider"`
+	Approval             OnlineApprovalRules `json:"approval"`
+	ArrivalInfo          *ArrivalInfo        `json:"arrival_info,omitempty"`
+
+	// BookingEnabled marinas.booking_enabled (edited on the marina)
+	BookingEnabled    bool               `json:"booking_enabled"`
+	CancellationTiers []CancellationTier `json:"cancellation_tiers"`
+	DepositBp         int                `json:"deposit_bp"`
+
+	// EmbedOrigins marinas.allowed_embed_origins (edited on the marina)
+	EmbedOrigins        []string              `json:"embed_origins"`
+	HideHeaderInEmbed   bool                  `json:"hide_header_in_embed"`
+	LatePaymentRecovery bool                  `json:"late_payment_recovery"`
+	MaxLiveHolds        int                   `json:"max_live_holds"`
+	PaymentMode         OnlinePaymentMode     `json:"payment_mode"`
+	RefundAs            RefundAs              `json:"refund_as"`
+	RequiredFields      BookingRequiredFields `json:"required_fields"`
+	RevealBerth         RevealBerth           `json:"reveal_berth"`
+	Rules               BookingRules          `json:"rules"`
+
+	// Saved False while the defaults were never saved
+	Saved       bool   `json:"saved"`
+	ShowFeet    bool   `json:"show_feet"`
+	ThemePreset string `json:"theme_preset"`
+	Version     int    `json:"version"`
+}
+
+// OnlineBookingSettingsInput defines model for OnlineBookingSettingsInput.
+type OnlineBookingSettingsInput struct {
+	AllowWithoutProvider bool                  `json:"allow_without_provider"`
+	Approval             OnlineApprovalRules   `json:"approval"`
+	ArrivalInfo          *ArrivalInfo          `json:"arrival_info,omitempty"`
+	CancellationTiers    []CancellationTier    `json:"cancellation_tiers"`
+	DepositBp            int                   `json:"deposit_bp"`
+	HideHeaderInEmbed    bool                  `json:"hide_header_in_embed"`
+	LatePaymentRecovery  bool                  `json:"late_payment_recovery"`
+	MaxLiveHolds         int                   `json:"max_live_holds"`
+	PaymentMode          OnlinePaymentMode     `json:"payment_mode"`
+	RefundAs             RefundAs              `json:"refund_as"`
+	RequiredFields       BookingRequiredFields `json:"required_fields"`
+	RevealBerth          RevealBerth           `json:"reveal_berth"`
+	Rules                BookingRules          `json:"rules"`
+	ShowFeet             bool                  `json:"show_feet"`
+	ThemePreset          string                `json:"theme_preset"`
+}
+
+// OnlineBookingStatus Transit statuses an online or channel booking goes through
+type OnlineBookingStatus string
+
+// OnlineBookingSummary defines model for OnlineBookingSummary.
+type OnlineBookingSummary struct {
+	ApprovalDeadline *time.Time      `json:"approval_deadline,omitempty"`
+	ApprovalReason   *ApprovalReason `json:"approval_reason,omitempty"`
+
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival IsoDate `json:"arrival"`
+
+	// BeamCm Length in integer centimetres
+	BeamCm   Cm            `json:"beam_cm"`
+	Category *string       `json:"category,omitempty"`
+	Channel  OnlineChannel `json:"channel"`
+
+	// ChannelCode Booking channel code (channel external)
+	ChannelCode *string   `json:"channel_code,omitempty"`
+	Code        string    `json:"code"`
+	ContractId  string    `json:"contract_id"`
+	CreatedAt   time.Time `json:"created_at"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure     IsoDate    `json:"departure"`
+	DueNowCents   *int64     `json:"due_now_cents,omitempty"`
+	HoldExpiresAt *time.Time `json:"hold_expires_at,omitempty"`
+
+	// LoaCm Length in integer centimetres
+	LoaCm     Cm     `json:"loa_cm"`
+	Reference string `json:"reference"`
+
+	// Status Transit statuses an online or channel booking goes through
+	Status     OnlineBookingStatus `json:"status"`
+	TotalCents int64               `json:"total_cents"`
+
+	// Version Transit version (If-Match of approve and reject)
+	Version int `json:"version"`
+}
+
+// OnlineChannel defines model for OnlineChannel.
+type OnlineChannel string
+
+// OnlineContact Contact submitted with the booking (decrypted only with customers.read)
+type OnlineContact struct {
+	Country   string  `json:"country"`
+	Email     string  `json:"email"`
+	FirstName string  `json:"first_name"`
+	LastName  string  `json:"last_name"`
+	Locale    Locale  `json:"locale"`
+	Phone     *string `json:"phone,omitempty"`
+}
+
+// OnlinePaymentMode defines model for OnlinePaymentMode.
+type OnlinePaymentMode string
+
+// OnlinePaymentState defines model for OnlinePaymentState.
+type OnlinePaymentState struct {
+	AmountCents   *int64                           `json:"amount_cents,omitempty"`
+	AuthorizedAt  *time.Time                       `json:"authorized_at,omitempty"`
+	CaptureFailed *bool                            `json:"capture_failed,omitempty"`
+	CaptureMethod *OnlinePaymentStateCaptureMethod `json:"capture_method,omitempty"`
+	CapturedAt    *time.Time                       `json:"captured_at,omitempty"`
+	IntentId      *string                          `json:"intent_id,omitempty"`
+	ProviderCode  *string                          `json:"provider_code,omitempty"`
+	State         OnlinePaymentStateState          `json:"state"`
+}
+
+// OnlinePaymentStateCaptureMethod defines model for OnlinePaymentState.CaptureMethod.
+type OnlinePaymentStateCaptureMethod string
+
+// OnlinePaymentStateState defines model for OnlinePaymentState.State.
+type OnlinePaymentStateState string
+
+// OnlineQuota defines model for OnlineQuota.
+type OnlineQuota struct {
+	GroupCode string   `json:"group_code"`
+	GroupId   string   `json:"group_id"`
+	GroupName I18nText `json:"group_name"`
+
+	// HasAreas Groups with dynamic areas accept only count quotas
+	HasAreas bool            `json:"has_areas"`
+	Kind     OnlineQuotaKind `json:"kind"`
+
+	// MemberBerths Active member berths (the percent base)
+	MemberBerths int `json:"member_berths"`
+
+	// Value Units (count) or 0..100 (percent)
+	Value int64 `json:"value"`
+}
+
+// OnlineQuotaGroupUsage defines model for OnlineQuotaGroupUsage.
+type OnlineQuotaGroupUsage struct {
+	GroupId string             `json:"group_id"`
+	Nights  []OnlineQuotaNight `json:"nights"`
+}
+
+// OnlineQuotaKind defines model for OnlineQuotaKind.
+type OnlineQuotaKind string
+
+// OnlineQuotaList defines model for OnlineQuotaList.
+type OnlineQuotaList struct {
+	Items []OnlineQuota `json:"items"`
+}
+
+// OnlineQuotaNight defines model for OnlineQuotaNight.
+type OnlineQuotaNight struct {
+	Cap int `json:"cap"`
+
+	// Night Calendar date YYYY-MM-DD in the marina timezone
+	Night IsoDate `json:"night"`
+	Used  int     `json:"used"`
+}
+
+// OnlineQuotaSet defines model for OnlineQuotaSet.
+type OnlineQuotaSet struct {
+	GroupId string          `json:"group_id"`
+	Kind    OnlineQuotaKind `json:"kind"`
+	Value   int64           `json:"value"`
+}
+
+// OnlineQuotaUsage defines model for OnlineQuotaUsage.
+type OnlineQuotaUsage struct {
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From   IsoDate                 `json:"from"`
+	Groups []OnlineQuotaGroupUsage `json:"groups"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To IsoDate `json:"to"`
+}
+
+// OnlineQuotasUpdate defines model for OnlineQuotasUpdate.
+type OnlineQuotasUpdate struct {
+	Items []OnlineQuotaSet `json:"items"`
+}
+
 // OpenCashSessionInput defines model for OpenCashSessionInput.
 type OpenCashSessionInput struct {
 	FloatCents int64   `json:"float_cents"`
@@ -15369,13 +16803,18 @@ type PaymentKind string
 // PaymentMatch defines model for PaymentMatch.
 type PaymentMatch struct {
 	// AmountCents Amount in integer cents of the marina currency
-	AmountCents     Cents     `json:"amount_cents"`
-	ChargeId        string    `json:"charge_id"`
-	ChargeNumber    string    `json:"charge_number"`
-	CreatedAt       time.Time `json:"created_at"`
-	Id              string    `json:"id"`
-	Reversed        *bool     `json:"reversed,omitempty"`
-	ReversesMatchId *string   `json:"reverses_match_id,omitempty"`
+	AmountCents  Cents     `json:"amount_cents"`
+	ChargeId     string    `json:"charge_id"`
+	ChargeNumber string    `json:"charge_number"`
+	CreatedAt    time.Time `json:"created_at"`
+	Id           string    `json:"id"`
+
+	// Reversed True when the whole match was reversed (reversed_cents equals amount_cents).
+	Reversed *bool `json:"reversed,omitempty"`
+
+	// ReversedCents Amount in integer cents of the marina currency
+	ReversedCents   *Cents  `json:"reversed_cents,omitempty"`
+	ReversesMatchId *string `json:"reverses_match_id,omitempty"`
 }
 
 // PaymentMethod defines model for PaymentMethod.
@@ -16655,11 +18094,14 @@ type PublicLink struct {
 
 // PublicMarina defines model for PublicMarina.
 type PublicMarina struct {
-	BookingEnabled bool     `json:"booking_enabled"`
-	DefaultLocale  Locale   `json:"default_locale"`
-	Locales        []Locale `json:"locales"`
-	Name           string   `json:"name"`
-	Slug           string   `json:"slug"`
+	BookingEnabled bool   `json:"booking_enabled"`
+	DefaultLocale  Locale `json:"default_locale"`
+
+	// EmbedOrigins Origins allowed to embed the booking page (marinas.allowed_embed_origins, M8); the SPA posts messages only to a parent origin in this list that also matches the referrer
+	EmbedOrigins *[]string `json:"embed_origins,omitempty"`
+	Locales      []Locale  `json:"locales"`
+	Name         string    `json:"name"`
+	Slug         string    `json:"slug"`
 }
 
 // PublicOtpRequest defines model for PublicOtpRequest.
@@ -17368,6 +18810,9 @@ type RefundKind string
 // RefundSource defines model for Refund.Source.
 type RefundSource string
 
+// RefundAs defines model for RefundAs.
+type RefundAs string
+
 // RefundInput defines model for RefundInput.
 type RefundInput struct {
 	AmountCents    int64              `json:"amount_cents"`
@@ -17881,6 +19326,9 @@ type RetainInput struct {
 	ItemId      *string `json:"item_id,omitempty"`
 	Reason      string  `json:"reason"`
 }
+
+// RevealBerth defines model for RevealBerth.
+type RevealBerth string
 
 // RevenueClass defines model for RevenueClass.
 type RevenueClass struct {
@@ -19693,6 +21141,18 @@ type AreaId = string
 // BerthId defines model for BerthId.
 type BerthId = string
 
+// BookingId defines model for BookingId.
+type BookingId = string
+
+// BookingIdempotencyKey defines model for BookingIdempotencyKey.
+type BookingIdempotencyKey = string
+
+// BookingTokenHeader defines model for BookingTokenHeader.
+type BookingTokenHeader = string
+
+// BotTokenHeader defines model for BotTokenHeader.
+type BotTokenHeader = string
+
 // BudgetId defines model for BudgetId.
 type BudgetId = string
 
@@ -19713,6 +21173,12 @@ type CashSessionId = string
 
 // CategoryId defines model for CategoryId.
 type CategoryId = string
+
+// ChannelCode defines model for ChannelCode.
+type ChannelCode = string
+
+// ChannelPathCode defines model for ChannelPathCode.
+type ChannelPathCode = string
 
 // ChargeExportId defines model for ChargeExportId.
 type ChargeExportId = string
@@ -19740,6 +21206,9 @@ type Cursor = string
 
 // CustomerId defines model for CustomerId.
 type CustomerId = string
+
+// CustomerSessionHeader defines model for CustomerSessionHeader.
+type CustomerSessionHeader = string
 
 // DeadlineId defines model for DeadlineId.
 type DeadlineId = string
@@ -19918,6 +21387,9 @@ type SignatureRequestId = string
 // Slug defines model for Slug.
 type Slug = string
 
+// StatusTokenHeader defines model for StatusTokenHeader.
+type StatusTokenHeader = string
+
 // TemplateId defines model for TemplateId.
 type TemplateId = string
 
@@ -19953,6 +21425,9 @@ type BadGateway = Problem
 
 // BadRequest defines model for BadRequest.
 type BadRequest = Problem
+
+// BookingUnprocessable defines model for BookingUnprocessable.
+type BookingUnprocessable = Problem
 
 // Conflict defines model for Conflict.
 type Conflict = Problem
@@ -20116,6 +21591,12 @@ type DeleteBlockParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// UpdateBookingChannelParams defines parameters for UpdateBookingChannel.
+type UpdateBookingChannelParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
 // CreateCashRegisterParams defines parameters for CreateCashRegister.
 type CreateCashRegisterParams struct {
 	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
@@ -20169,6 +21650,14 @@ type GetZReportParams struct {
 
 // GetZReportParamsFormat defines parameters for GetZReport.
 type GetZReportParamsFormat string
+
+// ListChannelReservationsParams defines parameters for ListChannelReservations.
+type ListChannelReservationsParams struct {
+	Channel *string                   `form:"channel,omitempty" json:"channel,omitempty"`
+	Status  *ChannelReservationStatus `form:"status,omitempty" json:"status,omitempty"`
+	Cursor  *Cursor                   `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit   *Limit                    `form:"limit,omitempty" json:"limit,omitempty"`
+}
 
 // ListChargeExportsParams defines parameters for ListChargeExports.
 type ListChargeExportsParams struct {
@@ -21343,6 +22832,64 @@ type SwapAllocationsParams struct {
 
 // UpdateOccupancySettingsParams defines parameters for UpdateOccupancySettings.
 type UpdateOccupancySettingsParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// GetOnlineQuotaUsageParams defines parameters for GetOnlineQuotaUsage.
+type GetOnlineQuotaUsageParams struct {
+	// From Required; optional in the contract only so that another marina is 404 first (missing: 422)
+	From *IsoDate `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Inclusive; required like from
+	To *IsoDate `form:"to,omitempty" json:"to,omitempty"`
+}
+
+// UpdateOnlineBookingSettingsParams defines parameters for UpdateOnlineBookingSettings.
+type UpdateOnlineBookingSettingsParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListBookingTextsParams defines parameters for ListBookingTexts.
+type ListBookingTextsParams struct {
+	Kind *BookingTextKind `form:"kind,omitempty" json:"kind,omitempty"`
+}
+
+// PublishBookingTextParams defines parameters for PublishBookingText.
+type PublishBookingTextParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ListOnlineBookingsParams defines parameters for ListOnlineBookings.
+type ListOnlineBookingsParams struct {
+	Status  *OnlineBookingStatus `form:"status,omitempty" json:"status,omitempty"`
+	Channel *OnlineChannel       `form:"channel,omitempty" json:"channel,omitempty"`
+
+	// From Arrival on or after
+	From *IsoDate `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Arrival on or before
+	To     *IsoDate `form:"to,omitempty" json:"to,omitempty"`
+	Cursor *Cursor  `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit   `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ApproveOnlineBookingParams defines parameters for ApproveOnlineBooking.
+type ApproveOnlineBookingParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// SendOnlineBookingPaymentLinkParams defines parameters for SendOnlineBookingPaymentLink.
+type SendOnlineBookingPaymentLinkParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// RejectOnlineBookingParams defines parameters for RejectOnlineBooking.
+type RejectOnlineBookingParams struct {
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
@@ -22718,6 +24265,176 @@ type PairDeviceParams struct {
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
+// ListAccountBookingsParams defines parameters for ListAccountBookings.
+type ListAccountBookingsParams struct {
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+}
+
+// GetAccountBookingParams defines parameters for GetAccountBooking.
+type GetAccountBookingParams struct {
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+}
+
+// CancelAccountBookingParams defines parameters for CancelAccountBooking.
+type CancelAccountBookingParams struct {
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// PreviewAccountCancellationParams defines parameters for PreviewAccountCancellation.
+type PreviewAccountCancellationParams struct {
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+}
+
+// ChangeAccountDatesParams defines parameters for ChangeAccountDates.
+type ChangeAccountDatesParams struct {
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// PreviewAccountDateChangeParams defines parameters for PreviewAccountDateChange.
+type PreviewAccountDateChangeParams struct {
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+}
+
+// UploadAccountDocumentParams defines parameters for UploadAccountDocument.
+type UploadAccountDocumentParams struct {
+	Type      BookingDocumentType `form:"type" json:"type"`
+	ExpiresOn *IsoDate            `form:"expires_on,omitempty" json:"expires_on,omitempty"`
+
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+
+	// XFileName Original file name (sanitised)
+	XFileName *string `json:"X-File-Name,omitempty"`
+}
+
+// PayAccountBalanceParams defines parameters for PayAccountBalance.
+type PayAccountBalanceParams struct {
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// GetAccountDocumentFileParams defines parameters for GetAccountDocumentFile.
+type GetAccountDocumentFileParams struct {
+	C   string `form:"c" json:"c"`
+	Exp int64  `form:"exp" json:"exp"`
+	Sig string `form:"sig" json:"sig"`
+}
+
+// GetAccountDocumentURLParams defines parameters for GetAccountDocumentURL.
+type GetAccountDocumentURLParams struct {
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+}
+
+// RequestAccountLinkParams defines parameters for RequestAccountLink.
+type RequestAccountLinkParams struct {
+	// PortoBotToken Challenge token verified by the BotProtection extension when one is registered
+	PortoBotToken *BotTokenHeader `json:"Porto-Bot-Token,omitempty"`
+}
+
+// CloseAccountSessionParams defines parameters for CloseAccountSession.
+type CloseAccountSessionParams struct {
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+}
+
+// ListAccountVesselsParams defines parameters for ListAccountVessels.
+type ListAccountVesselsParams struct {
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+}
+
+// GetBookingAvailabilityParams defines parameters for GetBookingAvailability.
+type GetBookingAvailabilityParams struct {
+	Arrival   IsoDate   `form:"arrival" json:"arrival"`
+	Departure IsoDate   `form:"departure" json:"departure"`
+	LoaCm     *int64    `form:"loa_cm,omitempty" json:"loa_cm,omitempty"`
+	BeamCm    *int64    `form:"beam_cm,omitempty" json:"beam_cm,omitempty"`
+	DraftCm   *int64    `form:"draft_cm,omitempty" json:"draft_cm,omitempty"`
+	HullType  *HullType `form:"hull_type,omitempty" json:"hull_type,omitempty"`
+
+	// VesselId A saved vessel; needs Porto-Customer-Session
+	VesselId *string `form:"vessel_id,omitempty" json:"vessel_id,omitempty"`
+
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+}
+
+// CreateBookingParams defines parameters for CreateBooking.
+type CreateBookingParams struct {
+	// IdempotencyKey Required on createBooking; handled by the domain (online_bookings.idempotency_hash): same key and body returns the same booking and token, a different body is 422 idempotency_mismatch
+	IdempotencyKey BookingIdempotencyKey `json:"Idempotency-Key"`
+
+	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
+	PortoCustomerSession *CustomerSessionHeader `json:"Porto-Customer-Session,omitempty"`
+
+	// PortoBotToken Challenge token verified by the BotProtection extension when one is registered
+	PortoBotToken *BotTokenHeader `json:"Porto-Bot-Token,omitempty"`
+}
+
+// AbandonBookingParams defines parameters for AbandonBooking.
+type AbandonBookingParams struct {
+	// PortoBookingToken The booking token returned by createBooking (never in the path or the query; missing = 404)
+	PortoBookingToken *BookingTokenHeader `json:"Porto-Booking-Token,omitempty"`
+}
+
+// GetBookingParams defines parameters for GetBooking.
+type GetBookingParams struct {
+	// PortoBookingToken The booking token returned by createBooking (never in the path or the query; missing = 404)
+	PortoBookingToken *BookingTokenHeader `json:"Porto-Booking-Token,omitempty"`
+}
+
+// SubmitBookingDetailsParams defines parameters for SubmitBookingDetails.
+type SubmitBookingDetailsParams struct {
+	// PortoBookingToken The booking token returned by createBooking (never in the path or the query; missing = 404)
+	PortoBookingToken *BookingTokenHeader `json:"Porto-Booking-Token,omitempty"`
+}
+
+// UploadBookingDocumentParams defines parameters for UploadBookingDocument.
+type UploadBookingDocumentParams struct {
+	Type      BookingDocumentType `form:"type" json:"type"`
+	ExpiresOn *IsoDate            `form:"expires_on,omitempty" json:"expires_on,omitempty"`
+
+	// PortoBookingToken The booking token returned by createBooking (never in the path or the query; missing = 404)
+	PortoBookingToken *BookingTokenHeader `json:"Porto-Booking-Token,omitempty"`
+
+	// XFileName Original file name (sanitised)
+	XFileName *string `json:"X-File-Name,omitempty"`
+}
+
+// StartBookingPaymentParams defines parameters for StartBookingPayment.
+type StartBookingPaymentParams struct {
+	// PortoBookingToken The booking token returned by createBooking (never in the path or the query; missing = 404)
+	PortoBookingToken *BookingTokenHeader `json:"Porto-Booking-Token,omitempty"`
+
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// GetBookingStatusParams defines parameters for GetBookingStatus.
+type GetBookingStatusParams struct {
+	// PortoBookingToken The booking token returned by createBooking (never in the path or the query; missing = 404)
+	PortoBookingToken *BookingTokenHeader `json:"Porto-Booking-Token,omitempty"`
+
+	// PortoStatusToken Read-only status token of the return page (from the URL fragment)
+	PortoStatusToken *StatusTokenHeader `json:"Porto-Status-Token,omitempty"`
+}
+
 // UploadPublicDocumentParams defines parameters for UploadPublicDocument.
 type UploadPublicDocumentParams struct {
 	Type      *DocumentType `form:"type,omitempty" json:"type,omitempty"`
@@ -22778,6 +24495,9 @@ type UpdateBillingSettingsJSONRequestBody = BillingSettingsInput
 
 // CreateBlockJSONRequestBody defines body for CreateBlock for application/json ContentType.
 type CreateBlockJSONRequestBody = BlockCreate
+
+// UpdateBookingChannelJSONRequestBody defines body for UpdateBookingChannel for application/json ContentType.
+type UpdateBookingChannelJSONRequestBody = BookingChannelUpdate
 
 // CreateCashRegisterJSONRequestBody defines body for CreateCashRegister for application/json ContentType.
 type CreateCashRegisterJSONRequestBody = CashRegisterInput
@@ -22956,6 +24676,9 @@ type CreateDocumentJSONRequestBody = DocumentInput
 // UpdateDocumentJSONRequestBody defines body for UpdateDocument for application/json ContentType.
 type UpdateDocumentJSONRequestBody = DocumentPatch
 
+// VerifyDocumentJSONRequestBody defines body for VerifyDocument for application/json ContentType.
+type VerifyDocumentJSONRequestBody = DocumentVerify
+
 // CreateDunningExclusionJSONRequestBody defines body for CreateDunningExclusion for application/json ContentType.
 type CreateDunningExclusionJSONRequestBody = DunningExclusionInput
 
@@ -23078,6 +24801,18 @@ type SwapAllocationsJSONRequestBody = SwapRequest
 
 // UpdateOccupancySettingsJSONRequestBody defines body for UpdateOccupancySettings for application/json ContentType.
 type UpdateOccupancySettingsJSONRequestBody = OccupancySettingsUpdate
+
+// UpdateOnlineQuotasJSONRequestBody defines body for UpdateOnlineQuotas for application/json ContentType.
+type UpdateOnlineQuotasJSONRequestBody = OnlineQuotasUpdate
+
+// UpdateOnlineBookingSettingsJSONRequestBody defines body for UpdateOnlineBookingSettings for application/json ContentType.
+type UpdateOnlineBookingSettingsJSONRequestBody = OnlineBookingSettingsInput
+
+// PublishBookingTextJSONRequestBody defines body for PublishBookingText for application/json ContentType.
+type PublishBookingTextJSONRequestBody = BookingTextPublish
+
+// RejectOnlineBookingJSONRequestBody defines body for RejectOnlineBooking for application/json ContentType.
+type RejectOnlineBookingJSONRequestBody = OnlineBookingReject
 
 // ImportOpeningBalancesJSONRequestBody defines body for ImportOpeningBalances for application/json ContentType.
 type ImportOpeningBalancesJSONRequestBody = OpeningBalanceImportInput
@@ -23336,6 +25071,33 @@ type PairDeviceSessionJSONRequestBody = PairSessionRequest
 
 // VerifyDeviceSessionTotpJSONRequestBody defines body for VerifyDeviceSessionTotp for application/json ContentType.
 type VerifyDeviceSessionTotpJSONRequestBody = DeviceSessionTotpRequest
+
+// CancelAccountBookingJSONRequestBody defines body for CancelAccountBooking for application/json ContentType.
+type CancelAccountBookingJSONRequestBody = AccountCancelInput
+
+// ChangeAccountDatesJSONRequestBody defines body for ChangeAccountDates for application/json ContentType.
+type ChangeAccountDatesJSONRequestBody = DateChangeInput
+
+// PreviewAccountDateChangeJSONRequestBody defines body for PreviewAccountDateChange for application/json ContentType.
+type PreviewAccountDateChangeJSONRequestBody = DateChangeInput
+
+// RequestAccountLinkJSONRequestBody defines body for RequestAccountLink for application/json ContentType.
+type RequestAccountLinkJSONRequestBody = AccountLoginInput
+
+// OpenAccountSessionJSONRequestBody defines body for OpenAccountSession for application/json ContentType.
+type OpenAccountSessionJSONRequestBody = AccountSessionInput
+
+// QuoteBookingJSONRequestBody defines body for QuoteBooking for application/json ContentType.
+type QuoteBookingJSONRequestBody = BookingQuoteInput
+
+// CreateBookingJSONRequestBody defines body for CreateBooking for application/json ContentType.
+type CreateBookingJSONRequestBody = BookingCreate
+
+// SubmitBookingDetailsJSONRequestBody defines body for SubmitBookingDetails for application/json ContentType.
+type SubmitBookingDetailsJSONRequestBody = BookingDetailsInput
+
+// StartBookingPaymentJSONRequestBody defines body for StartBookingPayment for application/json ContentType.
+type StartBookingPaymentJSONRequestBody = BookingPayInput
 
 // AcceptPublicQuoteJSONRequestBody defines body for AcceptPublicQuote for application/json ContentType.
 type AcceptPublicQuoteJSONRequestBody = PublicQuoteAccept
@@ -23775,6 +25537,18 @@ type ServerInterface interface {
 	// DeleteBlock Remove a block from today; past nights are kept (occupancy.move)
 	// (DELETE /api/admin/v1/marinas/{marinaId}/blocks/{allocationId})
 	DeleteBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, allocationId AllocationId, params DeleteBlockParams)
+	// ListBookingChannels Registered booking channels and the marina's connection to each (providers.configure)
+	// (GET /api/admin/v1/marinas/{marinaId}/booking-channels)
+	ListBookingChannels(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// UpdateBookingChannel Create or update the connection to a channel; credentials and webhook secret are write-only (providers.configure, If-Match when the connection exists)
+	// (PUT /api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode})
+	UpdateBookingChannel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, channelCode ChannelCode, params UpdateBookingChannelParams)
+	// SyncBookingChannel Pull reservations and push availability and rates now (providers.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}/sync)
+	SyncBookingChannel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, channelCode ChannelCode)
+	// TestBookingChannel Check the connection's credentials against the channel (providers.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}/test)
+	TestBookingChannel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, channelCode ChannelCode)
 	// ListCashRegisters Cash registers (payments.collect or payments.collect_cash)
 	// (GET /api/admin/v1/marinas/{marinaId}/cash-registers)
 	ListCashRegisters(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
@@ -23805,6 +25579,9 @@ type ServerInterface interface {
 	// GetZReport Z report of a session as print-ready HTML or PDF (payments.collect or payments.collect_cash)
 	// (GET /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/z-report)
 	GetZReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sessionId CashSessionId, params GetZReportParams)
+	// ListChannelReservations Reservations received from channels, newest first (transits.desk)
+	// (GET /api/admin/v1/marinas/{marinaId}/channel-reservations)
+	ListChannelReservations(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListChannelReservationsParams)
 	// ListChargeExports Exports to invoicing (charges.export)
 	// (GET /api/admin/v1/marinas/{marinaId}/charge-exports)
 	ListChargeExports(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListChargeExportsParams)
@@ -24168,6 +25945,9 @@ type ServerInterface interface {
 	// CreateDocumentFileURL A short-lived (5 minutes) signed download link bound to the calling user (customers.read)
 	// (POST /api/admin/v1/marinas/{marinaId}/documents/{documentId}/file-url)
 	CreateDocumentFileURL(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId)
+	// VerifyDocument Mark a document as verified by the office, or clear the mark (customers.write)
+	// (POST /api/admin/v1/marinas/{marinaId}/documents/{documentId}/verify)
+	VerifyDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId)
 	// ListDunningExclusions Dunning exclusions (charges.manage)
 	// (GET /api/admin/v1/marinas/{marinaId}/dunning-exclusions)
 	ListDunningExclusions(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListDunningExclusionsParams)
@@ -24465,6 +26245,42 @@ type ServerInterface interface {
 	// UpdateOccupancySettings Replace the occupancy settings (harbor.configure)
 	// (PUT /api/admin/v1/marinas/{marinaId}/occupancy-settings)
 	UpdateOccupancySettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateOccupancySettingsParams)
+	// GetOnlineQuotas Online quota of every berth group (harbor.configure)
+	// (GET /api/admin/v1/marinas/{marinaId}/online-booking/quotas)
+	GetOnlineQuotas(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// UpdateOnlineQuotas Set the online quotas of the listed groups; caps of future nights become max(new cap, used) (harbor.configure)
+	// (PUT /api/admin/v1/marinas/{marinaId}/online-booking/quotas)
+	UpdateOnlineQuotas(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// GetOnlineQuotaUsage Used and cap per group and night, at most 92 nights (harbor.configure)
+	// (GET /api/admin/v1/marinas/{marinaId}/online-booking/quotas/usage)
+	GetOnlineQuotaUsage(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetOnlineQuotaUsageParams)
+	// GetOnlineBookingSettings Online booking settings of the marina (defaults when never saved) (marina.configure)
+	// (GET /api/admin/v1/marinas/{marinaId}/online-booking/settings)
+	GetOnlineBookingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// UpdateOnlineBookingSettings Replace the online booking settings (marina.configure, If-Match)
+	// (PUT /api/admin/v1/marinas/{marinaId}/online-booking/settings)
+	UpdateOnlineBookingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateOnlineBookingSettingsParams)
+	// ListBookingTexts Published versions of the terms, privacy and marketing texts, newest first (marina.configure)
+	// (GET /api/admin/v1/marinas/{marinaId}/online-booking/texts)
+	ListBookingTexts(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListBookingTextsParams)
+	// PublishBookingText Publish a new version of a text (published versions are immutable) (marina.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/online-booking/texts)
+	PublishBookingText(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PublishBookingTextParams)
+	// ListOnlineBookings Online and channel bookings, newest first (transits.desk)
+	// (GET /api/admin/v1/marinas/{marinaId}/online-bookings)
+	ListOnlineBookings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListOnlineBookingsParams)
+	// GetOnlineBooking Online booking detail: contact (customers.read), documents, consents, payment state, approval deadline (transits.desk); the ETag is the transit version
+	// (GET /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId})
+	GetOnlineBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId)
+	// ApproveOnlineBooking Approve a booking awaiting approval: capture the authorisation, or send the payment link (transits.desk, If-Match)
+	// (POST /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/approve)
+	ApproveOnlineBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params ApproveOnlineBookingParams)
+	// SendOnlineBookingPaymentLink Approve without the authorisation and email a payment link (after a capture failure) (transits.desk, If-Match)
+	// (POST /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/payment-link)
+	SendOnlineBookingPaymentLink(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params SendOnlineBookingPaymentLinkParams)
+	// RejectOnlineBooking Reject a booking awaiting approval (voids the authorisation, releases the hold) (transits.desk, If-Match)
+	// (POST /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/reject)
+	RejectOnlineBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params RejectOnlineBookingParams)
 	// ImportOpeningBalances Import opening balances from CSV or Excel, with dry run; charges are born invoiced (charges.manage)
 	// (POST /api/admin/v1/marinas/{marinaId}/opening-balances/import)
 	ImportOpeningBalances(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ImportOpeningBalancesParams)
@@ -25071,6 +26887,78 @@ type ServerInterface interface {
 	// GetPublicMarina Public information of a marina
 	// (GET /api/public/v1/{slug})
 	GetPublicMarina(w http.ResponseWriter, r *http.Request, slug string)
+	// ListAccountBookings The customer's transits of the marina (any channel), newest first
+	// (GET /api/public/v1/{slug}/account/bookings)
+	ListAccountBookings(w http.ResponseWriter, r *http.Request, slug Slug, params ListAccountBookingsParams)
+	// GetAccountBooking Detail of one of the customer's transits (QR when confirmed, arrival info, documents, receipts)
+	// (GET /api/public/v1/{slug}/account/bookings/{contractId})
+	GetAccountBooking(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params GetAccountBookingParams)
+	// CancelAccountBooking Cancel within the policy; 409 refund_changed when the refund differs from the previewed one
+	// (POST /api/public/v1/{slug}/account/bookings/{contractId}/cancel)
+	CancelAccountBooking(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params CancelAccountBookingParams)
+	// PreviewAccountCancellation Cancellation preview with the refund from the contract's policy snapshot
+	// (GET /api/public/v1/{slug}/account/bookings/{contractId}/cancellation)
+	PreviewAccountCancellation(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params PreviewAccountCancellationParams)
+	// ChangeAccountDates Change the dates (online rules, same category); 409 price_changed when the total differs from expected_total_cents
+	// (POST /api/public/v1/{slug}/account/bookings/{contractId}/change-dates)
+	ChangeAccountDates(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params ChangeAccountDatesParams)
+	// PreviewAccountDateChange Availability and price effect of new dates for a confirmed transit before arrival; writes nothing
+	// (POST /api/public/v1/{slug}/account/bookings/{contractId}/change-dates/preview)
+	PreviewAccountDateChange(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params PreviewAccountDateChangeParams)
+	// UploadAccountDocument Upload a document for one of the customer's transits (same rules as uploadBookingDocument)
+	// (POST /api/public/v1/{slug}/account/bookings/{contractId}/documents)
+	UploadAccountDocument(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params UploadAccountDocumentParams)
+	// PayAccountBalance Pay the open residual of the transit (creates or reuses a payment request, returns the checkout URL)
+	// (POST /api/public/v1/{slug}/account/bookings/{contractId}/pay-balance)
+	PayAccountBalance(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params PayAccountBalanceParams)
+	// GetAccountDocumentFile Download one of the customer's own documents through a signed link from getAccountDocumentURL (c, exp and sig are checked in the service; served inline, no-store, sandbox CSP, nosniff; rate limited)
+	// (GET /api/public/v1/{slug}/account/documents/{documentId}/file)
+	GetAccountDocumentFile(w http.ResponseWriter, r *http.Request, slug Slug, documentId DocumentId, params GetAccountDocumentFileParams)
+	// GetAccountDocumentURL Short-lived signed URL of one of the customer's own documents
+	// (GET /api/public/v1/{slug}/account/documents/{documentId}/url)
+	GetAccountDocumentURL(w http.ResponseWriter, r *http.Request, slug Slug, documentId DocumentId, params GetAccountDocumentURLParams)
+	// RequestAccountLink Send a login link to the customer area; always 202 with the same body and comparable work, whether the email is known or not (no enumeration)
+	// (POST /api/public/v1/{slug}/account/login)
+	RequestAccountLink(w http.ResponseWriter, r *http.Request, slug Slug, params RequestAccountLinkParams)
+	// CloseAccountSession Revoke the customer-area session (logout)
+	// (DELETE /api/public/v1/{slug}/account/session)
+	CloseAccountSession(w http.ResponseWriter, r *http.Request, slug Slug, params CloseAccountSessionParams)
+	// OpenAccountSession Exchange a link token (from the URL fragment) for a customer-area session token
+	// (POST /api/public/v1/{slug}/account/session)
+	OpenAccountSession(w http.ResponseWriter, r *http.Request, slug Slug)
+	// ListAccountVessels The customer's vessels (name and dimensions) to prefill the search
+	// (GET /api/public/v1/{slug}/account/vessels)
+	ListAccountVessels(w http.ResponseWriter, r *http.Request, slug Slug, params ListAccountVesselsParams)
+	// GetBookingAvailability Availability per category for dates and vessel dimensions (yes/no and a "from" price only); an anonymous search with no availability is recorded as lost demand
+	// (GET /api/public/v1/{slug}/booking/availability)
+	GetBookingAvailability(w http.ResponseWriter, r *http.Request, slug Slug, params GetBookingAvailabilityParams)
+	// GetBookingConfig Booking page configuration: rules, categories, online services, payment mode, approval threshold, required fields, current texts, payability, theme, arrival info, units (Cache-Control public, max-age=60)
+	// (GET /api/public/v1/{slug}/booking/config)
+	GetBookingConfig(w http.ResponseWriter, r *http.Request, slug Slug)
+	// QuoteBooking Price of a stay in a category with services and promo code (pricing channel online); writes nothing
+	// (POST /api/public/v1/{slug}/booking/quote)
+	QuoteBooking(w http.ResponseWriter, r *http.Request, slug Slug)
+	// CreateBooking Hold a berth of a category: held transit with a concrete hold allocation, quota claims, audit and outbox in one transaction. Idempotency-Key is required and handled by the domain (no response with a token is ever stored by the idempotency middleware); a replay with the same key and body returns the same booking
+	// (POST /api/public/v1/{slug}/bookings)
+	CreateBooking(w http.ResponseWriter, r *http.Request, slug Slug, params CreateBookingParams)
+	// AbandonBooking Abandon a held booking (cancels the transit and releases the hold); held only
+	// (DELETE /api/public/v1/{slug}/bookings/{bookingId})
+	AbandonBooking(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params AbandonBookingParams)
+	// GetBooking The booking of the token holder (Porto-Booking-Token)
+	// (GET /api/public/v1/{slug}/bookings/{bookingId})
+	GetBooking(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params GetBookingParams)
+	// SubmitBookingDetails Customer and vessel details, people on board, arrival time and consents of a held booking
+	// (PUT /api/public/v1/{slug}/bookings/{bookingId}/details)
+	SubmitBookingDetails(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params SubmitBookingDetailsParams)
+	// UploadBookingDocument Upload a document of the booking (licence, insurance, registration, identity; PDF, PNG or JPEG, at most 10 MiB, raw body like the M4 customer links), encrypted at rest and verified by the office
+	// (POST /api/public/v1/{slug}/bookings/{bookingId}/documents)
+	UploadBookingDocument(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params UploadBookingDocumentParams)
+	// StartBookingPayment Start the advance payment (provider hosted page, top-level navigation) or send the request for approval; confirmation comes only from the provider webhook or the manual driver (INV-09)
+	// (POST /api/public/v1/{slug}/bookings/{bookingId}/pay)
+	StartBookingPayment(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params StartBookingPaymentParams)
+	// GetBookingStatus Status of the booking for the return page, with the booking token or the read-only status token; no personal data (the browser return never confirms, INV-09)
+	// (GET /api/public/v1/{slug}/bookings/{bookingId}/status)
+	GetBookingStatus(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params GetBookingStatusParams)
 	// ResolvePublicLink What a customer link is for and the data of its own subject only
 	// (GET /api/public/v1/{slug}/links/{token})
 	ResolvePublicLink(w http.ResponseWriter, r *http.Request, slug Slug, token Token)
@@ -25116,6 +27004,9 @@ type ServerInterface interface {
 	// Readyz Readiness probe (database reachable, migrations applied)
 	// (GET /readyz)
 	Readyz(w http.ResponseWriter, r *http.Request)
+	// ReceiveChannelWebhook Booking channel callback, verified with the connection's webhook secret; events are applied once (INV-89); unknown channel or connection is 404, invalid signature 401
+	// (POST /webhooks/channels/{channel}/{marinaId})
+	ReceiveChannelWebhook(w http.ResponseWriter, r *http.Request, channel ChannelPathCode, marinaId MarinaId)
 	// PaymentWebhook Payment provider callback, verified with the marina's webhook secret; duplicates are no-ops (INV-56); unknown provider or marina is 404
 	// (POST /webhooks/payments/{provider}/{marinaId})
 	PaymentWebhook(w http.ResponseWriter, r *http.Request, provider ProviderCode, marinaId MarinaId)
@@ -25338,6 +27229,30 @@ func (_ Unimplemented) DeleteBlock(w http.ResponseWriter, r *http.Request, marin
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ListBookingChannels Registered booking channels and the marina's connection to each (providers.configure)
+// (GET /api/admin/v1/marinas/{marinaId}/booking-channels)
+func (_ Unimplemented) ListBookingChannels(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateBookingChannel Create or update the connection to a channel; credentials and webhook secret are write-only (providers.configure, If-Match when the connection exists)
+// (PUT /api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode})
+func (_ Unimplemented) UpdateBookingChannel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, channelCode ChannelCode, params UpdateBookingChannelParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SyncBookingChannel Pull reservations and push availability and rates now (providers.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}/sync)
+func (_ Unimplemented) SyncBookingChannel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, channelCode ChannelCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// TestBookingChannel Check the connection's credentials against the channel (providers.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}/test)
+func (_ Unimplemented) TestBookingChannel(w http.ResponseWriter, r *http.Request, marinaId MarinaId, channelCode ChannelCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListCashRegisters Cash registers (payments.collect or payments.collect_cash)
 // (GET /api/admin/v1/marinas/{marinaId}/cash-registers)
 func (_ Unimplemented) ListCashRegisters(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
@@ -25395,6 +27310,12 @@ func (_ Unimplemented) AddCashMovement(w http.ResponseWriter, r *http.Request, m
 // GetZReport Z report of a session as print-ready HTML or PDF (payments.collect or payments.collect_cash)
 // (GET /api/admin/v1/marinas/{marinaId}/cash-sessions/{sessionId}/z-report)
 func (_ Unimplemented) GetZReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sessionId CashSessionId, params GetZReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListChannelReservations Reservations received from channels, newest first (transits.desk)
+// (GET /api/admin/v1/marinas/{marinaId}/channel-reservations)
+func (_ Unimplemented) ListChannelReservations(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListChannelReservationsParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -26124,6 +28045,12 @@ func (_ Unimplemented) CreateDocumentFileURL(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// VerifyDocument Mark a document as verified by the office, or clear the mark (customers.write)
+// (POST /api/admin/v1/marinas/{marinaId}/documents/{documentId}/verify)
+func (_ Unimplemented) VerifyDocument(w http.ResponseWriter, r *http.Request, marinaId MarinaId, documentId DocumentId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListDunningExclusions Dunning exclusions (charges.manage)
 // (GET /api/admin/v1/marinas/{marinaId}/dunning-exclusions)
 func (_ Unimplemented) ListDunningExclusions(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListDunningExclusionsParams) {
@@ -26715,6 +28642,78 @@ func (_ Unimplemented) GetOccupancySettings(w http.ResponseWriter, r *http.Reque
 // UpdateOccupancySettings Replace the occupancy settings (harbor.configure)
 // (PUT /api/admin/v1/marinas/{marinaId}/occupancy-settings)
 func (_ Unimplemented) UpdateOccupancySettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateOccupancySettingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetOnlineQuotas Online quota of every berth group (harbor.configure)
+// (GET /api/admin/v1/marinas/{marinaId}/online-booking/quotas)
+func (_ Unimplemented) GetOnlineQuotas(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateOnlineQuotas Set the online quotas of the listed groups; caps of future nights become max(new cap, used) (harbor.configure)
+// (PUT /api/admin/v1/marinas/{marinaId}/online-booking/quotas)
+func (_ Unimplemented) UpdateOnlineQuotas(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetOnlineQuotaUsage Used and cap per group and night, at most 92 nights (harbor.configure)
+// (GET /api/admin/v1/marinas/{marinaId}/online-booking/quotas/usage)
+func (_ Unimplemented) GetOnlineQuotaUsage(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetOnlineQuotaUsageParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetOnlineBookingSettings Online booking settings of the marina (defaults when never saved) (marina.configure)
+// (GET /api/admin/v1/marinas/{marinaId}/online-booking/settings)
+func (_ Unimplemented) GetOnlineBookingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateOnlineBookingSettings Replace the online booking settings (marina.configure, If-Match)
+// (PUT /api/admin/v1/marinas/{marinaId}/online-booking/settings)
+func (_ Unimplemented) UpdateOnlineBookingSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UpdateOnlineBookingSettingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListBookingTexts Published versions of the terms, privacy and marketing texts, newest first (marina.configure)
+// (GET /api/admin/v1/marinas/{marinaId}/online-booking/texts)
+func (_ Unimplemented) ListBookingTexts(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListBookingTextsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PublishBookingText Publish a new version of a text (published versions are immutable) (marina.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/online-booking/texts)
+func (_ Unimplemented) PublishBookingText(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PublishBookingTextParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListOnlineBookings Online and channel bookings, newest first (transits.desk)
+// (GET /api/admin/v1/marinas/{marinaId}/online-bookings)
+func (_ Unimplemented) ListOnlineBookings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListOnlineBookingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetOnlineBooking Online booking detail: contact (customers.read), documents, consents, payment state, approval deadline (transits.desk); the ETag is the transit version
+// (GET /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId})
+func (_ Unimplemented) GetOnlineBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ApproveOnlineBooking Approve a booking awaiting approval: capture the authorisation, or send the payment link (transits.desk, If-Match)
+// (POST /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/approve)
+func (_ Unimplemented) ApproveOnlineBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params ApproveOnlineBookingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SendOnlineBookingPaymentLink Approve without the authorisation and email a payment link (after a capture failure) (transits.desk, If-Match)
+// (POST /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/payment-link)
+func (_ Unimplemented) SendOnlineBookingPaymentLink(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params SendOnlineBookingPaymentLinkParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RejectOnlineBooking Reject a booking awaiting approval (voids the authorisation, releases the hold) (transits.desk, If-Match)
+// (POST /api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/reject)
+func (_ Unimplemented) RejectOnlineBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, contractId ContractId, params RejectOnlineBookingParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -27930,6 +29929,150 @@ func (_ Unimplemented) GetPublicMarina(w http.ResponseWriter, r *http.Request, s
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// ListAccountBookings The customer's transits of the marina (any channel), newest first
+// (GET /api/public/v1/{slug}/account/bookings)
+func (_ Unimplemented) ListAccountBookings(w http.ResponseWriter, r *http.Request, slug Slug, params ListAccountBookingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetAccountBooking Detail of one of the customer's transits (QR when confirmed, arrival info, documents, receipts)
+// (GET /api/public/v1/{slug}/account/bookings/{contractId})
+func (_ Unimplemented) GetAccountBooking(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params GetAccountBookingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CancelAccountBooking Cancel within the policy; 409 refund_changed when the refund differs from the previewed one
+// (POST /api/public/v1/{slug}/account/bookings/{contractId}/cancel)
+func (_ Unimplemented) CancelAccountBooking(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params CancelAccountBookingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PreviewAccountCancellation Cancellation preview with the refund from the contract's policy snapshot
+// (GET /api/public/v1/{slug}/account/bookings/{contractId}/cancellation)
+func (_ Unimplemented) PreviewAccountCancellation(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params PreviewAccountCancellationParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ChangeAccountDates Change the dates (online rules, same category); 409 price_changed when the total differs from expected_total_cents
+// (POST /api/public/v1/{slug}/account/bookings/{contractId}/change-dates)
+func (_ Unimplemented) ChangeAccountDates(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params ChangeAccountDatesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PreviewAccountDateChange Availability and price effect of new dates for a confirmed transit before arrival; writes nothing
+// (POST /api/public/v1/{slug}/account/bookings/{contractId}/change-dates/preview)
+func (_ Unimplemented) PreviewAccountDateChange(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params PreviewAccountDateChangeParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UploadAccountDocument Upload a document for one of the customer's transits (same rules as uploadBookingDocument)
+// (POST /api/public/v1/{slug}/account/bookings/{contractId}/documents)
+func (_ Unimplemented) UploadAccountDocument(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params UploadAccountDocumentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PayAccountBalance Pay the open residual of the transit (creates or reuses a payment request, returns the checkout URL)
+// (POST /api/public/v1/{slug}/account/bookings/{contractId}/pay-balance)
+func (_ Unimplemented) PayAccountBalance(w http.ResponseWriter, r *http.Request, slug Slug, contractId ContractId, params PayAccountBalanceParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetAccountDocumentFile Download one of the customer's own documents through a signed link from getAccountDocumentURL (c, exp and sig are checked in the service; served inline, no-store, sandbox CSP, nosniff; rate limited)
+// (GET /api/public/v1/{slug}/account/documents/{documentId}/file)
+func (_ Unimplemented) GetAccountDocumentFile(w http.ResponseWriter, r *http.Request, slug Slug, documentId DocumentId, params GetAccountDocumentFileParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetAccountDocumentURL Short-lived signed URL of one of the customer's own documents
+// (GET /api/public/v1/{slug}/account/documents/{documentId}/url)
+func (_ Unimplemented) GetAccountDocumentURL(w http.ResponseWriter, r *http.Request, slug Slug, documentId DocumentId, params GetAccountDocumentURLParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RequestAccountLink Send a login link to the customer area; always 202 with the same body and comparable work, whether the email is known or not (no enumeration)
+// (POST /api/public/v1/{slug}/account/login)
+func (_ Unimplemented) RequestAccountLink(w http.ResponseWriter, r *http.Request, slug Slug, params RequestAccountLinkParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CloseAccountSession Revoke the customer-area session (logout)
+// (DELETE /api/public/v1/{slug}/account/session)
+func (_ Unimplemented) CloseAccountSession(w http.ResponseWriter, r *http.Request, slug Slug, params CloseAccountSessionParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// OpenAccountSession Exchange a link token (from the URL fragment) for a customer-area session token
+// (POST /api/public/v1/{slug}/account/session)
+func (_ Unimplemented) OpenAccountSession(w http.ResponseWriter, r *http.Request, slug Slug) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListAccountVessels The customer's vessels (name and dimensions) to prefill the search
+// (GET /api/public/v1/{slug}/account/vessels)
+func (_ Unimplemented) ListAccountVessels(w http.ResponseWriter, r *http.Request, slug Slug, params ListAccountVesselsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetBookingAvailability Availability per category for dates and vessel dimensions (yes/no and a "from" price only); an anonymous search with no availability is recorded as lost demand
+// (GET /api/public/v1/{slug}/booking/availability)
+func (_ Unimplemented) GetBookingAvailability(w http.ResponseWriter, r *http.Request, slug Slug, params GetBookingAvailabilityParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetBookingConfig Booking page configuration: rules, categories, online services, payment mode, approval threshold, required fields, current texts, payability, theme, arrival info, units (Cache-Control public, max-age=60)
+// (GET /api/public/v1/{slug}/booking/config)
+func (_ Unimplemented) GetBookingConfig(w http.ResponseWriter, r *http.Request, slug Slug) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// QuoteBooking Price of a stay in a category with services and promo code (pricing channel online); writes nothing
+// (POST /api/public/v1/{slug}/booking/quote)
+func (_ Unimplemented) QuoteBooking(w http.ResponseWriter, r *http.Request, slug Slug) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateBooking Hold a berth of a category: held transit with a concrete hold allocation, quota claims, audit and outbox in one transaction. Idempotency-Key is required and handled by the domain (no response with a token is ever stored by the idempotency middleware); a replay with the same key and body returns the same booking
+// (POST /api/public/v1/{slug}/bookings)
+func (_ Unimplemented) CreateBooking(w http.ResponseWriter, r *http.Request, slug Slug, params CreateBookingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// AbandonBooking Abandon a held booking (cancels the transit and releases the hold); held only
+// (DELETE /api/public/v1/{slug}/bookings/{bookingId})
+func (_ Unimplemented) AbandonBooking(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params AbandonBookingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetBooking The booking of the token holder (Porto-Booking-Token)
+// (GET /api/public/v1/{slug}/bookings/{bookingId})
+func (_ Unimplemented) GetBooking(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params GetBookingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SubmitBookingDetails Customer and vessel details, people on board, arrival time and consents of a held booking
+// (PUT /api/public/v1/{slug}/bookings/{bookingId}/details)
+func (_ Unimplemented) SubmitBookingDetails(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params SubmitBookingDetailsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UploadBookingDocument Upload a document of the booking (licence, insurance, registration, identity; PDF, PNG or JPEG, at most 10 MiB, raw body like the M4 customer links), encrypted at rest and verified by the office
+// (POST /api/public/v1/{slug}/bookings/{bookingId}/documents)
+func (_ Unimplemented) UploadBookingDocument(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params UploadBookingDocumentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// StartBookingPayment Start the advance payment (provider hosted page, top-level navigation) or send the request for approval; confirmation comes only from the provider webhook or the manual driver (INV-09)
+// (POST /api/public/v1/{slug}/bookings/{bookingId}/pay)
+func (_ Unimplemented) StartBookingPayment(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params StartBookingPaymentParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetBookingStatus Status of the booking for the return page, with the booking token or the read-only status token; no personal data (the browser return never confirms, INV-09)
+// (GET /api/public/v1/{slug}/bookings/{bookingId}/status)
+func (_ Unimplemented) GetBookingStatus(w http.ResponseWriter, r *http.Request, slug Slug, bookingId BookingId, params GetBookingStatusParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ResolvePublicLink What a customer link is for and the data of its own subject only
 // (GET /api/public/v1/{slug}/links/{token})
 func (_ Unimplemented) ResolvePublicLink(w http.ResponseWriter, r *http.Request, slug Slug, token Token) {
@@ -28017,6 +30160,12 @@ func (_ Unimplemented) Healthz(w http.ResponseWriter, r *http.Request) {
 // Readyz Readiness probe (database reachable, migrations applied)
 // (GET /readyz)
 func (_ Unimplemented) Readyz(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ReceiveChannelWebhook Booking channel callback, verified with the connection's webhook secret; events are applied once (INV-89); unknown channel or connection is 404, invalid signature 401
+// (POST /webhooks/channels/{channel}/{marinaId})
+func (_ Unimplemented) ReceiveChannelWebhook(w http.ResponseWriter, r *http.Request, channel ChannelPathCode, marinaId MarinaId) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -29361,6 +31510,161 @@ func (siw *ServerInterfaceWrapper) DeleteBlock(w http.ResponseWriter, r *http.Re
 	handler.ServeHTTP(w, r)
 }
 
+// ListBookingChannels operation middleware
+func (siw *ServerInterfaceWrapper) ListBookingChannels(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListBookingChannels(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateBookingChannel operation middleware
+func (siw *ServerInterfaceWrapper) UpdateBookingChannel(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "channelCode" -------------
+	var channelCode ChannelCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "channelCode", chi.URLParam(r, "channelCode"), &channelCode, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channelCode", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateBookingChannelParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateBookingChannel(w, r, marinaId, channelCode, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SyncBookingChannel operation middleware
+func (siw *ServerInterfaceWrapper) SyncBookingChannel(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "channelCode" -------------
+	var channelCode ChannelCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "channelCode", chi.URLParam(r, "channelCode"), &channelCode, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channelCode", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SyncBookingChannel(w, r, marinaId, channelCode)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// TestBookingChannel operation middleware
+func (siw *ServerInterfaceWrapper) TestBookingChannel(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "channelCode" -------------
+	var channelCode ChannelCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "channelCode", chi.URLParam(r, "channelCode"), &channelCode, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channelCode", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.TestBookingChannel(w, r, marinaId, channelCode)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListCashRegisters operation middleware
 func (siw *ServerInterfaceWrapper) ListCashRegisters(w http.ResponseWriter, r *http.Request) {
 
@@ -29864,6 +32168,87 @@ func (siw *ServerInterfaceWrapper) GetZReport(w http.ResponseWriter, r *http.Req
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetZReport(w, r, marinaId, sessionId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListChannelReservations operation middleware
+func (siw *ServerInterfaceWrapper) ListChannelReservations(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListChannelReservationsParams
+
+	// ------------- Optional query parameter "channel" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "channel", r.URL.Query(), &params.Channel, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "channel"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListChannelReservations(w, r, marinaId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -37015,6 +39400,41 @@ func (siw *ServerInterfaceWrapper) CreateDocumentFileURL(w http.ResponseWriter, 
 	handler.ServeHTTP(w, r)
 }
 
+// VerifyDocument operation middleware
+func (siw *ServerInterfaceWrapper) VerifyDocument(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId DocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.VerifyDocument(w, r, marinaId, documentId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListDunningExclusions operation middleware
 func (siw *ServerInterfaceWrapper) ListDunningExclusions(w http.ResponseWriter, r *http.Request) {
 
@@ -42473,6 +44893,600 @@ func (siw *ServerInterfaceWrapper) UpdateOccupancySettings(w http.ResponseWriter
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UpdateOccupancySettings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetOnlineQuotas operation middleware
+func (siw *ServerInterfaceWrapper) GetOnlineQuotas(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetOnlineQuotas(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateOnlineQuotas operation middleware
+func (siw *ServerInterfaceWrapper) UpdateOnlineQuotas(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateOnlineQuotas(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetOnlineQuotaUsage operation middleware
+func (siw *ServerInterfaceWrapper) GetOnlineQuotaUsage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetOnlineQuotaUsageParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetOnlineQuotaUsage(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetOnlineBookingSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetOnlineBookingSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetOnlineBookingSettings(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateOnlineBookingSettings operation middleware
+func (siw *ServerInterfaceWrapper) UpdateOnlineBookingSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateOnlineBookingSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateOnlineBookingSettings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListBookingTexts operation middleware
+func (siw *ServerInterfaceWrapper) ListBookingTexts(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListBookingTextsParams
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListBookingTexts(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PublishBookingText operation middleware
+func (siw *ServerInterfaceWrapper) PublishBookingText(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PublishBookingTextParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PublishBookingText(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListOnlineBookings operation middleware
+func (siw *ServerInterfaceWrapper) ListOnlineBookings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListOnlineBookingsParams
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "channel" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "channel", r.URL.Query(), &params.Channel, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "channel"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListOnlineBookings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetOnlineBooking operation middleware
+func (siw *ServerInterfaceWrapper) GetOnlineBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetOnlineBooking(w, r, marinaId, contractId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ApproveOnlineBooking operation middleware
+func (siw *ServerInterfaceWrapper) ApproveOnlineBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ApproveOnlineBookingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ApproveOnlineBooking(w, r, marinaId, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SendOnlineBookingPaymentLink operation middleware
+func (siw *ServerInterfaceWrapper) SendOnlineBookingPaymentLink(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SendOnlineBookingPaymentLinkParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SendOnlineBookingPaymentLink(w, r, marinaId, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RejectOnlineBooking operation middleware
+func (siw *ServerInterfaceWrapper) RejectOnlineBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RejectOnlineBookingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RejectOnlineBooking(w, r, marinaId, contractId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -54971,6 +57985,1605 @@ func (siw *ServerInterfaceWrapper) GetPublicMarina(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
+// ListAccountBookings operation middleware
+func (siw *ServerInterfaceWrapper) ListAccountBookings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListAccountBookingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListAccountBookings(w, r, slug, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetAccountBooking operation middleware
+func (siw *ServerInterfaceWrapper) GetAccountBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetAccountBookingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetAccountBooking(w, r, slug, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CancelAccountBooking operation middleware
+func (siw *ServerInterfaceWrapper) CancelAccountBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CancelAccountBookingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CancelAccountBooking(w, r, slug, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PreviewAccountCancellation operation middleware
+func (siw *ServerInterfaceWrapper) PreviewAccountCancellation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PreviewAccountCancellationParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PreviewAccountCancellation(w, r, slug, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ChangeAccountDates operation middleware
+func (siw *ServerInterfaceWrapper) ChangeAccountDates(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ChangeAccountDatesParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ChangeAccountDates(w, r, slug, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PreviewAccountDateChange operation middleware
+func (siw *ServerInterfaceWrapper) PreviewAccountDateChange(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PreviewAccountDateChangeParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PreviewAccountDateChange(w, r, slug, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UploadAccountDocument operation middleware
+func (siw *ServerInterfaceWrapper) UploadAccountDocument(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UploadAccountDocumentParams
+
+	// ------------- Required query parameter "type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "type", r.URL.Query(), &params.Type, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "expires_on" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "expires_on", r.URL.Query(), &params.ExpiresOn, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "expires_on"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "expires_on", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	// ------------- Optional header parameter "X-File-Name" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("X-File-Name")]; found {
+		var XFileName string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-File-Name", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "X-File-Name", valueList[0], &XFileName, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-File-Name", Err: err})
+			return
+		}
+
+		params.XFileName = &XFileName
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UploadAccountDocument(w, r, slug, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PayAccountBalance operation middleware
+func (siw *ServerInterfaceWrapper) PayAccountBalance(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contractId" -------------
+	var contractId ContractId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "contractId", chi.URLParam(r, "contractId"), &contractId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contractId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PayAccountBalanceParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PayAccountBalance(w, r, slug, contractId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetAccountDocumentFile operation middleware
+func (siw *ServerInterfaceWrapper) GetAccountDocumentFile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId DocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetAccountDocumentFileParams
+
+	// ------------- Required query parameter "c" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "c", r.URL.Query(), &params.C, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "c"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "c", Err: err})
+		}
+		return
+	}
+
+	// ------------- Required query parameter "exp" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "exp", r.URL.Query(), &params.Exp, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "exp"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "exp", Err: err})
+		}
+		return
+	}
+
+	// ------------- Required query parameter "sig" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "sig", r.URL.Query(), &params.Sig, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sig"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sig", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetAccountDocumentFile(w, r, slug, documentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetAccountDocumentURL operation middleware
+func (siw *ServerInterfaceWrapper) GetAccountDocumentURL(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "documentId" -------------
+	var documentId DocumentId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "documentId", chi.URLParam(r, "documentId"), &documentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "documentId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetAccountDocumentURLParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetAccountDocumentURL(w, r, slug, documentId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RequestAccountLink operation middleware
+func (siw *ServerInterfaceWrapper) RequestAccountLink(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RequestAccountLinkParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Bot-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Bot-Token")]; found {
+		var PortoBotToken BotTokenHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Bot-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Bot-Token", valueList[0], &PortoBotToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Bot-Token", Err: err})
+			return
+		}
+
+		params.PortoBotToken = &PortoBotToken
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RequestAccountLink(w, r, slug, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CloseAccountSession operation middleware
+func (siw *ServerInterfaceWrapper) CloseAccountSession(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CloseAccountSessionParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CloseAccountSession(w, r, slug, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// OpenAccountSession operation middleware
+func (siw *ServerInterfaceWrapper) OpenAccountSession(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.OpenAccountSession(w, r, slug)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListAccountVessels operation middleware
+func (siw *ServerInterfaceWrapper) ListAccountVessels(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListAccountVesselsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListAccountVessels(w, r, slug, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetBookingAvailability operation middleware
+func (siw *ServerInterfaceWrapper) GetBookingAvailability(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetBookingAvailabilityParams
+
+	// ------------- Required query parameter "arrival" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "arrival", r.URL.Query(), &params.Arrival, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "arrival"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "arrival", Err: err})
+		}
+		return
+	}
+
+	// ------------- Required query parameter "departure" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "departure", r.URL.Query(), &params.Departure, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "departure"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "departure", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "loa_cm" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "loa_cm", r.URL.Query(), &params.LoaCm, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "loa_cm"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "loa_cm", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "beam_cm" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "beam_cm", r.URL.Query(), &params.BeamCm, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "beam_cm"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "beam_cm", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "draft_cm" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "draft_cm", r.URL.Query(), &params.DraftCm, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "draft_cm"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "draft_cm", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "hull_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "hull_type", r.URL.Query(), &params.HullType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "hull_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "hull_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "vessel_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vessel_id", r.URL.Query(), &params.VesselId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "vessel_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vessel_id", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetBookingAvailability(w, r, slug, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetBookingConfig operation middleware
+func (siw *ServerInterfaceWrapper) GetBookingConfig(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetBookingConfig(w, r, slug)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// QuoteBooking operation middleware
+func (siw *ServerInterfaceWrapper) QuoteBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.QuoteBooking(w, r, slug)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateBooking operation middleware
+func (siw *ServerInterfaceWrapper) CreateBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateBookingParams
+
+	headers := r.Header
+
+	// ------------- Required header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey BookingIdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = IdempotencyKey
+
+	} else {
+		err := fmt.Errorf("Header parameter Idempotency-Key is required, but not found")
+		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "Idempotency-Key", Err: err})
+		return
+	}
+
+	// ------------- Optional header parameter "Porto-Customer-Session" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Customer-Session")]; found {
+		var PortoCustomerSession CustomerSessionHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Customer-Session", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Customer-Session", valueList[0], &PortoCustomerSession, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Customer-Session", Err: err})
+			return
+		}
+
+		params.PortoCustomerSession = &PortoCustomerSession
+
+	}
+
+	// ------------- Optional header parameter "Porto-Bot-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Bot-Token")]; found {
+		var PortoBotToken BotTokenHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Bot-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Bot-Token", valueList[0], &PortoBotToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Bot-Token", Err: err})
+			return
+		}
+
+		params.PortoBotToken = &PortoBotToken
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateBooking(w, r, slug, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AbandonBooking operation middleware
+func (siw *ServerInterfaceWrapper) AbandonBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "bookingId" -------------
+	var bookingId BookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "bookingId", chi.URLParam(r, "bookingId"), &bookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "bookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AbandonBookingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Booking-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Booking-Token")]; found {
+		var PortoBookingToken BookingTokenHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Booking-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Booking-Token", valueList[0], &PortoBookingToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Booking-Token", Err: err})
+			return
+		}
+
+		params.PortoBookingToken = &PortoBookingToken
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AbandonBooking(w, r, slug, bookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetBooking operation middleware
+func (siw *ServerInterfaceWrapper) GetBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "bookingId" -------------
+	var bookingId BookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "bookingId", chi.URLParam(r, "bookingId"), &bookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "bookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetBookingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Booking-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Booking-Token")]; found {
+		var PortoBookingToken BookingTokenHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Booking-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Booking-Token", valueList[0], &PortoBookingToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Booking-Token", Err: err})
+			return
+		}
+
+		params.PortoBookingToken = &PortoBookingToken
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetBooking(w, r, slug, bookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SubmitBookingDetails operation middleware
+func (siw *ServerInterfaceWrapper) SubmitBookingDetails(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "bookingId" -------------
+	var bookingId BookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "bookingId", chi.URLParam(r, "bookingId"), &bookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "bookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SubmitBookingDetailsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Booking-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Booking-Token")]; found {
+		var PortoBookingToken BookingTokenHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Booking-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Booking-Token", valueList[0], &PortoBookingToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Booking-Token", Err: err})
+			return
+		}
+
+		params.PortoBookingToken = &PortoBookingToken
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SubmitBookingDetails(w, r, slug, bookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UploadBookingDocument operation middleware
+func (siw *ServerInterfaceWrapper) UploadBookingDocument(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "bookingId" -------------
+	var bookingId BookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "bookingId", chi.URLParam(r, "bookingId"), &bookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "bookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UploadBookingDocumentParams
+
+	// ------------- Required query parameter "type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "type", r.URL.Query(), &params.Type, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "expires_on" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "expires_on", r.URL.Query(), &params.ExpiresOn, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "expires_on"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "expires_on", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Booking-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Booking-Token")]; found {
+		var PortoBookingToken BookingTokenHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Booking-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Booking-Token", valueList[0], &PortoBookingToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Booking-Token", Err: err})
+			return
+		}
+
+		params.PortoBookingToken = &PortoBookingToken
+
+	}
+
+	// ------------- Optional header parameter "X-File-Name" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("X-File-Name")]; found {
+		var XFileName string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-File-Name", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "X-File-Name", valueList[0], &XFileName, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-File-Name", Err: err})
+			return
+		}
+
+		params.XFileName = &XFileName
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UploadBookingDocument(w, r, slug, bookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// StartBookingPayment operation middleware
+func (siw *ServerInterfaceWrapper) StartBookingPayment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "bookingId" -------------
+	var bookingId BookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "bookingId", chi.URLParam(r, "bookingId"), &bookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "bookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params StartBookingPaymentParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Booking-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Booking-Token")]; found {
+		var PortoBookingToken BookingTokenHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Booking-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Booking-Token", valueList[0], &PortoBookingToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Booking-Token", Err: err})
+			return
+		}
+
+		params.PortoBookingToken = &PortoBookingToken
+
+	}
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.StartBookingPayment(w, r, slug, bookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetBookingStatus operation middleware
+func (siw *ServerInterfaceWrapper) GetBookingStatus(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "bookingId" -------------
+	var bookingId BookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "bookingId", chi.URLParam(r, "bookingId"), &bookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "bookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetBookingStatusParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Booking-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Booking-Token")]; found {
+		var PortoBookingToken BookingTokenHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Booking-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Booking-Token", valueList[0], &PortoBookingToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Booking-Token", Err: err})
+			return
+		}
+
+		params.PortoBookingToken = &PortoBookingToken
+
+	}
+
+	// ------------- Optional header parameter "Porto-Status-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Status-Token")]; found {
+		var PortoStatusToken StatusTokenHeader
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Status-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Status-Token", valueList[0], &PortoStatusToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Status-Token", Err: err})
+			return
+		}
+
+		params.PortoStatusToken = &PortoStatusToken
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetBookingStatus(w, r, slug, bookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ResolvePublicLink operation middleware
 func (siw *ServerInterfaceWrapper) ResolvePublicLink(w http.ResponseWriter, r *http.Request) {
 
@@ -55495,6 +60108,41 @@ func (siw *ServerInterfaceWrapper) Readyz(w http.ResponseWriter, r *http.Request
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.Readyz(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReceiveChannelWebhook operation middleware
+func (siw *ServerInterfaceWrapper) ReceiveChannelWebhook(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "channel" -------------
+	var channel ChannelPathCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "channel", chi.URLParam(r, "channel"), &channel, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReceiveChannelWebhook(w, r, channel, marinaId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -57138,6 +61786,135 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/berth-revenue", wrapper.GetBerthRevenueReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/booking/config", wrapper.GetBookingConfig)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/booking/availability", wrapper.GetBookingAvailability)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/booking/quote", wrapper.QuoteBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/bookings", wrapper.CreateBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/public/v1/{slug}/bookings/{bookingId}", wrapper.AbandonBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/bookings/{bookingId}", wrapper.GetBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/public/v1/{slug}/bookings/{bookingId}/details", wrapper.SubmitBookingDetails)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/bookings/{bookingId}/documents", wrapper.UploadBookingDocument)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/bookings/{bookingId}/pay", wrapper.StartBookingPayment)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/bookings/{bookingId}/status", wrapper.GetBookingStatus)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/account/login", wrapper.RequestAccountLink)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/public/v1/{slug}/account/session", wrapper.CloseAccountSession)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/account/session", wrapper.OpenAccountSession)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/account/vessels", wrapper.ListAccountVessels)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/account/bookings", wrapper.ListAccountBookings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/account/bookings/{contractId}", wrapper.GetAccountBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/account/bookings/{contractId}/documents", wrapper.UploadAccountDocument)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/account/documents/{documentId}/url", wrapper.GetAccountDocumentURL)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/account/documents/{documentId}/file", wrapper.GetAccountDocumentFile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/account/bookings/{contractId}/pay-balance", wrapper.PayAccountBalance)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/account/bookings/{contractId}/cancellation", wrapper.PreviewAccountCancellation)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/account/bookings/{contractId}/cancel", wrapper.CancelAccountBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/account/bookings/{contractId}/change-dates/preview", wrapper.PreviewAccountDateChange)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/public/v1/{slug}/account/bookings/{contractId}/change-dates", wrapper.ChangeAccountDates)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-booking/settings", wrapper.GetOnlineBookingSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-booking/settings", wrapper.UpdateOnlineBookingSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-booking/texts", wrapper.ListBookingTexts)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-booking/texts", wrapper.PublishBookingText)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-booking/quotas", wrapper.GetOnlineQuotas)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-booking/quotas", wrapper.UpdateOnlineQuotas)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-booking/quotas/usage", wrapper.GetOnlineQuotaUsage)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-bookings", wrapper.ListOnlineBookings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}", wrapper.GetOnlineBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/approve", wrapper.ApproveOnlineBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/reject", wrapper.RejectOnlineBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/online-bookings/{contractId}/payment-link", wrapper.SendOnlineBookingPaymentLink)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/documents/{documentId}/verify", wrapper.VerifyDocument)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/booking-channels", wrapper.ListBookingChannels)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}", wrapper.UpdateBookingChannel)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}/test", wrapper.TestBookingChannel)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/booking-channels/{channelCode}/sync", wrapper.SyncBookingChannel)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/channel-reservations", wrapper.ListChannelReservations)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/webhooks/channels/{channel}/{marinaId}", wrapper.ReceiveChannelWebhook)
 	})
 
 	return r

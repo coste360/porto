@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Ciao,</p>
+<p>hai chiesto di accedere all'area clienti di {{v . "marina_name"}}. Apri questo link per vedere le tue prenotazioni:</p>
+<p><a href="{{v . "link"}}"><strong>Accedi alle mie prenotazioni</strong></a></p>
+<p>Il link vale {{with v . "expires_at"}}{{.}}{{else}}30{{end}} minuti e si può usare una sola volta. Se non hai chiesto l'accesso, ignora questa email.</p>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

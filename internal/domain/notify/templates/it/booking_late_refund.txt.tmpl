@@ -1,0 +1,23 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+il pagamento è arrivato dopo la scadenza della prenotazione e il posto non è più disponibile. L'importo viene rimborsato per intero sullo stesso metodo di pagamento.
+
+{{with v . "reference"}}Riferimento: {{.}}
+{{end}}{{with v . "starts_on"}}Arrivo: {{.}}
+{{end}}{{with v . "ends_on"}}Partenza: {{.}}
+{{end}}{{with v . "amount"}}Importo: {{.}}
+{{end}}{{with v . "refund"}}Rimborso: {{.}}
+{{end}}{{with v . "deadline_on"}}Risposta entro: {{.}}
+{{end}}{{with v . "reason"}}Motivo: {{.}}
+{{end}}{{with v . "berth"}}Posto: {{.}}
+{{end}}{{with v . "vhf_channel"}}Canale VHF: {{.}}
+{{end}}{{with v . "marina_phone"}}Telefono ormeggiatori: {{.}}
+{{end}}{{with v . "qr"}}Codice transito: {{.}}
+{{end}}{{with v . "rules_url"}}Regolamento: {{.}}
+{{end}}{{with v . "arrival_text"}}
+{{.}}
+{{end}}{{with v . "link"}}
+Cerca di nuovo: {{.}}
+{{end}}
+--
+{{v . "marina_name"}}

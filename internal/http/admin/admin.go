@@ -7,6 +7,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/coste360/porto/internal/domain/booking"
+	"github.com/coste360/porto/internal/domain/channel"
+	"github.com/coste360/porto/internal/domain/onlineconf"
+
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/csvimport"
 	"github.com/coste360/porto/internal/domain/apikey"
@@ -98,6 +102,11 @@ type Handler struct {
 
 	// M7 (m7-plan §8): reports, dashboard and comparison.
 	Reports *report.Service
+
+	// M8 (m8-plan §11): desk list and approval of online bookings, online settings and texts, booking channels.
+	Booking    *booking.Service
+	OnlineConf *onlineconf.Service
+	Channels   *channel.Service
 }
 
 func principal(r *http.Request) *auth.Principal {
