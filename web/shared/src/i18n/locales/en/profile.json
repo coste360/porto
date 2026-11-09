@@ -1,0 +1,123 @@
+{
+  "title": "Public profile",
+  "description": "The marina profile published next to the booking page: position, contacts, opening hours, depths, services, photos and a simplified map. It never contains personal data or the occupancy of single berths.",
+  "publish": "Publish",
+  "unpublish": "Withdraw",
+  "preview": "Preview",
+  "published": "Published",
+  "draft": "Not published",
+  "publishedToast": "Profile published.",
+  "publicUrl": "Public address",
+  "copy": "Copy the address",
+  "copied": "Address copied.",
+  "localMode": "This installation is not reachable from the internet: the profile is visible on the local network only.",
+  "missingTitle": "To publish, add:",
+  "missing": {
+    "position": "the position of the entrance",
+    "contact": "at least one contact (phone, email or website)",
+    "name": "the marina name"
+  },
+  "save": "Save",
+  "saved": "Profile saved.",
+  "invalid": "Some fields are not valid: check the tabs of the form.",
+  "maxChars": "At most {{max}} characters.",
+  "unit": {
+    "m": "m"
+  },
+  "lang": {
+    "it": "Italian",
+    "en": "English"
+  },
+  "tabs": {
+    "general": "General",
+    "contacts": "Contacts",
+    "hours": "Hours",
+    "harbour": "Harbour",
+    "services": "Services",
+    "photos": "Photos",
+    "sections": "Sections"
+  },
+  "fields": {
+    "description": "Description",
+    "publishEnglish": "Publish in English too",
+    "position": "Entrance position (WGS84)",
+    "positionHint": "Decimal degrees, for example 43.7101234 and 10.4012345.",
+    "lat": "Latitude",
+    "lon": "Longitude",
+    "address": "Address",
+    "street": "Street and number",
+    "postalCode": "Postal code",
+    "city": "Town",
+    "province": "Province",
+    "country": "Country (code)",
+    "phone": "Phone",
+    "email": "Email",
+    "website": "Website",
+    "websiteHint": "https addresses only.",
+    "vhf": "VHF channels",
+    "addVhf": "Add channel",
+    "removeVhf": "Remove the last channel",
+    "vhfInvalid": "Channels go from 1 to 88, at most four.",
+    "hoursNote": "Notes on opening hours",
+    "berthsTotal": "Berths (published value)",
+    "transitBerths": "Transit berths (published value)",
+    "computed": "Empty: the computed value is used ({{n}}).",
+    "depthMin": "Minimum depth",
+    "depthMax": "Maximum depth",
+    "notSet": "Not set",
+    "amps": "{{amps}} A",
+    "fuelHours": "Fuel station hours",
+    "travelLiftKg": "Travel lift: capacity (kg)",
+    "craneKg": "Crane: capacity (kg)",
+    "accessImages": "Access images"
+  },
+  "wind": {
+    "N": "North (N)",
+    "NE": "North-east (NE)",
+    "E": "East (E)",
+    "SE": "South-east (SE)",
+    "S": "South (S)",
+    "SW": "South-west (SW)",
+    "W": "West (W)",
+    "NW": "North-west (NW)"
+  },
+  "hours": {
+    "weekday": "Day",
+    "from": "From",
+    "to": "To",
+    "add": "Add opening hours",
+    "remove": "Remove opening hours"
+  },
+  "photos": {
+    "hint": "JPEG or PNG up to 8 MB, at most {{max}}. Photos are re-encoded without metadata (GPS position included).",
+    "alt": "Alternative text",
+    "up": "Move earlier",
+    "down": "Move later",
+    "remove": "Remove from the profile",
+    "upload": "Upload a photo",
+    "thumbnail": "Photo {{n}}"
+  },
+  "sections": {
+    "map": "Show the simplified map (no berth codes, no occupancy)",
+    "mapPick": "Map",
+    "firstMap": "The first map",
+    "poi": "Points of interest on the map",
+    "poiHint": "Map coordinates in metres from the top-left corner.",
+    "poiKind": "Kind",
+    "poiX": "Horizontal distance",
+    "poiY": "Vertical distance",
+    "poiAdd": "Add point",
+    "poiRemove": "Remove point",
+    "prices": "Show the transit prices",
+    "pricesHint": "No active transit price list has a publishable price table: enable it in the price list settings to show it.",
+    "occupancy": "Show the free berths tonight (only the number per category)",
+    "categories": "Published categories",
+    "categoriesHint": "The page shows how many berths of each category are free, never which ones."
+  },
+  "poi": {
+    "entrance": "Entrance",
+    "fuel": "Fuel station",
+    "office": "Marina office",
+    "pump_out": "Pump-out"
+  }
+}

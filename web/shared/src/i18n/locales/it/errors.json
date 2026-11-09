@@ -183,5 +183,15 @@
   "preauth_unavailable": "Nessun gateway di pagamento attivo supporta la preautorizzazione.",
   "deposit_exceeds": "La trattenuta supera la cauzione.",
   "nothing_to_collect": "Non c'è nulla da incassare su questo noleggio.",
-  "band_gap_lt_buffer": "Due fasce sono più vicine del buffer tra due noleggi."
+  "band_gap_lt_buffer": "Due fasce sono più vicine del buffer tra due noleggi.",
+  "ingest_unauthorized": "Chiave del sensore o firma non valida.",
+  "ingest_timestamp_out_of_range": "L'orario della firma è fuori dalla tolleranza di 300 secondi: controlla l'orologio del dispositivo.",
+  "invalid_payload": "Il lotto di letture non è valido (da 1 a 500 letture).",
+  "segment_overlap": "Il tratto si sovrappone a quello di un altro sensore attivo dell'area.",
+  "resource_has_sensor": "Il posto o la presa della colonnina ha già un sensore attivo.",
+  "invalid_sensor_resource": "Questo elemento non può avere un sensore.",
+  "alert_stale": "La situazione segnalata non è più attuale: l'avviso è stato chiuso.",
+  "alert_action_not_allowed": "Azione non consentita per questo avviso.",
+  "profile_incomplete": "Per pubblicare la scheda servono posizione, almeno un contatto e il nome del porto.",
+  "photo_invalid": "La foto non è un'immagine JPEG o PNG valida."
 }

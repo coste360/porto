@@ -10,6 +10,7 @@ const COLS: Record<number, string> = {
   4: 'grid-cols-4',
   5: 'grid-cols-5',
   6: 'grid-cols-6',
+  7: 'grid-cols-7',
 };
 
 export type PhoneTab<T extends string> = { value: T; label: string; icon: ReactNode };

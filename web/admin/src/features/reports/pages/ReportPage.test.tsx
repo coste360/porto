@@ -247,7 +247,7 @@ describe('ReportsIndexPage', () => {
   it('lists every report to reports.all', async () => {
     render([...ALL], `/m/${MARINA_ID}/reports`);
     await screen.findByTestId('reports-index');
-    // 16 M7 + 3 M9 + yard + rental + comparison.
-    expect(screen.getAllByTestId(/^report-card-/)).toHaveLength(16 + 3 + 1 + 1 + 1);
+    // 16 M7 + 3 M9 + yard + rental + sensors (M12) + comparison.
+    expect(screen.getAllByTestId(/^report-card-/)).toHaveLength(16 + 3 + 1 + 1 + 1 + 1);
   });
 });

@@ -70,6 +70,11 @@ import (
 	"github.com/coste360/porto/internal/domain/rental/fleet"
 	"github.com/coste360/porto/internal/domain/rental/handover"
 	"github.com/coste360/porto/internal/domain/rental/reservation"
+
+	"github.com/coste360/porto/internal/domain/profile"
+	"github.com/coste360/porto/internal/domain/sensor"
+	"github.com/coste360/porto/internal/domain/sensor/fakesensor"
+	"github.com/coste360/porto/internal/domain/sensor/watch"
 	"github.com/coste360/porto/internal/domain/workorder"
 	"github.com/coste360/porto/internal/domain/yardplan"
 	"github.com/coste360/porto/internal/domain/yardquote"
@@ -78,6 +83,7 @@ import (
 	httpbridge "github.com/coste360/porto/internal/http/bridge"
 	httpdesktop "github.com/coste360/porto/internal/http/desktop"
 	httpdevice "github.com/coste360/porto/internal/http/device"
+	"github.com/coste360/porto/internal/http/ingest"
 	"github.com/coste360/porto/internal/http/middleware"
 	"github.com/coste360/porto/internal/http/public"
 	"github.com/coste360/porto/internal/http/sse"
@@ -216,6 +222,11 @@ type App struct {
 	RentalFleet    *fleet.Service
 	RentalBookings *reservation.Service
 	RentalHandover *handover.Service
+
+	// M12 (m12-plan §2): sensors (devices, keys, ingestion, jobs), the reconciliation and the public profile.
+	Sensors     *sensor.Service
+	SensorWatch *watch.Service
+	Profiles    *profile.Service
 
 	ownDB     bool
 	restartMu sync.Mutex
@@ -365,6 +376,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
 		Contracts: a.Contracts, Occupancy: a.Occupancy,
 	})
+	a.wireM12(x)
 	policy := event.EgressPolicy{AllowPrivate: cfg.WebhooksAllowPrivate, AllowHTTP: cfg.WebhooksAllowPrivate}
 	a.Webhooks = webhook.NewService(db, clk, cfg.Keys, aw, a.Outbox, policy, log)
 	a.Deliverer = webhook.NewDeliverer(db, clk, cfg.Keys, event.NewEgress(policy, webhook.DeliveryTimeout), aw, a.Version, log)
@@ -398,6 +410,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			Storage: a.Storage, Maintenance: a.Maintenance, Utilities: a.Utilities,
 			YardQuotes: a.YardQuotes, WorkOrders: a.WorkOrders, YardPlan: a.YardPlan, Lifting: a.Lifting,
 			RentalFleet: a.RentalFleet, RentalBookings: a.RentalBookings, RentalHandover: a.RentalHandover,
+			Sensors: a.Sensors, SensorWatch: a.SensorWatch, Profiles: a.Profiles,
 		},
 		Device: &httpdevice.Handler{
 			Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String(), SecureCookies: cfg.SecureCookies(),
@@ -405,8 +418,10 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 		},
 		Public: &public.Handler{
 			Marinas: a.Marinas, Contracts: a.Contracts, Links: a.Links, Signatures: a.Signatures, Comms: a.Comms, Docs: a.Docs,
-			Collect: a.Collect, Booking: a.Booking, Portal: a.Portal, YardQuotes: a.YardQuotes,
+			Collect: a.Collect, Booking: a.Booking, Portal: a.Portal, YardQuotes: a.YardQuotes, Profiles: a.Profiles,
 		},
+		Ingest:      &ingest.Handler{Sensors: a.Sensors},
+		ProfilePage: &public.ProfilePage{Profiles: a.Profiles},
 		Webhooks: &webhooks.Handler{
 			Signatures: a.Signatures, Collect: a.Collect, Clock: clk, Channels: a.Channels,
 		},
@@ -549,6 +564,51 @@ func (a *App) wireM11() {
 	a.Signatures.RegisterSubject(a.RentalHandover)
 }
 
+// wireM12 builds the M12 services after presence (m12-plan §2): the sensor service (devices, keys, ingestion and
+// its jobs) over the registered polled sources, plus the fake source in development, demo and tests (D27); the
+// reconciliation over presence, occupancy and maintenance, woken by the ingestion through a buffered channel (sensor
+// never imports watch); the profile over the price lists. The day view reads the sensor facts through
+// occupancy.SensorReader (occupancy never imports sensor).
+func (a *App) wireM12(x ext.Extensions) {
+	cfg, db, clk, log := a.Config, a.DB, a.Clock, a.Log
+	aw := audit.NewWriter(clk)
+	sources := append([]ext.SensorSource(nil), x.SensorSources...)
+	if cfg.Dev || cfg.DemoPairingEnabled() {
+		sources = append(sources, fakesensor.New())
+	}
+	wake := make(chan struct{}, 1)
+	a.Sensors = sensor.NewService(sensor.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Sources: sources,
+		RawRetention: cfg.SensorRawRetention, Limiter: newSensorKeyLimiter(clk), Wake: wake,
+		HTTP: event.NewEgressClient(event.EgressPolicy{AllowPrivate: cfg.WebhooksAllowPrivate, AllowHTTP: cfg.WebhooksAllowPrivate}, 20*time.Second),
+	})
+	a.SensorWatch = watch.NewService(watch.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Presence: a.Presence, Occupancy: a.Occupancy,
+		Maintenance: a.Maintenance, Wake: wake, RawRetention: cfg.SensorRawRetention,
+	})
+	a.Occupancy.SetSensorReader(a.SensorWatch)
+	a.Profiles = profile.NewService(profile.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Files: a.Files, Prices: a.PriceLists,
+		BaseURL: cfg.BaseURL.String(), LocalMode: a.Desktop != nil,
+	})
+}
+
+// sensorKeyLimiter is the per-key rate limit of the ingestion (m12-plan §4.6): 30 requests per minute per device
+// key, 600 per gateway key, in-memory fixed windows like the router's limits.
+type sensorKeyLimiter struct{ device, gateway *middleware.Limiter }
+
+func newSensorKeyLimiter(c clock.Clock) sensorKeyLimiter {
+	return sensorKeyLimiter{device: middleware.NewLimiter(c, 30, time.Minute), gateway: middleware.NewLimiter(c, 600, time.Minute)}
+}
+
+// Allow implements sensor.KeyLimiter.
+func (l sensorKeyLimiter) Allow(keyID string, gateway bool) (bool, time.Duration) {
+	if gateway {
+		return l.gateway.Allow(keyID)
+	}
+	return l.device.Allow(keyID)
+}
+
 // wireBooking builds the M8 services after billing (m8-plan §2): settings, booking (over occupancy, contracts,
 // collect and the payment drivers), then the customer area and the channels, which call booking. The fake channel
 // (internal/domain/channel/fakechannel, ENGINE) is added to the channels only with cfg.DevFakeChannel.
@@ -668,6 +728,12 @@ func (a *App) registerJobs() error {
 		{Name: reservation.JobHoldsExpire, Every: time.Minute, RunAtStart: true, Run: a.RentalBookings.RunHoldsExpire},
 		{Name: handover.JobDeposits, Every: time.Minute, Run: a.RentalHandover.RunDeposits},
 		{Name: handover.JobIdentityRetention, Every: 24 * time.Hour, Run: a.RentalHandover.RunIdentityRetention},
+		// M12 (m12-plan §13). The contract phase registers no-ops; INGEST and RECONCILE implement them. The
+		// reconcile job also runs on the ingest wake (after a commit that wrote a state change).
+		{Name: sensor.JobPoll, Every: 15 * time.Second, Run: a.Sensors.RunPoll},
+		{Name: sensor.JobSilence, Every: time.Minute, Run: a.Sensors.RunSilence},
+		{Name: sensor.JobRetention, Every: time.Hour, RunAtStart: true, Run: a.Sensors.RunRetention},
+		{Name: watch.JobReconcile, Every: time.Minute, Wake: a.SensorWatch.Wake(), Run: a.SensorWatch.RunReconcile},
 	}
 	for _, j := range defs {
 		if err := a.Jobs.Register(j); err != nil {

@@ -61,4 +61,21 @@ describe('booking routes', () => {
       slug: 'porto-demo',
     });
   });
+
+  it('routes the M12 public marina profile', () => {
+    expect(routeFromPath('/p/porto-demo', slugFromPath)).toEqual({
+      page: 'profile',
+      slug: 'porto-demo',
+    });
+    expect(routeFromPath('/p/porto-demo/', slugFromPath)).toEqual({
+      page: 'profile',
+      slug: 'porto-demo',
+    });
+    expect(routeFromPath('/p/Porto_Demo', slugFromPath)).toEqual({ page: 'marina', slug: null });
+    expect(routeFromPath('/p/porto-demo/extra', slugFromPath)).toEqual({
+      page: 'marina',
+      slug: null,
+    });
+    expect(routeFromPath('/p/ab', slugFromPath)).toEqual({ page: 'marina', slug: null });
+  });
 });

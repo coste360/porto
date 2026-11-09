@@ -72,7 +72,9 @@ export type MarinaRoutePath =
   | '/m/$marinaId/yard/catalog'
   | '/m/$marinaId/rental/planner'
   | '/m/$marinaId/rental/bookings'
-  | '/m/$marinaId/rental/fleet';
+  | '/m/$marinaId/rental/fleet'
+  | '/m/$marinaId/sensors'
+  | '/m/$marinaId/profile';
 
 export type NavItem = {
   id: string;
@@ -392,6 +394,13 @@ export const NAV_ITEMS: NavItem[] = [
     labelKey: 'online:nav.settings',
     anyOf: ['marina.configure'],
   },
+  // M12 (m12-plan §16.2), settings group
+  {
+    id: 'profile',
+    to: '/m/$marinaId/profile',
+    labelKey: 'profile:title',
+    anyOf: ['marina.configure'],
+  },
   // M7 (m7-plan §10.1), group "Analisi"
   {
     id: 'reports',
@@ -408,6 +417,8 @@ export const NAV_ITEMS: NavItem[] = [
     anyOf: ['reports.all', 'marina.configure'],
   },
   { id: 'maps', to: '/m/$marinaId/maps', labelKey: 'common:nav.maps', anyOf: ['map.view'] },
+  // M12 (m12-plan §16.1), group "Porto"
+  { id: 'sensors', to: '/m/$marinaId/sensors', labelKey: 'sensors:title', anyOf: ['map.view'] },
   {
     id: 'customers',
     to: '/m/$marinaId/customers',
@@ -491,8 +502,8 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'audit', to: '/m/$marinaId/audit', labelKey: 'common:nav.audit', anyOf: ['audit.read'] },
 ];
 
-/** Modules of the next milestones, listed disabled in the sidebar. */
-export const UPCOMING_MODULES = ['common:nav.modules.sensors'] as const;
+/** Modules of the next milestones, listed disabled in the sidebar (none after M12, the last roadmap milestone). */
+export const UPCOMING_MODULES: readonly string[] = [];
 
 export function visibleNavItems(permissions: readonly Permission[]): NavItem[] {
   return NAV_ITEMS.filter((item) => item.anyOf.some((p) => permissions.includes(p)));

@@ -22,7 +22,7 @@ POSTGRES_IMAGE        ?= postgres:17-alpine
 # Go packages for test, test-db and lint; narrow it for focused runs: make test PKG=./internal/qty/...
 PKG                   ?= ./...
 # The M3 season simulation alone takes up to 10 minutes on PostgreSQL (m3-plan §9.4).
-TEST_DB_TIMEOUT       ?= 30m
+TEST_DB_TIMEOUT       ?= 60m
 
 BIN_DIR       := $(CURDIR)/bin
 GOLANGCI_LINT := $(BIN_DIR)/golangci-lint

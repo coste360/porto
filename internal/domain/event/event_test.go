@@ -299,6 +299,11 @@ func TestTypes_Catalogue(t *testing.T) {
 			RentalCancelled:  {RentalCancelled, TopicRental, true},
 			RentalCheckedOut: {RentalCheckedOut, TopicRental, true},
 			RentalReturned:   {RentalReturned, TopicRental, true},
+			// M12 (m12-plan §9.1): physical changes and anomalies are public.
+			SensorStateChanged: {SensorStateChanged, TopicSensor, true},
+			SensorAnomaly:      {SensorAnomaly, TopicSensor, true},
+			SensorChanged:      {SensorChanged, TopicSensor, false},
+			ProfileChanged:     {ProfileChanged, TopicMarina, false},
 		}
 		if want, ok := m1[ti.Type]; ok {
 			if ti != want {

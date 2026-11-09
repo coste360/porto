@@ -1,0 +1,219 @@
+{
+  "title": "Sensori",
+  "tabs": {
+    "alerts": "Avvisi",
+    "devices": "Dispositivi",
+    "gateways": "Gateway",
+    "sources": "Sorgenti",
+    "settings": "Impostazioni"
+  },
+  "physical": {
+    "occupied": "Occupato",
+    "free": "Libero",
+    "unknown": "Sconosciuto"
+  },
+  "health": {
+    "ok": "Regolare",
+    "offline": "Non in linea",
+    "battery_low": "Batteria scarica",
+    "silent": "Silenzioso"
+  },
+  "kind": {
+    "ultrasonic": "Ultrasuoni",
+    "radar": "Radar",
+    "magnetometer": "Magnetometro",
+    "infrared": "Infrarossi",
+    "camera": "Telecamera",
+    "other": "Altro"
+  },
+  "resourceType": {
+    "berth": "Posto",
+    "dynamic_area": "Tratto di area",
+    "pedestal": "Colonnina"
+  },
+  "alertKind": {
+    "unexpected_occupied": "Posto occupato non previsto",
+    "transit_arrival": "Arrivo del transito rilevato",
+    "return_detected": "Rientro rilevato",
+    "release_proposal": "Proposta di rilascio",
+    "early_return": "Rientro anticipato",
+    "device_silent": "Sensore silenzioso",
+    "battery_low": "Batteria del sensore scarica"
+  },
+  "alertStatus": {
+    "open": "Aperto",
+    "confirmed": "Confermato",
+    "dismissed": "Ignorato",
+    "resolved": "Risolto"
+  },
+  "action": {
+    "dismiss": "Ignora",
+    "confirm_arrival": "Conferma arrivo",
+    "confirm_release": "Conferma rilascio",
+    "revoke_release": "Revoca rilascio",
+    "create_task": "Crea intervento"
+  },
+  "lens": {
+    "toggle": "Sensori",
+    "free": "Libero",
+    "occupied": "Occupato",
+    "discrepancy": "Discrepanza",
+    "offline": "Non in linea",
+    "none": "Senza sensore",
+    "hint": "I posti con un sensore sono colorati dal suo stato; tratti di area e colonnine sono indicatori sulla mappa."
+  },
+  "empty": "Nessun sensore configurato.",
+  "description": "Stato fisico dei posti rilevato dai sensori, avvisi e proposte da confermare, dispositivi, gateway e sorgenti.",
+  "alerts": {
+    "status": "Stato",
+    "kind": "Tipo",
+    "allKinds": "Tutti i tipi",
+    "empty": "Nessun avviso.",
+    "history": "Storico",
+    "resold": "Posto rivenduto",
+    "where": "{{resource}} · sensore {{device}} · dal {{since}}",
+    "proposal": "Rilascio proposto dal {{from}} al {{to}}"
+  },
+  "dialog": {
+    "from": "Dal",
+    "to": "Al",
+    "consent": "Consenso del cliente acquisito",
+    "outsideProposal": "Il periodo deve essere compreso nella proposta.",
+    "priority": "Priorità",
+    "note": "Nota (facoltativa, mai inviata nelle notifiche)"
+  },
+  "priority": {
+    "low": "Bassa",
+    "normal": "Normale",
+    "high": "Alta",
+    "urgent": "Urgente"
+  },
+  "devices": {
+    "new": "Nuovo dispositivo",
+    "newHint": "Scegli la risorsa sulla mappa: un clic su un posto, un tratto in metri su un'area lineare o una colonnina con la presa.",
+    "code": "Codice",
+    "externalId": "Identificativo del fornitore",
+    "kind": "Tipo",
+    "resourceType": "Collegato a",
+    "resource": "Risorsa",
+    "map": "Mappa",
+    "gateway": "Gateway",
+    "ownKey": "Chiave propria",
+    "physical": "Stato fisico",
+    "health": "Funzionamento",
+    "battery": "Batteria",
+    "lastContact": "Ultimo contatto",
+    "key": "Chiave",
+    "rotate": "Rigenera chiave",
+    "revoke": "Revoca chiave",
+    "rotateHint": "La chiave attuale di {{code}} resta valida per il periodo di tolleranza indicato.",
+    "grace": "Tolleranza (ore, 0-168)",
+    "fromM": "Da (m)",
+    "toM": "A (m)",
+    "areaLength": "Lunghezza dell'area: {{length}} m",
+    "segmentInvalid": "Indica i metri di inizio e fine del tratto.",
+    "segmentOrder": "L'inizio deve precedere la fine.",
+    "segmentShort": "Il tratto deve essere lungo almeno 1 m.",
+    "segmentOutside": "Il tratto esce dall'area.",
+    "socket": "Presa",
+    "noSocket": "Nessuna presa",
+    "mapPicker": "Mappa per scegliere la risorsa",
+    "picked": "Risorsa scelta: {{code}}",
+    "pickHint": "Fai clic su una risorsa della mappa o sceglila dall'elenco.",
+    "create": "Crea"
+  },
+  "key": {
+    "title": "Chiave del dispositivo {{code}}",
+    "hint": "Copiala ora sul dispositivo: Porto ne conserva solo l'impronta e non potrà mostrarla di nuovo.",
+    "label": "Chiave",
+    "example": "Esempio di firma (curl e openssl)"
+  },
+  "keyStatus": {
+    "active": "Attiva",
+    "rotating": "In rotazione",
+    "revoked": "Revocata",
+    "unusable": "Da rigenerare"
+  },
+  "gatewayKind": {
+    "lorawan": "LoRaWAN",
+    "nbiot": "NB-IoT",
+    "mqtt_bridge": "Ponte MQTT",
+    "other": "Altro"
+  },
+  "gateways": {
+    "new": "Nuovo gateway",
+    "hint": "Un gateway invia le letture dei dispositivi collegati con la propria chiave.",
+    "name": "Nome",
+    "devices": "Dispositivi",
+    "create": "Crea gateway"
+  },
+  "sources": {
+    "new": "Nuova sorgente",
+    "hint": "Una sorgente interrogata periodicamente da Porto tramite un'estensione.",
+    "noDrivers": "Nessuna estensione di sorgenti installata.",
+    "driver": "Estensione",
+    "create": "Crea sorgente",
+    "lastPolled": "Ultima interrogazione",
+    "state": "Stato",
+    "enabled": "Attiva",
+    "disabled": "Disattivata",
+    "enable": "Attiva",
+    "disable": "Disattiva",
+    "pollNow": "Interroga ora",
+    "polled": "{{count}} letture acquisite"
+  },
+  "sourceError": {
+    "timeout": "Tempo scaduto",
+    "auth": "Credenziali rifiutate",
+    "bad_response": "Risposta non valida",
+    "unavailable": "Servizio non disponibile"
+  },
+  "settings": {
+    "thresholds": "Soglie",
+    "retention": "Le letture grezze sono conservate {{days}} giorni (impostazione dell'istanza).",
+    "fields": {
+      "hysteresis_readings": "Letture concordi per cambiare stato",
+      "hysteresis_minutes": "Minuti concordi per cambiare stato",
+      "offline_after_minutes": "Non in linea dopo (minuti)",
+      "silent_alert_minutes": "Avviso sensore silenzioso dopo (minuti)",
+      "battery_low_pct": "Batteria scarica sotto (%)",
+      "unexpected_after_minutes": "Occupazione non prevista dopo (minuti)",
+      "departure_cutoff_minutes": "Orario limite di partenza (minuti dalla mezzanotte)",
+      "presence_out_after_hours": "Uscita automatica dopo (ore di posto libero)",
+      "release_proposal_after_days": "Proposta di rilascio dopo (giorni)",
+      "release_proposal_nights": "Notti proposte per il rilascio"
+    },
+    "outOfRange": "Valore fuori dall'intervallo ammesso.",
+    "effectTitle": "Presenza automatica",
+    "effectHint": "Se attiva, per i contratti annuali con una sola barca il posto libero da alcune ore registra l'uscita della barca, e il suo ritorno dopo un'uscita registrata dal sensore. Contratti e occupazioni non cambiano mai senza conferma.",
+    "effect": "Registra automaticamente uscite e rientri"
+  },
+  "history": {
+    "title": "Storico del sensore",
+    "description": "Stato fisico notte per notte confrontato con lo stato contrattuale.",
+    "pick": "Apri lo storico da un dispositivo o da un avviso.",
+    "readings": "Letture grezze",
+    "timeline": "Notti",
+    "legend": "Barra superiore: stato contrattuale; barra inferiore: stato fisico; ! = discrepanza.",
+    "stateAtFrom": "Stato all'inizio del periodo: {{state}}",
+    "changes": "Cambi di stato",
+    "at": "Quando",
+    "change": "Cambio",
+    "reason": "Motivo"
+  },
+  "reason": {
+    "readings": "Letture concordi",
+    "duration": "Durata",
+    "silence": "Silenzio",
+    "device_moved": "Dispositivo spostato"
+  },
+  "dock": {
+    "offline": "Gli avvisi dei sensori sono disponibili solo in linea.",
+    "showOnMap": "Mostra sulla mappa"
+  },
+  "quick": {
+    "title": "Sensore",
+    "since": "Dal {{since}}",
+    "history": "Letture e storico"
+  }
+}

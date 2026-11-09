@@ -80,6 +80,7 @@
   --harbor-bad: #b91c1c;
   --harbor-override: #6d28d9;
   --harbor-muted: #64748b;
+  --harbor-sensor-occupied: #4338ca;
 }
 
 .dark {
@@ -139,6 +140,7 @@
   --harbor-bad: #f87171;
   --harbor-override: #c4b5fd;
   --harbor-muted: #94a3b8;
+  --harbor-sensor-occupied: #a5b4fc;
 }
 
 @theme inline {
@@ -200,6 +202,7 @@
   --color-harbor-bad: var(--harbor-bad);
   --color-harbor-override: var(--harbor-override);
   --color-harbor-muted: var(--harbor-muted);
+  --color-harbor-sensor-occupied: var(--harbor-sensor-occupied);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

@@ -20,7 +20,9 @@ export type GlyphId =
   | 'calendar'
   | 'bolt'
   | 'drop'
-  | 'alert';
+  | 'alert'
+  // M12 (m12-plan §9.2): sensor devices (markers of segment and pedestal devices, the Sensori lens).
+  | 'antenna';
 
 export type LensId =
   | 'occupancy'

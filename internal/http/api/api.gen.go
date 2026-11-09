@@ -4235,22 +4235,22 @@ func (e MaintenancePeriodicityKind) Valid() bool {
 
 // Defines values for MaintenancePriority.
 const (
-	High   MaintenancePriority = "high"
-	Low    MaintenancePriority = "low"
-	Normal MaintenancePriority = "normal"
-	Urgent MaintenancePriority = "urgent"
+	MaintenancePriorityHigh   MaintenancePriority = "high"
+	MaintenancePriorityLow    MaintenancePriority = "low"
+	MaintenancePriorityNormal MaintenancePriority = "normal"
+	MaintenancePriorityUrgent MaintenancePriority = "urgent"
 )
 
 // Valid indicates whether the value is a known member of the MaintenancePriority enum.
 func (e MaintenancePriority) Valid() bool {
 	switch e {
-	case High:
+	case MaintenancePriorityHigh:
 		return true
-	case Low:
+	case MaintenancePriorityLow:
 		return true
-	case Normal:
+	case MaintenancePriorityNormal:
 		return true
-	case Urgent:
+	case MaintenancePriorityUrgent:
 		return true
 	default:
 		return false
@@ -6062,6 +6062,8 @@ func (e PricingStage) Valid() bool {
 
 // Defines values for ProblemType.
 const (
+	ProblemTypeAlertActionNotAllowed     ProblemType = "alert_action_not_allowed"
+	ProblemTypeAlertStale                ProblemType = "alert_stale"
 	ProblemTypeAllocationChanged         ProblemType = "allocation_changed"
 	ProblemTypeAlreadyMember             ProblemType = "already_member"
 	ProblemTypeAlreadyReversed           ProblemType = "already_reversed"
@@ -6118,14 +6120,18 @@ const (
 	ProblemTypeIdempotencyMismatch       ProblemType = "idempotency_mismatch"
 	ProblemTypeImportNotUndoable         ProblemType = "import_not_undoable"
 	ProblemTypeInUse                     ProblemType = "in_use"
+	ProblemTypeIngestTimestampOutOfRange ProblemType = "ingest_timestamp_out_of_range"
+	ProblemTypeIngestUnauthorized        ProblemType = "ingest_unauthorized"
 	ProblemTypeInsuranceRequired         ProblemType = "insurance_required"
 	ProblemTypeInternalError             ProblemType = "internal_error"
 	ProblemTypeInvalidCredentials        ProblemType = "invalid_credentials"
 	ProblemTypeInvalidFile               ProblemType = "invalid_file"
+	ProblemTypeInvalidPayload            ProblemType = "invalid_payload"
 	ProblemTypeInvalidPeriod             ProblemType = "invalid_period"
 	ProblemTypeInvalidReportFilter       ProblemType = "invalid_report_filter"
 	ProblemTypeInvalidResetToken         ProblemType = "invalid_reset_token"
 	ProblemTypeInvalidScope              ProblemType = "invalid_scope"
+	ProblemTypeInvalidSensorResource     ProblemType = "invalid_sensor_resource"
 	ProblemTypeInvalidSignature          ProblemType = "invalid_signature"
 	ProblemTypeInvalidTotp               ProblemType = "invalid_totp"
 	ProblemTypeInvalidTransition         ProblemType = "invalid_transition"
@@ -6163,6 +6169,7 @@ const (
 	ProblemTypePairingCodeInvalid        ProblemType = "pairing_code_invalid"
 	ProblemTypePaperScanRequired         ProblemType = "paper_scan_required"
 	ProblemTypePeripheralUnavailable     ProblemType = "peripheral_unavailable"
+	ProblemTypePhotoInvalid              ProblemType = "photo_invalid"
 	ProblemTypePinnedInvalid             ProblemType = "pinned_invalid"
 	ProblemTypePlacementInvalid          ProblemType = "placement_invalid"
 	ProblemTypePreconditionRequired      ProblemType = "precondition_required"
@@ -6170,6 +6177,7 @@ const (
 	ProblemTypePriceListImmutable        ProblemType = "price_list_immutable"
 	ProblemTypePriceListInvalid          ProblemType = "price_list_invalid"
 	ProblemTypePriceListOverlap          ProblemType = "price_list_overlap"
+	ProblemTypeProfileIncomplete         ProblemType = "profile_incomplete"
 	ProblemTypePromoNotApplicable        ProblemType = "promo_not_applicable"
 	ProblemTypeProposalClosed            ProblemType = "proposal_closed"
 	ProblemTypeProviderDisabled          ProblemType = "provider_disabled"
@@ -6189,6 +6197,7 @@ const (
 	ProblemTypeRemoteUnreachable         ProblemType = "remote_unreachable"
 	ProblemTypeRenewalExists             ProblemType = "renewal_exists"
 	ProblemTypeReportTooLarge            ProblemType = "report_too_large"
+	ProblemTypeResourceHasSensor         ProblemType = "resource_has_sensor"
 	ProblemTypeResourceTaken             ProblemType = "resource_taken"
 	ProblemTypeRestoreBackupNewer        ProblemType = "restore_backup_newer"
 	ProblemTypeRestoreFailed             ProblemType = "restore_failed"
@@ -6196,6 +6205,7 @@ const (
 	ProblemTypeScenarioConflicts         ProblemType = "scenario_conflicts"
 	ProblemTypeScenarioNotDraft          ProblemType = "scenario_not_draft"
 	ProblemTypeScenarioWindowInvalid     ProblemType = "scenario_window_invalid"
+	ProblemTypeSegmentOverlap            ProblemType = "segment_overlap"
 	ProblemTypeSharesInvalid             ProblemType = "shares_invalid"
 	ProblemTypeSignatureOpen             ProblemType = "signature_open"
 	ProblemTypeSlugTaken                 ProblemType = "slug_taken"
@@ -6233,6 +6243,10 @@ const (
 // Valid indicates whether the value is a known member of the ProblemType enum.
 func (e ProblemType) Valid() bool {
 	switch e {
+	case ProblemTypeAlertActionNotAllowed:
+		return true
+	case ProblemTypeAlertStale:
+		return true
 	case ProblemTypeAllocationChanged:
 		return true
 	case ProblemTypeAlreadyMember:
@@ -6345,6 +6359,10 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeInUse:
 		return true
+	case ProblemTypeIngestTimestampOutOfRange:
+		return true
+	case ProblemTypeIngestUnauthorized:
+		return true
 	case ProblemTypeInsuranceRequired:
 		return true
 	case ProblemTypeInternalError:
@@ -6353,6 +6371,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeInvalidFile:
 		return true
+	case ProblemTypeInvalidPayload:
+		return true
 	case ProblemTypeInvalidPeriod:
 		return true
 	case ProblemTypeInvalidReportFilter:
@@ -6360,6 +6380,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeInvalidResetToken:
 		return true
 	case ProblemTypeInvalidScope:
+		return true
+	case ProblemTypeInvalidSensorResource:
 		return true
 	case ProblemTypeInvalidSignature:
 		return true
@@ -6435,6 +6457,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypePeripheralUnavailable:
 		return true
+	case ProblemTypePhotoInvalid:
+		return true
 	case ProblemTypePinnedInvalid:
 		return true
 	case ProblemTypePlacementInvalid:
@@ -6448,6 +6472,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypePriceListInvalid:
 		return true
 	case ProblemTypePriceListOverlap:
+		return true
+	case ProblemTypeProfileIncomplete:
 		return true
 	case ProblemTypePromoNotApplicable:
 		return true
@@ -6487,6 +6513,8 @@ func (e ProblemType) Valid() bool {
 		return true
 	case ProblemTypeReportTooLarge:
 		return true
+	case ProblemTypeResourceHasSensor:
+		return true
 	case ProblemTypeResourceTaken:
 		return true
 	case ProblemTypeRestoreBackupNewer:
@@ -6500,6 +6528,8 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeScenarioNotDraft:
 		return true
 	case ProblemTypeScenarioWindowInvalid:
+		return true
+	case ProblemTypeSegmentOverlap:
 		return true
 	case ProblemTypeSharesInvalid:
 		return true
@@ -6564,6 +6594,138 @@ func (e ProblemType) Valid() bool {
 	case ProblemTypeWorkOrderClosed:
 		return true
 	case ProblemTypeWorkOrderHasCharges:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ProfilePhotoFileContentType.
+const (
+	ProfilePhotoFileContentTypeImagejpeg ProfilePhotoFileContentType = "image/jpeg"
+	ProfilePhotoFileContentTypeImagepng  ProfilePhotoFileContentType = "image/png"
+)
+
+// Valid indicates whether the value is a known member of the ProfilePhotoFileContentType enum.
+func (e ProfilePhotoFileContentType) Valid() bool {
+	switch e {
+	case ProfilePhotoFileContentTypeImagejpeg:
+		return true
+	case ProfilePhotoFileContentTypeImagepng:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ProfilePoiKind.
+const (
+	ProfilePoiKindEntrance ProfilePoiKind = "entrance"
+	ProfilePoiKindFuel     ProfilePoiKind = "fuel"
+	ProfilePoiKindOffice   ProfilePoiKind = "office"
+	ProfilePoiKindPumpOut  ProfilePoiKind = "pump_out"
+)
+
+// Valid indicates whether the value is a known member of the ProfilePoiKind enum.
+func (e ProfilePoiKind) Valid() bool {
+	switch e {
+	case ProfilePoiKindEntrance:
+		return true
+	case ProfilePoiKindFuel:
+		return true
+	case ProfilePoiKindOffice:
+		return true
+	case ProfilePoiKindPumpOut:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ProfileSeabed.
+const (
+	ProfileSeabedMixed ProfileSeabed = "mixed"
+	ProfileSeabedMud   ProfileSeabed = "mud"
+	ProfileSeabedOther ProfileSeabed = "other"
+	ProfileSeabedRock  ProfileSeabed = "rock"
+	ProfileSeabedSand  ProfileSeabed = "sand"
+	ProfileSeabedWeed  ProfileSeabed = "weed"
+)
+
+// Valid indicates whether the value is a known member of the ProfileSeabed enum.
+func (e ProfileSeabed) Valid() bool {
+	switch e {
+	case ProfileSeabedMixed:
+		return true
+	case ProfileSeabedMud:
+		return true
+	case ProfileSeabedOther:
+		return true
+	case ProfileSeabedRock:
+		return true
+	case ProfileSeabedSand:
+		return true
+	case ProfileSeabedWeed:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ProfileServicesPowerAmps.
+const (
+	ProfileServicesPowerAmpsN125 ProfileServicesPowerAmps = 125
+	ProfileServicesPowerAmpsN16  ProfileServicesPowerAmps = 16
+	ProfileServicesPowerAmpsN32  ProfileServicesPowerAmps = 32
+	ProfileServicesPowerAmpsN63  ProfileServicesPowerAmps = 63
+)
+
+// Valid indicates whether the value is a known member of the ProfileServicesPowerAmps enum.
+func (e ProfileServicesPowerAmps) Valid() bool {
+	switch e {
+	case ProfileServicesPowerAmpsN125:
+		return true
+	case ProfileServicesPowerAmpsN16:
+		return true
+	case ProfileServicesPowerAmpsN32:
+		return true
+	case ProfileServicesPowerAmpsN63:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ProfileWind.
+const (
+	E  ProfileWind = "E"
+	N  ProfileWind = "N"
+	NE ProfileWind = "NE"
+	NW ProfileWind = "NW"
+	S  ProfileWind = "S"
+	SE ProfileWind = "SE"
+	SW ProfileWind = "SW"
+	W  ProfileWind = "W"
+)
+
+// Valid indicates whether the value is a known member of the ProfileWind enum.
+func (e ProfileWind) Valid() bool {
+	switch e {
+	case E:
+		return true
+	case N:
+		return true
+	case NE:
+		return true
+	case NW:
+		return true
+	case S:
+		return true
+	case SE:
+		return true
+	case SW:
+		return true
+	case W:
 		return true
 	default:
 		return false
@@ -8318,6 +8480,7 @@ const (
 	ReportKeyRental          ReportKey = "rental"
 	ReportKeyRevenueClasses  ReportKey = "revenue-classes"
 	ReportKeyRights          ReportKey = "rights"
+	ReportKeySensors         ReportKey = "sensors"
 	ReportKeyStorage         ReportKey = "storage"
 	ReportKeyUtilities       ReportKey = "utilities"
 	ReportKeyVessels         ReportKey = "vessels"
@@ -8362,6 +8525,8 @@ func (e ReportKey) Valid() bool {
 	case ReportKeyRevenueClasses:
 		return true
 	case ReportKeyRights:
+		return true
+	case ReportKeySensors:
 		return true
 	case ReportKeyStorage:
 		return true
@@ -8841,6 +9006,432 @@ func (e SearchPurpose) Valid() bool {
 	case SearchPurposeContract:
 		return true
 	case SearchPurposeTransit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorAlertAction.
+const (
+	ConfirmArrival SensorAlertAction = "confirm_arrival"
+	ConfirmRelease SensorAlertAction = "confirm_release"
+	CreateTask     SensorAlertAction = "create_task"
+	Dismiss        SensorAlertAction = "dismiss"
+	RevokeRelease  SensorAlertAction = "revoke_release"
+)
+
+// Valid indicates whether the value is a known member of the SensorAlertAction enum.
+func (e SensorAlertAction) Valid() bool {
+	switch e {
+	case ConfirmArrival:
+		return true
+	case ConfirmRelease:
+		return true
+	case CreateTask:
+		return true
+	case Dismiss:
+		return true
+	case RevokeRelease:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorAlertActionInputPriority.
+const (
+	SensorAlertActionInputPriorityHigh   SensorAlertActionInputPriority = "high"
+	SensorAlertActionInputPriorityLow    SensorAlertActionInputPriority = "low"
+	SensorAlertActionInputPriorityNormal SensorAlertActionInputPriority = "normal"
+	SensorAlertActionInputPriorityUrgent SensorAlertActionInputPriority = "urgent"
+)
+
+// Valid indicates whether the value is a known member of the SensorAlertActionInputPriority enum.
+func (e SensorAlertActionInputPriority) Valid() bool {
+	switch e {
+	case SensorAlertActionInputPriorityHigh:
+		return true
+	case SensorAlertActionInputPriorityLow:
+		return true
+	case SensorAlertActionInputPriorityNormal:
+		return true
+	case SensorAlertActionInputPriorityUrgent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorAlertKind.
+const (
+	SensorAlertKindBatteryLow         SensorAlertKind = "battery_low"
+	SensorAlertKindDeviceSilent       SensorAlertKind = "device_silent"
+	SensorAlertKindEarlyReturn        SensorAlertKind = "early_return"
+	SensorAlertKindReleaseProposal    SensorAlertKind = "release_proposal"
+	SensorAlertKindReturnDetected     SensorAlertKind = "return_detected"
+	SensorAlertKindTransitArrival     SensorAlertKind = "transit_arrival"
+	SensorAlertKindUnexpectedOccupied SensorAlertKind = "unexpected_occupied"
+)
+
+// Valid indicates whether the value is a known member of the SensorAlertKind enum.
+func (e SensorAlertKind) Valid() bool {
+	switch e {
+	case SensorAlertKindBatteryLow:
+		return true
+	case SensorAlertKindDeviceSilent:
+		return true
+	case SensorAlertKindEarlyReturn:
+		return true
+	case SensorAlertKindReleaseProposal:
+		return true
+	case SensorAlertKindReturnDetected:
+		return true
+	case SensorAlertKindTransitArrival:
+		return true
+	case SensorAlertKindUnexpectedOccupied:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorAlertStatus.
+const (
+	SensorAlertStatusConfirmed SensorAlertStatus = "confirmed"
+	SensorAlertStatusDismissed SensorAlertStatus = "dismissed"
+	SensorAlertStatusOpen      SensorAlertStatus = "open"
+	SensorAlertStatusResolved  SensorAlertStatus = "resolved"
+)
+
+// Valid indicates whether the value is a known member of the SensorAlertStatus enum.
+func (e SensorAlertStatus) Valid() bool {
+	switch e {
+	case SensorAlertStatusConfirmed:
+		return true
+	case SensorAlertStatusDismissed:
+		return true
+	case SensorAlertStatusOpen:
+		return true
+	case SensorAlertStatusResolved:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorContractual.
+const (
+	SensorContractualBlock          SensorContractual = "block"
+	SensorContractualContract       SensorContractual = "contract"
+	SensorContractualFree           SensorContractual = "free"
+	SensorContractualMaintenance    SensorContractual = "maintenance"
+	SensorContractualReleased       SensorContractual = "released"
+	SensorContractualReleasedResold SensorContractual = "released_resold"
+	SensorContractualTransit        SensorContractual = "transit"
+)
+
+// Valid indicates whether the value is a known member of the SensorContractual enum.
+func (e SensorContractual) Valid() bool {
+	switch e {
+	case SensorContractualBlock:
+		return true
+	case SensorContractualContract:
+		return true
+	case SensorContractualFree:
+		return true
+	case SensorContractualMaintenance:
+		return true
+	case SensorContractualReleased:
+		return true
+	case SensorContractualReleasedResold:
+		return true
+	case SensorContractualTransit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorDiscrepancyKind.
+const (
+	Absent             SensorDiscrepancyKind = "absent"
+	OccupiedUnexpected SensorDiscrepancyKind = "occupied_unexpected"
+)
+
+// Valid indicates whether the value is a known member of the SensorDiscrepancyKind enum.
+func (e SensorDiscrepancyKind) Valid() bool {
+	switch e {
+	case Absent:
+		return true
+	case OccupiedUnexpected:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorExpectation.
+const (
+	SensorExpectationEither   SensorExpectation = "either"
+	SensorExpectationFree     SensorExpectation = "free"
+	SensorExpectationNone     SensorExpectation = "none"
+	SensorExpectationOccupied SensorExpectation = "occupied"
+)
+
+// Valid indicates whether the value is a known member of the SensorExpectation enum.
+func (e SensorExpectation) Valid() bool {
+	switch e {
+	case SensorExpectationEither:
+		return true
+	case SensorExpectationFree:
+		return true
+	case SensorExpectationNone:
+		return true
+	case SensorExpectationOccupied:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorGatewayKind.
+const (
+	SensorGatewayKindLorawan    SensorGatewayKind = "lorawan"
+	SensorGatewayKindMqttBridge SensorGatewayKind = "mqtt_bridge"
+	SensorGatewayKindNbiot      SensorGatewayKind = "nbiot"
+	SensorGatewayKindOther      SensorGatewayKind = "other"
+)
+
+// Valid indicates whether the value is a known member of the SensorGatewayKind enum.
+func (e SensorGatewayKind) Valid() bool {
+	switch e {
+	case SensorGatewayKindLorawan:
+		return true
+	case SensorGatewayKindMqttBridge:
+		return true
+	case SensorGatewayKindNbiot:
+		return true
+	case SensorGatewayKindOther:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorHealth.
+const (
+	SensorHealthBatteryLow SensorHealth = "battery_low"
+	SensorHealthOffline    SensorHealth = "offline"
+	SensorHealthOk         SensorHealth = "ok"
+	SensorHealthSilent     SensorHealth = "silent"
+)
+
+// Valid indicates whether the value is a known member of the SensorHealth enum.
+func (e SensorHealth) Valid() bool {
+	switch e {
+	case SensorHealthBatteryLow:
+		return true
+	case SensorHealthOffline:
+		return true
+	case SensorHealthOk:
+		return true
+	case SensorHealthSilent:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorIngestItemCode.
+const (
+	DeviceInactive   SensorIngestItemCode = "device_inactive"
+	DeviceMismatch   SensorIngestItemCode = "device_mismatch"
+	DeviceNotBound   SensorIngestItemCode = "device_not_bound"
+	InvalidState     SensorIngestItemCode = "invalid_state"
+	InvalidValue     SensorIngestItemCode = "invalid_value"
+	ObservedInFuture SensorIngestItemCode = "observed_in_future"
+	ObservedTooOld   SensorIngestItemCode = "observed_too_old"
+	UnknownDevice    SensorIngestItemCode = "unknown_device"
+)
+
+// Valid indicates whether the value is a known member of the SensorIngestItemCode enum.
+func (e SensorIngestItemCode) Valid() bool {
+	switch e {
+	case DeviceInactive:
+		return true
+	case DeviceMismatch:
+		return true
+	case DeviceNotBound:
+		return true
+	case InvalidState:
+		return true
+	case InvalidValue:
+		return true
+	case ObservedInFuture:
+		return true
+	case ObservedTooOld:
+		return true
+	case UnknownDevice:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorKeyStatus.
+const (
+	SensorKeyStatusActive   SensorKeyStatus = "active"
+	SensorKeyStatusRevoked  SensorKeyStatus = "revoked"
+	SensorKeyStatusRotating SensorKeyStatus = "rotating"
+	SensorKeyStatusUnusable SensorKeyStatus = "unusable"
+)
+
+// Valid indicates whether the value is a known member of the SensorKeyStatus enum.
+func (e SensorKeyStatus) Valid() bool {
+	switch e {
+	case SensorKeyStatusActive:
+		return true
+	case SensorKeyStatusRevoked:
+		return true
+	case SensorKeyStatusRotating:
+		return true
+	case SensorKeyStatusUnusable:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorKind.
+const (
+	SensorKindCamera       SensorKind = "camera"
+	SensorKindInfrared     SensorKind = "infrared"
+	SensorKindMagnetometer SensorKind = "magnetometer"
+	SensorKindOther        SensorKind = "other"
+	SensorKindRadar        SensorKind = "radar"
+	SensorKindUltrasonic   SensorKind = "ultrasonic"
+)
+
+// Valid indicates whether the value is a known member of the SensorKind enum.
+func (e SensorKind) Valid() bool {
+	switch e {
+	case SensorKindCamera:
+		return true
+	case SensorKindInfrared:
+		return true
+	case SensorKindMagnetometer:
+		return true
+	case SensorKindOther:
+		return true
+	case SensorKindRadar:
+		return true
+	case SensorKindUltrasonic:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorPhysicalState.
+const (
+	SensorPhysicalStateFree     SensorPhysicalState = "free"
+	SensorPhysicalStateOccupied SensorPhysicalState = "occupied"
+	SensorPhysicalStateUnknown  SensorPhysicalState = "unknown"
+)
+
+// Valid indicates whether the value is a known member of the SensorPhysicalState enum.
+func (e SensorPhysicalState) Valid() bool {
+	switch e {
+	case SensorPhysicalStateFree:
+		return true
+	case SensorPhysicalStateOccupied:
+		return true
+	case SensorPhysicalStateUnknown:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorResourceType.
+const (
+	SensorResourceTypeBerth       SensorResourceType = "berth"
+	SensorResourceTypeDynamicArea SensorResourceType = "dynamic_area"
+	SensorResourceTypePedestal    SensorResourceType = "pedestal"
+)
+
+// Valid indicates whether the value is a known member of the SensorResourceType enum.
+func (e SensorResourceType) Valid() bool {
+	switch e {
+	case SensorResourceTypeBerth:
+		return true
+	case SensorResourceTypeDynamicArea:
+		return true
+	case SensorResourceTypePedestal:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorSourceErrorCode.
+const (
+	Auth        SensorSourceErrorCode = "auth"
+	BadResponse SensorSourceErrorCode = "bad_response"
+	Timeout     SensorSourceErrorCode = "timeout"
+	Unavailable SensorSourceErrorCode = "unavailable"
+)
+
+// Valid indicates whether the value is a known member of the SensorSourceErrorCode enum.
+func (e SensorSourceErrorCode) Valid() bool {
+	switch e {
+	case Auth:
+		return true
+	case BadResponse:
+		return true
+	case Timeout:
+		return true
+	case Unavailable:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorStateChangeReason.
+const (
+	DeviceMoved SensorStateChangeReason = "device_moved"
+	Duration    SensorStateChangeReason = "duration"
+	Readings    SensorStateChangeReason = "readings"
+	Silence     SensorStateChangeReason = "silence"
+)
+
+// Valid indicates whether the value is a known member of the SensorStateChangeReason enum.
+func (e SensorStateChangeReason) Valid() bool {
+	switch e {
+	case DeviceMoved:
+		return true
+	case Duration:
+		return true
+	case Readings:
+		return true
+	case Silence:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorsReportView.
+const (
+	SensorsReportViewDiscrepancies SensorsReportView = "discrepancies"
+)
+
+// Valid indicates whether the value is a known member of the SensorsReportView enum.
+func (e SensorsReportView) Valid() bool {
+	switch e {
+	case SensorsReportViewDiscrepancies:
 		return true
 	default:
 		return false
@@ -12174,6 +12765,54 @@ func (e GetRightsReportParamsSection) Valid() bool {
 	}
 }
 
+// Defines values for GetSensorsReportParamsView.
+const (
+	GetSensorsReportParamsViewDiscrepancies GetSensorsReportParamsView = "discrepancies"
+)
+
+// Valid indicates whether the value is a known member of the GetSensorsReportParamsView enum.
+func (e GetSensorsReportParamsView) Valid() bool {
+	switch e {
+	case GetSensorsReportParamsViewDiscrepancies:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetSensorsReportParamsGroupBy.
+const (
+	GetSensorsReportParamsGroupByGroup    GetSensorsReportParamsGroupBy = "group"
+	GetSensorsReportParamsGroupByKind     GetSensorsReportParamsGroupBy = "kind"
+	GetSensorsReportParamsGroupByMap      GetSensorsReportParamsGroupBy = "map"
+	GetSensorsReportParamsGroupByMonth    GetSensorsReportParamsGroupBy = "month"
+	GetSensorsReportParamsGroupByNight    GetSensorsReportParamsGroupBy = "night"
+	GetSensorsReportParamsGroupByResource GetSensorsReportParamsGroupBy = "resource"
+	GetSensorsReportParamsGroupByWeek     GetSensorsReportParamsGroupBy = "week"
+)
+
+// Valid indicates whether the value is a known member of the GetSensorsReportParamsGroupBy enum.
+func (e GetSensorsReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetSensorsReportParamsGroupByGroup:
+		return true
+	case GetSensorsReportParamsGroupByKind:
+		return true
+	case GetSensorsReportParamsGroupByMap:
+		return true
+	case GetSensorsReportParamsGroupByMonth:
+		return true
+	case GetSensorsReportParamsGroupByNight:
+		return true
+	case GetSensorsReportParamsGroupByResource:
+		return true
+	case GetSensorsReportParamsGroupByWeek:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetStorageReportParamsGroupBy.
 const (
 	GetStorageReportParamsGroupByArea         GetStorageReportParamsGroupBy = "area"
@@ -12667,7 +13306,7 @@ type AccrualsReport struct {
 	Period  ReportPeriod     `json:"period"`
 	Records []AccrualsRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -12969,7 +13608,7 @@ type AllocationWasteReport struct {
 	Period  ReportPeriod  `json:"period"`
 	Records []WasteRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report      ReportKey         `json:"report"`
 	Section     *string           `json:"section,omitempty"`
 	Suggestions []WasteSuggestion `json:"suggestions"`
@@ -13511,7 +14150,7 @@ type BerthRevenueReport struct {
 	Period  ReportPeriod         `json:"period"`
 	Records []BerthRevenueRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -14337,7 +14976,7 @@ type CashReport struct {
 	Period  ReportPeriod `json:"period"`
 	Records []CashRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -14902,7 +15541,7 @@ type ChargesReport struct {
 	Period  ReportPeriod    `json:"period"`
 	Records []ChargesRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -16251,7 +16890,7 @@ type CustomersReport struct {
 	Period  ReportPeriod      `json:"period"`
 	Records []CustomersRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -17058,7 +17697,7 @@ type EfficiencyReport struct {
 	Period  ReportPeriod       `json:"period"`
 	Records []EfficiencyRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -18945,7 +19584,7 @@ type LostDemandReport struct {
 	Period  ReportPeriod       `json:"period"`
 	Records []LostDemandRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -19147,7 +19786,7 @@ type MaintenanceReport struct {
 	Period  ReportPeriod              `json:"period"`
 	Records []MaintenanceReportRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -19824,6 +20463,158 @@ type MarinaPatch struct {
 	Timezone            *string                 `json:"timezone,omitempty"`
 }
 
+// MarinaProfile defines model for MarinaProfile.
+type MarinaProfile struct {
+	AccessImages *[]ProfilePhoto `json:"access_images,omitempty"`
+
+	// AccessNotes Text per language; it is the source language, en optional
+	AccessNotes *ProfileText    `json:"access_notes,omitempty"`
+	Address     *ProfileAddress `json:"address,omitempty"`
+
+	// BerthsTotal Override, else the active berths
+	BerthsTotal         int  `json:"berths_total"`
+	BerthsTotalOverride *int `json:"berths_total_override,omitempty"`
+
+	// DepthEntranceCm Length in integer centimetres
+	DepthEntranceCm *Cm `json:"depth_entrance_cm,omitempty"`
+
+	// DepthMaxCm Length in integer centimetres
+	DepthMaxCm *Cm `json:"depth_max_cm,omitempty"`
+
+	// DepthMinCm Length in integer centimetres
+	DepthMinCm *Cm `json:"depth_min_cm,omitempty"`
+
+	// DepthQuayCm Length in integer centimetres
+	DepthQuayCm *Cm `json:"depth_quay_cm,omitempty"`
+
+	// Description Text per language; it is the source language, en optional
+	Description *ProfileText    `json:"description,omitempty"`
+	DockHours   *[]ProfileHours `json:"dock_hours,omitempty"`
+	Email       *string         `json:"email,omitempty"`
+
+	// EntranceLatE7 WGS84 latitude x 10^7
+	EntranceLatE7 *int64 `json:"entrance_lat_e7,omitempty"`
+
+	// EntranceLonE7 WGS84 longitude x 10^7
+	EntranceLonE7 *int64 `json:"entrance_lon_e7,omitempty"`
+
+	// HoursNote Text per language; it is the source language, en optional
+	HoursNote *ProfileText `json:"hours_note,omitempty"`
+
+	// Lights Text per language; it is the source language, en optional
+	Lights *ProfileText `json:"lights,omitempty"`
+
+	// Locales Subset of the marina locales; it is always included
+	Locales *[]Locale `json:"locales,omitempty"`
+	MapId   *string   `json:"map_id,omitempty"`
+
+	// MaxLoaCm Length in integer centimetres
+	MaxLoaCm *Cm `json:"max_loa_cm,omitempty"`
+
+	// Missing What publishing still needs (position, contact, name)
+	Missing             *[]string       `json:"missing,omitempty"`
+	OccupancyCategories *[]string       `json:"occupancy_categories,omitempty"`
+	OfficeHours         *[]ProfileHours `json:"office_hours,omitempty"`
+	Phone               *string         `json:"phone,omitempty"`
+	Photos              *[]ProfilePhoto `json:"photos,omitempty"`
+	Poi                 *[]ProfilePoi   `json:"poi,omitempty"`
+
+	// PricesAvailable An active transit list publishes its matrix (publish_matrix)
+	PricesAvailable bool           `json:"prices_available"`
+	PublicUrl       string         `json:"public_url"`
+	Published       bool           `json:"published"`
+	PublishedAt     *time.Time     `json:"published_at,omitempty"`
+	Seabed          *ProfileSeabed `json:"seabed,omitempty"`
+
+	// Services Typed services; booleans default false
+	Services      *ProfileServices `json:"services,omitempty"`
+	Shelter       *[]ProfileWind   `json:"shelter,omitempty"`
+	ShowMap       *bool            `json:"show_map,omitempty"`
+	ShowOccupancy *bool            `json:"show_occupancy,omitempty"`
+	ShowPrices    *bool            `json:"show_prices,omitempty"`
+
+	// TransitBerths Override, else the transit-only or online-sellable berths
+	TransitBerths         int        `json:"transit_berths"`
+	TransitBerthsOverride *int       `json:"transit_berths_override,omitempty"`
+	UpdatedAt             *time.Time `json:"updated_at,omitempty"`
+	Version               int64      `json:"version"`
+	VhfChannels           *[]int     `json:"vhf_channels,omitempty"`
+
+	// Website https only
+	Website *string `json:"website,omitempty"`
+}
+
+// MarinaProfileInput defines model for MarinaProfileInput.
+type MarinaProfileInput struct {
+	AccessImages *[]ProfilePhoto `json:"access_images,omitempty"`
+
+	// AccessNotes Text per language; it is the source language, en optional
+	AccessNotes         *ProfileText    `json:"access_notes,omitempty"`
+	Address             *ProfileAddress `json:"address,omitempty"`
+	BerthsTotalOverride *int            `json:"berths_total_override,omitempty"`
+
+	// DepthEntranceCm Length in integer centimetres
+	DepthEntranceCm *Cm `json:"depth_entrance_cm,omitempty"`
+
+	// DepthMaxCm Length in integer centimetres
+	DepthMaxCm *Cm `json:"depth_max_cm,omitempty"`
+
+	// DepthMinCm Length in integer centimetres
+	DepthMinCm *Cm `json:"depth_min_cm,omitempty"`
+
+	// DepthQuayCm Length in integer centimetres
+	DepthQuayCm *Cm `json:"depth_quay_cm,omitempty"`
+
+	// Description Text per language; it is the source language, en optional
+	Description *ProfileText    `json:"description,omitempty"`
+	DockHours   *[]ProfileHours `json:"dock_hours,omitempty"`
+	Email       *string         `json:"email,omitempty"`
+
+	// EntranceLatE7 WGS84 latitude x 10^7
+	EntranceLatE7 *int64 `json:"entrance_lat_e7,omitempty"`
+
+	// EntranceLonE7 WGS84 longitude x 10^7
+	EntranceLonE7 *int64 `json:"entrance_lon_e7,omitempty"`
+
+	// HoursNote Text per language; it is the source language, en optional
+	HoursNote *ProfileText `json:"hours_note,omitempty"`
+
+	// Lights Text per language; it is the source language, en optional
+	Lights *ProfileText `json:"lights,omitempty"`
+
+	// Locales Subset of the marina locales; it is always included
+	Locales *[]Locale `json:"locales,omitempty"`
+	MapId   *string   `json:"map_id,omitempty"`
+
+	// MaxLoaCm Length in integer centimetres
+	MaxLoaCm            *Cm             `json:"max_loa_cm,omitempty"`
+	OccupancyCategories *[]string       `json:"occupancy_categories,omitempty"`
+	OfficeHours         *[]ProfileHours `json:"office_hours,omitempty"`
+	Phone               *string         `json:"phone,omitempty"`
+	Photos              *[]ProfilePhoto `json:"photos,omitempty"`
+	Poi                 *[]ProfilePoi   `json:"poi,omitempty"`
+	Seabed              *ProfileSeabed  `json:"seabed,omitempty"`
+
+	// Services Typed services; booleans default false
+	Services              *ProfileServices `json:"services,omitempty"`
+	Shelter               *[]ProfileWind   `json:"shelter,omitempty"`
+	ShowMap               *bool            `json:"show_map,omitempty"`
+	ShowOccupancy         *bool            `json:"show_occupancy,omitempty"`
+	ShowPrices            *bool            `json:"show_prices,omitempty"`
+	TransitBerthsOverride *int             `json:"transit_berths_override,omitempty"`
+	VhfChannels           *[]int           `json:"vhf_channels,omitempty"`
+
+	// Website https only
+	Website *string `json:"website,omitempty"`
+}
+
+// MarinaProfilePreview defines model for MarinaProfilePreview.
+type MarinaProfilePreview struct {
+	// JsonLd The JSON-LD Marina/Place object the page would embed
+	JsonLd  map[string]interface{} `json:"json_ld"`
+	Profile PublicProfile          `json:"profile"`
+}
+
 // MarinaRef defines model for MarinaRef.
 type MarinaRef struct {
 	Id   string `json:"id"`
@@ -20286,7 +21077,7 @@ type OccupancyReport struct {
 	Period  ReportPeriod      `json:"period"`
 	Records []OccupancyRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -21256,7 +22047,7 @@ type PaymentsReport struct {
 	Period  ReportPeriod     `json:"period"`
 	Records []PaymentsRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -21673,7 +22464,7 @@ type PresencesReport struct {
 	Period  ReportPeriod      `json:"period"`
 	Records []PresencesRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -22295,7 +23086,7 @@ type ProductionReport struct {
 	Period  ReportPeriod       `json:"period"`
 	Records []ProductionRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -22319,6 +23110,107 @@ type ProductionTotals struct {
 	TransitNights          int64 `json:"transit_nights"`
 	Transits               int64 `json:"transits"`
 }
+
+// ProfileAddress defines model for ProfileAddress.
+type ProfileAddress struct {
+	City *string `json:"city,omitempty"`
+
+	// Country ISO 3166-1 alpha-2
+	Country    *string `json:"country,omitempty"`
+	PostalCode *string `json:"postal_code,omitempty"`
+	Province   *string `json:"province,omitempty"`
+	Street     *string `json:"street,omitempty"`
+}
+
+// ProfileFuel defines model for ProfileFuel.
+type ProfileFuel struct {
+	Diesel *bool `json:"diesel,omitempty"`
+
+	// Hours Text per language; it is the source language, en optional
+	Hours  *ProfileText `json:"hours,omitempty"`
+	Petrol *bool        `json:"petrol,omitempty"`
+}
+
+// ProfileHours defines model for ProfileHours.
+type ProfileHours struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+
+	// Weekday 1 = Monday
+	Weekday int `json:"weekday"`
+}
+
+// ProfilePhoto defines model for ProfilePhoto.
+type ProfilePhoto struct {
+	// Alt Text per language; it is the source language, en optional
+	Alt    *ProfileText `json:"alt,omitempty"`
+	FileId string       `json:"file_id"`
+	Sort   *int         `json:"sort,omitempty"`
+}
+
+// ProfilePhotoFile An uploaded, re-encoded photo (not yet referenced by the profile)
+type ProfilePhotoFile struct {
+	ContentType ProfilePhotoFileContentType `json:"content_type"`
+	FileId      string                      `json:"file_id"`
+	Height      int                         `json:"height"`
+	SizeBytes   int64                       `json:"size_bytes"`
+	Width       int                         `json:"width"`
+}
+
+// ProfilePhotoFileContentType defines model for ProfilePhotoFile.ContentType.
+type ProfilePhotoFileContentType string
+
+// ProfilePoi Point of interest on the simplified map, in map coordinates
+type ProfilePoi struct {
+	Kind ProfilePoiKind `json:"kind"`
+
+	// XCm Length in integer centimetres
+	XCm Cm `json:"x_cm"`
+
+	// YCm Length in integer centimetres
+	YCm Cm `json:"y_cm"`
+}
+
+// ProfilePoiKind defines model for ProfilePoi.Kind.
+type ProfilePoiKind string
+
+// ProfileSeabed defines model for ProfileSeabed.
+type ProfileSeabed string
+
+// ProfileServices Typed services; booleans default false
+type ProfileServices struct {
+	CraneKg      *int64                      `json:"crane_kg,omitempty"`
+	Fuel         *ProfileFuel                `json:"fuel,omitempty"`
+	Laundry      *bool                       `json:"laundry,omitempty"`
+	Parking      *bool                       `json:"parking,omitempty"`
+	PowerAmps    *[]ProfileServicesPowerAmps `json:"power_amps,omitempty"`
+	PumpOut      *bool                       `json:"pump_out,omitempty"`
+	Rental       *bool                       `json:"rental,omitempty"`
+	Restaurant   *bool                       `json:"restaurant,omitempty"`
+	Shops        *bool                       `json:"shops,omitempty"`
+	Showers      *bool                       `json:"showers,omitempty"`
+	Slipway      *bool                       `json:"slipway,omitempty"`
+	Storage      *bool                       `json:"storage,omitempty"`
+	Toilets      *bool                       `json:"toilets,omitempty"`
+	Transport    *bool                       `json:"transport,omitempty"`
+	TravelLiftKg *int64                      `json:"travel_lift_kg,omitempty"`
+	Waste        *bool                       `json:"waste,omitempty"`
+	Water        *bool                       `json:"water,omitempty"`
+	Wifi         *bool                       `json:"wifi,omitempty"`
+	Yard         *bool                       `json:"yard,omitempty"`
+}
+
+// ProfileServicesPowerAmps defines model for ProfileServices.PowerAmps.
+type ProfileServicesPowerAmps int
+
+// ProfileText Text per language; it is the source language, en optional
+type ProfileText struct {
+	En *string `json:"en,omitempty"`
+	It *string `json:"it,omitempty"`
+}
+
+// ProfileWind defines model for ProfileWind.
+type ProfileWind string
 
 // ProviderTestResult defines model for ProviderTestResult.
 type ProviderTestResult struct {
@@ -22382,7 +23274,28 @@ type PublicMarina struct {
 	EmbedOrigins *[]string `json:"embed_origins,omitempty"`
 	Locales      []Locale  `json:"locales"`
 	Name         string    `json:"name"`
-	Slug         string    `json:"slug"`
+
+	// ProfilePublished The public profile /p/{slug} is published (M12)
+	ProfilePublished *bool  `json:"profile_published,omitempty"`
+	Slug             string `json:"slug"`
+}
+
+// PublicOccupancy defines model for PublicOccupancy.
+type PublicOccupancy struct {
+	// AsOf Now truncated to 5 minutes
+	AsOf       time.Time                 `json:"as_of"`
+	Categories []PublicOccupancyCategory `json:"categories"`
+
+	// Night Calendar date YYYY-MM-DD in the marina timezone
+	Night IsoDate `json:"night"`
+}
+
+// PublicOccupancyCategory defines model for PublicOccupancyCategory.
+type PublicOccupancyCategory struct {
+	Code        string   `json:"code"`
+	FreeBerths  int      `json:"free_berths"`
+	Name        I18nText `json:"name"`
+	TotalBerths int      `json:"total_berths"`
 }
 
 // PublicOtpRequest defines model for PublicOtpRequest.
@@ -22394,6 +23307,148 @@ type PublicOtpRequest struct {
 // PublicOtpVerify defines model for PublicOtpVerify.
 type PublicOtpVerify struct {
 	Code string `json:"code"`
+}
+
+// PublicPhoto defines model for PublicPhoto.
+type PublicPhoto struct {
+	Alt string `json:"alt"`
+	Url string `json:"url"`
+}
+
+// PublicPriceCell defines model for PublicPriceCell.
+type PublicPriceCell struct {
+	Col int `json:"col"`
+	Row int `json:"row"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents *Cents `json:"total_cents,omitempty"`
+
+	// Unit hour, half_day and day (and week) are accepted only on flat base rules of items with revenue class rental (M11, priced by RentalQuote, ignored by the mooring engine)
+	Unit *TimeUnit `json:"unit,omitempty"`
+}
+
+// PublicPriceColumn defines model for PublicPriceColumn.
+type PublicPriceColumn struct {
+	// Arrival Calendar date YYYY-MM-DD in the marina timezone
+	Arrival IsoDate `json:"arrival"`
+
+	// Departure Calendar date YYYY-MM-DD in the marina timezone
+	Departure IsoDate `json:"departure"`
+	Key       string  `json:"key"`
+	Label     string  `json:"label"`
+}
+
+// PublicPriceMatrix defines model for PublicPriceMatrix.
+type PublicPriceMatrix struct {
+	Cells            []PublicPriceCell   `json:"cells"`
+	Columns          []PublicPriceColumn `json:"columns"`
+	Currency         string              `json:"currency"`
+	PriceIncludesVat bool                `json:"price_includes_vat"`
+
+	// QuotedOn Calendar date YYYY-MM-DD in the marina timezone
+	QuotedOn IsoDate          `json:"quoted_on"`
+	Rows     []PublicPriceRow `json:"rows"`
+}
+
+// PublicPriceRow defines model for PublicPriceRow.
+type PublicPriceRow struct {
+	Key   string `json:"key"`
+	Label string `json:"label"`
+
+	// MaxBeamCm Length in integer centimetres
+	MaxBeamCm *Cm `json:"max_beam_cm,omitempty"`
+
+	// MaxLoaCm Length in integer centimetres
+	MaxLoaCm *Cm `json:"max_loa_cm,omitempty"`
+}
+
+// PublicProfile defines model for PublicProfile.
+type PublicProfile struct {
+	AccessImages *[]PublicPhoto  `json:"access_images,omitempty"`
+	AccessNotes  *string         `json:"access_notes,omitempty"`
+	Address      *ProfileAddress `json:"address,omitempty"`
+	BerthsTotal  *int            `json:"berths_total,omitempty"`
+
+	// BookingUrl /b/{slug}, only when online booking is enabled
+	BookingUrl *string `json:"booking_url,omitempty"`
+
+	// DepthEntranceCm Length in integer centimetres
+	DepthEntranceCm *Cm `json:"depth_entrance_cm,omitempty"`
+
+	// DepthMaxCm Length in integer centimetres
+	DepthMaxCm *Cm `json:"depth_max_cm,omitempty"`
+
+	// DepthMinCm Length in integer centimetres
+	DepthMinCm *Cm `json:"depth_min_cm,omitempty"`
+
+	// DepthQuayCm Length in integer centimetres
+	DepthQuayCm   *Cm                   `json:"depth_quay_cm,omitempty"`
+	Description   *string               `json:"description,omitempty"`
+	DockHours     *[]PublicProfileHours `json:"dock_hours,omitempty"`
+	Email         *string               `json:"email,omitempty"`
+	EntranceLatE7 *int64                `json:"entrance_lat_e7,omitempty"`
+	EntranceLonE7 *int64                `json:"entrance_lon_e7,omitempty"`
+	FuelHours     *string               `json:"fuel_hours,omitempty"`
+	HoursNote     *string               `json:"hours_note,omitempty"`
+	Lang          Locale                `json:"lang"`
+
+	// Latitude Exact decimal degrees from the e7 integer
+	Latitude  *string  `json:"latitude,omitempty"`
+	Lights    *string  `json:"lights,omitempty"`
+	Locales   []Locale `json:"locales"`
+	Longitude *string  `json:"longitude,omitempty"`
+
+	// MaxLoaCm Length in integer centimetres
+	MaxLoaCm    *Cm                   `json:"max_loa_cm,omitempty"`
+	Name        string                `json:"name"`
+	OfficeHours *[]PublicProfileHours `json:"office_hours,omitempty"`
+	PageUrl     string                `json:"page_url"`
+	Phone       *string               `json:"phone,omitempty"`
+	Photos      *[]PublicPhoto        `json:"photos,omitempty"`
+	Seabed      *ProfileSeabed        `json:"seabed,omitempty"`
+	Sections    struct {
+		Map       bool `json:"map"`
+		Occupancy bool `json:"occupancy"`
+		Prices    bool `json:"prices"`
+	} `json:"sections"`
+
+	// Services Typed services; booleans default false
+	Services      *ProfileServices `json:"services,omitempty"`
+	Shelter       *[]ProfileWind   `json:"shelter,omitempty"`
+	Slug          string           `json:"slug"`
+	TransitBerths *int             `json:"transit_berths,omitempty"`
+	Version       int64            `json:"version"`
+	VhfChannels   *[]int           `json:"vhf_channels,omitempty"`
+	Website       *string          `json:"website,omitempty"`
+}
+
+// PublicProfileHours defines model for PublicProfileHours.
+type PublicProfileHours struct {
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Weekday int    `json:"weekday"`
+}
+
+// PublicProfileMap defines model for PublicProfileMap.
+type PublicProfileMap struct {
+	Areas  []SimpleShape `json:"areas"`
+	Berths []SimpleShape `json:"berths"`
+	Land   []SimpleShape `json:"land"`
+
+	// MaxXCm Length in integer centimetres
+	MaxXCm Cm `json:"max_x_cm"`
+
+	// MaxYCm Length in integer centimetres
+	MaxYCm Cm `json:"max_y_cm"`
+
+	// MinXCm Length in integer centimetres
+	MinXCm Cm `json:"min_x_cm"`
+
+	// MinYCm Length in integer centimetres
+	MinYCm     Cm            `json:"min_y_cm"`
+	Poi        []ProfilePoi  `json:"poi"`
+	Structures []SimpleShape `json:"structures"`
+	Version    int64         `json:"version"`
 }
 
 // PublicQuote defines model for PublicQuote.
@@ -23048,7 +24103,7 @@ type ReceivablesReport struct {
 	Period  ReportPeriod        `json:"period"`
 	Records []ReceivablesRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -24395,7 +25450,7 @@ type RentalReport struct {
 	Period  ReportPeriod         `json:"period"`
 	Records []RentalReportRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -24781,7 +25836,7 @@ type ReportEnvelope struct {
 	// Period Inclusive period in the marina time zone (at most 400 days)
 	Period ReportPeriod `json:"period"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -24798,7 +25853,7 @@ type ReportFormat string
 // ReportGranularity defines model for ReportGranularity.
 type ReportGranularity string
 
-// ReportKey Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+// ReportKey Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 type ReportKey string
 
 // ReportLengthBand LOA bands in cm (m7-plan D8)
@@ -24944,7 +25999,7 @@ type RevenueClassesReport struct {
 	Period  ReportPeriod    `json:"period"`
 	Records []ChargesRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -25239,7 +26294,7 @@ type RightsReport struct {
 	Period  ReportPeriod   `json:"period"`
 	Records []RightsRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -25346,6 +26401,636 @@ type SendRemindersInput struct {
 type SendRemindersResult struct {
 	Queued  int `json:"queued"`
 	Skipped int `json:"skipped"`
+}
+
+// SensorAlert defines model for SensorAlert.
+type SensorAlert struct {
+	// AllowedActions Actions valid for the kind and the principal's permissions (empty unless open)
+	AllowedActions  []SensorAlertAction `json:"allowed_actions"`
+	ClearedAt       *time.Time          `json:"cleared_at,omitempty"`
+	DecidedAt       *time.Time          `json:"decided_at,omitempty"`
+	DecidedByUserId *string             `json:"decided_by_user_id,omitempty"`
+	DeviceCode      string              `json:"device_code"`
+	DeviceId        string              `json:"device_id"`
+	Id              string              `json:"id"`
+	Kind            SensorAlertKind     `json:"kind"`
+	MapId           string              `json:"map_id"`
+	Note            *string             `json:"note,omitempty"`
+	OpenedAt        time.Time           `json:"opened_at"`
+
+	// OutcomeRef Id of the presence, release or maintenance task created on confirm
+	OutcomeRef *string `json:"outcome_ref,omitempty"`
+
+	// Refs Ids and enums only
+	Refs         SensorAlertRefs `json:"refs"`
+	ResourceCode string          `json:"resource_code"`
+	ResourceId   string          `json:"resource_id"`
+
+	// ResourceType What a device watches (berth, a [from_cm, to_cm) segment of a linear dynamic area, a pedestal)
+	ResourceType SensorResourceType `json:"resource_type"`
+	Status       SensorAlertStatus  `json:"status"`
+	Version      int64              `json:"version"`
+}
+
+// SensorAlertAction defines model for SensorAlertAction.
+type SensorAlertAction string
+
+// SensorAlertActionInput defines model for SensorAlertActionInput.
+type SensorAlertActionInput struct {
+	Action SensorAlertAction `json:"action"`
+
+	// ConsentConfirmed Required true by confirm_release (422 consent_required)
+	ConsentConfirmed *bool `json:"consent_confirmed,omitempty"`
+
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From     *IsoDate                        `json:"from,omitempty"`
+	Note     *string                         `json:"note,omitempty"`
+	Priority *SensorAlertActionInputPriority `json:"priority,omitempty"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To *IsoDate `json:"to,omitempty"`
+}
+
+// SensorAlertActionInputPriority defines model for SensorAlertActionInput.Priority.
+type SensorAlertActionInputPriority string
+
+// SensorAlertKind defines model for SensorAlertKind.
+type SensorAlertKind string
+
+// SensorAlertList defines model for SensorAlertList.
+type SensorAlertList struct {
+	Items      []SensorAlert `json:"items"`
+	NextCursor *string       `json:"next_cursor"`
+}
+
+// SensorAlertRefs Ids and enums only
+type SensorAlertRefs struct {
+	AllocationId  *string    `json:"allocation_id,omitempty"`
+	ContractId    *string    `json:"contract_id,omitempty"`
+	PhysicalSince *time.Time `json:"physical_since,omitempty"`
+	PresenceId    *string    `json:"presence_id,omitempty"`
+
+	// ProposedFrom Calendar date YYYY-MM-DD in the marina timezone
+	ProposedFrom *IsoDate `json:"proposed_from,omitempty"`
+
+	// ProposedTo Calendar date YYYY-MM-DD in the marina timezone
+	ProposedTo *IsoDate `json:"proposed_to,omitempty"`
+	ReleaseId  *string  `json:"release_id,omitempty"`
+	Resold     *bool    `json:"resold,omitempty"`
+	VesselId   *string  `json:"vessel_id,omitempty"`
+}
+
+// SensorAlertStatus defines model for SensorAlertStatus.
+type SensorAlertStatus string
+
+// SensorBinding The ingestion path of a device; both absent = the device signs with its own key
+type SensorBinding struct {
+	GatewayId *string `json:"gateway_id,omitempty"`
+	SourceId  *string `json:"source_id,omitempty"`
+}
+
+// SensorContractual defines model for SensorContractual.
+type SensorContractual string
+
+// SensorDevice defines model for SensorDevice.
+type SensorDevice struct {
+	Active     bool      `json:"active"`
+	BatteryPct *int      `json:"battery_pct,omitempty"`
+	Code       string    `json:"code"`
+	CreatedAt  time.Time `json:"created_at"`
+
+	// DistanceCm Length in integer centimetres
+	DistanceCm *Cm    `json:"distance_cm,omitempty"`
+	ExternalId string `json:"external_id"`
+	Firmware   string `json:"firmware"`
+
+	// FromCm Length in integer centimetres
+	FromCm    *Cm          `json:"from_cm,omitempty"`
+	GatewayId *string      `json:"gateway_id,omitempty"`
+	Health    SensorHealth `json:"health"`
+	Id        string       `json:"id"`
+
+	// Informational Pedestal device with no single berth: map and history only, no rules
+	Informational *bool `json:"informational,omitempty"`
+
+	// KeyId Public key id (Porto-Key), never the secret
+	KeyId       *string    `json:"key_id,omitempty"`
+	KeyIssuedAt *time.Time `json:"key_issued_at,omitempty"`
+
+	// KeyStatus active, rotating (the previous key verifies until prev_valid_until), revoked, unusable (the verifier cannot be decrypted with this instance's PORTO_SECRET_KEY, e.g. after a restore elsewhere: rotate to re-key)
+	KeyStatus      SensorKeyStatus     `json:"key_status"`
+	Kind           SensorKind          `json:"kind"`
+	LastContactAt  *time.Time          `json:"last_contact_at,omitempty"`
+	LastObservedAt *time.Time          `json:"last_observed_at,omitempty"`
+	MapId          string              `json:"map_id"`
+	Model          string              `json:"model"`
+	PedestalSocket *string             `json:"pedestal_socket,omitempty"`
+	Physical       SensorPhysicalState `json:"physical"`
+	PhysicalSince  *time.Time          `json:"physical_since,omitempty"`
+	PrevValidUntil *time.Time          `json:"prev_valid_until,omitempty"`
+
+	// ResourceCode Code of the berth, dynamic area or pedestal
+	ResourceCode string `json:"resource_code"`
+	ResourceId   string `json:"resource_id"`
+
+	// ResourceType What a device watches (berth, a [from_cm, to_cm) segment of a linear dynamic area, a pedestal)
+	ResourceType SensorResourceType `json:"resource_type"`
+	Rssi         *int               `json:"rssi,omitempty"`
+	SourceId     *string            `json:"source_id,omitempty"`
+
+	// ToCm Length in integer centimetres
+	ToCm      *Cm       `json:"to_cm,omitempty"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Version   int64     `json:"version"`
+
+	// XCm Length in integer centimetres
+	XCm Cm `json:"x_cm"`
+
+	// YCm Length in integer centimetres
+	YCm Cm `json:"y_cm"`
+}
+
+// SensorDeviceInput defines model for SensorDeviceInput.
+type SensorDeviceInput struct {
+	Code       string  `json:"code"`
+	ExternalId string  `json:"external_id"`
+	Firmware   *string `json:"firmware,omitempty"`
+
+	// FromCm Length in integer centimetres
+	FromCm *Cm `json:"from_cm,omitempty"`
+
+	// GatewayId At most one of gateway_id and source_id
+	GatewayId      *string    `json:"gateway_id,omitempty"`
+	Kind           SensorKind `json:"kind"`
+	Model          *string    `json:"model,omitempty"`
+	PedestalSocket *string    `json:"pedestal_socket,omitempty"`
+	ResourceId     string     `json:"resource_id"`
+
+	// ResourceType What a device watches (berth, a [from_cm, to_cm) segment of a linear dynamic area, a pedestal)
+	ResourceType SensorResourceType `json:"resource_type"`
+	SourceId     *string            `json:"source_id,omitempty"`
+
+	// ToCm Length in integer centimetres
+	ToCm *Cm `json:"to_cm,omitempty"`
+
+	// XCm Length in integer centimetres
+	XCm *Cm `json:"x_cm,omitempty"`
+
+	// YCm Length in integer centimetres
+	YCm *Cm `json:"y_cm,omitempty"`
+}
+
+// SensorDeviceList defines model for SensorDeviceList.
+type SensorDeviceList struct {
+	Items      []SensorDevice `json:"items"`
+	NextCursor *string        `json:"next_cursor"`
+}
+
+// SensorDevicePatch Absent fields are unchanged; resource_type, resource_id, from_cm, to_cm and pedestal_socket move together
+type SensorDevicePatch struct {
+	Active *bool `json:"active,omitempty"`
+
+	// Binding The ingestion path of a device; both absent = the device signs with its own key
+	Binding  *SensorBinding `json:"binding,omitempty"`
+	Code     *string        `json:"code,omitempty"`
+	Firmware *string        `json:"firmware,omitempty"`
+
+	// FromCm Length in integer centimetres
+	FromCm         *Cm         `json:"from_cm,omitempty"`
+	Kind           *SensorKind `json:"kind,omitempty"`
+	Model          *string     `json:"model,omitempty"`
+	PedestalSocket *string     `json:"pedestal_socket,omitempty"`
+	ResourceId     *string     `json:"resource_id,omitempty"`
+
+	// ResourceType What a device watches (berth, a [from_cm, to_cm) segment of a linear dynamic area, a pedestal)
+	ResourceType *SensorResourceType `json:"resource_type,omitempty"`
+
+	// ToCm Length in integer centimetres
+	ToCm *Cm `json:"to_cm,omitempty"`
+
+	// XCm Length in integer centimetres
+	XCm *Cm `json:"x_cm,omitempty"`
+
+	// YCm Length in integer centimetres
+	YCm *Cm `json:"y_cm,omitempty"`
+}
+
+// SensorDeviceWithKey The device and its key, shown only in this response (Cache-Control no-store)
+type SensorDeviceWithKey struct {
+	Device SensorDevice `json:"device"`
+
+	// Key po_sns_<kid>_<secret>: store it on the device, Porto keeps only a hash
+	Key string `json:"key"`
+}
+
+// SensorDiscrepancyKind defines model for SensorDiscrepancyKind.
+type SensorDiscrepancyKind string
+
+// SensorExpectation defines model for SensorExpectation.
+type SensorExpectation string
+
+// SensorGateway defines model for SensorGateway.
+type SensorGateway struct {
+	Active      bool       `json:"active"`
+	Code        string     `json:"code"`
+	CreatedAt   time.Time  `json:"created_at"`
+	DeviceCount int        `json:"device_count"`
+	Id          string     `json:"id"`
+	KeyId       *string    `json:"key_id,omitempty"`
+	KeyIssuedAt *time.Time `json:"key_issued_at,omitempty"`
+
+	// KeyStatus active, rotating (the previous key verifies until prev_valid_until), revoked, unusable (the verifier cannot be decrypted with this instance's PORTO_SECRET_KEY, e.g. after a restore elsewhere: rotate to re-key)
+	KeyStatus      SensorKeyStatus   `json:"key_status"`
+	Kind           SensorGatewayKind `json:"kind"`
+	LastContactAt  *time.Time        `json:"last_contact_at,omitempty"`
+	Name           string            `json:"name"`
+	PrevValidUntil *time.Time        `json:"prev_valid_until,omitempty"`
+	UpdatedAt      time.Time         `json:"updated_at"`
+	Version        int64             `json:"version"`
+}
+
+// SensorGatewayInput defines model for SensorGatewayInput.
+type SensorGatewayInput struct {
+	Code string            `json:"code"`
+	Kind SensorGatewayKind `json:"kind"`
+	Name string            `json:"name"`
+}
+
+// SensorGatewayKind defines model for SensorGatewayKind.
+type SensorGatewayKind string
+
+// SensorGatewayList defines model for SensorGatewayList.
+type SensorGatewayList struct {
+	Items []SensorGateway `json:"items"`
+}
+
+// SensorGatewayPatch defines model for SensorGatewayPatch.
+type SensorGatewayPatch struct {
+	Active *bool              `json:"active,omitempty"`
+	Kind   *SensorGatewayKind `json:"kind,omitempty"`
+	Name   *string            `json:"name,omitempty"`
+}
+
+// SensorGatewayWithKey defines model for SensorGatewayWithKey.
+type SensorGatewayWithKey struct {
+	Gateway SensorGateway `json:"gateway"`
+
+	// Key po_gw_<kid>_<secret>, shown only in this response
+	Key string `json:"key"`
+}
+
+// SensorHealth defines model for SensorHealth.
+type SensorHealth string
+
+// SensorHistory defines model for SensorHistory.
+type SensorHistory struct {
+	Alerts    []SensorAlert       `json:"alerts"`
+	Changes   []SensorStateChange `json:"changes"`
+	DeviceIds *[]string           `json:"device_ids,omitempty"`
+
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From       IsoDate       `json:"from"`
+	NextCursor *string       `json:"next_cursor,omitempty"`
+	Nights     []SensorNight `json:"nights"`
+
+	// Readings Raw readings, newest first (include_readings, only inside the retention, at most 10,000)
+	Readings *[]SensorReadingRow `json:"readings,omitempty"`
+
+	// ReadingsFrom Oldest instant still kept by the retention
+	ReadingsFrom *time.Time `json:"readings_from,omitempty"`
+	ResourceId   string     `json:"resource_id"`
+
+	// ResourceType What a device watches (berth, a [from_cm, to_cm) segment of a linear dynamic area, a pedestal)
+	ResourceType SensorResourceType  `json:"resource_type"`
+	StateAtFrom  SensorPhysicalState `json:"state_at_from"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To IsoDate `json:"to"`
+}
+
+// SensorIngestItemCode defines model for SensorIngestItemCode.
+type SensorIngestItemCode string
+
+// SensorIngestRejected defines model for SensorIngestRejected.
+type SensorIngestRejected struct {
+	Code     SensorIngestItemCode `json:"code"`
+	DeviceId *string              `json:"device_id,omitempty"`
+	Index    int                  `json:"index"`
+}
+
+// SensorIngestResult defines model for SensorIngestResult.
+type SensorIngestResult struct {
+	// Accepted New readings stored (out-of-order ones included)
+	Accepted   int                    `json:"accepted"`
+	Duplicates int                    `json:"duplicates"`
+	Rejected   []SensorIngestRejected `json:"rejected"`
+	ServerTime time.Time              `json:"server_time"`
+}
+
+// SensorKeyRotateInput defines model for SensorKeyRotateInput.
+type SensorKeyRotateInput struct {
+	GraceHours *int `json:"grace_hours,omitempty"`
+}
+
+// SensorKeyStatus active, rotating (the previous key verifies until prev_valid_until), revoked, unusable (the verifier cannot be decrypted with this instance's PORTO_SECRET_KEY, e.g. after a restore elsewhere: rotate to re-key)
+type SensorKeyStatus string
+
+// SensorKind defines model for SensorKind.
+type SensorKind string
+
+// SensorMap defines model for SensorMap.
+type SensorMap struct {
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date        *IsoDate         `json:"date,omitempty"`
+	Entries     []SensorMapEntry `json:"entries"`
+	GeneratedAt time.Time        `json:"generated_at"`
+	MapId       string           `json:"map_id"`
+}
+
+// SensorMapEntry defines model for SensorMapEntry.
+type SensorMapEntry struct {
+	Code        string            `json:"code"`
+	DeviceId    string            `json:"device_id"`
+	Discrepancy bool              `json:"discrepancy"`
+	Expectation SensorExpectation `json:"expectation"`
+
+	// FromCm Length in integer centimetres
+	FromCm        *Cm                 `json:"from_cm,omitempty"`
+	Health        *SensorHealth       `json:"health,omitempty"`
+	Informational *bool               `json:"informational,omitempty"`
+	OpenAlerts    []SensorAlertKind   `json:"open_alerts"`
+	Physical      SensorPhysicalState `json:"physical"`
+	PhysicalSince *time.Time          `json:"physical_since,omitempty"`
+	ResourceId    string              `json:"resource_id"`
+
+	// ResourceType What a device watches (berth, a [from_cm, to_cm) segment of a linear dynamic area, a pedestal)
+	ResourceType SensorResourceType `json:"resource_type"`
+
+	// ToCm Length in integer centimetres
+	ToCm *Cm `json:"to_cm,omitempty"`
+
+	// XCm Length in integer centimetres
+	XCm Cm `json:"x_cm"`
+
+	// YCm Length in integer centimetres
+	YCm Cm `json:"y_cm"`
+}
+
+// SensorNight defines model for SensorNight.
+type SensorNight struct {
+	Contractual SensorContractual `json:"contractual"`
+	Discrepancy *bool             `json:"discrepancy,omitempty"`
+
+	// Night Calendar date YYYY-MM-DD in the marina timezone
+	Night    IsoDate             `json:"night"`
+	Physical SensorPhysicalState `json:"physical"`
+
+	// Presence Vessel presence state at 02:00 when one vessel is expected
+	Presence *string `json:"presence,omitempty"`
+}
+
+// SensorPhysicalState defines model for SensorPhysicalState.
+type SensorPhysicalState string
+
+// SensorReadingBatch defines model for SensorReadingBatch.
+type SensorReadingBatch struct {
+	// Readings 1..500 readings (otherwise 400 invalid_payload); unknown fields are ignored
+	Readings []SensorReadingInput `json:"readings"`
+}
+
+// SensorReadingInput defines model for SensorReadingInput.
+type SensorReadingInput struct {
+	// BatteryPct 0..100
+	BatteryPct *int `json:"battery_pct,omitempty"`
+
+	// DeviceId The device's external_id (vendor id)
+	DeviceId string `json:"device_id"`
+
+	// DistanceCm 0..10000
+	DistanceCm *int64  `json:"distance_cm,omitempty"`
+	Firmware   *string `json:"firmware,omitempty"`
+
+	// ObservedAt RFC 3339 with offset; truncated to milliseconds
+	ObservedAt time.Time `json:"observed_at"`
+
+	// Rssi -200..0 dBm
+	Rssi *int `json:"rssi,omitempty"`
+
+	// State occupied, free or unknown (other values: item invalid_state)
+	State string `json:"state"`
+}
+
+// SensorReadingRow defines model for SensorReadingRow.
+type SensorReadingRow struct {
+	BatteryPct *int   `json:"battery_pct,omitempty"`
+	DeviceId   string `json:"device_id"`
+
+	// DistanceCm Length in integer centimetres
+	DistanceCm *Cm                 `json:"distance_cm,omitempty"`
+	ObservedAt time.Time           `json:"observed_at"`
+	ReceivedAt time.Time           `json:"received_at"`
+	Rssi       *int                `json:"rssi,omitempty"`
+	State      SensorPhysicalState `json:"state"`
+}
+
+// SensorResourceType What a device watches (berth, a [from_cm, to_cm) segment of a linear dynamic area, a pedestal)
+type SensorResourceType string
+
+// SensorSettings defines model for SensorSettings.
+type SensorSettings struct {
+	BatteryLowPct int `json:"battery_low_pct"`
+
+	// DepartureCutoffMinutes Local minute of the departure day until which a departing berth may still be occupied (720 = 12:00)
+	DepartureCutoffMinutes int `json:"departure_cutoff_minutes"`
+	HysteresisMinutes      int `json:"hysteresis_minutes"`
+	HysteresisReadings     int `json:"hysteresis_readings"`
+	OfflineAfterMinutes    int `json:"offline_after_minutes"`
+
+	// PresenceEffectEnabled Automatic presence out/in for annual mooring contracts (24.4)
+	PresenceEffectEnabled bool `json:"presence_effect_enabled"`
+	PresenceOutAfterHours int  `json:"presence_out_after_hours"`
+
+	// RawRetentionDays PORTO_SENSOR_RAW_RETENTION of the instance (read-only)
+	RawRetentionDays         int `json:"raw_retention_days"`
+	ReleaseProposalAfterDays int `json:"release_proposal_after_days"`
+	ReleaseProposalNights    int `json:"release_proposal_nights"`
+
+	// SilentAlertMinutes At least offline_after_minutes
+	SilentAlertMinutes     int   `json:"silent_alert_minutes"`
+	UnexpectedAfterMinutes int   `json:"unexpected_after_minutes"`
+	Version                int64 `json:"version"`
+}
+
+// SensorSettingsInput defines model for SensorSettingsInput.
+type SensorSettingsInput struct {
+	BatteryLowPct int `json:"battery_low_pct"`
+
+	// DepartureCutoffMinutes Local minute of the departure day until which a departing berth may still be occupied (720 = 12:00)
+	DepartureCutoffMinutes int `json:"departure_cutoff_minutes"`
+	HysteresisMinutes      int `json:"hysteresis_minutes"`
+	HysteresisReadings     int `json:"hysteresis_readings"`
+	OfflineAfterMinutes    int `json:"offline_after_minutes"`
+
+	// PresenceEffectEnabled Automatic presence out/in for annual mooring contracts (24.4)
+	PresenceEffectEnabled    bool `json:"presence_effect_enabled"`
+	PresenceOutAfterHours    int  `json:"presence_out_after_hours"`
+	ReleaseProposalAfterDays int  `json:"release_proposal_after_days"`
+	ReleaseProposalNights    int  `json:"release_proposal_nights"`
+
+	// SilentAlertMinutes At least offline_after_minutes
+	SilentAlertMinutes     int `json:"silent_alert_minutes"`
+	UnexpectedAfterMinutes int `json:"unexpected_after_minutes"`
+}
+
+// SensorSource defines model for SensorSource.
+type SensorSource struct {
+	// Code Code of the registered ext.SensorSource driver
+	Code string `json:"code"`
+
+	// ConfigPublic The non-secret config values the driver declares; secret values are never returned
+	ConfigPublic  map[string]string      `json:"config_public"`
+	ConfigSet     bool                   `json:"config_set"`
+	CreatedAt     time.Time              `json:"created_at"`
+	DeviceCount   int                    `json:"device_count"`
+	Enabled       bool                   `json:"enabled"`
+	Id            string                 `json:"id"`
+	LastErrorCode *SensorSourceErrorCode `json:"last_error_code,omitempty"`
+	LastPolledAt  *time.Time             `json:"last_polled_at,omitempty"`
+	Name          string                 `json:"name"`
+	PollSeconds   int                    `json:"poll_seconds"`
+	UpdatedAt     time.Time              `json:"updated_at"`
+	Version       int64                  `json:"version"`
+}
+
+// SensorSourceDriver defines model for SensorSourceDriver.
+type SensorSourceDriver struct {
+	Code       string   `json:"code"`
+	PublicKeys []string `json:"public_keys"`
+	SecretKeys []string `json:"secret_keys"`
+}
+
+// SensorSourceErrorCode defines model for SensorSourceErrorCode.
+type SensorSourceErrorCode string
+
+// SensorSourceInput defines model for SensorSourceInput.
+type SensorSourceInput struct {
+	Code        string             `json:"code"`
+	Config      *map[string]string `json:"config,omitempty"`
+	Enabled     *bool              `json:"enabled,omitempty"`
+	Name        string             `json:"name"`
+	PollSeconds *int               `json:"poll_seconds,omitempty"`
+}
+
+// SensorSourceList defines model for SensorSourceList.
+type SensorSourceList struct {
+	Drivers []SensorSourceDriver `json:"drivers"`
+	Items   []SensorSource       `json:"items"`
+}
+
+// SensorSourcePatch defines model for SensorSourcePatch.
+type SensorSourcePatch struct {
+	// Config Replaces the stored config when present (write-only)
+	Config      *map[string]string `json:"config,omitempty"`
+	Enabled     *bool              `json:"enabled,omitempty"`
+	Name        *string            `json:"name,omitempty"`
+	PollSeconds *int               `json:"poll_seconds,omitempty"`
+}
+
+// SensorSourcePollResult defines model for SensorSourcePollResult.
+type SensorSourcePollResult struct {
+	Accepted   int                    `json:"accepted"`
+	Duplicates int                    `json:"duplicates"`
+	ErrorCode  *SensorSourceErrorCode `json:"error_code,omitempty"`
+	Rejected   int                    `json:"rejected"`
+}
+
+// SensorStateChange defines model for SensorStateChange.
+type SensorStateChange struct {
+	At       time.Time               `json:"at"`
+	DeviceId string                  `json:"device_id"`
+	From     SensorPhysicalState     `json:"from"`
+	Id       string                  `json:"id"`
+	Reason   SensorStateChangeReason `json:"reason"`
+	To       SensorPhysicalState     `json:"to"`
+}
+
+// SensorStateChangeReason defines model for SensorStateChangeReason.
+type SensorStateChangeReason string
+
+// SensorsReport defines model for SensorsReport.
+type SensorsReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string    `json:"filters"`
+	GroupBy *string              `json:"group_by,omitempty"`
+	Groups  []SensorsReportGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod          `json:"period"`
+	Records []SensorsReportRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate             `json:"today"`
+	Totals SensorsReportTotals `json:"totals"`
+	View   SensorsReportView   `json:"view"`
+}
+
+// SensorsReportView defines model for SensorsReport.View.
+type SensorsReportView string
+
+// SensorsReportGroup defines model for SensorsReportGroup.
+type SensorsReportGroup struct {
+	Key    string              `json:"key"`
+	Label  string              `json:"label"`
+	Totals SensorsReportTotals `json:"totals"`
+}
+
+// SensorsReportRecord defines model for SensorsReportRecord.
+type SensorsReportRecord struct {
+	AlertIds    []string          `json:"alert_ids"`
+	Contractual SensorContractual `json:"contractual"`
+
+	// FromCm Length in integer centimetres
+	FromCm  *Cm                   `json:"from_cm,omitempty"`
+	Kind    SensorDiscrepancyKind `json:"kind"`
+	MapId   *string               `json:"map_id,omitempty"`
+	MapName *string               `json:"map_name,omitempty"`
+
+	// Night Calendar date YYYY-MM-DD in the marina timezone
+	Night    IsoDate             `json:"night"`
+	Physical SensorPhysicalState `json:"physical"`
+	Presence *string             `json:"presence,omitempty"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref          ReportRef `json:"ref"`
+	ResourceCode string    `json:"resource_code"`
+	ResourceId   string    `json:"resource_id"`
+
+	// ResourceType What a device watches (berth, a [from_cm, to_cm) segment of a linear dynamic area, a pedestal)
+	ResourceType SensorResourceType `json:"resource_type"`
+
+	// ToCm Length in integer centimetres
+	ToCm *Cm `json:"to_cm,omitempty"`
+}
+
+// SensorsReportTotals defines model for SensorsReportTotals.
+type SensorsReportTotals struct {
+	Absent *int64 `json:"absent,omitempty"`
+
+	// CoverageBp Share of compared nights with a non-unknown physical state
+	CoverageBp               *int64 `json:"coverage_bp,omitempty"`
+	NightsCompared           *int64 `json:"nights_compared,omitempty"`
+	OccupiedUnexpected       *int64 `json:"occupied_unexpected,omitempty"`
+	Records                  int64  `json:"records"`
+	ResourcesWithDiscrepancy *int64 `json:"resources_with_discrepancy,omitempty"`
 }
 
 // SepaMandate defines model for SepaMandate.
@@ -25525,6 +27210,20 @@ type SignerRole string
 
 // SignerStatus defines model for SignerStatus.
 type SignerStatus string
+
+// SimplePoint [x_cm, y_cm], rounded to 10 cm
+type SimplePoint = []int64
+
+// SimpleShape defines model for SimpleShape.
+type SimpleShape struct {
+	// Category Berth category code (berths only)
+	Category *string       `json:"category,omitempty"`
+	Closed   *bool         `json:"closed,omitempty"`
+	Points   []SimplePoint `json:"points"`
+
+	// WidthCm Length in integer centimetres
+	WidthCm *Cm `json:"width_cm,omitempty"`
+}
 
 // SimulateResource defines model for SimulateResource.
 type SimulateResource struct {
@@ -26144,7 +27843,7 @@ type StorageReport struct {
 	Period  ReportPeriod          `json:"period"`
 	Records []StorageReportRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -26708,7 +28407,7 @@ type TileBreakdown struct {
 type TileDrill struct {
 	Params map[string]string `json:"params"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report ReportKey `json:"report"`
 }
 
@@ -27016,7 +28715,7 @@ type UtilitiesReport struct {
 	Period  ReportPeriod            `json:"period"`
 	Records []UtilitiesReportRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -27565,7 +29264,7 @@ type VesselsReport struct {
 	Period  ReportPeriod    `json:"period"`
 	Records []VesselsRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -28771,7 +30470,7 @@ type YardReport struct {
 	Period  ReportPeriod       `json:"period"`
 	Records []YardReportRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -29139,6 +30838,9 @@ type IdempotencyKey = string
 // IfMatch defines model for IfMatch.
 type IfMatch = string
 
+// IfNoneMatch defines model for IfNoneMatch.
+type IfNoneMatch = string
+
 // ImportRunId defines model for ImportRunId.
 type ImportRunId = string
 
@@ -29304,6 +31006,18 @@ type RightId = string
 // ScenarioId defines model for ScenarioId.
 type ScenarioId = string
 
+// SensorAlertId defines model for SensorAlertId.
+type SensorAlertId = string
+
+// SensorDeviceId defines model for SensorDeviceId.
+type SensorDeviceId = string
+
+// SensorGatewayId defines model for SensorGatewayId.
+type SensorGatewayId = string
+
+// SensorSourceId defines model for SensorSourceId.
+type SensorSourceId = string
+
 // SepaMandateId defines model for SepaMandateId.
 type SepaMandateId = string
 
@@ -29409,11 +31123,17 @@ type PreconditionRequired = Problem
 // PricingUnprocessable defines model for PricingUnprocessable.
 type PricingUnprocessable = Problem
 
+// ProfileUnprocessable defines model for ProfileUnprocessable.
+type ProfileUnprocessable = Problem
+
 // RentalUnprocessable defines model for RentalUnprocessable.
 type RentalUnprocessable = Problem
 
 // ReportUnprocessable defines model for ReportUnprocessable.
 type ReportUnprocessable = Problem
+
+// SensorUnprocessable defines model for SensorUnprocessable.
+type SensorUnprocessable = Problem
 
 // ServiceUnavailable defines model for ServiceUnavailable.
 type ServiceUnavailable = Problem
@@ -31290,6 +33010,41 @@ type UpdatePricingSettingsParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// PutMarinaProfileParams defines parameters for PutMarinaProfile.
+type PutMarinaProfileParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UploadProfilePhotoParams defines parameters for UploadProfilePhoto.
+type UploadProfilePhotoParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DeleteProfilePhotoParams defines parameters for DeleteProfilePhoto.
+type DeleteProfilePhotoParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// PreviewMarinaProfileParams defines parameters for PreviewMarinaProfile.
+type PreviewMarinaProfileParams struct {
+	Lang *Locale `form:"lang,omitempty" json:"lang,omitempty"`
+}
+
+// PublishMarinaProfileParams defines parameters for PublishMarinaProfile.
+type PublishMarinaProfileParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UnpublishMarinaProfileParams defines parameters for UnpublishMarinaProfile.
+type UnpublishMarinaProfileParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
 // ListQuotesParams defines parameters for ListQuotes.
 type ListQuotesParams struct {
 	Status     *QuoteStatus `form:"status,omitempty" json:"status,omitempty"`
@@ -32316,6 +34071,34 @@ type GetRightsReportParamsGroupBy string
 // GetRightsReportParamsSection defines parameters for GetRightsReport.
 type GetRightsReportParamsSection string
 
+// GetSensorsReportParams defines parameters for GetSensorsReport.
+type GetSensorsReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang       `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize   `form:"page_size,omitempty" json:"page_size,omitempty"`
+
+	// View Default discrepancies
+	View    *GetSensorsReportParamsView    `form:"view,omitempty" json:"view,omitempty"`
+	GroupBy *GetSensorsReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	MapId   *string                        `form:"map_id,omitempty" json:"map_id,omitempty"`
+	GroupId *string                        `form:"group_id,omitempty" json:"group_id,omitempty"`
+	Kind    *SensorDiscrepancyKind         `form:"kind,omitempty" json:"kind,omitempty"`
+}
+
+// GetSensorsReportParamsView defines parameters for GetSensorsReport.
+type GetSensorsReportParamsView string
+
+// GetSensorsReportParamsGroupBy defines parameters for GetSensorsReport.
+type GetSensorsReportParamsGroupBy string
+
 // GetStorageReportParams defines parameters for GetStorageReport.
 type GetStorageReportParams struct {
 	// From First night of the period (default January 1 of the current year)
@@ -32529,6 +34312,138 @@ type EndRightParams struct {
 
 // SetRightVesselsParams defines parameters for SetRightVessels.
 type SetRightVesselsParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListSensorAlertsParams defines parameters for ListSensorAlerts.
+type ListSensorAlertsParams struct {
+	Status   *SensorAlertStatus `form:"status,omitempty" json:"status,omitempty"`
+	Kind     *SensorAlertKind   `form:"kind,omitempty" json:"kind,omitempty"`
+	MapId    *string            `form:"map_id,omitempty" json:"map_id,omitempty"`
+	DeviceId *string            `form:"device_id,omitempty" json:"device_id,omitempty"`
+	Cursor   *Cursor            `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit    *Limit             `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ActOnSensorAlertParams defines parameters for ActOnSensorAlert.
+type ActOnSensorAlertParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// ListSensorDevicesParams defines parameters for ListSensorDevices.
+type ListSensorDevicesParams struct {
+	MapId        *string             `form:"map_id,omitempty" json:"map_id,omitempty"`
+	ResourceType *SensorResourceType `form:"resource_type,omitempty" json:"resource_type,omitempty"`
+	ResourceId   *string             `form:"resource_id,omitempty" json:"resource_id,omitempty"`
+	Health       *SensorHealth       `form:"health,omitempty" json:"health,omitempty"`
+	Active       *bool               `form:"active,omitempty" json:"active,omitempty"`
+	Cursor       *Cursor             `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit        *Limit              `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// CreateSensorDeviceParams defines parameters for CreateSensorDevice.
+type CreateSensorDeviceParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateSensorDeviceParams defines parameters for UpdateSensorDevice.
+type UpdateSensorDeviceParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// GetSensorDeviceHistoryParams defines parameters for GetSensorDeviceHistory.
+type GetSensorDeviceHistoryParams struct {
+	// From Default 7 days before to; range at most 31 days
+	From *IsoDate `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Default today
+	To              *IsoDate `form:"to,omitempty" json:"to,omitempty"`
+	IncludeReadings *bool    `form:"include_readings,omitempty" json:"include_readings,omitempty"`
+	Cursor          *Cursor  `form:"cursor,omitempty" json:"cursor,omitempty"`
+}
+
+// RevokeSensorDeviceKeyParams defines parameters for RevokeSensorDeviceKey.
+type RevokeSensorDeviceKeyParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// RotateSensorDeviceKeyParams defines parameters for RotateSensorDeviceKey.
+type RotateSensorDeviceKeyParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// CreateSensorGatewayParams defines parameters for CreateSensorGateway.
+type CreateSensorGatewayParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateSensorGatewayParams defines parameters for UpdateSensorGateway.
+type UpdateSensorGatewayParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// RevokeSensorGatewayKeyParams defines parameters for RevokeSensorGatewayKey.
+type RevokeSensorGatewayKeyParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// RotateSensorGatewayKeyParams defines parameters for RotateSensorGatewayKey.
+type RotateSensorGatewayKeyParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// GetSensorHistoryParams defines parameters for GetSensorHistory.
+type GetSensorHistoryParams struct {
+	// ResourceType Required; optional in the contract only so that another marina is 404 first (missing: 400)
+	ResourceType *SensorResourceType `form:"resource_type,omitempty" json:"resource_type,omitempty"`
+
+	// ResourceId Required; optional in the contract only so that another marina is 404 first (missing: 400)
+	ResourceId *string `form:"resource_id,omitempty" json:"resource_id,omitempty"`
+
+	// From Default 7 days before to; range at most 31 days
+	From *IsoDate `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Default today
+	To              *IsoDate `form:"to,omitempty" json:"to,omitempty"`
+	IncludeReadings *bool    `form:"include_readings,omitempty" json:"include_readings,omitempty"`
+	Cursor          *Cursor  `form:"cursor,omitempty" json:"cursor,omitempty"`
+}
+
+// GetSensorMapParams defines parameters for GetSensorMap.
+type GetSensorMapParams struct {
+	MapId *string `form:"map_id,omitempty" json:"map_id,omitempty"`
+
+	// Date A past night: physical state at 02:00 local from the history, health omitted
+	Date *IsoDate `form:"date,omitempty" json:"date,omitempty"`
+}
+
+// PutSensorSettingsParams defines parameters for PutSensorSettings.
+type PutSensorSettingsParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// CreateSensorSourceParams defines parameters for CreateSensorSource.
+type CreateSensorSourceParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateSensorSourceParams defines parameters for UpdateSensorSource.
+type UpdateSensorSourceParams struct {
 	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
@@ -33425,6 +35340,15 @@ type PairDeviceParams struct {
 	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
 }
 
+// IngestSensorReadingsParams defines parameters for IngestSensorReadings.
+type IngestSensorReadingsParams struct {
+	// PortoKey po_sns_<kid> or po_gw_<kid> (HMAC mode)
+	PortoKey *string `json:"Porto-Key,omitempty"`
+
+	// PortoSignature t=<unix seconds>,v1=<hex>[,v1=<hex>] (HMAC mode)
+	PortoSignature *string `json:"Porto-Signature,omitempty"`
+}
+
 // ListAccountBookingsParams defines parameters for ListAccountBookings.
 type ListAccountBookingsParams struct {
 	// PortoCustomerSession Customer-area session token (openAccountSession); missing or invalid = 404 on account operations
@@ -33606,6 +35530,34 @@ type UploadPublicDocumentParams struct {
 
 // PublicUnsubscribeFormdataBody defines parameters for PublicUnsubscribe.
 type PublicUnsubscribeFormdataBody = struct {
+}
+
+// GetPublicOccupancyParams defines parameters for GetPublicOccupancy.
+type GetPublicOccupancyParams struct {
+	// IfNoneMatch An ETag of a previous response; a match is 304
+	IfNoneMatch *IfNoneMatch `json:"If-None-Match,omitempty"`
+}
+
+// GetPublicProfileParams defines parameters for GetPublicProfile.
+type GetPublicProfileParams struct {
+	Lang *Locale `form:"lang,omitempty" json:"lang,omitempty"`
+
+	// IfNoneMatch An ETag of a previous response; a match is 304
+	IfNoneMatch *IfNoneMatch `json:"If-None-Match,omitempty"`
+}
+
+// GetPublicProfileMapParams defines parameters for GetPublicProfileMap.
+type GetPublicProfileMapParams struct {
+	// IfNoneMatch An ETag of a previous response; a match is 304
+	IfNoneMatch *IfNoneMatch `json:"If-None-Match,omitempty"`
+}
+
+// GetPublicProfilePricesParams defines parameters for GetPublicProfilePrices.
+type GetPublicProfilePricesParams struct {
+	Lang *Locale `form:"lang,omitempty" json:"lang,omitempty"`
+
+	// IfNoneMatch An ETag of a previous response; a match is 304
+	IfNoneMatch *IfNoneMatch `json:"If-None-Match,omitempty"`
 }
 
 // LoginJSONRequestBody defines body for Login for application/json ContentType.
@@ -34079,6 +36031,9 @@ type UpdatePricingSettingsJSONRequestBody = PricingSettingsUpdate
 // SimulatePriceJSONRequestBody defines body for SimulatePrice for application/json ContentType.
 type SimulatePriceJSONRequestBody = PricingSimulateRequest
 
+// PutMarinaProfileJSONRequestBody defines body for PutMarinaProfile for application/json ContentType.
+type PutMarinaProfileJSONRequestBody = MarinaProfileInput
+
 // CreateQuoteJSONRequestBody defines body for CreateQuote for application/json ContentType.
 type CreateQuoteJSONRequestBody = QuoteInput
 
@@ -34225,6 +36180,36 @@ type EndRightJSONRequestBody = RightEndInput
 
 // SetRightVesselsJSONRequestBody defines body for SetRightVessels for application/json ContentType.
 type SetRightVesselsJSONRequestBody = RightVesselsInput
+
+// ActOnSensorAlertJSONRequestBody defines body for ActOnSensorAlert for application/json ContentType.
+type ActOnSensorAlertJSONRequestBody = SensorAlertActionInput
+
+// CreateSensorDeviceJSONRequestBody defines body for CreateSensorDevice for application/json ContentType.
+type CreateSensorDeviceJSONRequestBody = SensorDeviceInput
+
+// UpdateSensorDeviceJSONRequestBody defines body for UpdateSensorDevice for application/json ContentType.
+type UpdateSensorDeviceJSONRequestBody = SensorDevicePatch
+
+// RotateSensorDeviceKeyJSONRequestBody defines body for RotateSensorDeviceKey for application/json ContentType.
+type RotateSensorDeviceKeyJSONRequestBody = SensorKeyRotateInput
+
+// CreateSensorGatewayJSONRequestBody defines body for CreateSensorGateway for application/json ContentType.
+type CreateSensorGatewayJSONRequestBody = SensorGatewayInput
+
+// UpdateSensorGatewayJSONRequestBody defines body for UpdateSensorGateway for application/json ContentType.
+type UpdateSensorGatewayJSONRequestBody = SensorGatewayPatch
+
+// RotateSensorGatewayKeyJSONRequestBody defines body for RotateSensorGatewayKey for application/json ContentType.
+type RotateSensorGatewayKeyJSONRequestBody = SensorKeyRotateInput
+
+// PutSensorSettingsJSONRequestBody defines body for PutSensorSettings for application/json ContentType.
+type PutSensorSettingsJSONRequestBody = SensorSettingsInput
+
+// CreateSensorSourceJSONRequestBody defines body for CreateSensorSource for application/json ContentType.
+type CreateSensorSourceJSONRequestBody = SensorSourceInput
+
+// UpdateSensorSourceJSONRequestBody defines body for UpdateSensorSource for application/json ContentType.
+type UpdateSensorSourceJSONRequestBody = SensorSourcePatch
 
 // ConfirmPaperSignatureJSONRequestBody defines body for ConfirmPaperSignature for application/json ContentType.
 type ConfirmPaperSignatureJSONRequestBody = PaperConfirmInput
@@ -34534,6 +36519,9 @@ type PairDeviceSessionJSONRequestBody = PairSessionRequest
 
 // VerifyDeviceSessionTotpJSONRequestBody defines body for VerifyDeviceSessionTotp for application/json ContentType.
 type VerifyDeviceSessionTotpJSONRequestBody = DeviceSessionTotpRequest
+
+// IngestSensorReadingsJSONRequestBody defines body for IngestSensorReadings for application/json ContentType.
+type IngestSensorReadingsJSONRequestBody = SensorReadingBatch
 
 // CancelAccountBookingJSONRequestBody defines body for CancelAccountBooking for application/json ContentType.
 type CancelAccountBookingJSONRequestBody = AccountCancelInput
@@ -36072,6 +38060,30 @@ type ServerInterface interface {
 	// SimulatePrice Price a stay with the full breakdown and trace; without price_list_id the list active on the arrival night (pricing.read)
 	// (POST /api/admin/v1/marinas/{marinaId}/pricing/simulate)
 	SimulatePrice(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// GetMarinaProfile The public profile draft with its computed figures (marina.read; defaults prefilled from the marina, version 0)
+	// (GET /api/admin/v1/marinas/{marinaId}/profile)
+	GetMarinaProfile(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// PutMarinaProfile Save the profile (marina.configure; If-Match "0" for the first save); a published profile is republished at once
+	// (PUT /api/admin/v1/marinas/{marinaId}/profile)
+	PutMarinaProfile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PutMarinaProfileParams)
+	// UploadProfilePhoto Upload a photo (JPEG or PNG, at most 8 MiB, raw body): decoded and re-encoded without metadata, longest side at most 2,400 px, stored encrypted; reference it from photos or access_images with a PUT (marina.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/profile/photos)
+	UploadProfilePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UploadProfilePhotoParams)
+	// DeleteProfilePhoto Delete an uploaded photo and remove it from photos and access_images (marina.configure)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/profile/photos/{fileId})
+	DeleteProfilePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, fileId FileId, params DeleteProfilePhotoParams)
+	// GetProfilePhoto The bytes of an uploaded profile photo, published or not (marina.read; preview and panel)
+	// (GET /api/admin/v1/marinas/{marinaId}/profile/photos/{fileId})
+	GetProfilePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, fileId FileId)
+	// PreviewMarinaProfile The public JSON and JSON-LD the draft would publish (marina.configure; Cache-Control no-store, used by /p/{slug}?preview=1 with the panel session)
+	// (GET /api/admin/v1/marinas/{marinaId}/profile/preview)
+	PreviewMarinaProfile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PreviewMarinaProfileParams)
+	// PublishMarinaProfile Publish the profile on /p/{slug} (marina.configure); missing position, contact or name is 422 profile_incomplete
+	// (POST /api/admin/v1/marinas/{marinaId}/profile/publish)
+	PublishMarinaProfile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PublishMarinaProfileParams)
+	// UnpublishMarinaProfile Withdraw the public profile; /p/{slug} and the public profile API answer 404 (marina.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/profile/unpublish)
+	UnpublishMarinaProfile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UnpublishMarinaProfileParams)
 	// ListQuotes Quotes, newest first (contracts.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/quotes)
 	ListQuotes(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListQuotesParams)
@@ -36363,6 +38375,9 @@ type ServerInterface interface {
 	// GetRightsReport R14 rights of use, holder charges, common-charge allotments and mandates (reports.all)
 	// (GET /api/admin/v1/marinas/{marinaId}/reports/rights)
 	GetRightsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRightsReportParams)
+	// GetSensorsReport R-sensors: physical vs contractual discrepancies per resource and night (reports.operational or reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/sensors)
+	GetSensorsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetSensorsReportParams)
 	// GetStorageReport R-storage: allocations on surface areas, m²-nights available and occupied, blocked exits (reports.operational or reports.all; production with reports.all)
 	// (GET /api/admin/v1/marinas/{marinaId}/reports/storage)
 	GetStorageReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetStorageReportParams)
@@ -36426,6 +38441,75 @@ type ServerInterface interface {
 	// SetRightVessels Replace the authorised vessels; a primary change re-allocates owner nights from from_night (rights.manage)
 	// (PUT /api/admin/v1/marinas/{marinaId}/rights/{rightId}/vessels)
 	SetRightVessels(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rightId RightId, params SetRightVesselsParams)
+	// ListSensorAlerts Sensor alerts and proposals, newest first (map.view; default status open)
+	// (GET /api/admin/v1/marinas/{marinaId}/sensors/alerts)
+	ListSensorAlerts(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListSensorAlertsParams)
+	// GetSensorAlert A sensor alert with the actions the principal may take (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/sensors/alerts/{sensorAlertId})
+	GetSensorAlert(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorAlertId SensorAlertId)
+	// ActOnSensorAlert Decide an alert through the existing domain services: dismiss and confirm_arrival (presence.write), confirm_release and revoke_release (occupancy.move), create_task (maintenance.manage or maintenance.report); a condition that no longer holds is 409 alert_stale
+	// (POST /api/admin/v1/marinas/{marinaId}/sensors/alerts/{sensorAlertId}/actions)
+	ActOnSensorAlert(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorAlertId SensorAlertId, params ActOnSensorAlertParams)
+	// ListSensorDevices Sensor devices with their health and physical state, by code (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/sensors/devices)
+	ListSensorDevices(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListSensorDevicesParams)
+	// CreateSensorDevice Register a device on a berth, a linear dynamic-area segment or a pedestal; the device key is in the response once (Cache-Control no-store) (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/sensors/devices)
+	CreateSensorDevice(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateSensorDeviceParams)
+	// GetSensorDevice A sensor device (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId})
+	GetSensorDevice(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorDeviceId SensorDeviceId)
+	// UpdateSensorDevice Update a device; a new resource or segment writes a state change to unknown (device_moved) and resets the hysteresis (harbor.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId})
+	UpdateSensorDevice(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorDeviceId SensorDeviceId, params UpdateSensorDeviceParams)
+	// GetSensorDeviceHistory Physical history of a device: state changes, alerts, night classification and raw readings within the retention (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/history)
+	GetSensorDeviceHistory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorDeviceId SensorDeviceId, params GetSensorDeviceHistoryParams)
+	// RevokeSensorDeviceKey Revoke the current and previous device key; readings get 401 until a rotate (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/revoke-key)
+	RevokeSensorDeviceKey(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorDeviceId SensorDeviceId, params RevokeSensorDeviceKeyParams)
+	// RotateSensorDeviceKey Issue a new device key (returned once); the previous one keeps verifying for grace_hours (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/rotate-key)
+	RotateSensorDeviceKey(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorDeviceId SensorDeviceId, params RotateSensorDeviceKeyParams)
+	// ListSensorGateways Sensor gateways (harbor.configure)
+	// (GET /api/admin/v1/marinas/{marinaId}/sensors/gateways)
+	ListSensorGateways(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// CreateSensorGateway Register a gateway; its key is in the response once (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/sensors/gateways)
+	CreateSensorGateway(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateSensorGatewayParams)
+	// UpdateSensorGateway Update a gateway (name, kind, active) (harbor.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId})
+	UpdateSensorGateway(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorGatewayId SensorGatewayId, params UpdateSensorGatewayParams)
+	// RevokeSensorGatewayKey Revoke the gateway keys (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/revoke-key)
+	RevokeSensorGatewayKey(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorGatewayId SensorGatewayId, params RevokeSensorGatewayKeyParams)
+	// RotateSensorGatewayKey Issue a new gateway key (returned once) with a grace period for the previous one (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/rotate-key)
+	RotateSensorGatewayKey(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorGatewayId SensorGatewayId, params RotateSensorGatewayKeyParams)
+	// GetSensorHistory Physical history of a resource (berth, dynamic area, pedestal): state changes, alerts, contractual and physical status per night, raw readings within the retention (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/sensors/history)
+	GetSensorHistory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetSensorHistoryParams)
+	// GetSensorMap Context Sensori of a map (default the first water map): physical state, health, expectation and discrepancy per device, no vessel or customer data (map.view)
+	// (GET /api/admin/v1/marinas/{marinaId}/sensors/map)
+	GetSensorMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetSensorMapParams)
+	// GetSensorSettings Sensor settings (map.view; defaults when never saved, version 0)
+	// (GET /api/admin/v1/marinas/{marinaId}/sensors/settings)
+	GetSensorSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// PutSensorSettings Save the sensor settings (harbor.configure; If-Match "0" for the first save)
+	// (PUT /api/admin/v1/marinas/{marinaId}/sensors/settings)
+	PutSensorSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PutSensorSettingsParams)
+	// ListSensorSources Polled sensor sources and the registered drivers with their config keys (harbor.configure)
+	// (GET /api/admin/v1/marinas/{marinaId}/sensors/sources)
+	ListSensorSources(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// CreateSensorSource Configure a polled source of a registered driver; secret config values are write-only (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/sensors/sources)
+	CreateSensorSource(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateSensorSourceParams)
+	// UpdateSensorSource Update a source; config replaces the stored values when present (harbor.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/sensors/sources/{sensorSourceId})
+	UpdateSensorSource(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorSourceId SensorSourceId, params UpdateSensorSourceParams)
+	// PollSensorSourceNow Poll the source now, through the same ingest service as the job (harbor.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/sensors/sources/{sensorSourceId}/poll)
+	PollSensorSourceNow(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorSourceId SensorSourceId)
 	// ListSignatureRequests Signature requests (contracts.read)
 	// (GET /api/admin/v1/marinas/{marinaId}/signature-requests)
 	ListSignatureRequests(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListSignatureRequestsParams)
@@ -37047,6 +39131,9 @@ type ServerInterface interface {
 	// GetDeviceSelf The calling device, its user, marina and permissions
 	// (GET /api/device/v1/self)
 	GetDeviceSelf(w http.ResponseWriter, r *http.Request)
+	// IngestSensorReadings Post a batch of 1..500 occupancy readings signed with a device or gateway key (per-item results, idempotent on device_id and observed_at)
+	// (POST /api/ingest/v1/readings)
+	IngestSensorReadings(w http.ResponseWriter, r *http.Request, params IngestSensorReadingsParams)
 	// GetPublicMarina Public information of a marina
 	// (GET /api/public/v1/{slug})
 	GetPublicMarina(w http.ResponseWriter, r *http.Request, slug string)
@@ -37155,6 +39242,9 @@ type ServerInterface interface {
 	// AcceptPublicYardQuote Accept a yard quote from its link; the work order is created
 	// (POST /api/public/v1/{slug}/links/{token}/yard-quote/accept)
 	AcceptPublicYardQuote(w http.ResponseWriter, r *http.Request, slug Slug, token Token)
+	// GetPublicOccupancy Aggregate free berths per published category tonight, never which berths or vessels (Cache-Control public, max-age=60; 404 when the option is off)
+	// (GET /api/public/v1/{slug}/occupancy)
+	GetPublicOccupancy(w http.ResponseWriter, r *http.Request, slug Slug, params GetPublicOccupancyParams)
 	// GetPayPage Public payment page of a payment request: amount, charges, bank details, online availability
 	// (GET /api/public/v1/{slug}/pay/{payToken})
 	GetPayPage(w http.ResponseWriter, r *http.Request, slug Slug, payToken PayToken)
@@ -37164,6 +39254,18 @@ type ServerInterface interface {
 	// GetPayStatus Status of the request for the return page (the browser return never confirms, INV-09)
 	// (GET /api/public/v1/{slug}/pay/{payToken}/status)
 	GetPayStatus(w http.ResponseWriter, r *http.Request, slug Slug, payToken PayToken)
+	// GetPublicProfile Published marina profile in a language (Cache-Control public, max-age=300; ETag; 120/min per IP prefix)
+	// (GET /api/public/v1/{slug}/profile)
+	GetPublicProfile(w http.ResponseWriter, r *http.Request, slug Slug, params GetPublicProfileParams)
+	// GetPublicProfileMap Simplified harbour map without codes, occupancy, vessels or sensors (Cache-Control public, max-age=3600; 404 when the section is off)
+	// (GET /api/public/v1/{slug}/profile/map)
+	GetPublicProfileMap(w http.ResponseWriter, r *http.Request, slug Slug, params GetPublicProfileMapParams)
+	// GetPublicProfilePhoto A photo referenced by the published profile (Cache-Control public, max-age=31536000, immutable; any other id is 404)
+	// (GET /api/public/v1/{slug}/profile/photos/{fileId})
+	GetPublicProfilePhoto(w http.ResponseWriter, r *http.Request, slug Slug, fileId FileId)
+	// GetPublicProfilePrices Transit price matrix of the active list published with publish_matrix (Cache-Control public, max-age=3600; 404 when the section is off or no list publishes it)
+	// (GET /api/public/v1/{slug}/profile/prices)
+	GetPublicProfilePrices(w http.ResponseWriter, r *http.Request, slug Slug, params GetPublicProfilePricesParams)
 	// Healthz Liveness probe
 	// (GET /healthz)
 	Healthz(w http.ResponseWriter, r *http.Request)
@@ -39357,6 +41459,54 @@ func (_ Unimplemented) SimulatePrice(w http.ResponseWriter, r *http.Request, mar
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// GetMarinaProfile The public profile draft with its computed figures (marina.read; defaults prefilled from the marina, version 0)
+// (GET /api/admin/v1/marinas/{marinaId}/profile)
+func (_ Unimplemented) GetMarinaProfile(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PutMarinaProfile Save the profile (marina.configure; If-Match "0" for the first save); a published profile is republished at once
+// (PUT /api/admin/v1/marinas/{marinaId}/profile)
+func (_ Unimplemented) PutMarinaProfile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PutMarinaProfileParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UploadProfilePhoto Upload a photo (JPEG or PNG, at most 8 MiB, raw body): decoded and re-encoded without metadata, longest side at most 2,400 px, stored encrypted; reference it from photos or access_images with a PUT (marina.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/profile/photos)
+func (_ Unimplemented) UploadProfilePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UploadProfilePhotoParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteProfilePhoto Delete an uploaded photo and remove it from photos and access_images (marina.configure)
+// (DELETE /api/admin/v1/marinas/{marinaId}/profile/photos/{fileId})
+func (_ Unimplemented) DeleteProfilePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, fileId FileId, params DeleteProfilePhotoParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetProfilePhoto The bytes of an uploaded profile photo, published or not (marina.read; preview and panel)
+// (GET /api/admin/v1/marinas/{marinaId}/profile/photos/{fileId})
+func (_ Unimplemented) GetProfilePhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, fileId FileId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PreviewMarinaProfile The public JSON and JSON-LD the draft would publish (marina.configure; Cache-Control no-store, used by /p/{slug}?preview=1 with the panel session)
+// (GET /api/admin/v1/marinas/{marinaId}/profile/preview)
+func (_ Unimplemented) PreviewMarinaProfile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PreviewMarinaProfileParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PublishMarinaProfile Publish the profile on /p/{slug} (marina.configure); missing position, contact or name is 422 profile_incomplete
+// (POST /api/admin/v1/marinas/{marinaId}/profile/publish)
+func (_ Unimplemented) PublishMarinaProfile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PublishMarinaProfileParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UnpublishMarinaProfile Withdraw the public profile; /p/{slug} and the public profile API answer 404 (marina.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/profile/unpublish)
+func (_ Unimplemented) UnpublishMarinaProfile(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params UnpublishMarinaProfileParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // ListQuotes Quotes, newest first (contracts.read)
 // (GET /api/admin/v1/marinas/{marinaId}/quotes)
 func (_ Unimplemented) ListQuotes(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListQuotesParams) {
@@ -39939,6 +42089,12 @@ func (_ Unimplemented) GetRightsReport(w http.ResponseWriter, r *http.Request, m
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// GetSensorsReport R-sensors: physical vs contractual discrepancies per resource and night (reports.operational or reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/sensors)
+func (_ Unimplemented) GetSensorsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetSensorsReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // GetStorageReport R-storage: allocations on surface areas, m²-nights available and occupied, blocked exits (reports.operational or reports.all; production with reports.all)
 // (GET /api/admin/v1/marinas/{marinaId}/reports/storage)
 func (_ Unimplemented) GetStorageReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetStorageReportParams) {
@@ -40062,6 +42218,144 @@ func (_ Unimplemented) EndRight(w http.ResponseWriter, r *http.Request, marinaId
 // SetRightVessels Replace the authorised vessels; a primary change re-allocates owner nights from from_night (rights.manage)
 // (PUT /api/admin/v1/marinas/{marinaId}/rights/{rightId}/vessels)
 func (_ Unimplemented) SetRightVessels(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rightId RightId, params SetRightVesselsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListSensorAlerts Sensor alerts and proposals, newest first (map.view; default status open)
+// (GET /api/admin/v1/marinas/{marinaId}/sensors/alerts)
+func (_ Unimplemented) ListSensorAlerts(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListSensorAlertsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetSensorAlert A sensor alert with the actions the principal may take (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/sensors/alerts/{sensorAlertId})
+func (_ Unimplemented) GetSensorAlert(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorAlertId SensorAlertId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ActOnSensorAlert Decide an alert through the existing domain services: dismiss and confirm_arrival (presence.write), confirm_release and revoke_release (occupancy.move), create_task (maintenance.manage or maintenance.report); a condition that no longer holds is 409 alert_stale
+// (POST /api/admin/v1/marinas/{marinaId}/sensors/alerts/{sensorAlertId}/actions)
+func (_ Unimplemented) ActOnSensorAlert(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorAlertId SensorAlertId, params ActOnSensorAlertParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListSensorDevices Sensor devices with their health and physical state, by code (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/sensors/devices)
+func (_ Unimplemented) ListSensorDevices(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListSensorDevicesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateSensorDevice Register a device on a berth, a linear dynamic-area segment or a pedestal; the device key is in the response once (Cache-Control no-store) (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/sensors/devices)
+func (_ Unimplemented) CreateSensorDevice(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateSensorDeviceParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetSensorDevice A sensor device (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId})
+func (_ Unimplemented) GetSensorDevice(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorDeviceId SensorDeviceId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateSensorDevice Update a device; a new resource or segment writes a state change to unknown (device_moved) and resets the hysteresis (harbor.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId})
+func (_ Unimplemented) UpdateSensorDevice(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorDeviceId SensorDeviceId, params UpdateSensorDeviceParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetSensorDeviceHistory Physical history of a device: state changes, alerts, night classification and raw readings within the retention (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/history)
+func (_ Unimplemented) GetSensorDeviceHistory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorDeviceId SensorDeviceId, params GetSensorDeviceHistoryParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RevokeSensorDeviceKey Revoke the current and previous device key; readings get 401 until a rotate (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/revoke-key)
+func (_ Unimplemented) RevokeSensorDeviceKey(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorDeviceId SensorDeviceId, params RevokeSensorDeviceKeyParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RotateSensorDeviceKey Issue a new device key (returned once); the previous one keeps verifying for grace_hours (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/rotate-key)
+func (_ Unimplemented) RotateSensorDeviceKey(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorDeviceId SensorDeviceId, params RotateSensorDeviceKeyParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListSensorGateways Sensor gateways (harbor.configure)
+// (GET /api/admin/v1/marinas/{marinaId}/sensors/gateways)
+func (_ Unimplemented) ListSensorGateways(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateSensorGateway Register a gateway; its key is in the response once (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/sensors/gateways)
+func (_ Unimplemented) CreateSensorGateway(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateSensorGatewayParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateSensorGateway Update a gateway (name, kind, active) (harbor.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId})
+func (_ Unimplemented) UpdateSensorGateway(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorGatewayId SensorGatewayId, params UpdateSensorGatewayParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RevokeSensorGatewayKey Revoke the gateway keys (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/revoke-key)
+func (_ Unimplemented) RevokeSensorGatewayKey(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorGatewayId SensorGatewayId, params RevokeSensorGatewayKeyParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// RotateSensorGatewayKey Issue a new gateway key (returned once) with a grace period for the previous one (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/rotate-key)
+func (_ Unimplemented) RotateSensorGatewayKey(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorGatewayId SensorGatewayId, params RotateSensorGatewayKeyParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetSensorHistory Physical history of a resource (berth, dynamic area, pedestal): state changes, alerts, contractual and physical status per night, raw readings within the retention (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/sensors/history)
+func (_ Unimplemented) GetSensorHistory(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetSensorHistoryParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetSensorMap Context Sensori of a map (default the first water map): physical state, health, expectation and discrepancy per device, no vessel or customer data (map.view)
+// (GET /api/admin/v1/marinas/{marinaId}/sensors/map)
+func (_ Unimplemented) GetSensorMap(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetSensorMapParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetSensorSettings Sensor settings (map.view; defaults when never saved, version 0)
+// (GET /api/admin/v1/marinas/{marinaId}/sensors/settings)
+func (_ Unimplemented) GetSensorSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PutSensorSettings Save the sensor settings (harbor.configure; If-Match "0" for the first save)
+// (PUT /api/admin/v1/marinas/{marinaId}/sensors/settings)
+func (_ Unimplemented) PutSensorSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PutSensorSettingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListSensorSources Polled sensor sources and the registered drivers with their config keys (harbor.configure)
+// (GET /api/admin/v1/marinas/{marinaId}/sensors/sources)
+func (_ Unimplemented) ListSensorSources(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateSensorSource Configure a polled source of a registered driver; secret config values are write-only (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/sensors/sources)
+func (_ Unimplemented) CreateSensorSource(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateSensorSourceParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateSensorSource Update a source; config replaces the stored values when present (harbor.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/sensors/sources/{sensorSourceId})
+func (_ Unimplemented) UpdateSensorSource(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorSourceId SensorSourceId, params UpdateSensorSourceParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PollSensorSourceNow Poll the source now, through the same ingest service as the job (harbor.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/sensors/sources/{sensorSourceId}/poll)
+func (_ Unimplemented) PollSensorSourceNow(w http.ResponseWriter, r *http.Request, marinaId MarinaId, sensorSourceId SensorSourceId) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -41307,6 +43601,12 @@ func (_ Unimplemented) GetDeviceSelf(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// IngestSensorReadings Post a batch of 1..500 occupancy readings signed with a device or gateway key (per-item results, idempotent on device_id and observed_at)
+// (POST /api/ingest/v1/readings)
+func (_ Unimplemented) IngestSensorReadings(w http.ResponseWriter, r *http.Request, params IngestSensorReadingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // GetPublicMarina Public information of a marina
 // (GET /api/public/v1/{slug})
 func (_ Unimplemented) GetPublicMarina(w http.ResponseWriter, r *http.Request, slug string) {
@@ -41523,6 +43823,12 @@ func (_ Unimplemented) AcceptPublicYardQuote(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// GetPublicOccupancy Aggregate free berths per published category tonight, never which berths or vessels (Cache-Control public, max-age=60; 404 when the option is off)
+// (GET /api/public/v1/{slug}/occupancy)
+func (_ Unimplemented) GetPublicOccupancy(w http.ResponseWriter, r *http.Request, slug Slug, params GetPublicOccupancyParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // GetPayPage Public payment page of a payment request: amount, charges, bank details, online availability
 // (GET /api/public/v1/{slug}/pay/{payToken})
 func (_ Unimplemented) GetPayPage(w http.ResponseWriter, r *http.Request, slug Slug, payToken PayToken) {
@@ -41538,6 +43844,30 @@ func (_ Unimplemented) StartPayCheckout(w http.ResponseWriter, r *http.Request, 
 // GetPayStatus Status of the request for the return page (the browser return never confirms, INV-09)
 // (GET /api/public/v1/{slug}/pay/{payToken}/status)
 func (_ Unimplemented) GetPayStatus(w http.ResponseWriter, r *http.Request, slug Slug, payToken PayToken) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPublicProfile Published marina profile in a language (Cache-Control public, max-age=300; ETag; 120/min per IP prefix)
+// (GET /api/public/v1/{slug}/profile)
+func (_ Unimplemented) GetPublicProfile(w http.ResponseWriter, r *http.Request, slug Slug, params GetPublicProfileParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPublicProfileMap Simplified harbour map without codes, occupancy, vessels or sensors (Cache-Control public, max-age=3600; 404 when the section is off)
+// (GET /api/public/v1/{slug}/profile/map)
+func (_ Unimplemented) GetPublicProfileMap(w http.ResponseWriter, r *http.Request, slug Slug, params GetPublicProfileMapParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPublicProfilePhoto A photo referenced by the published profile (Cache-Control public, max-age=31536000, immutable; any other id is 404)
+// (GET /api/public/v1/{slug}/profile/photos/{fileId})
+func (_ Unimplemented) GetPublicProfilePhoto(w http.ResponseWriter, r *http.Request, slug Slug, fileId FileId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetPublicProfilePrices Transit price matrix of the active list published with publish_matrix (Cache-Control public, max-age=3600; 404 when the section is off or no list publishes it)
+// (GET /api/public/v1/{slug}/profile/prices)
+func (_ Unimplemented) GetPublicProfilePrices(w http.ResponseWriter, r *http.Request, slug Slug, params GetPublicProfilePricesParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -61556,6 +63886,368 @@ func (siw *ServerInterfaceWrapper) SimulatePrice(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r)
 }
 
+// GetMarinaProfile operation middleware
+func (siw *ServerInterfaceWrapper) GetMarinaProfile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMarinaProfile(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutMarinaProfile operation middleware
+func (siw *ServerInterfaceWrapper) PutMarinaProfile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PutMarinaProfileParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutMarinaProfile(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UploadProfilePhoto operation middleware
+func (siw *ServerInterfaceWrapper) UploadProfilePhoto(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UploadProfilePhotoParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UploadProfilePhoto(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteProfilePhoto operation middleware
+func (siw *ServerInterfaceWrapper) DeleteProfilePhoto(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "fileId" -------------
+	var fileId FileId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "fileId", chi.URLParam(r, "fileId"), &fileId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fileId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteProfilePhotoParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteProfilePhoto(w, r, marinaId, fileId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetProfilePhoto operation middleware
+func (siw *ServerInterfaceWrapper) GetProfilePhoto(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "fileId" -------------
+	var fileId FileId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "fileId", chi.URLParam(r, "fileId"), &fileId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fileId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetProfilePhoto(w, r, marinaId, fileId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PreviewMarinaProfile operation middleware
+func (siw *ServerInterfaceWrapper) PreviewMarinaProfile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PreviewMarinaProfileParams
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PreviewMarinaProfile(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PublishMarinaProfile operation middleware
+func (siw *ServerInterfaceWrapper) PublishMarinaProfile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PublishMarinaProfileParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PublishMarinaProfile(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnpublishMarinaProfile operation middleware
+func (siw *ServerInterfaceWrapper) UnpublishMarinaProfile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UnpublishMarinaProfileParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnpublishMarinaProfile(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListQuotes operation middleware
 func (siw *ServerInterfaceWrapper) ListQuotes(w http.ResponseWriter, r *http.Request) {
 
@@ -69626,6 +72318,178 @@ func (siw *ServerInterfaceWrapper) GetRightsReport(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
+// GetSensorsReport operation middleware
+func (siw *ServerInterfaceWrapper) GetSensorsReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSensorsReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "view" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "view", r.URL.Query(), &params.View, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "view"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "view", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_id", r.URL.Query(), &params.GroupId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSensorsReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetStorageReport operation middleware
 func (siw *ServerInterfaceWrapper) GetStorageReport(w http.ResponseWriter, r *http.Request) {
 
@@ -71433,6 +74297,1359 @@ func (siw *ServerInterfaceWrapper) SetRightVessels(w http.ResponseWriter, r *htt
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SetRightVessels(w, r, marinaId, rightId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListSensorAlerts operation middleware
+func (siw *ServerInterfaceWrapper) ListSensorAlerts(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListSensorAlertsParams
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "device_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "device_id", r.URL.Query(), &params.DeviceId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "device_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "device_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListSensorAlerts(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSensorAlert operation middleware
+func (siw *ServerInterfaceWrapper) GetSensorAlert(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorAlertId" -------------
+	var sensorAlertId SensorAlertId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorAlertId", chi.URLParam(r, "sensorAlertId"), &sensorAlertId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorAlertId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSensorAlert(w, r, marinaId, sensorAlertId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ActOnSensorAlert operation middleware
+func (siw *ServerInterfaceWrapper) ActOnSensorAlert(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorAlertId" -------------
+	var sensorAlertId SensorAlertId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorAlertId", chi.URLParam(r, "sensorAlertId"), &sensorAlertId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorAlertId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ActOnSensorAlertParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ActOnSensorAlert(w, r, marinaId, sensorAlertId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListSensorDevices operation middleware
+func (siw *ServerInterfaceWrapper) ListSensorDevices(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListSensorDevicesParams
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "resource_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "resource_type", r.URL.Query(), &params.ResourceType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "resource_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resource_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "resource_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "resource_id", r.URL.Query(), &params.ResourceId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "resource_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resource_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "health" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "health", r.URL.Query(), &params.Health, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "health"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "health", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "active" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "active", r.URL.Query(), &params.Active, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "active"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "active", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListSensorDevices(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateSensorDevice operation middleware
+func (siw *ServerInterfaceWrapper) CreateSensorDevice(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateSensorDeviceParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateSensorDevice(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSensorDevice operation middleware
+func (siw *ServerInterfaceWrapper) GetSensorDevice(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorDeviceId" -------------
+	var sensorDeviceId SensorDeviceId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorDeviceId", chi.URLParam(r, "sensorDeviceId"), &sensorDeviceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorDeviceId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSensorDevice(w, r, marinaId, sensorDeviceId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateSensorDevice operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSensorDevice(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorDeviceId" -------------
+	var sensorDeviceId SensorDeviceId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorDeviceId", chi.URLParam(r, "sensorDeviceId"), &sensorDeviceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorDeviceId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateSensorDeviceParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateSensorDevice(w, r, marinaId, sensorDeviceId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSensorDeviceHistory operation middleware
+func (siw *ServerInterfaceWrapper) GetSensorDeviceHistory(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorDeviceId" -------------
+	var sensorDeviceId SensorDeviceId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorDeviceId", chi.URLParam(r, "sensorDeviceId"), &sensorDeviceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorDeviceId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSensorDeviceHistoryParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "include_readings" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "include_readings", r.URL.Query(), &params.IncludeReadings, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "include_readings"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "include_readings", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSensorDeviceHistory(w, r, marinaId, sensorDeviceId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RevokeSensorDeviceKey operation middleware
+func (siw *ServerInterfaceWrapper) RevokeSensorDeviceKey(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorDeviceId" -------------
+	var sensorDeviceId SensorDeviceId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorDeviceId", chi.URLParam(r, "sensorDeviceId"), &sensorDeviceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorDeviceId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RevokeSensorDeviceKeyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RevokeSensorDeviceKey(w, r, marinaId, sensorDeviceId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RotateSensorDeviceKey operation middleware
+func (siw *ServerInterfaceWrapper) RotateSensorDeviceKey(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorDeviceId" -------------
+	var sensorDeviceId SensorDeviceId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorDeviceId", chi.URLParam(r, "sensorDeviceId"), &sensorDeviceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorDeviceId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RotateSensorDeviceKeyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RotateSensorDeviceKey(w, r, marinaId, sensorDeviceId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListSensorGateways operation middleware
+func (siw *ServerInterfaceWrapper) ListSensorGateways(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListSensorGateways(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateSensorGateway operation middleware
+func (siw *ServerInterfaceWrapper) CreateSensorGateway(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateSensorGatewayParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateSensorGateway(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateSensorGateway operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSensorGateway(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorGatewayId" -------------
+	var sensorGatewayId SensorGatewayId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorGatewayId", chi.URLParam(r, "sensorGatewayId"), &sensorGatewayId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorGatewayId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateSensorGatewayParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateSensorGateway(w, r, marinaId, sensorGatewayId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RevokeSensorGatewayKey operation middleware
+func (siw *ServerInterfaceWrapper) RevokeSensorGatewayKey(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorGatewayId" -------------
+	var sensorGatewayId SensorGatewayId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorGatewayId", chi.URLParam(r, "sensorGatewayId"), &sensorGatewayId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorGatewayId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RevokeSensorGatewayKeyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RevokeSensorGatewayKey(w, r, marinaId, sensorGatewayId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RotateSensorGatewayKey operation middleware
+func (siw *ServerInterfaceWrapper) RotateSensorGatewayKey(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorGatewayId" -------------
+	var sensorGatewayId SensorGatewayId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorGatewayId", chi.URLParam(r, "sensorGatewayId"), &sensorGatewayId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorGatewayId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RotateSensorGatewayKeyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RotateSensorGatewayKey(w, r, marinaId, sensorGatewayId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSensorHistory operation middleware
+func (siw *ServerInterfaceWrapper) GetSensorHistory(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSensorHistoryParams
+
+	// ------------- Optional query parameter "resource_type" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "resource_type", r.URL.Query(), &params.ResourceType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "resource_type"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resource_type", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "resource_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "resource_id", r.URL.Query(), &params.ResourceId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "resource_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resource_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "include_readings" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "include_readings", r.URL.Query(), &params.IncludeReadings, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "include_readings"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "include_readings", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSensorHistory(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSensorMap operation middleware
+func (siw *ServerInterfaceWrapper) GetSensorMap(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSensorMapParams
+
+	// ------------- Optional query parameter "map_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "map_id", r.URL.Query(), &params.MapId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "map_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "map_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "date" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "date", r.URL.Query(), &params.Date, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "date"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "date", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSensorMap(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSensorSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetSensorSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSensorSettings(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutSensorSettings operation middleware
+func (siw *ServerInterfaceWrapper) PutSensorSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PutSensorSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutSensorSettings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListSensorSources operation middleware
+func (siw *ServerInterfaceWrapper) ListSensorSources(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListSensorSources(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateSensorSource operation middleware
+func (siw *ServerInterfaceWrapper) CreateSensorSource(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateSensorSourceParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateSensorSource(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateSensorSource operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSensorSource(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorSourceId" -------------
+	var sensorSourceId SensorSourceId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorSourceId", chi.URLParam(r, "sensorSourceId"), &sensorSourceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorSourceId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateSensorSourceParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateSensorSource(w, r, marinaId, sensorSourceId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PollSensorSourceNow operation middleware
+func (siw *ServerInterfaceWrapper) PollSensorSourceNow(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "sensorSourceId" -------------
+	var sensorSourceId SensorSourceId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sensorSourceId", chi.URLParam(r, "sensorSourceId"), &sensorSourceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sensorSourceId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PollSensorSourceNow(w, r, marinaId, sensorSourceId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -81710,6 +85927,66 @@ func (siw *ServerInterfaceWrapper) GetDeviceSelf(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r)
 }
 
+// IngestSensorReadings operation middleware
+func (siw *ServerInterfaceWrapper) IngestSensorReadings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params IngestSensorReadingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Porto-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Key")]; found {
+		var PortoKey string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Key", valueList[0], &PortoKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Key", Err: err})
+			return
+		}
+
+		params.PortoKey = &PortoKey
+
+	}
+
+	// ------------- Optional header parameter "Porto-Signature" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Signature")]; found {
+		var PortoSignature string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Signature", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Signature", valueList[0], &PortoSignature, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Signature", Err: err})
+			return
+		}
+
+		params.PortoSignature = &PortoSignature
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.IngestSensorReadings(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetPublicMarina operation middleware
 func (siw *ServerInterfaceWrapper) GetPublicMarina(w http.ResponseWriter, r *http.Request) {
 
@@ -83770,6 +88047,56 @@ func (siw *ServerInterfaceWrapper) AcceptPublicYardQuote(w http.ResponseWriter, 
 	handler.ServeHTTP(w, r)
 }
 
+// GetPublicOccupancy operation middleware
+func (siw *ServerInterfaceWrapper) GetPublicOccupancy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPublicOccupancyParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-None-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-None-Match")]; found {
+		var IfNoneMatch IfNoneMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-None-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-None-Match", valueList[0], &IfNoneMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-None-Match", Err: err})
+			return
+		}
+
+		params.IfNoneMatch = &IfNoneMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPublicOccupancy(w, r, slug, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetPayPage operation middleware
 func (siw *ServerInterfaceWrapper) GetPayPage(w http.ResponseWriter, r *http.Request) {
 
@@ -83866,6 +88193,217 @@ func (siw *ServerInterfaceWrapper) GetPayStatus(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetPayStatus(w, r, slug, payToken)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPublicProfile operation middleware
+func (siw *ServerInterfaceWrapper) GetPublicProfile(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPublicProfileParams
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-None-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-None-Match")]; found {
+		var IfNoneMatch IfNoneMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-None-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-None-Match", valueList[0], &IfNoneMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-None-Match", Err: err})
+			return
+		}
+
+		params.IfNoneMatch = &IfNoneMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPublicProfile(w, r, slug, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPublicProfileMap operation middleware
+func (siw *ServerInterfaceWrapper) GetPublicProfileMap(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPublicProfileMapParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-None-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-None-Match")]; found {
+		var IfNoneMatch IfNoneMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-None-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-None-Match", valueList[0], &IfNoneMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-None-Match", Err: err})
+			return
+		}
+
+		params.IfNoneMatch = &IfNoneMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPublicProfileMap(w, r, slug, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPublicProfilePhoto operation middleware
+func (siw *ServerInterfaceWrapper) GetPublicProfilePhoto(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "fileId" -------------
+	var fileId FileId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "fileId", chi.URLParam(r, "fileId"), &fileId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "fileId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPublicProfilePhoto(w, r, slug, fileId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPublicProfilePrices operation middleware
+func (siw *ServerInterfaceWrapper) GetPublicProfilePrices(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "slug" -------------
+	var slug Slug
+
+	err = runtime.BindStyledParameterWithOptions("simple", "slug", chi.URLParam(r, "slug"), &slug, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "slug", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPublicProfilePricesParams
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-None-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-None-Match")]; found {
+		var IfNoneMatch IfNoneMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-None-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-None-Match", valueList[0], &IfNoneMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-None-Match", Err: err})
+			return
+		}
+
+		params.IfNoneMatch = &IfNoneMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPublicProfilePrices(w, r, slug, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -86313,6 +90851,120 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/rental", wrapper.GetRentalReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/ingest/v1/readings", wrapper.IngestSensorReadings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/devices", wrapper.ListSensorDevices)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/devices", wrapper.CreateSensorDevice)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}", wrapper.GetSensorDevice)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}", wrapper.UpdateSensorDevice)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/rotate-key", wrapper.RotateSensorDeviceKey)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/revoke-key", wrapper.RevokeSensorDeviceKey)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/history", wrapper.GetSensorDeviceHistory)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/gateways", wrapper.ListSensorGateways)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/gateways", wrapper.CreateSensorGateway)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}", wrapper.UpdateSensorGateway)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/rotate-key", wrapper.RotateSensorGatewayKey)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/revoke-key", wrapper.RevokeSensorGatewayKey)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/sources", wrapper.ListSensorSources)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/sources", wrapper.CreateSensorSource)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/sources/{sensorSourceId}", wrapper.UpdateSensorSource)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/sources/{sensorSourceId}/poll", wrapper.PollSensorSourceNow)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/settings", wrapper.GetSensorSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/settings", wrapper.PutSensorSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/map", wrapper.GetSensorMap)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/alerts", wrapper.ListSensorAlerts)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/alerts/{sensorAlertId}", wrapper.GetSensorAlert)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/alerts/{sensorAlertId}/actions", wrapper.ActOnSensorAlert)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/sensors/history", wrapper.GetSensorHistory)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/sensors", wrapper.GetSensorsReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/profile", wrapper.GetMarinaProfile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/profile", wrapper.PutMarinaProfile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/profile/publish", wrapper.PublishMarinaProfile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/profile/unpublish", wrapper.UnpublishMarinaProfile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/profile/preview", wrapper.PreviewMarinaProfile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/profile/photos", wrapper.UploadProfilePhoto)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/profile/photos/{fileId}", wrapper.DeleteProfilePhoto)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/profile/photos/{fileId}", wrapper.GetProfilePhoto)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/profile", wrapper.GetPublicProfile)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/profile/map", wrapper.GetPublicProfileMap)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/profile/prices", wrapper.GetPublicProfilePrices)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/occupancy", wrapper.GetPublicOccupancy)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/public/v1/{slug}/profile/photos/{fileId}", wrapper.GetPublicProfilePhoto)
 	})
 
 	return r

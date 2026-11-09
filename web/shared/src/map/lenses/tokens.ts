@@ -23,6 +23,8 @@ export const HARBOR_TOKENS = [
   'bad',
   'override',
   'muted',
+  // M12 (m12-plan §9.2): a berth physically occupied according to its sensor (lens Sensori).
+  'sensor-occupied',
 ] as const;
 
 export type HarborToken = (typeof HARBOR_TOKENS)[number];
@@ -213,6 +215,14 @@ export const TOKEN_CLASSES: Readonly<Record<HarborToken, TokenClasses>> = {
     text: 'text-harbor-muted',
     onFill: 'fill-foreground',
     onStroke: 'stroke-foreground/70',
+  },
+  'sensor-occupied': {
+    fill: 'fill-harbor-sensor-occupied',
+    stroke: 'stroke-harbor-sensor-occupied',
+    bg: 'bg-harbor-sensor-occupied',
+    text: 'text-harbor-sensor-occupied',
+    onFill: 'fill-background',
+    onStroke: 'stroke-background',
   },
 };
 

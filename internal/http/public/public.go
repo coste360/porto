@@ -15,6 +15,7 @@ import (
 	"github.com/coste360/porto/internal/domain/magiclink"
 	"github.com/coste360/porto/internal/domain/marina"
 	"github.com/coste360/porto/internal/domain/portal"
+	"github.com/coste360/porto/internal/domain/profile"
 	"github.com/coste360/porto/internal/domain/signature"
 	"github.com/coste360/porto/internal/domain/yardquote"
 	"github.com/coste360/porto/internal/http/api"
@@ -43,6 +44,9 @@ type Handler struct {
 
 	// M10 yard quote links (yard_quote_links.go, QUOTE; m10-plan §13).
 	YardQuotes *yardquote.Service
+
+	// M12 public marina profile (profile.go, PUBLIC; m12-plan §12.2). nil = every profile operation is 404.
+	Profiles *profile.Service
 }
 
 // GetPublicMarina implements api.ServerInterface.
@@ -56,6 +60,10 @@ func (h *Handler) GetPublicMarina(w http.ResponseWriter, r *http.Request, slug s
 	body := api.PublicMarina{
 		Slug: m.Slug, Name: m.Name, DefaultLocale: api.Locale(m.DefaultLocale), Locales: view.Locales(m.Locales),
 		BookingEnabled: m.BookingEnabled,
+	}
+	if h.Profiles != nil && h.Profiles.Published(r.Context(), m.Slug) {
+		published := true
+		body.ProfilePublished = &published
 	}
 	if len(m.EmbedOrigins) > 0 {
 		origins := slices.Clone(m.EmbedOrigins)

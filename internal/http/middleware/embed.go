@@ -34,6 +34,10 @@ func ParseEmbedOrigin(s string) (string, bool) {
 // and root-file paths (/b/assets/..., /b/embed.js, /b/sw.js) are not pages.
 func bookingPageSlug(p string) (string, bool) {
 	rest, ok := strings.CutPrefix(p, "/b/")
+	if !ok {
+		// M12: the public profile page /p/{slug} is framed like the booking page (m12-plan §12.3).
+		rest, ok = strings.CutPrefix(p, "/p/")
+	}
 	if !ok || strings.HasPrefix(rest, "assets/") {
 		return "", false
 	}

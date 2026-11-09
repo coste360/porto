@@ -98,16 +98,39 @@ func TestPolicies_SecurityOfKeyOperations(t *testing.T) {
 }
 
 // TestPolicies_DomainIdempotency: createBooking handles Idempotency-Key in the domain (m8-plan §4.3), so the
-// middleware never stores a response carrying a booking token; every other operation keeps the middleware.
+// middleware never stores a response carrying a booking token; the M12 operations returning a sensor key once
+// (INV-105) are domain too; every other operation keeps the middleware.
 func TestPolicies_DomainIdempotency(t *testing.T) {
 	ps, err := Policies()
 	if err != nil {
 		t.Fatal(err)
 	}
 	for key, p := range ps {
-		if want := key == "POST /api/public/v1/{slug}/bookings"; p.DomainIdempotency != want {
+		want := map[string]bool{
+			"POST /api/public/v1/{slug}/bookings":                                                 true,
+			"POST /api/admin/v1/marinas/{marinaId}/sensors/devices":                               true,
+			"POST /api/admin/v1/marinas/{marinaId}/sensors/gateways":                              true,
+			"POST /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/rotate-key":   true,
+			"POST /api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/rotate-key": true,
+		}[key]
+		if p.DomainIdempotency != want {
 			t.Errorf("%s: DomainIdempotency %v, want %v", key, p.DomainIdempotency, want)
 		}
+	}
+}
+
+// TestProfilePage_RateLimited: /p/* is limited per IP prefix like getPublicProfile (each request resolves the slug
+// in the database before the head cache).
+func TestProfilePage_RateLimited(t *testing.T) {
+	h := testRouter(t)
+	codes := map[int]int{}
+	for range profilePagePerMinute + 1 {
+		rec := httptest.NewRecorder()
+		h.ServeHTTP(rec, httptest.NewRequest("GET", "/p/nope", nil))
+		codes[rec.Code]++
+	}
+	if codes[http.StatusNotFound] != profilePagePerMinute || codes[http.StatusTooManyRequests] != 1 {
+		t.Fatalf("codes %v", codes)
 	}
 }
 

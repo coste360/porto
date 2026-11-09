@@ -432,6 +432,7 @@ type ElementInfo struct {
 var elementTables = map[string]string{
 	ElementBerth: "berths", ElementStructure: "harbor_structures", ElementDynamicArea: "dynamic_areas",
 	ElementLandResource: "land_resources", ElementPedestal: "pedestals", ElementEquipment: "equipment",
+	ElementSensor: "sensor_devices",
 }
 
 // ElementInfos returns the elements of the marina among refs (type → ids), keyed by type + ":" + id. Unknown or

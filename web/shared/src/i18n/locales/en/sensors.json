@@ -1,0 +1,219 @@
+{
+  "title": "Sensors",
+  "tabs": {
+    "alerts": "Alerts",
+    "devices": "Devices",
+    "gateways": "Gateways",
+    "sources": "Sources",
+    "settings": "Settings"
+  },
+  "physical": {
+    "occupied": "Occupied",
+    "free": "Free",
+    "unknown": "Unknown"
+  },
+  "health": {
+    "ok": "Working",
+    "offline": "Offline",
+    "battery_low": "Low battery",
+    "silent": "Silent"
+  },
+  "kind": {
+    "ultrasonic": "Ultrasonic",
+    "radar": "Radar",
+    "magnetometer": "Magnetometer",
+    "infrared": "Infrared",
+    "camera": "Camera",
+    "other": "Other"
+  },
+  "resourceType": {
+    "berth": "Berth",
+    "dynamic_area": "Area segment",
+    "pedestal": "Pedestal"
+  },
+  "alertKind": {
+    "unexpected_occupied": "Unexpected occupied berth",
+    "transit_arrival": "Transit arrival detected",
+    "return_detected": "Return detected",
+    "release_proposal": "Release proposal",
+    "early_return": "Early return",
+    "device_silent": "Silent sensor",
+    "battery_low": "Sensor battery low"
+  },
+  "alertStatus": {
+    "open": "Open",
+    "confirmed": "Confirmed",
+    "dismissed": "Dismissed",
+    "resolved": "Resolved"
+  },
+  "action": {
+    "dismiss": "Dismiss",
+    "confirm_arrival": "Confirm arrival",
+    "confirm_release": "Confirm release",
+    "revoke_release": "Revoke release",
+    "create_task": "Create task"
+  },
+  "lens": {
+    "toggle": "Sensors",
+    "free": "Free",
+    "occupied": "Occupied",
+    "discrepancy": "Discrepancy",
+    "offline": "Offline",
+    "none": "No sensor",
+    "hint": "Berths with a sensor are coloured by its state; area segments and pedestals are markers on the map."
+  },
+  "empty": "No sensor configured.",
+  "description": "Physical state of the berths detected by the sensors, alerts and proposals to confirm, devices, gateways and sources.",
+  "alerts": {
+    "status": "Status",
+    "kind": "Kind",
+    "allKinds": "All kinds",
+    "empty": "No alerts.",
+    "history": "History",
+    "resold": "Berth resold",
+    "where": "{{resource}} · sensor {{device}} · since {{since}}",
+    "proposal": "Release proposed from {{from}} to {{to}}"
+  },
+  "dialog": {
+    "from": "From",
+    "to": "To",
+    "consent": "Customer consent obtained",
+    "outsideProposal": "The period must lie within the proposal.",
+    "priority": "Priority",
+    "note": "Note (optional, never sent in notifications)"
+  },
+  "priority": {
+    "low": "Low",
+    "normal": "Normal",
+    "high": "High",
+    "urgent": "Urgent"
+  },
+  "devices": {
+    "new": "New device",
+    "newHint": "Pick the resource on the map: click a berth, a segment in metres on a linear area or a pedestal with its socket.",
+    "code": "Code",
+    "externalId": "Vendor id",
+    "kind": "Kind",
+    "resourceType": "Attached to",
+    "resource": "Resource",
+    "map": "Map",
+    "gateway": "Gateway",
+    "ownKey": "Own key",
+    "physical": "Physical state",
+    "health": "Health",
+    "battery": "Battery",
+    "lastContact": "Last contact",
+    "key": "Key",
+    "rotate": "Rotate key",
+    "revoke": "Revoke key",
+    "rotateHint": "The current key of {{code}} stays valid for the grace period.",
+    "grace": "Grace (hours, 0-168)",
+    "fromM": "From (m)",
+    "toM": "To (m)",
+    "areaLength": "Area length: {{length}} m",
+    "segmentInvalid": "Enter the start and end metres of the segment.",
+    "segmentOrder": "The start must come before the end.",
+    "segmentShort": "The segment must be at least 1 m long.",
+    "segmentOutside": "The segment goes beyond the area.",
+    "socket": "Socket",
+    "noSocket": "No socket",
+    "mapPicker": "Map to pick the resource",
+    "picked": "Picked resource: {{code}}",
+    "pickHint": "Click a resource on the map or pick it from the list.",
+    "create": "Create"
+  },
+  "key": {
+    "title": "Key of device {{code}}",
+    "hint": "Copy it to the device now: Porto keeps only its fingerprint and cannot show it again.",
+    "label": "Key",
+    "example": "Signing example (curl and openssl)"
+  },
+  "keyStatus": {
+    "active": "Active",
+    "rotating": "Rotating",
+    "revoked": "Revoked",
+    "unusable": "To be regenerated"
+  },
+  "gatewayKind": {
+    "lorawan": "LoRaWAN",
+    "nbiot": "NB-IoT",
+    "mqtt_bridge": "MQTT bridge",
+    "other": "Other"
+  },
+  "gateways": {
+    "new": "New gateway",
+    "hint": "A gateway posts the readings of its devices with its own key.",
+    "name": "Name",
+    "devices": "Devices",
+    "create": "Create gateway"
+  },
+  "sources": {
+    "new": "New source",
+    "hint": "A source Porto polls periodically through an extension.",
+    "noDrivers": "No source extension installed.",
+    "driver": "Extension",
+    "create": "Create source",
+    "lastPolled": "Last poll",
+    "state": "State",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "enable": "Enable",
+    "disable": "Disable",
+    "pollNow": "Poll now",
+    "polled": "{{count}} readings acquired"
+  },
+  "sourceError": {
+    "timeout": "Timed out",
+    "auth": "Credentials refused",
+    "bad_response": "Invalid response",
+    "unavailable": "Service unavailable"
+  },
+  "settings": {
+    "thresholds": "Thresholds",
+    "retention": "Raw readings are kept {{days}} days (instance setting).",
+    "fields": {
+      "hysteresis_readings": "Agreeing readings to change state",
+      "hysteresis_minutes": "Agreeing minutes to change state",
+      "offline_after_minutes": "Offline after (minutes)",
+      "silent_alert_minutes": "Silent sensor alert after (minutes)",
+      "battery_low_pct": "Low battery below (%)",
+      "unexpected_after_minutes": "Unexpected occupation after (minutes)",
+      "departure_cutoff_minutes": "Departure cutoff (minutes from midnight)",
+      "presence_out_after_hours": "Automatic departure after (hours of free berth)",
+      "release_proposal_after_days": "Release proposal after (days)",
+      "release_proposal_nights": "Nights proposed for release"
+    },
+    "outOfRange": "Value out of the allowed range.",
+    "effectTitle": "Automatic presence",
+    "effectHint": "When enabled, for annual contracts with a single vessel a berth free for some hours records the vessel's departure, and its return after a departure recorded by the sensor. Contracts and occupancy never change without confirmation.",
+    "effect": "Record departures and returns automatically"
+  },
+  "history": {
+    "title": "Sensor history",
+    "description": "Physical state night by night against the contractual status.",
+    "pick": "Open the history from a device or an alert.",
+    "readings": "Raw readings",
+    "timeline": "Nights",
+    "legend": "Top bar: contractual status; bottom bar: physical state; ! = discrepancy.",
+    "stateAtFrom": "State at the start of the period: {{state}}",
+    "changes": "State changes",
+    "at": "When",
+    "change": "Change",
+    "reason": "Reason"
+  },
+  "reason": {
+    "readings": "Agreeing readings",
+    "duration": "Duration",
+    "silence": "Silence",
+    "device_moved": "Device moved"
+  },
+  "dock": {
+    "offline": "Sensor alerts are available online only.",
+    "showOnMap": "Show on the map"
+  },
+  "quick": {
+    "title": "Sensor",
+    "since": "Since {{since}}",
+    "history": "Readings and history"
+  }
+}

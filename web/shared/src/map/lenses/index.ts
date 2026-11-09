@@ -17,6 +17,8 @@ export { daysBetween } from './deadlines';
 export { FIT_OK_BP, FIT_WARN_BP } from './fitness';
 export * from './rights';
 export * from './payments';
+// Sensori lens (M12, RECONCILE): a function of the getSensorMap entries.
+export * from './sensors';
 
 export const LENSES: Readonly<Record<LensId, Lens>> = {
   occupancy: occupancyLens,

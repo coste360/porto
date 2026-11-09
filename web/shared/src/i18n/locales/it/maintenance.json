@@ -138,7 +138,8 @@
     "source": {
       "plan": "Piano",
       "office": "Ufficio",
-      "report": "Segnalazione"
+      "report": "Segnalazione",
+      "sensor": "Sensore"
     },
     "outcome": {
       "ok": "Tutto in ordine",
@@ -160,7 +161,8 @@
       "dynamic_area": "Area",
       "land_resource": "Risorsa a terra",
       "pedestal": "Colonnina",
-      "equipment": "Mezzo"
+      "equipment": "Mezzo",
+      "sensor": "Sensore"
     },
     "equipmentKind": {
       "travel_lift": "Travel lift",

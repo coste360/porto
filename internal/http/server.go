@@ -20,12 +20,14 @@ import (
 	"github.com/coste360/porto/internal/http/bridge"
 	"github.com/coste360/porto/internal/http/desktop"
 	"github.com/coste360/porto/internal/http/device"
+	"github.com/coste360/porto/internal/http/ingest"
 	"github.com/coste360/porto/internal/http/middleware"
 	"github.com/coste360/porto/internal/http/problem"
 	"github.com/coste360/porto/internal/http/public"
 	"github.com/coste360/porto/internal/http/respond"
 	"github.com/coste360/porto/internal/http/static"
 	"github.com/coste360/porto/internal/http/webhooks"
+	"github.com/coste360/porto/internal/reqctx"
 )
 
 // MaxBodyBytes is the hard cap of every request body (m1-plan §4.1); each operation has its own, smaller or
@@ -78,6 +80,23 @@ var bookingRateLimits = []struct {
 	{[]string{"receiveChannelWebhook"}, 600, time.Minute},
 }
 
+// m12RateLimits are the per-IP-prefix limits of the M12 ingestion (before authentication; the per-key limits are
+// in the sensor service) and of the public profile operations (m12-plan §4.6, §12.2).
+var m12RateLimits = []struct {
+	op string
+	n  int
+}{
+	{"ingestSensorReadings", 3000},
+	{"getPublicProfile", 120},
+	{"getPublicProfileMap", 60},
+	{"getPublicProfilePrices", 60},
+	{"getPublicOccupancy", 120},
+	{"getPublicProfilePhoto", 300},
+}
+
+// profilePagePerMinute is the per-IP-prefix limit of the /p/{slug} page (the getPublicProfile limit).
+const profilePagePerMinute = 120
+
 // Deps are the collaborators of the router.
 type Deps struct {
 	Log   *slog.Logger
@@ -92,6 +111,11 @@ type Deps struct {
 	Desktop *desktop.Handler
 	// Bridge serves /api/bridge/v1 (M6b, local peripherals); nil or a nil Runtime answers 404 everywhere.
 	Bridge *bridge.Handler
+	// Ingest serves /api/ingest/v1 (M12, sensor readings); nil answers 404.
+	Ingest *ingest.Handler
+	// ProfilePage serves /p/{slug} (M12, public marina profile page, framed like /b/{slug}); nil answers 404. Its
+	// Index defaults to the booking SPA index.html.
+	ProfilePage *public.ProfilePage
 
 	Authenticator middleware.Authenticator
 	Idempotency   middleware.IdempotencyStore
@@ -120,6 +144,7 @@ type server struct {
 	webhooksAPI
 	desktopAPI
 	bridgeAPI
+	ingestAPI
 	ready func(ctx context.Context) (int64, error)
 }
 
@@ -130,6 +155,7 @@ type (
 	webhooksAPI struct{ *webhooks.Handler }
 	desktopAPI  struct{ *desktop.Handler }
 	bridgeAPI   struct{ *bridge.Handler }
+	ingestAPI   struct{ *ingest.Handler }
 )
 
 // DesktopPrefix is the path prefix of the desktop API, served only on the desktop loopback listener (INV-80).
@@ -201,7 +227,9 @@ func NewRouter(d Deps) (http.Handler, error) {
 		problem.Write(w, r, problem.MethodNotAllowed)
 	})
 
-	mountStatic(r, d.AdminApp, d.BookingApp, middleware.EmbedFraming(d.EmbedOrigins))
+	embedFraming := middleware.EmbedFraming(d.EmbedOrigins)
+	mountStatic(r, d.AdminApp, d.BookingApp, embedFraming)
+	mountProfilePage(r, d.ProfilePage, d.BookingApp, embedFraming, middleware.NewLimiter(d.Clock, profilePagePerMinute, time.Minute))
 
 	// Customer magic-link pages (M4, m4-plan §6.6): one limiter per IP prefix shared by every link operation. The
 	// per-token limit is applied by the link services.
@@ -228,6 +256,9 @@ func NewRouter(d Deps) (http.Handler, error) {
 		for _, op := range rl.ops {
 			byIP[op] = l
 		}
+	}
+	for _, rl := range m12RateLimits {
+		byIP[rl.op] = middleware.NewLimiter(d.Clock, rl.n, time.Minute)
 	}
 
 	// Per-operation middleware, outermost first; the generated wrapper applies the list in reverse.
@@ -256,6 +287,9 @@ func NewRouter(d Deps) (http.Handler, error) {
 	if d.Bridge == nil {
 		d.Bridge = &bridge.Handler{}
 	}
+	if d.Ingest == nil {
+		d.Ingest = &ingest.Handler{}
+	}
 	srv := &server{
 		adminAPI{d.Admin},
 		deviceAPI{d.Device},
@@ -263,6 +297,7 @@ func NewRouter(d Deps) (http.Handler, error) {
 		webhooksAPI{d.Webhooks},
 		desktopAPI{d.Desktop},
 		bridgeAPI{d.Bridge},
+		ingestAPI{d.Ingest},
 		d.Ready,
 	}
 	api.HandlerWithOptions(srv, api.ChiServerOptions{
@@ -314,4 +349,30 @@ func mountStatic(r chi.Router, adminApp, bookingApp *static.App, embedFraming fu
 	embedJS := func(w http.ResponseWriter, r *http.Request) { bookingApp.ServeFile(w, r, "embed.js", false) }
 	r.Get("/embed.js", embedJS)
 	r.Head("/embed.js", embedJS)
+}
+
+// mountProfilePage serves /p/{slug} (M12, m12-plan §12.3) behind the booking framing headers: the profile page
+// handler injects its head into the booking SPA index. Without a handler the path is 404 noindex.
+// The page is limited per IP prefix like getPublicProfile: each request resolves the slug in the database.
+func mountProfilePage(r chi.Router, page *public.ProfilePage, bookingApp *static.App, embedFraming func(http.Handler) http.Handler, limit *middleware.Limiter) {
+	var h http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Robots-Tag", "noindex")
+		http.NotFound(w, r)
+	})
+	if page != nil {
+		if page.Index == nil {
+			page.Index = bookingApp.Index
+		}
+		h = page
+	}
+	framed := embedFraming(h)
+	limited := func(w http.ResponseWriter, r *http.Request) {
+		if ok, wait := limit.Allow("profilePage|" + middleware.PeerKey(reqctx.From(r.Context()).ClientIP)); !ok {
+			problem.Write(w, r, problem.RateLimited, problem.RetryAfter(wait))
+			return
+		}
+		framed.ServeHTTP(w, r)
+	}
+	r.Get("/p/*", limited)
+	r.Head("/p/*", limited)
 }

@@ -24,6 +24,10 @@ import (
 	"github.com/coste360/porto/internal/domain/rental/handover"
 	"github.com/coste360/porto/internal/domain/rental/reservation"
 
+	"github.com/coste360/porto/internal/domain/profile"
+	"github.com/coste360/porto/internal/domain/sensor"
+	"github.com/coste360/porto/internal/domain/sensor/watch"
+
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/csvimport"
 	"github.com/coste360/porto/internal/domain/apikey"
@@ -139,6 +143,12 @@ type Handler struct {
 	RentalFleet    *fleet.Service
 	RentalBookings *reservation.Service
 	RentalHandover *handover.Service
+
+	// M12 (m12-plan §17): devices, gateways, sources, keys and settings (INGEST), map context, alerts, history and
+	// the sensors report (RECONCILE; the report goes through Reports), the public profile panel (PUBLIC).
+	Sensors     *sensor.Service
+	SensorWatch *watch.Service
+	Profiles    *profile.Service
 }
 
 func principal(r *http.Request) *auth.Principal {

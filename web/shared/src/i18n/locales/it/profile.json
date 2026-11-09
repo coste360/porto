@@ -1,0 +1,123 @@
+{
+  "title": "Scheda pubblica",
+  "description": "La scheda del porto pubblicata accanto alla pagina di prenotazione: posizione, contatti, orari, fondali, servizi, foto e mappa semplificata. Non contiene mai dati personali né l'occupazione dei singoli posti.",
+  "publish": "Pubblica",
+  "unpublish": "Ritira",
+  "preview": "Anteprima",
+  "published": "Pubblicata",
+  "draft": "Non pubblicata",
+  "publishedToast": "Scheda pubblicata.",
+  "publicUrl": "Indirizzo pubblico",
+  "copy": "Copia l'indirizzo",
+  "copied": "Indirizzo copiato.",
+  "localMode": "Questa installazione non è raggiungibile da internet: la scheda è visibile solo nella rete locale.",
+  "missingTitle": "Per pubblicare manca:",
+  "missing": {
+    "position": "la posizione dell'imboccatura",
+    "contact": "almeno un contatto (telefono, email o sito)",
+    "name": "il nome del porto"
+  },
+  "save": "Salva",
+  "saved": "Scheda salvata.",
+  "invalid": "Alcuni campi non sono validi: controlla le schede del modulo.",
+  "maxChars": "Al massimo {{max}} caratteri.",
+  "unit": {
+    "m": "m"
+  },
+  "lang": {
+    "it": "Italiano",
+    "en": "Inglese"
+  },
+  "tabs": {
+    "general": "Generale",
+    "contacts": "Contatti",
+    "hours": "Orari",
+    "harbour": "Porto",
+    "services": "Servizi",
+    "photos": "Foto",
+    "sections": "Sezioni"
+  },
+  "fields": {
+    "description": "Descrizione",
+    "publishEnglish": "Pubblica anche in inglese",
+    "position": "Posizione dell'imboccatura (WGS84)",
+    "positionHint": "Gradi decimali, per esempio 43,7101234 e 10,4012345.",
+    "lat": "Latitudine",
+    "lon": "Longitudine",
+    "address": "Indirizzo",
+    "street": "Via e numero",
+    "postalCode": "CAP",
+    "city": "Comune",
+    "province": "Provincia",
+    "country": "Paese (sigla)",
+    "phone": "Telefono",
+    "email": "Email",
+    "website": "Sito web",
+    "websiteHint": "Solo indirizzi https.",
+    "vhf": "Canali VHF",
+    "addVhf": "Aggiungi canale",
+    "removeVhf": "Togli l'ultimo canale",
+    "vhfInvalid": "I canali vanno da 1 a 88, al massimo quattro.",
+    "hoursNote": "Note sugli orari",
+    "berthsTotal": "Posti barca (valore pubblicato)",
+    "transitBerths": "Posti per il transito (valore pubblicato)",
+    "computed": "Vuoto: si usa il valore calcolato ({{n}}).",
+    "depthMin": "Fondale minimo",
+    "depthMax": "Fondale massimo",
+    "notSet": "Non indicato",
+    "amps": "{{amps}} A",
+    "fuelHours": "Orari del distributore",
+    "travelLiftKg": "Travel lift: portata (kg)",
+    "craneKg": "Gru: portata (kg)",
+    "accessImages": "Immagini dell'accesso"
+  },
+  "wind": {
+    "N": "Tramontana (N)",
+    "NE": "Grecale (NE)",
+    "E": "Levante (E)",
+    "SE": "Scirocco (SE)",
+    "S": "Ostro (S)",
+    "SW": "Libeccio (SW)",
+    "W": "Ponente (W)",
+    "NW": "Maestrale (NW)"
+  },
+  "hours": {
+    "weekday": "Giorno",
+    "from": "Dalle",
+    "to": "Alle",
+    "add": "Aggiungi orario",
+    "remove": "Togli orario"
+  },
+  "photos": {
+    "hint": "JPEG o PNG fino a 8 MB, al massimo {{max}}. Le foto vengono ricodificate senza metadati (posizione GPS compresa).",
+    "alt": "Testo alternativo",
+    "up": "Sposta prima",
+    "down": "Sposta dopo",
+    "remove": "Togli dalla scheda",
+    "upload": "Carica una foto",
+    "thumbnail": "Foto {{n}}"
+  },
+  "sections": {
+    "map": "Mostra la mappa semplificata (senza codici dei posti né occupazione)",
+    "mapPick": "Mappa",
+    "firstMap": "La prima mappa",
+    "poi": "Punti di interesse sulla mappa",
+    "poiHint": "Coordinate della mappa in metri dall'angolo in alto a sinistra.",
+    "poiKind": "Tipo",
+    "poiX": "Distanza orizzontale",
+    "poiY": "Distanza verticale",
+    "poiAdd": "Aggiungi punto",
+    "poiRemove": "Togli punto",
+    "prices": "Mostra i prezzi per il transito",
+    "pricesHint": "Nessun listino attivo per il transito ha la tabella prezzi pubblicabile: attivala nelle impostazioni del listino per mostrarla.",
+    "occupancy": "Mostra i posti liberi stanotte (solo il numero per categoria)",
+    "categories": "Categorie pubblicate",
+    "categoriesHint": "Si mostra quanti posti sono liberi per categoria, mai quali."
+  },
+  "poi": {
+    "entrance": "Imboccatura",
+    "fuel": "Distributore",
+    "office": "Direzione",
+    "pump_out": "Svuotamento acque nere"
+  }
+}

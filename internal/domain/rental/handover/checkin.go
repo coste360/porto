@@ -304,8 +304,13 @@ func (s *Service) CheckIn(ctx context.Context, p *auth.Principal, marinaID, book
 		if err != nil {
 			return err
 		}
-		if store.UTC(in.ReturnedAt).Before(b.CheckedOutAt) {
+		// The phone enters the return time at minute precision: a return in the check-out's own minute is valid
+		// and is stored at the check-out instant, so returned_at never precedes checked_out_at.
+		if store.UTC(in.ReturnedAt).Before(b.CheckedOutAt.Truncate(time.Minute)) {
 			return invalid("returned_at", "before_check_out")
+		}
+		if store.UTC(in.ReturnedAt).Before(b.CheckedOutAt) {
+			in.ReturnedAt = b.CheckedOutAt
 		}
 		d, err := s.loadDraft(ctx, tx, scope, b, store.RentalPhaseCheckin)
 		if err != nil {

@@ -58,9 +58,13 @@ import (
 
 	"github.com/coste360/porto/internal/domain/rental/fleet"
 	"github.com/coste360/porto/internal/domain/rental/handover"
+
+	"github.com/coste360/porto/internal/domain/profile"
 	rentalprice "github.com/coste360/porto/internal/domain/rental/price"
 	"github.com/coste360/porto/internal/domain/rental/reservation"
 	"github.com/coste360/porto/internal/domain/rental/slots"
+	"github.com/coste360/porto/internal/domain/sensor"
+	"github.com/coste360/porto/internal/domain/sensor/watch"
 	"github.com/coste360/porto/pkg/ext"
 )
 
@@ -381,6 +385,29 @@ var sentinels = []struct {
 	{slots.ErrNotImplemented, problem.NotImplemented},
 	{pricing.ErrRentalNotImplemented, problem.NotImplemented},
 	{signature.ErrScreenNotImplemented, problem.NotImplemented},
+	// M12 (m12-plan §13); the typed errors (sensor.TimestampError, sensor.RateLimitError,
+	// profile.IncompleteError) are mapped in mapM12.
+	{sensor.ErrVersionMismatch, problem.VersionConflict},
+	{sensor.ErrCodeTaken, problem.CodeTaken},
+	{sensor.ErrSegmentOverlap, problem.SegmentOverlap},
+	{sensor.ErrResourceHasSensor, problem.ResourceHasSensor},
+	{sensor.ErrInvalidResource, problem.InvalidSensorResource},
+	{sensor.ErrSourceBusy, problem.Conflict},
+	{sensor.ErrIngestUnauthorized, problem.IngestUnauthorized},
+	{sensor.ErrInvalidPayload, problem.InvalidPayload},
+	{sensor.ErrBusy, problem.NotReady},
+	{watch.ErrVersionMismatch, problem.VersionConflict},
+	{watch.ErrAlertStale, problem.AlertStale},
+	{watch.ErrActionNotAllowed, problem.AlertActionNotAllowed},
+	{watch.ErrConsentRequired, problem.ConsentRequired},
+	{profile.ErrVersionMismatch, problem.VersionConflict},
+	{profile.ErrPhotoInvalid, problem.PhotoInvalid},
+	{profile.ErrUnsupportedMedia, problem.UnsupportedMediaType},
+	{profile.ErrNotPublished, problem.NotFound},
+	{pricelist.ErrNoPublicMatrix, problem.NotFound},
+	{sensor.ErrNotImplemented, problem.NotImplemented},
+	{watch.ErrNotImplemented, problem.NotImplemented},
+	{profile.ErrNotImplemented, problem.NotImplemented},
 	{ErrBadJSON, problem.BadRequest},
 	{errUnsupportedMedia, problem.UnsupportedMediaType},
 }
@@ -417,6 +444,9 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 		return t, opts, true
 	}
 	if t, opts, ok := mapM11(err); ok {
+		return t, opts, true
+	}
+	if t, opts, ok := mapM12(err); ok {
 		return t, opts, true
 	}
 	if fe, ok := errors.AsType[*report.FilterError](err); ok {
@@ -862,6 +892,25 @@ func mapM11(err error) (problem.Type, []problem.Option, bool) {
 			d["expected"] = re.Expected
 		}
 		return t, []problem.Option{problem.WithDetails(d)}, true
+	}
+	return "", nil, false
+}
+
+// mapM12 maps the typed M12 errors (m12-plan §13).
+func mapM12(err error) (problem.Type, []problem.Option, bool) {
+	if _, ok := errors.AsType[*sensor.TimestampError](err); ok {
+		// The ingest handler sets Porto-Server-Time before writing the problem.
+		return problem.IngestTimestampOutOfRange, nil, true
+	}
+	if rl, ok := errors.AsType[*sensor.RateLimitError](err); ok {
+		return problem.RateLimited, []problem.Option{problem.RetryAfter(rl.RetryAfter)}, true
+	}
+	if errors.Is(err, profile.ErrPhotoTooLarge) {
+		// Same shape as the generic body limit: bad_request with status 413.
+		return problem.BadRequest, []problem.Option{problem.Status(http.StatusRequestEntityTooLarge)}, true
+	}
+	if ie, ok := errors.AsType[*profile.IncompleteError](err); ok {
+		return problem.ProfileIncomplete, []problem.Option{problem.WithDetails(map[string]any{"missing": orEmptyStrings(ie.Missing)})}, true
 	}
 	return "", nil, false
 }

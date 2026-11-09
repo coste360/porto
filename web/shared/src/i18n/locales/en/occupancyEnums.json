@@ -173,7 +173,8 @@
     "departure_overdue": "Departure overdue",
     "vessel_exceeds_limits": "Vessel beyond the berth limits",
     "insurance_expired_active": "Insurance expired or missing",
-    "hold_lost_draft": "Draft without its hold"
+    "hold_lost_draft": "Draft without its hold",
+    "sensor_discrepancy": "The sensor disagrees with the expected occupancy"
   },
   "lens": {
     "occupancy": "Occupancy",

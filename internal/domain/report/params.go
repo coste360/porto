@@ -114,6 +114,8 @@ var specs = map[Key]reportSpec{
 		params:  []string{"view", "group_by", "unit_id", "category", "formula_id"},
 		groupBy: []string{"unit", "category", "formula", "line_kind", "status", "mode", "day", "week", "month"},
 	},
+	// M12 (m12-plan §10.3): view discrepancies only; map_id, group_id and kind (discrepancy kind) filter.
+	calc.KeySensors: {params: []string{"view", "group_by", "map_id", "group_id", "kind"}, groupBy: calc.SensorsGroups},
 }
 
 func (sp reportSpec) accepts(name string) bool { return slices.Contains(sp.params, name) }
@@ -254,9 +256,12 @@ func ParseParams(key Key, q url.Values) (Params, error) {
 	out.Channel = p.enum("channel", channels)
 	out.Purpose = p.enum("purpose", purposes)
 	out.NewOnly, _ = p.boolean("new")
-	if key == calc.KeyUtilities {
+	switch key {
+	case calc.KeyUtilities:
 		out.Kind = p.enum("kind", meterKinds)
-	} else {
+	case calc.KeySensors:
+		out.Kind = p.enum("kind", []string{calc.SensorKindOccupiedUnexpected, calc.SensorKindAbsent})
+	default:
 		out.Kind = p.enum("kind", contractKinds)
 	}
 	switch key {
@@ -300,9 +305,12 @@ func ParseParams(key Key, q url.Values) (Params, error) {
 	out.Method = p.enum("method", paymentMethods)
 	out.AsOf = p.date("as_of")
 	out.OverdueOnly, _ = p.boolean("overdue")
-	if key == calc.KeyRental {
+	switch key {
+	case calc.KeyRental:
 		out.View = p.enum("view", calc.RentalViews)
-	} else {
+	case calc.KeySensors:
+		out.View = p.enum("view", []string{calc.SensorsViewDiscrepancies})
+	default:
 		out.View = p.enum("view", calc.YardViews)
 	}
 	out.UnitID = p.str("unit_id", 36)

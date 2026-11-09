@@ -246,5 +246,17 @@ func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) er
 	if err := a.seedRentalHandovers(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: rental handovers: %w", err)
 	}
+	// M12 (m12-plan §17.2): gateway, fake source, devices and readings (INGEST), then one reconcile run for an
+	// alert of every kind and one sensor presence (RECONCILE), then the published profile (PUBLIC). Each part is a
+	// no-op when the demo marina already has its data.
+	if err := a.seedSensors(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: sensors: %w", err)
+	}
+	if err := a.seedSensorAlerts(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: sensor alerts: %w", err)
+	}
+	if err := a.seedProfile(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: profile: %w", err)
+	}
 	return nil
 }

@@ -42,6 +42,7 @@ export type MaintenanceReport = S['MaintenanceReport'];
 export type UtilitiesReport = S['UtilitiesReport'];
 export type YardReportResponse = S['YardReport'];
 export type RentalReportResponse = S['RentalReport'];
+export type SensorsReportResponse = S['SensorsReport'];
 
 /** The JSON response of each report key (comparison has its own hook in dashboard.ts). */
 export type ReportResponses = {
@@ -69,6 +70,8 @@ export type ReportResponses = {
   yard: YardReportResponse;
   // M11 (m11-plan §11)
   rental: RentalReportResponse;
+  // M12 (m12-plan §10.3)
+  sensors: SensorsReportResponse;
 };
 
 /** A report served by GET .../reports/{key} (every key but comparison). */

@@ -17,6 +17,7 @@ import { lodFor, structureLabelFontCm, type Lod } from './elements/common';
 import { DecorationElement } from './elements/Decoration';
 import { DynamicAreaElement } from './elements/DynamicArea';
 import { GlyphDefs } from './elements/Glyphs';
+import { MarkerLayer, type MapMarker } from './elements/Markers';
 import { LensFill, LensGlyph, lensGlyphShown, lensGlyphSize, lensLod } from './elements/LensFill';
 import { Vessel } from './elements/Vessel';
 import { Grid, NorthArrow, ScaleBar } from './elements/Overlays';
@@ -101,6 +102,8 @@ export type HarborMapProps = Omit<SVGProps<SVGSVGElement>, 'ref' | 'viewBox' | '
   tileLabels?: ReadonlyMap<string, string>;
   /** Accessible name of an interactive vessel silhouette. */
   vesselLabel?: (item: VesselItem) => string;
+  /** Point markers drawn above the elements at a constant size (M12 sensor devices). */
+  markers?: readonly MapMarker[];
 };
 
 /** Bounds of a vessel silhouette (loa around its stern, any heading). */
@@ -197,6 +200,7 @@ export function HarborMap({
   mode = 'scale',
   tileLabels,
   vesselLabel,
+  markers,
   className,
   ...svgProps
 }: HarborMapProps) {
@@ -222,8 +226,9 @@ export function HarborMap({
   const glyphs = useMemo(() => {
     const set = new Set<GlyphId>();
     if (lensStyles) for (const st of lensStyles.values()) if (st.glyph) set.add(st.glyph);
+    if (markers) for (const m of markers) set.add(m.glyph);
     return set;
-  }, [lensStyles]);
+  }, [lensStyles, markers]);
 
   const s = pxPerCm(viewport);
   const view = viewBoxOf(viewport);
@@ -371,7 +376,7 @@ export function HarborMap({
       }}
     >
       <KitDefs prefix={uid} assets={kitAssets} />
-      {lensStyles ? <GlyphDefs prefix={uid} glyphs={glyphs} /> : null}
+      {lensStyles || markers ? <GlyphDefs prefix={uid} glyphs={glyphs} /> : null}
       <rect
         x={0}
         y={0}
@@ -446,6 +451,9 @@ export function HarborMap({
             ) : null,
           )}
         </g>
+      ) : null}
+      {markers && markers.length > 0 ? (
+        <MarkerLayer markers={markers} prefix={uid} pxPerCm={s} />
       ) : null}
       {preview && preview.length > 0 ? (
         <g data-layer="preview">{preview.map((item) => render(item, 'preview', false))}</g>

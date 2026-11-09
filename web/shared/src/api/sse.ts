@@ -31,6 +31,8 @@ export const SSE_TOPICS = [
   'yard.changed',
   // M11 (m11-plan §13.2)
   'rental.changed',
+  // M12 (m12-plan §9.1): sensor.state_changed, sensor.anomaly and the sensor configuration.
+  'sensor.changed',
 ] as const;
 
 /** Debounce of the narrowed (M3) invalidations, per query key. */

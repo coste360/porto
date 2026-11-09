@@ -491,6 +491,37 @@ export const queryKeys = {
     trim(['marina', marinaId, 'rental', 'handover', bookingId, phase]),
   rentalDeposit: (marinaId: string, bookingId?: string) =>
     trim(['marina', marinaId, 'rental', 'deposit', bookingId]),
+
+  // M12 sensors (m12-plan §9.1) under ['marina', id, 'sensors'] (sensor.changed, narrowed by map and debounced):
+  // devices, gateways, sources and settings (INGEST); the Sensori map context, alerts and history (RECONCILE).
+  sensors: (marinaId: string) => ['marina', marinaId, 'sensors'] as const,
+  sensorDevices: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'sensors', 'devices', filters]),
+  sensorDevice: (marinaId: string, deviceId?: string) =>
+    trim(['marina', marinaId, 'sensors', 'device', deviceId]),
+  sensorGateways: (marinaId: string) => ['marina', marinaId, 'sensors', 'gateways'] as const,
+  sensorSources: (marinaId: string) => ['marina', marinaId, 'sensors', 'sources'] as const,
+  sensorSettings: (marinaId: string) => ['marina', marinaId, 'sensors', 'settings'] as const,
+  sensorMap: (marinaId: string, mapId?: string, date?: string) =>
+    trim(['marina', marinaId, 'sensors', 'map', mapId, date]),
+  sensorAlerts: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'sensors', 'alerts', filters]),
+  sensorAlert: (marinaId: string, alertId?: string) =>
+    trim(['marina', marinaId, 'sensors', 'alert', alertId]),
+  sensorHistory: (marinaId: string, query?: Record<string, string | boolean | undefined>) =>
+    trim(['marina', marinaId, 'sensors', 'history', query]),
+
+  // M12 public profile (m12-plan §12) under ['marina', id, 'profile'] (profile.changed on marina.changed).
+  profile: (marinaId: string) => ['marina', marinaId, 'profile'] as const,
+  profilePreview: (marinaId: string, lang?: string) =>
+    trim(['marina', marinaId, 'profile', 'preview', lang]),
+
+  // M12 public pages (no marina session): the published profile of a slug and its sections.
+  publicProfile: (slug: string, lang?: string) => trim(['public', slug, 'profile', lang]),
+  publicProfileMap: (slug: string) => ['public', slug, 'profile', 'map'] as const,
+  publicProfilePrices: (slug: string, lang?: string) =>
+    trim(['public', slug, 'profile', 'prices', lang]),
+  publicOccupancy: (slug: string) => ['public', slug, 'occupancy'] as const,
 };
 
 /** Drops the trailing undefined segments, so a key with fewer arguments is a prefix of the full one. */
@@ -518,6 +549,8 @@ export const NARROWED_TOPICS = [
   'occupancy.changed',
   'presence.changed',
   'contract.changed',
+  // M12 (m12-plan §9.1): physical state changes arrive often; narrowed by map and debounced.
+  'sensor.changed',
 ] as const;
 
 /**
@@ -572,6 +605,17 @@ export function keysForMessage(msg: StreamMessage, marinaId: string): QueryKey[]
         // M9: storage contract details.
         queryKeys.storageContract(marinaId),
       ];
+    case 'sensor.changed':
+      // M12: the Sensori context of the message's map, alerts, devices, and the day view (anomaly counts).
+      return [
+        queryKeys.sensorMap(marinaId, mapId),
+        queryKeys.sensorAlerts(marinaId),
+        queryKeys.sensorAlert(marinaId),
+        queryKeys.sensorDevices(marinaId),
+        queryKeys.sensorDevice(marinaId),
+        queryKeys.sensorHistory(marinaId),
+        queryKeys.dayView(marinaId, mapId),
+      ];
     default:
       return keysForTopic(msg.topic, marinaId);
   }
@@ -581,7 +625,13 @@ export function keysForMessage(msg: StreamMessage, marinaId: string): QueryKey[]
 export function keysForTopic(topic: string, marinaId: string): QueryKey[] {
   switch (topic) {
     case 'marina.changed':
-      return [queryKeys.marina(marinaId), queryKeys.organizations, queryKeys.me];
+      // profile.changed (M12) travels on marina.changed.
+      return [
+        queryKeys.marina(marinaId),
+        queryKeys.organizations,
+        queryKeys.me,
+        queryKeys.profile(marinaId),
+      ];
     case 'team.changed':
       return [queryKeys.team(marinaId), queryKeys.me];
     case 'map.changed':
@@ -626,6 +676,9 @@ export function keysForTopic(topic: string, marinaId: string): QueryKey[] {
       // Fleet, skippers, formulas, settings, bookings, planner, blocks, handovers, deposits and damages (M11);
       // rental charges and payments also arrive on billing.changed.
       return [queryKeys.rental(marinaId)];
+    case 'sensor.changed':
+      // M12 (whole topic, e.g. a message without data): everything under sensors and the day views.
+      return [queryKeys.sensors(marinaId), queryKeys.dayView(marinaId)];
     default:
       return [];
   }

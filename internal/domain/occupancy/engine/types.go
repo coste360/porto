@@ -210,6 +210,10 @@ const (
 	AnomalyVesselExceedsLimits       = "vessel_exceeds_limits"
 	AnomalyInsuranceExpiredActive    = "insurance_expired_active"
 	AnomalyHoldLostDraft             = "hold_lost_draft"
+	// AnomalySensorDiscrepancy (M12, m12-plan §8.1, §9.2): the physical state of a sensor disagrees with the
+	// contractual expectation for at least AnomalyInput.SensorUnexpectedMinutes. Segment devices are reported on the
+	// dynamic-area element.
+	AnomalySensorDiscrepancy = "sensor_discrepancy"
 )
 
 // AnomalyInput is the day of a map as seen by Anomalies. Times are minutes from local midnight of Date.
@@ -218,6 +222,19 @@ type AnomalyInput struct {
 	NowMinutes   int // now, minutes from local midnight of Date (negative or ≥ 1440 when now is another day)
 	GraceMinutes int // occupancy_settings.arrival_grace_minutes
 	Elements     []AnomalyElement
+	// Sensors are the sensor facts of the map keyed by the resource id the anomaly is reported on (M12; nil = no
+	// sensors, or a date other than today). SensorUnexpectedMinutes is sensor_settings.unexpected_after_minutes.
+	Sensors                 map[string]SensorFact
+	SensorUnexpectedMinutes int
+}
+
+// SensorFact is what the day view knows of the sensor of a resource (M12, filled by occupancy.SensorReader).
+// Expectation is the contractual expectation of m12-plan §8.1: occupied, free, either or none (no expectation).
+type SensorFact struct {
+	Physical      string // occupied, free, unknown
+	StableMinutes int    // minutes since the physical state was confirmed
+	Expectation   string
+	Informational bool // pedestal device with no single berth: never an anomaly
 }
 
 // AnomalyElement is one resource (or area placement) of the day view.

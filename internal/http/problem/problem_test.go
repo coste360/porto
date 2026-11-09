@@ -173,8 +173,8 @@ func TestWriteError_UnmappedIsInternal(t *testing.T) {
 func TestTypes_Registry(t *testing.T) {
 	slug := regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	all := All()
-	if len(all) != 184 {
-		t.Fatalf("declared %d types, want 184 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4 + m5-plan §7.4 + m6a-plan §3.4 + m6b-plan §9.1 + m7-plan §8 + m8-plan §11 + m9-plan §15.1 + m10-plan §13 + m11-plan §13.1)", len(all))
+	if len(all) != 194 {
+		t.Fatalf("declared %d types, want 194 (m0-plan §4.4 + m1-plan §4.5 + m2-plan §4.6 + m3-plan §7.4 + m4-plan §7.4 + m5-plan §7.4 + m6a-plan §3.4 + m6b-plan §9.1 + m7-plan §8 + m8-plan §11 + m9-plan §15.1 + m10-plan §13 + m11-plan §13.1 + m12-plan §13)", len(all))
 	}
 	for _, ty := range all {
 		if !slug.MatchString(string(ty)) {
@@ -217,7 +217,10 @@ func TestTypes_Registry(t *testing.T) {
 		UnitNotBookable: 422, SkipperRequired: 422, SkipperUnavailable: 422, SkipperLicenceExpired: 422,
 		LicenceRequired: 422, LicenceExpired: 422, HandoverIncomplete: 422, HandoverLocked: 409,
 		EngineHoursDecreasing: 422, PreauthUnavailable: 422, DepositExceeds: 422, NothingToCollect: 409,
-		BandGapLtBuffer: 422,
+		BandGapLtBuffer:    422,
+		IngestUnauthorized: 401, IngestTimestampOutOfRange: 401, InvalidPayload: 400, SegmentOverlap: 422,
+		ResourceHasSensor: 409, InvalidSensorResource: 422, AlertStale: 409, AlertActionNotAllowed: 422,
+		ProfileIncomplete: 422, PhotoInvalid: 422,
 	}
 	for ty, s := range want {
 		if StatusOf(ty) != s {

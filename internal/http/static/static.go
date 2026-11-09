@@ -38,6 +38,10 @@ func Load(dir, prefix string) *App {
 	return a
 }
 
+// Index returns the embedded index.html (nil when the build is missing). Used by the M12 /p/{slug} page, which
+// injects its head into the booking SPA.
+func (a *App) Index() []byte { return a.index }
+
 // Built reports whether the SPA build is embedded.
 func (a *App) Built() bool { return a.index != nil }
 

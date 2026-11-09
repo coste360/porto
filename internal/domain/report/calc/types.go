@@ -43,6 +43,14 @@ const (
 	KeyUtilities   ReportKey = "utilities"
 )
 
+// M12 report key (m12-plan §10.3). CONTRACT seam: RECONCILE implements the builder (calc/sensors.go) and its
+// wiring; until then the handler answers 501.
+const (
+	KeySensors ReportKey = "sensors"
+	// SensorsViewDiscrepancies is the only view of the sensors report.
+	SensorsViewDiscrepancies = "discrepancies"
+)
+
 // Unit is the unit of an integer value (OpenAPI ReportUnit).
 type Unit string
 

@@ -82,7 +82,7 @@ describe('catalog', () => {
 
   it('serves every report key once', () => {
     const keys = REPORTS.map((r) => r.key);
-    expect(new Set(keys).size).toBe(16 + 3 + 1 + 1); // M7 + M9 (storage, maintenance, utilities) + M10 yard + M11 rental
+    expect(new Set(keys).size).toBe(16 + 3 + 1 + 1 + 1); // M7 + M9 (storage, maintenance, utilities) + M10 yard + M11 rental + M12 sensors
   });
 
   it('has an Italian and English label for every column, total, grouping, section and filter', () => {

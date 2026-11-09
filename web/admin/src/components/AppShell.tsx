@@ -68,23 +68,25 @@ export function AppShell() {
               })}
             </SidebarMenu>
           </SidebarGroup>
-          <SidebarGroup>
-            <SidebarGroupLabel>{t('common:nav.upcoming')}</SidebarGroupLabel>
-            <SidebarMenu>
-              {UPCOMING_MODULES.map((key) => (
-                <SidebarMenuItem key={key}>
-                  <SidebarMenuButton
-                    disabled
-                    aria-disabled="true"
-                    tooltip={t('common:nav.upcomingHint')}
-                    title={t('common:nav.upcomingHint')}
-                  >
-                    <span>{t(key)}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
+          {UPCOMING_MODULES.length > 0 && (
+            <SidebarGroup>
+              <SidebarGroupLabel>{t('common:nav.upcoming')}</SidebarGroupLabel>
+              <SidebarMenu>
+                {UPCOMING_MODULES.map((key) => (
+                  <SidebarMenuItem key={key}>
+                    <SidebarMenuButton
+                      disabled
+                      aria-disabled="true"
+                      tooltip={t('common:nav.upcomingHint')}
+                      title={t('common:nav.upcomingHint')}
+                    >
+                      <span>{t(key)}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+          )}
         </SidebarContent>
         <SidebarFooter>
           <UserMenu variant="sidebar" />

@@ -174,6 +174,17 @@ const (
 	RentalReturned   = "rental.returned"
 )
 
+// M12 event types (version 1, m12-plan §9.1, D19). sensor.state_changed and sensor.anomaly are public (webhook
+// catalogue); sensor.changed (configuration, keys, settings) and profile.changed feed SSE and cache invalidation
+// only. Data carry ids, enums, instants and counts: never external ids, keys, signatures, reading values, battery,
+// vessel names, contract numbers or notes (INV-70, INV-103). Raw readings emit no event.
+const (
+	SensorStateChanged = "sensor.state_changed"
+	SensorAnomaly      = "sensor.anomaly"
+	SensorChanged      = "sensor.changed"
+	ProfileChanged     = "profile.changed"
+)
+
 // SSE topics.
 const (
 	TopicMarina = "marina.changed"
@@ -210,6 +221,8 @@ const (
 	TopicYard = "yard.changed"
 	// TopicRental carries rental units, skippers, formulas, settings, bookings, blocks, handovers and damages (M11).
 	TopicRental = "rental.changed"
+	// TopicSensor carries physical state changes, sensor alerts and sensor configuration (M12, spec 27.4).
+	TopicSensor = "sensor.changed"
 )
 
 // TypeInfo describes an event type. Public types can be subscribed by webhook endpoints; Topic is the SSE event
@@ -336,6 +349,11 @@ var catalogue = []TypeInfo{
 	{RentalCancelled, TopicRental, true},
 	{RentalCheckedOut, TopicRental, true},
 	{RentalReturned, TopicRental, true},
+	// M12
+	{SensorStateChanged, TopicSensor, true},
+	{SensorAnomaly, TopicSensor, true},
+	{SensorChanged, TopicSensor, false},
+	{ProfileChanged, TopicMarina, false},
 }
 
 // Types returns the catalogue of event types.

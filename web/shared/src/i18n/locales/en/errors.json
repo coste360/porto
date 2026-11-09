@@ -183,5 +183,15 @@
   "preauth_unavailable": "No enabled payment gateway supports pre-authorisation.",
   "deposit_exceeds": "The retention exceeds the deposit.",
   "nothing_to_collect": "There is nothing to collect on this rental.",
-  "band_gap_lt_buffer": "Two bands are closer than the buffer between rentals."
+  "band_gap_lt_buffer": "Two bands are closer than the buffer between rentals.",
+  "ingest_unauthorized": "Invalid sensor key or signature.",
+  "ingest_timestamp_out_of_range": "The signature time is outside the 300-second tolerance: check the device clock.",
+  "invalid_payload": "The readings batch is not valid (1 to 500 readings).",
+  "segment_overlap": "The segment overlaps another active sensor of the area.",
+  "resource_has_sensor": "The berth or pedestal socket already has an active sensor.",
+  "invalid_sensor_resource": "This element cannot carry a sensor.",
+  "alert_stale": "The reported situation no longer holds: the alert was closed.",
+  "alert_action_not_allowed": "Action not allowed for this alert.",
+  "profile_incomplete": "Publishing the profile needs the position, at least one contact and the marina name.",
+  "photo_invalid": "The photo is not a valid JPEG or PNG image."
 }

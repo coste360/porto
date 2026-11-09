@@ -211,6 +211,8 @@ func seedListDoc(y int, items map[string]string) pricelist.SaveRequest {
 		pricing.ContractMonthly: {PercentBP: bp(10000)}, pricing.ContractTransit: {PercentBP: bp(3000)},
 	}
 	set.SeasonWindow = &pricing.DateRange{From: day(4, 1), To: day(9, 30)}
+	// The public marina profile (M12) shows the transit matrix of this list.
+	set.PublishMatrix = true
 	set.PrimaryItems = map[pricing.ContractType]string{
 		pricing.ContractAnnual: items["ORM-ANN"], pricing.ContractSeasonal: items["ORM-STG"],
 		pricing.ContractMonthly: items["ORM-MES"], pricing.ContractTransit: items["TRN-NTT"],

@@ -130,6 +130,12 @@ import enReports from './locales/en/reports.json';
 import itReports from './locales/it/reports.json';
 import enDashboard from './locales/en/dashboard.json';
 import itDashboard from './locales/it/dashboard.json';
+import enSensors from './locales/en/sensors.json';
+import itSensors from './locales/it/sensors.json';
+import enProfile from './locales/en/profile.json';
+import itProfile from './locales/it/profile.json';
+import enPublicProfile from './locales/en/publicProfile.json';
+import itPublicProfile from './locales/it/publicProfile.json';
 
 export const SUPPORTED_LOCALES = ['it', 'en'] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
@@ -210,6 +216,10 @@ export const NAMESPACES = [
   'rentalFleet',
   'rentalBookings',
   'rentalHandover',
+  // M12 (m12-plan §17.1): sensors (admin), public profile panel (admin) and page (booking)
+  'sensors',
+  'profile',
+  'publicProfile',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -281,6 +291,9 @@ export const resources = {
     rentalFleet: itRentalFleet,
     rentalBookings: itRentalBookings,
     rentalHandover: itRentalHandover,
+    sensors: itSensors,
+    profile: itProfile,
+    publicProfile: itPublicProfile,
   },
   en: {
     common: enCommon,
@@ -349,5 +362,8 @@ export const resources = {
     rentalFleet: enRentalFleet,
     rentalBookings: enRentalBookings,
     rentalHandover: enRentalHandover,
+    sensors: enSensors,
+    profile: enProfile,
+    publicProfile: enPublicProfile,
   },
 } as const;

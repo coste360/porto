@@ -552,7 +552,16 @@ func (s *Service) buildDay(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 		}
 		view.Unplaced = append(view.Unplaced, Unplaced{Vessel: vesselBrief(v), PresenceID: vp.LastPresenceID, Reason: "arrived_without_booking"})
 	}
-	anomalies := engine.Anomalies(engine.AnomalyInput{Date: date, NowMinutes: nowMin, GraceMinutes: cfg.ArrivalGraceMinutes, Elements: anomalyIn})
+	anomalyInput := engine.AnomalyInput{Date: date, NowMinutes: nowMin, GraceMinutes: cfg.ArrivalGraceMinutes, Elements: anomalyIn}
+	if s.d.Sensors != nil {
+		// M12: sensor discrepancies (m12-plan §9.2); the reader answers nothing for another date than today.
+		facts, err := s.d.Sensors.SensorFacts(ctx, tx, scope, m.ID, date, now)
+		if err != nil {
+			return nil, err
+		}
+		anomalyInput.Sensors, anomalyInput.SensorUnexpectedMinutes = facts.ByResource, facts.UnexpectedAfterMinutes
+	}
+	anomalies := engine.Anomalies(anomalyInput)
 	elIdx := map[string]int{}
 	for i, e := range view.Elements {
 		elIdx[e.ResourceID] = i

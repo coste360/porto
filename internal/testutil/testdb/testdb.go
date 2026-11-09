@@ -43,19 +43,19 @@ func RunUnmigrated(t *testing.T, fn func(t *testing.T, db *store.DB)) {
 	})
 }
 
-// SQLite returns a fresh migrated SQLite database (a WAL file in the test's temp dir).
-func SQLite(t *testing.T) *store.DB {
+// SQLite returns a fresh migrated SQLite database (a WAL file in the test's temp dir); benchmarks use it too.
+func SQLite(t testing.TB) *store.DB {
 	t.Helper()
 	return open(t, migrations.SQLite, true)
 }
 
 // Postgres returns a fresh migrated PostgreSQL database, or skips the test when no server is configured.
-func Postgres(t *testing.T) *store.DB {
+func Postgres(t testing.TB) *store.DB {
 	t.Helper()
 	return open(t, migrations.Postgres, true)
 }
 
-func open(t *testing.T, d migrations.Dialect, migrate bool) *store.DB {
+func open(t testing.TB, d migrations.Dialect, migrate bool) *store.DB {
 	t.Helper()
 	ctx := context.Background()
 	var opts store.Options
@@ -87,7 +87,7 @@ func open(t *testing.T, d migrations.Dialect, migrate bool) *store.DB {
 
 // privateSchema creates an empty schema for the test and returns base with search_path set to it. The schema is
 // dropped when the test ends.
-func privateSchema(t *testing.T, base string) string {
+func privateSchema(t testing.TB, base string) string {
 	t.Helper()
 	suffix, err := crypto.RandomBase32(10)
 	if err != nil {

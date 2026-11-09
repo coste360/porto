@@ -188,6 +188,8 @@ var reportRoutePermissions = map[string][]Permission{
 	"getYardReport": {PermReportsYard, PermReportsAll},
 	// M11 (m11-plan §11): the rental report with reports.rental (the rental role) as well as reports.all.
 	"getRentalReport": {PermReportsRental, PermReportsAll},
+	// M12 (m12-plan §10.3): the sensors discrepancy report is operational.
+	"getSensorsReport": {PermReportsOperational, PermReportsAll},
 }
 
 // TestReports_RouteTableMatchesContract: every M7 operation is in the contract with known permissions, and the

@@ -45,7 +45,12 @@ describe('nav', () => {
   });
 
   it('shows the M1 modules by permission', () => {
-    expect(visibleNavItems(['map.view']).map((i) => i.id)).toEqual(['ops', 'planner', 'maps']);
+    expect(visibleNavItems(['map.view']).map((i) => i.id)).toEqual([
+      'ops',
+      'planner',
+      'maps',
+      'sensors',
+    ]);
     expect(visibleNavItems(['customers.read']).map((i) => i.id)).toEqual([
       'customers',
       'vessels',
@@ -129,8 +134,8 @@ describe('nav', () => {
     expect(UPCOMING_MODULES).not.toContain('common:nav.modules.yard');
   });
 
-  it('lists the future modules without the M1 ones', () => {
-    expect(UPCOMING_MODULES.length).toBeGreaterThan(0);
+  it('lists no future module after M12', () => {
+    expect(UPCOMING_MODULES).toEqual([]);
     expect(UPCOMING_MODULES).not.toContain('common:nav.modules.map');
     expect(UPCOMING_MODULES).not.toContain('common:nav.modules.customers');
   });

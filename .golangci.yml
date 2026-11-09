@@ -321,6 +321,14 @@ linters:
             - "**/internal/domain/rental/price/**"
             - "**/internal/domain/rental/slots/**"
             - "**/internal/domain/rental/states/**"
+            # M12 (m12-plan §0.3)
+            - "**/internal/domain/sensor/hysteresis/**"
+            - "**/internal/domain/sensor/ingestauth/**"
+            - "**/internal/domain/sensor/reconcile/**"
+            - "**/internal/domain/sensor/nights/**"
+            - "**/internal/domain/profile/jsonld/**"
+            - "**/internal/domain/profile/simplemap/**"
+            - "**/internal/domain/profile/aggregate/**"
           deny:
             - pkg: github.com/coste360/porto/internal/store
               desc: pure engines must not touch the database (INV-21)
@@ -384,6 +392,33 @@ linters:
               desc: channel drivers talk to channels, the store belongs to the domain services
             - pkg: github.com/uptrace/bun
               desc: channel drivers never touch the database
+        # M12 (m12-plan §2): sensor never imports the reconciliation (it wakes it through a channel); occupancy reads
+        # sensor facts only through occupancy.SensorReader; profile reads physical states through the store; the fake
+        # source is a driver (pkg/ext only).
+        sensor-ingest:
+          list-mode: lax
+          files:
+            - "**/internal/domain/sensor/*.go"
+          deny:
+            - pkg: github.com/coste360/porto/internal/domain/sensor/watch
+              desc: sensor wakes the reconciliation through a channel, never imports it (m12-plan §2)
+        occupancy-no-sensor:
+          list-mode: lax
+          files:
+            - "**/internal/domain/occupancy/**"
+            - "**/internal/domain/profile/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/domain/sensor
+              desc: occupancy and profile read sensor facts through occupancy.SensorReader or the store (m12-plan §2)
+        fakesensor:
+          list-mode: lax
+          files:
+            - "**/internal/domain/sensor/fakesensor/**"
+          deny:
+            - pkg: github.com/coste360/porto/internal/store
+              desc: sensor sources talk to vendors, the store belongs to the domain services
+            - pkg: github.com/uptrace/bun
+              desc: sensor sources never touch the database
         # Reports are read-only (INV-61, m7-plan §0.2): no audit row, no outbox event; the pure report packages
         # never import the report service either (calc/align/swap/export → report is a cycle in spirit).
         report-readonly:
@@ -446,6 +481,14 @@ linters:
             - "**/internal/domain/rental/price/**"
             - "**/internal/domain/rental/slots/**"
             - "**/internal/domain/rental/states/**"
+            # M12 (m12-plan §0.3)
+            - "**/internal/domain/sensor/hysteresis/**"
+            - "**/internal/domain/sensor/ingestauth/**"
+            - "**/internal/domain/sensor/reconcile/**"
+            - "**/internal/domain/sensor/nights/**"
+            - "**/internal/domain/profile/jsonld/**"
+            - "**/internal/domain/profile/simplemap/**"
+            - "**/internal/domain/profile/aggregate/**"
             # Seeded generators of the layout and fit parity vectors (test data, not the engines).
             - "!**/internal/domain/layout/internal/vectors/**"
             - "!**/internal/domain/fit/internal/genvectors/**"

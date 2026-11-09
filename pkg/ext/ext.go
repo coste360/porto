@@ -177,6 +177,9 @@ type Extensions struct {
 	// BookingChannels connect external berth marketplaces (M8, spec 23.2, 27.5); none ships with Porto (the
 	// fake channel of internal/domain/channel/fakechannel is for tests and development only).
 	BookingChannels []BookingChannel
+	// SensorSources are polled sources of occupancy readings (M12, spec 24.3, 27.5): vendor APIs or bridges. None
+	// ships with Porto (the fake source of internal/domain/sensor/fakesensor is for tests, development and demo).
+	SensorSources []SensorSource
 	// HTTPRoutes mounts extra routes on the root router.
 	HTTPRoutes func(r chi.Router)
 }

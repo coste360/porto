@@ -113,6 +113,23 @@ func GetVesselPresence(ctx context.Context, db bun.IDB, s MarinaScope, vesselID 
 	return vp, nil
 }
 
+// LockVesselPresence is GetVesselPresence with FOR UPDATE on PostgreSQL (M12 automatic presences re-read the state
+// under the lock, m12-plan §8.4). A vessel without a row is ErrNotFound and is not locked.
+func LockVesselPresence(ctx context.Context, db bun.IDB, s MarinaScope, vesselID string) (*VesselPresence, error) {
+	if !ValidID(vesselID) {
+		return nil, ErrNotFound
+	}
+	vp := new(VesselPresence)
+	q := db.NewSelect().Model(vp).Where("marina_id = ?", s.ID()).Where("vessel_id = ?", vesselID)
+	if IsPostgres(db) {
+		q = q.For("UPDATE")
+	}
+	if err := q.Scan(ctx); err != nil {
+		return nil, notFound(err)
+	}
+	return vp, nil
+}
+
 // VesselPresences returns the presence states of the given vessels keyed by vessel id.
 func VesselPresences(ctx context.Context, db bun.IDB, s MarinaScope, vesselIDs []string) (map[string]VesselPresence, error) {
 	out := map[string]VesselPresence{}

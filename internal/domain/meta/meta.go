@@ -79,6 +79,9 @@ func Get(cfg *config.Config, version, edition string) Meta {
 			"yard", "lifting",
 			// M11 (m11-plan §13.2): rental fleet, planner, check-out and check-in, quick cash.
 			"rental",
+			// M12 (m12-plan §13): occupancy sensors (ingestion, reconciliation, map context) and the public marina
+			// profile /p/{slug} (on the desktop edition reachable only on the local network: local_mode).
+			"sensors", "public_profile",
 		},
 		DemoPairing:          cfg != nil && cfg.DemoPairingEnabled(),
 		PricingEngineVersion: pricing.EngineVersion,

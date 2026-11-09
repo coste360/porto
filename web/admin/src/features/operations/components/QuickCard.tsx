@@ -37,6 +37,7 @@ export function QuickCard({
   actions,
   onAction,
   onClose,
+  extra,
 }: {
   marinaId: string;
   subject: DaySubject;
@@ -44,6 +45,8 @@ export function QuickCard({
   actions: readonly QuickAction[];
   onAction: (a: QuickAction) => void;
   onClose: () => void;
+  /** Extra section under the data (M12: the sensor readings of the resource when the Sensori lens is on). */
+  extra?: ReactNode;
 }) {
   const { t, i18n } = useT();
   const s = subject.subject;
@@ -166,6 +169,7 @@ export function QuickCard({
             </Row>
           ) : null}
         </dl>
+        {extra}
         {actions.length > 0 ? (
           <div
             className="flex flex-wrap gap-2"

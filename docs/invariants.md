@@ -704,3 +704,69 @@ scadute con `SKIP LOCKED` su PostgreSQL, così non attende mai una conferma in c
 (`TestRentalQuote_Recompute`, `RentalEngineVersion`); INV-70, INV-71 e INV-83 valgono per gli eventi `rental.*` e
 per il tipo offline `rental.checklist` (`TestAcceptance_M11_Offline`, il caso PUT di `runner.test.ts`, e
 `TestAcceptance_M11_OfflineStaleReplay`: un salvataggio in coda più vecchio di quello registrato non lo sovrascrive).
+
+## Sensori e scheda pubblica (spec 24, 25)
+
+**INV-100 — I sensori non modificano occupazioni né contratti.** Nessun percorso del codice dei sensori
+(`internal/domain/sensor/**`, `internal/domain/presence/sensor.go`, `internal/domain/maintenance/sensor.go`,
+`internal/store/sensor_*.go`) inserisce, elimina o aggiorna `allocations`, `*_occupancies`, `releases`, `contracts` o
+addebiti, fuori dalle azioni di conferma degli avvisi che chiamano i servizi di dominio con i permessi dell'utente. Gli
+unici effetti automatici sono `sensor_alerts` e, solo se la marina lo abilita, le presenze con `source = sensor` dei
+contratti d'ormeggio annuali attivi (mai dei transiti, degli ormeggi stagionali o mensili né delle allocazioni senza
+contratto: `presence.RecordSensorTx` li rifiuta; senza hook di contratto). Verificata da:
+`TestReconcile_NeverChangesOccupancy`, `TestSensor_NoOccupancyWrites`, `TestRecordSensorTx` (contratto invariato dopo
+una presenza da sensore, transito e ormeggio stagionale rifiutati), query Q43 di `store.CheckSensorAlertInvariants`
+(presenze da sensore solo su ormeggi annuali) (M12). Stato: implemented.
+
+**INV-101 — Una lettura per (dispositivo, istante) e stato fisico come piega delle letture.** `sensor_readings` ha
+chiave primaria `(device_id, observed_at)` con `observed_at` troncato al millisecondo; lo stato fisico di un
+dispositivo è la piega con isteresi delle sue letture nuove in ordine d'arrivo (le letture fuori ordine si conservano
+ma non cambiano lo stato, come quelle osservate prima dell'istante dello stato confermato dopo un silenzio o uno
+spostamento) e coincide con il `to` dell'ultimo cambio registrato; i cambi alternano e non vanno indietro nel tempo.
+Audit e outbox: le letture grezze non sono mai nell'audit, nell'outbox né nel backup (alto volume); ogni cambio di
+stato confermato scrive una riga `sensor_state_changes` e un evento `sensor.state_changed` nella stessa transazione
+dell'inserimento delle letture; ogni modifica di dispositivi, gateway, sorgenti, impostazioni e avvisi scrive audit ed
+evento nella stessa transazione. Verificata da: la chiave primaria, query Q40 e Q41 di `store.CheckSensorInvariants`,
+`TestConcurrency_IngestIdempotency` (un solo cambio e un solo evento), `TestConcurrency_IngestSameDevice`,
+`TestIngest_AuditOutboxDesign` (nessuna riga di audit per le letture, un evento per cambio), `TestRapid_HysteresisFold`,
+`TestHysteresis_Table`, `TestMigrations_M12Constraints` (M12). Stato: implemented.
+
+**INV-102 — L'ingestione scrive solo nel marina e sui dispositivi della chiave.** La marina di una lettura è quella
+della chiave autenticata, mai del payload; una chiave di dispositivo scrive solo il proprio `external_id`, una chiave
+di gateway solo i dispositivi associati a quel gateway, una sorgente solo i propri dispositivi; un `external_id`
+sconosciuto nella marina dà lo stesso esito che esista altrove o no. Dispositivi e gateway letti prima della
+transazione sono riletti dopo il lock delle righe di stato (che `UpdateDevice` prende sempre): un dispositivo
+disattivato, scollegato o spostato nel frattempo è rifiutato o registrato sulla nuova risorsa. Verificata da:
+`TestIngest_KeyScopes`, `TestIngest_CrossMarina`, `TestIngest_RecheckAfterLock`, `TestConcurrency_IngestVsDeviceUpdate`, `TestAcceptance_M12_IngestIsolation`, `TestAcceptance_CrossMarinaResourceIdsM12` (M12).
+Stato: implemented.
+
+**INV-103 — Pagine e API pubbliche senza dati personali né occupazione per posto.** La scheda `/p/{slug}`, le API
+pubbliche del profilo e l'occupazione aggregata non contengono nomi, email, telefoni o documenti di clienti, nomi di
+imbarcazioni, codici dei posti, numeri di contratto né lo stato di un singolo posto; l'occupazione è solo un conteggio
+per categoria pubblicata; la mappa semplificata non ha codici, occupazione, imbarcazioni né sensori; le foto sono
+ricodificate senza metadati. Verificata da: `TestAcceptance_M12_PublicProfile` (nomi, email, telefoni di clienti, nomi
+di imbarcazioni e codici dei posti assenti da ogni risposta pubblica e dall'HTML della pagina; nessun cookie),
+`TestPublicProfile_NoPII`, `TestPublicOccupancy_AggregateOnly`, `TestPublicOccupancy_PedestalSensor`, `TestSimpleMap_NoCodesNoOccupancy`, `TestSimpleMap_PublicNoCodes`,
+`TestProfile_PhotoReencodeStripsEXIF`, `TestProfile_PhotosReferencedAndServed` (solo le foto caricate dal pannello e
+referenziate dalla scheda pubblicata sono servite) (M12). Stato: implemented.
+
+**INV-104 — Un solo avviso aperto per sensore e tipo; una condizione decisa non si riapre finché non cessa.**
+`sensor_alerts_open_uidx (device_id, kind) WHERE status = 'open'` è l'unica garanzia di unicità (ADR 0003); un avviso
+si apre solo se nessuna riga con lo stesso `(device_id, kind, condition_key)` ha `cleared_at` nullo, qualunque sia lo
+stato, così un avviso ignorato o confermato non si ripresenta finché la condizione non cessa. Verificata da: l'indice
+unico parziale, `TestConcurrency_ReconcileAlertsOnce`, `TestReconcile_DismissSuppresses`,
+`TestMigrations_M12Constraints`, query Q42 di `store.CheckSensorAlertInvariants` (M12). Stato: implemented.
+
+**INV-105 — Segreti dei sensori mai in chiaro, mostrati una volta, verificati a tempo costante, finestra anti-replay
+di 300 s.** Le chiavi di dispositivi e gateway sono casuali (`crypto/rand`), restituite solo alla creazione e alla
+rotazione (`Cache-Control: no-store`), conservate come hash SHA-256 e verificatore cifrato con la KeyRing, mai nei log,
+negli eventi, nell'audit o in `idempotency_keys` (solo il `key_id`; le operazioni che restituiscono una chiave sono
+`x-porto-idempotency: domain`, quindi il middleware non ne conserva la risposta); le firme si verificano con `hmac.Equal`, i bearer con
+`subtle.ConstantTimeCompare`, con lavoro comparabile per una chiave sconosciuta; una firma con `t` oltre 300 s dal
+tempo del server è rifiutata. Verificata da: `TestIngestAuth_DocVector`, `TestIngestAuth_Table`,
+`TestIngestAuth_ConstantTime`, `TestIngestAuth_PreviousKeyGrace`, `TestSensorKeys_NotStoredOrLogged`,
+`TestAcceptance_M12_KeysNotInIdempotencyStore`, `TestAcceptance_M12_Ingest` (M12). Stato: implemented.
+
+INV-70 vale anche per gli eventi `sensor.*` e `profile.changed` (campioni in `event.Samples`), INV-73 per ogni nuova
+rotta di sensori e profilo (`TestAcceptance_CrossMarinaIsolation`, `TestAcceptance_CrossMarinaResourceIdsM12`), INV-72
+invariato.

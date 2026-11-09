@@ -62,3 +62,5 @@ export * from './hooks/lifting';
 export * from './hooks/rentalfleet';
 export * from './hooks/rentalbookings';
 export * from './hooks/rentalhandover';
+export * from './hooks/sensors';
+export * from './hooks/profile';

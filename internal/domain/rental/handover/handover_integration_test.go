@@ -467,3 +467,45 @@ func TestHandover_CrossMarina(t *testing.T) {
 		_ = money.Cents(0)
 	})
 }
+
+// TestHandover_CheckInSameMinuteAsCheckOut: the phone sends the return time at minute precision, so a boat taken
+// back in the minute of its check-out (08:35:40 out, 08:35 back) is accepted and stored at the check-out instant;
+// an earlier minute is still refused.
+func TestHandover_CheckInSameMinuteAsCheckOut(t *testing.T) {
+	testdb.Run(t, func(t *testing.T, db *store.DB) {
+		e := newEnv(t, db)
+		p := e.Owner
+		out := e.at(t, "2027-06-12", 8, 35).Add(40 * time.Second)
+		e.Clock.Set(out)
+		e.openSession(t)
+		b := e.booking(t, "", false)
+		e.prepareCheckOut(t, b)
+		if _, err := e.svc.QuickCash(ctx(), p, e.MarinaID, b.ID, QuickCashInput{Method: MethodCash}); err != nil {
+			t.Fatalf("quick cash: %v", err)
+		}
+		cur := e.reload(t, b.ID)
+		if _, err := e.svc.CheckOut(ctx(), p, e.MarinaID, b.ID, cur.Version, CheckOutInput{}); err != nil {
+			t.Fatalf("check-out: %v", err)
+		}
+		e.Clock.Advance(10 * time.Second)
+		e.checklist(t, b.ID, store.RentalPhaseCheckin, 8, 121_000)
+		if _, err := e.svc.UploadPhoto(ctx(), p, e.MarinaID, b.ID, store.RentalPhaseCheckin, PhotoInput{Kind: store.RentalFileBoat, ContentType: "image/png", Body: photo(t, 92)}); err != nil {
+			t.Fatal(err)
+		}
+		cur = e.reload(t, b.ID)
+		minute := out.Truncate(time.Minute)
+		_, err := e.svc.CheckIn(ctx(), p, e.MarinaID, b.ID, cur.Version, CheckInInput{ReturnedAt: minute.Add(-time.Minute), DepositDecision: DecisionRelease})
+		var ve *auth.ValidationError
+		if !errors.As(err, &ve) {
+			t.Fatalf("a minute before the check-out: %v", err)
+		}
+		if _, err := e.svc.CheckIn(ctx(), p, e.MarinaID, b.ID, cur.Version, CheckInInput{ReturnedAt: minute, DepositDecision: DecisionRelease}); err != nil {
+			t.Fatalf("check-in in the check-out minute: %v", err)
+		}
+		done := e.reload(t, b.ID)
+		if !done.ReturnedAt.Equal(done.CheckedOutAt) {
+			t.Fatalf("returned_at %v, checked_out_at %v", done.ReturnedAt, done.CheckedOutAt)
+		}
+		e.invariants(t)
+	})
+}

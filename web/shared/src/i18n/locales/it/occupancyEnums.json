@@ -173,7 +173,8 @@
     "departure_overdue": "Partenza scaduta",
     "vessel_exceeds_limits": "Imbarcazione oltre i limiti del posto",
     "insurance_expired_active": "Assicurazione scaduta o mancante",
-    "hold_lost_draft": "Bozza senza più opzione sul posto"
+    "hold_lost_draft": "Bozza senza più opzione sul posto",
+    "sensor_discrepancy": "Il sensore non concorda con l'occupazione prevista"
   },
   "lens": {
     "occupancy": "Occupazione",

@@ -228,6 +228,17 @@ func BackupTables() []string {
 		"rental_handovers",
 		"rental_damages",
 		"rental_handover_files",
+		// M12 sensors and public profile (00026_sensors, 00027_marina_profile). sensor_readings is excluded below;
+		// device keys are stored only as hashes and KeyRing-encrypted verifiers, which a restore under another
+		// PORTO_SECRET_KEY cannot decrypt (devices are re-keyed, m12-plan §3.3).
+		"sensor_settings",
+		"sensor_gateways",
+		"sensor_sources",
+		"sensor_devices",
+		"sensor_device_states",
+		"sensor_state_changes",
+		"sensor_alerts",
+		"marina_profiles",
 	}
 }
 
@@ -239,8 +250,11 @@ func BackupExcludedTables() []string {
 	// because payments and refunds are unique by provider reference.
 	// customer_portal_links, customer_portal_sessions (M8): short-lived customer credentials, like sessions.
 	// channel_events (M8): dedupe cache of channel events; channel_reservations stay unique by external reference.
+	// sensor_readings (M12, m12-plan §7, D8): high-volume raw diagnostics, reproducible from devices only within 30
+	// days; the history that matters is sensor_state_changes (backed up). Raw-reading views show nothing before the
+	// restore date.
 	return []string{
 		"sessions", "idempotency_keys", "goose_db_version", "move_undo_log", "signature_otps", "payment_provider_events",
-		"customer_portal_links", "customer_portal_sessions", "channel_events",
+		"customer_portal_links", "customer_portal_sessions", "channel_events", "sensor_readings",
 	}
 }

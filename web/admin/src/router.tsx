@@ -57,6 +57,8 @@ import { yardOrdersRoutes } from './features/yard-orders/routes';
 import { yardPlannerRoutes } from './features/yard-planner/routes';
 import { liftingRoutes } from './features/lifting/routes';
 import { rentalFleetRoutes } from './features/rental-fleet/routes';
+import { sensorsRoutes } from './features/sensors/routes';
+import { profileRoutes } from './features/profile/routes';
 import { rentalPlannerRoutes } from './features/rental-planner/routes';
 import { CertificateHelpPage } from './features/help/CertificateHelpPage';
 
@@ -265,6 +267,9 @@ export const routeTree = rootRoute.addChildren([
       ...liftingRoutes(marinaRoute),
       ...rentalFleetRoutes(marinaRoute),
       ...rentalPlannerRoutes(marinaRoute),
+      // M12 (m12-plan §16)
+      ...sensorsRoutes(marinaRoute),
+      ...profileRoutes(marinaRoute),
     ]),
   ]),
 ]);

@@ -152,7 +152,7 @@ func (s *Service) Record(ctx context.Context, p *auth.Principal, marinaID string
 	}
 	var presenceID, contractID string
 	err = s.d.DB.RunInTx(ctx, func(ctx context.Context, tx bun.Tx) error {
-		pr, c, err := s.recordTx(ctx, tx, scope, p, in)
+		pr, c, err := s.recordTx(ctx, tx, scope, p, in, SourceStaff)
 		if err != nil {
 			return err
 		}
@@ -233,8 +233,10 @@ func (s *Service) result(ctx context.Context, scope store.MarinaScope, p *auth.P
 	return out, nil
 }
 
-// recordTx writes the presence, the vessel state, the contract hook, audit and event in tx.
-func (s *Service) recordTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, p *auth.Principal, in Input) (*store.Presence, *store.Contract, error) {
+// recordTx writes the presence, the vessel state, the contract hook, audit and event in tx. source is the
+// presences.source value (SourceStaff, or SourceSensor from RecordSensorTx, which never calls the contract hooks:
+// sensors never change contracts, INV-100).
+func (s *Service) recordTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, p *auth.Principal, in Input, source string) (*store.Presence, *store.Contract, error) {
 	if _, err := store.GetVessel(ctx, tx, scope, in.VesselID); err != nil {
 		return nil, nil, notFound(err)
 	}
@@ -315,7 +317,7 @@ func (s *Service) recordTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 	}
 	pr := &store.Presence{
 		ID: store.NewID(), MarinaID: scope.ID(), VesselID: in.VesselID, Event: in.Event, At: at, Night: night,
-		Source: "staff", Notes: in.Notes, IdempotencyKey: in.IdempotencyKey, IdempotencyHash: hash,
+		Source: source, Notes: in.Notes, IdempotencyKey: in.IdempotencyKey, IdempotencyHash: hash,
 		CreatedAt: now, UpdatedAt: now,
 	}
 	if p != nil && p.Kind == auth.KindUser {
@@ -343,10 +345,12 @@ func (s *Service) recordTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 		return nil, nil, err
 	}
 	var c *store.Contract
-	switch in.Event {
-	case EventArrived:
+	switch {
+	case source == SourceSensor:
+		err = nil // no contract hook; err may still hold the ErrNotFound of a vessel without a presence row
+	case in.Event == EventArrived:
 		c, err = s.d.Contracts.OnArrivalTx(ctx, tx, scope, p, pr.ContractID)
-	case EventDeparted:
+	case in.Event == EventDeparted:
 		c, err = s.d.Contracts.OnDepartureTx(ctx, tx, scope, p, pr.ContractID, night)
 	}
 	if err != nil {
@@ -425,7 +429,7 @@ func (s *Service) UnexpectedArrival(ctx context.Context, p *auth.Principal, mari
 		if len(allocs) > 0 {
 			aid = allocs[0].ID
 		}
-		pr, _, err := s.recordTx(ctx, tx, scope, p, Input{VesselID: c.VesselID, Event: EventArrived, AllocationID: aid, Notes: notes})
+		pr, _, err := s.recordTx(ctx, tx, scope, p, Input{VesselID: c.VesselID, Event: EventArrived, AllocationID: aid, Notes: notes}, SourceStaff)
 		if err != nil {
 			return err
 		}

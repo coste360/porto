@@ -32,7 +32,8 @@
     "rental": "Noleggio",
     "storage": "Rimessaggio",
     "maintenance": "Manutenzioni",
-    "utilities": "Consumi e utenze"
+    "utilities": "Consumi e utenze",
+    "sensors": "Sensori: discrepanze"
   },
   "export": {
     "csv": "Esporta CSV",
@@ -305,7 +306,18 @@
     "deposit_status": "Stato cauzione",
     "deposit_cents": "Cauzione",
     "released_cents": "Restituito",
-    "outstanding_cents": "In essere"
+    "outstanding_cents": "In essere",
+    "map_name": "Mappa",
+    "contractual": "Stato contrattuale",
+    "presence": "Presenza alle 02:00",
+    "physical": "Stato fisico",
+    "from_cm": "Da",
+    "to_cm": "A",
+    "occupied_unexpected": "Occupati non previsti",
+    "absent": "Assenti",
+    "resources_with_discrepancy": "Risorse con discrepanze",
+    "nights_compared": "Notti confrontate",
+    "coverage_bp": "Copertura sensori"
   },
   "descriptions": {
     "occupancy": "Notti occupate su notti disponibili, fisica o contrattuale, per posti, terre e aree dinamiche.",
@@ -329,7 +341,8 @@
     "maintenance": "Interventi di manutenzione per stato, ritardi, minuti interni e costi esterni.",
     "utilities": "Consumi di energia, acqua e contatori: da addebitare, addebitati e non assegnati.",
     "yard": "Ore lavorate, carico dei dipendenti, margini delle commesse e mezzi di sollevamento del cantiere.",
-    "rental": "Utilizzo della flotta, ricavi per unità e formula, danni e cauzioni del noleggio (la cauzione non è un ricavo finché non viene trattenuta)."
+    "rental": "Utilizzo della flotta, ricavi per unità e formula, danni e cauzioni del noleggio (la cauzione non è un ricavo finché non viene trattenuta).",
+    "sensors": "Notti in cui lo stato fisico rilevato dai sensori non corrisponde a quello contrattuale: posti occupati non previsti e assenze. Solo codici, nessun nome."
   },
   "groupBy": {
     "resource": "Risorsa",
@@ -434,6 +447,9 @@
       "revenue": "Ricavi",
       "damages": "Danni",
       "deposits": "Cauzioni"
+    },
+    "sensors": {
+      "discrepancies": "Discrepanze"
     }
   },
   "filters": {
@@ -728,6 +744,35 @@
       "retained": "Trattenuta",
       "partially_retained": "Trattenuta in parte",
       "waived": "Esentata"
+    },
+    "sensorDiscrepancy": {
+      "occupied_unexpected": "Occupato non previsto",
+      "absent": "Assente"
+    },
+    "sensorContractual": {
+      "free": "Libero",
+      "contract": "Contratto",
+      "transit": "Transito",
+      "released": "Rilasciato",
+      "released_resold": "Rilasciato e rivenduto",
+      "block": "Blocco",
+      "maintenance": "Manutenzione"
+    },
+    "sensorPhysical": {
+      "occupied": "Occupato",
+      "free": "Libero",
+      "unknown": "Sconosciuto"
+    },
+    "sensorResourceType": {
+      "berth": "Posto",
+      "dynamic_area": "Tratto di area",
+      "pedestal": "Colonnina"
+    },
+    "presenceState": {
+      "in_port": "In porto",
+      "out": "Fuori",
+      "ashore": "A terra",
+      "yard": "In cantiere"
     }
   },
   "suggestions": {

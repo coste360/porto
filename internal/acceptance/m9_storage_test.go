@@ -218,7 +218,12 @@ func TestAcceptance_M9_StorageShed(t *testing.T) {
 			m := it.(map[string]any)
 			want[str(m, "allocation_id")] = [2]float64{m["x_cm"].(float64), m["y_cm"].(float64)}
 		}
+		// Apply moves every boat in one transaction: under a loaded `make test-db` (packages in parallel on one
+		// PostgreSQL) it can exceed the default 10 s client timeout, which is not what this test measures.
+		o.http.Timeout = 2 * time.Minute
+		applyStart := time.Now()
 		ap := o.expect(t, 200, "POST", S+"/apply", nil, "If-Match", etagOf(scn["version"]))
+		t.Logf("apply %v", time.Since(applyStart))
 		if str(ap["scenario"].(map[string]any), "status") != "applied" {
 			t.Fatalf("apply %v", ap["scenario"])
 		}

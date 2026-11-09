@@ -217,6 +217,19 @@ const (
 	DepositExceeds        Type = "deposit_exceeds"
 	NothingToCollect      Type = "nothing_to_collect"
 	BandGapLtBuffer       Type = "band_gap_lt_buffer"
+
+	// M12 (m12-plan §13). The ingestion errors use their own slugs so that vendors can tell a clock problem from a
+	// key problem; 413 stays the generic body-limit problem (bad_request with status 413) of every operation.
+	IngestUnauthorized        Type = "ingest_unauthorized"
+	IngestTimestampOutOfRange Type = "ingest_timestamp_out_of_range"
+	InvalidPayload            Type = "invalid_payload"
+	SegmentOverlap            Type = "segment_overlap"
+	ResourceHasSensor         Type = "resource_has_sensor"
+	InvalidSensorResource     Type = "invalid_sensor_resource"
+	AlertStale                Type = "alert_stale"
+	AlertActionNotAllowed     Type = "alert_action_not_allowed"
+	ProfileIncomplete         Type = "profile_incomplete"
+	PhotoInvalid              Type = "photo_invalid"
 )
 
 type typeInfo struct {
@@ -415,6 +428,17 @@ var registry = map[Type]typeInfo{
 	DepositExceeds:        {http.StatusUnprocessableEntity, "The retention exceeds the deposit"},
 	NothingToCollect:      {http.StatusConflict, "Nothing to collect on the rental"},
 	BandGapLtBuffer:       {http.StatusUnprocessableEntity, "Two bands are closer than the buffer between rentals"},
+	// M12
+	IngestUnauthorized:        {http.StatusUnauthorized, "The sensor key or signature is not valid"},
+	IngestTimestampOutOfRange: {http.StatusUnauthorized, "The signature timestamp is outside the 300-second tolerance"},
+	InvalidPayload:            {http.StatusBadRequest, "The readings batch is malformed or has 0 or more than 500 readings"},
+	SegmentOverlap:            {http.StatusUnprocessableEntity, "The segment overlaps another active device of the area"},
+	ResourceHasSensor:         {http.StatusConflict, "The berth or pedestal socket already has an active device"},
+	InvalidSensorResource:     {http.StatusUnprocessableEntity, "The resource cannot carry a sensor"},
+	AlertStale:                {http.StatusConflict, "The condition of the alert no longer holds"},
+	AlertActionNotAllowed:     {http.StatusUnprocessableEntity, "The action is not allowed for this alert"},
+	ProfileIncomplete:         {http.StatusUnprocessableEntity, "The profile misses data required to publish (missing in details)"},
+	PhotoInvalid:              {http.StatusUnprocessableEntity, "The photo is not a valid JPEG or PNG image"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

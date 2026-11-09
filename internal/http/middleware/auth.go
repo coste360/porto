@@ -10,6 +10,7 @@ import (
 
 	"github.com/coste360/porto/internal/crypto"
 	"github.com/coste360/porto/internal/domain/auth"
+	"github.com/coste360/porto/internal/domain/sensor/ingestauth"
 	"github.com/coste360/porto/internal/http/problem"
 	"github.com/coste360/porto/internal/http/respond"
 	"github.com/coste360/porto/internal/reqctx"
@@ -30,7 +31,8 @@ type Authenticator interface {
 }
 
 // Authenticate reads the credentials of a request: `Authorization: Bearer po_live_…` (API key),
-// `Authorization: Bearer po_dev_…` (device) or the porto_session cookie. A bearer token that does not
+// `Authorization: Bearer po_dev_…` (device) or the porto_session cookie; M12 sensor keys (po_gw_, po_sns_) are left
+// to the ingest handler. A bearer token that does not
 // authenticate is 401 at once; an invalid cookie leaves the request anonymous (public operations still work).
 // Whether the operation accepts the method is decided by Enforce.
 func Authenticate(a Authenticator) func(http.Handler) http.Handler {
@@ -54,6 +56,9 @@ func Authenticate(a Authenticator) func(http.Handler) http.Handler {
 				case strings.HasPrefix(token, auth.DeviceTokenPrefix):
 					p, err = a.AuthenticateDevice(r.Context(), token)
 					method = reqctx.AuthDevice
+				case strings.HasPrefix(token, ingestauth.GatewayPrefix) || strings.HasPrefix(token, ingestauth.DevicePrefix):
+					// M12 sensor keys: verified by the ingest handler (the only operation that accepts them); the
+					// request stays anonymous, so every authenticated operation still answers 401.
 				default:
 					err = auth.ErrUnauthenticated
 				}

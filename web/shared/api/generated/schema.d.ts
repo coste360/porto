@@ -11445,12 +11445,622 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/ingest/v1/readings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post a batch of 1..500 occupancy readings signed with a device or gateway key (per-item results, idempotent on device_id and observed_at)
+         * @description Authentication (handler): `Porto-Key` + `Porto-Signature: t=<unix>,v1=<hex>` (HMAC-SHA256 of "v1\n<t>\nPOST\n/api/ingest/v1/readings\n<hex sha256 of the body>" with the full key, |now - t| <= 300 s; devices must sign) or `Authorization: Bearer po_gw_<kid>_<secret>` (gateways only). Rate limits: 3,000 per minute per IP prefix, 30 per minute per device key, 600 per minute per gateway key. See docs/sensor-protocol.md (normative, with a test vector).
+         */
+        post: operations["ingestSensorReadings"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Sensor devices with their health and physical state, by code (map.view) */
+        get: operations["listSensorDevices"];
+        put?: never;
+        /** Register a device on a berth, a linear dynamic-area segment or a pedestal; the device key is in the response once (Cache-Control no-store) (harbor.configure) */
+        post: operations["createSensorDevice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorDeviceId: components["parameters"]["SensorDeviceId"];
+            };
+            cookie?: never;
+        };
+        /** A sensor device (map.view) */
+        get: operations["getSensorDevice"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update a device; a new resource or segment writes a state change to unknown (device_moved) and resets the hysteresis (harbor.configure) */
+        patch: operations["updateSensorDevice"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/rotate-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorDeviceId: components["parameters"]["SensorDeviceId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Issue a new device key (returned once); the previous one keeps verifying for grace_hours (harbor.configure) */
+        post: operations["rotateSensorDeviceKey"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/revoke-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorDeviceId: components["parameters"]["SensorDeviceId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke the current and previous device key; readings get 401 until a rotate (harbor.configure) */
+        post: operations["revokeSensorDeviceKey"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorDeviceId: components["parameters"]["SensorDeviceId"];
+            };
+            cookie?: never;
+        };
+        /** Physical history of a device: state changes, alerts, night classification and raw readings within the retention (map.view) */
+        get: operations["getSensorDeviceHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/gateways": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Sensor gateways (harbor.configure) */
+        get: operations["listSensorGateways"];
+        put?: never;
+        /** Register a gateway; its key is in the response once (harbor.configure) */
+        post: operations["createSensorGateway"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorGatewayId: components["parameters"]["SensorGatewayId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update a gateway (name, kind, active) (harbor.configure) */
+        patch: operations["updateSensorGateway"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/rotate-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorGatewayId: components["parameters"]["SensorGatewayId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Issue a new gateway key (returned once) with a grace period for the previous one (harbor.configure) */
+        post: operations["rotateSensorGatewayKey"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/revoke-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorGatewayId: components["parameters"]["SensorGatewayId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke the gateway keys (harbor.configure) */
+        post: operations["revokeSensorGatewayKey"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Polled sensor sources and the registered drivers with their config keys (harbor.configure) */
+        get: operations["listSensorSources"];
+        put?: never;
+        /** Configure a polled source of a registered driver; secret config values are write-only (harbor.configure) */
+        post: operations["createSensorSource"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/sources/{sensorSourceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorSourceId: components["parameters"]["SensorSourceId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update a source; config replaces the stored values when present (harbor.configure) */
+        patch: operations["updateSensorSource"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/sources/{sensorSourceId}/poll": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorSourceId: components["parameters"]["SensorSourceId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Poll the source now, through the same ingest service as the job (harbor.configure) */
+        post: operations["pollSensorSourceNow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Sensor settings (map.view; defaults when never saved, version 0) */
+        get: operations["getSensorSettings"];
+        /** Save the sensor settings (harbor.configure; If-Match "0" for the first save) */
+        put: operations["putSensorSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/map": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Context Sensori of a map (default the first water map): physical state, health, expectation and discrepancy per device, no vessel or customer data (map.view) */
+        get: operations["getSensorMap"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Sensor alerts and proposals, newest first (map.view; default status open) */
+        get: operations["listSensorAlerts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/alerts/{sensorAlertId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorAlertId: components["parameters"]["SensorAlertId"];
+            };
+            cookie?: never;
+        };
+        /** A sensor alert with the actions the principal may take (map.view) */
+        get: operations["getSensorAlert"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/alerts/{sensorAlertId}/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorAlertId: components["parameters"]["SensorAlertId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decide an alert through the existing domain services: dismiss and confirm_arrival (presence.write), confirm_release and revoke_release (occupancy.move), create_task (maintenance.manage or maintenance.report); a condition that no longer holds is 409 alert_stale */
+        post: operations["actOnSensorAlert"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/sensors/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Physical history of a resource (berth, dynamic area, pedestal): state changes, alerts, contractual and physical status per night, raw readings within the retention (map.view) */
+        get: operations["getSensorHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/sensors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R-sensors: physical vs contractual discrepancies per resource and night (reports.operational or reports.all) */
+        get: operations["getSensorsReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** The public profile draft with its computed figures (marina.read; defaults prefilled from the marina, version 0) */
+        get: operations["getMarinaProfile"];
+        /** Save the profile (marina.configure; If-Match "0" for the first save); a published profile is republished at once */
+        put: operations["putMarinaProfile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/profile/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish the profile on /p/{slug} (marina.configure); missing position, contact or name is 422 profile_incomplete */
+        post: operations["publishMarinaProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/profile/unpublish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Withdraw the public profile; /p/{slug} and the public profile API answer 404 (marina.configure) */
+        post: operations["unpublishMarinaProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/profile/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** The public JSON and JSON-LD the draft would publish (marina.configure; Cache-Control no-store, used by /p/{slug}?preview=1 with the panel session) */
+        get: operations["previewMarinaProfile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/profile/photos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload a photo (JPEG or PNG, at most 8 MiB, raw body): decoded and re-encoded without metadata, longest side at most 2,400 px, stored encrypted; reference it from photos or access_images with a PUT (marina.configure) */
+        post: operations["uploadProfilePhoto"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/profile/photos/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        /** The bytes of an uploaded profile photo, published or not (marina.read; preview and panel) */
+        get: operations["getProfilePhoto"];
+        put?: never;
+        post?: never;
+        /** Delete an uploaded photo and remove it from photos and access_images (marina.configure) */
+        delete: operations["deleteProfilePhoto"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        /** Published marina profile in a language (Cache-Control public, max-age=300; ETag; 120/min per IP prefix) */
+        get: operations["getPublicProfile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/profile/map": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        /** Simplified harbour map without codes, occupancy, vessels or sensors (Cache-Control public, max-age=3600; 404 when the section is off) */
+        get: operations["getPublicProfileMap"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/profile/prices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        /** Transit price matrix of the active list published with publish_matrix (Cache-Control public, max-age=3600; 404 when the section is off or no list publishes it) */
+        get: operations["getPublicProfilePrices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/occupancy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        /** Aggregate free berths per published category tonight, never which berths or vessels (Cache-Control public, max-age=60; 404 when the option is off) */
+        get: operations["getPublicOccupancy"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/v1/{slug}/profile/photos/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        /** A photo referenced by the published profile (Cache-Control public, max-age=31536000, immutable; any other id is 404) */
+        get: operations["getPublicProfilePhoto"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid" | "invalid_period" | "invalid_report_filter" | "report_too_large" | "unknown_indicator" | "booking_unavailable" | "booking_rules" | "booking_busy" | "consent_required" | "text_outdated" | "refund_changed" | "price_changed" | "cancellation_not_allowed" | "nothing_due" | "idempotency_mismatch" | "storage_target_invalid" | "storage_no_space" | "area_exits_invalid" | "pinned_invalid" | "too_many_items" | "scenario_window_invalid" | "scenario_not_draft" | "scenario_conflicts" | "movement_not_pending" | "element_invalid" | "maintenance_conflicts" | "task_already_done" | "reading_charged" | "consumption_frozen" | "formula_invalid" | "work_order_closed" | "work_order_has_charges" | "qualification_mismatch" | "capacity_exceeded" | "dependency_violation" | "duration_too_long" | "offline_time_out_of_range" | "timer_already_running" | "return_exceeds_issued" | "nothing_to_bill" | "equipment_slot_taken" | "operator_busy" | "equipment_out_of_service" | "equipment_capacity_exceeded" | "operator_not_enabled" | "outside_lift_window";
+        ProblemType: "bad_request" | "validation_failed" | "weak_password" | "invalid_reset_token" | "invalid_totp" | "pairing_code_invalid" | "invalid_scope" | "invalid_webhook_url" | "unknown_event_type" | "unauthorized" | "invalid_credentials" | "totp_required" | "forbidden" | "csrf_failed" | "totp_enrolment_required" | "totp_required_by_policy" | "not_found" | "method_not_allowed" | "conflict" | "slug_taken" | "already_member" | "last_owner" | "totp_already_enabled" | "totp_not_enrolled" | "endpoint_disabled" | "idempotency_in_progress" | "version_conflict" | "unsupported_media_type" | "idempotency_key_reused" | "precondition_required" | "rate_limited" | "internal_error" | "not_ready" | "map_invalid" | "map_not_empty" | "map_not_georeferenced" | "invalid_file" | "file_too_large" | "csv_invalid" | "customer_anonymized" | "customer_merged" | "download_link_expired" | "no_price" | "promo_not_applicable" | "price_list_invalid" | "price_list_immutable" | "price_list_overlap" | "in_use" | "resource_taken" | "fit_blocked" | "placement_invalid" | "invalid_transition" | "quote_expired" | "hold_expired" | "closure_active" | "undo_unavailable" | "release_invalid" | "customer_required" | "not_implemented" | "renewal_exists" | "proposal_closed" | "signature_open" | "invalid_signature" | "otp_invalid" | "otp_locked" | "otp_rate_limited" | "link_invalid" | "template_invalid" | "template_limits" | "paper_scan_required" | "insurance_required" | "customer_email_missing" | "shares_invalid" | "table_incomplete" | "table_active" | "transfer_requirements" | "mandate_overlap" | "vessel_in_other_fleet" | "vessel_not_in_fleet" | "import_not_undoable" | "provider_unknown" | "code_taken" | "charge_immutable" | "charge_cancelled" | "use_edit" | "match_exceeds" | "refund_exceeds" | "already_reversed" | "credit_insufficient" | "not_deposit" | "nothing_to_settle" | "charge_exists" | "no_termination_amount" | "not_exported" | "export_empty" | "export_too_large" | "charges_not_open" | "release_not_resold" | "cash_session_required" | "cash_session_open" | "cash_session_closed" | "cash_insufficient" | "register_in_use" | "provider_disabled" | "provider_refund_unsupported" | "provider_error" | "billing_item_missing" | "first_run_token_invalid" | "first_run_done" | "lan_port_unavailable" | "lan_no_address" | "backup_in_progress" | "restore_failed" | "restore_backup_newer" | "allocation_changed" | "offline_not_allowed" | "remote_unreachable" | "remote_pin_mismatch" | "peripheral_unavailable" | "claim_expired" | "app_pin_invalid" | "invalid_period" | "invalid_report_filter" | "report_too_large" | "unknown_indicator" | "booking_unavailable" | "booking_rules" | "booking_busy" | "consent_required" | "text_outdated" | "refund_changed" | "price_changed" | "cancellation_not_allowed" | "nothing_due" | "idempotency_mismatch" | "storage_target_invalid" | "storage_no_space" | "area_exits_invalid" | "pinned_invalid" | "too_many_items" | "scenario_window_invalid" | "scenario_not_draft" | "scenario_conflicts" | "movement_not_pending" | "element_invalid" | "maintenance_conflicts" | "task_already_done" | "reading_charged" | "consumption_frozen" | "formula_invalid" | "work_order_closed" | "work_order_has_charges" | "qualification_mismatch" | "capacity_exceeded" | "dependency_violation" | "duration_too_long" | "offline_time_out_of_range" | "timer_already_running" | "return_exceeds_issued" | "nothing_to_bill" | "equipment_slot_taken" | "operator_busy" | "equipment_out_of_service" | "equipment_capacity_exceeded" | "operator_not_enabled" | "outside_lift_window" | "ingest_unauthorized" | "ingest_timestamp_out_of_range" | "invalid_payload" | "segment_overlap" | "resource_has_sensor" | "invalid_sensor_resource" | "alert_stale" | "alert_action_not_allowed" | "profile_incomplete" | "photo_invalid";
         FieldError: {
             field: string;
             code: string;
@@ -12255,6 +12865,8 @@ export interface components {
             default_locale: components["schemas"]["Locale"];
             locales: components["schemas"]["Locale"][];
             booking_enabled: boolean;
+            /** @description The public profile /p/{slug} is published (M12) */
+            profile_published?: boolean;
             /** @description Origins allowed to embed the booking page (marinas.allowed_embed_origins, M8); the SPA posts messages only to a parent origin in this list that also matches the referrer */
             embed_origins?: string[];
         };
@@ -17801,10 +18413,10 @@ export interface components {
             verifying: boolean;
         };
         /**
-         * @description Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+         * @description Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11, sensors from M12.
          * @enum {string}
          */
-        ReportKey: "occupancy" | "efficiency" | "allocation-waste" | "lost-demand" | "customers" | "production" | "accruals" | "charges" | "payments" | "revenue-classes" | "comparison" | "receivables" | "presences" | "rights" | "cash" | "vessels" | "berth-revenue" | "storage" | "maintenance" | "utilities" | "yard" | "rental";
+        ReportKey: "occupancy" | "efficiency" | "allocation-waste" | "lost-demand" | "customers" | "production" | "accruals" | "charges" | "payments" | "revenue-classes" | "comparison" | "receivables" | "presences" | "rights" | "cash" | "vessels" | "berth-revenue" | "storage" | "maintenance" | "utilities" | "yard" | "rental" | "sensors";
         /**
          * @description json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
          * @enum {string}
@@ -22951,6 +23563,731 @@ export interface components {
             groups: components["schemas"]["RentalReportGroup"][];
             records: components["schemas"]["RentalReportRecord"][];
         };
+        /** @enum {string} */
+        SensorKind: "ultrasonic" | "radar" | "magnetometer" | "infrared" | "camera" | "other";
+        /**
+         * @description What a device watches (berth, a [from_cm, to_cm) segment of a linear dynamic area, a pedestal)
+         * @enum {string}
+         */
+        SensorResourceType: "berth" | "dynamic_area" | "pedestal";
+        /** @enum {string} */
+        SensorPhysicalState: "occupied" | "free" | "unknown";
+        /** @enum {string} */
+        SensorHealth: "ok" | "offline" | "battery_low" | "silent";
+        /**
+         * @description active, rotating (the previous key verifies until prev_valid_until), revoked, unusable (the verifier cannot be decrypted with this instance's PORTO_SECRET_KEY, e.g. after a restore elsewhere: rotate to re-key)
+         * @enum {string}
+         */
+        SensorKeyStatus: "active" | "rotating" | "revoked" | "unusable";
+        /** @enum {string} */
+        SensorExpectation: "occupied" | "free" | "either" | "none";
+        /** @enum {string} */
+        SensorStateChangeReason: "readings" | "duration" | "silence" | "device_moved";
+        /** @enum {string} */
+        SensorGatewayKind: "lorawan" | "nbiot" | "mqtt_bridge" | "other";
+        /** @enum {string} */
+        SensorAlertKind: "unexpected_occupied" | "transit_arrival" | "return_detected" | "release_proposal" | "early_return" | "device_silent" | "battery_low";
+        /** @enum {string} */
+        SensorAlertStatus: "open" | "confirmed" | "dismissed" | "resolved";
+        /** @enum {string} */
+        SensorAlertAction: "dismiss" | "confirm_arrival" | "confirm_release" | "revoke_release" | "create_task";
+        /** @enum {string} */
+        SensorIngestItemCode: "unknown_device" | "device_inactive" | "device_mismatch" | "device_not_bound" | "observed_in_future" | "observed_too_old" | "invalid_state" | "invalid_value";
+        SensorReadingInput: {
+            /** @description The device's external_id (vendor id) */
+            device_id: string;
+            /**
+             * Format: date-time
+             * @description RFC 3339 with offset; truncated to milliseconds
+             */
+            observed_at: string;
+            /** @description occupied, free or unknown (other values: item invalid_state) */
+            state: string;
+            /**
+             * Format: int64
+             * @description 0..10000
+             */
+            distance_cm?: number;
+            /** @description 0..100 */
+            battery_pct?: number;
+            /** @description -200..0 dBm */
+            rssi?: number;
+            firmware?: string;
+        };
+        SensorReadingBatch: {
+            /** @description 1..500 readings (otherwise 400 invalid_payload); unknown fields are ignored */
+            readings: components["schemas"]["SensorReadingInput"][];
+        };
+        SensorIngestRejected: {
+            index: number;
+            device_id?: string;
+            code: components["schemas"]["SensorIngestItemCode"];
+        };
+        SensorIngestResult: {
+            /** @description New readings stored (out-of-order ones included) */
+            accepted: number;
+            duplicates: number;
+            rejected: components["schemas"]["SensorIngestRejected"][];
+            /** Format: date-time */
+            server_time: string;
+        };
+        SensorDevice: {
+            id: string;
+            external_id: string;
+            code: string;
+            kind: components["schemas"]["SensorKind"];
+            model: string;
+            firmware: string;
+            resource_type: components["schemas"]["SensorResourceType"];
+            resource_id: string;
+            /** @description Code of the berth, dynamic area or pedestal */
+            resource_code: string;
+            from_cm?: components["schemas"]["Cm"];
+            to_cm?: components["schemas"]["Cm"];
+            pedestal_socket?: string;
+            /** @description Pedestal device with no single berth: map and history only, no rules */
+            informational?: boolean;
+            map_id: string;
+            x_cm: components["schemas"]["Cm"];
+            y_cm: components["schemas"]["Cm"];
+            gateway_id?: string;
+            source_id?: string;
+            /** @description Public key id (Porto-Key), never the secret */
+            key_id?: string;
+            key_status: components["schemas"]["SensorKeyStatus"];
+            /** Format: date-time */
+            key_issued_at?: string;
+            /** Format: date-time */
+            prev_valid_until?: string;
+            active: boolean;
+            physical: components["schemas"]["SensorPhysicalState"];
+            /** Format: date-time */
+            physical_since?: string;
+            health: components["schemas"]["SensorHealth"];
+            battery_pct?: number;
+            rssi?: number;
+            distance_cm?: components["schemas"]["Cm"];
+            /** Format: date-time */
+            last_contact_at?: string;
+            /** Format: date-time */
+            last_observed_at?: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        SensorDeviceList: {
+            items: components["schemas"]["SensorDevice"][];
+            next_cursor: string | null;
+        };
+        SensorDeviceInput: {
+            external_id: string;
+            code: string;
+            kind: components["schemas"]["SensorKind"];
+            model?: string;
+            firmware?: string;
+            resource_type: components["schemas"]["SensorResourceType"];
+            resource_id: string;
+            from_cm?: components["schemas"]["Cm"];
+            to_cm?: components["schemas"]["Cm"];
+            pedestal_socket?: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            /** @description At most one of gateway_id and source_id */
+            gateway_id?: string;
+            source_id?: string;
+        };
+        /** @description The ingestion path of a device; both absent = the device signs with its own key */
+        SensorBinding: {
+            gateway_id?: string;
+            source_id?: string;
+        };
+        /** @description Absent fields are unchanged; resource_type, resource_id, from_cm, to_cm and pedestal_socket move together */
+        SensorDevicePatch: {
+            code?: string;
+            kind?: components["schemas"]["SensorKind"];
+            model?: string;
+            firmware?: string;
+            resource_type?: components["schemas"]["SensorResourceType"];
+            resource_id?: string;
+            from_cm?: components["schemas"]["Cm"];
+            to_cm?: components["schemas"]["Cm"];
+            pedestal_socket?: string;
+            x_cm?: components["schemas"]["Cm"];
+            y_cm?: components["schemas"]["Cm"];
+            binding?: components["schemas"]["SensorBinding"];
+            active?: boolean;
+        };
+        /** @description The device and its key, shown only in this response (Cache-Control no-store) */
+        SensorDeviceWithKey: {
+            device: components["schemas"]["SensorDevice"];
+            /** @description po_sns_<kid>_<secret>: store it on the device, Porto keeps only a hash */
+            key: string;
+        };
+        SensorKeyRotateInput: {
+            /** @default 24 */
+            grace_hours: number;
+        };
+        SensorGateway: {
+            id: string;
+            code: string;
+            name: string;
+            kind: components["schemas"]["SensorGatewayKind"];
+            key_id?: string;
+            key_status: components["schemas"]["SensorKeyStatus"];
+            /** Format: date-time */
+            key_issued_at?: string;
+            /** Format: date-time */
+            prev_valid_until?: string;
+            /** Format: date-time */
+            last_contact_at?: string;
+            active: boolean;
+            device_count: number;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        SensorGatewayList: {
+            items: components["schemas"]["SensorGateway"][];
+        };
+        SensorGatewayInput: {
+            code: string;
+            name: string;
+            kind: components["schemas"]["SensorGatewayKind"];
+        };
+        SensorGatewayPatch: {
+            name?: string;
+            kind?: components["schemas"]["SensorGatewayKind"];
+            active?: boolean;
+        };
+        SensorGatewayWithKey: {
+            gateway: components["schemas"]["SensorGateway"];
+            /** @description po_gw_<kid>_<secret>, shown only in this response */
+            key: string;
+        };
+        /** @enum {string} */
+        SensorSourceErrorCode: "timeout" | "auth" | "bad_response" | "unavailable";
+        SensorSource: {
+            id: string;
+            /** @description Code of the registered ext.SensorSource driver */
+            code: string;
+            name: string;
+            config_set: boolean;
+            /** @description The non-secret config values the driver declares; secret values are never returned */
+            config_public: {
+                [key: string]: string;
+            };
+            poll_seconds: number;
+            enabled: boolean;
+            /** Format: date-time */
+            last_polled_at?: string;
+            last_error_code?: components["schemas"]["SensorSourceErrorCode"];
+            device_count: number;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        SensorSourceDriver: {
+            code: string;
+            public_keys: string[];
+            secret_keys: string[];
+        };
+        SensorSourceList: {
+            items: components["schemas"]["SensorSource"][];
+            drivers: components["schemas"]["SensorSourceDriver"][];
+        };
+        SensorSourceInput: {
+            code: string;
+            name: string;
+            config?: {
+                [key: string]: string;
+            };
+            /** @default 60 */
+            poll_seconds: number;
+            /** @default true */
+            enabled: boolean;
+        };
+        SensorSourcePatch: {
+            name?: string;
+            /** @description Replaces the stored config when present (write-only) */
+            config?: {
+                [key: string]: string;
+            };
+            poll_seconds?: number;
+            enabled?: boolean;
+        };
+        SensorSourcePollResult: {
+            accepted: number;
+            duplicates: number;
+            rejected: number;
+            error_code?: components["schemas"]["SensorSourceErrorCode"];
+        };
+        SensorSettingsInput: {
+            hysteresis_readings: number;
+            hysteresis_minutes: number;
+            offline_after_minutes: number;
+            /** @description At least offline_after_minutes */
+            silent_alert_minutes: number;
+            battery_low_pct: number;
+            unexpected_after_minutes: number;
+            /** @description Local minute of the departure day until which a departing berth may still be occupied (720 = 12:00) */
+            departure_cutoff_minutes: number;
+            /** @description Automatic presence out/in for annual mooring contracts (24.4) */
+            presence_effect_enabled: boolean;
+            presence_out_after_hours: number;
+            release_proposal_after_days: number;
+            release_proposal_nights: number;
+        };
+        SensorSettings: components["schemas"]["SensorSettingsInput"] & {
+            /** @description PORTO_SENSOR_RAW_RETENTION of the instance (read-only) */
+            raw_retention_days: number;
+            /** Format: int64 */
+            version: number;
+        };
+        SensorMapEntry: {
+            device_id: string;
+            code: string;
+            resource_type: components["schemas"]["SensorResourceType"];
+            resource_id: string;
+            from_cm?: components["schemas"]["Cm"];
+            to_cm?: components["schemas"]["Cm"];
+            x_cm: components["schemas"]["Cm"];
+            y_cm: components["schemas"]["Cm"];
+            physical: components["schemas"]["SensorPhysicalState"];
+            /** Format: date-time */
+            physical_since?: string;
+            health?: components["schemas"]["SensorHealth"];
+            discrepancy: boolean;
+            expectation: components["schemas"]["SensorExpectation"];
+            informational?: boolean;
+            open_alerts: components["schemas"]["SensorAlertKind"][];
+        };
+        SensorMap: {
+            map_id: string;
+            date?: components["schemas"]["IsoDate"];
+            /** Format: date-time */
+            generated_at: string;
+            entries: components["schemas"]["SensorMapEntry"][];
+        };
+        /** @description Ids and enums only */
+        SensorAlertRefs: {
+            allocation_id?: string;
+            contract_id?: string;
+            vessel_id?: string;
+            release_id?: string;
+            presence_id?: string;
+            resold?: boolean;
+            proposed_from?: components["schemas"]["IsoDate"];
+            proposed_to?: components["schemas"]["IsoDate"];
+            /** Format: date-time */
+            physical_since?: string;
+        };
+        SensorAlert: {
+            id: string;
+            kind: components["schemas"]["SensorAlertKind"];
+            status: components["schemas"]["SensorAlertStatus"];
+            device_id: string;
+            device_code: string;
+            resource_type: components["schemas"]["SensorResourceType"];
+            resource_id: string;
+            resource_code: string;
+            map_id: string;
+            refs: components["schemas"]["SensorAlertRefs"];
+            /** Format: date-time */
+            opened_at: string;
+            /** Format: date-time */
+            cleared_at?: string;
+            /** Format: date-time */
+            decided_at?: string;
+            decided_by_user_id?: string;
+            /** @description Id of the presence, release or maintenance task created on confirm */
+            outcome_ref?: string;
+            note?: string;
+            /** @description Actions valid for the kind and the principal's permissions (empty unless open) */
+            allowed_actions: components["schemas"]["SensorAlertAction"][];
+            /** Format: int64 */
+            version: number;
+        };
+        SensorAlertList: {
+            items: components["schemas"]["SensorAlert"][];
+            next_cursor: string | null;
+        };
+        SensorAlertActionInput: {
+            action: components["schemas"]["SensorAlertAction"];
+            note?: string;
+            from?: components["schemas"]["IsoDate"];
+            to?: components["schemas"]["IsoDate"];
+            /** @description Required true by confirm_release (422 consent_required) */
+            consent_confirmed?: boolean;
+            /** @enum {string} */
+            priority?: "low" | "normal" | "high" | "urgent";
+        };
+        SensorStateChange: {
+            id: string;
+            device_id: string;
+            from: components["schemas"]["SensorPhysicalState"];
+            to: components["schemas"]["SensorPhysicalState"];
+            /** Format: date-time */
+            at: string;
+            reason: components["schemas"]["SensorStateChangeReason"];
+        };
+        SensorReadingRow: {
+            device_id: string;
+            /** Format: date-time */
+            observed_at: string;
+            /** Format: date-time */
+            received_at: string;
+            state: components["schemas"]["SensorPhysicalState"];
+            distance_cm?: components["schemas"]["Cm"];
+            battery_pct?: number;
+            rssi?: number;
+        };
+        /** @enum {string} */
+        SensorContractual: "free" | "contract" | "transit" | "released" | "released_resold" | "block" | "maintenance";
+        SensorNight: {
+            night: components["schemas"]["IsoDate"];
+            contractual: components["schemas"]["SensorContractual"];
+            physical: components["schemas"]["SensorPhysicalState"];
+            /** @description Vessel presence state at 02:00 when one vessel is expected */
+            presence?: string;
+            discrepancy?: boolean;
+        };
+        SensorHistory: {
+            resource_type: components["schemas"]["SensorResourceType"];
+            resource_id: string;
+            device_ids?: string[];
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            state_at_from: components["schemas"]["SensorPhysicalState"];
+            changes: components["schemas"]["SensorStateChange"][];
+            alerts: components["schemas"]["SensorAlert"][];
+            nights: components["schemas"]["SensorNight"][];
+            /** @description Raw readings, newest first (include_readings, only inside the retention, at most 10,000) */
+            readings?: components["schemas"]["SensorReadingRow"][];
+            /**
+             * Format: date-time
+             * @description Oldest instant still kept by the retention
+             */
+            readings_from?: string;
+            next_cursor?: string | null;
+        };
+        /** @enum {string} */
+        SensorDiscrepancyKind: "occupied_unexpected" | "absent";
+        SensorsReportTotals: {
+            /** Format: int64 */
+            records: number;
+            /** Format: int64 */
+            nights_compared?: number;
+            /** Format: int64 */
+            occupied_unexpected?: number;
+            /** Format: int64 */
+            absent?: number;
+            /** Format: int64 */
+            resources_with_discrepancy?: number;
+            /**
+             * Format: int64
+             * @description Share of compared nights with a non-unknown physical state
+             */
+            coverage_bp?: number | null;
+        };
+        SensorsReportGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["SensorsReportTotals"];
+        };
+        SensorsReportRecord: {
+            night: components["schemas"]["IsoDate"];
+            map_id?: string;
+            map_name?: string;
+            resource_type: components["schemas"]["SensorResourceType"];
+            resource_id: string;
+            resource_code: string;
+            from_cm?: components["schemas"]["Cm"];
+            to_cm?: components["schemas"]["Cm"];
+            contractual: components["schemas"]["SensorContractual"];
+            presence?: string;
+            physical: components["schemas"]["SensorPhysicalState"];
+            kind: components["schemas"]["SensorDiscrepancyKind"];
+            alert_ids: string[];
+            ref: components["schemas"]["ReportRef"];
+        };
+        SensorsReport: components["schemas"]["ReportEnvelope"] & {
+            /** @enum {string} */
+            view: "discrepancies";
+            totals: components["schemas"]["SensorsReportTotals"];
+            groups: components["schemas"]["SensorsReportGroup"][];
+            records: components["schemas"]["SensorsReportRecord"][];
+        };
+        /** @description Text per language; it is the source language, en optional */
+        ProfileText: {
+            it?: string;
+            en?: string;
+        };
+        ProfileAddress: {
+            street?: string;
+            postal_code?: string;
+            city?: string;
+            province?: string;
+            /** @description ISO 3166-1 alpha-2 */
+            country?: string;
+        };
+        ProfileHours: {
+            /** @description 1 = Monday */
+            weekday: number;
+            from: string;
+            to: string;
+        };
+        /** @enum {string} */
+        ProfileWind: "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
+        /** @enum {string} */
+        ProfileSeabed: "sand" | "mud" | "rock" | "weed" | "mixed" | "other";
+        ProfileFuel: {
+            petrol?: boolean;
+            diesel?: boolean;
+            hours?: components["schemas"]["ProfileText"];
+        };
+        /** @description Typed services; booleans default false */
+        ProfileServices: {
+            water?: boolean;
+            power_amps?: (16 | 32 | 63 | 125)[];
+            fuel?: components["schemas"]["ProfileFuel"];
+            wifi?: boolean;
+            toilets?: boolean;
+            showers?: boolean;
+            laundry?: boolean;
+            pump_out?: boolean;
+            waste?: boolean;
+            /** Format: int64 */
+            travel_lift_kg?: number;
+            /** Format: int64 */
+            crane_kg?: number;
+            slipway?: boolean;
+            yard?: boolean;
+            storage?: boolean;
+            rental?: boolean;
+            parking?: boolean;
+            restaurant?: boolean;
+            shops?: boolean;
+            transport?: boolean;
+        };
+        ProfilePhoto: {
+            file_id: string;
+            alt?: components["schemas"]["ProfileText"];
+            sort?: number;
+        };
+        /** @description An uploaded, re-encoded photo (not yet referenced by the profile) */
+        ProfilePhotoFile: {
+            file_id: string;
+            /** @enum {string} */
+            content_type: "image/jpeg" | "image/png";
+            width: number;
+            height: number;
+            /** Format: int64 */
+            size_bytes: number;
+        };
+        /** @description Point of interest on the simplified map, in map coordinates */
+        ProfilePoi: {
+            /** @enum {string} */
+            kind: "entrance" | "fuel" | "office" | "pump_out";
+            x_cm: components["schemas"]["Cm"];
+            y_cm: components["schemas"]["Cm"];
+        };
+        MarinaProfileInput: {
+            /** @description Subset of the marina locales; it is always included */
+            locales?: components["schemas"]["Locale"][];
+            /**
+             * Format: int64
+             * @description WGS84 latitude x 10^7
+             */
+            entrance_lat_e7?: number;
+            /**
+             * Format: int64
+             * @description WGS84 longitude x 10^7
+             */
+            entrance_lon_e7?: number;
+            address?: components["schemas"]["ProfileAddress"];
+            phone?: string;
+            email?: string;
+            /** @description https only */
+            website?: string;
+            vhf_channels?: number[];
+            office_hours?: components["schemas"]["ProfileHours"][];
+            dock_hours?: components["schemas"]["ProfileHours"][];
+            hours_note?: components["schemas"]["ProfileText"];
+            berths_total_override?: number;
+            transit_berths_override?: number;
+            max_loa_cm?: components["schemas"]["Cm"];
+            depth_entrance_cm?: components["schemas"]["Cm"];
+            depth_quay_cm?: components["schemas"]["Cm"];
+            depth_min_cm?: components["schemas"]["Cm"];
+            depth_max_cm?: components["schemas"]["Cm"];
+            seabed?: components["schemas"]["ProfileSeabed"];
+            shelter?: components["schemas"]["ProfileWind"][];
+            access_notes?: components["schemas"]["ProfileText"];
+            access_images?: components["schemas"]["ProfilePhoto"][];
+            lights?: components["schemas"]["ProfileText"];
+            services?: components["schemas"]["ProfileServices"];
+            photos?: components["schemas"]["ProfilePhoto"][];
+            show_map?: boolean;
+            map_id?: string;
+            show_prices?: boolean;
+            show_occupancy?: boolean;
+            occupancy_categories?: string[];
+            poi?: components["schemas"]["ProfilePoi"][];
+            description?: components["schemas"]["ProfileText"];
+        };
+        MarinaProfile: components["schemas"]["MarinaProfileInput"] & {
+            published: boolean;
+            /** Format: date-time */
+            published_at?: string;
+            /** @description Override, else the active berths */
+            berths_total: number;
+            /** @description Override, else the transit-only or online-sellable berths */
+            transit_berths: number;
+            /** @description An active transit list publishes its matrix (publish_matrix) */
+            prices_available: boolean;
+            /** @description What publishing still needs (position, contact, name) */
+            missing?: string[];
+            public_url: string;
+            /** Format: date-time */
+            updated_at?: string;
+            /** Format: int64 */
+            version: number;
+        };
+        PublicPhoto: {
+            url: string;
+            alt: string;
+        };
+        PublicProfileHours: {
+            weekday: number;
+            from: string;
+            to: string;
+        };
+        PublicProfile: {
+            slug: string;
+            name: string;
+            lang: components["schemas"]["Locale"];
+            locales: components["schemas"]["Locale"][];
+            description?: string;
+            /** Format: int64 */
+            entrance_lat_e7?: number;
+            /** Format: int64 */
+            entrance_lon_e7?: number;
+            /** @description Exact decimal degrees from the e7 integer */
+            latitude?: string;
+            longitude?: string;
+            address?: components["schemas"]["ProfileAddress"];
+            phone?: string;
+            email?: string;
+            website?: string;
+            vhf_channels?: number[];
+            office_hours?: components["schemas"]["PublicProfileHours"][];
+            dock_hours?: components["schemas"]["PublicProfileHours"][];
+            hours_note?: string;
+            berths_total?: number;
+            transit_berths?: number;
+            max_loa_cm?: components["schemas"]["Cm"];
+            depth_entrance_cm?: components["schemas"]["Cm"];
+            depth_quay_cm?: components["schemas"]["Cm"];
+            depth_min_cm?: components["schemas"]["Cm"];
+            depth_max_cm?: components["schemas"]["Cm"];
+            seabed?: components["schemas"]["ProfileSeabed"];
+            shelter?: components["schemas"]["ProfileWind"][];
+            access_notes?: string;
+            access_images?: components["schemas"]["PublicPhoto"][];
+            lights?: string;
+            services?: components["schemas"]["ProfileServices"];
+            fuel_hours?: string;
+            photos?: components["schemas"]["PublicPhoto"][];
+            sections: {
+                map: boolean;
+                prices: boolean;
+                occupancy: boolean;
+            };
+            /** @description /b/{slug}, only when online booking is enabled */
+            booking_url?: string;
+            page_url: string;
+            /** Format: int64 */
+            version: number;
+        };
+        MarinaProfilePreview: {
+            profile: components["schemas"]["PublicProfile"];
+            /** @description The JSON-LD Marina/Place object the page would embed */
+            json_ld: {
+                [key: string]: unknown;
+            };
+        };
+        /** @description [x_cm, y_cm], rounded to 10 cm */
+        SimplePoint: number[];
+        SimpleShape: {
+            points: components["schemas"]["SimplePoint"][];
+            closed?: boolean;
+            width_cm?: components["schemas"]["Cm"];
+            /** @description Berth category code (berths only) */
+            category?: string;
+        };
+        PublicProfileMap: {
+            min_x_cm: components["schemas"]["Cm"];
+            min_y_cm: components["schemas"]["Cm"];
+            max_x_cm: components["schemas"]["Cm"];
+            max_y_cm: components["schemas"]["Cm"];
+            structures: components["schemas"]["SimpleShape"][];
+            berths: components["schemas"]["SimpleShape"][];
+            areas: components["schemas"]["SimpleShape"][];
+            land: components["schemas"]["SimpleShape"][];
+            poi: components["schemas"]["ProfilePoi"][];
+            /** Format: int64 */
+            version: number;
+        };
+        PublicPriceRow: {
+            key: string;
+            label: string;
+            max_loa_cm?: components["schemas"]["Cm"];
+            max_beam_cm?: components["schemas"]["Cm"];
+        };
+        PublicPriceColumn: {
+            key: string;
+            label: string;
+            arrival: components["schemas"]["IsoDate"];
+            departure: components["schemas"]["IsoDate"];
+        };
+        PublicPriceCell: {
+            row: number;
+            col: number;
+            total_cents?: components["schemas"]["Cents"];
+            unit?: components["schemas"]["TimeUnit"];
+        };
+        PublicPriceMatrix: {
+            quoted_on: components["schemas"]["IsoDate"];
+            currency: string;
+            price_includes_vat: boolean;
+            rows: components["schemas"]["PublicPriceRow"][];
+            columns: components["schemas"]["PublicPriceColumn"][];
+            cells: components["schemas"]["PublicPriceCell"][];
+        };
+        PublicOccupancyCategory: {
+            code: string;
+            name: components["schemas"]["I18nText"];
+            free_berths: number;
+            total_berths: number;
+        };
+        PublicOccupancy: {
+            /**
+             * Format: date-time
+             * @description Now truncated to 5 minutes
+             */
+            as_of: string;
+            night: components["schemas"]["IsoDate"];
+            categories: components["schemas"]["PublicOccupancyCategory"][];
+        };
     };
     responses: {
         /** @description A domain rule refused the request (m4-plan §7.4: insurance_required, customer_email_missing, paper_scan_required, shares_invalid, table_incomplete, transfer_requirements, template_invalid, template_limits, otp_invalid, vessel_not_in_fleet, provider_unknown, fit_blocked, no_price, ...), a validation failure, or an idempotency key was reused */
@@ -23161,6 +24498,24 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description A sensor rule refused the request (m12-plan §13: segment_overlap, invalid_sensor_resource, alert_action_not_allowed, consent_required, ...), a validation failure, or an idempotency key was reused */
+        SensorUnprocessable: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
+        /** @description The profile cannot be saved or published (profile_incomplete with the missing fields, photo_invalid), or a validation failure */
+        ProfileUnprocessable: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
     };
     parameters: {
         ChargeId: string;
@@ -23211,6 +24566,12 @@ export interface components {
         MarinaId: string;
         UserId: string;
         EndpointId: string;
+        SensorDeviceId: string;
+        SensorGatewayId: string;
+        SensorSourceId: string;
+        SensorAlertId: string;
+        /** @description An ETag of a previous response; a match is 304 */
+        IfNoneMatch: string;
         Cursor: string;
         Limit: number;
         /** @description Single-use first-run token of the desktop window (never in the URL) */
@@ -47326,6 +48687,1282 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    ingestSensorReadings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description po_sns_<kid> or po_gw_<kid> (HMAC mode) */
+                "Porto-Key"?: string;
+                /** @description t=<unix seconds>,v1=<hex>[,v1=<hex>] (HMAC mode) */
+                "Porto-Signature"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SensorReadingBatch"];
+            };
+        };
+        responses: {
+            /** @description Per-item results */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorIngestResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            /** @description ingest_unauthorized, or ingest_timestamp_out_of_range with Porto-Server-Time */
+            401: {
+                headers: {
+                    "Porto-Server-Time"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    listSensorDevices: {
+        parameters: {
+            query?: {
+                map_id?: string;
+                resource_type?: components["schemas"]["SensorResourceType"];
+                resource_id?: string;
+                health?: components["schemas"]["SensorHealth"];
+                active?: boolean;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorDeviceList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createSensorDevice: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SensorDeviceInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorDeviceWithKey"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["SensorUnprocessable"];
+        };
+    };
+    getSensorDevice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorDeviceId: components["parameters"]["SensorDeviceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorDevice"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateSensorDevice: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorDeviceId: components["parameters"]["SensorDeviceId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SensorDevicePatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorDevice"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["SensorUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    rotateSensorDeviceKey: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorDeviceId: components["parameters"]["SensorDeviceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SensorKeyRotateInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorDeviceWithKey"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["SensorUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    revokeSensorDeviceKey: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorDeviceId: components["parameters"]["SensorDeviceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorDevice"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getSensorDeviceHistory: {
+        parameters: {
+            query?: {
+                /** @description Default 7 days before to; range at most 31 days */
+                from?: components["schemas"]["IsoDate"];
+                /** @description Default today */
+                to?: components["schemas"]["IsoDate"];
+                include_readings?: boolean;
+                cursor?: components["parameters"]["Cursor"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorDeviceId: components["parameters"]["SensorDeviceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorHistory"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["SensorUnprocessable"];
+        };
+    };
+    listSensorGateways: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorGatewayList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createSensorGateway: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SensorGatewayInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorGatewayWithKey"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["SensorUnprocessable"];
+        };
+    };
+    updateSensorGateway: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorGatewayId: components["parameters"]["SensorGatewayId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SensorGatewayPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorGateway"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["SensorUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    rotateSensorGatewayKey: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorGatewayId: components["parameters"]["SensorGatewayId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SensorKeyRotateInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorGatewayWithKey"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["SensorUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    revokeSensorGatewayKey: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorGatewayId: components["parameters"]["SensorGatewayId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorGateway"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listSensorSources: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorSourceList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createSensorSource: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SensorSourceInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorSource"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["SensorUnprocessable"];
+        };
+    };
+    updateSensorSource: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorSourceId: components["parameters"]["SensorSourceId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SensorSourcePatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorSource"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["SensorUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    pollSensorSourceNow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorSourceId: components["parameters"]["SensorSourceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorSourcePollResult"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    getSensorSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    putSensorSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SensorSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorSettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["SensorUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getSensorMap: {
+        parameters: {
+            query?: {
+                map_id?: string;
+                /** @description A past night: physical state at 02:00 local from the history, health omitted */
+                date?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorMap"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listSensorAlerts: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["SensorAlertStatus"];
+                kind?: components["schemas"]["SensorAlertKind"];
+                map_id?: string;
+                device_id?: string;
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorAlertList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getSensorAlert: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorAlertId: components["parameters"]["SensorAlertId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorAlert"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    actOnSensorAlert: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                sensorAlertId: components["parameters"]["SensorAlertId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SensorAlertActionInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorAlert"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["SensorUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getSensorHistory: {
+        parameters: {
+            query?: {
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing: 400) */
+                resource_type?: components["schemas"]["SensorResourceType"];
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing: 400) */
+                resource_id?: string;
+                /** @description Default 7 days before to; range at most 31 days */
+                from?: components["schemas"]["IsoDate"];
+                /** @description Default today */
+                to?: components["schemas"]["IsoDate"];
+                include_readings?: boolean;
+                cursor?: components["parameters"]["Cursor"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorHistory"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["SensorUnprocessable"];
+        };
+    };
+    getSensorsReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                /** @description Default discrepancies */
+                view?: "discrepancies";
+                group_by?: "resource" | "map" | "group" | "kind" | "night" | "week" | "month";
+                map_id?: string;
+                group_id?: string;
+                kind?: components["schemas"]["SensorDiscrepancyKind"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SensorsReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    getMarinaProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarinaProfile"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    putMarinaProfile: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarinaProfileInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarinaProfile"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["ProfileUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    publishMarinaProfile: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarinaProfile"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["ProfileUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    unpublishMarinaProfile: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarinaProfile"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    previewMarinaProfile: {
+        parameters: {
+            query?: {
+                lang?: components["schemas"]["Locale"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarinaProfilePreview"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    uploadProfilePhoto: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "image/jpeg": string;
+                "image/png": string;
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfilePhotoFile"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+            422: components["responses"]["ProfileUnprocessable"];
+        };
+    };
+    getProfilePhoto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "image/png": string;
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    deleteProfilePhoto: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarinaProfile"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            412: components["responses"]["PreconditionFailed"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getPublicProfile: {
+        parameters: {
+            query?: {
+                lang?: components["schemas"]["Locale"];
+            };
+            header?: {
+                /** @description An ETag of a previous response; a match is 304 */
+                "If-None-Match"?: components["parameters"]["IfNoneMatch"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicProfile"];
+                };
+            };
+            /** @description Not modified */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getPublicProfileMap: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description An ETag of a previous response; a match is 304 */
+                "If-None-Match"?: components["parameters"]["IfNoneMatch"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicProfileMap"];
+                };
+            };
+            /** @description Not modified */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getPublicProfilePrices: {
+        parameters: {
+            query?: {
+                lang?: components["schemas"]["Locale"];
+            };
+            header?: {
+                /** @description An ETag of a previous response; a match is 304 */
+                "If-None-Match"?: components["parameters"]["IfNoneMatch"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicPriceMatrix"];
+                };
+            };
+            /** @description Not modified */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getPublicOccupancy: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description An ETag of a previous response; a match is 304 */
+                "If-None-Match"?: components["parameters"]["IfNoneMatch"];
+            };
+            path: {
+                slug: components["parameters"]["Slug"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicOccupancy"];
+                };
+            };
+            /** @description Not modified */
+            304: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getPublicProfilePhoto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: components["parameters"]["Slug"];
+                fileId: components["parameters"]["FileId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "image/png": string;
+                };
+            };
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
         };
     };
 }

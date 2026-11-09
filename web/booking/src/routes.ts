@@ -1,8 +1,9 @@
 // Routes of the booking SPA (m4-plan §8.1, m8-plan §12). The SPA has no router: the path picks the page. M4 adds
 // the customer magic-link pages under /b/{slug}/m/{purpose}/{token} (quote acceptance, renewal proposal, signing,
 // unsubscribe); M5 the pay page; M8 the booking return page /b/{slug}/r/{bookingId} (tokens in the fragment), the
-// customer area /b/{slug}/account and its login link /b/{slug}/a (token in the fragment). Everything else is the
-// public marina page, which hosts the booking flow (steps as URL hashes).
+// customer area /b/{slug}/account and its login link /b/{slug}/a (token in the fragment); M12 the public marina
+// profile /p/{slug} (served by Go with an injected head, m12-plan §12.3). Everything else is the public marina
+// page, which hosts the booking flow (steps as URL hashes).
 
 export const LINK_PURPOSES = ['quote', 'renewal', 'signature', 'unsubscribe'] as const;
 export type LinkPurpose = (typeof LINK_PURPOSES)[number];
@@ -13,7 +14,8 @@ export type BookingRoute =
   | { page: 'pay'; slug: string; token: string; ret: boolean }
   | { page: 'return'; slug: string; bookingId: string }
   | { page: 'account'; slug: string; contractId: string | null }
-  | { page: 'accountLink'; slug: string };
+  | { page: 'accountLink'; slug: string }
+  | { page: 'profile'; slug: string };
 
 const SLUG = '([a-z0-9-]{3,63})';
 const LINK = new RegExp(`^/b/${SLUG}/m/([a-z]+)/([A-Za-z0-9_-]{16,128})/?$`);
@@ -23,12 +25,16 @@ const PAY = new RegExp(`^/b/${SLUG}/pay/([A-Za-z0-9_-]{16,128})(/return)?/?$`);
 const RETURN = new RegExp(`^/b/${SLUG}/r/([A-Za-z0-9-]{8,64})/?$`);
 const ACCOUNT = new RegExp(`^/b/${SLUG}/account(?:/([A-Za-z0-9-]{8,64}))?/?$`);
 const ACCOUNT_LINK = new RegExp(`^/b/${SLUG}/a/?$`);
+// M12 (m12-plan §12.3): the public marina profile.
+const PROFILE = new RegExp(`^/p/${SLUG}/?$`);
 
 /** Resolves a pathname to a booking page. Unknown link purposes fall back to the marina page. */
 export function routeFromPath(
   pathname: string,
   marinaSlug: (p: string) => string | null,
 ): BookingRoute {
+  const profile = PROFILE.exec(pathname);
+  if (profile) return { page: 'profile', slug: profile[1] ?? '' };
   const pay = PAY.exec(pathname);
   if (pay) return { page: 'pay', slug: pay[1] ?? '', token: pay[2] ?? '', ret: Boolean(pay[3]) };
   const ret = RETURN.exec(pathname);

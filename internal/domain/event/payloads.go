@@ -732,6 +732,51 @@ type RentalData struct {
 	EntityID  string `json:"entity_id,omitempty"`
 }
 
+// SensorStateChangedData is the data of sensor.state_changed (M12, public): a confirmed physical change of a
+// device. ResourceIDs repeats ResourceID so the SSE message carries resource_ids like the occupancy events (map
+// invalidation); FromCm/ToCm are set for dynamic-area segments. From and To are occupied, free or unknown; Reason
+// is readings, duration, silence or device_moved.
+type SensorStateChangedData struct {
+	DeviceID     string   `json:"device_id"`
+	ResourceType string   `json:"resource_type"`
+	ResourceID   string   `json:"resource_id"`
+	ResourceIDs  []string `json:"resource_ids"`
+	MapID        string   `json:"map_id"`
+	FromCm       *int64   `json:"from_cm,omitempty"`
+	ToCm         *int64   `json:"to_cm,omitempty"`
+	From         string   `json:"from"`
+	To           string   `json:"to"`
+	At           string   `json:"at"`
+	Reason       string   `json:"reason"`
+}
+
+// SensorAnomalyData is the data of sensor.anomaly (M12, public): an alert opened, decided or resolved.
+type SensorAnomalyData struct {
+	AlertID      string   `json:"alert_id"`
+	Kind         string   `json:"kind"`
+	Status       string   `json:"status"`
+	DeviceID     string   `json:"device_id"`
+	ResourceType string   `json:"resource_type"`
+	ResourceIDs  []string `json:"resource_ids"`
+	MapID        string   `json:"map_id"`
+}
+
+// SensorChangedData is the data of sensor.changed (M12, internal): a device, gateway, source or the settings
+// changed. Change is created, updated, key_rotated, key_revoked, deactivated or settings.
+type SensorChangedData struct {
+	DeviceID  string `json:"device_id,omitempty"`
+	GatewayID string `json:"gateway_id,omitempty"`
+	SourceID  string `json:"source_id,omitempty"`
+	MapID     string `json:"map_id,omitempty"`
+	Change    string `json:"change"`
+}
+
+// ProfileChangedData is the data of profile.changed (M12, internal): updated, published, unpublished or photo.
+type ProfileChangedData struct {
+	MarinaID string `json:"marina_id"`
+	Change   string `json:"change"`
+}
+
 const sampleID = "01900000-0000-7000-8000-000000000000"
 
 // Samples returns one example payload per event type.
@@ -902,5 +947,16 @@ func Samples() map[string]any {
 		RentalCancelled:  RentalData{BookingID: sampleID, UnitID: sampleID, Status: "cancelled", Change: "hold_expired", StartsOn: night.String(), EndsOn: night.String()},
 		RentalCheckedOut: RentalData{BookingID: sampleID, UnitID: sampleID, Status: "checked_out", StartsOn: night.String(), EndsOn: night.String()},
 		RentalReturned:   RentalData{BookingID: sampleID, UnitID: sampleID, Status: "returned", StartsOn: night.String(), EndsOn: night.String()},
+		// M12
+		SensorStateChanged: SensorStateChangedData{
+			DeviceID: sampleID, ResourceType: "berth", ResourceID: sampleID, ResourceIDs: ids, MapID: sampleID,
+			From: "free", To: "occupied", At: "2027-07-01T08:30:00Z", Reason: "readings",
+		},
+		SensorAnomaly: SensorAnomalyData{
+			AlertID: sampleID, Kind: "unexpected_occupied", Status: "open", DeviceID: sampleID, ResourceType: "berth",
+			ResourceIDs: ids, MapID: sampleID,
+		},
+		SensorChanged:  SensorChangedData{DeviceID: sampleID, MapID: sampleID, Change: "key_rotated"},
+		ProfileChanged: ProfileChangedData{MarinaID: sampleID, Change: "published"},
 	}
 }

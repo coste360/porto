@@ -8,6 +8,48 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M12 "Sensori e scheda pubblica" (spec 24, 25, 9.2, 10.6, 12.5, 23, 27, 30, m12-plan, ADR 0017):
+
+- Sensor devices (berth, segment `[from_cm, to_cm)` of a linear area, or pedestal socket) with model, firmware, map
+  position, battery, signal and last contact; gateways and polled sources (`ext.SensorSource`, fake source in dev,
+  demo and tests only); sensor settings per marina (`harbor.configure`, If-Match).
+- Device and gateway keys (`po_sns_…`, `po_gw_…`) from `crypto/rand`, shown once, stored as a SHA-256
+  hash plus an encrypted HMAC verifier, rotation with a grace period, revoke; a restore under another
+  `PORTO_SECRET_KEY` needs re-keying (INV-105).
+- Ingestion `POST /api/ingest/v1/readings`: batches up to 500 readings / 256 KiB signed with `Porto-Key` and
+  `Porto-Signature` (HMAC-SHA256, ±300 s) or a gateway bearer key over HTTPS; the marina comes from the key, never
+  the payload (INV-102); idempotent on `(device_id, observed_at)` (INV-101); per-item results; rate limits per
+  device key, gateway key and IP prefix. Protocol for vendors in `docs/sensor-protocol.md`.
+- Pure hysteresis (occupied/free/unknown after N agreeing readings or T minutes, default 2 or 5 min), silence to
+  `unknown`, reset on move; physical state changes in `sensor_state_changes` with `sensor.state_changed` in the
+  same transaction. Raw readings kept `PORTO_SENSOR_RAW_RETENTION` (default 30 days) and excluded from backup.
+- Reconciliation (pure rules R1–R8, job `sensors.reconcile` woken by ingestion): unexpected occupied, transit
+  arrival proposal, annual vessel away (automatic presence out only when the marina enables it), release proposal
+  where `release_policy = with_consent`, return detected, early return over a resold berth, silent or low-battery
+  sensor proposing a maintenance task. Alerts are proposals: contracts and occupancy change only on an operator
+  confirmation through the existing services (INV-100, INV-104).
+- *Sensori* map context (lens, legend, markers, quick card) updated live by SSE `sensor.changed` without personal
+  data; alerts inbox and the dock "Avvisi" tab on the phone; per-berth and per-device physical history (physical
+  night = majority of 22:00–06:00); report `sensors` (discrepancies) with CSV/Excel export; day-view anomaly
+  `sensor_discrepancy`.
+- Marina profile edited in the panel (position WGS84, contacts, VHF, hours, features, depths, services, photos
+  re-encoded without metadata, it/en) and published on `/p/{slug}` next to the booking page: simplified map without
+  codes or occupancy, transit price matrix of the list flagged `publish_matrix`, aggregate free berths per category
+  when enabled (never which berths or vessels), booking button, JSON-LD `Marina`/`Place`, canonical and hreflang;
+  public APIs cacheable, rate limited and cookie-free (INV-103). Nothing is sent to external directories.
+- API: tags `sensors`, `sensors-ingest`, `profile`, `profile-public`; events `sensor.state_changed`,
+  `sensor.anomaly`, `sensor.changed`, `profile.changed`; jobs `sensors.poll`, `sensors.silence`,
+  `sensors.retention`, `sensors.reconcile`. Migrations `00026_sensors`, `00027_marina_profile` (SQLite and
+  PostgreSQL).
+- Demo seed: a gateway, the fake source, 40 berth devices on the largest pier, 2 segment devices and 1 pedestal
+  device with a back-dated history and 6 h of readings, an alert of every kind, one automatic presence, one silent
+  device and one at 12 % battery; a published demo profile with photos, POIs, aggregate occupancy and the transit
+  price matrix (the demo price list now sets `publish_matrix`).
+- Load acceptance: 1,000 simulated sensors with one reading per minute each on SQLite stay well within 2 s from
+  accepted reading to SSE and to a fresh operational view (`TestAcceptance_M12_SensorLoad`).
+- Not in M12: a reference hardware partner (open decision), MQTT/LoRaWAN code in the core, automatic release
+  without confirmation.
+
 M11 "Noleggio" (spec 19, 20, 21, 29.2, m11-plan, ADR 0016):
 
 - Rental fleet: units linked to registry vessels (category, seats, licence requirement never/always/threshold on
@@ -551,6 +593,8 @@ M0 — Fondamenta (spec 32.3):
 - Documentation: `docs/architecture.md`, `CONTRIBUTING.md`, invariants INV-72 and INV-73.
 
 ### Changed
+
+- Licence: Business Source License 1.1 with an Additional Use Grant for marinas, berthing points, boatyards and dry-storage facilities operated directly, converting to AGPL-3.0-or-later three years after each release (decision D2); README rewritten for the public release with screenshots in `docs/screenshots/`.
 
 Polish after M10 (demo review):
 

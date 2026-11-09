@@ -37,6 +37,13 @@ func OfferedEvents(contractKind string) []string {
 	return []string{EventArrived, EventDeparted}
 }
 
+// Presence sources (presences.source): staff for every user and API record, sensor for the automatic presences of
+// the M12 reconciliation (RecordSensorTx); customer is reserved.
+const (
+	SourceStaff  = "staff"
+	SourceSensor = "sensor"
+)
+
 // Vessel presence states (vessel_presence.state).
 const (
 	StateInPort = "in_port"

@@ -17,6 +17,8 @@ const GLYPH_PATHS: Readonly<Record<GlyphId, string>> = {
   bolt: 'M58 4 L16 56 H44 L36 96 L84 40 H54 Z',
   drop: 'M50 4 C50 4 16 46 16 64 A34 34 0 0 0 84 64 C84 46 50 4 50 4 Z',
   alert: 'M50 4 L96 92 H4 Z M44 34 V64 H56 V34 Z M44 72 V84 H56 V72 Z',
+  antenna:
+    'M44 44 H56 V96 H44 Z M50 26 A12 12 0 1 0 50.1 26 Z M22 16 L30 24 A28 28 0 0 0 30 64 L22 72 A40 40 0 0 1 22 16 Z M78 16 L70 24 A28 28 0 0 1 70 64 L78 72 A40 40 0 0 0 78 16 Z',
 };
 
 export const GLYPH_IDS = Object.keys(GLYPH_PATHS) as GlyphId[];

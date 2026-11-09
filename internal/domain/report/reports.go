@@ -610,7 +610,16 @@ func (r *run) runPresences(q Params) (*PresencesResult, calc.Facts, error) {
 			ContractKind: e.ContractKind, BerthCode: e.BerthCode,
 		})
 	}
-	vs, err := store.ReportVessels(r.ctx, r.tx, r.scope(), vids)
+	rels, err := store.ReportReleases(r.ctx, r.tx, r.scope(), store.ReportFilter{From: q.From, To: q.To})
+	if err != nil {
+		return nil, nil, err
+	}
+	// One name load for the annual vessels and the vessels of the releases (the query budget of the report).
+	names := append([]string(nil), vids...)
+	for _, rl := range rels {
+		names = append(names, rl.VesselID)
+	}
+	vs, err := store.ReportVessels(r.ctx, r.tx, r.scope(), names)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -626,10 +635,6 @@ func (r *run) runPresences(q Params) (*PresencesResult, calc.Facts, error) {
 			ID: c.ID, Number: contractCode(c.Kind, c.Year, c.Number),
 			VesselID: c.VesselID, VesselName: vname[c.VesselID], StartsOn: c.StartsOn, EndsOn: c.EndsOn,
 		})
-	}
-	rels, err := store.ReportReleases(r.ctx, r.tx, r.scope(), store.ReportFilter{From: q.From, To: q.To})
-	if err != nil {
-		return nil, nil, err
 	}
 	var resold []string
 	for _, rl := range rels {
@@ -661,24 +666,10 @@ func (r *run) runPresences(q Params) (*PresencesResult, calc.Facts, error) {
 	for _, x := range res {
 		code[x.ID] = x.Code
 	}
-	relVessels := map[string]string{}
-	if len(rels) > 0 {
-		var ids []string
-		for _, rl := range rels {
-			ids = append(ids, rl.VesselID)
-		}
-		vs, err := store.ReportVessels(r.ctx, r.tx, r.scope(), ids)
-		if err != nil {
-			return nil, nil, err
-		}
-		for _, v := range vs {
-			relVessels[v.ID] = v.Name
-		}
-	}
 	for _, rl := range rels {
 		ri := calc.ReleaseInfo{
 			ID: rl.ID, ContractID: rl.ContractID, ContractNumber: contractCode(rl.ContractKind, rl.ContractYear, rl.ContractNumber),
-			VesselName: relVessels[rl.VesselID], BerthCode: code[rl.ResourceID], From: rl.FromNight, To: rl.ToNight,
+			VesselName: vname[rl.VesselID], BerthCode: code[rl.ResourceID], From: rl.FromNight, To: rl.ToNight,
 			Credit: money.Cents(rl.CreditCents), ResoldNights: nightsOf[rl.ResoldAllocationID],
 		}
 		if a := resaleOf[rl.ResoldAllocationID]; a != nil && calc.Qualifying(a.ContractKind, a.ContractStatus) {

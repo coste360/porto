@@ -4,14 +4,17 @@ import { describe, expect, it } from 'vitest';
 import { MARINA_ID, makeMe, meRoute, renderApp } from '../test/renderApp';
 
 describe('AppShell', () => {
-  it('shows only the allowed sections and the future modules disabled', async () => {
+  it('shows only the allowed sections and no future module after M12', async () => {
     renderApp(`/m/${MARINA_ID}`, [meRoute(makeMe({}, ['marina.read', 'devices.pair_self']))]);
     expect(await screen.findByRole('link', { name: 'Panoramica' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Dispositivi' })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Team' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Registro attività' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Mappe' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Sensori di occupazione' })).toBeDisabled();
+    expect(
+      screen.queryByRole('button', { name: 'Sensori di occupazione' }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Sensori' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Cantiere' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Rimessaggio' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Addebiti e pagamenti' })).not.toBeInTheDocument();

@@ -191,6 +191,14 @@ tags:
     description: Rental planner, availability, bookings on 30-minute slots, holds and blocks (M11, spec 19.3)
   - name: rental-handover
     description: Rental check-out and check-in, identity, contract signature, deposit, damages, quick cash, PDFs (M11, spec 19.4-19.5)
+  - name: sensors
+    description: Occupancy sensors - devices, gateways, polled sources, keys, settings, map context, alerts, history (M12, spec 24)
+  - name: sensors-ingest
+    description: Ingestion of sensor readings signed with device or gateway keys (M12, spec 24.3; docs/sensor-protocol.md)
+  - name: profile
+    description: Public marina profile draft, publication and photos (M12, spec 25)
+  - name: profile-public
+    description: Published marina profile, simplified map, transit prices and aggregate occupancy (M12, spec 25, 24.5)
 
 paths:
   /healthz:
@@ -19360,6 +19368,1027 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "422": { $ref: "#/components/responses/ReportUnprocessable" }
 
+
+  # ---------------------------------------------------------------------------------------------------------------
+  # M12 sensors (spec 24; m12-plan §3-§10, §13). The ingestion surface /api/ingest/v1 authenticates with the device
+  # or gateway key of docs/sensor-protocol.md (checked by the handler: security is empty for the router, the
+  # documented schemes are sensorHmac and gatewayBearer). The marina always comes from the key, never from the body
+  # (INV-102). Admin reads need map.view, configuration writes harbor.configure (D18).
+  # ---------------------------------------------------------------------------------------------------------------
+  /api/ingest/v1/readings:
+    post:
+      tags: [sensors-ingest]
+      operationId: ingestSensorReadings
+      summary: >-
+        Post a batch of 1..500 occupancy readings signed with a device or gateway key (per-item results, idempotent on
+        device_id and observed_at)
+      description: >-
+        Authentication (handler): `Porto-Key` + `Porto-Signature: t=<unix>,v1=<hex>` (HMAC-SHA256 of
+        "v1\n<t>\nPOST\n/api/ingest/v1/readings\n<hex sha256 of the body>" with the full key, |now - t| <= 300 s;
+        devices must sign) or `Authorization: Bearer po_gw_<kid>_<secret>` (gateways only). Rate limits: 3,000 per
+        minute per IP prefix, 30 per minute per device key, 600 per minute per gateway key. See
+        docs/sensor-protocol.md (normative, with a test vector).
+      security: []
+      x-porto-max-body-bytes: 262144
+      parameters:
+        - { name: Porto-Key, in: header, required: false, schema: { type: string, maxLength: 40 }, description: "po_sns_<kid> or po_gw_<kid> (HMAC mode)" }
+        - { name: Porto-Signature, in: header, required: false, schema: { type: string, maxLength: 200 }, description: "t=<unix seconds>,v1=<hex>[,v1=<hex>] (HMAC mode)" }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorReadingBatch" }
+      responses:
+        "200":
+          description: Per-item results
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorIngestResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401":
+          description: ingest_unauthorized, or ingest_timestamp_out_of_range with Porto-Server-Time
+          headers:
+            Porto-Server-Time:
+              schema: { type: integer, format: int64 }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/Problem" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "503": { $ref: "#/components/responses/ServiceUnavailable" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/devices:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [sensors]
+      operationId: listSensorDevices
+      summary: Sensor devices with their health and physical state, by code (map.view)
+      security: *readSecurity
+      parameters:
+        - { name: map_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: resource_type, in: query, required: false, schema: { $ref: "#/components/schemas/SensorResourceType" } }
+        - { name: resource_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: health, in: query, required: false, schema: { $ref: "#/components/schemas/SensorHealth" } }
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorDeviceList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [sensors]
+      operationId: createSensorDevice
+      summary: >-
+        Register a device on a berth, a linear dynamic-area segment or a pedestal; the device key is in the response
+        once (Cache-Control no-store) (harbor.configure)
+      security: *writeSecurity
+      # The response carries a key shown once: the idempotency middleware must never store it (INV-105). The
+      # Idempotency-Key is accepted but nothing is stored: a retry of a committed create is refused by the unique
+      # code / external id (409), so the key is never returned twice.
+      x-porto-idempotency: domain
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorDeviceInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorDeviceWithKey" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorDeviceId"
+    get:
+      tags: [sensors]
+      operationId: getSensorDevice
+      summary: A sensor device (map.view)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorDevice" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [sensors]
+      operationId: updateSensorDevice
+      summary: >-
+        Update a device; a new resource or segment writes a state change to unknown (device_moved) and resets the
+        hysteresis (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorDevicePatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorDevice" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/rotate-key:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorDeviceId"
+    post:
+      tags: [sensors]
+      operationId: rotateSensorDeviceKey
+      summary: >-
+        Issue a new device key (returned once); the previous one keeps verifying for grace_hours (harbor.configure)
+      security: *writeSecurity
+      # The response carries a key shown once: never stored by the idempotency middleware (INV-105).
+      x-porto-idempotency: domain
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorKeyRotateInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorDeviceWithKey" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/revoke-key:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorDeviceId"
+    post:
+      tags: [sensors]
+      operationId: revokeSensorDeviceKey
+      summary: Revoke the current and previous device key; readings get 401 until a rotate (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorDevice" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/devices/{sensorDeviceId}/history:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorDeviceId"
+    get:
+      tags: [sensors]
+      operationId: getSensorDeviceHistory
+      summary: >-
+        Physical history of a device: state changes, alerts, night classification and raw readings within the
+        retention (map.view)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, description: "Default 7 days before to; range at most 31 days", schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, description: "Default today", schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: include_readings, in: query, required: false, schema: { type: boolean } }
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorHistory" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/gateways:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [sensors]
+      operationId: listSensorGateways
+      summary: Sensor gateways (harbor.configure)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorGatewayList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [sensors]
+      operationId: createSensorGateway
+      summary: Register a gateway; its key is in the response once (harbor.configure)
+      security: *writeSecurity
+      # The response carries a key shown once: the idempotency middleware must never store it (INV-105). The
+      # Idempotency-Key is accepted but nothing is stored: a retry of a committed create is refused by the unique
+      # code / external id (409), so the key is never returned twice.
+      x-porto-idempotency: domain
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorGatewayInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorGatewayWithKey" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorGatewayId"
+    patch:
+      tags: [sensors]
+      operationId: updateSensorGateway
+      summary: Update a gateway (name, kind, active) (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorGatewayPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorGateway" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/rotate-key:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorGatewayId"
+    post:
+      tags: [sensors]
+      operationId: rotateSensorGatewayKey
+      summary: Issue a new gateway key (returned once) with a grace period for the previous one (harbor.configure)
+      security: *writeSecurity
+      # The response carries a key shown once: never stored by the idempotency middleware (INV-105).
+      x-porto-idempotency: domain
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorKeyRotateInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorGatewayWithKey" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/gateways/{sensorGatewayId}/revoke-key:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorGatewayId"
+    post:
+      tags: [sensors]
+      operationId: revokeSensorGatewayKey
+      summary: Revoke the gateway keys (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorGateway" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/sources:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [sensors]
+      operationId: listSensorSources
+      summary: Polled sensor sources and the registered drivers with their config keys (harbor.configure)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorSourceList" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [sensors]
+      operationId: createSensorSource
+      summary: Configure a polled source of a registered driver; secret config values are write-only (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorSourceInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorSource" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/sources/{sensorSourceId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorSourceId"
+    patch:
+      tags: [sensors]
+      operationId: updateSensorSource
+      summary: Update a source; config replaces the stored values when present (harbor.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorSourcePatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorSource" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/sources/{sensorSourceId}/poll:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorSourceId"
+    post:
+      tags: [sensors]
+      operationId: pollSensorSourceNow
+      summary: Poll the source now, through the same ingest service as the job (harbor.configure)
+      security: *writeSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorSourcePollResult" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/settings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [sensors]
+      operationId: getSensorSettings
+      summary: Sensor settings (map.view; defaults when never saved, version 0)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [sensors]
+      operationId: putSensorSettings
+      summary: Save the sensor settings (harbor.configure; If-Match "0" for the first save)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorSettingsInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/map:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [sensors]
+      operationId: getSensorMap
+      summary: >-
+        Context Sensori of a map (default the first water map): physical state, health, expectation and discrepancy
+        per device, no vessel or customer data (map.view)
+      security: *readSecurity
+      parameters:
+        - { name: map_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: date, in: query, required: false, description: "A past night: physical state at 02:00 local from the history, health omitted", schema: { $ref: "#/components/schemas/IsoDate" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorMap" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/alerts:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [sensors]
+      operationId: listSensorAlerts
+      summary: Sensor alerts and proposals, newest first (map.view; default status open)
+      security: *readSecurity
+      parameters:
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/SensorAlertStatus" } }
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/SensorAlertKind" } }
+        - { name: map_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: device_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorAlertList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/alerts/{sensorAlertId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorAlertId"
+    get:
+      tags: [sensors]
+      operationId: getSensorAlert
+      summary: A sensor alert with the actions the principal may take (map.view)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorAlert" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/alerts/{sensorAlertId}/actions:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/SensorAlertId"
+    post:
+      tags: [sensors]
+      operationId: actOnSensorAlert
+      summary: >-
+        Decide an alert through the existing domain services: dismiss and confirm_arrival (presence.write),
+        confirm_release and revoke_release (occupancy.move), create_task (maintenance.manage or maintenance.report);
+        a condition that no longer holds is 409 alert_stale
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SensorAlertActionInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorAlert" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/sensors/history:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [sensors]
+      operationId: getSensorHistory
+      summary: >-
+        Physical history of a resource (berth, dynamic area, pedestal): state changes, alerts, contractual and
+        physical status per night, raw readings within the retention (map.view)
+      security: *readSecurity
+      parameters:
+        - { name: resource_type, in: query, required: false, description: "Required; optional in the contract only so that another marina is 404 first (missing: 400)", schema: { $ref: "#/components/schemas/SensorResourceType" } }
+        - { name: resource_id, in: query, required: false, description: "Required; optional in the contract only so that another marina is 404 first (missing: 400)", schema: { type: string, maxLength: 36 } }
+        - { name: from, in: query, required: false, description: "Default 7 days before to; range at most 31 days", schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, description: "Default today", schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: include_readings, in: query, required: false, schema: { type: boolean } }
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorHistory" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/SensorUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/sensors:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getSensorsReport
+      summary: >-
+        R-sensors: physical vs contractual discrepancies per resource and night (reports.operational or reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: view, in: query, required: false, schema: { type: string, enum: [discrepancies] }, description: "Default discrepancies" }
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [resource, map, group, kind, night, week, month] } }
+        - { name: map_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: group_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: kind, in: query, required: false, schema: { $ref: "#/components/schemas/SensorDiscrepancyKind" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SensorsReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
+  # ---------------------------------------------------------------------------------------------------------------
+  # M12 public marina profile (spec 25; m12-plan §11, §12). The panel edits the draft (marina.read to read,
+  # marina.configure to write); the public operations serve only a published profile (unpublished = unknown slug,
+  # 404), set no cookies and are cacheable (Cache-Control and ETag, If-None-Match -> 304). No personal data and no
+  # per-berth occupancy ever reach them (INV-103).
+  # ---------------------------------------------------------------------------------------------------------------
+  /api/admin/v1/marinas/{marinaId}/profile:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [profile]
+      operationId: getMarinaProfile
+      summary: The public profile draft with its computed figures (marina.read; defaults prefilled from the marina, version 0)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MarinaProfile" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [profile]
+      operationId: putMarinaProfile
+      summary: Save the profile (marina.configure; If-Match "0" for the first save); a published profile is republished at once
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MarinaProfileInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MarinaProfile" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/ProfileUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/profile/publish:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [profile]
+      operationId: publishMarinaProfile
+      summary: Publish the profile on /p/{slug} (marina.configure); missing position, contact or name is 422 profile_incomplete
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MarinaProfile" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/ProfileUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/profile/unpublish:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [profile]
+      operationId: unpublishMarinaProfile
+      summary: Withdraw the public profile; /p/{slug} and the public profile API answer 404 (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MarinaProfile" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/profile/preview:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [profile]
+      operationId: previewMarinaProfile
+      summary: >-
+        The public JSON and JSON-LD the draft would publish (marina.configure; Cache-Control no-store, used by
+        /p/{slug}?preview=1 with the panel session)
+      security: *readSecurity
+      parameters:
+        - { name: lang, in: query, required: false, schema: { $ref: "#/components/schemas/Locale" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MarinaProfilePreview" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/profile/photos:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [profile]
+      operationId: uploadProfilePhoto
+      summary: >-
+        Upload a photo (JPEG or PNG, at most 8 MiB, raw body): decoded and re-encoded without metadata, longest side
+        at most 2,400 px, stored encrypted; reference it from photos or access_images with a PUT (marina.configure)
+      security: *writeSecurity
+      x-porto-max-body-bytes: 8388608
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema: { type: string, format: binary }
+          image/png:
+            schema: { type: string, format: binary }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProfilePhotoFile" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/ProfileUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/profile/photos/{fileId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/FileId"
+    get:
+      tags: [profile]
+      operationId: getProfilePhoto
+      summary: The bytes of an uploaded profile photo, published or not (marina.read; preview and panel)
+      security: *readSecurity
+      responses:
+        "200":
+          description: Image
+          content:
+            image/jpeg:
+              schema: { type: string, format: binary }
+            image/png:
+              schema: { type: string, format: binary }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [profile]
+      operationId: deleteProfilePhoto
+      summary: Delete an uploaded photo and remove it from photos and access_images (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MarinaProfile" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/public/v1/{slug}/profile:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    get:
+      tags: [profile-public]
+      operationId: getPublicProfile
+      summary: Published marina profile in a language (Cache-Control public, max-age=300; ETag; 120/min per IP prefix)
+      security: []
+      parameters:
+        - { name: lang, in: query, required: false, schema: { $ref: "#/components/schemas/Locale" } }
+        - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PublicProfile" }
+        "304": { description: Not modified }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/profile/map:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    get:
+      tags: [profile-public]
+      operationId: getPublicProfileMap
+      summary: >-
+        Simplified harbour map without codes, occupancy, vessels or sensors (Cache-Control public, max-age=3600;
+        404 when the section is off)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PublicProfileMap" }
+        "304": { description: Not modified }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/profile/prices:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    get:
+      tags: [profile-public]
+      operationId: getPublicProfilePrices
+      summary: >-
+        Transit price matrix of the active list published with publish_matrix (Cache-Control public, max-age=3600;
+        404 when the section is off or no list publishes it)
+      security: []
+      parameters:
+        - { name: lang, in: query, required: false, schema: { $ref: "#/components/schemas/Locale" } }
+        - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PublicPriceMatrix" }
+        "304": { description: Not modified }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/occupancy:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+    get:
+      tags: [profile-public]
+      operationId: getPublicOccupancy
+      summary: >-
+        Aggregate free berths per published category tonight, never which berths or vessels (Cache-Control public,
+        max-age=60; 404 when the option is off)
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/IfNoneMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PublicOccupancy" }
+        "304": { description: Not modified }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
+  /api/public/v1/{slug}/profile/photos/{fileId}:
+    parameters:
+      - $ref: "#/components/parameters/Slug"
+      - $ref: "#/components/parameters/FileId"
+    get:
+      tags: [profile-public]
+      operationId: getPublicProfilePhoto
+      summary: >-
+        A photo referenced by the published profile (Cache-Control public, max-age=31536000, immutable; any other id
+        is 404)
+      security: []
+      responses:
+        "200":
+          description: Image
+          content:
+            image/jpeg:
+              schema: { type: string, format: binary }
+            image/png:
+              schema: { type: string, format: binary }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+
 components:
   securitySchemes:
     cookieAuth:
@@ -19400,6 +20429,18 @@ components:
       description: >-
         Per-launch cookie of the desktop remote proxy (M6b, HttpOnly, SameSite=Strict), obtained by the app window
         from a secret in the URL fragment; checked by the proxy only.
+    sensorHmac:
+      type: apiKey
+      in: header
+      name: Porto-Signature
+      description: >-
+        M12 ingestion (docs/sensor-protocol.md): Porto-Key (po_sns_<kid> or po_gw_<kid>) plus Porto-Signature
+        t=<unix>,v1=<hex HMAC-SHA256>, timestamp tolerance 300 s. Checked by the ingest handler, never by the router.
+    gatewayBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: po_gw_<kid>_<secret>
+      description: M12 ingestion by gateways that cannot sign (HTTPS only); checked by the ingest handler.
 
   headers:
     ETag:
@@ -19647,6 +20688,32 @@ components:
       in: path
       required: true
       schema: { type: string }
+    SensorDeviceId:
+      name: sensorDeviceId
+      in: path
+      required: true
+      schema: { type: string }
+    SensorGatewayId:
+      name: sensorGatewayId
+      in: path
+      required: true
+      schema: { type: string }
+    SensorSourceId:
+      name: sensorSourceId
+      in: path
+      required: true
+      schema: { type: string }
+    SensorAlertId:
+      name: sensorAlertId
+      in: path
+      required: true
+      schema: { type: string }
+    IfNoneMatch:
+      name: If-None-Match
+      in: header
+      required: false
+      description: An ETag of a previous response; a match is 304
+      schema: { type: string, maxLength: 200 }
     Cursor:
       name: cursor
       in: query
@@ -20218,6 +21285,21 @@ components:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
 
+    SensorUnprocessable:
+      description: >-
+        A sensor rule refused the request (m12-plan §13: segment_overlap, invalid_sensor_resource,
+        alert_action_not_allowed, consent_required, ...), a validation failure, or an idempotency key was reused
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    ProfileUnprocessable:
+      description: >-
+        The profile cannot be saved or published (profile_incomplete with the missing fields, photo_invalid), or a
+        validation failure
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+
   schemas:
     ProblemType:
       type: string
@@ -20388,6 +21470,16 @@ components:
         - equipment_capacity_exceeded
         - operator_not_enabled
         - outside_lift_window
+        - ingest_unauthorized
+        - ingest_timestamp_out_of_range
+        - invalid_payload
+        - segment_overlap
+        - resource_has_sensor
+        - invalid_sensor_resource
+        - alert_stale
+        - alert_action_not_allowed
+        - profile_incomplete
+        - photo_invalid
 
     FieldError:
       type: object
@@ -21609,6 +22701,7 @@ components:
           type: array
           items: { $ref: "#/components/schemas/Locale" }
         booking_enabled: { type: boolean }
+        profile_published: { type: boolean, description: "The public profile /p/{slug} is published (M12)" }
         embed_origins:
           description: >-
             Origins allowed to embed the booking page (marinas.allowed_embed_origins, M8); the SPA posts messages
@@ -29696,11 +30789,11 @@ components:
     ReportKey:
       description: >-
         Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from
-        M11.
+        M11, sensors from M12.
       type: string
       enum: [occupancy, efficiency, allocation-waste, lost-demand, customers, production, accruals, charges, payments,
              revenue-classes, comparison, receivables, presences, rights, cash, vessels, berth-revenue, storage,
-             maintenance, utilities, yard, rental]
+             maintenance, utilities, yard, rental, sensors]
 
     ReportFormat:
       description: json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
@@ -35877,3 +36970,852 @@ components:
             totals: { $ref: "#/components/schemas/RentalReportTotals" }
             groups: { type: array, items: { $ref: "#/components/schemas/RentalReportGroup" } }
             records: { type: array, items: { $ref: "#/components/schemas/RentalReportRecord" } }
+
+    # ---- M12 sensors (spec 24; m12-plan §3-§10) ----
+
+    SensorKind:
+      type: string
+      enum: [ultrasonic, radar, magnetometer, infrared, camera, other]
+
+    SensorResourceType:
+      description: What a device watches (berth, a [from_cm, to_cm) segment of a linear dynamic area, a pedestal)
+      type: string
+      enum: [berth, dynamic_area, pedestal]
+
+    SensorPhysicalState:
+      type: string
+      enum: [occupied, free, unknown]
+
+    SensorHealth:
+      type: string
+      enum: [ok, offline, battery_low, silent]
+
+    SensorKeyStatus:
+      description: >-
+        active, rotating (the previous key verifies until prev_valid_until), revoked, unusable (the verifier cannot
+        be decrypted with this instance's PORTO_SECRET_KEY, e.g. after a restore elsewhere: rotate to re-key)
+      type: string
+      enum: [active, rotating, revoked, unusable]
+
+    SensorExpectation:
+      type: string
+      enum: [occupied, free, either, none]
+
+    SensorStateChangeReason:
+      type: string
+      enum: [readings, duration, silence, device_moved]
+
+    SensorGatewayKind:
+      type: string
+      enum: [lorawan, nbiot, mqtt_bridge, other]
+
+    SensorAlertKind:
+      type: string
+      enum: [unexpected_occupied, transit_arrival, return_detected, release_proposal, early_return, device_silent, battery_low]
+
+    SensorAlertStatus:
+      type: string
+      enum: [open, confirmed, dismissed, resolved]
+
+    SensorAlertAction:
+      type: string
+      enum: [dismiss, confirm_arrival, confirm_release, revoke_release, create_task]
+
+    SensorIngestItemCode:
+      type: string
+      enum: [unknown_device, device_inactive, device_mismatch, device_not_bound, observed_in_future, observed_too_old,
+             invalid_state, invalid_value]
+
+    SensorReadingInput:
+      type: object
+      required: [device_id, observed_at, state]
+      properties:
+        device_id: { type: string, maxLength: 64, description: "The device's external_id (vendor id)" }
+        observed_at: { type: string, format: date-time, description: "RFC 3339 with offset; truncated to milliseconds" }
+        state: { type: string, maxLength: 16, description: "occupied, free or unknown (other values: item invalid_state)" }
+        distance_cm: { type: integer, format: int64, description: "0..10000" }
+        battery_pct: { type: integer, description: "0..100" }
+        rssi: { type: integer, description: "-200..0 dBm" }
+        firmware: { type: string, maxLength: 64 }
+
+    SensorReadingBatch:
+      type: object
+      required: [readings]
+      properties:
+        readings:
+          description: 1..500 readings (otherwise 400 invalid_payload); unknown fields are ignored
+          type: array
+          items: { $ref: "#/components/schemas/SensorReadingInput" }
+
+    SensorIngestRejected:
+      type: object
+      required: [index, code]
+      properties:
+        index: { type: integer }
+        device_id: { type: string }
+        code: { $ref: "#/components/schemas/SensorIngestItemCode" }
+
+    SensorIngestResult:
+      type: object
+      required: [accepted, duplicates, rejected, server_time]
+      properties:
+        accepted: { type: integer, description: "New readings stored (out-of-order ones included)" }
+        duplicates: { type: integer }
+        rejected: { type: array, items: { $ref: "#/components/schemas/SensorIngestRejected" } }
+        server_time: { type: string, format: date-time }
+
+    SensorDevice:
+      type: object
+      required: [id, external_id, code, kind, model, firmware, resource_type, resource_id, resource_code, map_id, x_cm,
+                 y_cm, key_status, active, physical, health, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        external_id: { type: string }
+        code: { type: string }
+        kind: { $ref: "#/components/schemas/SensorKind" }
+        model: { type: string }
+        firmware: { type: string }
+        resource_type: { $ref: "#/components/schemas/SensorResourceType" }
+        resource_id: { type: string }
+        resource_code: { type: string, description: "Code of the berth, dynamic area or pedestal" }
+        from_cm: { $ref: "#/components/schemas/Cm" }
+        to_cm: { $ref: "#/components/schemas/Cm" }
+        pedestal_socket: { type: string }
+        informational: { type: boolean, description: "Pedestal device with no single berth: map and history only, no rules" }
+        map_id: { type: string }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        gateway_id: { type: string }
+        source_id: { type: string }
+        key_id: { type: string, description: "Public key id (Porto-Key), never the secret" }
+        key_status: { $ref: "#/components/schemas/SensorKeyStatus" }
+        key_issued_at: { type: string, format: date-time }
+        prev_valid_until: { type: string, format: date-time }
+        active: { type: boolean }
+        physical: { $ref: "#/components/schemas/SensorPhysicalState" }
+        physical_since: { type: string, format: date-time }
+        health: { $ref: "#/components/schemas/SensorHealth" }
+        battery_pct: { type: integer }
+        rssi: { type: integer }
+        distance_cm: { $ref: "#/components/schemas/Cm" }
+        last_contact_at: { type: string, format: date-time }
+        last_observed_at: { type: string, format: date-time }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    SensorDeviceList:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/SensorDevice" } }
+        next_cursor: { type: [string, "null"] }
+
+    SensorDeviceInput:
+      type: object
+      required: [external_id, code, kind, resource_type, resource_id]
+      properties:
+        external_id: { type: string, minLength: 1, maxLength: 64, pattern: "^[A-Za-z0-9._:-]{1,64}$" }
+        code: { type: string, minLength: 1, maxLength: 32, pattern: "^[A-Z0-9_-]{1,32}$" }
+        kind: { $ref: "#/components/schemas/SensorKind" }
+        model: { type: string, maxLength: 64 }
+        firmware: { type: string, maxLength: 64 }
+        resource_type: { $ref: "#/components/schemas/SensorResourceType" }
+        resource_id: { type: string, maxLength: 36 }
+        from_cm: { $ref: "#/components/schemas/Cm" }
+        to_cm: { $ref: "#/components/schemas/Cm" }
+        pedestal_socket: { type: string, maxLength: 16 }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        gateway_id: { type: string, maxLength: 36, description: "At most one of gateway_id and source_id" }
+        source_id: { type: string, maxLength: 36 }
+
+    SensorBinding:
+      description: The ingestion path of a device; both absent = the device signs with its own key
+      type: object
+      properties:
+        gateway_id: { type: string, maxLength: 36 }
+        source_id: { type: string, maxLength: 36 }
+
+    SensorDevicePatch:
+      description: Absent fields are unchanged; resource_type, resource_id, from_cm, to_cm and pedestal_socket move together
+      type: object
+      properties:
+        code: { type: string, minLength: 1, maxLength: 32, pattern: "^[A-Z0-9_-]{1,32}$" }
+        kind: { $ref: "#/components/schemas/SensorKind" }
+        model: { type: string, maxLength: 64 }
+        firmware: { type: string, maxLength: 64 }
+        resource_type: { $ref: "#/components/schemas/SensorResourceType" }
+        resource_id: { type: string, maxLength: 36 }
+        from_cm: { $ref: "#/components/schemas/Cm" }
+        to_cm: { $ref: "#/components/schemas/Cm" }
+        pedestal_socket: { type: string, maxLength: 16 }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        binding: { $ref: "#/components/schemas/SensorBinding" }
+        active: { type: boolean }
+
+    SensorDeviceWithKey:
+      description: The device and its key, shown only in this response (Cache-Control no-store)
+      type: object
+      required: [device, key]
+      properties:
+        device: { $ref: "#/components/schemas/SensorDevice" }
+        key: { type: string, description: "po_sns_<kid>_<secret>: store it on the device, Porto keeps only a hash" }
+
+    SensorKeyRotateInput:
+      type: object
+      properties:
+        grace_hours: { type: integer, minimum: 0, maximum: 168, default: 24 }
+
+    SensorGateway:
+      type: object
+      required: [id, code, name, kind, key_status, active, device_count, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { type: string }
+        kind: { $ref: "#/components/schemas/SensorGatewayKind" }
+        key_id: { type: string }
+        key_status: { $ref: "#/components/schemas/SensorKeyStatus" }
+        key_issued_at: { type: string, format: date-time }
+        prev_valid_until: { type: string, format: date-time }
+        last_contact_at: { type: string, format: date-time }
+        active: { type: boolean }
+        device_count: { type: integer }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    SensorGatewayList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/SensorGateway" } }
+
+    SensorGatewayInput:
+      type: object
+      required: [code, name, kind]
+      properties:
+        code: { type: string, minLength: 1, maxLength: 32, pattern: "^[A-Z0-9_-]{1,32}$" }
+        name: { type: string, minLength: 1, maxLength: 80 }
+        kind: { $ref: "#/components/schemas/SensorGatewayKind" }
+
+    SensorGatewayPatch:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        kind: { $ref: "#/components/schemas/SensorGatewayKind" }
+        active: { type: boolean }
+
+    SensorGatewayWithKey:
+      type: object
+      required: [gateway, key]
+      properties:
+        gateway: { $ref: "#/components/schemas/SensorGateway" }
+        key: { type: string, description: "po_gw_<kid>_<secret>, shown only in this response" }
+
+    SensorSourceErrorCode:
+      type: string
+      enum: [timeout, auth, bad_response, unavailable]
+
+    SensorSource:
+      type: object
+      required: [id, code, name, config_set, config_public, poll_seconds, enabled, device_count, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        code: { type: string, description: "Code of the registered ext.SensorSource driver" }
+        name: { type: string }
+        config_set: { type: boolean }
+        config_public:
+          description: The non-secret config values the driver declares; secret values are never returned
+          type: object
+          additionalProperties: { type: string }
+        poll_seconds: { type: integer }
+        enabled: { type: boolean }
+        last_polled_at: { type: string, format: date-time }
+        last_error_code: { $ref: "#/components/schemas/SensorSourceErrorCode" }
+        device_count: { type: integer }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    SensorSourceDriver:
+      type: object
+      required: [code, public_keys, secret_keys]
+      properties:
+        code: { type: string }
+        public_keys: { type: array, items: { type: string } }
+        secret_keys: { type: array, items: { type: string } }
+
+    SensorSourceList:
+      type: object
+      required: [items, drivers]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/SensorSource" } }
+        drivers: { type: array, items: { $ref: "#/components/schemas/SensorSourceDriver" } }
+
+    SensorSourceInput:
+      type: object
+      required: [code, name]
+      properties:
+        code: { type: string, minLength: 1, maxLength: 64, pattern: "^[a-z0-9_-]+$" }
+        name: { type: string, minLength: 1, maxLength: 80 }
+        config:
+          type: object
+          additionalProperties: { type: string, maxLength: 2000 }
+        poll_seconds: { type: integer, minimum: 15, maximum: 3600, default: 60 }
+        enabled: { type: boolean, default: true }
+
+    SensorSourcePatch:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        config:
+          description: Replaces the stored config when present (write-only)
+          type: object
+          additionalProperties: { type: string, maxLength: 2000 }
+        poll_seconds: { type: integer, minimum: 15, maximum: 3600 }
+        enabled: { type: boolean }
+
+    SensorSourcePollResult:
+      type: object
+      required: [accepted, duplicates, rejected]
+      properties:
+        accepted: { type: integer }
+        duplicates: { type: integer }
+        rejected: { type: integer }
+        error_code: { $ref: "#/components/schemas/SensorSourceErrorCode" }
+
+    SensorSettingsInput:
+      type: object
+      required: [hysteresis_readings, hysteresis_minutes, offline_after_minutes, silent_alert_minutes, battery_low_pct,
+                 unexpected_after_minutes, departure_cutoff_minutes, presence_effect_enabled, presence_out_after_hours,
+                 release_proposal_after_days, release_proposal_nights]
+      properties:
+        hysteresis_readings: { type: integer, minimum: 1, maximum: 10 }
+        hysteresis_minutes: { type: integer, minimum: 1, maximum: 60 }
+        offline_after_minutes: { type: integer, minimum: 5, maximum: 1440 }
+        silent_alert_minutes: { type: integer, minimum: 30, maximum: 10080, description: "At least offline_after_minutes" }
+        battery_low_pct: { type: integer, minimum: 1, maximum: 90 }
+        unexpected_after_minutes: { type: integer, minimum: 0, maximum: 240 }
+        departure_cutoff_minutes: { type: integer, minimum: 0, maximum: 1439, description: "Local minute of the departure day until which a departing berth may still be occupied (720 = 12:00)" }
+        presence_effect_enabled: { type: boolean, description: "Automatic presence out/in for annual mooring contracts (24.4)" }
+        presence_out_after_hours: { type: integer, minimum: 1, maximum: 168 }
+        release_proposal_after_days: { type: integer, minimum: 1, maximum: 60 }
+        release_proposal_nights: { type: integer, minimum: 1, maximum: 60 }
+
+    SensorSettings:
+      allOf:
+        - $ref: "#/components/schemas/SensorSettingsInput"
+        - type: object
+          required: [raw_retention_days, version]
+          properties:
+            raw_retention_days: { type: integer, description: "PORTO_SENSOR_RAW_RETENTION of the instance (read-only)" }
+            version: { type: integer, format: int64 }
+
+    SensorMapEntry:
+      type: object
+      required: [device_id, code, resource_type, resource_id, x_cm, y_cm, physical, discrepancy, expectation, open_alerts]
+      properties:
+        device_id: { type: string }
+        code: { type: string }
+        resource_type: { $ref: "#/components/schemas/SensorResourceType" }
+        resource_id: { type: string }
+        from_cm: { $ref: "#/components/schemas/Cm" }
+        to_cm: { $ref: "#/components/schemas/Cm" }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+        physical: { $ref: "#/components/schemas/SensorPhysicalState" }
+        physical_since: { type: string, format: date-time }
+        health: { $ref: "#/components/schemas/SensorHealth" }
+        discrepancy: { type: boolean }
+        expectation: { $ref: "#/components/schemas/SensorExpectation" }
+        informational: { type: boolean }
+        open_alerts: { type: array, items: { $ref: "#/components/schemas/SensorAlertKind" } }
+
+    SensorMap:
+      type: object
+      required: [map_id, generated_at, entries]
+      properties:
+        map_id: { type: string }
+        date: { $ref: "#/components/schemas/IsoDate" }
+        generated_at: { type: string, format: date-time }
+        entries: { type: array, items: { $ref: "#/components/schemas/SensorMapEntry" } }
+
+    SensorAlertRefs:
+      description: Ids and enums only
+      type: object
+      properties:
+        allocation_id: { type: string }
+        contract_id: { type: string }
+        vessel_id: { type: string }
+        release_id: { type: string }
+        presence_id: { type: string }
+        resold: { type: boolean }
+        proposed_from: { $ref: "#/components/schemas/IsoDate" }
+        proposed_to: { $ref: "#/components/schemas/IsoDate" }
+        physical_since: { type: string, format: date-time }
+
+    SensorAlert:
+      type: object
+      required: [id, kind, status, device_id, device_code, resource_type, resource_id, resource_code, map_id, refs,
+                 opened_at, allowed_actions, version]
+      properties:
+        id: { type: string }
+        kind: { $ref: "#/components/schemas/SensorAlertKind" }
+        status: { $ref: "#/components/schemas/SensorAlertStatus" }
+        device_id: { type: string }
+        device_code: { type: string }
+        resource_type: { $ref: "#/components/schemas/SensorResourceType" }
+        resource_id: { type: string }
+        resource_code: { type: string }
+        map_id: { type: string }
+        refs: { $ref: "#/components/schemas/SensorAlertRefs" }
+        opened_at: { type: string, format: date-time }
+        cleared_at: { type: string, format: date-time }
+        decided_at: { type: string, format: date-time }
+        decided_by_user_id: { type: string }
+        outcome_ref: { type: string, description: "Id of the presence, release or maintenance task created on confirm" }
+        note: { type: string }
+        allowed_actions:
+          description: Actions valid for the kind and the principal's permissions (empty unless open)
+          type: array
+          items: { $ref: "#/components/schemas/SensorAlertAction" }
+        version: { type: integer, format: int64 }
+
+    SensorAlertList:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/SensorAlert" } }
+        next_cursor: { type: [string, "null"] }
+
+    SensorAlertActionInput:
+      type: object
+      required: [action]
+      properties:
+        action: { $ref: "#/components/schemas/SensorAlertAction" }
+        note: { type: string, maxLength: 500 }
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        consent_confirmed: { type: boolean, description: "Required true by confirm_release (422 consent_required)" }
+        priority: { type: string, enum: [low, normal, high, urgent] }
+
+    SensorStateChange:
+      type: object
+      required: [id, device_id, from, to, at, reason]
+      properties:
+        id: { type: string }
+        device_id: { type: string }
+        from: { $ref: "#/components/schemas/SensorPhysicalState" }
+        to: { $ref: "#/components/schemas/SensorPhysicalState" }
+        at: { type: string, format: date-time }
+        reason: { $ref: "#/components/schemas/SensorStateChangeReason" }
+
+    SensorReadingRow:
+      type: object
+      required: [device_id, observed_at, received_at, state]
+      properties:
+        device_id: { type: string }
+        observed_at: { type: string, format: date-time }
+        received_at: { type: string, format: date-time }
+        state: { $ref: "#/components/schemas/SensorPhysicalState" }
+        distance_cm: { $ref: "#/components/schemas/Cm" }
+        battery_pct: { type: integer }
+        rssi: { type: integer }
+
+    SensorContractual:
+      type: string
+      enum: [free, contract, transit, released, released_resold, block, maintenance]
+
+    SensorNight:
+      type: object
+      required: [night, contractual, physical]
+      properties:
+        night: { $ref: "#/components/schemas/IsoDate" }
+        contractual: { $ref: "#/components/schemas/SensorContractual" }
+        physical: { $ref: "#/components/schemas/SensorPhysicalState" }
+        presence: { type: string, description: "Vessel presence state at 02:00 when one vessel is expected" }
+        discrepancy: { type: boolean }
+
+    SensorHistory:
+      type: object
+      required: [resource_type, resource_id, from, to, state_at_from, changes, alerts, nights]
+      properties:
+        resource_type: { $ref: "#/components/schemas/SensorResourceType" }
+        resource_id: { type: string }
+        device_ids: { type: array, items: { type: string } }
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        state_at_from: { $ref: "#/components/schemas/SensorPhysicalState" }
+        changes: { type: array, items: { $ref: "#/components/schemas/SensorStateChange" } }
+        alerts: { type: array, items: { $ref: "#/components/schemas/SensorAlert" } }
+        nights: { type: array, items: { $ref: "#/components/schemas/SensorNight" } }
+        readings:
+          description: Raw readings, newest first (include_readings, only inside the retention, at most 10,000)
+          type: array
+          items: { $ref: "#/components/schemas/SensorReadingRow" }
+        readings_from: { type: string, format: date-time, description: "Oldest instant still kept by the retention" }
+        next_cursor: { type: [string, "null"] }
+
+    SensorDiscrepancyKind:
+      type: string
+      enum: [occupied_unexpected, absent]
+
+    SensorsReportTotals:
+      type: object
+      required: [records]
+      properties:
+        records: { type: integer, format: int64 }
+        nights_compared: { type: integer, format: int64 }
+        occupied_unexpected: { type: integer, format: int64 }
+        absent: { type: integer, format: int64 }
+        resources_with_discrepancy: { type: integer, format: int64 }
+        coverage_bp: { type: [integer, "null"], format: int64, description: "Share of compared nights with a non-unknown physical state" }
+
+    SensorsReportGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/SensorsReportTotals" }
+
+    SensorsReportRecord:
+      type: object
+      required: [night, resource_type, resource_id, resource_code, contractual, physical, kind, alert_ids, ref]
+      properties:
+        night: { $ref: "#/components/schemas/IsoDate" }
+        map_id: { type: string }
+        map_name: { type: string }
+        resource_type: { $ref: "#/components/schemas/SensorResourceType" }
+        resource_id: { type: string }
+        resource_code: { type: string }
+        from_cm: { $ref: "#/components/schemas/Cm" }
+        to_cm: { $ref: "#/components/schemas/Cm" }
+        contractual: { $ref: "#/components/schemas/SensorContractual" }
+        presence: { type: string }
+        physical: { $ref: "#/components/schemas/SensorPhysicalState" }
+        kind: { $ref: "#/components/schemas/SensorDiscrepancyKind" }
+        alert_ids: { type: array, items: { type: string } }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    SensorsReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [view, totals, groups, records]
+          properties:
+            view: { type: string, enum: [discrepancies] }
+            totals: { $ref: "#/components/schemas/SensorsReportTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/SensorsReportGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/SensorsReportRecord" } }
+
+    # ---- M12 public marina profile (spec 25; m12-plan §11, §12) ----
+
+    ProfileText:
+      description: Text per language; it is the source language, en optional
+      type: object
+      properties:
+        it: { type: string, maxLength: 2000 }
+        en: { type: string, maxLength: 2000 }
+
+    ProfileAddress:
+      type: object
+      properties:
+        street: { type: string, maxLength: 200 }
+        postal_code: { type: string, maxLength: 16 }
+        city: { type: string, maxLength: 100 }
+        province: { type: string, maxLength: 8 }
+        country: { type: string, maxLength: 2, description: ISO 3166-1 alpha-2 }
+
+    ProfileHours:
+      type: object
+      required: [weekday, from, to]
+      properties:
+        weekday: { type: integer, minimum: 1, maximum: 7, description: "1 = Monday" }
+        from: { type: string, pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$" }
+        to: { type: string, pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$|^24:00$" }
+
+    ProfileWind:
+      type: string
+      enum: [N, NE, E, SE, S, SW, W, NW]
+
+    ProfileSeabed:
+      type: string
+      enum: [sand, mud, rock, weed, mixed, other]
+
+    ProfileFuel:
+      type: object
+      properties:
+        petrol: { type: boolean }
+        diesel: { type: boolean }
+        hours: { $ref: "#/components/schemas/ProfileText" }
+
+    ProfileServices:
+      description: Typed services; booleans default false
+      type: object
+      properties:
+        water: { type: boolean }
+        power_amps:
+          type: array
+          items: { type: integer, enum: [16, 32, 63, 125] }
+        fuel: { $ref: "#/components/schemas/ProfileFuel" }
+        wifi: { type: boolean }
+        toilets: { type: boolean }
+        showers: { type: boolean }
+        laundry: { type: boolean }
+        pump_out: { type: boolean }
+        waste: { type: boolean }
+        travel_lift_kg: { type: integer, format: int64, minimum: 0 }
+        crane_kg: { type: integer, format: int64, minimum: 0 }
+        slipway: { type: boolean }
+        yard: { type: boolean }
+        storage: { type: boolean }
+        rental: { type: boolean }
+        parking: { type: boolean }
+        restaurant: { type: boolean }
+        shops: { type: boolean }
+        transport: { type: boolean }
+
+    ProfilePhoto:
+      type: object
+      required: [file_id]
+      properties:
+        file_id: { type: string, maxLength: 36 }
+        alt: { $ref: "#/components/schemas/ProfileText" }
+        sort: { type: integer }
+
+    ProfilePhotoFile:
+      description: An uploaded, re-encoded photo (not yet referenced by the profile)
+      type: object
+      required: [file_id, content_type, width, height, size_bytes]
+      properties:
+        file_id: { type: string }
+        content_type: { type: string, enum: [image/jpeg, image/png] }
+        width: { type: integer }
+        height: { type: integer }
+        size_bytes: { type: integer, format: int64 }
+
+    ProfilePoi:
+      description: Point of interest on the simplified map, in map coordinates
+      type: object
+      required: [kind, x_cm, y_cm]
+      properties:
+        kind: { type: string, enum: [entrance, fuel, office, pump_out] }
+        x_cm: { $ref: "#/components/schemas/Cm" }
+        y_cm: { $ref: "#/components/schemas/Cm" }
+
+    MarinaProfileInput:
+      type: object
+      properties:
+        locales: { type: array, items: { $ref: "#/components/schemas/Locale" }, description: "Subset of the marina locales; it is always included" }
+        entrance_lat_e7: { type: integer, format: int64, minimum: -900000000, maximum: 900000000, description: "WGS84 latitude x 10^7" }
+        entrance_lon_e7: { type: integer, format: int64, minimum: -1800000000, maximum: 1800000000, description: "WGS84 longitude x 10^7" }
+        address: { $ref: "#/components/schemas/ProfileAddress" }
+        phone: { type: string, maxLength: 40 }
+        email: { type: string, maxLength: 254 }
+        website: { type: string, maxLength: 300, description: "https only" }
+        vhf_channels:
+          type: array
+          maxItems: 4
+          items: { type: integer, minimum: 1, maximum: 88 }
+        office_hours: { type: array, maxItems: 21, items: { $ref: "#/components/schemas/ProfileHours" } }
+        dock_hours: { type: array, maxItems: 21, items: { $ref: "#/components/schemas/ProfileHours" } }
+        hours_note: { $ref: "#/components/schemas/ProfileText" }
+        berths_total_override: { type: integer, minimum: 0 }
+        transit_berths_override: { type: integer, minimum: 0 }
+        max_loa_cm: { $ref: "#/components/schemas/Cm" }
+        depth_entrance_cm: { $ref: "#/components/schemas/Cm" }
+        depth_quay_cm: { $ref: "#/components/schemas/Cm" }
+        depth_min_cm: { $ref: "#/components/schemas/Cm" }
+        depth_max_cm: { $ref: "#/components/schemas/Cm" }
+        seabed: { $ref: "#/components/schemas/ProfileSeabed" }
+        shelter: { type: array, maxItems: 8, items: { $ref: "#/components/schemas/ProfileWind" } }
+        access_notes: { $ref: "#/components/schemas/ProfileText" }
+        access_images: { type: array, maxItems: 4, items: { $ref: "#/components/schemas/ProfilePhoto" } }
+        lights: { $ref: "#/components/schemas/ProfileText" }
+        services: { $ref: "#/components/schemas/ProfileServices" }
+        photos: { type: array, maxItems: 12, items: { $ref: "#/components/schemas/ProfilePhoto" } }
+        show_map: { type: boolean }
+        map_id: { type: string, maxLength: 36 }
+        show_prices: { type: boolean }
+        show_occupancy: { type: boolean }
+        occupancy_categories: { type: array, maxItems: 20, items: { type: string, maxLength: 32 } }
+        poi: { type: array, maxItems: 16, items: { $ref: "#/components/schemas/ProfilePoi" } }
+        description: { $ref: "#/components/schemas/ProfileText" }
+
+    MarinaProfile:
+      allOf:
+        - $ref: "#/components/schemas/MarinaProfileInput"
+        - type: object
+          required: [published, berths_total, transit_berths, prices_available, public_url, version]
+          properties:
+            published: { type: boolean }
+            published_at: { type: string, format: date-time }
+            berths_total: { type: integer, description: "Override, else the active berths" }
+            transit_berths: { type: integer, description: "Override, else the transit-only or online-sellable berths" }
+            prices_available: { type: boolean, description: "An active transit list publishes its matrix (publish_matrix)" }
+            missing: { type: array, items: { type: string }, description: "What publishing still needs (position, contact, name)" }
+            public_url: { type: string }
+            updated_at: { type: string, format: date-time }
+            version: { type: integer, format: int64 }
+
+    PublicPhoto:
+      type: object
+      required: [url, alt]
+      properties:
+        url: { type: string }
+        alt: { type: string }
+
+    PublicProfileHours:
+      type: object
+      required: [weekday, from, to]
+      properties:
+        weekday: { type: integer }
+        from: { type: string }
+        to: { type: string }
+
+    PublicProfile:
+      type: object
+      required: [slug, name, lang, locales, page_url, sections, version]
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        lang: { $ref: "#/components/schemas/Locale" }
+        locales: { type: array, items: { $ref: "#/components/schemas/Locale" } }
+        description: { type: string }
+        entrance_lat_e7: { type: integer, format: int64 }
+        entrance_lon_e7: { type: integer, format: int64 }
+        latitude: { type: string, description: "Exact decimal degrees from the e7 integer" }
+        longitude: { type: string }
+        address: { $ref: "#/components/schemas/ProfileAddress" }
+        phone: { type: string }
+        email: { type: string }
+        website: { type: string }
+        vhf_channels: { type: array, items: { type: integer } }
+        office_hours: { type: array, items: { $ref: "#/components/schemas/PublicProfileHours" } }
+        dock_hours: { type: array, items: { $ref: "#/components/schemas/PublicProfileHours" } }
+        hours_note: { type: string }
+        berths_total: { type: integer }
+        transit_berths: { type: integer }
+        max_loa_cm: { $ref: "#/components/schemas/Cm" }
+        depth_entrance_cm: { $ref: "#/components/schemas/Cm" }
+        depth_quay_cm: { $ref: "#/components/schemas/Cm" }
+        depth_min_cm: { $ref: "#/components/schemas/Cm" }
+        depth_max_cm: { $ref: "#/components/schemas/Cm" }
+        seabed: { $ref: "#/components/schemas/ProfileSeabed" }
+        shelter: { type: array, items: { $ref: "#/components/schemas/ProfileWind" } }
+        access_notes: { type: string }
+        access_images: { type: array, items: { $ref: "#/components/schemas/PublicPhoto" } }
+        lights: { type: string }
+        services: { $ref: "#/components/schemas/ProfileServices" }
+        fuel_hours: { type: string }
+        photos: { type: array, items: { $ref: "#/components/schemas/PublicPhoto" } }
+        sections:
+          type: object
+          required: [map, prices, occupancy]
+          properties:
+            map: { type: boolean }
+            prices: { type: boolean }
+            occupancy: { type: boolean }
+        booking_url: { type: string, description: "/b/{slug}, only when online booking is enabled" }
+        page_url: { type: string }
+        version: { type: integer, format: int64 }
+
+    MarinaProfilePreview:
+      type: object
+      required: [profile, json_ld]
+      properties:
+        profile: { $ref: "#/components/schemas/PublicProfile" }
+        json_ld:
+          description: The JSON-LD Marina/Place object the page would embed
+          type: object
+          additionalProperties: true
+
+    SimplePoint:
+      description: "[x_cm, y_cm], rounded to 10 cm"
+      type: array
+      minItems: 2
+      maxItems: 2
+      items: { type: integer, format: int64 }
+
+    SimpleShape:
+      type: object
+      required: [points]
+      properties:
+        points: { type: array, maxItems: 32, items: { $ref: "#/components/schemas/SimplePoint" } }
+        closed: { type: boolean }
+        width_cm: { $ref: "#/components/schemas/Cm" }
+        category: { type: string, description: "Berth category code (berths only)" }
+
+    PublicProfileMap:
+      type: object
+      required: [min_x_cm, min_y_cm, max_x_cm, max_y_cm, structures, berths, areas, land, poi, version]
+      properties:
+        min_x_cm: { $ref: "#/components/schemas/Cm" }
+        min_y_cm: { $ref: "#/components/schemas/Cm" }
+        max_x_cm: { $ref: "#/components/schemas/Cm" }
+        max_y_cm: { $ref: "#/components/schemas/Cm" }
+        structures: { type: array, items: { $ref: "#/components/schemas/SimpleShape" } }
+        berths: { type: array, items: { $ref: "#/components/schemas/SimpleShape" } }
+        areas: { type: array, items: { $ref: "#/components/schemas/SimpleShape" } }
+        land: { type: array, items: { $ref: "#/components/schemas/SimpleShape" } }
+        poi: { type: array, items: { $ref: "#/components/schemas/ProfilePoi" } }
+        version: { type: integer, format: int64 }
+
+    PublicPriceRow:
+      type: object
+      required: [key, label]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        max_loa_cm: { $ref: "#/components/schemas/Cm" }
+        max_beam_cm: { $ref: "#/components/schemas/Cm" }
+
+    PublicPriceColumn:
+      type: object
+      required: [key, label, arrival, departure]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        arrival: { $ref: "#/components/schemas/IsoDate" }
+        departure: { $ref: "#/components/schemas/IsoDate" }
+
+    PublicPriceCell:
+      type: object
+      required: [row, col]
+      properties:
+        row: { type: integer }
+        col: { type: integer }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        unit: { $ref: "#/components/schemas/TimeUnit" }
+
+    PublicPriceMatrix:
+      type: object
+      required: [quoted_on, currency, price_includes_vat, rows, columns, cells]
+      properties:
+        quoted_on: { $ref: "#/components/schemas/IsoDate" }
+        currency: { type: string }
+        price_includes_vat: { type: boolean }
+        rows: { type: array, items: { $ref: "#/components/schemas/PublicPriceRow" } }
+        columns: { type: array, items: { $ref: "#/components/schemas/PublicPriceColumn" } }
+        cells: { type: array, items: { $ref: "#/components/schemas/PublicPriceCell" } }
+
+    PublicOccupancyCategory:
+      type: object
+      required: [code, name, free_berths, total_berths]
+      properties:
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        free_berths: { type: integer }
+        total_berths: { type: integer }
+
+    PublicOccupancy:
+      type: object
+      required: [as_of, night, categories]
+      properties:
+        as_of: { type: string, format: date-time, description: "Now truncated to 5 minutes" }
+        night: { $ref: "#/components/schemas/IsoDate" }
+        categories: { type: array, items: { $ref: "#/components/schemas/PublicOccupancyCategory" } }

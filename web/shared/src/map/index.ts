@@ -27,3 +27,4 @@ export { LensFill, lensLod, LENS_FILL_PX, LENS_FULL_PX, type LensLod } from './e
 export { Vessel } from './elements/Vessel';
 export { DragGhost, type DragGhostProps, type GhostState } from './elements/DragGhost';
 export { GlyphIcon, GLYPH_IDS } from './elements/Glyphs';
+export { MARKER_PX, type MapMarker } from './elements/Markers';

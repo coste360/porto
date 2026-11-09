@@ -32,7 +32,8 @@
     "rental": "Rental",
     "storage": "Dry storage",
     "maintenance": "Maintenance",
-    "utilities": "Utilities and consumption"
+    "utilities": "Utilities and consumption",
+    "sensors": "Sensors: discrepancies"
   },
   "export": {
     "csv": "Export CSV",
@@ -305,7 +306,18 @@
     "deposit_status": "Deposit status",
     "deposit_cents": "Deposit",
     "released_cents": "Released",
-    "outstanding_cents": "Outstanding"
+    "outstanding_cents": "Outstanding",
+    "map_name": "Map",
+    "contractual": "Contractual status",
+    "presence": "Presence at 02:00",
+    "physical": "Physical state",
+    "from_cm": "From",
+    "to_cm": "To",
+    "occupied_unexpected": "Unexpected occupied",
+    "absent": "Absent",
+    "resources_with_discrepancy": "Resources with discrepancies",
+    "nights_compared": "Nights compared",
+    "coverage_bp": "Sensor coverage"
   },
   "descriptions": {
     "occupancy": "Occupied over available nights, physical or contractual, for berths, land and dynamic areas.",
@@ -329,7 +341,8 @@
     "maintenance": "Maintenance tasks by status, delays, internal minutes and external costs.",
     "utilities": "Power, water and counter consumption: to charge, charged and unassigned.",
     "yard": "Hours worked, employee workload, work order margins and lifting equipment of the yard.",
-    "rental": "Fleet utilisation, revenue by unit and formula, damages and deposits of rentals (a deposit is not revenue until it is retained)."
+    "rental": "Fleet utilisation, revenue by unit and formula, damages and deposits of rentals (a deposit is not revenue until it is retained).",
+    "sensors": "Nights when the physical state detected by the sensors does not match the contractual one: unexpected occupations and absences. Codes only, no names."
   },
   "groupBy": {
     "resource": "Resource",
@@ -434,6 +447,9 @@
       "revenue": "Revenue",
       "damages": "Damages",
       "deposits": "Deposits"
+    },
+    "sensors": {
+      "discrepancies": "Discrepancies"
     }
   },
   "filters": {
@@ -728,6 +744,35 @@
       "retained": "Retained",
       "partially_retained": "Partially retained",
       "waived": "Waived"
+    },
+    "sensorDiscrepancy": {
+      "occupied_unexpected": "Unexpected occupied",
+      "absent": "Absent"
+    },
+    "sensorContractual": {
+      "free": "Free",
+      "contract": "Contract",
+      "transit": "Transit",
+      "released": "Released",
+      "released_resold": "Released and resold",
+      "block": "Block",
+      "maintenance": "Maintenance"
+    },
+    "sensorPhysical": {
+      "occupied": "Occupied",
+      "free": "Free",
+      "unknown": "Unknown"
+    },
+    "sensorResourceType": {
+      "berth": "Berth",
+      "dynamic_area": "Area segment",
+      "pedestal": "Pedestal"
+    },
+    "presenceState": {
+      "in_port": "In port",
+      "out": "Out",
+      "ashore": "Ashore",
+      "yard": "In the yard"
     }
   },
   "suggestions": {

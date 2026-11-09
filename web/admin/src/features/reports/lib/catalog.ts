@@ -1067,6 +1067,45 @@ export const REPORTS: readonly ReportDef[] = [
       }
     },
   },
+  // M12 (m12-plan §10.3): physical vs contractual discrepancies per (resource, night), view discrepancies; codes only
+  // (never vessel names), the drill links to the berth history. Operational: reports.operational is enough.
+  {
+    key: 'sensors',
+    group: 'operational',
+    needsAll: false,
+    sectionParam: 'view',
+    sections: ['discrepancies'],
+    groupBy: ['resource', 'map', 'group', 'kind', 'night', 'week', 'month'],
+    filters: ['kind'],
+    dims: true,
+    filterValues: {
+      kind: {
+        values: ['occupied_unexpected', 'absent'],
+        group: vg('reports', 'values.sensorDiscrepancy'),
+      },
+    },
+    totals: [
+      t('records', 'int'),
+      t('occupied_unexpected', 'int'),
+      t('absent', 'int'),
+      t('resources_with_discrepancy', 'int'),
+      t('nights_compared', 'int'),
+      t('coverage_bp', 'bp'),
+    ],
+    chart: t('records', 'int'),
+    columns: () => [
+      c('night', 'date'),
+      c('map_name', 'text'),
+      c('resource_code', 'text'),
+      en('resource_type', vg('reports', 'values.sensorResourceType')),
+      c('from_cm', 'cm'),
+      c('to_cm', 'cm'),
+      en('contractual', vg('reports', 'values.sensorContractual')),
+      en('presence', vg('reports', 'values.presenceState')),
+      en('physical', vg('reports', 'values.sensorPhysical')),
+      { ...en('kind', vg('reports', 'values.sensorDiscrepancy')), total: 'records' },
+    ],
+  },
 ];
 
 /** The values and their translation group of a filter in a report (report-specific values first). */

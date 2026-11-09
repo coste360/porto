@@ -77,6 +77,10 @@ var (
 		// M11 (00023_rental_fleet, 00024_rental_bookings)
 		"rental_skippers.active", "rental_formulas.active", "rental_extras.active", "rental_bookings.invoice_requested",
 		"rental_bookings.allow_outside_hours",
+		// M12 (00026_sensors, 00027_marina_profile)
+		"sensor_settings.presence_effect_enabled", "sensor_gateways.active", "sensor_sources.enabled",
+		"sensor_devices.active", "marina_profiles.published", "marina_profiles.show_map", "marina_profiles.show_prices",
+		"marina_profiles.show_occupancy",
 	}
 	sqliteJSONColumns = []string{
 		"organizations.billing_address", "marinas.locales", "marinas.contacts", "marinas.address", "marinas.geo",
@@ -128,6 +132,12 @@ var (
 		"rental_settings.bands", "rental_settings.checklist", "rental_settings.deposit_modes", "rental_formulas.name",
 		"rental_formulas.categories", "rental_extras.categories", "rental_bookings.price_snapshot",
 		"rental_handovers.checklist",
+		// M12 (00026_sensors, 00027_marina_profile)
+		"sensor_alerts.refs", "marina_profiles.locales", "marina_profiles.address", "marina_profiles.vhf_channels",
+		"marina_profiles.office_hours", "marina_profiles.dock_hours", "marina_profiles.hours_note",
+		"marina_profiles.shelter", "marina_profiles.access_notes", "marina_profiles.access_images",
+		"marina_profiles.lights", "marina_profiles.services", "marina_profiles.photos",
+		"marina_profiles.occupancy_categories", "marina_profiles.poi", "marina_profiles.description",
 	}
 )
 
@@ -279,6 +289,11 @@ var dumpOrder = map[string]string{
 	"rental_slots":           "unit_id, date, slot",
 	"rental_skipper_slots":   "skipper_id, date, slot",
 	"rental_booking_charges": "booking_id, charge_id",
+	// M12
+	"sensor_settings":      "marina_id",
+	"sensor_device_states": "device_id",
+	"sensor_readings":      "device_id, observed_at",
+	"marina_profiles":      "marina_id",
 }
 
 // DumpTable calls fn with every row of table (ordered by id, or by its primary key when it has no id), converted

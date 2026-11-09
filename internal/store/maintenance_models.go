@@ -19,6 +19,9 @@ const (
 	ElementLandResource = "land_resource"
 	ElementPedestal     = "pedestal"
 	ElementEquipment    = "equipment"
+	// ElementSensor is a sensor device (M12, 00026): tasks of silent or low-battery devices, created only by the
+	// confirm action of a sensor alert (maintenance.CreateSensorTaskTx). Plans never target it.
+	ElementSensor = "sensor"
 
 	PeriodMonths    = "months"
 	PeriodCycles    = "cycles"
@@ -33,6 +36,7 @@ const (
 	TaskSourcePlan   = "plan"
 	TaskSourceOffice = "office"
 	TaskSourceReport = "report"
+	TaskSourceSensor = "sensor" // M12: confirmed sensor alert (device_silent, battery_low)
 
 	// DeadlineSourceMaintenanceTask is deadlines.source_type of a maintenance task (kind maintenance_due).
 	DeadlineSourceMaintenanceTask = "maintenance_task"

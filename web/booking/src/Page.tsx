@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 
 import { BookingPage } from './BookingPage';
+import { ProfileLink } from './profile/ProfileLink';
 import type { BookingRoute } from './routes';
 
 // Lazy chunks (m8-plan §12.1 budget): the entry carries only the marina page shell; the booking flow (inside
@@ -12,6 +13,8 @@ const AccountLinkPage = lazy(() =>
   import('./account').then((m) => ({ default: m.AccountLinkPage })),
 );
 const ReturnPage = lazy(() => import('./booking/ReturnPage'));
+// M12 (m12-plan §12.3): the public profile is its own lazy chunk (the booking first-load budget is unchanged).
+const ProfilePage = lazy(() => import('./profile').then((m) => ({ default: m.ProfilePage })));
 
 export function Page({ route }: { route: BookingRoute }) {
   switch (route.page) {
@@ -25,7 +28,15 @@ export function Page({ route }: { route: BookingRoute }) {
       return <AccountPage slug={route.slug} contractId={route.contractId} />;
     case 'accountLink':
       return <AccountLinkPage slug={route.slug} />;
+    case 'profile':
+      return <ProfilePage slug={route.slug} />;
     default:
-      return <BookingPage slug={route.slug} />;
+      // M12: the "Scheda del porto" link when the marina publishes its profile (only the link is in the entry).
+      return (
+        <>
+          <BookingPage slug={route.slug} />
+          <ProfileLink slug={route.slug} />
+        </>
+      );
   }
 }

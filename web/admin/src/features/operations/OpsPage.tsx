@@ -20,6 +20,7 @@ import {
   useMapRights,
   useMaps,
   useOccupancySettingsForOps,
+  useSensorMap,
   useUndoMove,
   type MoveResultData,
   type PlacementInputData,
@@ -33,6 +34,7 @@ import {
   applyLens,
   applyPaymentsLens,
   applyRightsLens,
+  applySensorsLens,
   daySubjects,
   fitToView,
   focusBox,
@@ -82,6 +84,8 @@ import { LegendFilter } from './components/LegendFilter';
 import { LensTabs } from './components/LensTabs';
 import { PaymentsLegend } from './components/PaymentsLegend';
 import { RightsLegend } from './components/RightsLegend';
+import { SensorsLegend } from './components/SensorsLegend';
+import { SensorQuickSection } from '../sensors/components/SensorQuickSection';
 import { MoveDialog, type MoveTarget } from './components/MoveDialog';
 import { OpsFiltersPanel } from './components/OpsFiltersPanel';
 import { QuickCard } from './components/QuickCard';
@@ -169,6 +173,11 @@ export function OpsPage() {
   const [paymentsOn, setPaymentsOn] = useState(false);
   const [paymentsHidden, setPaymentsHidden] = useState<ReadonlySet<string>>(new Set());
   const mapPayments = useMapPaymentStatus(marinaId, mapId ?? '', date, paymentsOn);
+  // M12 Sensori lens (m12-plan §9.2): composed with the day view from getSensorMap (live for today, the night's
+  // classification for a past date), like rights and payments; segment and pedestal devices are markers.
+  const [sensorsOn, setSensorsOn] = useState(false);
+  const [sensorsHidden, setSensorsHidden] = useState<ReadonlySet<string>>(new Set());
+  const sensorMap = useSensorMap(marinaId, mapId ?? undefined, date, sensorsOn && !!mapId);
 
   const setSearch = useCallback(
     (patch: Partial<typeof search>) =>
@@ -216,8 +225,14 @@ export function OpsPage() {
     () => (paymentsOn && dv ? applyPaymentsLens(subjects, mapPayments.data, paymentsHidden) : null),
     [paymentsOn, dv, subjects, mapPayments.data, paymentsHidden],
   );
-  const shownStyles = paymentsResult?.styles ?? rightsResult?.styles ?? lensResult?.styles;
-  const shownDimmed = paymentsResult?.dimmed ?? rightsResult?.dimmed ?? lensResult?.dimmed;
+  const sensorsResult = useMemo(
+    () => (sensorsOn && dv ? applySensorsLens(subjects, sensorMap.data, sensorsHidden) : null),
+    [sensorsOn, dv, subjects, sensorMap.data, sensorsHidden],
+  );
+  const shownStyles =
+    sensorsResult?.styles ?? paymentsResult?.styles ?? rightsResult?.styles ?? lensResult?.styles;
+  const shownDimmed =
+    sensorsResult?.dimmed ?? paymentsResult?.dimmed ?? rightsResult?.dimmed ?? lensResult?.dimmed;
   const vessels = useMemo<VesselItem[]>(() => (doc && dv ? opsVessels(doc, dv) : []), [doc, dv]);
   const tileLabels = useMemo(() => {
     const m = new Map<string, string>();
@@ -641,6 +656,7 @@ export function OpsPage() {
                 setHidden(new Set());
                 setRightsOn(false);
                 setPaymentsOn(false);
+                setSensorsOn(false);
                 setSearch({ lens: l });
               }}
             />
@@ -651,6 +667,7 @@ export function OpsPage() {
               data-testid="ops-rights-lens"
               onClick={() => {
                 setPaymentsOn(false);
+                setSensorsOn(false);
                 setRightsOn((v) => !v);
               }}
             >
@@ -663,11 +680,27 @@ export function OpsPage() {
               data-testid="ops-payments-lens"
               onClick={() => {
                 setRightsOn(false);
+                setSensorsOn(false);
                 setPaymentsOn((v) => !v);
               }}
             >
               {t('receivables:lens.title')}
             </Button>
+            {can('map.view') ? (
+              <Button
+                variant={sensorsOn ? 'default' : 'outline'}
+                size="sm"
+                aria-pressed={sensorsOn}
+                data-testid="ops-sensors-lens"
+                onClick={() => {
+                  setRightsOn(false);
+                  setPaymentsOn(false);
+                  setSensorsOn((v) => !v);
+                }}
+              >
+                {t('sensors:lens.toggle')}
+              </Button>
+            ) : null}
           </div>
           <div className="grid gap-3 lg:grid-cols-12">
             <aside className="flex flex-col gap-4 lg:col-span-3">
@@ -676,7 +709,13 @@ export function OpsPage() {
                   <CardTitle>{t('opsMap:legend.title')}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {paymentsResult ? (
+                  {sensorsResult ? (
+                    <SensorsLegend
+                      counts={sensorsResult.counts}
+                      hidden={sensorsHidden}
+                      onHiddenChange={setSensorsHidden}
+                    />
+                  ) : paymentsResult ? (
                     <PaymentsLegend
                       counts={paymentsResult.counts}
                       hidden={paymentsHidden}
@@ -755,7 +794,7 @@ export function OpsPage() {
                       <PrintMapButton
                         mapId={mapId}
                         date={date}
-                        {...(rightsOn || paymentsOn ? {} : { lens })}
+                        {...(rightsOn || paymentsOn || sensorsOn ? {} : { lens })}
                       />
                     ) : null}
                     {picking ? (
@@ -792,6 +831,7 @@ export function OpsPage() {
                       highlight={highlight}
                       mode={mode}
                       tileLabels={tileLabels}
+                      {...(sensorsResult ? { markers: sensorsResult.markers } : {})}
                       backgroundUrl={
                         doc.background
                           ? mapBackgroundUrl(marinaId, mapId, doc.background.file_id)
@@ -873,6 +913,18 @@ export function OpsPage() {
                   actions={actions}
                   onAction={onAction}
                   onClose={() => setSelectedRef(null)}
+                  {...(sensorsOn && mapId
+                    ? {
+                        extra: (
+                          <SensorQuickSection
+                            marinaId={marinaId}
+                            mapId={mapId}
+                            date={date}
+                            resourceId={card.resourceId}
+                          />
+                        ),
+                      }
+                    : {})}
                 />
               ) : null}
               {can('transits.desk') ? (

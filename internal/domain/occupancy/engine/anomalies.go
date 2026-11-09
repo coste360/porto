@@ -17,7 +17,7 @@ const (
 
 // Anomalies returns the anomalies of the day-view elements (m3-plan §8.4), sorted by resource, allocation and
 // code: presence_without_allocation, not_arrived, departure_overdue, vessel_exceeds_limits,
-// insurance_expired_active, hold_lost_draft.
+// insurance_expired_active, hold_lost_draft and (M12) sensor_discrepancy.
 func Anomalies(in AnomalyInput) []Anomaly {
 	var out []Anomaly
 	for _, e := range in.Elements {
@@ -51,6 +51,7 @@ func Anomalies(in AnomalyInput) []Anomaly {
 			add(AnomalyHoldLostDraft)
 		}
 	}
+	out = append(out, sensorAnomalies(in)...)
 	slices.SortStableFunc(out, func(a, b Anomaly) int {
 		if c := cmp.Compare(a.ResourceID, b.ResourceID); c != 0 {
 			return c
