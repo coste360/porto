@@ -16,10 +16,10 @@ type matchCtx struct {
 	period           string
 }
 
-// specificity is the number of non-empty scope lists (0..6).
+// specificity is the number of non-empty scope lists (0..7; TimeBands is set only on rental rules).
 func (s Scope) specificity() int {
 	n := 0
-	for _, l := range []int{len(s.ContractTypes), len(s.Categories), len(s.GroupIDs), len(s.Channels), len(s.CustomerCategories), len(s.Periods)} {
+	for _, l := range []int{len(s.ContractTypes), len(s.Categories), len(s.GroupIDs), len(s.Channels), len(s.CustomerCategories), len(s.Periods), len(s.TimeBands)} {
 		if l > 0 {
 			n++
 		}

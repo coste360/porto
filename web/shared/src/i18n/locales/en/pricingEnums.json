@@ -45,7 +45,10 @@
     "month": "Month",
     "season": "Season",
     "year": "Year",
-    "stay": "One-off"
+    "stay": "One-off",
+    "hour": "Hour (rental)",
+    "half_day": "Half day (rental)",
+    "day": "Day (rental)"
   },
   "splitRules": {
     "pro_rata_daily": "Daily pro rata",

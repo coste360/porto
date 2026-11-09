@@ -76,7 +76,8 @@
       "yard": "Boatyard",
       "rental": "Rentals",
       "booking": "Online booking",
-      "reports": "Reports"
+      "reports": "Reports",
+      "sensors": "Occupancy sensors"
     },
     "maps": "Maps",
     "customers": "Customers",

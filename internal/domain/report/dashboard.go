@@ -20,6 +20,7 @@ type tileSpec struct {
 	drill     func() Params
 	needAll   bool
 	needYard  bool // reports.yard or reports.all (the yard tiles, D32)
+	needRent  bool // reports.rental or reports.all (the rental tiles, m11-plan §11)
 	dims      bool // the dashboard dimension filters apply
 	noPrev    bool // receivables: current residuals only (D13)
 	noSeries  bool // not additive by day
@@ -95,8 +96,13 @@ var tileSpecs = []tileSpec{
 		key: calc.IndYardMargin, report: calc.KeyYard, drill: func() Params { return Params{View: calc.YardViewMargins, InvoicedInPeriod: true} },
 		needYard: true,
 	},
-	{key: string(calc.TileRentalUtilisation), seam: calc.ReasonMilestoneM11},
-	{key: string(calc.TileRentalRevenue), seam: calc.ReasonMilestoneM11},
+	// M11 (m11-plan §11): rented / available slots of the fleet inside the open window, and the net of the
+	// rental-origin charges issued in the period (deposit retentions excluded, INV-98).
+	{
+		key: calc.IndRentalUtilisation, report: calc.KeyRental, drill: func() Params { return Params{View: calc.RentalViewUtilisation} },
+		needRent: true,
+	},
+	{key: calc.IndRentalRevenue, report: calc.KeyRental, drill: func() Params { return Params{View: calc.RentalViewRevenue} }, needRent: true},
 }
 
 // comparisonSpecs are the extra comparison indicators (not tiles).
@@ -275,6 +281,12 @@ func (r *run) runReport(q Params, memo map[string]*tileRun) (*tileRun, error) {
 		if x != nil {
 			t.res, t.totals = x, x.Totals
 		}
+	case calc.KeyRental:
+		var x *RentalResult
+		x, t.facts, err = r.runRental(q)
+		if x != nil {
+			t.res, t.totals = x, x.Totals
+		}
 	case calc.KeyLostDemand:
 		var x *LostDemandResult
 		x, t.facts, err = r.runLostDemand(q)
@@ -332,7 +344,7 @@ func (s *Service) Dashboard(ctx context.Context, p *auth.Principal, marinaID str
 				})
 				continue
 			}
-			if (t.needAll && !acc.Full) || (t.needYard && !hasYard(p, acc)) {
+			if (t.needAll && !acc.Full) || (t.needYard && !hasYard(p, acc)) || (t.needRent && !hasRental(p, acc)) {
 				continue
 			}
 			tile, err := r.tile(t, q.Dims, from, to, pf, pt, withPrev && !t.noPrev, out.Align, out.Granularity, memo)
@@ -430,7 +442,7 @@ func (s *Service) Compare(ctx context.Context, p *auth.Principal, marinaID strin
 	if err != nil {
 		return nil, err
 	}
-	if t.needYard && !hasYard(p, acc) {
+	if (t.needYard && !hasYard(p, acc)) || (t.needRent && !hasRental(p, acc)) {
 		return nil, auth.ErrForbidden
 	}
 	if err := checkPeriod(q.From, q.To); err != nil {

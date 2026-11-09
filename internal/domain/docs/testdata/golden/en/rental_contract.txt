@@ -1,0 +1,26 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Rental contract NL2027-000012
+Between Porto Demo (the marina) and Mario Rossi (the renter).
+Rented unit
+Unit GOM58, Gommone 5,8 (LT 0058), length 5.80 m, seats 8.
+Formula Mezza giornata mattina: from 12/06/2027 08:00 to 12/06/2027 13:00.
+The renter declares to hold the boating licence the unit requires.
+Price
+# | Description | Qty | Amount
+1 | Gommone 5,8 m - mezza giornata | 1 | €150.00
+2 | Frigo portatile | 1 | €5.00
+3 | Kit snorkeling | 1 | €10.00
+Total (VAT included): €165.00.
+Deposit: €500.00, returned at the return unless damages are found.
+Conditions
+The fuel used is charged at the return from the tank level. A return after the planned time is charged after 15
+minutes of grace, in blocks of 30 minutes. Damages found at the return are charged on the repair estimate,
+also by retaining the deposit. The renter undertakes to respect the harbour rules and the navigation
+regulations.
+Return code: PR1:01900000-0000-7000-8000-000000000000
+[signature customer]
+The customer
+Name:
+Date and signature:
+Porto Demo S.r.l. · VAT 01234567890 · Page 1 of 1

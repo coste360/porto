@@ -457,6 +457,40 @@ export const queryKeys = {
   ) => trim(['marina', marinaId, 'yard', 'lifting', date, filters]),
   equipmentOperators: (marinaId: string, equipmentId?: string) =>
     trim(['marina', marinaId, 'yard', 'operators', equipmentId]),
+
+  // M11 rental (m11-plan §14) under ['marina', id, 'rental'] (rental.changed). Fleet, skippers, formulas, extras,
+  // settings and quotes (FLEET); planner, availability, bookings, blocks and the day view (BOOKING); handovers,
+  // deposits and damages (HANDOVER). The day view of today/tomorrow, the bookings of those days, the settings and
+  // the handovers are the offline allowlist slot rental (HANDOVER).
+  rental: (marinaId: string) => ['marina', marinaId, 'rental'] as const,
+  rentalUnits: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'rental', 'units', filters]),
+  rentalUnit: (marinaId: string, unitId?: string) =>
+    trim(['marina', marinaId, 'rental', 'unit', unitId]),
+  rentalSkippers: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'rental', 'skippers', filters]),
+  rentalFormulas: (marinaId: string) => ['marina', marinaId, 'rental', 'formulas'] as const,
+  rentalExtras: (marinaId: string) => ['marina', marinaId, 'rental', 'extras'] as const,
+  rentalSettings: (marinaId: string) => ['marina', marinaId, 'rental', 'settings'] as const,
+  rentalQuote: (marinaId: string, input?: unknown) =>
+    trim(['marina', marinaId, 'rental', 'quote', input]),
+  rentalPlanner: (marinaId: string, from?: string, to?: string, view?: string, category?: string) =>
+    trim(['marina', marinaId, 'rental', 'planner', from, to, view, category]),
+  rentalAvailability: (
+    marinaId: string,
+    query?: Record<string, string | number | boolean | undefined>,
+  ) => trim(['marina', marinaId, 'rental', 'availability', query]),
+  rentalBookings: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'rental', 'bookings', filters]),
+  rentalBooking: (marinaId: string, bookingId?: string) =>
+    trim(['marina', marinaId, 'rental', 'booking', bookingId]),
+  rentalBlocks: (marinaId: string, filters?: Record<string, string | undefined>) =>
+    trim(['marina', marinaId, 'rental', 'blocks', filters]),
+  rentalDay: (marinaId: string, date?: string) => trim(['marina', marinaId, 'rental', 'day', date]),
+  rentalHandover: (marinaId: string, bookingId?: string, phase?: string) =>
+    trim(['marina', marinaId, 'rental', 'handover', bookingId, phase]),
+  rentalDeposit: (marinaId: string, bookingId?: string) =>
+    trim(['marina', marinaId, 'rental', 'deposit', bookingId]),
 };
 
 /** Drops the trailing undefined segments, so a key with fewer arguments is a prefix of the full one. */
@@ -588,6 +622,10 @@ export function keysForTopic(topic: string, marinaId: string): QueryKey[] {
       // Yard catalogue, quotes, work orders, tasks, time entries, materials, costs, billings, planner and lifting
       // (M10); work order billings also arrive on billing.changed.
       return [queryKeys.yard(marinaId)];
+    case 'rental.changed':
+      // Fleet, skippers, formulas, settings, bookings, planner, blocks, handovers, deposits and damages (M11);
+      // rental charges and payments also arrive on billing.changed.
+      return [queryKeys.rental(marinaId)];
     default:
       return [];
   }

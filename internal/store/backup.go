@@ -74,6 +74,9 @@ var (
 		"work_order_lines.price_includes_vat", "employees.active", "task_assignments.forced_qualification",
 		"task_assignments.overload", "timesheets.late", "stock_movements.price_overridden", "stock_movements.late",
 		"work_order_external_costs.billable", "work_order_external_costs.late", "equipment.bookable",
+		// M11 (00023_rental_fleet, 00024_rental_bookings)
+		"rental_skippers.active", "rental_formulas.active", "rental_extras.active", "rental_bookings.invoice_requested",
+		"rental_bookings.allow_outside_hours",
 	}
 	sqliteJSONColumns = []string{
 		"organizations.billing_address", "marinas.locales", "marinas.contacts", "marinas.address", "marinas.geo",
@@ -121,6 +124,10 @@ var (
 		"work_packages.name", "work_package_versions.lines", "work_package_versions.job_vars", "yard_quotes.job_inputs",
 		"yard_quotes.vessel_overrides", "yard_quotes.snapshot", "yard_quotes.estimated_hours", "yard_quote_lines.task",
 		"yard_quote_lines.issues", "work_orders.rate_snapshot", "work_tasks.checklist", "work_order_billings.requested",
+		// M11 (00023_rental_fleet, 00024_rental_bookings, 00025_rental_handovers)
+		"rental_settings.bands", "rental_settings.checklist", "rental_settings.deposit_modes", "rental_formulas.name",
+		"rental_formulas.categories", "rental_extras.categories", "rental_bookings.price_snapshot",
+		"rental_handovers.checklist",
 	}
 )
 
@@ -266,6 +273,12 @@ var dumpOrder = map[string]string{
 	"equipment_operators":     "equipment_id, employee_id",
 	"equipment_slots":         "equipment_id, date, slot",
 	"operator_slots":          "employee_id, date, slot",
+	// M11
+	"rental_settings":        "marina_id",
+	"rental_skipper_hours":   "skipper_id, weekday, from_slot",
+	"rental_slots":           "unit_id, date, slot",
+	"rental_skipper_slots":   "skipper_id, date, slot",
+	"rental_booking_charges": "booking_id, charge_id",
 }
 
 // DumpTable calls fn with every row of table (ordered by id, or by its primary key when it has no id), converted

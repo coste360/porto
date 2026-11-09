@@ -44,6 +44,9 @@ const (
 	PurposeTransit        = store.IntentPurposeTransit
 	PurposeSEPACollect    = store.IntentPurposeSEPACollect
 	PurposeMandateSetup   = store.IntentPurposeMandateSetup
+	// PurposeRentalDeposit is a manual-capture pre-authorisation of a rental deposit (M11, D15): its events go to
+	// the RentalDepositHooks, never to the charge matching below.
+	PurposeRentalDeposit = store.IntentPurposeRentalDeposit
 )
 
 var (
@@ -290,6 +293,9 @@ func (s *Service) succeededTx(ctx context.Context, tx bun.IDB, scope store.Marin
 	}
 	if in.Purpose == PurposeMandateSetup {
 		return nil
+	}
+	if in.Purpose == PurposeRentalDeposit {
+		return s.rentalDepositCapturedTx(ctx, tx, scope, actor, in, ev)
 	}
 	existing, err := store.PaymentIDsOfIntent(ctx, tx, scope, in.ID)
 	if err != nil {
@@ -937,6 +943,9 @@ func (s *Service) authorizedTx(ctx context.Context, tx bun.IDB, scope store.Mari
 	if err := s.audit(ctx, tx, scope, actor, "intent.apply", "payment_intent", in.ID, map[string]any{"status": store.IntentProcessing, "authorized": true}); err != nil {
 		return err
 	}
+	if in.Purpose == PurposeRentalDeposit {
+		return s.rentalDepositAuthorizedTx(ctx, tx, scope, actor, in)
+	}
 	if in.Purpose != PurposeTransit || in.ContractID == "" {
 		return nil
 	}
@@ -979,7 +988,13 @@ func (s *Service) voidedTx(ctx context.Context, tx bun.IDB, scope store.MarinaSc
 	if err != nil || !changed {
 		return err
 	}
-	return s.audit(ctx, tx, scope, actor, "intent.apply", "payment_intent", in.ID, map[string]any{"status": store.IntentCancelled, "voided": true})
+	if err := s.audit(ctx, tx, scope, actor, "intent.apply", "payment_intent", in.ID, map[string]any{"status": store.IntentCancelled, "voided": true}); err != nil {
+		return err
+	}
+	if in.Purpose == PurposeRentalDeposit {
+		return s.rentalDepositVoidedTx(ctx, tx, scope, actor, in)
+	}
+	return nil
 }
 
 // CaptureIntent captures an authorised intent after the approval committed (idempotency key capture:<intent>). The

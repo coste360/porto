@@ -174,6 +174,7 @@ func (h *m7Harness) recordSum(t *testing.T, c *client, key string, drill map[str
 			default:
 				m9RecordSum(key, r, &value, &numer)
 				m10RecordSum(key, r, &value)
+				m11RecordSum(key, r, &value, &numer, &denom)
 			}
 		}
 		m9TotalsDenom(key, body, &denom)

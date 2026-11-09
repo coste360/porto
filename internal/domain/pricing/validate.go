@@ -291,9 +291,12 @@ func (v *validator) baseRule(r *Rule) {
 	} else if r.Active && !item.Active {
 		v.err(IssueRuleItemInactive, RefRule, id, "item_id", map[string]string{"item_id": r.ItemID})
 	}
-	if !slices.Contains(TimeUnits(), r.Unit) {
+	switch {
+	case slices.Contains(RentalTimeUnits(), r.Unit) && r.Unit != UnitWeek:
+		v.rentalRule(r, item, ok)
+	case !slices.Contains(TimeUnits(), r.Unit):
 		v.err(IssueRuleUnitInvalid, RefRule, id, "unit", nil)
-	} else {
+	default:
 		if ok && r.Unit == UnitStay && item.Type == ItemBerthFee {
 			v.err(IssueRuleUnitInvalid, RefRule, id, "unit", map[string]string{"unit": string(r.Unit)})
 		}
@@ -303,6 +306,12 @@ func (v *validator) baseRule(r *Rule) {
 	}
 	bad := func(field string) {
 		v.err(IssueRuleBasisInvalid, RefRule, id, field, map[string]string{"basis": string(r.Basis)})
+	}
+	if r.Unit == UnitWeek && ok && isRentalItem(item) && r.Basis != BasisFlat {
+		bad("basis")
+	}
+	if len(r.Scope.TimeBands) > 0 && r.Unit != UnitHalfDay {
+		v.err(IssueRuleUnitInvalid, RefRule, id, "scope.time_bands", map[string]string{"unit": string(r.Unit)})
 	}
 	switch r.Basis {
 	case BasisFlat:
@@ -356,8 +365,27 @@ func (v *validator) baseRule(r *Rule) {
 	}
 }
 
+// RevenueClassRental is the revenue class of rental items (D3): only they take the rental time units.
+const RevenueClassRental = "rental"
+
+func isRentalItem(it *Item) bool { return it != nil && it.RevenueClass == RevenueClassRental }
+
+// rentalRule checks a base rule with a rental time unit (hour, half_day, day; m11-plan §5.1): only on rental items
+// and only with basis flat. Quote never uses these rules (no contract type prices them).
+func (v *validator) rentalRule(r *Rule, item *Item, known bool) {
+	if known && !isRentalItem(item) {
+		v.err(IssueRuleUnitInvalid, RefRule, r.ID, "unit", map[string]string{"unit": string(r.Unit)})
+	}
+	if r.Basis != BasisFlat {
+		v.err(IssueRuleBasisInvalid, RefRule, r.ID, "basis", map[string]string{"basis": string(r.Basis), "unit": string(r.Unit)})
+	}
+}
+
 func (v *validator) effectRule(r *Rule) {
 	id := r.ID
+	if len(r.Scope.TimeBands) > 0 {
+		v.err(IssueRuleUnitInvalid, RefRule, id, "scope.time_bands", nil)
+	}
 	for _, t := range r.TargetItemIDs {
 		if _, ok := v.items[t]; !ok {
 			v.err(IssueRuleItemUnknown, RefRule, id, "target_item_ids", map[string]string{"item_id": t})
@@ -478,7 +506,7 @@ func scopeKey(s Scope) string {
 	for i, c := range s.Channels {
 		chs[i] = string(c)
 	}
-	return str(cts, s.Categories, s.GroupIDs, chs, s.CustomerCategories, s.Periods)
+	return str(cts, s.Categories, s.GroupIDs, chs, s.CustomerCategories, s.Periods, s.TimeBands)
 }
 
 // HasErrors reports whether issues contains an error (activation is blocked).

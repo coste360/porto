@@ -1,0 +1,15 @@
+Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},
+
+il tuo noleggio è confermato.
+
+{{with v . "reference"}}Riferimento: {{.}}
+{{end}}{{with v . "unit"}}Imbarcazione: {{.}}
+{{end}}{{with v . "starts_on"}}Ritiro: {{.}}
+{{end}}{{with v . "ends_on"}}Riconsegna: {{.}}
+{{end}}{{with v . "amount"}}Importo: {{.}}
+{{end}}{{with v . "qr"}}Codice da mostrare al pontile: {{.}}
+{{end}}
+Porta con te un documento d'identità e, se richiesta, la patente nautica.
+
+--
+{{v . "marina_name"}}

@@ -76,7 +76,8 @@
       "yard": "Cantiere",
       "rental": "Noleggio",
       "booking": "Prenotazioni online",
-      "reports": "Report"
+      "reports": "Report",
+      "sensors": "Sensori di occupazione"
     },
     "maps": "Mappe",
     "customers": "Clienti",

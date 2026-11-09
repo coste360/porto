@@ -53,9 +53,10 @@ func TestDashboardHandlers_Scenario(t *testing.T) {
 			t.Fatalf("tile %s missing or without drill: %+v", k, tl)
 		}
 	}
-	for _, k := range []api.TileKey{"rental_revenue"} {
-		if tl := keys[k]; tl.Available || tl.Reason == nil || tl.Drill != nil {
-			t.Fatalf("seam tile %s %+v", k, tl)
+	// M11: the rental tiles are available (owner holds reports.all) and drill into the rental report.
+	for _, k := range []api.TileKey{"rental_utilisation", "rental_revenue"} {
+		if tl := keys[k]; !tl.Available || tl.Drill == nil || tl.Drill.Report != "rental" {
+			t.Fatalf("rental tile %s %+v", k, tl)
 		}
 	}
 	// M10: the yard tiles are available (owner holds reports.all) and drill into the yard report.

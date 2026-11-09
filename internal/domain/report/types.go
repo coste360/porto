@@ -135,6 +135,10 @@ type Params struct {
 	EquipmentID      string
 	OpenOnly         bool // open_only=true
 	InvoicedInPeriod bool // invoiced_in_period=true
+
+	// M11 rental (m11-plan §11): View is the rental view; the category filter is Dims.Category.
+	UnitID    string
+	FormulaID string
 }
 
 // DashboardParams is the request of GET .../dashboard (m7-plan §4).

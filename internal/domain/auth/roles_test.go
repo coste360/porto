@@ -186,6 +186,8 @@ var reportRoutePermissions = map[string][]Permission{
 	"getUtilitiesReport":   {PermReportsOperational, PermReportsAll},
 	// M10 (m10-plan §12, D32): the yard report with reports.yard (yard_mgr) as well as reports.all.
 	"getYardReport": {PermReportsYard, PermReportsAll},
+	// M11 (m11-plan §11): the rental report with reports.rental (the rental role) as well as reports.all.
+	"getRentalReport": {PermReportsRental, PermReportsAll},
 }
 
 // TestReports_RouteTableMatchesContract: every M7 operation is in the contract with known permissions, and the

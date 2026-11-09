@@ -62,26 +62,28 @@ export function ReportsIndexPage() {
             </div>
           </section>
         ))}
-        <section className="flex flex-col gap-3">
-          <h2 className="text-lg font-semibold">{t('reports:groups.upcoming')}</h2>
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {UPCOMING_REPORTS.map((r) => (
-              <Card key={r.key} className="opacity-70" data-testid={`report-card-${r.key}`}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <ChartColumnIcon className="size-4" />
-                    {t(`reports:keys.${r.key}`)}
-                  </CardTitle>
-                  <CardDescription>
-                    <Badge variant="outline">
-                      {t('reports:unavailable', { milestone: r.milestone })}
-                    </Badge>
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
-        </section>
+        {UPCOMING_REPORTS.length > 0 ? (
+          <section className="flex flex-col gap-3">
+            <h2 className="text-lg font-semibold">{t('reports:groups.upcoming')}</h2>
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {UPCOMING_REPORTS.map((r) => (
+                <Card key={r.key} className="opacity-70" data-testid={`report-card-${r.key}`}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <ChartColumnIcon className="size-4" />
+                      {t(`reports:keys.${r.key}`)}
+                    </CardTitle>
+                    <CardDescription>
+                      <Badge variant="outline">
+                        {t('reports:unavailable', { milestone: r.milestone })}
+                      </Badge>
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </div>
     </RequirePermission>
   );

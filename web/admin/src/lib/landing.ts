@@ -11,13 +11,13 @@ import type { Device, Permission } from '@porto/shared/api';
  * | yard.timesheets or yard.manage (M10)              | yard_mgr, yard                   | /m/<id>/yard-phone   |
  * | presence.write (haul-out and launch without desk) | (none today: yard_mgr lands above) | /m/<id>/dock       |
  * | storage.manage (M9)                               | (none today)                     | /m/<id>/storage-phone |
- * | maintenance.report (M9)                           | rental                           | /m/<id>/maintenance-phone |
+ * | rental.manage without presence.write (M11)        | rental                           | /m/<id>/rental-phone |
+ * | maintenance.report (M9)                           | (none today: rental lands above) | /m/<id>/maintenance-phone |
  * | reports.all or marina.configure                   | accounting, viewer               | /m/<id>/direction    |
  * | anything else                                     | (none today)                     | /m/<id>              |
  *
- * Seam, filled by later milestones (each adds its row above the fallback, before the direction row when the
- * role also holds reports.all):
- * - M11 rentals (rental.manage without presence.write): /m/<id>/rental-phone.
+ * Later milestones add their row above the fallback, before the direction row when the role also holds
+ * reports.all.
  * Owners and directors hold presence.write and land on the dock; the dock's "Altro" tab links the direction
  * screen for them.
  */
@@ -35,6 +35,7 @@ export function landingFor(
   if (has('yard.timesheets') || has('yard.manage')) return `${base}/yard-phone`;
   if (has('presence.write')) return `${base}/dock`;
   if (has('storage.manage')) return `${base}/storage-phone`;
+  if (has('rental.manage')) return `${base}/rental-phone`;
   if (has('maintenance.report')) return `${base}/maintenance-phone`;
   if (has('reports.all') || has('marina.configure')) return `${base}/direction`;
   return base;
@@ -58,6 +59,11 @@ export function canUseMaintenancePhone(permissions: readonly Permission[]): bool
 /** Whether a user may open the yard phone screen (my tasks, timer, hours, lifting day; M10). */
 export function canUseYardPhone(permissions: readonly Permission[]): boolean {
   return permissions.includes('yard.timesheets') || permissions.includes('yard.manage');
+}
+
+/** Whether a user may open the rental phone screen (today, check-out, check-in, quick cash; M11). */
+export function canUseRentalPhone(permissions: readonly Permission[]): boolean {
+  return permissions.includes('rental.manage');
 }
 
 /** Whether a user may open the dock phone screen. */

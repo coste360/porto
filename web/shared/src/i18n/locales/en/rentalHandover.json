@@ -1,0 +1,192 @@
+{
+  "nav": {
+    "phone": "Rentals"
+  },
+  "title": "Today's rentals",
+  "description": "Check-out and check-in of the boats from the phone.",
+  "pending": "This section will be available soon.",
+  "back": "Back",
+  "next": "Next",
+  "finish": "Done",
+  "progress": "Progress",
+  "queued_one": "{{count}} operation waiting for the connection",
+  "queued_other": "{{count}} operations waiting for the connection",
+  "tabs": {
+    "today": "Today",
+    "scan": "Scan",
+    "cash": "Till",
+    "new": "New"
+  },
+  "today": {
+    "pickups": "Departures",
+    "out": "At sea",
+    "returns_due": "Returns",
+    "late": "Late",
+    "empty": "No rentals today",
+    "lateBadge": "Late"
+  },
+  "scan": {
+    "label": "Rental code (PR1:…)",
+    "open": "Open the rental"
+  },
+  "steps": {
+    "identity": "Identity",
+    "licence": "Licence",
+    "contract": "Contract",
+    "deposit": "Deposit",
+    "boat": "Boat",
+    "summary": "Summary",
+    "return": "Return",
+    "damages": "Damages",
+    "extras": "Extras"
+  },
+  "phase": {
+    "checkout": "Check-out",
+    "checkin": "Check-in"
+  },
+  "missing": {
+    "identity": "Identity document",
+    "licence": "Boating licence",
+    "contract": "Signed contract",
+    "deposit": "Deposit",
+    "checklist": "Checks",
+    "photos": "Boat photos",
+    "engine_hours": "Engine hours",
+    "fuel": "Fuel"
+  },
+  "identity": {
+    "number": "Document number",
+    "expires": "Document expiry",
+    "photo": "Document photo"
+  },
+  "licence": {
+    "number": "Licence number",
+    "expires": "Licence expiry",
+    "photo": "Licence photo"
+  },
+  "sign": {
+    "hint": "The renter signs with a finger in the box (simple electronic signature).",
+    "pad": "Signature box",
+    "clear": "Clear",
+    "submit": "Sign",
+    "paper": "Sign on paper",
+    "otp": "Sign with a code"
+  },
+  "deposit": {
+    "title": "Deposit",
+    "amount": "Deposit {{amount}}",
+    "take": "Take the deposit",
+    "reason": "Reason",
+    "openPage": "Open the pre-authorisation page",
+    "retained": "{{amount}} retained",
+    "mode": {
+      "cash": "Cash",
+      "card_pos": "Card (POS)",
+      "preauth": "Pre-authorisation",
+      "waived": "No deposit"
+    },
+    "status": {
+      "none": "To take",
+      "pending": "Pending",
+      "held": "Taken",
+      "authorized": "Authorised",
+      "capture_pending": "Capturing",
+      "released": "Released",
+      "retained": "Retained",
+      "partially_retained": "Partly retained",
+      "waived": "Waived"
+    },
+    "qrAlt": "Pre-authorisation page QR code",
+    "qrHint": "The customer scans the QR code with their own phone to authorise the deposit."
+  },
+  "boat": {
+    "allOk": "All ok",
+    "fuel": "Fuel: {{value}}/8",
+    "fuelLabel": "Fuel level in eighths",
+    "engineHours": "Engine hours",
+    "photos_one": "Boat photos ({{count}})",
+    "photos_other": "Boat photos ({{count}})",
+    "addPhoto": "Take a photo",
+    "save": "Save the checks"
+  },
+  "checkout": {
+    "title": "Check-out {{label}}",
+    "ready": "Everything is ready for the check-out.",
+    "commit": "Hand over",
+    "done": "Boat handed over"
+  },
+  "checkin": {
+    "title": "Check-in {{label}}",
+    "returnedAt": "Return time",
+    "late": "Late ({{minutes}} min)",
+    "fuel": "Fuel",
+    "extras": "Extras",
+    "damageExcess": "Damages beyond the deposit",
+    "total": "Due at return",
+    "proposal": "Proposed retention",
+    "commit": "Check in",
+    "done": "Return recorded"
+  },
+  "damages": {
+    "none": "No damage",
+    "add": "Add a damage",
+    "photo": "Damage photo",
+    "description": "Description",
+    "estimate": "Estimate (€)",
+    "save": "Save the damage"
+  },
+  "extras": {
+    "less": "Remove",
+    "more": "Add"
+  },
+  "decision": {
+    "release": "Release",
+    "retain_all": "Retain all",
+    "retain": "Retain",
+    "amount": "Amount retained (€)"
+  },
+  "cash": {
+    "title": "Collect",
+    "button": "Collect {{amount}}",
+    "collect": "Collect now",
+    "done": "Payment recorded",
+    "empty": "No charge to collect",
+    "openLink": "Open the payment link",
+    "method": {
+      "cash": "Cash",
+      "card_pos": "Card (POS)",
+      "link": "Payment link"
+    },
+    "target": {
+      "main": "Rental",
+      "return": "Return charge",
+      "open": "Every open charge"
+    },
+    "qrAlt": "Payment link QR code",
+    "qrHint": "The customer scans the QR code with their own phone to pay.",
+    "linkNeedsCustomer": "A payment link needs a registered customer: for a walk-in renter use cash or card (POS)."
+  },
+  "panel": {
+    "title": "Check-out and check-in",
+    "ready": "Ready"
+  },
+  "pdf": {
+    "contract": "Contract",
+    "checkout": "Check-out report",
+    "checkin": "Check-in report"
+  },
+  "queue": {
+    "checklist": "Rental checks {{booking}}",
+    "photo": "Rental photo {{booking}}"
+  },
+  "walkIn": {
+    "closed": "Outside rental hours: no rental can start now.",
+    "offline": "Offline: a new rental needs the network.",
+    "pickUnit": "Choose the unit",
+    "duration": "Duration",
+    "pickDuration": "Choose the duration",
+    "hours_one": "{{count}} hour",
+    "hours_other": "{{count}} hours",
+    "confirm": "Confirm and start the check-out"
+  }
+}

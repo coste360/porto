@@ -240,6 +240,19 @@ func sumRecords(t *testing.T, d *demo, p *auth.Principal, key string, drill *cal
 			}
 		}
 		return frac(v, 0)
+	case calc.KeyRental:
+		r, err := d.svc.Rental(ctx, p, d.marina, q)
+		must(t, err)
+		var num, den int64
+		for _, x := range r.Records {
+			if key == calc.IndRentalRevenue {
+				num += int64(x.Net.Value)
+				continue
+			}
+			num += x.RentedSlots.Value
+			den += x.AvailableSlots.Value
+		}
+		return frac(num, den)
 	}
 	t.Fatalf("no drill for %s", drill.Report)
 	return calc.TileValue{}

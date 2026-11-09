@@ -109,6 +109,11 @@ var specs = map[Key]reportSpec{
 		},
 		groupBy: []string{"employee", "department", "order", "work_type", "qualification", "bay", "status", "equipment", "week", "month"},
 	},
+	// M11 (m11-plan §11): views utilisation (default), revenue, damages, deposits.
+	calc.KeyRental: {
+		params:  []string{"view", "group_by", "unit_id", "category", "formula_id"},
+		groupBy: []string{"unit", "category", "formula", "line_kind", "status", "mode", "day", "week", "month"},
+	},
 }
 
 func (sp reportSpec) accepts(name string) bool { return slices.Contains(sp.params, name) }
@@ -295,7 +300,13 @@ func ParseParams(key Key, q url.Values) (Params, error) {
 	out.Method = p.enum("method", paymentMethods)
 	out.AsOf = p.date("as_of")
 	out.OverdueOnly, _ = p.boolean("overdue")
-	out.View = p.enum("view", calc.YardViews)
+	if key == calc.KeyRental {
+		out.View = p.enum("view", calc.RentalViews)
+	} else {
+		out.View = p.enum("view", calc.YardViews)
+	}
+	out.UnitID = p.str("unit_id", 36)
+	out.FormulaID = p.str("formula_id", 36)
 	out.EmployeeID = p.str("employee_id", 36)
 	out.WorkOrderID = p.str("work_order_id", 36)
 	out.WorkTypeID = p.str("work_type_id", 36)
@@ -388,6 +399,8 @@ func (p Params) Values() url.Values {
 	set("meter_id", p.MeterID)
 	set("contract_id", p.ContractID)
 	set("view", p.View)
+	set("unit_id", p.UnitID)
+	set("formula_id", p.FormulaID)
 	set("employee_id", p.EmployeeID)
 	set("work_order_id", p.WorkOrderID)
 	set("work_type_id", p.WorkTypeID)

@@ -293,6 +293,12 @@ func TestTypes_Catalogue(t *testing.T) {
 			WorkOrderBilled:         {WorkOrderBilled, TopicYard, false},
 			YardPlanChanged:         {YardPlanChanged, TopicYard, false},
 			EquipmentBookingChanged: {EquipmentBookingChanged, TopicYard, true},
+			// M11 (m11-plan §13.2, D24): confirmed, cancelled, checked out and returned are public.
+			RentalChanged:    {RentalChanged, TopicRental, false},
+			RentalConfirmed:  {RentalConfirmed, TopicRental, true},
+			RentalCancelled:  {RentalCancelled, TopicRental, true},
+			RentalCheckedOut: {RentalCheckedOut, TopicRental, true},
+			RentalReturned:   {RentalReturned, TopicRental, true},
 		}
 		if want, ok := m1[ti.Type]; ok {
 			if ti != want {

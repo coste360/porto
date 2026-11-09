@@ -1,0 +1,142 @@
+{
+  "nav": {
+    "planner": "Planner noleggi",
+    "bookings": "Noleggi"
+  },
+  "title": "Planner noleggi",
+  "description": "Prenotazioni delle unità a noleggio per ore, mezze giornate e giorni.",
+  "pending": "Questa sezione sarà disponibile a breve.",
+  "planner": {
+    "from": "Dal",
+    "previous": "Periodo precedente",
+    "next": "Periodo successivo",
+    "today": "Oggi",
+    "view": "Vista",
+    "views": {
+      "hours": "Ore",
+      "half_days": "Mezze giornate",
+      "days": "Giorni"
+    },
+    "category": "Categoria",
+    "allCategories": "Tutte le categorie",
+    "gridLabel": "Planner delle unità a noleggio",
+    "cell": "{{row}}, {{date}} {{from}}-{{to}}",
+    "legend": "Legenda"
+  },
+  "dialog": {
+    "title": "Nuovo noleggio",
+    "description": "{{unit}}, {{range}}",
+    "formula": "Formula",
+    "quoting": "Calcolo dei prezzi…",
+    "noFormula": "Nessuna formula ha un prezzo per questo intervallo.",
+    "suggested": "consigliata"
+  },
+  "fields": {
+    "skipper": "Skipper",
+    "noSkipper": "Senza skipper",
+    "extras": "Extra",
+    "renterName": "Nome del cliente",
+    "renterPhone": "Telefono",
+    "renterEmail": "Email",
+    "customerSearch": "Cerca in anagrafica",
+    "customer": "Cliente in anagrafica",
+    "noCustomer": "Nessuno",
+    "invoice": "Il cliente chiede la fattura",
+    "status": "Stato",
+    "number": "Numero",
+    "unit": "Unità",
+    "formula": "Formula",
+    "start": "Ritiro",
+    "end": "Riconsegna",
+    "total": "Totale",
+    "holdExpires": "Opzione valida fino a",
+    "licence": "Patente nautica",
+    "fiscalMode": "Documento",
+    "cancelReason": "Motivo dell'annullamento",
+    "item": "Articolo",
+    "qty": "Quantità",
+    "unitPrice": "Prezzo unitario",
+    "amount": "Importo"
+  },
+  "actions": {
+    "close": "Chiudi",
+    "hold": "Opzione",
+    "confirm": "Conferma",
+    "extendHold": "Proroga l'opzione",
+    "noShow": "Mancato ritiro",
+    "cancel": "Annulla il noleggio"
+  },
+  "conflict": {
+    "rental_slot_taken": "L'unità è già occupata in questo intervallo: le prenotazioni in conflitto sono evidenziate nel planner.",
+    "skipper_busy": "Lo skipper è già impegnato in questo intervallo."
+  },
+  "toast": {
+    "held": "Opzione {{number}} registrata",
+    "confirmed": "Noleggio {{number}} confermato",
+    "moved": "Noleggio {{number}} spostato",
+    "confirm": "Noleggio confermato",
+    "cancel": "Noleggio annullato",
+    "no_show": "Mancato ritiro registrato",
+    "extend_hold": "Opzione prorogata",
+    "extend": "Noleggio prolungato"
+  },
+  "status": {
+    "held": "In opzione",
+    "confirmed": "Confermato",
+    "checked_out": "In mare",
+    "returned": "Riconsegnato",
+    "closed": "Chiuso",
+    "cancelled": "Annullato",
+    "no_show": "Mancato ritiro",
+    "maintenance": "In manutenzione"
+  },
+  "kind": {
+    "hold": "Opzione",
+    "booked": "Prenotato",
+    "buffer": "Margine tra noleggi",
+    "block": "Fermo"
+  },
+  "reason": {
+    "maintenance": "Manutenzione",
+    "closure": "Chiusura",
+    "day_off": "Riposo",
+    "other": "Altro"
+  },
+  "category": {
+    "rib": "Gommone",
+    "open": "Open",
+    "cabin": "Cabinato",
+    "sail": "Vela",
+    "pedalo": "Pedalò",
+    "sup": "SUP"
+  },
+  "list": {
+    "allStatuses": "Tutti gli stati",
+    "empty": "Nessun noleggio."
+  },
+  "booking": {
+    "title": "Noleggio {{number}}",
+    "actions": "Azioni",
+    "lines": "Prezzo",
+    "charges": "Addebiti",
+    "licenceYes": "Richiesta",
+    "licenceNo": "Non richiesta",
+    "slotsLost": "L'opzione è scaduta e l'intervallo è stato preso da un'altra prenotazione."
+  },
+  "fiscal": {
+    "receipt": "Documento commerciale",
+    "invoice": "Fattura (all'esportazione)"
+  },
+  "lineKind": {
+    "unit": "unità",
+    "skipper": "skipper",
+    "extra": "extra"
+  },
+  "chargeKind": {
+    "main": "Noleggio",
+    "return": "Riconsegna",
+    "adjustment": "Rettifica",
+    "replaced": "Sostituito",
+    "deposit_retention": "Cauzione trattenuta"
+  }
+}

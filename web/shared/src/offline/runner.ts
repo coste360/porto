@@ -275,7 +275,7 @@ export class Runner {
     let response: Response;
     try {
       response = await this.deps.fetch(path, {
-        method: 'POST',
+        method: op.request.method ?? 'POST',
         headers,
         ...(body !== undefined ? { body } : {}),
         credentials: 'same-origin',

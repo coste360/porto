@@ -185,6 +185,12 @@ tags:
     description: Employees, calendars, absences, planner, workload and auto-plan (M10, spec 18.5)
   - name: lifting
     description: Lifting equipment bookings on 15-minute slots and operators (M10, spec 18.7)
+  - name: rental-fleet
+    description: Rental fleet - units, skippers and their hours, formulas, extras, settings, quotes (M11, spec 19.1-19.2)
+  - name: rental-bookings
+    description: Rental planner, availability, bookings on 30-minute slots, holds and blocks (M11, spec 19.3)
+  - name: rental-handover
+    description: Rental check-out and check-in, identity, contract signature, deposit, damages, quick cash, PDFs (M11, spec 19.4-19.5)
 
 paths:
   /healthz:
@@ -18033,6 +18039,1327 @@ paths:
         "422": { $ref: "#/components/responses/ReportUnprocessable" }
 
 
+  /api/admin/v1/marinas/{marinaId}/rental/units:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [rental-fleet]
+      operationId: listRentalUnits
+      summary: >-
+        Rental units of the fleet (rental.manage)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/RentalUnitStatus" } }
+        - { name: category, in: query, required: false, schema: { $ref: "#/components/schemas/RentalCategory" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalUnitList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [rental-fleet]
+      operationId: createRentalUnit
+      summary: >-
+        Add a registry vessel of the marina to the rental fleet (rental.manage); the item must have revenue class rental
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalUnitInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalUnit" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/units/{rentalUnitId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalUnitId"
+    get:
+      tags: [rental-fleet]
+      operationId: getRentalUnit
+      summary: >-
+        A rental unit (rental.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalUnit" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [rental-fleet]
+      operationId: updateRentalUnit
+      summary: >-
+        Update a rental unit (rental.manage); maintenance and retired units are not bookable for new bookings
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalUnitPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalUnit" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/skippers:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [rental-fleet]
+      operationId: listRentalSkippers
+      summary: >-
+        Bookable skippers with their weekly hours (rental.manage)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalSkipperList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [rental-fleet]
+      operationId: createRentalSkipper
+      summary: >-
+        Add a skipper (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalSkipperInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalSkipper" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/skippers/{rentalSkipperId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalSkipperId"
+    patch:
+      tags: [rental-fleet]
+      operationId: updateRentalSkipper
+      summary: >-
+        Update a skipper (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalSkipperPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalSkipper" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/skippers/{rentalSkipperId}/hours:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalSkipperId"
+    put:
+      tags: [rental-fleet]
+      operationId: putRentalSkipperHours
+      summary: >-
+        Replace the weekly working hours of a skipper (rental.manage; a soft rule, days off are blocks)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalSkipperHoursInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalSkipper" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/formulas:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [rental-fleet]
+      operationId: listRentalFormulas
+      summary: >-
+        Rental formulas (rental.manage)
+      security: *readSecurity
+      parameters:
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalFormulaList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [rental-fleet]
+      operationId: createRentalFormula
+      summary: >-
+        Add a rental formula (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalFormulaInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalFormula" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/formulas/{rentalFormulaId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalFormulaId"
+    patch:
+      tags: [rental-fleet]
+      operationId: updateRentalFormula
+      summary: >-
+        Update a rental formula (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalFormulaPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalFormula" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/extras:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [rental-fleet]
+      operationId: listRentalExtras
+      summary: >-
+        Rental extras (rental.manage)
+      security: *readSecurity
+      parameters:
+        - { name: active, in: query, required: false, schema: { type: boolean } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalExtraList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [rental-fleet]
+      operationId: createRentalExtra
+      summary: >-
+        Add a rental extra on a catalogue item (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalExtraInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalExtra" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/extras/{rentalExtraId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalExtraId"
+    patch:
+      tags: [rental-fleet]
+      operationId: updateRentalExtra
+      summary: >-
+        Update a rental extra (marina.configure)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalExtraPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalExtra" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/settings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [rental-fleet]
+      operationId: getRentalSettings
+      summary: >-
+        Rental settings: open window, bands, buffer, holds, checklist (rental.manage; defaults when never saved, version 0)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalSettings" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [rental-fleet]
+      operationId: putRentalSettings
+      summary: >-
+        Save the rental settings (marina.configure; If-Match "0" for the first save)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalSettingsInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalSettings" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/quote:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    post:
+      tags: [rental-fleet]
+      operationId: quoteRental
+      summary: >-
+        Stateless quote of a unit and range: one formula, or every valid formula sorted by total when omitted (rental.manage)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalQuoteInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalQuoteResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/planner:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [rental-bookings]
+      operationId: getRentalPlanner
+      summary: >-
+        Planner rows (units and skippers) with segments by state, blocks and buffers (rental.manage)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, description: "Required; optional in the contract only so that another marina is 404 first (missing: 400)", schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, description: "Required; optional in the contract only so that another marina is 404 first (missing: 400)", schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: view, in: query, required: false, schema: { type: string, enum: [hours, half_days, days] }, description: "Default days" }
+        - { name: category, in: query, required: false, schema: { $ref: "#/components/schemas/RentalCategory" } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalPlanner" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/availability:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [rental-bookings]
+      operationId: searchRentalAvailability
+      summary: >-
+        Units (and skippers) free for a range and formula (rental.manage); a pre-check only, the slot keys decide
+      security: *readSecurity
+      parameters:
+        - { name: starts_on, in: query, required: false, description: "Required; optional in the contract only so that another marina is 404 first (missing: 400)", schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: start_slot, in: query, required: false, description: "Required; optional in the contract only so that another marina is 404 first (missing: 400)", schema: { type: integer, minimum: 0, maximum: 47 } }
+        - { name: ends_on, in: query, required: false, description: "Required; optional in the contract only so that another marina is 404 first (missing: 400)", schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: end_slot, in: query, required: false, description: "Required; optional in the contract only so that another marina is 404 first (missing: 400)", schema: { type: integer, minimum: 1, maximum: 48 } }
+        - { name: formula_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: category, in: query, required: false, schema: { $ref: "#/components/schemas/RentalCategory" } }
+        - { name: skipper, in: query, required: false, schema: { type: boolean }, description: "Also list free skippers" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalAvailability" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [rental-bookings]
+      operationId: listRentalBookings
+      summary: >-
+        Rental bookings, newest first (rental.manage)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: status, in: query, required: false, schema: { $ref: "#/components/schemas/RentalBookingStatus" } }
+        - { name: unit_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: customer_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBookingList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [rental-bookings]
+      operationId: createRentalBooking
+      summary: >-
+        Create a held (hold true, desk option) or confirmed rental; a taken slot is 409 rental_slot_taken, a busy skipper 409 skipper_busy (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalBookingInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBooking" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    get:
+      tags: [rental-bookings]
+      operationId: getRentalBooking
+      summary: >-
+        A rental booking with price lines, extras, deposit and charges (rental.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBooking" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [rental-bookings]
+      operationId: updateRentalBooking
+      summary: >-
+        Reschedule (unit, range, skipper) or edit a held or confirmed booking; slots rewritten in one transaction (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalBookingPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBooking" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/transition:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    post:
+      tags: [rental-bookings]
+      operationId: transitionRentalBooking
+      summary: >-
+        confirm, cancel, no_show or extend_hold a booking (rental.manage); any other transition is 409 invalid_transition
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalTransitionInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBooking" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/blocks:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [rental-bookings]
+      operationId: listRentalBlocks
+      summary: >-
+        Blocks of units and skippers in a period (rental.manage)
+      security: *readSecurity
+      parameters:
+        - { name: from, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: to, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" } }
+        - { name: unit_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: skipper_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBlockList" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [rental-bookings]
+      operationId: createRentalBlock
+      summary: >-
+        Block a unit (maintenance, closure) or a skipper (day off); a booked slot is 409 rental_slot_taken (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalBlockInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBlock" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/blocks/{rentalBlockId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBlockId"
+    patch:
+      tags: [rental-bookings]
+      operationId: updateRentalBlock
+      summary: >-
+        Change a block (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalBlockPatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBlock" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+    delete:
+      tags: [rental-bookings]
+      operationId: deleteRentalBlock
+      summary: >-
+        Delete a block (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204":
+          description: Deleted
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/day:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [rental-bookings]
+      operationId: getRentalDay
+      summary: >-
+        Day view of the rental desk and phone: pickups, out at sea, returns due and late (rental.manage)
+      security: *readSecurity
+      parameters:
+        - { name: date, in: query, required: false, schema: { $ref: "#/components/schemas/IsoDate" }, description: "Default today in the marina time zone" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalDay" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+      - $ref: "#/components/parameters/RentalPhase"
+    get:
+      tags: [rental-handover]
+      operationId: getHandover
+      summary: >-
+        The check-out or check-in draft of a booking with its photos and missing steps (rental.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalHandover" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/checklist:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+      - $ref: "#/components/parameters/RentalPhase"
+    put:
+      tags: [rental-handover]
+      operationId: saveHandoverChecklist
+      summary: >-
+        Save checklist, fuel, engine hours and notes of a handover (rental.manage)
+      description: >-
+        Offline (kind rental.checklist): no If-Match; a replay with the same client_ref has one effect; a completed handover is 409 handover_locked; never changes status, slots, charges or deposits (INV-71).
+      security: *writeSecurity
+      x-porto-offline: true
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalChecklistInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalHandover" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/photos:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+      - $ref: "#/components/parameters/RentalPhase"
+    post:
+      tags: [rental-handover]
+      operationId: uploadHandoverPhoto
+      summary: >-
+        Attach a photo to a handover (JPEG or PNG, at most 8 MiB, raw body), encrypted at rest (rental.manage)
+      description: >-
+        Offline (kind rental.checklist, dependent through the handover) only for kind boat; identity, licence and damage photos are online. The same bytes as an existing file of the handover return that file.
+      security: *writeSecurity
+      x-porto-offline: true
+      x-porto-max-body-bytes: 8388608
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/OfflineQueuedAt"
+        - { name: kind, in: query, required: false, description: "Required; optional in the contract only so that another marina is 404 first (missing: 400)", schema: { type: string, enum: [id_document, licence, boat, damage] } }
+        - { name: damage_id, in: query, required: false, schema: { type: string, maxLength: 36 }, description: "Required for kind damage" }
+        - { name: client_ref, in: query, required: false, schema: { type: string, maxLength: 64 } }
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema: { type: string, format: binary }
+          image/png:
+            schema: { type: string, format: binary }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalHandoverFile" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "413": { $ref: "#/components/responses/PayloadTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/identity:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    put:
+      tags: [rental-handover]
+      operationId: putHandoverIdentity
+      summary: >-
+        Renter identity and licence typed by the operator, encrypted at rest (rental.manage); an expired licence is 422 licence_expired
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalIdentityInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalHandover" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/contract/sign:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    post:
+      tags: [rental-handover]
+      operationId: signRentalContract
+      summary: >-
+        Sign the rental contract on screen (signature PNG, simple electronic signature), or start an OTP or paper signature (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalSignInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalSignature" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/contract/pdf:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    get:
+      tags: [rental-handover]
+      operationId: getRentalContractPdf
+      summary: >-
+        The rental contract PDF, signed when available (rental.manage)
+      security: *readSecurity
+      parameters:
+        - { name: exp, in: query, required: false, schema: { type: integer, format: int64 } }
+        - { name: sig, in: query, required: false, schema: { type: string, maxLength: 128 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/deposit:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    get:
+      tags: [rental-handover]
+      operationId: getRentalDeposit
+      summary: >-
+        Deposit state of a booking with the pre-authorisation URL while pending (rental.manage)
+      security: *readSecurity
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalDeposit" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [rental-handover]
+      operationId: startRentalDeposit
+      summary: >-
+        Take the deposit: cash or card POS payment (kind deposit), pre-authorisation through a provider, or waived with a reason (rental.manage + payments.collect or payments.collect_cash)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalDepositInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalDeposit" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-out:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    post:
+      tags: [rental-handover]
+      operationId: checkOutRental
+      summary: >-
+        Hand the boat over: checks identity, licence, signed contract, deposit, checklist and photos (422 handover_incomplete with the missing steps) (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalCheckOutInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBooking" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/damages:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    post:
+      tags: [rental-handover]
+      operationId: createRentalDamage
+      summary: >-
+        Record a damage found at return with an estimate (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalDamageInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalDamage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/damages/{rentalDamageId}:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalDamageId"
+    patch:
+      tags: [rental-handover]
+      operationId: updateRentalDamage
+      summary: >-
+        Update a damage (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalDamagePatch" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalDamage" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+    delete:
+      tags: [rental-handover]
+      operationId: deleteRentalDamage
+      summary: >-
+        Delete an open damage before check-in (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "204":
+          description: Deleted
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-in/preview:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    post:
+      tags: [rental-handover]
+      operationId: previewRentalCheckIn
+      summary: >-
+        Stateless return totals: late fee, metered fuel, extras, damage excess and deposit proposal (rental.manage)
+      security: *writeSecurity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalCheckInInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalCheckInPreview" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-in:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    post:
+      tags: [rental-handover]
+      operationId: checkInRental
+      summary: >-
+        Take the boat back: return charge, deposit release or retention, damages, unit engine hours, close when nothing is pending (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalCheckInInput" }
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBooking" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/close:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    post:
+      tags: [rental-handover]
+      operationId: closeRental
+      summary: >-
+        Close a returned booking whose deposit is final (rental.manage)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IfMatch"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag: { $ref: "#/components/headers/ETag" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalBooking" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "412": { $ref: "#/components/responses/PreconditionFailed" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+        "428": { $ref: "#/components/responses/PreconditionRequired" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/pdf:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+      - $ref: "#/components/parameters/RentalPhase"
+    get:
+      tags: [rental-handover]
+      operationId: getRentalHandoverPdf
+      summary: >-
+        The handover PDF of a phase (rental.manage)
+      security: *readSecurity
+      parameters:
+        - { name: exp, in: query, required: false, schema: { type: integer, format: int64 } }
+        - { name: sig, in: query, required: false, schema: { type: string, maxLength: 128 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/quick-cash:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+      - $ref: "#/components/parameters/RentalBookingId"
+    post:
+      tags: [rental-handover]
+      operationId: quickCashRental
+      summary: >-
+        Collect the open rental charges in one step: cash or card POS with the commercial document (receipt mode), or a payment link (rental.manage + payments.collect, or payments.collect_cash for cash)
+      security: *writeSecurity
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RentalQuickCashInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalQuickCashResult" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/RentalUnprocessable" }
+
+  /api/admin/v1/marinas/{marinaId}/reports/rental:
+    parameters:
+      - $ref: "#/components/parameters/MarinaId"
+    get:
+      tags: [reports]
+      operationId: getRentalReport
+      summary: >-
+        R-rental: utilisation, revenue, damages, deposits (reports.rental or reports.all)
+      security: *readSecurity
+      parameters:
+        - $ref: "#/components/parameters/ReportFrom"
+        - $ref: "#/components/parameters/ReportTo"
+        - $ref: "#/components/parameters/ReportFormatParam"
+        - $ref: "#/components/parameters/ReportLang"
+        - $ref: "#/components/parameters/ReportPageNumber"
+        - $ref: "#/components/parameters/ReportPageSize"
+        - { name: view, in: query, required: false, schema: { type: string, enum: [utilisation, revenue, damages, deposits] }, description: "Default utilisation" }
+        - { name: group_by, in: query, required: false, schema: { type: string, enum: [unit, category, formula, line_kind, status, mode, day, week, month] } }
+        - { name: unit_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+        - { name: category, in: query, required: false, schema: { $ref: "#/components/schemas/RentalCategory" } }
+        - { name: formula_id, in: query, required: false, schema: { type: string, maxLength: 36 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RentalReport" }
+            text/csv:
+              schema: { type: string }
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema: { type: string, format: binary }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ReportUnprocessable" }
+
 components:
   securitySchemes:
     cookieAuth:
@@ -18699,6 +20026,46 @@ components:
       in: path
       required: true
       schema: { type: string }
+    RentalUnitId:
+      name: rentalUnitId
+      in: path
+      required: true
+      schema: { type: string }
+    RentalSkipperId:
+      name: rentalSkipperId
+      in: path
+      required: true
+      schema: { type: string }
+    RentalFormulaId:
+      name: rentalFormulaId
+      in: path
+      required: true
+      schema: { type: string }
+    RentalExtraId:
+      name: rentalExtraId
+      in: path
+      required: true
+      schema: { type: string }
+    RentalBookingId:
+      name: rentalBookingId
+      in: path
+      required: true
+      schema: { type: string }
+    RentalBlockId:
+      name: rentalBlockId
+      in: path
+      required: true
+      schema: { type: string }
+    RentalDamageId:
+      name: rentalDamageId
+      in: path
+      required: true
+      schema: { type: string }
+    RentalPhase:
+      name: phase
+      in: path
+      required: true
+      schema: { $ref: "#/components/schemas/RentalPhase" }
   responses:
     M4Unprocessable:
       description: >-
@@ -18837,6 +20204,16 @@ components:
         dependency_violation, duration_too_long, offline_time_out_of_range, return_exceeds_issued,
         equipment_capacity_exceeded, operator_not_enabled, outside_lift_window, customer_email_missing, ...), a
         validation failure, or an idempotency key was reused
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    RentalUnprocessable:
+      description: >-
+        A rental rule refused the request (m11-plan §13.1: formula_range_mismatch, outside_rental_hours,
+        unit_not_bookable, skipper_required, skipper_unavailable, skipper_licence_expired, licence_required,
+        licence_expired, handover_incomplete with the missing steps, engine_hours_decreasing, preauth_unavailable,
+        deposit_exceeds, band_gap_lt_buffer, no_price, customer_required, ...), a validation failure, or an
+        idempotency key was reused
       content:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
@@ -22048,8 +23425,11 @@ components:
       enum: [per_berth, length_band, per_meter, per_m2, per_m2_berth, flat, metered]
 
     TimeUnit:
+      description: >-
+        hour, half_day and day (and week) are accepted only on flat base rules of items with revenue class rental
+        (M11, priced by RentalQuote, ignored by the mooring engine)
       type: string
-      enum: [night, week, month, season, year, stay]
+      enum: [night, week, month, season, year, stay, hour, half_day, day]
 
     SplitRule:
       type: string
@@ -22431,6 +23811,10 @@ components:
           description: Rate period codes
           type: array
           items: { type: string, maxLength: 32 }
+        time_bands:
+          description: Rental half-day band codes (M11, honoured by the rental quote only)
+          type: array
+          items: { type: string, maxLength: 16 }
 
     PricingConditions:
       type: object
@@ -24467,6 +25851,11 @@ components:
       type: string
       enum: [paper, otp, provider]
 
+    SignatureRequestDriver:
+      description: Driver of a signature request; screen (on-screen signature, M11) is used only by rental contracts
+      type: string
+      enum: [paper, otp, provider, screen]
+
     InsurancePolicy:
       type: string
       enum: [warn, block]
@@ -26255,7 +27644,8 @@ components:
     DocumentSubjectType:
       type: string
       enum: [quote, contract, addendum, renewal_proposal, right_transfer, holder_chain, mandate_statement, fee_notice,
-             common_charges_holder, common_charges_items, installment_notice, communication, map_print, letter]
+             common_charges_holder, common_charges_items, installment_notice, communication, map_print, letter,
+             yard_quote, work_order, rental_booking]
 
     GeneratedDocumentStatus:
       type: string
@@ -26302,8 +27692,9 @@ components:
       enum: [pending_document, sent, partially_signed, signed, declined, expired, cancelled]
 
     SignatureSubjectType:
+      description: rental is a rental contract (M11, subject id = rental booking id)
       type: string
-      enum: [contract, addendum, right_transfer]
+      enum: [contract, addendum, right_transfer, rental]
 
     SignerStatus:
       type: string
@@ -26335,7 +27726,7 @@ components:
         subject_type: { $ref: "#/components/schemas/SignatureSubjectType" }
         subject_id: { type: string }
         document_id: { type: string }
-        driver: { $ref: "#/components/schemas/SignatureDriver" }
+        driver: { $ref: "#/components/schemas/SignatureRequestDriver" }
         provider_code: { type: string }
         order_mode: { $ref: "#/components/schemas/SignatureOrderMode" }
         status: { $ref: "#/components/schemas/SignatureRequestStatus" }
@@ -28304,12 +29695,12 @@ components:
 
     ReportKey:
       description: >-
-        Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11)
-        is reserved and not served yet.
+        Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from
+        M11.
       type: string
       enum: [occupancy, efficiency, allocation-waste, lost-demand, customers, production, accruals, charges, payments,
              revenue-classes, comparison, receivables, presences, rights, cash, vessels, berth-revenue, storage,
-             maintenance, utilities, yard]
+             maintenance, utilities, yard, rental]
 
     ReportFormat:
       description: json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
@@ -28354,7 +29745,7 @@ components:
           enum: [contract, transit, charge, payment, refund, allocation, berth, area, land_resource, customer, vessel,
                  inquiry, release, presence, cash_session, fiscal_document, right, common_charge_run, mandate,
                  installment, holder_installment, scenario, maintenance_task, utility_meter, utility_consumption,
-                 work_order, yard_quote, employee, equipment_booking]
+                 work_order, yard_quote, employee, equipment_booking, rental_unit, rental_booking]
         id: { type: string }
         label: { type: string }
 
@@ -29301,8 +30692,8 @@ components:
 
     TileKey:
       description: >-
-        Manager dashboard tiles (m7-plan §4). yard_* are available from M10 (m10-plan §12); rental_* (M11) are
-        returned with available=false.
+        Manager dashboard tiles (m7-plan §4). yard_* are available from M10 (m10-plan §12); rental_* are available
+        from M11 (m11-plan §11).
       type: string
       enum: [production, charged, collected, receivables_open, receivables_overdue, occupancy, efficiency,
              berth_revenue_per_m, transit_avg_night, new_customers, renewal_rate, vessels_hosted, vessels_avg_loa,
@@ -33507,3 +34898,982 @@ components:
             totals: { $ref: "#/components/schemas/YardReportTotals" }
             groups: { type: array, items: { $ref: "#/components/schemas/YardReportGroup" } }
             records: { type: array, items: { $ref: "#/components/schemas/YardReportRecord" } }
+
+    # ---- M11 rental (m11-plan §3-§13) ----
+
+    RentalCategory:
+      type: string
+      enum: [rib, open, cabin, sail, pedalo, sup]
+    RentalUnitStatus:
+      type: string
+      enum: [available, maintenance, retired]
+    RentalLicenceMode:
+      description: never, always, or threshold on the total engine power (rental_settings.licence_threshold_kw_milli)
+      type: string
+      enum: [never, always, threshold]
+    RentalFuelType:
+      type: string
+      enum: [petrol, diesel, electric, none]
+    RentalOwnership:
+      type: string
+      enum: [marina, third_party]
+    RentalFormulaKind:
+      type: string
+      enum: [hourly, half_day, day, multi_day, week]
+    RentalSkipperMode:
+      type: string
+      enum: [none, optional, required]
+    RentalFuelMode:
+      type: string
+      enum: [included, metered]
+    RentalExtraChargeMode:
+      type: string
+      enum: [per_rental, per_day]
+    RentalBookingStatus:
+      type: string
+      enum: [held, confirmed, checked_out, returned, closed, cancelled, no_show]
+    RentalChannel:
+      type: string
+      enum: [desk, api, online]
+    RentalDepositMode:
+      type: string
+      enum: [cash, card_pos, preauth, waived]
+    RentalDepositStatus:
+      type: string
+      enum: [none, pending, held, authorized, capture_pending, released, retained, partially_retained, waived]
+    RentalBlockReason:
+      type: string
+      enum: [maintenance, closure, day_off, other]
+    RentalSlotKind:
+      type: string
+      enum: [hold, booked, buffer, block]
+    RentalPhase:
+      type: string
+      enum: [checkout, checkin]
+    RentalFileKind:
+      type: string
+      enum: [id_document, licence, boat, damage]
+    RentalDamageStatus:
+      type: string
+      enum: [open, charged, waived]
+    RentalFiscalMode:
+      description: receipt (commercial document through the FiscalDriver) unless the customer asked for an invoice
+      type: string
+      enum: [receipt, invoice]
+
+    RentalSlotPoint:
+      description: >-
+        A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min,
+        (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+      type: object
+      required: [date, slot]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        slot: { type: integer, minimum: 0, maximum: 48 }
+
+    RentalPriceLine:
+      type: object
+      required: [seq, kind, item_id, item_code, qty_milli, unit_cents, amount_cents, price_includes_vat]
+      properties:
+        seq: { type: integer }
+        kind: { type: string, enum: [unit, skipper, extra, late_fee, fuel, damage] }
+        item_id: { type: string }
+        item_code: { type: string }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        unit_cents: { $ref: "#/components/schemas/Cents" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        price_includes_vat: { type: boolean }
+        rule_ids: { type: array, items: { type: string } }
+
+    RentalExtraQty:
+      type: object
+      required: [extra_id, qty_milli]
+      properties:
+        extra_id: { type: string, maxLength: 36 }
+        qty_milli: { type: integer, format: int64, minimum: 1 }
+
+    RentalUnit:
+      type: object
+      required: [id, vessel_id, vessel_name, code, category, seats, licence, licence_required, engine_kw_milli, fuel_type,
+                 tank_milli, deposit_cents, status, item_id, ownership, engine_hours_milli, note, sort, version, created_at,
+                 updated_at]
+      properties:
+        id: { type: string }
+        vessel_id: { type: string }
+        vessel_name: { type: string }
+        code: { type: string }
+        category: { $ref: "#/components/schemas/RentalCategory" }
+        seats: { type: integer }
+        licence: { $ref: "#/components/schemas/RentalLicenceMode" }
+        licence_required: { type: boolean, description: Without a skipper (a skipper never needs the renter's licence) }
+        engine_kw_milli: { type: integer, format: int64, description: Total engine power of the vessel }
+        fuel_type: { $ref: "#/components/schemas/RentalFuelType" }
+        tank_milli: { $ref: "#/components/schemas/QtyMilli" }
+        deposit_cents: { $ref: "#/components/schemas/Cents" }
+        status: { $ref: "#/components/schemas/RentalUnitStatus" }
+        home_berth_id: { type: string }
+        home_berth_code: { type: string }
+        item_id: { type: string }
+        ownership: { $ref: "#/components/schemas/RentalOwnership" }
+        owner_customer_id: { type: string }
+        engine_hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        note: { type: string }
+        sort: { type: integer }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    RentalUnitList:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/RentalUnit" } }
+        next_cursor: { type: [string, "null"] }
+
+    RentalUnitInput:
+      type: object
+      required: [vessel_id, code, category, seats, fuel_type, item_id]
+      properties:
+        vessel_id: { type: string, maxLength: 36 }
+        code: { type: string, pattern: "^[A-Z0-9_-]{1,16}$" }
+        category: { $ref: "#/components/schemas/RentalCategory" }
+        seats: { type: integer, minimum: 1, maximum: 99 }
+        licence: { $ref: "#/components/schemas/RentalLicenceMode" }
+        fuel_type: { $ref: "#/components/schemas/RentalFuelType" }
+        tank_milli: { type: integer, format: int64, minimum: 0 }
+        deposit_cents: { type: integer, format: int64, minimum: 0 }
+        status: { $ref: "#/components/schemas/RentalUnitStatus" }
+        home_berth_id: { type: string, maxLength: 36 }
+        item_id: { type: string, maxLength: 36 }
+        ownership: { $ref: "#/components/schemas/RentalOwnership" }
+        owner_customer_id: { type: string, maxLength: 36 }
+        note: { type: string, maxLength: 500 }
+        sort: { type: integer }
+
+    RentalUnitPatch:
+      type: object
+      properties:
+        code: { type: string, pattern: "^[A-Z0-9_-]{1,16}$" }
+        category: { $ref: "#/components/schemas/RentalCategory" }
+        seats: { type: integer, minimum: 1, maximum: 99 }
+        licence: { $ref: "#/components/schemas/RentalLicenceMode" }
+        fuel_type: { $ref: "#/components/schemas/RentalFuelType" }
+        tank_milli: { type: integer, format: int64, minimum: 0 }
+        deposit_cents: { type: integer, format: int64, minimum: 0 }
+        status: { $ref: "#/components/schemas/RentalUnitStatus" }
+        home_berth_id: { type: [string, "null"], maxLength: 36 }
+        item_id: { type: string, maxLength: 36 }
+        ownership: { $ref: "#/components/schemas/RentalOwnership" }
+        owner_customer_id: { type: [string, "null"], maxLength: 36 }
+        note: { type: string, maxLength: 500 }
+        sort: { type: integer }
+
+    RentalSkipperHoursRow:
+      type: object
+      required: [weekday, from_slot, to_slot]
+      properties:
+        weekday: { type: integer, minimum: 1, maximum: 7, description: ISO weekday, 1 = Monday }
+        from_slot: { type: integer, minimum: 0, maximum: 47 }
+        to_slot: { type: integer, minimum: 1, maximum: 48 }
+
+    RentalSkipper:
+      description: A bookable skipper; name and contact are personal data shown only to rental.manage (never in events)
+      type: object
+      required: [id, name, active, sort, hours, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        phone: { type: string }
+        email: { type: string }
+        licence_expires_on: { $ref: "#/components/schemas/IsoDate" }
+        user_id: { type: string }
+        active: { type: boolean }
+        sort: { type: integer }
+        hours: { type: array, items: { $ref: "#/components/schemas/RentalSkipperHoursRow" } }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    RentalSkipperList:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/RentalSkipper" } }
+        next_cursor: { type: [string, "null"] }
+
+    RentalSkipperInput:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        phone: { type: string, maxLength: 32 }
+        email: { type: string, maxLength: 254 }
+        licence_expires_on: { $ref: "#/components/schemas/IsoDate" }
+        user_id: { type: string, maxLength: 36 }
+        active: { type: boolean }
+        sort: { type: integer }
+
+    RentalSkipperPatch:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        phone: { type: [string, "null"], maxLength: 32 }
+        email: { type: [string, "null"], maxLength: 254 }
+        licence_expires_on: { type: [string, "null"], format: date }
+        user_id: { type: [string, "null"], maxLength: 36 }
+        active: { type: boolean }
+        sort: { type: integer }
+
+    RentalSkipperHoursInput:
+      type: object
+      required: [hours]
+      properties:
+        hours: { type: array, maxItems: 28, items: { $ref: "#/components/schemas/RentalSkipperHoursRow" } }
+
+    RentalFormula:
+      type: object
+      required: [id, code, name, kind, min_slots, min_days, max_days, skipper, fuel, grace_minutes, late_step_minutes,
+                 categories, active, sort, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        kind: { $ref: "#/components/schemas/RentalFormulaKind" }
+        band_code: { type: string }
+        min_slots: { type: integer }
+        max_slots: { type: integer }
+        min_days: { type: integer }
+        max_days: { type: integer }
+        skipper: { $ref: "#/components/schemas/RentalSkipperMode" }
+        fuel: { $ref: "#/components/schemas/RentalFuelMode" }
+        fuel_item_id: { type: string }
+        late_item_id: { type: string }
+        grace_minutes: { type: integer }
+        late_step_minutes: { type: integer, enum: [15, 30, 60] }
+        categories: { type: array, items: { $ref: "#/components/schemas/RentalCategory" } }
+        active: { type: boolean }
+        sort: { type: integer }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    RentalFormulaList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/RentalFormula" } }
+
+    RentalFormulaInput:
+      type: object
+      required: [code, name, kind]
+      properties:
+        code: { type: string, pattern: "^[A-Z0-9_-]{1,24}$" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        kind: { $ref: "#/components/schemas/RentalFormulaKind" }
+        band_code: { type: string, maxLength: 16 }
+        min_slots: { type: integer, minimum: 1, maximum: 48 }
+        max_slots: { type: integer, minimum: 1, maximum: 48 }
+        min_days: { type: integer, minimum: 1, maximum: 366 }
+        max_days: { type: integer, minimum: 1, maximum: 366 }
+        skipper: { $ref: "#/components/schemas/RentalSkipperMode" }
+        fuel: { $ref: "#/components/schemas/RentalFuelMode" }
+        fuel_item_id: { type: string, maxLength: 36 }
+        late_item_id: { type: string, maxLength: 36 }
+        grace_minutes: { type: integer, minimum: 0, maximum: 120 }
+        late_step_minutes: { type: integer, enum: [15, 30, 60] }
+        categories: { type: array, maxItems: 6, items: { $ref: "#/components/schemas/RentalCategory" } }
+        active: { type: boolean }
+        sort: { type: integer }
+
+    RentalFormulaPatch:
+      type: object
+      properties:
+        code: { type: string, pattern: "^[A-Z0-9_-]{1,24}$" }
+        name: { $ref: "#/components/schemas/I18nText" }
+        band_code: { type: string, maxLength: 16 }
+        min_slots: { type: integer, minimum: 1, maximum: 48 }
+        max_slots: { type: [integer, "null"], minimum: 1, maximum: 48 }
+        min_days: { type: integer, minimum: 1, maximum: 366 }
+        max_days: { type: integer, minimum: 1, maximum: 366 }
+        skipper: { $ref: "#/components/schemas/RentalSkipperMode" }
+        fuel: { $ref: "#/components/schemas/RentalFuelMode" }
+        fuel_item_id: { type: [string, "null"], maxLength: 36 }
+        late_item_id: { type: [string, "null"], maxLength: 36 }
+        grace_minutes: { type: integer, minimum: 0, maximum: 120 }
+        late_step_minutes: { type: integer, enum: [15, 30, 60] }
+        categories: { type: array, maxItems: 6, items: { $ref: "#/components/schemas/RentalCategory" } }
+        active: { type: boolean }
+        sort: { type: integer }
+
+    RentalExtra:
+      type: object
+      required: [id, item_id, item_code, name, charge_mode, default_qty_milli, max_qty_milli, categories, active, sort, version]
+      properties:
+        id: { type: string }
+        item_id: { type: string }
+        item_code: { type: string }
+        name: { $ref: "#/components/schemas/I18nText" }
+        charge_mode: { $ref: "#/components/schemas/RentalExtraChargeMode" }
+        default_qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        max_qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        categories: { type: array, items: { $ref: "#/components/schemas/RentalCategory" } }
+        active: { type: boolean }
+        sort: { type: integer }
+        version: { type: integer, format: int64 }
+
+    RentalExtraList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/RentalExtra" } }
+
+    RentalExtraInput:
+      type: object
+      required: [item_id]
+      properties:
+        item_id: { type: string, maxLength: 36 }
+        charge_mode: { $ref: "#/components/schemas/RentalExtraChargeMode" }
+        default_qty_milli: { type: integer, format: int64, minimum: 0 }
+        max_qty_milli: { type: integer, format: int64, minimum: 1 }
+        categories: { type: array, maxItems: 6, items: { $ref: "#/components/schemas/RentalCategory" } }
+        active: { type: boolean }
+        sort: { type: integer }
+
+    RentalExtraPatch:
+      type: object
+      properties:
+        charge_mode: { $ref: "#/components/schemas/RentalExtraChargeMode" }
+        default_qty_milli: { type: integer, format: int64, minimum: 0 }
+        max_qty_milli: { type: integer, format: int64, minimum: 1 }
+        categories: { type: array, maxItems: 6, items: { $ref: "#/components/schemas/RentalCategory" } }
+        active: { type: boolean }
+        sort: { type: integer }
+
+    RentalBand:
+      type: object
+      required: [code, from_slot, to_slot, label]
+      properties:
+        code: { type: string, pattern: "^[a-z0-9_]{1,16}$" }
+        from_slot: { type: integer, minimum: 0, maximum: 47 }
+        to_slot: { type: integer, minimum: 1, maximum: 48 }
+        label: { $ref: "#/components/schemas/I18nText" }
+
+    RentalChecklistTemplateItem:
+      type: object
+      required: [key, label, categories]
+      properties:
+        key: { type: string, pattern: "^[a-z0-9_]{1,32}$" }
+        label: { $ref: "#/components/schemas/I18nText" }
+        categories: { type: array, items: { $ref: "#/components/schemas/RentalCategory" } }
+
+    RentalSettingsInput:
+      type: object
+      required: [open_from_slot, open_to_slot, bands, buffer_slots, desk_hold_minutes, no_show_after_minutes,
+                 licence_threshold_kw_milli, checklist, checkout_min_photos, checkin_min_photos, deposit_modes,
+                 identity_retention_days]
+      properties:
+        open_from_slot: { type: integer, minimum: 0, maximum: 47 }
+        open_to_slot: { type: integer, minimum: 1, maximum: 48 }
+        bands: { type: array, minItems: 1, maxItems: 4, items: { $ref: "#/components/schemas/RentalBand" } }
+        buffer_slots: { type: integer, minimum: 0, maximum: 8 }
+        desk_hold_minutes: { type: integer, minimum: 5, maximum: 1440 }
+        no_show_after_minutes: { type: integer, minimum: 0, maximum: 1440 }
+        licence_threshold_kw_milli: { type: integer, format: int64, minimum: 1 }
+        skipper_item_id: { type: [string, "null"], maxLength: 36 }
+        damage_item_id: { type: [string, "null"], maxLength: 36 }
+        checklist: { type: array, minItems: 1, maxItems: 30, items: { $ref: "#/components/schemas/RentalChecklistTemplateItem" } }
+        checkout_min_photos: { type: integer, minimum: 0, maximum: 10 }
+        checkin_min_photos: { type: integer, minimum: 0, maximum: 10 }
+        deposit_modes: { type: array, minItems: 1, maxItems: 3, items: { type: string, enum: [cash, card_pos, preauth] } }
+        identity_retention_days: { type: integer, minimum: 30, maximum: 3650 }
+        default_register_id: { type: [string, "null"], maxLength: 36 }
+
+    RentalSettings:
+      allOf:
+        - $ref: "#/components/schemas/RentalSettingsInput"
+        - type: object
+          required: [version, preauth_available]
+          properties:
+            version: { type: integer, format: int64, description: 0 = defaults, never saved }
+            preauth_available: { type: boolean, description: An enabled provider supports pre-authorisation }
+
+    RentalQuoteInput:
+      type: object
+      required: [unit_id, start, end]
+      properties:
+        unit_id: { type: string, maxLength: 36 }
+        start: { $ref: "#/components/schemas/RentalSlotPoint" }
+        end: { $ref: "#/components/schemas/RentalSlotPoint" }
+        formula_id: { type: string, maxLength: 36, description: Omitted = every valid formula, sorted by total }
+        skipper_id: { type: string, maxLength: 36 }
+        with_skipper: { type: boolean, description: Price a skipper line without choosing one }
+        extras: { type: array, maxItems: 20, items: { $ref: "#/components/schemas/RentalExtraQty" } }
+        customer_id: { type: string, maxLength: 36 }
+
+    RentalQuoteOption:
+      type: object
+      required: [formula_id, formula_code, kind, ok, total_cents, licence_required, lines]
+      properties:
+        formula_id: { type: string }
+        formula_code: { type: string }
+        kind: { $ref: "#/components/schemas/RentalFormulaKind" }
+        ok: { type: boolean }
+        problem: { type: string, description: "Problem slug when not ok (no_price, formula_range_mismatch, outside_rental_hours, skipper_required, ...)" }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        licence_required: { type: boolean }
+        engine_version: { type: integer }
+        lines: { type: array, items: { $ref: "#/components/schemas/RentalPriceLine" } }
+
+    RentalQuoteResult:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/RentalQuoteOption" } }
+
+    RentalPlannerSegment:
+      type: object
+      required: [kind, from, to]
+      properties:
+        booking_id: { type: string }
+        block_id: { type: string }
+        number: { type: string }
+        status: { $ref: "#/components/schemas/RentalBookingStatus" }
+        kind: { $ref: "#/components/schemas/RentalSlotKind" }
+        reason: { $ref: "#/components/schemas/RentalBlockReason" }
+        from: { $ref: "#/components/schemas/RentalSlotPoint" }
+        to: { $ref: "#/components/schemas/RentalSlotPoint" }
+
+    RentalPlannerRow:
+      type: object
+      required: [kind, id, code, segments]
+      properties:
+        kind: { type: string, enum: [unit, skipper] }
+        id: { type: string }
+        code: { type: string, description: Unit code, or the skipper's name (rental.manage) }
+        category: { $ref: "#/components/schemas/RentalCategory" }
+        status: { $ref: "#/components/schemas/RentalUnitStatus" }
+        seats: { type: integer }
+        segments: { type: array, items: { $ref: "#/components/schemas/RentalPlannerSegment" } }
+
+    RentalPlanner:
+      type: object
+      required: [from, to, view, open_from_slot, open_to_slot, buffer_slots, bands, rows]
+      properties:
+        from: { $ref: "#/components/schemas/IsoDate" }
+        to: { $ref: "#/components/schemas/IsoDate" }
+        view: { type: string, enum: [hours, half_days, days] }
+        open_from_slot: { type: integer }
+        open_to_slot: { type: integer }
+        buffer_slots: { type: integer }
+        bands: { type: array, items: { $ref: "#/components/schemas/RentalBand" } }
+        rows: { type: array, items: { $ref: "#/components/schemas/RentalPlannerRow" } }
+
+    RentalAvailability:
+      type: object
+      required: [units, skippers]
+      properties:
+        units:
+          type: array
+          items:
+            type: object
+            required: [unit_id, code, category, seats, licence_required, formula_ids]
+            properties:
+              unit_id: { type: string }
+              code: { type: string }
+              category: { $ref: "#/components/schemas/RentalCategory" }
+              seats: { type: integer }
+              licence_required: { type: boolean }
+              formula_ids: { type: array, items: { type: string } }
+        skippers:
+          type: array
+          items:
+            type: object
+            required: [skipper_id, name, within_hours]
+            properties:
+              skipper_id: { type: string }
+              name: { type: string }
+              within_hours: { type: boolean }
+
+    RentalRenter:
+      description: Walk-in renter without a registry customer (encrypted at rest, never in events or logs)
+      type: object
+      properties:
+        name: { type: string, maxLength: 120 }
+        phone: { type: string, maxLength: 32 }
+        email: { type: string, maxLength: 254 }
+
+    RentalBookingExtra:
+      type: object
+      required: [extra_id, item_id, qty_milli, source]
+      properties:
+        extra_id: { type: string }
+        item_id: { type: string }
+        qty_milli: { $ref: "#/components/schemas/QtyMilli" }
+        source: { type: string, enum: [booking, return] }
+
+    RentalBookingChargeRef:
+      type: object
+      required: [charge_id, kind, status, total_cents, paid_amount_cents, fiscal_mode]
+      properties:
+        charge_id: { type: string }
+        kind: { type: string, enum: [main, return, adjustment, replaced, deposit_retention] }
+        status: { type: string }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        paid_amount_cents: { $ref: "#/components/schemas/Cents" }
+        fiscal_mode: { $ref: "#/components/schemas/RentalFiscalMode" }
+
+    RentalDeposit:
+      type: object
+      required: [status, amount_cents, retained_cents]
+      properties:
+        mode: { $ref: "#/components/schemas/RentalDepositMode" }
+        status: { $ref: "#/components/schemas/RentalDepositStatus" }
+        amount_cents: { $ref: "#/components/schemas/Cents" }
+        retained_cents: { $ref: "#/components/schemas/Cents" }
+        decision_cents: { $ref: "#/components/schemas/Cents" }
+        payment_id: { type: string }
+        intent_id: { type: string }
+        checkout_url: { type: string, description: Pre-authorisation page while pending (shown as a QR) }
+        checkout_qr_svg:
+          type: string
+          description: SVG of a QR of checkout_url (the renter scans it with their own phone); set with checkout_url
+        expires_at: { type: string, format: date-time }
+        waive_reason: { type: string }
+
+    RentalBooking:
+      type: object
+      required: [id, number, status, channel, unit_id, unit_code, formula_id, formula_code, kind, start, end, starts_at,
+                 ends_at, slots_lost, invoice_requested, fiscal_mode, licence_required, allow_outside_hours, total_cents,
+                 engine_version, lines, extras, deposit, charges, note, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        number: { type: string, description: NL<year>-NNNNNN }
+        status: { $ref: "#/components/schemas/RentalBookingStatus" }
+        channel: { $ref: "#/components/schemas/RentalChannel" }
+        unit_id: { type: string }
+        unit_code: { type: string }
+        formula_id: { type: string }
+        formula_code: { type: string }
+        kind: { $ref: "#/components/schemas/RentalFormulaKind" }
+        skipper_id: { type: string }
+        start: { $ref: "#/components/schemas/RentalSlotPoint" }
+        end: { $ref: "#/components/schemas/RentalSlotPoint" }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time }
+        hold_expires_at: { type: string, format: date-time }
+        slots_lost: { type: boolean, description: The rows of an expired hold were reclaimed by another booking }
+        customer_id: { type: string }
+        renter: { $ref: "#/components/schemas/RentalRenter" }
+        party_size: { type: integer }
+        invoice_requested: { type: boolean }
+        fiscal_mode: { $ref: "#/components/schemas/RentalFiscalMode" }
+        licence_required: { type: boolean }
+        allow_outside_hours: { type: boolean }
+        total_cents: { $ref: "#/components/schemas/Cents" }
+        engine_version: { type: integer }
+        lines: { type: array, items: { $ref: "#/components/schemas/RentalPriceLine" } }
+        extras: { type: array, items: { $ref: "#/components/schemas/RentalBookingExtra" } }
+        deposit: { $ref: "#/components/schemas/RentalDeposit" }
+        charges: { type: array, items: { $ref: "#/components/schemas/RentalBookingChargeRef" } }
+        checked_out_at: { type: string, format: date-time }
+        returned_at: { type: string, format: date-time }
+        closed_at: { type: string, format: date-time }
+        cancelled_at: { type: string, format: date-time }
+        cancel_reason: { type: string }
+        no_show_at: { type: string, format: date-time }
+        note: { type: string }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    RentalBookingList:
+      type: object
+      required: [items, next_cursor]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/RentalBooking" } }
+        next_cursor: { type: [string, "null"] }
+
+    RentalBookingInput:
+      type: object
+      required: [unit_id, formula_id, start, end]
+      properties:
+        unit_id: { type: string, maxLength: 36 }
+        formula_id: { type: string, maxLength: 36 }
+        start: { $ref: "#/components/schemas/RentalSlotPoint" }
+        end: { $ref: "#/components/schemas/RentalSlotPoint" }
+        skipper_id: { type: string, maxLength: 36 }
+        hold: { type: boolean, description: true = held option (desk_hold_minutes), false = confirmed }
+        customer_id: { type: string, maxLength: 36 }
+        renter: { $ref: "#/components/schemas/RentalRenter" }
+        party_size: { type: integer, minimum: 1, maximum: 99 }
+        extras: { type: array, maxItems: 20, items: { $ref: "#/components/schemas/RentalExtraQty" } }
+        invoice_requested: { type: boolean }
+        allow_outside_hours: { type: boolean, description: Book a skipper outside his weekly hours (audited) }
+        note: { type: string, maxLength: 500 }
+
+    RentalBookingPatch:
+      type: object
+      properties:
+        unit_id: { type: string, maxLength: 36 }
+        formula_id: { type: string, maxLength: 36 }
+        start: { $ref: "#/components/schemas/RentalSlotPoint" }
+        end: { $ref: "#/components/schemas/RentalSlotPoint" }
+        skipper_id: { type: [string, "null"], maxLength: 36 }
+        customer_id: { type: [string, "null"], maxLength: 36 }
+        renter: { $ref: "#/components/schemas/RentalRenter" }
+        party_size: { type: [integer, "null"], minimum: 1, maximum: 99 }
+        extras: { type: array, maxItems: 20, items: { $ref: "#/components/schemas/RentalExtraQty" } }
+        invoice_requested: { type: boolean }
+        allow_outside_hours: { type: boolean }
+        keep_price: { type: boolean, description: Keep the price snapshot on a reschedule (marina.configure) }
+        note: { type: string, maxLength: 500 }
+
+    RentalTransitionInput:
+      type: object
+      required: [action]
+      properties:
+        action: { type: string, enum: [confirm, cancel, no_show, extend_hold, extend] }
+        reason: { type: string, maxLength: 200 }
+        until: { type: string, format: date-time, description: extend_hold only }
+        end: { $ref: "#/components/schemas/RentalSlotPoint" }
+        formula_id:
+          type: string
+          description: >-
+            extend only: the formula the extended range is priced with (same unit category). Omitted, the booking
+            keeps its formula, so a half_day or day booking that outgrows its band or the open window is 422
+            formula_range_mismatch and needs a formula that fits the new range (for example hourly or multi_day).
+
+    RentalBlock:
+      type: object
+      required: [id, from, to, reason, note, version, created_at, updated_at]
+      properties:
+        id: { type: string }
+        unit_id: { type: string }
+        skipper_id: { type: string }
+        from: { $ref: "#/components/schemas/RentalSlotPoint" }
+        to: { $ref: "#/components/schemas/RentalSlotPoint" }
+        reason: { $ref: "#/components/schemas/RentalBlockReason" }
+        note: { type: string }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    RentalBlockList:
+      type: object
+      required: [items]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/RentalBlock" } }
+
+    RentalBlockInput:
+      type: object
+      required: [from, to, reason]
+      properties:
+        unit_id: { type: string, maxLength: 36 }
+        skipper_id: { type: string, maxLength: 36 }
+        from: { $ref: "#/components/schemas/RentalSlotPoint" }
+        to: { $ref: "#/components/schemas/RentalSlotPoint" }
+        reason: { $ref: "#/components/schemas/RentalBlockReason" }
+        note: { type: string, maxLength: 200 }
+
+    RentalBlockPatch:
+      type: object
+      properties:
+        from: { $ref: "#/components/schemas/RentalSlotPoint" }
+        to: { $ref: "#/components/schemas/RentalSlotPoint" }
+        reason: { $ref: "#/components/schemas/RentalBlockReason" }
+        note: { type: string, maxLength: 200 }
+
+    RentalDayEntry:
+      type: object
+      required: [booking_id, number, status, unit_id, unit_code, start, end, starts_at, ends_at, late, deposit_status]
+      properties:
+        booking_id: { type: string }
+        number: { type: string }
+        status: { $ref: "#/components/schemas/RentalBookingStatus" }
+        unit_id: { type: string }
+        unit_code: { type: string }
+        skipper_id: { type: string }
+        renter_name: { type: string }
+        start: { $ref: "#/components/schemas/RentalSlotPoint" }
+        end: { $ref: "#/components/schemas/RentalSlotPoint" }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time }
+        late: { type: boolean, description: Pickup later than no_show_after_minutes, or return after the planned end }
+        late_minutes: { type: integer }
+        deposit_status: { $ref: "#/components/schemas/RentalDepositStatus" }
+        unpaid_cents: { $ref: "#/components/schemas/Cents" }
+
+    RentalDay:
+      type: object
+      required: [date, pickups, out, returns_due, late]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        pickups: { type: array, items: { $ref: "#/components/schemas/RentalDayEntry" } }
+        out: { type: array, items: { $ref: "#/components/schemas/RentalDayEntry" } }
+        returns_due: { type: array, items: { $ref: "#/components/schemas/RentalDayEntry" } }
+        late: { type: array, items: { $ref: "#/components/schemas/RentalDayEntry" } }
+
+    RentalChecklistEntry:
+      type: object
+      required: [key, ok]
+      properties:
+        key: { type: string, maxLength: 32 }
+        ok: { type: boolean }
+        note: { type: string, maxLength: 200 }
+
+    RentalHandoverFile:
+      type: object
+      required: [id, file_id, kind, content_type, created_at]
+      properties:
+        id: { type: string }
+        file_id: { type: string }
+        kind: { $ref: "#/components/schemas/RentalFileKind" }
+        damage_id: { type: string }
+        content_type: { type: string }
+        created_at: { type: string, format: date-time }
+
+    RentalIdentitySummary:
+      description: What the operator typed, masked (the number shows its last 3 characters only)
+      type: object
+      required: [document_type, document_number_masked, document_expires_on]
+      properties:
+        document_type: { type: string, enum: [identity_card, passport, driving_licence, other] }
+        document_number_masked: { type: string }
+        document_expires_on: { $ref: "#/components/schemas/IsoDate" }
+        licence_number_masked: { type: string }
+        licence_category: { type: string }
+        licence_expires_on: { $ref: "#/components/schemas/IsoDate" }
+        purged: { type: boolean }
+
+    RentalHandover:
+      type: object
+      required: [booking_id, phase, checklist, notes, files, missing, version]
+      properties:
+        id: { type: string }
+        booking_id: { type: string }
+        phase: { $ref: "#/components/schemas/RentalPhase" }
+        checklist: { type: array, items: { $ref: "#/components/schemas/RentalChecklistEntry" } }
+        fuel_eighths: { type: integer, minimum: 0, maximum: 8 }
+        engine_hours_milli: { $ref: "#/components/schemas/QtyMilli" }
+        refuel_milli: { $ref: "#/components/schemas/QtyMilli" }
+        notes: { type: string }
+        actual_at: { type: string, format: date-time }
+        identity: { $ref: "#/components/schemas/RentalIdentitySummary" }
+        contract_signed: { type: boolean }
+        files: { type: array, items: { $ref: "#/components/schemas/RentalHandoverFile" } }
+        missing:
+          description: Steps still missing before check-out or check-in (the same list as handover_incomplete)
+          type: array
+          items: { type: string, enum: [identity, licence, contract, deposit, checklist, photos, engine_hours, fuel] }
+        completed_at: { type: string, format: date-time }
+        version: { type: integer, format: int64, description: 0 = no draft saved yet }
+
+    RentalChecklistInput:
+      type: object
+      required: [client_ref, items]
+      properties:
+        client_ref: { type: string, minLength: 8, maxLength: 64 }
+        device_at: { type: string, format: date-time }
+        items: { type: array, maxItems: 30, items: { $ref: "#/components/schemas/RentalChecklistEntry" } }
+        fuel_eighths: { type: integer, minimum: 0, maximum: 8 }
+        engine_hours_milli: { type: integer, format: int64, minimum: 0 }
+        refuel_milli: { type: integer, format: int64, minimum: 0 }
+        notes: { type: string, maxLength: 1000 }
+
+    RentalIdentityInput:
+      type: object
+      required: [document_type, document_number, document_expires_on]
+      properties:
+        document_type: { type: string, enum: [identity_card, passport, driving_licence, other] }
+        document_number: { type: string, minLength: 1, maxLength: 32 }
+        document_expires_on: { $ref: "#/components/schemas/IsoDate" }
+        document_issuer: { type: string, maxLength: 80 }
+        licence_number: { type: string, maxLength: 32 }
+        licence_category: { type: string, maxLength: 32 }
+        licence_expires_on: { $ref: "#/components/schemas/IsoDate" }
+
+    RentalSignInput:
+      type: object
+      required: [driver]
+      properties:
+        driver: { type: string, enum: [screen, otp, paper] }
+        signature_png: { type: string, maxLength: 280000, description: "screen: base64 PNG of the drawn signature (at most 200 KiB decoded)" }
+        signer_name: { type: string, maxLength: 120 }
+        email: { type: string, maxLength: 254, description: otp only }
+        device_label: { type: string, maxLength: 80 }
+
+    RentalSignature:
+      type: object
+      required: [request_id, driver, status, document_id]
+      properties:
+        request_id: { type: string }
+        driver: { type: string, enum: [screen, otp, paper] }
+        status: { type: string }
+        document_id: { type: string }
+        signed_document_id: { type: string }
+
+    RentalDepositInput:
+      type: object
+      required: [mode]
+      properties:
+        mode: { $ref: "#/components/schemas/RentalDepositMode" }
+        amount_cents: { type: integer, format: int64, minimum: 0, description: Default the unit's deposit }
+        reason: { type: string, maxLength: 200, description: waived only (required) }
+        register_id: { type: string, maxLength: 36 }
+        provider_code: { type: string, maxLength: 32 }
+
+    RentalCheckOutInput:
+      type: object
+      properties:
+        actual_at: { type: string, format: date-time }
+        note: { type: string, maxLength: 500 }
+
+    RentalDamage:
+      type: object
+      required: [id, booking_id, description, estimate_cents, status, retained_cents, charged_cents, files, version, created_at]
+      properties:
+        id: { type: string }
+        booking_id: { type: string }
+        description: { type: string }
+        estimate_cents: { $ref: "#/components/schemas/Cents" }
+        status: { $ref: "#/components/schemas/RentalDamageStatus" }
+        retained_cents: { $ref: "#/components/schemas/Cents" }
+        charged_cents: { $ref: "#/components/schemas/Cents" }
+        waive_reason: { type: string }
+        files: { type: array, items: { $ref: "#/components/schemas/RentalHandoverFile" } }
+        version: { type: integer, format: int64 }
+        created_at: { type: string, format: date-time }
+
+    RentalDamageInput:
+      type: object
+      required: [description, estimate_cents]
+      properties:
+        description: { type: string, minLength: 1, maxLength: 500 }
+        estimate_cents: { type: integer, format: int64, minimum: 0 }
+
+    RentalDamagePatch:
+      type: object
+      properties:
+        description: { type: string, minLength: 1, maxLength: 500 }
+        estimate_cents: { type: integer, format: int64, minimum: 0 }
+        waived: { type: boolean }
+        waive_reason: { type: string, maxLength: 200 }
+
+    RentalCheckInInput:
+      type: object
+      required: [returned_at, deposit_decision]
+      properties:
+        returned_at: { type: string, format: date-time }
+        extras: { type: array, maxItems: 20, items: { $ref: "#/components/schemas/RentalExtraQty" }, description: Consumed beyond the booked ones }
+        deposit_decision: { type: string, enum: [release, retain_all, retain] }
+        retain_cents: { type: integer, format: int64, minimum: 0, description: retain only }
+        waive_damage_ids: { type: array, maxItems: 20, items: { type: string, maxLength: 36 } }
+        waive_reason: { type: string, maxLength: 200 }
+        note: { type: string, maxLength: 500 }
+
+    RentalCheckInPreview:
+      type: object
+      required: [late_minutes, late_fee_cents, fuel_litres_milli, fuel_cents, extras_cents, damage_estimate_cents,
+                 damage_excess_cents, return_total_cents, deposit_cents, deposit_proposal_cents, lines]
+      properties:
+        late_minutes: { type: integer }
+        late_fee_cents: { $ref: "#/components/schemas/Cents" }
+        fuel_litres_milli: { $ref: "#/components/schemas/QtyMilli" }
+        fuel_cents: { $ref: "#/components/schemas/Cents" }
+        extras_cents: { $ref: "#/components/schemas/Cents" }
+        damage_estimate_cents: { $ref: "#/components/schemas/Cents" }
+        damage_excess_cents: { $ref: "#/components/schemas/Cents" }
+        return_total_cents: { $ref: "#/components/schemas/Cents" }
+        deposit_cents: { $ref: "#/components/schemas/Cents" }
+        deposit_proposal_cents: { $ref: "#/components/schemas/Cents" }
+        lines: { type: array, items: { $ref: "#/components/schemas/RentalPriceLine" } }
+
+    RentalQuickCashInput:
+      type: object
+      required: [method]
+      properties:
+        target: { type: string, enum: [main, return, open], description: Default open }
+        method: { type: string, enum: [cash, card_pos, link] }
+        register_id: { type: string, maxLength: 36 }
+
+    RentalQuickCashResult:
+      type: object
+      required: [charges, fiscal_document_ids]
+      properties:
+        charges: { type: array, items: { $ref: "#/components/schemas/RentalBookingChargeRef" } }
+        payment_id: { type: string }
+        fiscal_document_ids: { type: array, items: { type: string } }
+        receipt_url: { type: string }
+        link_url: { type: string }
+        link_qr_svg:
+          type: string
+          description: SVG of a QR of link_url (the renter scans it to pay on their own phone); set with link_url
+        link_expires_at: { type: string, format: date-time }
+
+    RentalReportTotals:
+      type: object
+      required: [records]
+      properties:
+        records: { type: integer, format: int64 }
+        available_slots: { type: integer, format: int64 }
+        rented_slots: { type: integer, format: int64 }
+        utilisation_bp: { type: [integer, "null"], format: int64 }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        estimate_cents: { $ref: "#/components/schemas/Cents" }
+        retained_cents: { $ref: "#/components/schemas/Cents" }
+        deposit_cents: { $ref: "#/components/schemas/Cents" }
+        released_cents: { $ref: "#/components/schemas/Cents" }
+        outstanding_cents: { $ref: "#/components/schemas/Cents" }
+
+    RentalReportGroup:
+      type: object
+      required: [key, label, totals]
+      properties:
+        key: { type: string }
+        label: { type: string }
+        totals: { $ref: "#/components/schemas/RentalReportTotals" }
+
+    RentalReportRecord:
+      description: One record of the selected view; fields not meaningful for the view are absent
+      type: object
+      required: [ref]
+      properties:
+        date: { $ref: "#/components/schemas/IsoDate" }
+        unit_id: { type: string }
+        unit_code: { type: string }
+        category: { $ref: "#/components/schemas/RentalCategory" }
+        formula_id: { type: string }
+        formula_code: { type: string }
+        booking_id: { type: string }
+        booking_number: { type: string }
+        line_kind: { type: string }
+        charge_id: { type: string }
+        available_slots: { type: integer, format: int64 }
+        rented_slots: { type: integer, format: int64 }
+        utilisation_bp: { type: [integer, "null"], format: int64 }
+        net_cents: { $ref: "#/components/schemas/Cents" }
+        vat_cents: { $ref: "#/components/schemas/Cents" }
+        gross_cents: { $ref: "#/components/schemas/Cents" }
+        damage_id: { type: string }
+        damage_status: { $ref: "#/components/schemas/RentalDamageStatus" }
+        estimate_cents: { $ref: "#/components/schemas/Cents" }
+        retained_cents: { $ref: "#/components/schemas/Cents" }
+        deposit_mode: { $ref: "#/components/schemas/RentalDepositMode" }
+        deposit_status: { $ref: "#/components/schemas/RentalDepositStatus" }
+        deposit_cents: { $ref: "#/components/schemas/Cents" }
+        released_cents: { $ref: "#/components/schemas/Cents" }
+        outstanding_cents: { $ref: "#/components/schemas/Cents" }
+        ref: { $ref: "#/components/schemas/ReportRef" }
+
+    RentalReport:
+      allOf:
+        - $ref: "#/components/schemas/ReportEnvelope"
+        - type: object
+          required: [view, totals, groups, records]
+          properties:
+            view: { type: string, enum: [utilisation, revenue, damages, deposits] }
+            totals: { $ref: "#/components/schemas/RentalReportTotals" }
+            groups: { type: array, items: { $ref: "#/components/schemas/RentalReportGroup" } }
+            records: { type: array, items: { $ref: "#/components/schemas/RentalReportRecord" } }

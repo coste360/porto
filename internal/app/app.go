@@ -67,6 +67,9 @@ import (
 	"github.com/coste360/porto/internal/domain/utility"
 
 	"github.com/coste360/porto/internal/domain/lifting"
+	"github.com/coste360/porto/internal/domain/rental/fleet"
+	"github.com/coste360/porto/internal/domain/rental/handover"
+	"github.com/coste360/porto/internal/domain/rental/reservation"
 	"github.com/coste360/porto/internal/domain/workorder"
 	"github.com/coste360/porto/internal/domain/yardplan"
 	"github.com/coste360/porto/internal/domain/yardquote"
@@ -208,6 +211,11 @@ type App struct {
 	WorkOrders *workorder.Service
 	YardPlan   *yardplan.Service
 	Lifting    *lifting.Service
+
+	// M11 (m11-plan §2): rental fleet, bookings and handover.
+	RentalFleet    *fleet.Service
+	RentalBookings *reservation.Service
+	RentalHandover *handover.Service
 
 	ownDB     bool
 	restartMu sync.Mutex
@@ -351,6 +359,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	a.wireBooking(x)
 	a.wireM9()
 	a.wireM10()
+	a.wireM11()
 	a.Reports = report.NewService(report.Deps{DB: db, Clock: clk, Prices: a.PriceLists, Log: log})
 	a.Presence = presence.NewService(presence.Deps{
 		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Keys: cfg.Keys, Files: a.Files, Log: log,
@@ -388,6 +397,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 			Booking: a.Booking, OnlineConf: a.OnlineConf, Channels: a.Channels,
 			Storage: a.Storage, Maintenance: a.Maintenance, Utilities: a.Utilities,
 			YardQuotes: a.YardQuotes, WorkOrders: a.WorkOrders, YardPlan: a.YardPlan, Lifting: a.Lifting,
+			RentalFleet: a.RentalFleet, RentalBookings: a.RentalBookings, RentalHandover: a.RentalHandover,
 		},
 		Device: &httpdevice.Handler{
 			Auth: authSvc, Devices: a.Devices, BaseURL: cfg.BaseURL.String(), SecureCookies: cfg.SecureCookies(),
@@ -515,6 +525,30 @@ func (a *App) wireM10() {
 	a.WorkOrders.SetBookingCanceller(a.Lifting)
 }
 
+// wireM11 builds the M11 rental services after M10 (m11-plan §2): the fleet over the price lists and the payment
+// drivers (pre-authorisation availability); reservation over the fleet; the handover over reservation and the
+// billing services. Then the seams: collect calls the handover for the events of rental deposit pre-authorisations
+// (collect.RentalDepositHooks) and the signature service for rental contracts (subject kind rental), so collect and
+// signature never import rental.
+func (a *App) wireM11() {
+	cfg, db, clk, log := a.Config, a.DB, a.Clock, a.Log
+	aw := audit.NewWriter(clk)
+	a.RentalFleet = fleet.NewService(fleet.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Prices: a.PriceLists, Preauth: a.Collect,
+	})
+	a.RentalBookings = reservation.NewService(reservation.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Fleet: a.RentalFleet, Notify: a.Notify,
+	})
+	a.RentalHandover = handover.NewService(handover.Deps{
+		DB: db, Clock: clk, Audit: aw, Outbox: a.Outbox, Log: log, Keys: cfg.Keys, Files: a.Files,
+		Reservations: a.RentalBookings, Bookings: a.RentalBookings, Fleet: a.RentalFleet, Charges: a.Charges,
+		Payments: a.Payments, Cash: a.Cash, Fiscal: a.Fiscal, Collect: a.Collect, Docs: a.Docs, Signatures: a.Signatures,
+	})
+	a.RentalBookings.SetHooks(a.RentalHandover)
+	a.Collect.SetRentalDepositHooks(a.RentalHandover)
+	a.Signatures.RegisterSubject(a.RentalHandover)
+}
+
 // wireBooking builds the M8 services after billing (m8-plan §2): settings, booking (over occupancy, contracts,
 // collect and the payment drivers), then the customer area and the channels, which call booking. The fake channel
 // (internal/domain/channel/fakechannel, ENGINE) is added to the channels only with cfg.DevFakeChannel.
@@ -630,6 +664,10 @@ func (a *App) registerJobs() error {
 		// M10 (m10-plan §4.3, §7). The contract phase registers no-ops; QUOTE and ORDERS implement them.
 		{Name: yardquote.JobQuotesExpire, Every: time.Hour, RunAtStart: true, Run: a.YardQuotes.RunExpire},
 		{Name: workorder.JobTimersGuard, Every: 15 * time.Minute, Run: a.WorkOrders.RunTimersGuard},
+		// M11 (m11-plan §13.2)
+		{Name: reservation.JobHoldsExpire, Every: time.Minute, RunAtStart: true, Run: a.RentalBookings.RunHoldsExpire},
+		{Name: handover.JobDeposits, Every: time.Minute, Run: a.RentalHandover.RunDeposits},
+		{Name: handover.JobIdentityRetention, Every: 24 * time.Hour, Run: a.RentalHandover.RunIdentityRetention},
 	}
 	for _, j := range defs {
 		if err := a.Jobs.Register(j); err != nil {

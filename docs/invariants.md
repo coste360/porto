@@ -161,11 +161,30 @@ richiesta o una prenotazione annullata non ha righe di slot. Verificata da: `Tes
 `TestMigrations_M10Constraints`, `TestAcceptance_M10_Lifting`, query Q31 di `store.CheckLiftingInvariants` (M10).
 Stato: implemented.
 
+**INV-18 — Nessuna doppia prenotazione di un'unità a noleggio né di uno skipper.** Uno slot di 30 minuti di
+un'unità (con il buffer che segue ogni noleggio) appartiene al più a una prenotazione o a un blocco, e lo stesso vale
+per lo skipper: le chiavi primarie di `rental_slots (unit_id, date, slot)` e `rental_skipper_slots (skipper_id,
+date, slot)` sono l'unica garanzia (ADR 0003); le righe si inseriscono con `ON CONFLICT DO NOTHING` e si contano, un
+conteggio corto annulla la transazione e risponde `409 rental_slot_taken` (o `skipper_busy`), mai un controllo
+preventivo. Verificata da: `TestConcurrency_RentalUnitSlots`, `TestConcurrency_RentalSkipperSlots`,
+`TestAcceptance_M11_NoDoubleBooking`, `TestMigrations_M11BookingConstraints` (chiavi e CHECK di prenotazioni e slot)
+e `TestMigrations_M11Constraints` (vincoli di flotta, collegamenti agli addebiti, consegne e CHECK estesi da 00025)
+(M11). Stato: implemented.
+
+**INV-19 — Le righe di un noleggio coincidono con il suo intervallo.** Le righe di unità di una prenotazione sono
+esattamente `slots.Expand(intervallo, buffer)` (troncate in caso di rientro anticipato), quelle dello skipper
+l'intervallo senza buffer; una prenotazione annullata o `no_show` non ha righe e solo una prenotazione `held` ha righe
+`hold`. Verificata da: query Q32 di `store.CheckRentalInvariants` (eseguita dopo ogni scenario delle suite di
+`reservation` e dai test di concorrenza), `TestRapid_RentalSlotsExpand` (M11). Stato: implemented.
+
 ## Prezzi (spec 12)
 
 **INV-20 — Snapshot riproducibile.** Ricalcolare un `price_snapshot` con la stessa `engine_version` e gli stessi
 input restituisce lo stesso totale. Verificata da: `TestQuote_SnapshotReproducible` (property test,
-`pricing.Recompute(pricing.NewSnapshot(...))` uguale dopo il giro JSON). Stato: implemented.
+`pricing.Recompute(pricing.NewSnapshot(...))` uguale dopo il giro JSON). Dal M11 vale anche per gli snapshot dei
+noleggi (`rental_bookings.price_snapshot` con `RentalEngineVersion`): `TestRentalQuote_Recompute` (giro JSON del
+`RentalBreakdown`), `TestRentalQuote_Purity` (ordine di regole e articoli ininfluente) e `TestFleet_QuoteAndSnapshot`
+(lo stesso `SnapshotTx` sullo stesso listino dà lo stesso totale). Stato: implemented.
 
 **INV-21 — Il motore prezzi è puro.** `internal/domain/pricing` non importa `store`, `clock`, `time.Now`. Verificata
 da: regole `pure-engines` e `pure-engines-no-rand` (anche `math/rand` e `math/rand/v2`) di `depguard` in
@@ -463,7 +482,10 @@ da M4 `TestSignature_SignerUserScopedToMarina` (un firmatario utente deve avere 
 `TestAcceptance_CrossMarinaResourceIdsM10` (le rotte con `{workOrderId}`, `{taskId}`, `{timesheetId}`,
 `{externalCostId}` e `{fileId}` con id reali di commessa, attività, ora, costo esterno e foto di un altro marina) e
 `TestAcceptance_CrossOrgUserLinksM10` (responsabile della commessa e utente collegato al dipendente devono avere un
-accesso al marina: un utente di un'altra organizzazione risponde come un id sconosciuto). Stato: partial.
+accesso al marina: un utente di un'altra organizzazione risponde come un id sconosciuto); da M11
+`TestAcceptance_CrossMarinaResourceIdsM11` (tutte le rotte `{marinaId}/rental/` con id reali di un altro marina:
+`{rentalUnitId}`, `{rentalSkipperId}`, `{rentalFormulaId}`, `{rentalExtraId}`, `{rentalBookingId}`,
+`{rentalBlockId}` e `{rentalDamageId}`). Stato: partial.
 
 **INV-74 — Documenti cifrati a riposo e serviti solo con link firmati.** I file dei documenti (e gli sfondi delle
 mappe) sono salvati cifrati con il KeyRing sotto `PORTO_DATA_DIR/files`, legati a marina e id; il download di un
@@ -646,3 +668,39 @@ commessa (`work_orders.quote_id` unico) e una variante al più una variazione (`
 unico), nella stessa transazione dell'accettazione; due accettazioni concorrenti danno un 200 e un `409
 invalid_transition`. Verificata da: `TestConcurrency_YardQuoteAccept`, `TestMigrations_M10Constraints` (M10). Stato:
 implemented.
+
+## Noleggio (spec 19)
+
+**INV-97 — Un solo punto di cambio di stato dei noleggi.** Solo `internal/domain/rental/reservation` scrive
+`rental_bookings.status`, le righe di `rental_slots` e `rental_skipper_slots` e `hold_expires_at`, consultando la
+tabella pura `rental/states`; ogni cambio scrive audit e outbox nella stessa transazione. La consegna e la
+restituzione passano dai metodi `*Tx` di `reservation`. Verificata da: `TestRentalStates_Table`,
+`TestRental_StatusWritesOnlyInReservation` (M11). Stato: implemented.
+
+**INV-98 — La cauzione non è un ricavo finché non viene trattenuta.** Un pagamento di tipo cauzione si abbina solo al
+suo addebito `deposit_retention`; `deposit_retained_cents` è l'importo abbinato e non supera la cauzione; la cauzione
+non compare mai nei corrispettivi, nel report dei ricavi né nel riquadro `rental_revenue` finché non è trattenuta.
+Si trattiene solo quanto deciso al rientro: un evento di addebito della pre-autorizzazione senza importo, o con un
+importo maggiore della decisione, è riportato alla decisione. Verificata da: query B60 di
+`store.CheckRentalInvariants`, `TestRental_DepositNeverRevenue`, `TestRapid_DepositSettlement`,
+`TestAcceptance_M11_Preauth` (anche con l'evento senza importo) (M11). Stato: implemented.
+
+**INV-99 — Un solo addebito principale e uno di riconsegna per noleggio.** Per ogni prenotazione esiste al più un
+collegamento `main` e uno `return` in `rental_booking_charges` (unique parziale). Un addebito principale non esportato
+e non pagato si annulla invece di rettificarlo (riprezzatura, cambio di cliente o di `invoice_requested`,
+annullamento della prenotazione) e il suo collegamento diventa `replaced`; lo stesso fa l'hook di annullamento degli
+addebiti di origine `rental` quando l'ufficio annulla un addebito principale o di riconsegna, così la prenotazione
+si può addebitare di nuovo. Un addebito esportato o pagato si corregge solo con rettifiche collegate (INV-51), e
+dopo un pagamento `invoice_requested` non cambia più: un noleggio non mescola scontrino e fattura. Per un noleggio
+chiuso l'addebito principale vivo più le sue rettifiche è lo snapshot (Q33b conta 0 quando non ne resta nessuno).
+Verificata da: `rental_booking_charges_kind_uidx`, query Q33, `TestConcurrency_RentalCheckOutOnce`,
+`TestConcurrency_RentalQuickCashOnce`, `TestRental_CancelledMainChargeRecreated`,
+`TestRental_MainChargeReplacedOrAdjusted`, `TestAcceptance_M11_InvoiceSwitch`, `TestMigrations_M11Constraints`
+(M11). Stato: implemented.
+
+Estensioni di M11 a invarianti esistenti: INV-05 vale anche per gli hold dei noleggi
+(`TestReservation_ExpiredHoldIsReclaimed`, `TestConcurrency_RentalHoldReclaim`; il recupero blocca le prenotazioni
+scadute con `SKIP LOCKED` su PostgreSQL, così non attende mai una conferma in corso); INV-20 vale anche per gli snapshot dei noleggi
+(`TestRentalQuote_Recompute`, `RentalEngineVersion`); INV-70, INV-71 e INV-83 valgono per gli eventi `rental.*` e
+per il tipo offline `rental.checklist` (`TestAcceptance_M11_Offline`, il caso PUT di `runner.test.ts`, e
+`TestAcceptance_M11_OfflineStaleReplay`: un salvataggio in coda più vecchio di quello registrato non lo sovrascrive).

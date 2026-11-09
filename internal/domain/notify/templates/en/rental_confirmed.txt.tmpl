@@ -1,0 +1,15 @@
+Dear {{with v . "customer_name"}}{{.}}{{else}}customer{{end}},
+
+your rental is confirmed.
+
+{{with v . "reference"}}Reference: {{.}}
+{{end}}{{with v . "unit"}}Boat: {{.}}
+{{end}}{{with v . "starts_on"}}Pick-up: {{.}}
+{{end}}{{with v . "ends_on"}}Return: {{.}}
+{{end}}{{with v . "amount"}}Amount: {{.}}
+{{end}}{{with v . "qr"}}Code to show at the pier: {{.}}
+{{end}}
+Please bring an identity document and, when required, your boating licence.
+
+--
+{{v . "marina_name"}}

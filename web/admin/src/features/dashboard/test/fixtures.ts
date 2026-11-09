@@ -77,3 +77,28 @@ export function makeDashboard(tiles: Tile[], over: Partial<Dashboard> = {}): Das
     ...over,
   };
 }
+
+// M11 (m11-plan §11): the rental tiles, available since FLEET.
+export const rentalUtilisationTile: Tile = {
+  key: 'rental_utilisation',
+  unit: 'bp',
+  available: true,
+  dims_applied: false,
+  value: 2500,
+  numerator: 10,
+  denominator: 40,
+  trend: 'none',
+  series: [],
+  drill: { report: 'rental', params: { view: 'utilisation' } },
+};
+
+export const rentalRevenueTile: Tile = {
+  key: 'rental_revenue',
+  unit: 'cents',
+  available: true,
+  dims_applied: false,
+  value: 2108600,
+  trend: 'none',
+  series: [],
+  drill: { report: 'rental', params: { view: 'revenue' } },
+};

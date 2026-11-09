@@ -221,6 +221,10 @@ func DemoView(kind Kind) any {
 		return yardQuoteDemo()
 	case KindYardWorkOrder:
 		return yardWorkOrderDemo()
+	case KindRentalContract:
+		return rentalContractDemo()
+	case KindRentalHandover:
+		return rentalHandoverDemo()
 	case KindMapPrint:
 		return views.MapPrintView{Marina: demoMarina, MapName: "Porto", Date: calendar.MustParse("2026-11-07"), Lens: "occupancy"}
 	}

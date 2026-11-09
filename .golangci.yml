@@ -317,6 +317,10 @@ linters:
             - "**/internal/domain/yardplan/load/**"
             - "**/internal/domain/yardplan/auto/**"
             - "**/internal/domain/lifting/slots/**"
+            # M11 (m11-plan §0.4); pricing is listed above
+            - "**/internal/domain/rental/price/**"
+            - "**/internal/domain/rental/slots/**"
+            - "**/internal/domain/rental/states/**"
           deny:
             - pkg: github.com/coste360/porto/internal/store
               desc: pure engines must not touch the database (INV-21)
@@ -438,6 +442,10 @@ linters:
             - "**/internal/domain/yardplan/load/**"
             - "**/internal/domain/yardplan/auto/**"
             - "**/internal/domain/lifting/slots/**"
+            # M11 (m11-plan §0.4)
+            - "**/internal/domain/rental/price/**"
+            - "**/internal/domain/rental/slots/**"
+            - "**/internal/domain/rental/states/**"
             # Seeded generators of the layout and fit parity vectors (test data, not the engines).
             - "!**/internal/domain/layout/internal/vectors/**"
             - "!**/internal/domain/fit/internal/genvectors/**"

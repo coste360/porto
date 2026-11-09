@@ -31,6 +31,7 @@ describe('nav', () => {
       'maintenance.manage',
       'yard.read',
       'yard.manage',
+      'rental.manage',
     ]).map((i) => i.id);
     expect(ids).toEqual(NAV_ITEMS.map((i) => i.id));
   });

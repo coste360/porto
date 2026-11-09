@@ -8,6 +8,54 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+M11 "Noleggio" (spec 19, 20, 21, 29.2, m11-plan, ADR 0016):
+
+- Rental fleet: units linked to registry vessels (category, seats, licence requirement never/always/threshold on
+  engine kW, fuel, deposit, status, home berth, own or third-party owner), bookable skippers with weekly hours,
+  days off and licence, formulas (hourly, half day on configurable bands, day, multi-day, week; with or without
+  skipper; fuel included or metered), extras and marina rental settings (open window, bands, buffer, hold TTL,
+  checklist, grace and late-fee step).
+- Pricing through the pure engine (`pricing.RentalQuote`, `EngineVersion` unchanged): rental items of the price
+  lists with time units `hour`, `half_day`, `day`, `week`, scope `time_bands`, rate periods per priced date,
+  customer category and channel; skipper line and extras per rental or per day; stateless quote listing every
+  valid formula; reproducible snapshot on the booking (INV-20, `RentalEngineVersion`).
+- Bookings (`NL<year>-NNNNNN`) on 30-minute slots: no double booking of a unit or a skipper enforced by the primary
+  keys of `rental_slots` and `rental_skipper_slots`, with a configurable buffer row after each rental (INV-18,
+  INV-19, ADR 0003); holds ("Opzione") with lazy reclaim of expired holds at conflict time and the
+  `rental.holds_expire` job (INV-05); blocks; states held → confirmed → checked_out → returned → closed, plus
+  cancelled and no_show, only through `rental/reservation` with audit and outbox (INV-97).
+- Planner unit × time (hours, half days, days) on a shared SVG grid: drag to create and to move, colours by state,
+  409 highlight on overlap; bookings list and booking page with the handover panel.
+- Check-out and check-in from the phone (Today, New walk-in booking from now, Scan, Till): renter identity and licence typed by the operator and
+  encrypted, document photos, rental contract signed on screen (new `screen` signature driver; OTP and paper
+  unchanged), deposit in cash, card POS, pre-authorisation through the payment driver or waived, checklist, fuel,
+  engine hours and photos (offline kind `rental.checklist`); on return the actual time with the late fee of the
+  formula, metered fuel, extras, damages with photos and estimate, deposit released or retained fully or partially.
+  A deposit is never revenue until retained (INV-98); one main and one return charge per booking (INV-99).
+- Quick cash in one step (cash, card POS, payment link) with the commercial document through `FiscalDriver`;
+  invoice-requested charges go to the export. The payment link and the deposit pre-authorisation page are shown as
+  a QR for the renter's own phone; the payment link needs a registered customer (disabled for walk-ins).
+- An unexported, unpaid main charge is cancelled and re-created (link `replaced`) on a reprice, a change of
+  customer or of `invoice_requested`, and cancelled with the booking; exported or paid charges get linked
+  adjustments, and `invoice_requested` cannot change once the main charge is paid. A rental charge cancelled by the
+  office frees its link, so the booking can be charged again.
+- `extend` of a checked-out booking takes an optional `formula_id` (a half day or a day cannot grow within its own
+  formula); API only in M11.
+- Handover and return PDFs from the `rental_contract` and `rental_handover` templates (it, en); e-mail template
+  `rental_confirmed`.
+- Report `rental` (utilisation, revenue, damages, deposits) with CSV/Excel export and the dashboard tiles
+  `rental_utilisation` and `rental_revenue` (`reports.rental` or `reports.all`).
+- API: tags `rental-fleet`, `rental-bookings`, `rental-handover`; events `rental.changed`, `rental.confirmed`,
+  `rental.cancelled`, `rental.checked_out`, `rental.returned`; SSE topic `rental.changed`; jobs
+  `rental.holds_expire`, `rental.deposits`, `rental.identity_retention`. Migrations `00023_rental_fleet`,
+  `00024_rental_bookings`, `00025_rental_handovers` (SQLite and PostgreSQL). The offline queue replays a request
+  with its own HTTP method.
+- Demo seed: price list `NOL-<year>`, five units, two skippers, six formulas, extras, bookings in every state
+  (held, confirmed, at sea, back with a damage and a partially retained deposit, back clean with the deposit
+  released, cancelled, no-show, one expired hold) and blocks.
+- Not in M11: online rental sale on the public booking page (deferred, ADR 0016), revenue sharing with third-party
+  owners, sensors (M12).
+
 M10 "Cantiere" (spec 18, 20, 21, 29.2, m10-plan, ADR 0015):
 
 - Pure `formula` package (ADR 0006): parser, type checker and fixed-point evaluator on `qty.Milli` with half-even

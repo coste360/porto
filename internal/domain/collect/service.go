@@ -52,6 +52,8 @@ type Deps struct {
 // Service is the collection service.
 type Service struct {
 	d Deps
+	// rental receives the provider events of rental deposit pre-authorisations (M11, SetRentalDepositHooks).
+	rental RentalDepositHooks
 }
 
 // NewService returns the service.

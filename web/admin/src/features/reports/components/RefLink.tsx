@@ -130,6 +130,23 @@ export function RefLink({
           {children}
         </Link>
       );
+    // M11: rental bookings have a detail page; units are edited on the fleet page.
+    case 'rental_booking':
+      return (
+        <Link
+          to="/m/$marinaId/rental/bookings/$bookingId"
+          params={{ marinaId, bookingId: id }}
+          className={linkClass}
+        >
+          {children}
+        </Link>
+      );
+    case 'rental_unit':
+      return (
+        <Link to="/m/$marinaId/rental/fleet" params={{ marinaId }} className={linkClass}>
+          {children}
+        </Link>
+      );
     default:
       return <>{children}</>;
   }

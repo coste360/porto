@@ -94,6 +94,16 @@ for (const scheme of ['light', 'dark'] as const) {
       await expectNoSeriousViolations(page, `utilities/${scheme}`);
     });
 
+    test('rental fleet, planner and bookings pages (M11)', async ({ page }) => {
+      await login(page);
+      const marinaId = marinaIdOf(page);
+      for (const path of ['rental/fleet', 'rental/planner', 'rental/bookings']) {
+        await page.goto(`/admin/m/${marinaId}/${path}`);
+        await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+        await expectNoSeriousViolations(page, `${path}/${scheme}`);
+      }
+    });
+
     test('customer area login (M8)', async ({ page }) => {
       await page.goto(`/b/${OWNER.slug}/account`);
       await expect(page.getByRole('heading', { name: 'Accedi alle tue prenotazioni' })).toBeVisible();

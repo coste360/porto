@@ -1,0 +1,26 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Contratto di noleggio NL2027-000012
+Tra Porto Demo (il porto) e Mario Rossi (il noleggiatore).
+Unità noleggiata
+Unità GOM58, Gommone 5,8 (LT 0058), lunghezza 5,80 m, posti 8.
+Formula Mezza giornata mattina: dal 12/06/2027 08:00 al 12/06/2027 13:00.
+Il noleggiatore dichiara di essere in possesso della patente nautica richiesta per l'unità.
+Prezzo
+# | Descrizione | Q.tà | Importo
+1 | Gommone 5,8 m - mezza giornata | 1 | 150,00 €
+2 | Frigo portatile | 1 | 5,00 €
+3 | Kit snorkeling | 1 | 10,00 €
+Totale (IVA inclusa): 165,00 €.
+Cauzione: 500,00 €, restituita al rientro salvo danni accertati.
+Condizioni
+Il carburante consumato è addebitato al rientro in base al livello del serbatoio. La riconsegna oltre l'orario
+previsto comporta un supplemento dopo 15 minuti di tolleranza, a blocchi di 30 minuti. I danni accertati al
+rientro sono addebitati sulla base del preventivo di riparazione, anche trattenendo la cauzione. Il
+noleggiatore si impegna a rispettare il regolamento del porto e le norme di navigazione.
+Codice di riconsegna: PR1:01900000-0000-7000-8000-000000000000
+[signature customer]
+Il cliente
+Nome e cognome:
+Data e firma:
+Porto Demo S.r.l. · P. IVA 01234567890 · Pagina 1 di 1

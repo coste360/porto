@@ -1,0 +1,18 @@
+=== page 1 ===
+Porto Demo · Via del Porto 1, 04024 Gaeta (LT)
+Handover report: riconsegna NL2027-000012
+Renter Mario Rossi, unit GOM58 (Gommone 5,8), formula Mezza giornata mattina, from 12/06/2027 08:00
+to 12/06/2027 13:00.
+Actual time: 12/06/2027 13:50, operator Luca Verdi.
+Fuel: 5/8. Engine hours: 125,0. Photos: 2.
+Checks
+Item | Outcome | Note
+Scafo | Graffio a dritta
+Motore | OK
+Giubbotti salvagente | OK
+Damages
+Description | Estimate | Status
+Graffio profondo sul tubolare di dritta | €180.00 | charged
+Late by 35 minutes, late fee €60.00. Fuel charged: €47.25. Return charge: €107.25.
+Deposit €500.00: retained €180.00, released €320.00.
+Porto Demo S.r.l. · VAT 01234567890 · Page 1 of 1

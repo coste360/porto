@@ -66,6 +66,11 @@ func TileValueOf(key string, totals any) TileValue {
 			return f(int64(t.Margin.Value), 0)
 		}
 		return f(t.Records, 0)
+	case RentalTotals:
+		if key == IndRentalRevenue {
+			return f(int64(t.Net.Value), 0)
+		}
+		return f(t.RentedSlots.Value, t.AvailableSlots.Value)
 	case LostDemandTotals:
 		if key == IndLostDemandValue {
 			return f(int64(t.Value.Value), 0)

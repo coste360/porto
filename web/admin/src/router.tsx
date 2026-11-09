@@ -56,6 +56,8 @@ import { yardQuotesRoutes } from './features/yard-quotes/routes';
 import { yardOrdersRoutes } from './features/yard-orders/routes';
 import { yardPlannerRoutes } from './features/yard-planner/routes';
 import { liftingRoutes } from './features/lifting/routes';
+import { rentalFleetRoutes } from './features/rental-fleet/routes';
+import { rentalPlannerRoutes } from './features/rental-planner/routes';
 import { CertificateHelpPage } from './features/help/CertificateHelpPage';
 
 export type RouterContext = { queryClient: QueryClient; api: ApiClient };
@@ -261,6 +263,8 @@ export const routeTree = rootRoute.addChildren([
       ...yardOrdersRoutes(marinaRoute),
       ...yardPlannerRoutes(marinaRoute),
       ...liftingRoutes(marinaRoute),
+      ...rentalFleetRoutes(marinaRoute),
+      ...rentalPlannerRoutes(marinaRoute),
     ]),
   ]),
 ]);

@@ -59,3 +59,6 @@ export * from './hooks/yardquote';
 export * from './hooks/workorders';
 export * from './hooks/yardplan';
 export * from './hooks/lifting';
+export * from './hooks/rentalfleet';
+export * from './hooks/rentalbookings';
+export * from './hooks/rentalhandover';

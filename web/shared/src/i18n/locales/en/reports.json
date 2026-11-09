@@ -290,7 +290,22 @@
     "equipment_code": "Equipment",
     "from_slot": "From slot",
     "to_slot": "To slot",
-    "booking_status": "Booking status"
+    "booking_status": "Booking status",
+    "unit_code": "Unit",
+    "formula_code": "Formula",
+    "booking_number": "Rental",
+    "line_kind": "Line kind",
+    "available_slots": "Available slots",
+    "rented_slots": "Rented slots",
+    "utilisation_bp": "Utilisation",
+    "damage_status": "Damage status",
+    "estimate_cents": "Estimate",
+    "retained_cents": "Retained",
+    "deposit_mode": "Deposit mode",
+    "deposit_status": "Deposit status",
+    "deposit_cents": "Deposit",
+    "released_cents": "Released",
+    "outstanding_cents": "Outstanding"
   },
   "descriptions": {
     "occupancy": "Occupied over available nights, physical or contractual, for berths, land and dynamic areas.",
@@ -313,7 +328,8 @@
     "storage": "Boats ashore in yards and sheds: occupied surface, blocked exits and storage contract production.",
     "maintenance": "Maintenance tasks by status, delays, internal minutes and external costs.",
     "utilities": "Power, water and counter consumption: to charge, charged and unassigned.",
-    "yard": "Hours worked, employee workload, work order margins and lifting equipment of the yard."
+    "yard": "Hours worked, employee workload, work order margins and lifting equipment of the yard.",
+    "rental": "Fleet utilisation, revenue by unit and formula, damages and deposits of rentals (a deposit is not revenue until it is retained)."
   },
   "groupBy": {
     "resource": "Resource",
@@ -366,7 +382,11 @@
     "work_type": "Work type",
     "qualification": "Qualification",
     "bay": "Bay",
-    "equipment": "Equipment"
+    "equipment": "Equipment",
+    "unit": "Unit",
+    "formula": "Formula",
+    "line_kind": "Line kind",
+    "mode": "Mode"
   },
   "sections": {
     "presences": {
@@ -408,6 +428,12 @@
       "margins": "Margins",
       "margins_by_work_type": "Margins by work type",
       "lifting": "Lifting"
+    },
+    "rental": {
+      "utilisation": "Utilisation",
+      "revenue": "Revenue",
+      "damages": "Damages",
+      "deposits": "Deposits"
     }
   },
   "filters": {
@@ -663,6 +689,45 @@
       "booked": "Booked",
       "done": "Done",
       "cancelled": "Cancelled"
+    },
+    "rentalCategory": {
+      "rib": "RIB",
+      "open": "Open boat",
+      "cabin": "Cabin cruiser",
+      "sail": "Sailing boat",
+      "pedalo": "Pedalo",
+      "sup": "SUP"
+    },
+    "rentalLineKind": {
+      "unit": "Unit",
+      "skipper": "Skipper",
+      "extra": "Extra",
+      "late": "Late return",
+      "fuel": "Fuel",
+      "damage": "Damage",
+      "adjustment": "Adjustment"
+    },
+    "rentalDamageStatus": {
+      "open": "Open",
+      "charged": "Charged",
+      "waived": "Waived"
+    },
+    "rentalDepositMode": {
+      "cash": "Cash",
+      "card_pos": "Card (POS)",
+      "preauth": "Pre-authorisation",
+      "waived": "Waived"
+    },
+    "rentalDepositStatus": {
+      "none": "None",
+      "pending": "Pending",
+      "held": "Held",
+      "authorized": "Authorised",
+      "capture_pending": "Capture pending",
+      "released": "Released",
+      "retained": "Retained",
+      "partially_retained": "Partially retained",
+      "waived": "Waived"
     }
   },
   "suggestions": {

@@ -122,7 +122,7 @@ export function op(id: string, patch: Partial<QueuedOp> = {}): QueuedOp {
   };
 }
 
-export type Call = { url: string; headers: Headers; body: unknown };
+export type Call = { url: string; method: string; headers: Headers; body: unknown };
 
 /** A fetch answering from a script of responses (or a function of the call). */
 export function scriptedFetch(
@@ -134,7 +134,7 @@ export function scriptedFetch(
     const raw = init?.body;
     let body: unknown = raw;
     if (typeof raw === 'string') body = JSON.parse(raw);
-    const call = { url: String(input), headers, body };
+    const call = { url: String(input), method: init?.method ?? 'GET', headers, body };
     calls.push(call);
     const r = await answer(call, calls.length);
     if (r instanceof Error) throw r;

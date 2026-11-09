@@ -1,0 +1,225 @@
+{
+  "nav": {
+    "group": "Rental",
+    "fleet": "Fleet"
+  },
+  "title": "Rental fleet",
+  "description": "Units, skippers, formulas, extras and rental settings.",
+  "pending": "This section will be available soon.",
+  "tabs": {
+    "units": "Units",
+    "skippers": "Skippers",
+    "formulas": "Formulas",
+    "extras": "Extras",
+    "settings": "Settings"
+  },
+  "units": {
+    "new": "New unit",
+    "edit": "Edit unit",
+    "empty": "No units in the fleet.",
+    "licenceNeeded": "Licence required",
+    "licenceNotNeeded": "No licence",
+    "kwComputed": "Total power {{kw}} kW (threshold {{threshold}} kW): {{verdict}}.",
+    "kwFromVessel": "The power is read from the engines of the registry vessel (threshold {{threshold}} kW).",
+    "thirdPartyHint": "The owner is for information only: revenue sharing is not managed."
+  },
+  "skippers": {
+    "new": "New skipper",
+    "edit": "Edit skipper",
+    "empty": "No skippers.",
+    "inactive": "Inactive",
+    "noHours": "No hours",
+    "editHours": "Hours",
+    "hoursTitle": "Weekly hours of {{name}}",
+    "defaultHours": "Monday to Saturday, opening hours",
+    "hoursInvalid": "Each window must start before it ends and not overlap another on the same day.",
+    "hint": "Weekly hours are a guide; days off and absences are blocks on the planner."
+  },
+  "formulas": {
+    "new": "New formula",
+    "edit": "Edit formula",
+    "empty": "No formulas.",
+    "inactive": "Inactive"
+  },
+  "extras": {
+    "new": "New extra",
+    "edit": "Edit extra",
+    "empty": "No extras.",
+    "inactive": "Inactive"
+  },
+  "settings": {
+    "window": "Hours and bands",
+    "rules": "Rules",
+    "checklist": "Handover checklist",
+    "addBand": "Add band",
+    "stripLabel": "Open {{from}}-{{to}}; bands: {{bands}}",
+    "preauthUnavailable": "No enabled payment provider supports pre-authorisation: the mode will not be offered."
+  },
+  "issues": {
+    "window_invalid": "Opening must start before closing.",
+    "window_dst": "Opening hours cannot include 02:00-03:00 (daylight saving change).",
+    "buffer_range": "The buffer between rentals is 0 to 8 half hours.",
+    "bands_count": "Set 1 to 4 bands.",
+    "band_code": "Each band needs a unique code (lower case, digits and underscore).",
+    "band_order": "Each band must start before it ends.",
+    "band_outside": "Bands must be inside the opening hours.",
+    "band_dst": "Bands cannot include 02:00-03:00.",
+    "band_gap_lt_buffer": "Two bands must be at least the buffer apart."
+  },
+  "coverage": {
+    "open": "Price coverage",
+    "title": "Price coverage",
+    "description": "For a sample date, every formula is priced on every unit with the active price list.",
+    "date": "Sample date"
+  },
+  "hints": {
+    "allCategories": "Nothing selected: every category.",
+    "allCategoriesShort": "All",
+    "chooseItem": "Choose an item",
+    "none": "None",
+    "chooseVessel": "Choose the vessel",
+    "searchVessel": "Search vessel",
+    "noVessel": "No vessels",
+    "searchBerth": "Search berth",
+    "noBerth": "No berths",
+    "chooseOwner": "Choose the owner",
+    "searchOwner": "Search customer",
+    "noOwner": "No customers",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes"
+  },
+  "fields": {
+    "code": "Code",
+    "vessel": "Vessel",
+    "category": "Category",
+    "seats": "Seats",
+    "licence": "Licence",
+    "fuelType": "Fuel",
+    "tank": "Tank (litres)",
+    "deposit": "Deposit",
+    "status": "Status",
+    "homeBerth": "Home berth",
+    "item": "Item",
+    "ownership": "Ownership",
+    "owner": "Owner",
+    "note": "Notes",
+    "name": "Name",
+    "nameIt": "Name (Italian)",
+    "nameEn": "Name (English)",
+    "phone": "Phone",
+    "email": "Email",
+    "licenceExpires": "Licence expiry",
+    "active": "Active",
+    "hours": "Hours",
+    "weekday": "Day",
+    "from": "From",
+    "to": "To",
+    "kind": "Kind",
+    "band": "Band",
+    "bandCode": "Band code",
+    "minSlots": "Minimum (half hours)",
+    "maxSlots": "Maximum (half hours, empty = opening)",
+    "minDays": "Minimum days (at least {{min}})",
+    "maxDays": "Maximum days",
+    "skipper": "Skipper",
+    "fuel": "Fuel",
+    "fuelItem": "Fuel item",
+    "lateItem": "Late fee item",
+    "grace": "Grace (minutes)",
+    "lateStep": "Late fee step",
+    "categories": "Categories",
+    "chargeMode": "Charge",
+    "defaultQty": "Default quantity",
+    "maxQty": "Maximum quantity",
+    "openFrom": "Opening",
+    "openTo": "Closing",
+    "buffer": "Buffer between rentals (half hours)",
+    "deskHold": "Desk option (minutes)",
+    "noShowAfter": "No-show after (minutes)",
+    "threshold": "Licence threshold (kW)",
+    "skipperItem": "Skipper item",
+    "damageItem": "Damage item",
+    "register": "Default cash register",
+    "checkoutPhotos": "Minimum photos at check-out",
+    "checkinPhotos": "Minimum photos at check-in",
+    "retention": "Document retention (days)",
+    "depositModes": "Deposit modes",
+    "key": "Key",
+    "label": "Label",
+    "labelEn": "Label (English)",
+    "formula": "Formula"
+  },
+  "enums": {
+    "category": {
+      "rib": "RIB",
+      "open": "Open boat",
+      "cabin": "Cabin cruiser",
+      "sail": "Sailing boat",
+      "pedalo": "Pedalo",
+      "sup": "SUP"
+    },
+    "licence": {
+      "never": "Never",
+      "always": "Always",
+      "threshold": "Above the power threshold"
+    },
+    "fuelType": {
+      "petrol": "Petrol",
+      "diesel": "Diesel",
+      "electric": "Electric",
+      "none": "None"
+    },
+    "status": {
+      "available": "Available",
+      "maintenance": "In maintenance",
+      "retired": "Retired"
+    },
+    "ownership": {
+      "marina": "Marina",
+      "third_party": "Third party"
+    },
+    "kind": {
+      "hourly": "Hourly",
+      "half_day": "Half day",
+      "day": "Full day",
+      "multi_day": "Several days",
+      "week": "Week"
+    },
+    "skipper": {
+      "none": "No skipper",
+      "optional": "Optional skipper",
+      "required": "Skipper required"
+    },
+    "fuel": {
+      "included": "Included",
+      "metered": "Metered"
+    },
+    "chargeMode": {
+      "per_rental": "Per rental",
+      "per_day": "Per day"
+    },
+    "depositMode": {
+      "cash": "Cash",
+      "card_pos": "Card (POS)",
+      "preauth": "Pre-authorisation"
+    },
+    "weekday": {
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday",
+      "7": "Sunday"
+    },
+    "weekdayShort": {
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat",
+      "7": "Sun"
+    }
+  }
+}

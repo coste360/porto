@@ -715,6 +715,23 @@ type EquipmentBookingChangedData struct {
 	Status      string `json:"status"`
 }
 
+// RentalData is the data of rental.changed, rental.confirmed, rental.cancelled, rental.checked_out and
+// rental.returned (M11): ids, enums and dates only (INV-70). Change says what happened for rental.changed
+// (created, rescheduled, extended, no_show, closed, hold_extended, block, unit, skipper, formula, settings,
+// handover, damage, deposit); Entity and EntityID name a non-booking entity (unit, skipper, formula, extra,
+// settings, block).
+type RentalData struct {
+	BookingID string `json:"booking_id,omitempty"`
+	UnitID    string `json:"unit_id,omitempty"`
+	SkipperID string `json:"skipper_id,omitempty"`
+	Status    string `json:"status,omitempty"`
+	Change    string `json:"change,omitempty"`
+	StartsOn  string `json:"starts_on,omitempty"`
+	EndsOn    string `json:"ends_on,omitempty"`
+	Entity    string `json:"entity,omitempty"`
+	EntityID  string `json:"entity_id,omitempty"`
+}
+
 const sampleID = "01900000-0000-7000-8000-000000000000"
 
 // Samples returns one example payload per event type.
@@ -876,5 +893,14 @@ func Samples() map[string]any {
 		WorkOrderBilled:         WorkOrderBilledData{WorkOrderID: sampleID, BillingID: sampleID, Kind: "final", ChargeID: sampleID, GrossCents: 169595},
 		YardPlanChanged:         YardPlanChangedData{Entity: "assignments", Dates: []string{night.String()}},
 		EquipmentBookingChanged: EquipmentBookingChangedData{BookingID: sampleID, EquipmentID: sampleID, Date: night.String(), Status: "booked"},
+		// M11
+		RentalChanged: RentalData{
+			BookingID: sampleID, UnitID: sampleID, SkipperID: sampleID, Status: "held", Change: "created",
+			StartsOn: night.String(), EndsOn: night.String(),
+		},
+		RentalConfirmed:  RentalData{BookingID: sampleID, UnitID: sampleID, Status: "confirmed", StartsOn: night.String(), EndsOn: night.String()},
+		RentalCancelled:  RentalData{BookingID: sampleID, UnitID: sampleID, Status: "cancelled", Change: "hold_expired", StartsOn: night.String(), EndsOn: night.String()},
+		RentalCheckedOut: RentalData{BookingID: sampleID, UnitID: sampleID, Status: "checked_out", StartsOn: night.String(), EndsOn: night.String()},
+		RentalReturned:   RentalData{BookingID: sampleID, UnitID: sampleID, Status: "returned", StartsOn: night.String(), EndsOn: night.String()},
 	}
 }

@@ -77,6 +77,8 @@ func Get(cfg *config.Config, version, edition string) Meta {
 			"storage", "maintenance", "utilities",
 			// M10 (m10-plan §13): yard catalogue, quotes, work orders and planner; lifting equipment bookings.
 			"yard", "lifting",
+			// M11 (m11-plan §13.2): rental fleet, planner, check-out and check-in, quick cash.
+			"rental",
 		},
 		DemoPairing:          cfg != nil && cfg.DemoPairingEnabled(),
 		PricingEngineVersion: pricing.EngineVersion,

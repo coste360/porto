@@ -163,6 +163,10 @@ func TestContract_ConfirmedOnlyInConfirmTransit(t *testing.T) {
 		if de.IsDir() || !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") || strings.HasSuffix(path, ".gen.go") {
 			return nil
 		}
+		// Rental bookings (M11) have their own confirmed status, guarded by INV-97 (only rental/reservation writes it).
+		if strings.HasPrefix(path, filepath.Join(root, "domain", "rental")+string(filepath.Separator)) {
+			return nil
+		}
 		f, err := os.Open(path)
 		if err != nil {
 			return err

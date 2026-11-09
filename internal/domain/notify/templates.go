@@ -88,6 +88,12 @@ const TemplateYardQuote = "yard_quote"
 // M10Templates lists the M10 templates.
 func M10Templates() []string { return []string{TemplateYardQuote} }
 
+// M11 templates (m11-plan §16.2): the optional "noleggio confermato" email sent to the renter (BOOKING).
+const TemplateRentalConfirmed = "rental_confirmed"
+
+// M11Templates lists the M11 templates.
+func M11Templates() []string { return []string{TemplateRentalConfirmed} }
+
 // M4Templates lists the M4 templates.
 func M4Templates() []string {
 	return []string{
@@ -162,6 +168,7 @@ type templateSet struct {
 var templates = func() map[string]templateSet {
 	out := map[string]templateSet{}
 	names := append(append(append([]string{TemplatePasswordReset, TemplateInvitation}, M4Templates()...), M9Templates()...), M10Templates()...)
+	names = append(names, M11Templates()...)
 	optional := map[string]bool{}
 	for _, name := range append(M5Templates(), M8Templates()...) {
 		names, optional[name] = append(names, name), true

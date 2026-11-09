@@ -69,7 +69,10 @@ export type MarinaRoutePath =
   | '/m/$marinaId/yard/lifting'
   | '/m/$marinaId/yard/timesheets'
   | '/m/$marinaId/yard/employees'
-  | '/m/$marinaId/yard/catalog';
+  | '/m/$marinaId/yard/catalog'
+  | '/m/$marinaId/rental/planner'
+  | '/m/$marinaId/rental/bookings'
+  | '/m/$marinaId/rental/fleet';
 
 export type NavItem = {
   id: string;
@@ -186,6 +189,25 @@ export const NAV_ITEMS: NavItem[] = [
     to: '/m/$marinaId/yard/catalog',
     labelKey: 'yardCatalog:nav.catalog',
     anyOf: ['yard.read', 'yard.manage'],
+  },
+  // M11 (m11-plan §14), group "Noleggio"
+  {
+    id: 'rental-planner',
+    to: '/m/$marinaId/rental/planner',
+    labelKey: 'rentalBookings:nav.planner',
+    anyOf: ['rental.manage'],
+  },
+  {
+    id: 'rental-bookings',
+    to: '/m/$marinaId/rental/bookings',
+    labelKey: 'rentalBookings:nav.bookings',
+    anyOf: ['rental.manage'],
+  },
+  {
+    id: 'rental-fleet',
+    to: '/m/$marinaId/rental/fleet',
+    labelKey: 'rentalFleet:nav.fleet',
+    anyOf: ['rental.manage'],
   },
   // M4 (m4-plan §8.1)
   {
@@ -375,7 +397,8 @@ export const NAV_ITEMS: NavItem[] = [
     id: 'reports',
     to: '/m/$marinaId/reports',
     labelKey: 'common:nav.reports',
-    anyOf: ['reports.operational', 'reports.all'],
+    // reports.rental: the rental role opens the rental report (M11).
+    anyOf: ['reports.operational', 'reports.all', 'reports.rental'],
   },
   { id: 'dock', to: '/m/$marinaId/dock', labelKey: 'common:nav.dock', anyOf: ['presence.write'] },
   {
@@ -469,7 +492,7 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 /** Modules of the next milestones, listed disabled in the sidebar. */
-export const UPCOMING_MODULES = ['common:nav.modules.rental'] as const;
+export const UPCOMING_MODULES = ['common:nav.modules.sensors'] as const;
 
 export function visibleNavItems(permissions: readonly Permission[]): NavItem[] {
   return NAV_ITEMS.filter((item) => item.anyOf.some((p) => permissions.includes(p)));

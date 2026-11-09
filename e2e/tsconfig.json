@@ -9,5 +9,5 @@
     "types": ["node"],
     "noEmit": true
   },
-  "include": ["playwright.config.ts", "playwright.desktop.config.ts", "support", "tests", "tests-desktop"]
+  "include": ["playwright.config.ts", "playwright.desktop.config.ts", "support", "helpers", "tests", "tests-desktop"]
 }

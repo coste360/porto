@@ -36,9 +36,11 @@ describe('offline allowlists', () => {
       'recordPayment',
       'recordPresence',
       'reportMaintenance',
+      'saveHandoverChecklist',
       'startTimer',
       'stopTimer',
       'updateTaskProgress',
+      'uploadHandoverPhoto',
       'uploadMaintenancePhoto',
       'uploadMeterReadingPhoto',
       'uploadPresencePhoto',
@@ -132,5 +134,29 @@ describe('offline allowlists', () => {
     const kinds = new Set(Object.values(OFFLINE_OPERATION_KINDS));
     expect(kinds.has('yard.timesheet')).toBe(true);
     expect(kinds.has('yard.activity_done')).toBe(true);
+  });
+  it('caches the rental phone slot (M11): day of today and tomorrow, bookings, settings and handover drafts', () => {
+    const yes = [
+      queryKeys.rentalDay(M, 'today'),
+      queryKeys.rentalDay(M, localDate()),
+      queryKeys.rentalDay(M, localDate(1)),
+      queryKeys.rentalBooking(M, 'b1'),
+      queryKeys.rentalSettings(M),
+      queryKeys.rentalHandover(M, 'b1', 'checkout'),
+      queryKeys.rentalHandover(M, 'b1', 'checkin'),
+    ];
+    const no = [
+      queryKeys.rentalDay(M, localDate(2)),
+      queryKeys.rentalPlanner(M, '2027-06-01', '2027-06-07', 'hours'),
+      queryKeys.rentalBookings(M),
+      queryKeys.rentalUnits(M),
+      queryKeys.rentalDeposit(M, 'b1'),
+      queryKeys.rentalBooking('other', 'b1'),
+    ];
+    for (const k of yes) expect(isPersistable(k, M), JSON.stringify(k)).toBe(true);
+    for (const k of no) expect(isPersistable(k, M), JSON.stringify(k)).toBe(false);
+    const kinds = new Set(Object.values(OFFLINE_OPERATION_KINDS));
+    expect(kinds.has('rental.checklist')).toBe(true);
+    expect(OFFLINE_QUERY_ALLOWLIST.every((e) => e.operationId !== null)).toBe(true);
   });
 });

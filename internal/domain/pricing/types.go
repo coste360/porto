@@ -288,6 +288,9 @@ type Scope struct {
 	Channels           []Channel      `json:"channels,omitempty"`
 	CustomerCategories []string       `json:"customer_categories,omitempty"`
 	Periods            []string       `json:"periods,omitempty"` // rate period codes
+	// TimeBands are rental half-day band codes (M11): honoured only by RentalQuote, omitempty so that published
+	// catalogues stay byte-identical (INV-26).
+	TimeBands []string `json:"time_bands,omitempty"`
 }
 
 // Conditions of modifiers and discounts; nil = absent.

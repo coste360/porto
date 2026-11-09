@@ -51,7 +51,7 @@ const PHONE: Record<Role, string> = {
   dock: `/m/${M}/dock`,
   yard_mgr: `/m/${M}/yard-phone`,
   yard: `/m/${M}/yard-phone`,
-  rental: `/m/${M}/maintenance-phone`,
+  rental: `/m/${M}/rental-phone`,
   viewer: `/m/${M}/direction`,
 };
 

@@ -86,6 +86,10 @@ export const TIME_UNITS = [
   'season',
   'year',
   'stay',
+  // M11 (m11-plan §5.1): rental units, valid only on flat base rules of rental items.
+  'hour',
+  'half_day',
+  'day',
 ] as const satisfies readonly Schemas['TimeUnit'][];
 
 export const SPLIT_RULES = [

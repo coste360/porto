@@ -60,6 +60,18 @@ describe('runner', () => {
     r.dispose();
   });
 
+  it('replays with the method of the request, POST by default', async () => {
+    const { fetch, calls } = scriptedFetch(() => json(200, {}));
+    const r = makeRunner(clock, fetch);
+    r.setUser(USER);
+    const put = presenceNewOp('v1');
+    await enqueueOp({ ...put, request: { ...put.request, method: 'PUT' } });
+    await enqueueOp(presenceNewOp('v2'));
+    await drained(r);
+    expect(calls.map((c) => c.method)).toEqual(['PUT', 'POST']);
+    r.dispose();
+  });
+
   it('a lost response is retried with the same key and the replay header; the second answer settles it', async () => {
     let n = 0;
     const { fetch, calls } = scriptedFetch(() =>

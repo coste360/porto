@@ -1,0 +1,225 @@
+{
+  "nav": {
+    "group": "Noleggio",
+    "fleet": "Flotta"
+  },
+  "title": "Flotta a noleggio",
+  "description": "Unità, skipper, formule, extra e impostazioni del noleggio.",
+  "pending": "Questa sezione sarà disponibile a breve.",
+  "tabs": {
+    "units": "Unità",
+    "skippers": "Skipper",
+    "formulas": "Formule",
+    "extras": "Extra",
+    "settings": "Impostazioni"
+  },
+  "units": {
+    "new": "Nuova unità",
+    "edit": "Modifica unità",
+    "empty": "Nessuna unità nella flotta.",
+    "licenceNeeded": "Patente richiesta",
+    "licenceNotNeeded": "Senza patente",
+    "kwComputed": "Potenza totale {{kw}} kW (soglia {{threshold}} kW): {{verdict}}.",
+    "kwFromVessel": "La potenza viene letta dai motori dell'imbarcazione in anagrafica (soglia {{threshold}} kW).",
+    "thirdPartyHint": "Il proprietario è solo informativo: la ripartizione dei ricavi non è gestita."
+  },
+  "skippers": {
+    "new": "Nuovo skipper",
+    "edit": "Modifica skipper",
+    "empty": "Nessuno skipper.",
+    "inactive": "Non attivo",
+    "noHours": "Nessun orario",
+    "editHours": "Orari",
+    "hoursTitle": "Orari settimanali di {{name}}",
+    "defaultHours": "Lunedì-sabato, orario di apertura",
+    "hoursInvalid": "Gli intervalli devono avere inizio prima della fine e non sovrapporsi nello stesso giorno.",
+    "hint": "Gli orari settimanali sono indicativi; ferie e assenze si inseriscono come blocchi nel planner."
+  },
+  "formulas": {
+    "new": "Nuova formula",
+    "edit": "Modifica formula",
+    "empty": "Nessuna formula.",
+    "inactive": "Non attiva"
+  },
+  "extras": {
+    "new": "Nuovo extra",
+    "edit": "Modifica extra",
+    "empty": "Nessun extra.",
+    "inactive": "Non attivo"
+  },
+  "settings": {
+    "window": "Orario e fasce",
+    "rules": "Regole",
+    "checklist": "Checklist di consegna",
+    "addBand": "Aggiungi fascia",
+    "stripLabel": "Apertura {{from}}-{{to}}; fasce: {{bands}}",
+    "preauthUnavailable": "Nessun fornitore di pagamento attivo supporta la pre-autorizzazione: la modalità non sarà proposta."
+  },
+  "issues": {
+    "window_invalid": "L'orario di apertura deve iniziare prima della chiusura.",
+    "window_dst": "L'orario di apertura non può comprendere le 02:00-03:00 (cambio dell'ora legale).",
+    "buffer_range": "Il margine tra noleggi va da 0 a 8 mezz'ore.",
+    "bands_count": "Servono da 1 a 4 fasce.",
+    "band_code": "Ogni fascia ha un codice univoco (minuscole, cifre e trattino basso).",
+    "band_order": "Ogni fascia deve iniziare prima di finire.",
+    "band_outside": "Le fasce devono stare dentro l'orario di apertura.",
+    "band_dst": "Le fasce non possono comprendere le 02:00-03:00.",
+    "band_gap_lt_buffer": "Tra due fasce serve almeno il margine tra noleggi."
+  },
+  "coverage": {
+    "open": "Copertura prezzi",
+    "title": "Copertura dei prezzi",
+    "description": "Per una data di prova, ogni formula è prezzata su ogni unità con il listino attivo.",
+    "date": "Data di prova"
+  },
+  "hints": {
+    "allCategories": "Nessuna selezione: tutte le categorie.",
+    "allCategoriesShort": "Tutte",
+    "chooseItem": "Scegli un articolo",
+    "none": "Nessuno",
+    "chooseVessel": "Scegli l'imbarcazione",
+    "searchVessel": "Cerca imbarcazione",
+    "noVessel": "Nessuna imbarcazione",
+    "searchBerth": "Cerca posto",
+    "noBerth": "Nessun posto",
+    "chooseOwner": "Scegli il proprietario",
+    "searchOwner": "Cerca cliente",
+    "noOwner": "Nessun cliente",
+    "minutes_one": "{{count}} minuto",
+    "minutes_other": "{{count}} minuti"
+  },
+  "fields": {
+    "code": "Codice",
+    "vessel": "Imbarcazione",
+    "category": "Categoria",
+    "seats": "Posti",
+    "licence": "Patente",
+    "fuelType": "Carburante",
+    "tank": "Serbatoio (litri)",
+    "deposit": "Cauzione",
+    "status": "Stato",
+    "homeBerth": "Posto barca",
+    "item": "Articolo",
+    "ownership": "Proprietà",
+    "owner": "Proprietario",
+    "note": "Note",
+    "name": "Nome",
+    "nameIt": "Nome (italiano)",
+    "nameEn": "Nome (inglese)",
+    "phone": "Telefono",
+    "email": "Email",
+    "licenceExpires": "Scadenza patente",
+    "active": "Attivo",
+    "hours": "Orari",
+    "weekday": "Giorno",
+    "from": "Dalle",
+    "to": "Alle",
+    "kind": "Tipo",
+    "band": "Fascia",
+    "bandCode": "Codice fascia",
+    "minSlots": "Minimo (mezz'ore)",
+    "maxSlots": "Massimo (mezz'ore, vuoto = apertura)",
+    "minDays": "Giorni minimi (almeno {{min}})",
+    "maxDays": "Giorni massimi",
+    "skipper": "Skipper",
+    "fuel": "Carburante",
+    "fuelItem": "Articolo carburante",
+    "lateItem": "Articolo ritardo",
+    "grace": "Tolleranza (minuti)",
+    "lateStep": "Scatto ritardo",
+    "categories": "Categorie",
+    "chargeMode": "Addebito",
+    "defaultQty": "Quantità predefinita",
+    "maxQty": "Quantità massima",
+    "openFrom": "Apertura",
+    "openTo": "Chiusura",
+    "buffer": "Margine tra noleggi (mezz'ore)",
+    "deskHold": "Opzione dal banco (minuti)",
+    "noShowAfter": "Mancato ritiro dopo (minuti)",
+    "threshold": "Soglia patente (kW)",
+    "skipperItem": "Articolo skipper",
+    "damageItem": "Articolo danni",
+    "register": "Cassa predefinita",
+    "checkoutPhotos": "Foto minime alla consegna",
+    "checkinPhotos": "Foto minime al rientro",
+    "retention": "Conservazione documenti (giorni)",
+    "depositModes": "Modalità di cauzione",
+    "key": "Chiave",
+    "label": "Etichetta",
+    "labelEn": "Etichetta (inglese)",
+    "formula": "Formula"
+  },
+  "enums": {
+    "category": {
+      "rib": "Gommone",
+      "open": "Open",
+      "cabin": "Cabinato",
+      "sail": "Vela",
+      "pedalo": "Pedalò",
+      "sup": "SUP"
+    },
+    "licence": {
+      "never": "Mai",
+      "always": "Sempre",
+      "threshold": "Oltre la soglia di potenza"
+    },
+    "fuelType": {
+      "petrol": "Benzina",
+      "diesel": "Gasolio",
+      "electric": "Elettrico",
+      "none": "Nessuno"
+    },
+    "status": {
+      "available": "Disponibile",
+      "maintenance": "In manutenzione",
+      "retired": "Dismessa"
+    },
+    "ownership": {
+      "marina": "Del porto",
+      "third_party": "Di terzi"
+    },
+    "kind": {
+      "hourly": "Oraria",
+      "half_day": "Mezza giornata",
+      "day": "Giornata",
+      "multi_day": "Più giorni",
+      "week": "Settimana"
+    },
+    "skipper": {
+      "none": "Senza skipper",
+      "optional": "Skipper facoltativo",
+      "required": "Skipper obbligatorio"
+    },
+    "fuel": {
+      "included": "Incluso",
+      "metered": "A consumo"
+    },
+    "chargeMode": {
+      "per_rental": "Per noleggio",
+      "per_day": "Al giorno"
+    },
+    "depositMode": {
+      "cash": "Contanti",
+      "card_pos": "Carta (POS)",
+      "preauth": "Pre-autorizzazione"
+    },
+    "weekday": {
+      "1": "Lunedì",
+      "2": "Martedì",
+      "3": "Mercoledì",
+      "4": "Giovedì",
+      "5": "Venerdì",
+      "6": "Sabato",
+      "7": "Domenica"
+    },
+    "weekdayShort": {
+      "1": "Lun",
+      "2": "Mar",
+      "3": "Mer",
+      "4": "Gio",
+      "5": "Ven",
+      "6": "Sab",
+      "7": "Dom"
+    }
+  }
+}

@@ -231,14 +231,23 @@ describe('ReportsIndexPage', () => {
     expect(screen.getByTestId('report-card-occupancy')).toBeInTheDocument();
     expect(screen.getByTestId('report-card-comparison')).toBeInTheDocument();
     expect(screen.queryByTestId('report-card-charges')).not.toBeInTheDocument();
-    // M10: the yard report needs reports.yard or reports.all; rental is still announced.
+    // M10/M11: the yard and rental reports need reports.yard / reports.rental or reports.all; nothing is
+    // announced any more.
     expect(screen.queryByTestId('report-card-yard')).not.toBeInTheDocument();
-    expect(screen.getByTestId('report-card-rental')).toHaveTextContent('M11');
+    expect(screen.queryByTestId('report-card-rental')).not.toBeInTheDocument();
+  });
+
+  it('lists the rental report to reports.rental', async () => {
+    render(['marina.read', 'reports.rental'], `/m/${MARINA_ID}/reports`);
+    await screen.findByTestId('reports-index');
+    expect(screen.getByTestId('report-card-rental')).toBeInTheDocument();
+    expect(screen.queryByTestId('report-card-occupancy')).not.toBeInTheDocument();
   });
 
   it('lists every report to reports.all', async () => {
     render([...ALL], `/m/${MARINA_ID}/reports`);
     await screen.findByTestId('reports-index');
-    expect(screen.getAllByTestId(/^report-card-/)).toHaveLength(16 + 3 + 1 + 2);
+    // 16 M7 + 3 M9 + yard + rental + comparison.
+    expect(screen.getAllByTestId(/^report-card-/)).toHaveLength(16 + 3 + 1 + 1 + 1);
   });
 });

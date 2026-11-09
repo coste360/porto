@@ -2,8 +2,8 @@
 // `x-porto-offline: true` in api/openapi.yaml (the server pins the same set, TestPolicies_OfflineSet).
 
 /** Kinds of queued operations. M9 enables utility.reading, maintenance.report and maintenance.outcome
- * (m9-plan §10); M10 enables yard.timesheet and yard.activity_done (m10-plan §7); reserved for M11 (not
- * enabled): rental.checklist. */
+ * (m9-plan §10); M10 enables yard.timesheet and yard.activity_done (m10-plan §7); M11 enables
+ * rental.checklist (m11-plan §12). */
 export type OfflineOpKind =
   | 'presence.record'
   | 'presence.photo'
@@ -12,7 +12,8 @@ export type OfflineOpKind =
   | 'maintenance.report'
   | 'maintenance.outcome'
   | 'yard.timesheet'
-  | 'yard.activity_done';
+  | 'yard.activity_done'
+  | 'rental.checklist';
 
 /** The only operations the queue may replay, with their kind. */
 export const OFFLINE_OPERATION_KINDS = {
@@ -32,6 +33,10 @@ export const OFFLINE_OPERATION_KINDS = {
   createTimeEntry: 'yard.timesheet',
   updateTaskProgress: 'yard.activity_done',
   uploadTaskPhoto: 'yard.activity_done',
+  // M11 (m11-plan §12): checklist, fuel, engine hours and boat photos of a confirmed or checked-out rental;
+  // uploadHandoverPhoto depends on its checklist save; neither changes status, slots, charges or deposits (INV-71).
+  saveHandoverChecklist: 'rental.checklist',
+  uploadHandoverPhoto: 'rental.checklist',
 } as const satisfies Record<string, OfflineOpKind>;
 
 export const OFFLINE_OPERATIONS: readonly string[] = Object.keys(OFFLINE_OPERATION_KINDS);
@@ -126,6 +131,30 @@ export const OFFLINE_QUERY_ALLOWLIST: readonly AllowlistEntry[] = [
     name: 'activities.lifting',
     operationId: 'listEquipmentBookings',
     match: (k) => marinaArea('yard', 'lifting')(k) && k.length === 5 && inWindow(k[4], 2),
+  },
+  // M11 rental slot (m11-plan §12): the rental phone's day view of today and tomorrow, the bookings opened from
+  // it, the settings (checklist template) and the handover drafts:
+  // ['marina', id, 'rental', 'day', date], ['marina', id, 'rental', 'booking', bookingId],
+  // ['marina', id, 'rental', 'settings'], ['marina', id, 'rental', 'handover', bookingId, phase]
+  {
+    name: 'rental.day',
+    operationId: 'getRentalDay',
+    match: (k) => marinaArea('rental', 'day')(k) && k.length === 5 && inWindow(k[4], 2),
+  },
+  {
+    name: 'rental.booking',
+    operationId: 'getRentalBooking',
+    match: (k) => marinaArea('rental', 'booking')(k) && k.length === 5,
+  },
+  {
+    name: 'rental.settings',
+    operationId: 'getRentalSettings',
+    match: (k) => marinaArea('rental', 'settings')(k) && k.length === 4,
+  },
+  {
+    name: 'rental.handover',
+    operationId: 'getHandover',
+    match: (k) => marinaArea('rental', 'handover')(k) && k.length === 6,
   },
   // The meters of the dock reading round (m9-plan §10): ['marina', id, 'utilities', 'meters', { route: 'dock' }]
   {

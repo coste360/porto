@@ -20,6 +20,10 @@ import (
 	"github.com/coste360/porto/internal/domain/yardplan"
 	"github.com/coste360/porto/internal/domain/yardquote"
 
+	"github.com/coste360/porto/internal/domain/rental/fleet"
+	"github.com/coste360/porto/internal/domain/rental/handover"
+	"github.com/coste360/porto/internal/domain/rental/reservation"
+
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/csvimport"
 	"github.com/coste360/porto/internal/domain/apikey"
@@ -128,6 +132,13 @@ type Handler struct {
 	WorkOrders *workorder.Service
 	YardPlan   *yardplan.Service
 	Lifting    *lifting.Service
+
+	// M11 (m11-plan §16.1): rental fleet, formulas, settings and quotes (FLEET), bookings, planner and blocks
+	// (BOOKING), check-out, check-in, deposits, damages and quick cash (HANDOVER); the rental report goes through
+	// Reports.
+	RentalFleet    *fleet.Service
+	RentalBookings *reservation.Service
+	RentalHandover *handover.Service
 }
 
 func principal(r *http.Request) *auth.Principal {

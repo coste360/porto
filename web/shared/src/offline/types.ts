@@ -21,6 +21,8 @@ export interface QueuedOp {
   dependsOn?: { opId: string; bind: Record<string, string> };
   request: {
     operationId: string;
+    /** HTTP method of the replay; POST when omitted (the rental checklist is a PUT). */
+    method?: 'POST' | 'PUT';
     path: string;
     body?: unknown;
     blobId?: string;

@@ -196,6 +196,11 @@ const E = {
   workOrderStatus: vg('reports', 'values.workOrderStatus'),
   bookingPurpose: vg('reports', 'values.bookingPurpose'),
   bookingStatus: vg('reports', 'values.bookingStatus'),
+  rentalCategory: vg('reports', 'values.rentalCategory'),
+  rentalLineKind: vg('reports', 'values.rentalLineKind'),
+  rentalDamageStatus: vg('reports', 'values.rentalDamageStatus'),
+  rentalDepositMode: vg('reports', 'values.rentalDepositMode'),
+  rentalDepositStatus: vg('reports', 'values.rentalDepositStatus'),
 } as const;
 
 const c = (key: string, kind: CellKind, extra: Partial<ColumnDef> = {}): ColumnDef => ({
@@ -974,6 +979,94 @@ export const REPORTS: readonly ReportDef[] = [
       }
     },
   },
+  // M11 (m11-plan §11): the rental report, one view per section (the `view` parameter); money visible with
+  // reports.rental as well as reports.all. Deposits are never revenue: retentions appear in damages only.
+  {
+    key: 'rental',
+    group: 'operational',
+    needsAll: false,
+    permission: 'reports.rental',
+    sectionParam: 'view',
+    sections: ['utilisation', 'revenue', 'damages', 'deposits'],
+    groupBy: ['unit', 'category', 'formula', 'line_kind', 'status', 'mode', 'day', 'week', 'month'],
+    groupByOf: (view) =>
+      ({
+        utilisation: ['unit', 'category', 'day', 'week', 'month'],
+        revenue: ['unit', 'category', 'formula', 'line_kind', 'day', 'week', 'month'],
+        damages: ['unit', 'category', 'status', 'month'],
+        deposits: ['unit', 'category', 'formula', 'mode', 'status', 'month'],
+      })[view] ?? [],
+    filters: [],
+    totals: [t('available_slots', 'int'), t('rented_slots', 'int'), t('utilisation_bp', 'bp')],
+    totalsOf: (view) =>
+      ({
+        utilisation: [
+          t('available_slots', 'int'),
+          t('rented_slots', 'int'),
+          t('utilisation_bp', 'bp'),
+        ],
+        revenue: [
+          t('records', 'int'),
+          t('net_cents', 'cents'),
+          t('vat_cents', 'cents'),
+          t('gross_cents', 'cents'),
+        ],
+        damages: [t('records', 'int'), t('estimate_cents', 'cents'), t('retained_cents', 'cents')],
+        deposits: [
+          t('deposit_cents', 'cents'),
+          t('retained_cents', 'cents'),
+          t('released_cents', 'cents'),
+          t('outstanding_cents', 'cents'),
+        ],
+      })[view] ?? [],
+    chart: t('records', 'int'),
+    columns: (view) => {
+      switch (view) {
+        case 'revenue':
+          return [
+            c('date', 'date'),
+            c('booking_number', 'text'),
+            c('unit_code', 'text'),
+            en('category', E.rentalCategory),
+            c('formula_code', 'text'),
+            en('line_kind', E.rentalLineKind),
+            c('net_cents', 'cents', { total: 'net_cents' }),
+            c('vat_cents', 'cents', { total: 'vat_cents' }),
+            c('gross_cents', 'cents', { total: 'gross_cents' }),
+          ];
+        case 'damages':
+          return [
+            c('date', 'date'),
+            c('booking_number', 'text'),
+            c('unit_code', 'text'),
+            en('damage_status', E.rentalDamageStatus),
+            c('estimate_cents', 'cents', { total: 'estimate_cents' }),
+            c('retained_cents', 'cents', { total: 'retained_cents' }),
+          ];
+        case 'deposits':
+          return [
+            c('date', 'date'),
+            c('booking_number', 'text'),
+            c('unit_code', 'text'),
+            en('deposit_mode', E.rentalDepositMode),
+            en('deposit_status', E.rentalDepositStatus),
+            c('deposit_cents', 'cents', { total: 'deposit_cents' }),
+            c('retained_cents', 'cents', { total: 'retained_cents' }),
+            c('released_cents', 'cents', { total: 'released_cents' }),
+            c('outstanding_cents', 'cents', { total: 'outstanding_cents' }),
+          ];
+        default:
+          return [
+            c('date', 'date'),
+            c('unit_code', 'text'),
+            en('category', E.rentalCategory),
+            c('available_slots', 'int', { total: 'available_slots' }),
+            c('rented_slots', 'int', { total: 'rented_slots' }),
+            c('utilisation_bp', 'bp', { total: 'utilisation_bp' }),
+          ];
+      }
+    },
+  },
 ];
 
 /** The values and their translation group of a filter in a report (report-specific values first). */
@@ -995,8 +1088,8 @@ export function fieldOf(record: Record<string, unknown>, key: string): unknown {
   return v;
 }
 
-/** Reports announced for later milestones (m7-plan §1.2). */
-export const UPCOMING_REPORTS = [{ key: 'rental', milestone: 'M11' }] as const;
+/** Reports announced for later milestones (m7-plan §1.2): none left after M11. */
+export const UPCOMING_REPORTS: readonly { key: string; milestone: string }[] = [];
 
 export function reportDef(key: string): ReportDef | undefined {
   return REPORTS.find((r) => r.key === key);

@@ -24,13 +24,13 @@ test("dashboard tile opens its report with the same period and total", async ({
   const text = (await value.textContent())?.trim() ?? "";
   expect(text).toMatch(/€/);
 
-  // The M11 seams are listed as not available yet; the yard tiles are live since M10.
-  await expect(page.getByTestId("dashboard-seams")).toContainText(
-    "Disponibile con M11",
-  );
-  await expect(page.getByTestId("dashboard-seams")).not.toContainText(
-    "Disponibile con M10",
-  );
+  // Every tile is live since M11: the rental tiles are on the grid and no seam is left.
+  await expect(
+    dashboard.locator(
+      '[data-testid="dashboard-tile"][data-tile="rental_revenue"]',
+    ),
+  ).toBeVisible();
+  await expect(page.getByTestId("dashboard-seams")).toHaveCount(0);
 
   await value.click();
   await expect(page).toHaveURL(

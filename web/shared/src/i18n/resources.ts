@@ -15,6 +15,12 @@ import itYardQuotes from './locales/it/yardQuotes.json';
 import itYardOrders from './locales/it/yardOrders.json';
 import itYardPlanner from './locales/it/yardPlanner.json';
 import itLifting from './locales/it/lifting.json';
+import enRentalFleet from './locales/en/rentalFleet.json';
+import enRentalBookings from './locales/en/rentalBookings.json';
+import enRentalHandover from './locales/en/rentalHandover.json';
+import itRentalFleet from './locales/it/rentalFleet.json';
+import itRentalBookings from './locales/it/rentalBookings.json';
+import itRentalHandover from './locales/it/rentalHandover.json';
 import enAuth from './locales/en/auth.json';
 import enBooking from './locales/en/booking.json';
 import enCommon from './locales/en/common.json';
@@ -200,6 +206,10 @@ export const NAMESPACES = [
   'yardOrders',
   'yardPlanner',
   'lifting',
+  // M11 (m11-plan §14)
+  'rentalFleet',
+  'rentalBookings',
+  'rentalHandover',
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
@@ -268,6 +278,9 @@ export const resources = {
     yardOrders: itYardOrders,
     yardPlanner: itYardPlanner,
     lifting: itLifting,
+    rentalFleet: itRentalFleet,
+    rentalBookings: itRentalBookings,
+    rentalHandover: itRentalHandover,
   },
   en: {
     common: enCommon,
@@ -333,5 +346,8 @@ export const resources = {
     yardOrders: enYardOrders,
     yardPlanner: enYardPlanner,
     lifting: enLifting,
+    rentalFleet: enRentalFleet,
+    rentalBookings: enRentalBookings,
+    rentalHandover: enRentalHandover,
   },
 } as const;

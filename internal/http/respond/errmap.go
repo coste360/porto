@@ -55,6 +55,12 @@ import (
 	"github.com/coste360/porto/internal/domain/yardplan"
 	"github.com/coste360/porto/internal/domain/yardquote"
 	"github.com/coste360/porto/internal/domain/yardquote/price"
+
+	"github.com/coste360/porto/internal/domain/rental/fleet"
+	"github.com/coste360/porto/internal/domain/rental/handover"
+	rentalprice "github.com/coste360/porto/internal/domain/rental/price"
+	"github.com/coste360/porto/internal/domain/rental/reservation"
+	"github.com/coste360/porto/internal/domain/rental/slots"
 	"github.com/coste360/porto/pkg/ext"
 )
 
@@ -339,6 +345,42 @@ var sentinels = []struct {
 	{workorder.ErrNotImplemented, problem.NotImplemented},
 	{yardplan.ErrNotImplemented, problem.NotImplemented},
 	{lifting.ErrNotImplemented, problem.NotImplemented},
+	// M11 (m11-plan §13.1); the typed errors with details (reservation.SlotConflict, handover.IncompleteError,
+	// slots.RangeError) are mapped in mapM11.
+	{fleet.ErrVersionMismatch, problem.VersionConflict},
+	{fleet.ErrCodeTaken, problem.CodeTaken},
+	{fleet.ErrBandGapLtBuffer, problem.BandGapLtBuffer},
+	{fleet.ErrNoPrice, problem.NoPrice},
+	{reservation.ErrVersionMismatch, problem.VersionConflict},
+	{reservation.ErrInvalidTransition, problem.InvalidTransition},
+	{reservation.ErrSlotTaken, problem.RentalSlotTaken},
+	{reservation.ErrSkipperBusy, problem.SkipperBusy},
+	{reservation.ErrHoldExpired, problem.RentalHoldExpired},
+	{reservation.ErrUnitNotBookable, problem.UnitNotBookable},
+	{reservation.ErrSkipperRequired, problem.SkipperRequired},
+	{reservation.ErrSkipperUnavailable, problem.SkipperUnavailable},
+	{reservation.ErrSkipperLicenceExpired, problem.SkipperLicenceExpired},
+	{reservation.ErrCustomerRequired, problem.CustomerRequired},
+	{handover.ErrVersionMismatch, problem.VersionConflict},
+	{handover.ErrInvalidTransition, problem.InvalidTransition},
+	{handover.ErrHandoverIncomplete, problem.HandoverIncomplete},
+	{handover.ErrHandoverLocked, problem.HandoverLocked},
+	{handover.ErrEngineHoursDecreasing, problem.EngineHoursDecreasing},
+	{handover.ErrLicenceRequired, problem.LicenceRequired},
+	{handover.ErrLicenceExpired, problem.LicenceExpired},
+	{handover.ErrPreauthUnavailable, problem.PreauthUnavailable},
+	{handover.ErrDepositExceeds, problem.DepositExceeds},
+	{handover.ErrNothingToCollect, problem.NothingToCollect},
+	{handover.ErrCustomerRequired, problem.CustomerRequired},
+	{handover.ErrOfflineTimeOutOfRange, problem.OfflineTimeOutOfRange},
+	{rentalprice.ErrDepositExceeds, problem.DepositExceeds},
+	{fleet.ErrNotImplemented, problem.NotImplemented},
+	{reservation.ErrNotImplemented, problem.NotImplemented},
+	{handover.ErrNotImplemented, problem.NotImplemented},
+	{rentalprice.ErrNotImplemented, problem.NotImplemented},
+	{slots.ErrNotImplemented, problem.NotImplemented},
+	{pricing.ErrRentalNotImplemented, problem.NotImplemented},
+	{signature.ErrScreenNotImplemented, problem.NotImplemented},
 	{ErrBadJSON, problem.BadRequest},
 	{errUnsupportedMedia, problem.UnsupportedMediaType},
 }
@@ -372,6 +414,9 @@ func MapError(err error) (problem.Type, []problem.Option, bool) {
 		return t, opts, true
 	}
 	if t, opts, ok := mapM10(err); ok {
+		return t, opts, true
+	}
+	if t, opts, ok := mapM11(err); ok {
 		return t, opts, true
 	}
 	if fe, ok := errors.AsType[*report.FilterError](err); ok {
@@ -776,4 +821,47 @@ func orEmptyStrings(v []string) []string {
 		return []string{}
 	}
 	return v
+}
+
+// mapM11 maps the typed errors of M11 that carry details (m11-plan §13.1). Details hold ids, dates, slots and
+// step names only (no renter or skipper data, INV-70).
+func mapM11(err error) (problem.Type, []problem.Option, bool) {
+	if ce, ok := errors.AsType[*reservation.SlotConflict](err); ok {
+		t := problem.RentalSlotTaken
+		if ce.Target == reservation.TargetSkipper {
+			t = problem.SkipperBusy
+		}
+		d := map[string]any{
+			"target": ce.Target, "slots": orEmptyInts(ce.Slots), "booking_ids": orEmptyStrings(ce.BookingIDs),
+			"block_ids": orEmptyStrings(ce.BlockIDs),
+		}
+		if ce.ResourceID != "" {
+			d["resource_id"] = ce.ResourceID
+		}
+		if !ce.Date.IsZero() {
+			d["date"] = ce.Date.String()
+		}
+		return t, []problem.Option{problem.WithDetails(d)}, true
+	}
+	if ie, ok := errors.AsType[*handover.IncompleteError](err); ok {
+		return problem.HandoverIncomplete, []problem.Option{problem.WithDetails(map[string]any{"missing": orEmptyStrings(ie.Missing)})}, true
+	}
+	if re, ok := errors.AsType[*slots.RangeError](err); ok {
+		t := problem.FormulaRangeMismatch
+		switch re.Code {
+		case slots.CodeOutsideRentalHours:
+			t = problem.OutsideRentalHours
+		case slots.CodeBandGapLtBuffer:
+			t = problem.BandGapLtBuffer
+		}
+		d := map[string]any{}
+		if re.Kind != "" {
+			d["kind"] = re.Kind
+		}
+		if re.Expected != "" {
+			d["expected"] = re.Expected
+		}
+		return t, []problem.Option{problem.WithDetails(d)}, true
+	}
+	return "", nil, false
 }

@@ -45,7 +45,10 @@
     "month": "Mese",
     "season": "Stagione",
     "year": "Anno",
-    "stay": "Una tantum"
+    "stay": "Una tantum",
+    "hour": "Ora (noleggio)",
+    "half_day": "Mezza giornata (noleggio)",
+    "day": "Giornata (noleggio)"
   },
   "splitRules": {
     "pro_rata_daily": "Pro rata giornaliero",

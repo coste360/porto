@@ -24,3 +24,4 @@ unique, 0004 prezzi puri, 0005 OpenAPI spec-first, 0009 shadcn, 0012 kit della m
 | [0013](0013-prenotazione-online-m8.md) | Prenotazione online (M8): quote come contatori nel DB, hold concreto con idempotenza di dominio, conferma anche da canale verificato | proposta |
 | [0014](0014-rimessaggio-manutenzioni-m9.md) | Rimessaggio e manutenzioni (M9): ipotesi separate dallo stato reale, ottimizzatore puro con seme, applicazione tutto o niente, consumi addebitati una volta | proposta |
 | [0015](0015-cantiere-m10.md) | Cantiere (M10): formule pure in virgola fissa, preventivo riproducibile dallo snapshot, commessa creata nell'accettazione, mezzi senza doppie prenotazioni per vincolo del DB, magazzino rinviato | proposta |
+| [0016](0016-noleggio-m11.md) | Noleggio (M11): slot di 30 minuti con buffer per vincolo del DB, hold come la vendita online, prezzi dai listini, cauzione mai ricavo finché non trattenuta, vendita online rinviata | proposta |

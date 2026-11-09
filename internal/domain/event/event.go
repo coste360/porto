@@ -163,6 +163,17 @@ const (
 	EquipmentBookingChanged = "equipment.booking_changed"
 )
 
+// M11 event types (version 1, m11-plan §13.2, D24). rental.confirmed, rental.cancelled, rental.checked_out and
+// rental.returned are public (webhook catalogue); rental.changed feeds SSE and cache invalidation only. Data carry
+// ids, enums and dates: never renter or skipper data, documents, licence numbers or amounts (INV-70).
+const (
+	RentalChanged    = "rental.changed"
+	RentalConfirmed  = "rental.confirmed"
+	RentalCancelled  = "rental.cancelled"
+	RentalCheckedOut = "rental.checked_out"
+	RentalReturned   = "rental.returned"
+)
+
 // SSE topics.
 const (
 	TopicMarina = "marina.changed"
@@ -197,6 +208,8 @@ const (
 	// TopicYard carries the yard catalogue, yard quotes, work orders, tasks, time entries, materials, external
 	// costs, billings, employees, planner assignments and lifting bookings (M10).
 	TopicYard = "yard.changed"
+	// TopicRental carries rental units, skippers, formulas, settings, bookings, blocks, handovers and damages (M11).
+	TopicRental = "rental.changed"
 )
 
 // TypeInfo describes an event type. Public types can be subscribed by webhook endpoints; Topic is the SSE event
@@ -317,6 +330,12 @@ var catalogue = []TypeInfo{
 	{WorkOrderBilled, TopicYard, false},
 	{YardPlanChanged, TopicYard, false},
 	{EquipmentBookingChanged, TopicYard, true},
+	// M11
+	{RentalChanged, TopicRental, false},
+	{RentalConfirmed, TopicRental, true},
+	{RentalCancelled, TopicRental, true},
+	{RentalCheckedOut, TopicRental, true},
+	{RentalReturned, TopicRental, true},
 }
 
 // Types returns the catalogue of event types.

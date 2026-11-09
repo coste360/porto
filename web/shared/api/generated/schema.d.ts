@@ -10735,6 +10735,716 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/marinas/{marinaId}/rental/units": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Rental units of the fleet (rental.manage) */
+        get: operations["listRentalUnits"];
+        put?: never;
+        /** Add a registry vessel of the marina to the rental fleet (rental.manage); the item must have revenue class rental */
+        post: operations["createRentalUnit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/units/{rentalUnitId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalUnitId: components["parameters"]["RentalUnitId"];
+            };
+            cookie?: never;
+        };
+        /** A rental unit (rental.manage) */
+        get: operations["getRentalUnit"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update a rental unit (rental.manage); maintenance and retired units are not bookable for new bookings */
+        patch: operations["updateRentalUnit"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/skippers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Bookable skippers with their weekly hours (rental.manage) */
+        get: operations["listRentalSkippers"];
+        put?: never;
+        /** Add a skipper (rental.manage) */
+        post: operations["createRentalSkipper"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/skippers/{rentalSkipperId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalSkipperId: components["parameters"]["RentalSkipperId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update a skipper (rental.manage) */
+        patch: operations["updateRentalSkipper"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/skippers/{rentalSkipperId}/hours": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalSkipperId: components["parameters"]["RentalSkipperId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace the weekly working hours of a skipper (rental.manage; a soft rule, days off are blocks) */
+        put: operations["putRentalSkipperHours"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/formulas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Rental formulas (rental.manage) */
+        get: operations["listRentalFormulas"];
+        put?: never;
+        /** Add a rental formula (marina.configure) */
+        post: operations["createRentalFormula"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/formulas/{rentalFormulaId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalFormulaId: components["parameters"]["RentalFormulaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update a rental formula (marina.configure) */
+        patch: operations["updateRentalFormula"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/extras": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Rental extras (rental.manage) */
+        get: operations["listRentalExtras"];
+        put?: never;
+        /** Add a rental extra on a catalogue item (marina.configure) */
+        post: operations["createRentalExtra"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/extras/{rentalExtraId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalExtraId: components["parameters"]["RentalExtraId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update a rental extra (marina.configure) */
+        patch: operations["updateRentalExtra"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Rental settings: open window, bands, buffer, holds, checklist (rental.manage; defaults when never saved, version 0) */
+        get: operations["getRentalSettings"];
+        /** Save the rental settings (marina.configure; If-Match "0" for the first save) */
+        put: operations["putRentalSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stateless quote of a unit and range: one formula, or every valid formula sorted by total when omitted (rental.manage) */
+        post: operations["quoteRental"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/planner": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Planner rows (units and skippers) with segments by state, blocks and buffers (rental.manage) */
+        get: operations["getRentalPlanner"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/availability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Units (and skippers) free for a range and formula (rental.manage); a pre-check only, the slot keys decide */
+        get: operations["searchRentalAvailability"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Rental bookings, newest first (rental.manage) */
+        get: operations["listRentalBookings"];
+        put?: never;
+        /** Create a held (hold true, desk option) or confirmed rental; a taken slot is 409 rental_slot_taken, a busy skipper 409 skipper_busy (rental.manage) */
+        post: operations["createRentalBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        /** A rental booking with price lines, extras, deposit and charges (rental.manage) */
+        get: operations["getRentalBooking"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Reschedule (unit, range, skipper) or edit a held or confirmed booking; slots rewritten in one transaction (rental.manage) */
+        patch: operations["updateRentalBooking"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/transition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** confirm, cancel, no_show or extend_hold a booking (rental.manage); any other transition is 409 invalid_transition */
+        post: operations["transitionRentalBooking"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/blocks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Blocks of units and skippers in a period (rental.manage) */
+        get: operations["listRentalBlocks"];
+        put?: never;
+        /** Block a unit (maintenance, closure) or a skipper (day off); a booked slot is 409 rental_slot_taken (rental.manage) */
+        post: operations["createRentalBlock"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/blocks/{rentalBlockId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBlockId: components["parameters"]["RentalBlockId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a block (rental.manage) */
+        delete: operations["deleteRentalBlock"];
+        options?: never;
+        head?: never;
+        /** Change a block (rental.manage) */
+        patch: operations["updateRentalBlock"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/day": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** Day view of the rental desk and phone: pickups, out at sea, returns due and late (rental.manage) */
+        get: operations["getRentalDay"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+                phase: components["parameters"]["RentalPhase"];
+            };
+            cookie?: never;
+        };
+        /** The check-out or check-in draft of a booking with its photos and missing steps (rental.manage) */
+        get: operations["getHandover"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/checklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+                phase: components["parameters"]["RentalPhase"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Save checklist, fuel, engine hours and notes of a handover (rental.manage)
+         * @description Offline (kind rental.checklist): no If-Match; a replay with the same client_ref has one effect; a completed handover is 409 handover_locked; never changes status, slots, charges or deposits (INV-71).
+         */
+        put: operations["saveHandoverChecklist"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/photos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+                phase: components["parameters"]["RentalPhase"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Attach a photo to a handover (JPEG or PNG, at most 8 MiB, raw body), encrypted at rest (rental.manage)
+         * @description Offline (kind rental.checklist, dependent through the handover) only for kind boat; identity, licence and damage photos are online. The same bytes as an existing file of the handover return that file.
+         */
+        post: operations["uploadHandoverPhoto"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/identity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Renter identity and licence typed by the operator, encrypted at rest (rental.manage); an expired licence is 422 licence_expired */
+        put: operations["putHandoverIdentity"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/contract/sign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign the rental contract on screen (signature PNG, simple electronic signature), or start an OTP or paper signature (rental.manage) */
+        post: operations["signRentalContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/contract/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        /** The rental contract PDF, signed when available (rental.manage) */
+        get: operations["getRentalContractPdf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/deposit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        /** Deposit state of a booking with the pre-authorisation URL while pending (rental.manage) */
+        get: operations["getRentalDeposit"];
+        put?: never;
+        /** Take the deposit: cash or card POS payment (kind deposit), pre-authorisation through a provider, or waived with a reason (rental.manage + payments.collect or payments.collect_cash) */
+        post: operations["startRentalDeposit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Hand the boat over: checks identity, licence, signed contract, deposit, checklist and photos (422 handover_incomplete with the missing steps) (rental.manage) */
+        post: operations["checkOutRental"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/damages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record a damage found at return with an estimate (rental.manage) */
+        post: operations["createRentalDamage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/damages/{rentalDamageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalDamageId: components["parameters"]["RentalDamageId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an open damage before check-in (rental.manage) */
+        delete: operations["deleteRentalDamage"];
+        options?: never;
+        head?: never;
+        /** Update a damage (rental.manage) */
+        patch: operations["updateRentalDamage"];
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-in/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stateless return totals: late fee, metered fuel, extras, damage excess and deposit proposal (rental.manage) */
+        post: operations["previewRentalCheckIn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Take the boat back: return charge, deposit release or retention, damages, unit engine hours, close when nothing is pending (rental.manage) */
+        post: operations["checkInRental"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Close a returned booking whose deposit is final (rental.manage) */
+        post: operations["closeRental"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+                phase: components["parameters"]["RentalPhase"];
+            };
+            cookie?: never;
+        };
+        /** The handover PDF of a phase (rental.manage) */
+        get: operations["getRentalHandoverPdf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/quick-cash": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Collect the open rental charges in one step: cash or card POS with the commercial document (receipt mode), or a payment link (rental.manage + payments.collect, or payments.collect_cash for cash) */
+        post: operations["quickCashRental"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/marinas/{marinaId}/reports/rental": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        /** R-rental: utilisation, revenue, damages, deposits (reports.rental or reports.all) */
+        get: operations["getRentalReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -12732,8 +13442,11 @@ export interface components {
         PricingStage: "base" | "modifier" | "discount";
         /** @enum {string} */
         PricingBasis: "per_berth" | "length_band" | "per_meter" | "per_m2" | "per_m2_berth" | "flat" | "metered";
-        /** @enum {string} */
-        TimeUnit: "night" | "week" | "month" | "season" | "year" | "stay";
+        /**
+         * @description hour, half_day and day (and week) are accepted only on flat base rules of items with revenue class rental (M11, priced by RentalQuote, ignored by the mooring engine)
+         * @enum {string}
+         */
+        TimeUnit: "night" | "week" | "month" | "season" | "year" | "stay" | "hour" | "half_day" | "day";
         /** @enum {string} */
         SplitRule: "pro_rata_daily" | "whole_months" | "best_combination";
         /** @enum {string} */
@@ -12984,6 +13697,8 @@ export interface components {
             customer_categories?: components["schemas"]["CustomerCategory"][];
             /** @description Rate period codes */
             periods?: string[];
+            /** @description Rental half-day band codes (M11, honoured by the rental quote only) */
+            time_bands?: string[];
         };
         PricingConditions: {
             hull_types?: components["schemas"]["HullType"][];
@@ -14403,6 +15118,11 @@ export interface components {
         PlanChoice: "standard" | "early_payment";
         /** @enum {string} */
         SignatureDriver: "paper" | "otp" | "provider";
+        /**
+         * @description Driver of a signature request; screen (on-screen signature, M11) is used only by rental contracts
+         * @enum {string}
+         */
+        SignatureRequestDriver: "paper" | "otp" | "provider" | "screen";
         /** @enum {string} */
         InsurancePolicy: "warn" | "block";
         /** @enum {string} */
@@ -15563,7 +16283,7 @@ export interface components {
             sample: components["schemas"]["TemplatePreviewSample"];
         };
         /** @enum {string} */
-        DocumentSubjectType: "quote" | "contract" | "addendum" | "renewal_proposal" | "right_transfer" | "holder_chain" | "mandate_statement" | "fee_notice" | "common_charges_holder" | "common_charges_items" | "installment_notice" | "communication" | "map_print" | "letter";
+        DocumentSubjectType: "quote" | "contract" | "addendum" | "renewal_proposal" | "right_transfer" | "holder_chain" | "mandate_statement" | "fee_notice" | "common_charges_holder" | "common_charges_items" | "installment_notice" | "communication" | "map_print" | "letter" | "yard_quote" | "work_order" | "rental_booking";
         /** @enum {string} */
         GeneratedDocumentStatus: "pending" | "rendering" | "ready" | "failed" | "superseded";
         GeneratedDocument: {
@@ -15595,8 +16315,11 @@ export interface components {
         };
         /** @enum {string} */
         SignatureRequestStatus: "pending_document" | "sent" | "partially_signed" | "signed" | "declined" | "expired" | "cancelled";
-        /** @enum {string} */
-        SignatureSubjectType: "contract" | "addendum" | "right_transfer";
+        /**
+         * @description rental is a rental contract (M11, subject id = rental booking id)
+         * @enum {string}
+         */
+        SignatureSubjectType: "contract" | "addendum" | "right_transfer" | "rental";
         /** @enum {string} */
         SignerStatus: "waiting" | "invited" | "signed" | "declined";
         Signer: {
@@ -15625,7 +16348,7 @@ export interface components {
             subject_type: components["schemas"]["SignatureSubjectType"];
             subject_id: string;
             document_id: string;
-            driver: components["schemas"]["SignatureDriver"];
+            driver: components["schemas"]["SignatureRequestDriver"];
             provider_code?: string;
             order_mode: components["schemas"]["SignatureOrderMode"];
             status: components["schemas"]["SignatureRequestStatus"];
@@ -17078,10 +17801,10 @@ export interface components {
             verifying: boolean;
         };
         /**
-         * @description Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+         * @description Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
          * @enum {string}
          */
-        ReportKey: "occupancy" | "efficiency" | "allocation-waste" | "lost-demand" | "customers" | "production" | "accruals" | "charges" | "payments" | "revenue-classes" | "comparison" | "receivables" | "presences" | "rights" | "cash" | "vessels" | "berth-revenue" | "storage" | "maintenance" | "utilities" | "yard";
+        ReportKey: "occupancy" | "efficiency" | "allocation-waste" | "lost-demand" | "customers" | "production" | "accruals" | "charges" | "payments" | "revenue-classes" | "comparison" | "receivables" | "presences" | "rights" | "cash" | "vessels" | "berth-revenue" | "storage" | "maintenance" | "utilities" | "yard" | "rental";
         /**
          * @description json (default), csv (Italian, ';', decimal comma, UTF-8 BOM) or xlsx; exports ignore page
          * @enum {string}
@@ -17114,7 +17837,7 @@ export interface components {
         /** @description Link from a record to its entity page (ids and display codes only) */
         ReportRef: {
             /** @enum {string} */
-            type: "contract" | "transit" | "charge" | "payment" | "refund" | "allocation" | "berth" | "area" | "land_resource" | "customer" | "vessel" | "inquiry" | "release" | "presence" | "cash_session" | "fiscal_document" | "right" | "common_charge_run" | "mandate" | "installment" | "holder_installment" | "scenario" | "maintenance_task" | "utility_meter" | "utility_consumption" | "work_order" | "yard_quote" | "employee" | "equipment_booking";
+            type: "contract" | "transit" | "charge" | "payment" | "refund" | "allocation" | "berth" | "area" | "land_resource" | "customer" | "vessel" | "inquiry" | "release" | "presence" | "cash_session" | "fiscal_document" | "right" | "common_charge_run" | "mandate" | "installment" | "holder_installment" | "scenario" | "maintenance_task" | "utility_meter" | "utility_consumption" | "work_order" | "yard_quote" | "employee" | "equipment_booking" | "rental_unit" | "rental_booking";
             id: string;
             label?: string;
         };
@@ -17956,7 +18679,7 @@ export interface components {
             records: components["schemas"]["BerthRevenueRecord"][];
         };
         /**
-         * @description Manager dashboard tiles (m7-plan §4). yard_* are available from M10 (m10-plan §12); rental_* (M11) are returned with available=false.
+         * @description Manager dashboard tiles (m7-plan §4). yard_* are available from M10 (m10-plan §12); rental_* are available from M11 (m11-plan §11).
          * @enum {string}
          */
         TileKey: "production" | "charged" | "collected" | "receivables_open" | "receivables_overdue" | "occupancy" | "efficiency" | "berth_revenue_per_m" | "transit_avg_night" | "new_customers" | "renewal_rate" | "vessels_hosted" | "vessels_avg_loa" | "yard_open_orders" | "yard_hours" | "yard_margin" | "rental_utilisation" | "rental_revenue" | "storage_occupancy" | "storage_exits_blocked" | "maintenance_overdue" | "utility_unbilled";
@@ -21372,6 +22095,862 @@ export interface components {
             groups: components["schemas"]["YardReportGroup"][];
             records: components["schemas"]["YardReportRecord"][];
         };
+        /** @enum {string} */
+        RentalCategory: "rib" | "open" | "cabin" | "sail" | "pedalo" | "sup";
+        /** @enum {string} */
+        RentalUnitStatus: "available" | "maintenance" | "retired";
+        /**
+         * @description never, always, or threshold on the total engine power (rental_settings.licence_threshold_kw_milli)
+         * @enum {string}
+         */
+        RentalLicenceMode: "never" | "always" | "threshold";
+        /** @enum {string} */
+        RentalFuelType: "petrol" | "diesel" | "electric" | "none";
+        /** @enum {string} */
+        RentalOwnership: "marina" | "third_party";
+        /** @enum {string} */
+        RentalFormulaKind: "hourly" | "half_day" | "day" | "multi_day" | "week";
+        /** @enum {string} */
+        RentalSkipperMode: "none" | "optional" | "required";
+        /** @enum {string} */
+        RentalFuelMode: "included" | "metered";
+        /** @enum {string} */
+        RentalExtraChargeMode: "per_rental" | "per_day";
+        /** @enum {string} */
+        RentalBookingStatus: "held" | "confirmed" | "checked_out" | "returned" | "closed" | "cancelled" | "no_show";
+        /** @enum {string} */
+        RentalChannel: "desk" | "api" | "online";
+        /** @enum {string} */
+        RentalDepositMode: "cash" | "card_pos" | "preauth" | "waived";
+        /** @enum {string} */
+        RentalDepositStatus: "none" | "pending" | "held" | "authorized" | "capture_pending" | "released" | "retained" | "partially_retained" | "waived";
+        /** @enum {string} */
+        RentalBlockReason: "maintenance" | "closure" | "day_off" | "other";
+        /** @enum {string} */
+        RentalSlotKind: "hold" | "booked" | "buffer" | "block";
+        /** @enum {string} */
+        RentalPhase: "checkout" | "checkin";
+        /** @enum {string} */
+        RentalFileKind: "id_document" | "licence" | "boat" | "damage";
+        /** @enum {string} */
+        RentalDamageStatus: "open" | "charged" | "waived";
+        /**
+         * @description receipt (commercial document through the FiscalDriver) unless the customer asked for an invoice
+         * @enum {string}
+         */
+        RentalFiscalMode: "receipt" | "invoice";
+        /** @description A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00) */
+        RentalSlotPoint: {
+            date: components["schemas"]["IsoDate"];
+            slot: number;
+        };
+        RentalPriceLine: {
+            seq: number;
+            /** @enum {string} */
+            kind: "unit" | "skipper" | "extra" | "late_fee" | "fuel" | "damage";
+            item_id: string;
+            item_code: string;
+            qty_milli: components["schemas"]["QtyMilli"];
+            unit_cents: components["schemas"]["Cents"];
+            amount_cents: components["schemas"]["Cents"];
+            price_includes_vat: boolean;
+            rule_ids?: string[];
+        };
+        RentalExtraQty: {
+            extra_id: string;
+            /** Format: int64 */
+            qty_milli: number;
+        };
+        RentalUnit: {
+            id: string;
+            vessel_id: string;
+            vessel_name: string;
+            code: string;
+            category: components["schemas"]["RentalCategory"];
+            seats: number;
+            licence: components["schemas"]["RentalLicenceMode"];
+            /** @description Without a skipper (a skipper never needs the renter's licence) */
+            licence_required: boolean;
+            /**
+             * Format: int64
+             * @description Total engine power of the vessel
+             */
+            engine_kw_milli: number;
+            fuel_type: components["schemas"]["RentalFuelType"];
+            tank_milli: components["schemas"]["QtyMilli"];
+            deposit_cents: components["schemas"]["Cents"];
+            status: components["schemas"]["RentalUnitStatus"];
+            home_berth_id?: string;
+            home_berth_code?: string;
+            item_id: string;
+            ownership: components["schemas"]["RentalOwnership"];
+            owner_customer_id?: string;
+            engine_hours_milli: components["schemas"]["QtyMilli"];
+            note: string;
+            sort: number;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        RentalUnitList: {
+            items: components["schemas"]["RentalUnit"][];
+            next_cursor: string | null;
+        };
+        RentalUnitInput: {
+            vessel_id: string;
+            code: string;
+            category: components["schemas"]["RentalCategory"];
+            seats: number;
+            licence?: components["schemas"]["RentalLicenceMode"];
+            fuel_type: components["schemas"]["RentalFuelType"];
+            /** Format: int64 */
+            tank_milli?: number;
+            /** Format: int64 */
+            deposit_cents?: number;
+            status?: components["schemas"]["RentalUnitStatus"];
+            home_berth_id?: string;
+            item_id: string;
+            ownership?: components["schemas"]["RentalOwnership"];
+            owner_customer_id?: string;
+            note?: string;
+            sort?: number;
+        };
+        RentalUnitPatch: {
+            code?: string;
+            category?: components["schemas"]["RentalCategory"];
+            seats?: number;
+            licence?: components["schemas"]["RentalLicenceMode"];
+            fuel_type?: components["schemas"]["RentalFuelType"];
+            /** Format: int64 */
+            tank_milli?: number;
+            /** Format: int64 */
+            deposit_cents?: number;
+            status?: components["schemas"]["RentalUnitStatus"];
+            home_berth_id?: string | null;
+            item_id?: string;
+            ownership?: components["schemas"]["RentalOwnership"];
+            owner_customer_id?: string | null;
+            note?: string;
+            sort?: number;
+        };
+        RentalSkipperHoursRow: {
+            /** @description ISO weekday */
+            weekday: number;
+            from_slot: number;
+            to_slot: number;
+        };
+        /** @description A bookable skipper; name and contact are personal data shown only to rental.manage (never in events) */
+        RentalSkipper: {
+            id: string;
+            name: string;
+            phone?: string;
+            email?: string;
+            licence_expires_on?: components["schemas"]["IsoDate"];
+            user_id?: string;
+            active: boolean;
+            sort: number;
+            hours: components["schemas"]["RentalSkipperHoursRow"][];
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        RentalSkipperList: {
+            items: components["schemas"]["RentalSkipper"][];
+            next_cursor: string | null;
+        };
+        RentalSkipperInput: {
+            name: string;
+            phone?: string;
+            email?: string;
+            licence_expires_on?: components["schemas"]["IsoDate"];
+            user_id?: string;
+            active?: boolean;
+            sort?: number;
+        };
+        RentalSkipperPatch: {
+            name?: string;
+            phone?: string | null;
+            email?: string | null;
+            /** Format: date */
+            licence_expires_on?: string | null;
+            user_id?: string | null;
+            active?: boolean;
+            sort?: number;
+        };
+        RentalSkipperHoursInput: {
+            hours: components["schemas"]["RentalSkipperHoursRow"][];
+        };
+        RentalFormula: {
+            id: string;
+            code: string;
+            name: components["schemas"]["I18nText"];
+            kind: components["schemas"]["RentalFormulaKind"];
+            band_code?: string;
+            min_slots: number;
+            max_slots?: number;
+            min_days: number;
+            max_days: number;
+            skipper: components["schemas"]["RentalSkipperMode"];
+            fuel: components["schemas"]["RentalFuelMode"];
+            fuel_item_id?: string;
+            late_item_id?: string;
+            grace_minutes: number;
+            /** @enum {integer} */
+            late_step_minutes: 15 | 30 | 60;
+            categories: components["schemas"]["RentalCategory"][];
+            active: boolean;
+            sort: number;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        RentalFormulaList: {
+            items: components["schemas"]["RentalFormula"][];
+        };
+        RentalFormulaInput: {
+            code: string;
+            name: components["schemas"]["I18nText"];
+            kind: components["schemas"]["RentalFormulaKind"];
+            band_code?: string;
+            min_slots?: number;
+            max_slots?: number;
+            min_days?: number;
+            max_days?: number;
+            skipper?: components["schemas"]["RentalSkipperMode"];
+            fuel?: components["schemas"]["RentalFuelMode"];
+            fuel_item_id?: string;
+            late_item_id?: string;
+            grace_minutes?: number;
+            /** @enum {integer} */
+            late_step_minutes?: 15 | 30 | 60;
+            categories?: components["schemas"]["RentalCategory"][];
+            active?: boolean;
+            sort?: number;
+        };
+        RentalFormulaPatch: {
+            code?: string;
+            name?: components["schemas"]["I18nText"];
+            band_code?: string;
+            min_slots?: number;
+            max_slots?: number | null;
+            min_days?: number;
+            max_days?: number;
+            skipper?: components["schemas"]["RentalSkipperMode"];
+            fuel?: components["schemas"]["RentalFuelMode"];
+            fuel_item_id?: string | null;
+            late_item_id?: string | null;
+            grace_minutes?: number;
+            /** @enum {integer} */
+            late_step_minutes?: 15 | 30 | 60;
+            categories?: components["schemas"]["RentalCategory"][];
+            active?: boolean;
+            sort?: number;
+        };
+        RentalExtra: {
+            id: string;
+            item_id: string;
+            item_code: string;
+            name: components["schemas"]["I18nText"];
+            charge_mode: components["schemas"]["RentalExtraChargeMode"];
+            default_qty_milli: components["schemas"]["QtyMilli"];
+            max_qty_milli: components["schemas"]["QtyMilli"];
+            categories: components["schemas"]["RentalCategory"][];
+            active: boolean;
+            sort: number;
+            /** Format: int64 */
+            version: number;
+        };
+        RentalExtraList: {
+            items: components["schemas"]["RentalExtra"][];
+        };
+        RentalExtraInput: {
+            item_id: string;
+            charge_mode?: components["schemas"]["RentalExtraChargeMode"];
+            /** Format: int64 */
+            default_qty_milli?: number;
+            /** Format: int64 */
+            max_qty_milli?: number;
+            categories?: components["schemas"]["RentalCategory"][];
+            active?: boolean;
+            sort?: number;
+        };
+        RentalExtraPatch: {
+            charge_mode?: components["schemas"]["RentalExtraChargeMode"];
+            /** Format: int64 */
+            default_qty_milli?: number;
+            /** Format: int64 */
+            max_qty_milli?: number;
+            categories?: components["schemas"]["RentalCategory"][];
+            active?: boolean;
+            sort?: number;
+        };
+        RentalBand: {
+            code: string;
+            from_slot: number;
+            to_slot: number;
+            label: components["schemas"]["I18nText"];
+        };
+        RentalChecklistTemplateItem: {
+            key: string;
+            label: components["schemas"]["I18nText"];
+            categories: components["schemas"]["RentalCategory"][];
+        };
+        RentalSettingsInput: {
+            open_from_slot: number;
+            open_to_slot: number;
+            bands: components["schemas"]["RentalBand"][];
+            buffer_slots: number;
+            desk_hold_minutes: number;
+            no_show_after_minutes: number;
+            /** Format: int64 */
+            licence_threshold_kw_milli: number;
+            skipper_item_id?: string | null;
+            damage_item_id?: string | null;
+            checklist: components["schemas"]["RentalChecklistTemplateItem"][];
+            checkout_min_photos: number;
+            checkin_min_photos: number;
+            deposit_modes: ("cash" | "card_pos" | "preauth")[];
+            identity_retention_days: number;
+            default_register_id?: string | null;
+        };
+        RentalSettings: components["schemas"]["RentalSettingsInput"] & {
+            /**
+             * Format: int64
+             * @description 0 = defaults
+             */
+            version: number;
+            /** @description An enabled provider supports pre-authorisation */
+            preauth_available: boolean;
+        };
+        RentalQuoteInput: {
+            unit_id: string;
+            start: components["schemas"]["RentalSlotPoint"];
+            end: components["schemas"]["RentalSlotPoint"];
+            /** @description Omitted = every valid formula */
+            formula_id?: string;
+            skipper_id?: string;
+            /** @description Price a skipper line without choosing one */
+            with_skipper?: boolean;
+            extras?: components["schemas"]["RentalExtraQty"][];
+            customer_id?: string;
+        };
+        RentalQuoteOption: {
+            formula_id: string;
+            formula_code: string;
+            kind: components["schemas"]["RentalFormulaKind"];
+            ok: boolean;
+            /** @description Problem slug when not ok (no_price, formula_range_mismatch, outside_rental_hours, skipper_required, ...) */
+            problem?: string;
+            total_cents: components["schemas"]["Cents"];
+            licence_required: boolean;
+            engine_version?: number;
+            lines: components["schemas"]["RentalPriceLine"][];
+        };
+        RentalQuoteResult: {
+            items: components["schemas"]["RentalQuoteOption"][];
+        };
+        RentalPlannerSegment: {
+            booking_id?: string;
+            block_id?: string;
+            number?: string;
+            status?: components["schemas"]["RentalBookingStatus"];
+            kind: components["schemas"]["RentalSlotKind"];
+            reason?: components["schemas"]["RentalBlockReason"];
+            from: components["schemas"]["RentalSlotPoint"];
+            to: components["schemas"]["RentalSlotPoint"];
+        };
+        RentalPlannerRow: {
+            /** @enum {string} */
+            kind: "unit" | "skipper";
+            id: string;
+            /** @description Unit code */
+            code: string;
+            category?: components["schemas"]["RentalCategory"];
+            status?: components["schemas"]["RentalUnitStatus"];
+            seats?: number;
+            segments: components["schemas"]["RentalPlannerSegment"][];
+        };
+        RentalPlanner: {
+            from: components["schemas"]["IsoDate"];
+            to: components["schemas"]["IsoDate"];
+            /** @enum {string} */
+            view: "hours" | "half_days" | "days";
+            open_from_slot: number;
+            open_to_slot: number;
+            buffer_slots: number;
+            bands: components["schemas"]["RentalBand"][];
+            rows: components["schemas"]["RentalPlannerRow"][];
+        };
+        RentalAvailability: {
+            units: {
+                unit_id: string;
+                code: string;
+                category: components["schemas"]["RentalCategory"];
+                seats: number;
+                licence_required: boolean;
+                formula_ids: string[];
+            }[];
+            skippers: {
+                skipper_id: string;
+                name: string;
+                within_hours: boolean;
+            }[];
+        };
+        /** @description Walk-in renter without a registry customer (encrypted at rest, never in events or logs) */
+        RentalRenter: {
+            name?: string;
+            phone?: string;
+            email?: string;
+        };
+        RentalBookingExtra: {
+            extra_id: string;
+            item_id: string;
+            qty_milli: components["schemas"]["QtyMilli"];
+            /** @enum {string} */
+            source: "booking" | "return";
+        };
+        RentalBookingChargeRef: {
+            charge_id: string;
+            /** @enum {string} */
+            kind: "main" | "return" | "adjustment" | "replaced" | "deposit_retention";
+            status: string;
+            total_cents: components["schemas"]["Cents"];
+            paid_amount_cents: components["schemas"]["Cents"];
+            fiscal_mode: components["schemas"]["RentalFiscalMode"];
+        };
+        RentalDeposit: {
+            mode?: components["schemas"]["RentalDepositMode"];
+            status: components["schemas"]["RentalDepositStatus"];
+            amount_cents: components["schemas"]["Cents"];
+            retained_cents: components["schemas"]["Cents"];
+            decision_cents?: components["schemas"]["Cents"];
+            payment_id?: string;
+            intent_id?: string;
+            /** @description Pre-authorisation page while pending (shown as a QR) */
+            checkout_url?: string;
+            /** @description SVG of a QR of checkout_url (the renter scans it with their own phone); set with checkout_url */
+            checkout_qr_svg?: string;
+            /** Format: date-time */
+            expires_at?: string;
+            waive_reason?: string;
+        };
+        RentalBooking: {
+            id: string;
+            /** @description NL<year>-NNNNNN */
+            number: string;
+            status: components["schemas"]["RentalBookingStatus"];
+            channel: components["schemas"]["RentalChannel"];
+            unit_id: string;
+            unit_code: string;
+            formula_id: string;
+            formula_code: string;
+            kind: components["schemas"]["RentalFormulaKind"];
+            skipper_id?: string;
+            start: components["schemas"]["RentalSlotPoint"];
+            end: components["schemas"]["RentalSlotPoint"];
+            /** Format: date-time */
+            starts_at: string;
+            /** Format: date-time */
+            ends_at: string;
+            /** Format: date-time */
+            hold_expires_at?: string;
+            /** @description The rows of an expired hold were reclaimed by another booking */
+            slots_lost: boolean;
+            customer_id?: string;
+            renter?: components["schemas"]["RentalRenter"];
+            party_size?: number;
+            invoice_requested: boolean;
+            fiscal_mode: components["schemas"]["RentalFiscalMode"];
+            licence_required: boolean;
+            allow_outside_hours: boolean;
+            total_cents: components["schemas"]["Cents"];
+            engine_version: number;
+            lines: components["schemas"]["RentalPriceLine"][];
+            extras: components["schemas"]["RentalBookingExtra"][];
+            deposit: components["schemas"]["RentalDeposit"];
+            charges: components["schemas"]["RentalBookingChargeRef"][];
+            /** Format: date-time */
+            checked_out_at?: string;
+            /** Format: date-time */
+            returned_at?: string;
+            /** Format: date-time */
+            closed_at?: string;
+            /** Format: date-time */
+            cancelled_at?: string;
+            cancel_reason?: string;
+            /** Format: date-time */
+            no_show_at?: string;
+            note: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        RentalBookingList: {
+            items: components["schemas"]["RentalBooking"][];
+            next_cursor: string | null;
+        };
+        RentalBookingInput: {
+            unit_id: string;
+            formula_id: string;
+            start: components["schemas"]["RentalSlotPoint"];
+            end: components["schemas"]["RentalSlotPoint"];
+            skipper_id?: string;
+            /** @description true = held option (desk_hold_minutes) */
+            hold?: boolean;
+            customer_id?: string;
+            renter?: components["schemas"]["RentalRenter"];
+            party_size?: number;
+            extras?: components["schemas"]["RentalExtraQty"][];
+            invoice_requested?: boolean;
+            /** @description Book a skipper outside his weekly hours (audited) */
+            allow_outside_hours?: boolean;
+            note?: string;
+        };
+        RentalBookingPatch: {
+            unit_id?: string;
+            formula_id?: string;
+            start?: components["schemas"]["RentalSlotPoint"];
+            end?: components["schemas"]["RentalSlotPoint"];
+            skipper_id?: string | null;
+            customer_id?: string | null;
+            renter?: components["schemas"]["RentalRenter"];
+            party_size?: number | null;
+            extras?: components["schemas"]["RentalExtraQty"][];
+            invoice_requested?: boolean;
+            allow_outside_hours?: boolean;
+            /** @description Keep the price snapshot on a reschedule (marina.configure) */
+            keep_price?: boolean;
+            note?: string;
+        };
+        RentalTransitionInput: {
+            /** @enum {string} */
+            action: "confirm" | "cancel" | "no_show" | "extend_hold" | "extend";
+            reason?: string;
+            /**
+             * Format: date-time
+             * @description extend_hold only
+             */
+            until?: string;
+            end?: components["schemas"]["RentalSlotPoint"];
+            /** @description extend only: the formula the extended range is priced with (same unit category). Omitted, the booking keeps its formula, so a half_day or day booking that outgrows its band or the open window is 422 formula_range_mismatch and needs a formula that fits the new range (for example hourly or multi_day). */
+            formula_id?: string;
+        };
+        RentalBlock: {
+            id: string;
+            unit_id?: string;
+            skipper_id?: string;
+            from: components["schemas"]["RentalSlotPoint"];
+            to: components["schemas"]["RentalSlotPoint"];
+            reason: components["schemas"]["RentalBlockReason"];
+            note: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        RentalBlockList: {
+            items: components["schemas"]["RentalBlock"][];
+        };
+        RentalBlockInput: {
+            unit_id?: string;
+            skipper_id?: string;
+            from: components["schemas"]["RentalSlotPoint"];
+            to: components["schemas"]["RentalSlotPoint"];
+            reason: components["schemas"]["RentalBlockReason"];
+            note?: string;
+        };
+        RentalBlockPatch: {
+            from?: components["schemas"]["RentalSlotPoint"];
+            to?: components["schemas"]["RentalSlotPoint"];
+            reason?: components["schemas"]["RentalBlockReason"];
+            note?: string;
+        };
+        RentalDayEntry: {
+            booking_id: string;
+            number: string;
+            status: components["schemas"]["RentalBookingStatus"];
+            unit_id: string;
+            unit_code: string;
+            skipper_id?: string;
+            renter_name?: string;
+            start: components["schemas"]["RentalSlotPoint"];
+            end: components["schemas"]["RentalSlotPoint"];
+            /** Format: date-time */
+            starts_at: string;
+            /** Format: date-time */
+            ends_at: string;
+            /** @description Pickup later than no_show_after_minutes */
+            late: boolean;
+            late_minutes?: number;
+            deposit_status: components["schemas"]["RentalDepositStatus"];
+            unpaid_cents?: components["schemas"]["Cents"];
+        };
+        RentalDay: {
+            date: components["schemas"]["IsoDate"];
+            pickups: components["schemas"]["RentalDayEntry"][];
+            out: components["schemas"]["RentalDayEntry"][];
+            returns_due: components["schemas"]["RentalDayEntry"][];
+            late: components["schemas"]["RentalDayEntry"][];
+        };
+        RentalChecklistEntry: {
+            key: string;
+            ok: boolean;
+            note?: string;
+        };
+        RentalHandoverFile: {
+            id: string;
+            file_id: string;
+            kind: components["schemas"]["RentalFileKind"];
+            damage_id?: string;
+            content_type: string;
+            /** Format: date-time */
+            created_at: string;
+        };
+        /** @description What the operator typed, masked (the number shows its last 3 characters only) */
+        RentalIdentitySummary: {
+            /** @enum {string} */
+            document_type: "identity_card" | "passport" | "driving_licence" | "other";
+            document_number_masked: string;
+            document_expires_on: components["schemas"]["IsoDate"];
+            licence_number_masked?: string;
+            licence_category?: string;
+            licence_expires_on?: components["schemas"]["IsoDate"];
+            purged?: boolean;
+        };
+        RentalHandover: {
+            id?: string;
+            booking_id: string;
+            phase: components["schemas"]["RentalPhase"];
+            checklist: components["schemas"]["RentalChecklistEntry"][];
+            fuel_eighths?: number;
+            engine_hours_milli?: components["schemas"]["QtyMilli"];
+            refuel_milli?: components["schemas"]["QtyMilli"];
+            notes: string;
+            /** Format: date-time */
+            actual_at?: string;
+            identity?: components["schemas"]["RentalIdentitySummary"];
+            contract_signed?: boolean;
+            files: components["schemas"]["RentalHandoverFile"][];
+            /** @description Steps still missing before check-out or check-in (the same list as handover_incomplete) */
+            missing: ("identity" | "licence" | "contract" | "deposit" | "checklist" | "photos" | "engine_hours" | "fuel")[];
+            /** Format: date-time */
+            completed_at?: string;
+            /**
+             * Format: int64
+             * @description 0 = no draft saved yet
+             */
+            version: number;
+        };
+        RentalChecklistInput: {
+            client_ref: string;
+            /** Format: date-time */
+            device_at?: string;
+            items: components["schemas"]["RentalChecklistEntry"][];
+            fuel_eighths?: number;
+            /** Format: int64 */
+            engine_hours_milli?: number;
+            /** Format: int64 */
+            refuel_milli?: number;
+            notes?: string;
+        };
+        RentalIdentityInput: {
+            /** @enum {string} */
+            document_type: "identity_card" | "passport" | "driving_licence" | "other";
+            document_number: string;
+            document_expires_on: components["schemas"]["IsoDate"];
+            document_issuer?: string;
+            licence_number?: string;
+            licence_category?: string;
+            licence_expires_on?: components["schemas"]["IsoDate"];
+        };
+        RentalSignInput: {
+            /** @enum {string} */
+            driver: "screen" | "otp" | "paper";
+            /** @description screen: base64 PNG of the drawn signature (at most 200 KiB decoded) */
+            signature_png?: string;
+            signer_name?: string;
+            /** @description otp only */
+            email?: string;
+            device_label?: string;
+        };
+        RentalSignature: {
+            request_id: string;
+            /** @enum {string} */
+            driver: "screen" | "otp" | "paper";
+            status: string;
+            document_id: string;
+            signed_document_id?: string;
+        };
+        RentalDepositInput: {
+            mode: components["schemas"]["RentalDepositMode"];
+            /**
+             * Format: int64
+             * @description Default the unit's deposit
+             */
+            amount_cents?: number;
+            /** @description waived only (required) */
+            reason?: string;
+            register_id?: string;
+            provider_code?: string;
+        };
+        RentalCheckOutInput: {
+            /** Format: date-time */
+            actual_at?: string;
+            note?: string;
+        };
+        RentalDamage: {
+            id: string;
+            booking_id: string;
+            description: string;
+            estimate_cents: components["schemas"]["Cents"];
+            status: components["schemas"]["RentalDamageStatus"];
+            retained_cents: components["schemas"]["Cents"];
+            charged_cents: components["schemas"]["Cents"];
+            waive_reason?: string;
+            files: components["schemas"]["RentalHandoverFile"][];
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            created_at: string;
+        };
+        RentalDamageInput: {
+            description: string;
+            /** Format: int64 */
+            estimate_cents: number;
+        };
+        RentalDamagePatch: {
+            description?: string;
+            /** Format: int64 */
+            estimate_cents?: number;
+            waived?: boolean;
+            waive_reason?: string;
+        };
+        RentalCheckInInput: {
+            /** Format: date-time */
+            returned_at: string;
+            /** @description Consumed beyond the booked ones */
+            extras?: components["schemas"]["RentalExtraQty"][];
+            /** @enum {string} */
+            deposit_decision: "release" | "retain_all" | "retain";
+            /**
+             * Format: int64
+             * @description retain only
+             */
+            retain_cents?: number;
+            waive_damage_ids?: string[];
+            waive_reason?: string;
+            note?: string;
+        };
+        RentalCheckInPreview: {
+            late_minutes: number;
+            late_fee_cents: components["schemas"]["Cents"];
+            fuel_litres_milli: components["schemas"]["QtyMilli"];
+            fuel_cents: components["schemas"]["Cents"];
+            extras_cents: components["schemas"]["Cents"];
+            damage_estimate_cents: components["schemas"]["Cents"];
+            damage_excess_cents: components["schemas"]["Cents"];
+            return_total_cents: components["schemas"]["Cents"];
+            deposit_cents: components["schemas"]["Cents"];
+            deposit_proposal_cents: components["schemas"]["Cents"];
+            lines: components["schemas"]["RentalPriceLine"][];
+        };
+        RentalQuickCashInput: {
+            /**
+             * @description Default open
+             * @enum {string}
+             */
+            target?: "main" | "return" | "open";
+            /** @enum {string} */
+            method: "cash" | "card_pos" | "link";
+            register_id?: string;
+        };
+        RentalQuickCashResult: {
+            charges: components["schemas"]["RentalBookingChargeRef"][];
+            payment_id?: string;
+            fiscal_document_ids: string[];
+            receipt_url?: string;
+            link_url?: string;
+            /** @description SVG of a QR of link_url (the renter scans it to pay on their own phone); set with link_url */
+            link_qr_svg?: string;
+            /** Format: date-time */
+            link_expires_at?: string;
+        };
+        RentalReportTotals: {
+            /** Format: int64 */
+            records: number;
+            /** Format: int64 */
+            available_slots?: number;
+            /** Format: int64 */
+            rented_slots?: number;
+            /** Format: int64 */
+            utilisation_bp?: number | null;
+            net_cents?: components["schemas"]["Cents"];
+            vat_cents?: components["schemas"]["Cents"];
+            gross_cents?: components["schemas"]["Cents"];
+            estimate_cents?: components["schemas"]["Cents"];
+            retained_cents?: components["schemas"]["Cents"];
+            deposit_cents?: components["schemas"]["Cents"];
+            released_cents?: components["schemas"]["Cents"];
+            outstanding_cents?: components["schemas"]["Cents"];
+        };
+        RentalReportGroup: {
+            key: string;
+            label: string;
+            totals: components["schemas"]["RentalReportTotals"];
+        };
+        /** @description One record of the selected view; fields not meaningful for the view are absent */
+        RentalReportRecord: {
+            date?: components["schemas"]["IsoDate"];
+            unit_id?: string;
+            unit_code?: string;
+            category?: components["schemas"]["RentalCategory"];
+            formula_id?: string;
+            formula_code?: string;
+            booking_id?: string;
+            booking_number?: string;
+            line_kind?: string;
+            charge_id?: string;
+            /** Format: int64 */
+            available_slots?: number;
+            /** Format: int64 */
+            rented_slots?: number;
+            /** Format: int64 */
+            utilisation_bp?: number | null;
+            net_cents?: components["schemas"]["Cents"];
+            vat_cents?: components["schemas"]["Cents"];
+            gross_cents?: components["schemas"]["Cents"];
+            damage_id?: string;
+            damage_status?: components["schemas"]["RentalDamageStatus"];
+            estimate_cents?: components["schemas"]["Cents"];
+            retained_cents?: components["schemas"]["Cents"];
+            deposit_mode?: components["schemas"]["RentalDepositMode"];
+            deposit_status?: components["schemas"]["RentalDepositStatus"];
+            deposit_cents?: components["schemas"]["Cents"];
+            released_cents?: components["schemas"]["Cents"];
+            outstanding_cents?: components["schemas"]["Cents"];
+            ref: components["schemas"]["ReportRef"];
+        };
+        RentalReport: components["schemas"]["ReportEnvelope"] & {
+            /** @enum {string} */
+            view: "utilisation" | "revenue" | "damages" | "deposits";
+            totals: components["schemas"]["RentalReportTotals"];
+            groups: components["schemas"]["RentalReportGroup"][];
+            records: components["schemas"]["RentalReportRecord"][];
+        };
     };
     responses: {
         /** @description A domain rule refused the request (m4-plan §7.4: insurance_required, customer_email_missing, paper_scan_required, shares_invalid, table_incomplete, transfer_requirements, template_invalid, template_limits, otp_invalid, vessel_not_in_fleet, provider_unknown, fit_blocked, no_price, ...), a validation failure, or an idempotency key was reused */
@@ -21573,6 +23152,15 @@ export interface components {
                 "application/problem+json": components["schemas"]["Problem"];
             };
         };
+        /** @description A rental rule refused the request (m11-plan §13.1: formula_range_mismatch, outside_rental_hours, unit_not_bookable, skipper_required, skipper_unavailable, skipper_licence_expired, licence_required, licence_expired, handover_incomplete with the missing steps, engine_hours_decreasing, preauth_unavailable, deposit_exceeds, band_gap_lt_buffer, no_price, customer_required, ...), a validation failure, or an idempotency key was reused */
+        RentalUnprocessable: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": components["schemas"]["Problem"];
+            };
+        };
     };
     parameters: {
         ChargeId: string;
@@ -21711,6 +23299,14 @@ export interface components {
         AbsenceId: string;
         AssignmentId: string;
         EquipmentBookingId: string;
+        RentalUnitId: string;
+        RentalSkipperId: string;
+        RentalFormulaId: string;
+        RentalExtraId: string;
+        RentalBookingId: string;
+        RentalBlockId: string;
+        RentalDamageId: string;
+        RentalPhase: components["schemas"]["RentalPhase"];
     };
     requestBodies: never;
     headers: {
@@ -44079,6 +45675,1648 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["YardReport"];
+                    "text/csv": string;
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["ReportUnprocessable"];
+        };
+    };
+    listRentalUnits: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+                status?: components["schemas"]["RentalUnitStatus"];
+                category?: components["schemas"]["RentalCategory"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalUnitList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createRentalUnit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalUnitInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalUnit"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    getRentalUnit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalUnitId: components["parameters"]["RentalUnitId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalUnit"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateRentalUnit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalUnitId: components["parameters"]["RentalUnitId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalUnitPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalUnit"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listRentalSkippers: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+                active?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalSkipperList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createRentalSkipper: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalSkipperInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalSkipper"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    updateRentalSkipper: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalSkipperId: components["parameters"]["RentalSkipperId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalSkipperPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalSkipper"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    putRentalSkipperHours: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalSkipperId: components["parameters"]["RentalSkipperId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalSkipperHoursInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalSkipper"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listRentalFormulas: {
+        parameters: {
+            query?: {
+                active?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalFormulaList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createRentalFormula: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalFormulaInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalFormula"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    updateRentalFormula: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalFormulaId: components["parameters"]["RentalFormulaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalFormulaPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalFormula"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listRentalExtras: {
+        parameters: {
+            query?: {
+                active?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalExtraList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createRentalExtra: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalExtraInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalExtra"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    updateRentalExtra: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalExtraId: components["parameters"]["RentalExtraId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalExtraPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalExtra"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getRentalSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    putRentalSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalSettings"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    quoteRental: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalQuoteInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalQuoteResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    getRentalPlanner: {
+        parameters: {
+            query?: {
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing: 400) */
+                from?: components["schemas"]["IsoDate"];
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing: 400) */
+                to?: components["schemas"]["IsoDate"];
+                /** @description Default days */
+                view?: "hours" | "half_days" | "days";
+                category?: components["schemas"]["RentalCategory"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalPlanner"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    searchRentalAvailability: {
+        parameters: {
+            query?: {
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing: 400) */
+                starts_on?: components["schemas"]["IsoDate"];
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing: 400) */
+                start_slot?: number;
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing: 400) */
+                ends_on?: components["schemas"]["IsoDate"];
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing: 400) */
+                end_slot?: number;
+                formula_id?: string;
+                category?: components["schemas"]["RentalCategory"];
+                /** @description Also list free skippers */
+                skipper?: boolean;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalAvailability"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listRentalBookings: {
+        parameters: {
+            query?: {
+                cursor?: components["parameters"]["Cursor"];
+                limit?: components["parameters"]["Limit"];
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                status?: components["schemas"]["RentalBookingStatus"];
+                unit_id?: string;
+                customer_id?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBookingList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createRentalBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalBookingInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBooking"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    getRentalBooking: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBooking"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    updateRentalBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalBookingPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBooking"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    transitionRentalBooking: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalTransitionInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBooking"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    listRentalBlocks: {
+        parameters: {
+            query?: {
+                from?: components["schemas"]["IsoDate"];
+                to?: components["schemas"]["IsoDate"];
+                unit_id?: string;
+                skipper_id?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBlockList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createRentalBlock: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalBlockInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBlock"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    deleteRentalBlock: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBlockId: components["parameters"]["RentalBlockId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateRentalBlock: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBlockId: components["parameters"]["RentalBlockId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalBlockPatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBlock"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getRentalDay: {
+        parameters: {
+            query?: {
+                /** @description Default today in the marina time zone */
+                date?: components["schemas"]["IsoDate"];
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalDay"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getHandover: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+                phase: components["parameters"]["RentalPhase"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalHandover"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    saveHandoverChecklist: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+                phase: components["parameters"]["RentalPhase"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalChecklistInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalHandover"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    uploadHandoverPhoto: {
+        parameters: {
+            query?: {
+                /** @description Required; optional in the contract only so that another marina is 404 first (missing: 400) */
+                kind?: "id_document" | "licence" | "boat" | "damage";
+                /** @description Required for kind damage */
+                damage_id?: string;
+                client_ref?: string;
+            };
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline. */
+                "Porto-Offline-Queued-At"?: components["parameters"]["OfflineQueuedAt"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+                phase: components["parameters"]["RentalPhase"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "image/jpeg": string;
+                "image/png": string;
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalHandoverFile"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            413: components["responses"]["PayloadTooLarge"];
+            415: components["responses"]["UnsupportedMediaType"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    putHandoverIdentity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalIdentityInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalHandover"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    signRentalContract: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalSignInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalSignature"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    getRentalContractPdf: {
+        parameters: {
+            query?: {
+                exp?: number;
+                sig?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getRentalDeposit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalDeposit"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    startRentalDeposit: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalDepositInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalDeposit"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    checkOutRental: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RentalCheckOutInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBooking"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    createRentalDamage: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalDamageInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalDamage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    deleteRentalDamage: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalDamageId: components["parameters"]["RentalDamageId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    updateRentalDamage: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalDamageId: components["parameters"]["RentalDamageId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalDamagePatch"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalDamage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    previewRentalCheckIn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalCheckInInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalCheckInPreview"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    checkInRental: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalCheckInInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBooking"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    closeRental: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The ETag of the version being changed. Missing is 428, stale is 412. */
+                "If-Match"?: components["parameters"]["IfMatch"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalBooking"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            412: components["responses"]["PreconditionFailed"];
+            422: components["responses"]["RentalUnprocessable"];
+            428: components["responses"]["PreconditionRequired"];
+        };
+    };
+    getRentalHandoverPdf: {
+        parameters: {
+            query?: {
+                exp?: number;
+                sig?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+                phase: components["parameters"]["RentalPhase"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    quickCashRental: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline). */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+                rentalBookingId: components["parameters"]["RentalBookingId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RentalQuickCashInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalQuickCashResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["RentalUnprocessable"];
+        };
+    };
+    getRentalReport: {
+        parameters: {
+            query?: {
+                /** @description First night of the period (default January 1 of the current year) */
+                from?: components["parameters"]["ReportFrom"];
+                /** @description Last night of the period, inclusive (default today); at most 400 days after from */
+                to?: components["parameters"]["ReportTo"];
+                format?: components["parameters"]["ReportFormatParam"];
+                /** @description Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian */
+                lang?: components["parameters"]["ReportLang"];
+                page?: components["parameters"]["ReportPageNumber"];
+                page_size?: components["parameters"]["ReportPageSize"];
+                /** @description Default utilisation */
+                view?: "utilisation" | "revenue" | "damages" | "deposits";
+                group_by?: "unit" | "category" | "formula" | "line_kind" | "status" | "mode" | "day" | "week" | "month";
+                unit_id?: string;
+                category?: components["schemas"]["RentalCategory"];
+                formula_id?: string;
+            };
+            header?: never;
+            path: {
+                marinaId: components["parameters"]["MarinaId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalReport"];
                     "text/csv": string;
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
                 };

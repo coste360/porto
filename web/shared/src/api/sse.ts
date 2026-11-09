@@ -29,6 +29,8 @@ export const SSE_TOPICS = [
   'utilities.changed',
   // M10 (m10-plan §13)
   'yard.changed',
+  // M11 (m11-plan §13.2)
+  'rental.changed',
 ] as const;
 
 /** Debounce of the narrowed (M3) invalidations, per query key. */

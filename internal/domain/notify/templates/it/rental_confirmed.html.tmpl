@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="it">
+<body style="font-family: sans-serif; line-height: 1.5;">
+<p>Gentile {{with v . "customer_name"}}{{.}}{{else}}cliente{{end}},</p>
+<p>il tuo noleggio è confermato.</p>
+<table>
+{{with v . "reference"}}<tr><td>Riferimento</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "unit"}}<tr><td>Imbarcazione</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "starts_on"}}<tr><td>Ritiro</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "ends_on"}}<tr><td>Riconsegna</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "amount"}}<tr><td>Importo</td><td><strong>{{.}}</strong></td></tr>{{end}}
+{{with v . "qr"}}<tr><td>Codice da mostrare al pontile</td><td><strong>{{.}}</strong></td></tr>{{end}}
+</table>
+<p>Porta con te un documento d'identità e, se richiesta, la patente nautica.</p>
+<p style="color: #666;">{{v . "marina_name"}}</p>
+</body>
+</html>

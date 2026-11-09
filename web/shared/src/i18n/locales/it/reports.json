@@ -290,7 +290,22 @@
     "equipment_code": "Mezzo",
     "from_slot": "Dallo slot",
     "to_slot": "Allo slot",
-    "booking_status": "Stato prenotazione"
+    "booking_status": "Stato prenotazione",
+    "unit_code": "Unità",
+    "formula_code": "Formula",
+    "booking_number": "Noleggio",
+    "line_kind": "Tipo riga",
+    "available_slots": "Slot disponibili",
+    "rented_slots": "Slot noleggiati",
+    "utilisation_bp": "Utilizzo",
+    "damage_status": "Stato danno",
+    "estimate_cents": "Stima",
+    "retained_cents": "Trattenuto",
+    "deposit_mode": "Modalità cauzione",
+    "deposit_status": "Stato cauzione",
+    "deposit_cents": "Cauzione",
+    "released_cents": "Restituito",
+    "outstanding_cents": "In essere"
   },
   "descriptions": {
     "occupancy": "Notti occupate su notti disponibili, fisica o contrattuale, per posti, terre e aree dinamiche.",
@@ -313,7 +328,8 @@
     "storage": "Barche a terra su piazzali e capannoni: superficie occupata, uscite bloccate e produzione dei contratti di rimessaggio.",
     "maintenance": "Interventi di manutenzione per stato, ritardi, minuti interni e costi esterni.",
     "utilities": "Consumi di energia, acqua e contatori: da addebitare, addebitati e non assegnati.",
-    "yard": "Ore lavorate, carico dei dipendenti, margini delle commesse e mezzi di sollevamento del cantiere."
+    "yard": "Ore lavorate, carico dei dipendenti, margini delle commesse e mezzi di sollevamento del cantiere.",
+    "rental": "Utilizzo della flotta, ricavi per unità e formula, danni e cauzioni del noleggio (la cauzione non è un ricavo finché non viene trattenuta)."
   },
   "groupBy": {
     "resource": "Risorsa",
@@ -366,7 +382,11 @@
     "work_type": "Lavorazione",
     "qualification": "Qualifica",
     "bay": "Postazione",
-    "equipment": "Mezzo"
+    "equipment": "Mezzo",
+    "unit": "Unità",
+    "formula": "Formula",
+    "line_kind": "Tipo riga",
+    "mode": "Modalità"
   },
   "sections": {
     "presences": {
@@ -408,6 +428,12 @@
       "margins": "Margini",
       "margins_by_work_type": "Margini per lavorazione",
       "lifting": "Sollevamento"
+    },
+    "rental": {
+      "utilisation": "Utilizzo",
+      "revenue": "Ricavi",
+      "damages": "Danni",
+      "deposits": "Cauzioni"
     }
   },
   "filters": {
@@ -663,6 +689,45 @@
       "booked": "Prenotata",
       "done": "Eseguita",
       "cancelled": "Annullata"
+    },
+    "rentalCategory": {
+      "rib": "Gommone",
+      "open": "Open",
+      "cabin": "Cabinato",
+      "sail": "Vela",
+      "pedalo": "Pedalò",
+      "sup": "SUP"
+    },
+    "rentalLineKind": {
+      "unit": "Unità",
+      "skipper": "Skipper",
+      "extra": "Extra",
+      "late": "Ritardo",
+      "fuel": "Carburante",
+      "damage": "Danni",
+      "adjustment": "Rettifica"
+    },
+    "rentalDamageStatus": {
+      "open": "Aperto",
+      "charged": "Addebitato",
+      "waived": "Abbonato"
+    },
+    "rentalDepositMode": {
+      "cash": "Contanti",
+      "card_pos": "Carta (POS)",
+      "preauth": "Pre-autorizzazione",
+      "waived": "Esentata"
+    },
+    "rentalDepositStatus": {
+      "none": "Nessuna",
+      "pending": "In attesa",
+      "held": "Trattenuta in cassa",
+      "authorized": "Autorizzata",
+      "capture_pending": "Incasso in corso",
+      "released": "Restituita",
+      "retained": "Trattenuta",
+      "partially_retained": "Trattenuta in parte",
+      "waived": "Esentata"
     }
   },
   "suggestions": {

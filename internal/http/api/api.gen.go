@@ -2571,7 +2571,10 @@ const (
 	DocumentSubjectTypeMapPrint            DocumentSubjectType = "map_print"
 	DocumentSubjectTypeQuote               DocumentSubjectType = "quote"
 	DocumentSubjectTypeRenewalProposal     DocumentSubjectType = "renewal_proposal"
+	DocumentSubjectTypeRentalBooking       DocumentSubjectType = "rental_booking"
 	DocumentSubjectTypeRightTransfer       DocumentSubjectType = "right_transfer"
+	DocumentSubjectTypeWorkOrder           DocumentSubjectType = "work_order"
+	DocumentSubjectTypeYardQuote           DocumentSubjectType = "yard_quote"
 )
 
 // Valid indicates whether the value is a known member of the DocumentSubjectType enum.
@@ -2603,7 +2606,13 @@ func (e DocumentSubjectType) Valid() bool {
 		return true
 	case DocumentSubjectTypeRenewalProposal:
 		return true
+	case DocumentSubjectTypeRentalBooking:
+		return true
 	case DocumentSubjectTypeRightTransfer:
+		return true
+	case DocumentSubjectTypeWorkOrder:
+		return true
+	case DocumentSubjectTypeYardQuote:
 		return true
 	default:
 		return false
@@ -7302,6 +7311,909 @@ func (e RenewalProposalStatus) Valid() bool {
 	}
 }
 
+// Defines values for RentalBlockReason.
+const (
+	RentalBlockReasonClosure     RentalBlockReason = "closure"
+	RentalBlockReasonDayOff      RentalBlockReason = "day_off"
+	RentalBlockReasonMaintenance RentalBlockReason = "maintenance"
+	RentalBlockReasonOther       RentalBlockReason = "other"
+)
+
+// Valid indicates whether the value is a known member of the RentalBlockReason enum.
+func (e RentalBlockReason) Valid() bool {
+	switch e {
+	case RentalBlockReasonClosure:
+		return true
+	case RentalBlockReasonDayOff:
+		return true
+	case RentalBlockReasonMaintenance:
+		return true
+	case RentalBlockReasonOther:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalBookingChargeRefKind.
+const (
+	RentalBookingChargeRefKindAdjustment       RentalBookingChargeRefKind = "adjustment"
+	RentalBookingChargeRefKindDepositRetention RentalBookingChargeRefKind = "deposit_retention"
+	RentalBookingChargeRefKindMain             RentalBookingChargeRefKind = "main"
+	RentalBookingChargeRefKindReplaced         RentalBookingChargeRefKind = "replaced"
+	RentalBookingChargeRefKindReturn           RentalBookingChargeRefKind = "return"
+)
+
+// Valid indicates whether the value is a known member of the RentalBookingChargeRefKind enum.
+func (e RentalBookingChargeRefKind) Valid() bool {
+	switch e {
+	case RentalBookingChargeRefKindAdjustment:
+		return true
+	case RentalBookingChargeRefKindDepositRetention:
+		return true
+	case RentalBookingChargeRefKindMain:
+		return true
+	case RentalBookingChargeRefKindReplaced:
+		return true
+	case RentalBookingChargeRefKindReturn:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalBookingExtraSource.
+const (
+	RentalBookingExtraSourceBooking RentalBookingExtraSource = "booking"
+	RentalBookingExtraSourceReturn  RentalBookingExtraSource = "return"
+)
+
+// Valid indicates whether the value is a known member of the RentalBookingExtraSource enum.
+func (e RentalBookingExtraSource) Valid() bool {
+	switch e {
+	case RentalBookingExtraSourceBooking:
+		return true
+	case RentalBookingExtraSourceReturn:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalBookingStatus.
+const (
+	RentalBookingStatusCancelled  RentalBookingStatus = "cancelled"
+	RentalBookingStatusCheckedOut RentalBookingStatus = "checked_out"
+	RentalBookingStatusClosed     RentalBookingStatus = "closed"
+	RentalBookingStatusConfirmed  RentalBookingStatus = "confirmed"
+	RentalBookingStatusHeld       RentalBookingStatus = "held"
+	RentalBookingStatusNoShow     RentalBookingStatus = "no_show"
+	RentalBookingStatusReturned   RentalBookingStatus = "returned"
+)
+
+// Valid indicates whether the value is a known member of the RentalBookingStatus enum.
+func (e RentalBookingStatus) Valid() bool {
+	switch e {
+	case RentalBookingStatusCancelled:
+		return true
+	case RentalBookingStatusCheckedOut:
+		return true
+	case RentalBookingStatusClosed:
+		return true
+	case RentalBookingStatusConfirmed:
+		return true
+	case RentalBookingStatusHeld:
+		return true
+	case RentalBookingStatusNoShow:
+		return true
+	case RentalBookingStatusReturned:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalCategory.
+const (
+	RentalCategoryCabin  RentalCategory = "cabin"
+	RentalCategoryOpen   RentalCategory = "open"
+	RentalCategoryPedalo RentalCategory = "pedalo"
+	RentalCategoryRib    RentalCategory = "rib"
+	RentalCategorySail   RentalCategory = "sail"
+	RentalCategorySup    RentalCategory = "sup"
+)
+
+// Valid indicates whether the value is a known member of the RentalCategory enum.
+func (e RentalCategory) Valid() bool {
+	switch e {
+	case RentalCategoryCabin:
+		return true
+	case RentalCategoryOpen:
+		return true
+	case RentalCategoryPedalo:
+		return true
+	case RentalCategoryRib:
+		return true
+	case RentalCategorySail:
+		return true
+	case RentalCategorySup:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalChannel.
+const (
+	RentalChannelApi    RentalChannel = "api"
+	RentalChannelDesk   RentalChannel = "desk"
+	RentalChannelOnline RentalChannel = "online"
+)
+
+// Valid indicates whether the value is a known member of the RentalChannel enum.
+func (e RentalChannel) Valid() bool {
+	switch e {
+	case RentalChannelApi:
+		return true
+	case RentalChannelDesk:
+		return true
+	case RentalChannelOnline:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalCheckInInputDepositDecision.
+const (
+	RentalCheckInInputDepositDecisionRelease   RentalCheckInInputDepositDecision = "release"
+	RentalCheckInInputDepositDecisionRetain    RentalCheckInInputDepositDecision = "retain"
+	RentalCheckInInputDepositDecisionRetainAll RentalCheckInInputDepositDecision = "retain_all"
+)
+
+// Valid indicates whether the value is a known member of the RentalCheckInInputDepositDecision enum.
+func (e RentalCheckInInputDepositDecision) Valid() bool {
+	switch e {
+	case RentalCheckInInputDepositDecisionRelease:
+		return true
+	case RentalCheckInInputDepositDecisionRetain:
+		return true
+	case RentalCheckInInputDepositDecisionRetainAll:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalDamageStatus.
+const (
+	RentalDamageStatusCharged RentalDamageStatus = "charged"
+	RentalDamageStatusOpen    RentalDamageStatus = "open"
+	RentalDamageStatusWaived  RentalDamageStatus = "waived"
+)
+
+// Valid indicates whether the value is a known member of the RentalDamageStatus enum.
+func (e RentalDamageStatus) Valid() bool {
+	switch e {
+	case RentalDamageStatusCharged:
+		return true
+	case RentalDamageStatusOpen:
+		return true
+	case RentalDamageStatusWaived:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalDepositMode.
+const (
+	RentalDepositModeCardPos RentalDepositMode = "card_pos"
+	RentalDepositModeCash    RentalDepositMode = "cash"
+	RentalDepositModePreauth RentalDepositMode = "preauth"
+	RentalDepositModeWaived  RentalDepositMode = "waived"
+)
+
+// Valid indicates whether the value is a known member of the RentalDepositMode enum.
+func (e RentalDepositMode) Valid() bool {
+	switch e {
+	case RentalDepositModeCardPos:
+		return true
+	case RentalDepositModeCash:
+		return true
+	case RentalDepositModePreauth:
+		return true
+	case RentalDepositModeWaived:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalDepositStatus.
+const (
+	RentalDepositStatusAuthorized        RentalDepositStatus = "authorized"
+	RentalDepositStatusCapturePending    RentalDepositStatus = "capture_pending"
+	RentalDepositStatusHeld              RentalDepositStatus = "held"
+	RentalDepositStatusNone              RentalDepositStatus = "none"
+	RentalDepositStatusPartiallyRetained RentalDepositStatus = "partially_retained"
+	RentalDepositStatusPending           RentalDepositStatus = "pending"
+	RentalDepositStatusReleased          RentalDepositStatus = "released"
+	RentalDepositStatusRetained          RentalDepositStatus = "retained"
+	RentalDepositStatusWaived            RentalDepositStatus = "waived"
+)
+
+// Valid indicates whether the value is a known member of the RentalDepositStatus enum.
+func (e RentalDepositStatus) Valid() bool {
+	switch e {
+	case RentalDepositStatusAuthorized:
+		return true
+	case RentalDepositStatusCapturePending:
+		return true
+	case RentalDepositStatusHeld:
+		return true
+	case RentalDepositStatusNone:
+		return true
+	case RentalDepositStatusPartiallyRetained:
+		return true
+	case RentalDepositStatusPending:
+		return true
+	case RentalDepositStatusReleased:
+		return true
+	case RentalDepositStatusRetained:
+		return true
+	case RentalDepositStatusWaived:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalExtraChargeMode.
+const (
+	PerDay    RentalExtraChargeMode = "per_day"
+	PerRental RentalExtraChargeMode = "per_rental"
+)
+
+// Valid indicates whether the value is a known member of the RentalExtraChargeMode enum.
+func (e RentalExtraChargeMode) Valid() bool {
+	switch e {
+	case PerDay:
+		return true
+	case PerRental:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalFileKind.
+const (
+	RentalFileKindBoat       RentalFileKind = "boat"
+	RentalFileKindDamage     RentalFileKind = "damage"
+	RentalFileKindIdDocument RentalFileKind = "id_document"
+	RentalFileKindLicence    RentalFileKind = "licence"
+)
+
+// Valid indicates whether the value is a known member of the RentalFileKind enum.
+func (e RentalFileKind) Valid() bool {
+	switch e {
+	case RentalFileKindBoat:
+		return true
+	case RentalFileKindDamage:
+		return true
+	case RentalFileKindIdDocument:
+		return true
+	case RentalFileKindLicence:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalFiscalMode.
+const (
+	RentalFiscalModeInvoice RentalFiscalMode = "invoice"
+	RentalFiscalModeReceipt RentalFiscalMode = "receipt"
+)
+
+// Valid indicates whether the value is a known member of the RentalFiscalMode enum.
+func (e RentalFiscalMode) Valid() bool {
+	switch e {
+	case RentalFiscalModeInvoice:
+		return true
+	case RentalFiscalModeReceipt:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalFormulaLateStepMinutes.
+const (
+	RentalFormulaLateStepMinutesN15 RentalFormulaLateStepMinutes = 15
+	RentalFormulaLateStepMinutesN30 RentalFormulaLateStepMinutes = 30
+	RentalFormulaLateStepMinutesN60 RentalFormulaLateStepMinutes = 60
+)
+
+// Valid indicates whether the value is a known member of the RentalFormulaLateStepMinutes enum.
+func (e RentalFormulaLateStepMinutes) Valid() bool {
+	switch e {
+	case RentalFormulaLateStepMinutesN15:
+		return true
+	case RentalFormulaLateStepMinutesN30:
+		return true
+	case RentalFormulaLateStepMinutesN60:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalFormulaInputLateStepMinutes.
+const (
+	RentalFormulaInputLateStepMinutesN15 RentalFormulaInputLateStepMinutes = 15
+	RentalFormulaInputLateStepMinutesN30 RentalFormulaInputLateStepMinutes = 30
+	RentalFormulaInputLateStepMinutesN60 RentalFormulaInputLateStepMinutes = 60
+)
+
+// Valid indicates whether the value is a known member of the RentalFormulaInputLateStepMinutes enum.
+func (e RentalFormulaInputLateStepMinutes) Valid() bool {
+	switch e {
+	case RentalFormulaInputLateStepMinutesN15:
+		return true
+	case RentalFormulaInputLateStepMinutesN30:
+		return true
+	case RentalFormulaInputLateStepMinutesN60:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalFormulaKind.
+const (
+	RentalFormulaKindDay      RentalFormulaKind = "day"
+	RentalFormulaKindHalfDay  RentalFormulaKind = "half_day"
+	RentalFormulaKindHourly   RentalFormulaKind = "hourly"
+	RentalFormulaKindMultiDay RentalFormulaKind = "multi_day"
+	RentalFormulaKindWeek     RentalFormulaKind = "week"
+)
+
+// Valid indicates whether the value is a known member of the RentalFormulaKind enum.
+func (e RentalFormulaKind) Valid() bool {
+	switch e {
+	case RentalFormulaKindDay:
+		return true
+	case RentalFormulaKindHalfDay:
+		return true
+	case RentalFormulaKindHourly:
+		return true
+	case RentalFormulaKindMultiDay:
+		return true
+	case RentalFormulaKindWeek:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalFormulaPatchLateStepMinutes.
+const (
+	RentalFormulaPatchLateStepMinutesN15 RentalFormulaPatchLateStepMinutes = 15
+	RentalFormulaPatchLateStepMinutesN30 RentalFormulaPatchLateStepMinutes = 30
+	RentalFormulaPatchLateStepMinutesN60 RentalFormulaPatchLateStepMinutes = 60
+)
+
+// Valid indicates whether the value is a known member of the RentalFormulaPatchLateStepMinutes enum.
+func (e RentalFormulaPatchLateStepMinutes) Valid() bool {
+	switch e {
+	case RentalFormulaPatchLateStepMinutesN15:
+		return true
+	case RentalFormulaPatchLateStepMinutesN30:
+		return true
+	case RentalFormulaPatchLateStepMinutesN60:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalFuelMode.
+const (
+	RentalFuelModeIncluded RentalFuelMode = "included"
+	RentalFuelModeMetered  RentalFuelMode = "metered"
+)
+
+// Valid indicates whether the value is a known member of the RentalFuelMode enum.
+func (e RentalFuelMode) Valid() bool {
+	switch e {
+	case RentalFuelModeIncluded:
+		return true
+	case RentalFuelModeMetered:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalFuelType.
+const (
+	RentalFuelTypeDiesel   RentalFuelType = "diesel"
+	RentalFuelTypeElectric RentalFuelType = "electric"
+	RentalFuelTypeNone     RentalFuelType = "none"
+	RentalFuelTypePetrol   RentalFuelType = "petrol"
+)
+
+// Valid indicates whether the value is a known member of the RentalFuelType enum.
+func (e RentalFuelType) Valid() bool {
+	switch e {
+	case RentalFuelTypeDiesel:
+		return true
+	case RentalFuelTypeElectric:
+		return true
+	case RentalFuelTypeNone:
+		return true
+	case RentalFuelTypePetrol:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalHandoverMissing.
+const (
+	RentalHandoverMissingChecklist   RentalHandoverMissing = "checklist"
+	RentalHandoverMissingContract    RentalHandoverMissing = "contract"
+	RentalHandoverMissingDeposit     RentalHandoverMissing = "deposit"
+	RentalHandoverMissingEngineHours RentalHandoverMissing = "engine_hours"
+	RentalHandoverMissingFuel        RentalHandoverMissing = "fuel"
+	RentalHandoverMissingIdentity    RentalHandoverMissing = "identity"
+	RentalHandoverMissingLicence     RentalHandoverMissing = "licence"
+	RentalHandoverMissingPhotos      RentalHandoverMissing = "photos"
+)
+
+// Valid indicates whether the value is a known member of the RentalHandoverMissing enum.
+func (e RentalHandoverMissing) Valid() bool {
+	switch e {
+	case RentalHandoverMissingChecklist:
+		return true
+	case RentalHandoverMissingContract:
+		return true
+	case RentalHandoverMissingDeposit:
+		return true
+	case RentalHandoverMissingEngineHours:
+		return true
+	case RentalHandoverMissingFuel:
+		return true
+	case RentalHandoverMissingIdentity:
+		return true
+	case RentalHandoverMissingLicence:
+		return true
+	case RentalHandoverMissingPhotos:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalIdentityInputDocumentType.
+const (
+	RentalIdentityInputDocumentTypeDrivingLicence RentalIdentityInputDocumentType = "driving_licence"
+	RentalIdentityInputDocumentTypeIdentityCard   RentalIdentityInputDocumentType = "identity_card"
+	RentalIdentityInputDocumentTypeOther          RentalIdentityInputDocumentType = "other"
+	RentalIdentityInputDocumentTypePassport       RentalIdentityInputDocumentType = "passport"
+)
+
+// Valid indicates whether the value is a known member of the RentalIdentityInputDocumentType enum.
+func (e RentalIdentityInputDocumentType) Valid() bool {
+	switch e {
+	case RentalIdentityInputDocumentTypeDrivingLicence:
+		return true
+	case RentalIdentityInputDocumentTypeIdentityCard:
+		return true
+	case RentalIdentityInputDocumentTypeOther:
+		return true
+	case RentalIdentityInputDocumentTypePassport:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalIdentitySummaryDocumentType.
+const (
+	RentalIdentitySummaryDocumentTypeDrivingLicence RentalIdentitySummaryDocumentType = "driving_licence"
+	RentalIdentitySummaryDocumentTypeIdentityCard   RentalIdentitySummaryDocumentType = "identity_card"
+	RentalIdentitySummaryDocumentTypeOther          RentalIdentitySummaryDocumentType = "other"
+	RentalIdentitySummaryDocumentTypePassport       RentalIdentitySummaryDocumentType = "passport"
+)
+
+// Valid indicates whether the value is a known member of the RentalIdentitySummaryDocumentType enum.
+func (e RentalIdentitySummaryDocumentType) Valid() bool {
+	switch e {
+	case RentalIdentitySummaryDocumentTypeDrivingLicence:
+		return true
+	case RentalIdentitySummaryDocumentTypeIdentityCard:
+		return true
+	case RentalIdentitySummaryDocumentTypeOther:
+		return true
+	case RentalIdentitySummaryDocumentTypePassport:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalLicenceMode.
+const (
+	RentalLicenceModeAlways    RentalLicenceMode = "always"
+	RentalLicenceModeNever     RentalLicenceMode = "never"
+	RentalLicenceModeThreshold RentalLicenceMode = "threshold"
+)
+
+// Valid indicates whether the value is a known member of the RentalLicenceMode enum.
+func (e RentalLicenceMode) Valid() bool {
+	switch e {
+	case RentalLicenceModeAlways:
+		return true
+	case RentalLicenceModeNever:
+		return true
+	case RentalLicenceModeThreshold:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalOwnership.
+const (
+	RentalOwnershipMarina     RentalOwnership = "marina"
+	RentalOwnershipThirdParty RentalOwnership = "third_party"
+)
+
+// Valid indicates whether the value is a known member of the RentalOwnership enum.
+func (e RentalOwnership) Valid() bool {
+	switch e {
+	case RentalOwnershipMarina:
+		return true
+	case RentalOwnershipThirdParty:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalPhase.
+const (
+	Checkin  RentalPhase = "checkin"
+	Checkout RentalPhase = "checkout"
+)
+
+// Valid indicates whether the value is a known member of the RentalPhase enum.
+func (e RentalPhase) Valid() bool {
+	switch e {
+	case Checkin:
+		return true
+	case Checkout:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalPlannerView.
+const (
+	RentalPlannerViewDays     RentalPlannerView = "days"
+	RentalPlannerViewHalfDays RentalPlannerView = "half_days"
+	RentalPlannerViewHours    RentalPlannerView = "hours"
+)
+
+// Valid indicates whether the value is a known member of the RentalPlannerView enum.
+func (e RentalPlannerView) Valid() bool {
+	switch e {
+	case RentalPlannerViewDays:
+		return true
+	case RentalPlannerViewHalfDays:
+		return true
+	case RentalPlannerViewHours:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalPlannerRowKind.
+const (
+	RentalPlannerRowKindSkipper RentalPlannerRowKind = "skipper"
+	RentalPlannerRowKindUnit    RentalPlannerRowKind = "unit"
+)
+
+// Valid indicates whether the value is a known member of the RentalPlannerRowKind enum.
+func (e RentalPlannerRowKind) Valid() bool {
+	switch e {
+	case RentalPlannerRowKindSkipper:
+		return true
+	case RentalPlannerRowKindUnit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalPriceLineKind.
+const (
+	RentalPriceLineKindDamage  RentalPriceLineKind = "damage"
+	RentalPriceLineKindExtra   RentalPriceLineKind = "extra"
+	RentalPriceLineKindFuel    RentalPriceLineKind = "fuel"
+	RentalPriceLineKindLateFee RentalPriceLineKind = "late_fee"
+	RentalPriceLineKindSkipper RentalPriceLineKind = "skipper"
+	RentalPriceLineKindUnit    RentalPriceLineKind = "unit"
+)
+
+// Valid indicates whether the value is a known member of the RentalPriceLineKind enum.
+func (e RentalPriceLineKind) Valid() bool {
+	switch e {
+	case RentalPriceLineKindDamage:
+		return true
+	case RentalPriceLineKindExtra:
+		return true
+	case RentalPriceLineKindFuel:
+		return true
+	case RentalPriceLineKindLateFee:
+		return true
+	case RentalPriceLineKindSkipper:
+		return true
+	case RentalPriceLineKindUnit:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalQuickCashInputMethod.
+const (
+	RentalQuickCashInputMethodCardPos RentalQuickCashInputMethod = "card_pos"
+	RentalQuickCashInputMethodCash    RentalQuickCashInputMethod = "cash"
+	RentalQuickCashInputMethodLink    RentalQuickCashInputMethod = "link"
+)
+
+// Valid indicates whether the value is a known member of the RentalQuickCashInputMethod enum.
+func (e RentalQuickCashInputMethod) Valid() bool {
+	switch e {
+	case RentalQuickCashInputMethodCardPos:
+		return true
+	case RentalQuickCashInputMethodCash:
+		return true
+	case RentalQuickCashInputMethodLink:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalQuickCashInputTarget.
+const (
+	RentalQuickCashInputTargetMain   RentalQuickCashInputTarget = "main"
+	RentalQuickCashInputTargetOpen   RentalQuickCashInputTarget = "open"
+	RentalQuickCashInputTargetReturn RentalQuickCashInputTarget = "return"
+)
+
+// Valid indicates whether the value is a known member of the RentalQuickCashInputTarget enum.
+func (e RentalQuickCashInputTarget) Valid() bool {
+	switch e {
+	case RentalQuickCashInputTargetMain:
+		return true
+	case RentalQuickCashInputTargetOpen:
+		return true
+	case RentalQuickCashInputTargetReturn:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalReportView.
+const (
+	RentalReportViewDamages     RentalReportView = "damages"
+	RentalReportViewDeposits    RentalReportView = "deposits"
+	RentalReportViewRevenue     RentalReportView = "revenue"
+	RentalReportViewUtilisation RentalReportView = "utilisation"
+)
+
+// Valid indicates whether the value is a known member of the RentalReportView enum.
+func (e RentalReportView) Valid() bool {
+	switch e {
+	case RentalReportViewDamages:
+		return true
+	case RentalReportViewDeposits:
+		return true
+	case RentalReportViewRevenue:
+		return true
+	case RentalReportViewUtilisation:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalSettingsDepositModes.
+const (
+	RentalSettingsDepositModesCardPos RentalSettingsDepositModes = "card_pos"
+	RentalSettingsDepositModesCash    RentalSettingsDepositModes = "cash"
+	RentalSettingsDepositModesPreauth RentalSettingsDepositModes = "preauth"
+)
+
+// Valid indicates whether the value is a known member of the RentalSettingsDepositModes enum.
+func (e RentalSettingsDepositModes) Valid() bool {
+	switch e {
+	case RentalSettingsDepositModesCardPos:
+		return true
+	case RentalSettingsDepositModesCash:
+		return true
+	case RentalSettingsDepositModesPreauth:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalSettingsInputDepositModes.
+const (
+	RentalSettingsInputDepositModesCardPos RentalSettingsInputDepositModes = "card_pos"
+	RentalSettingsInputDepositModesCash    RentalSettingsInputDepositModes = "cash"
+	RentalSettingsInputDepositModesPreauth RentalSettingsInputDepositModes = "preauth"
+)
+
+// Valid indicates whether the value is a known member of the RentalSettingsInputDepositModes enum.
+func (e RentalSettingsInputDepositModes) Valid() bool {
+	switch e {
+	case RentalSettingsInputDepositModesCardPos:
+		return true
+	case RentalSettingsInputDepositModesCash:
+		return true
+	case RentalSettingsInputDepositModesPreauth:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalSignInputDriver.
+const (
+	RentalSignInputDriverOtp    RentalSignInputDriver = "otp"
+	RentalSignInputDriverPaper  RentalSignInputDriver = "paper"
+	RentalSignInputDriverScreen RentalSignInputDriver = "screen"
+)
+
+// Valid indicates whether the value is a known member of the RentalSignInputDriver enum.
+func (e RentalSignInputDriver) Valid() bool {
+	switch e {
+	case RentalSignInputDriverOtp:
+		return true
+	case RentalSignInputDriverPaper:
+		return true
+	case RentalSignInputDriverScreen:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalSignatureDriver.
+const (
+	RentalSignatureDriverOtp    RentalSignatureDriver = "otp"
+	RentalSignatureDriverPaper  RentalSignatureDriver = "paper"
+	RentalSignatureDriverScreen RentalSignatureDriver = "screen"
+)
+
+// Valid indicates whether the value is a known member of the RentalSignatureDriver enum.
+func (e RentalSignatureDriver) Valid() bool {
+	switch e {
+	case RentalSignatureDriverOtp:
+		return true
+	case RentalSignatureDriverPaper:
+		return true
+	case RentalSignatureDriverScreen:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalSkipperMode.
+const (
+	RentalSkipperModeNone     RentalSkipperMode = "none"
+	RentalSkipperModeOptional RentalSkipperMode = "optional"
+	RentalSkipperModeRequired RentalSkipperMode = "required"
+)
+
+// Valid indicates whether the value is a known member of the RentalSkipperMode enum.
+func (e RentalSkipperMode) Valid() bool {
+	switch e {
+	case RentalSkipperModeNone:
+		return true
+	case RentalSkipperModeOptional:
+		return true
+	case RentalSkipperModeRequired:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalSlotKind.
+const (
+	RentalSlotKindBlock  RentalSlotKind = "block"
+	RentalSlotKindBooked RentalSlotKind = "booked"
+	RentalSlotKindBuffer RentalSlotKind = "buffer"
+	RentalSlotKindHold   RentalSlotKind = "hold"
+)
+
+// Valid indicates whether the value is a known member of the RentalSlotKind enum.
+func (e RentalSlotKind) Valid() bool {
+	switch e {
+	case RentalSlotKindBlock:
+		return true
+	case RentalSlotKindBooked:
+		return true
+	case RentalSlotKindBuffer:
+		return true
+	case RentalSlotKindHold:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalTransitionInputAction.
+const (
+	RentalTransitionInputActionCancel     RentalTransitionInputAction = "cancel"
+	RentalTransitionInputActionConfirm    RentalTransitionInputAction = "confirm"
+	RentalTransitionInputActionExtend     RentalTransitionInputAction = "extend"
+	RentalTransitionInputActionExtendHold RentalTransitionInputAction = "extend_hold"
+	RentalTransitionInputActionNoShow     RentalTransitionInputAction = "no_show"
+)
+
+// Valid indicates whether the value is a known member of the RentalTransitionInputAction enum.
+func (e RentalTransitionInputAction) Valid() bool {
+	switch e {
+	case RentalTransitionInputActionCancel:
+		return true
+	case RentalTransitionInputActionConfirm:
+		return true
+	case RentalTransitionInputActionExtend:
+		return true
+	case RentalTransitionInputActionExtendHold:
+		return true
+	case RentalTransitionInputActionNoShow:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RentalUnitStatus.
+const (
+	RentalUnitStatusAvailable   RentalUnitStatus = "available"
+	RentalUnitStatusMaintenance RentalUnitStatus = "maintenance"
+	RentalUnitStatusRetired     RentalUnitStatus = "retired"
+)
+
+// Valid indicates whether the value is a known member of the RentalUnitStatus enum.
+func (e RentalUnitStatus) Valid() bool {
+	switch e {
+	case RentalUnitStatusAvailable:
+		return true
+	case RentalUnitStatusMaintenance:
+		return true
+	case RentalUnitStatusRetired:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ReportAlign.
 const (
 	ReportAlignDate    ReportAlign = "date"
@@ -7403,6 +8315,7 @@ const (
 	ReportKeyPresences       ReportKey = "presences"
 	ReportKeyProduction      ReportKey = "production"
 	ReportKeyReceivables     ReportKey = "receivables"
+	ReportKeyRental          ReportKey = "rental"
 	ReportKeyRevenueClasses  ReportKey = "revenue-classes"
 	ReportKeyRights          ReportKey = "rights"
 	ReportKeyStorage         ReportKey = "storage"
@@ -7443,6 +8356,8 @@ func (e ReportKey) Valid() bool {
 	case ReportKeyProduction:
 		return true
 	case ReportKeyReceivables:
+		return true
+	case ReportKeyRental:
 		return true
 	case ReportKeyRevenueClasses:
 		return true
@@ -7517,6 +8432,8 @@ const (
 	ReportRefTypePresence           ReportRefType = "presence"
 	ReportRefTypeRefund             ReportRefType = "refund"
 	ReportRefTypeRelease            ReportRefType = "release"
+	ReportRefTypeRentalBooking      ReportRefType = "rental_booking"
+	ReportRefTypeRentalUnit         ReportRefType = "rental_unit"
 	ReportRefTypeRight              ReportRefType = "right"
 	ReportRefTypeScenario           ReportRefType = "scenario"
 	ReportRefTypeTransit            ReportRefType = "transit"
@@ -7571,6 +8488,10 @@ func (e ReportRefType) Valid() bool {
 	case ReportRefTypeRefund:
 		return true
 	case ReportRefTypeRelease:
+		return true
+	case ReportRefTypeRentalBooking:
+		return true
+	case ReportRefTypeRentalUnit:
 		return true
 	case ReportRefTypeRight:
 		return true
@@ -8076,6 +8997,30 @@ func (e SignatureOrderMode) Valid() bool {
 	}
 }
 
+// Defines values for SignatureRequestDriver.
+const (
+	SignatureRequestDriverOtp      SignatureRequestDriver = "otp"
+	SignatureRequestDriverPaper    SignatureRequestDriver = "paper"
+	SignatureRequestDriverProvider SignatureRequestDriver = "provider"
+	SignatureRequestDriverScreen   SignatureRequestDriver = "screen"
+)
+
+// Valid indicates whether the value is a known member of the SignatureRequestDriver enum.
+func (e SignatureRequestDriver) Valid() bool {
+	switch e {
+	case SignatureRequestDriverOtp:
+		return true
+	case SignatureRequestDriverPaper:
+		return true
+	case SignatureRequestDriverProvider:
+		return true
+	case SignatureRequestDriverScreen:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for SignatureRequestStatus.
 const (
 	SignatureRequestStatusCancelled       SignatureRequestStatus = "cancelled"
@@ -8113,6 +9058,7 @@ func (e SignatureRequestStatus) Valid() bool {
 const (
 	SignatureSubjectTypeAddendum      SignatureSubjectType = "addendum"
 	SignatureSubjectTypeContract      SignatureSubjectType = "contract"
+	SignatureSubjectTypeRental        SignatureSubjectType = "rental"
 	SignatureSubjectTypeRightTransfer SignatureSubjectType = "right_transfer"
 )
 
@@ -8122,6 +9068,8 @@ func (e SignatureSubjectType) Valid() bool {
 	case SignatureSubjectTypeAddendum:
 		return true
 	case SignatureSubjectTypeContract:
+		return true
+	case SignatureSubjectTypeRental:
 		return true
 	case SignatureSubjectTypeRightTransfer:
 		return true
@@ -8915,17 +9863,26 @@ func (e TileTrend) Valid() bool {
 
 // Defines values for TimeUnit.
 const (
-	TimeUnitMonth  TimeUnit = "month"
-	TimeUnitNight  TimeUnit = "night"
-	TimeUnitSeason TimeUnit = "season"
-	TimeUnitStay   TimeUnit = "stay"
-	TimeUnitWeek   TimeUnit = "week"
-	TimeUnitYear   TimeUnit = "year"
+	TimeUnitDay     TimeUnit = "day"
+	TimeUnitHalfDay TimeUnit = "half_day"
+	TimeUnitHour    TimeUnit = "hour"
+	TimeUnitMonth   TimeUnit = "month"
+	TimeUnitNight   TimeUnit = "night"
+	TimeUnitSeason  TimeUnit = "season"
+	TimeUnitStay    TimeUnit = "stay"
+	TimeUnitWeek    TimeUnit = "week"
+	TimeUnitYear    TimeUnit = "year"
 )
 
 // Valid indicates whether the value is a known member of the TimeUnit enum.
 func (e TimeUnit) Valid() bool {
 	switch e {
+	case TimeUnitDay:
+		return true
+	case TimeUnitHalfDay:
+		return true
+	case TimeUnitHour:
+		return true
 	case TimeUnitMonth:
 		return true
 	case TimeUnitNight:
@@ -10491,6 +11448,51 @@ func (e ListCampaignProposalsParamsFormat) Valid() bool {
 	}
 }
 
+// Defines values for UploadHandoverPhotoParamsKind.
+const (
+	UploadHandoverPhotoParamsKindBoat       UploadHandoverPhotoParamsKind = "boat"
+	UploadHandoverPhotoParamsKindDamage     UploadHandoverPhotoParamsKind = "damage"
+	UploadHandoverPhotoParamsKindIdDocument UploadHandoverPhotoParamsKind = "id_document"
+	UploadHandoverPhotoParamsKindLicence    UploadHandoverPhotoParamsKind = "licence"
+)
+
+// Valid indicates whether the value is a known member of the UploadHandoverPhotoParamsKind enum.
+func (e UploadHandoverPhotoParamsKind) Valid() bool {
+	switch e {
+	case UploadHandoverPhotoParamsKindBoat:
+		return true
+	case UploadHandoverPhotoParamsKindDamage:
+		return true
+	case UploadHandoverPhotoParamsKindIdDocument:
+		return true
+	case UploadHandoverPhotoParamsKindLicence:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetRentalPlannerParamsView.
+const (
+	GetRentalPlannerParamsViewDays     GetRentalPlannerParamsView = "days"
+	GetRentalPlannerParamsViewHalfDays GetRentalPlannerParamsView = "half_days"
+	GetRentalPlannerParamsViewHours    GetRentalPlannerParamsView = "hours"
+)
+
+// Valid indicates whether the value is a known member of the GetRentalPlannerParamsView enum.
+func (e GetRentalPlannerParamsView) Valid() bool {
+	switch e {
+	case GetRentalPlannerParamsViewDays:
+		return true
+	case GetRentalPlannerParamsViewHalfDays:
+		return true
+	case GetRentalPlannerParamsViewHours:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetAccrualsReportParamsGroupBy.
 const (
 	GetAccrualsReportParamsGroupByCustomer GetAccrualsReportParamsGroupBy = "customer"
@@ -11037,6 +12039,69 @@ func (e GetReceivablesReportParamsSection) Valid() bool {
 	case GetReceivablesReportParamsSectionOpen:
 		return true
 	case GetReceivablesReportParamsSectionReminders:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetRentalReportParamsView.
+const (
+	GetRentalReportParamsViewDamages     GetRentalReportParamsView = "damages"
+	GetRentalReportParamsViewDeposits    GetRentalReportParamsView = "deposits"
+	GetRentalReportParamsViewRevenue     GetRentalReportParamsView = "revenue"
+	GetRentalReportParamsViewUtilisation GetRentalReportParamsView = "utilisation"
+)
+
+// Valid indicates whether the value is a known member of the GetRentalReportParamsView enum.
+func (e GetRentalReportParamsView) Valid() bool {
+	switch e {
+	case GetRentalReportParamsViewDamages:
+		return true
+	case GetRentalReportParamsViewDeposits:
+		return true
+	case GetRentalReportParamsViewRevenue:
+		return true
+	case GetRentalReportParamsViewUtilisation:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetRentalReportParamsGroupBy.
+const (
+	GetRentalReportParamsGroupByCategory GetRentalReportParamsGroupBy = "category"
+	GetRentalReportParamsGroupByDay      GetRentalReportParamsGroupBy = "day"
+	GetRentalReportParamsGroupByFormula  GetRentalReportParamsGroupBy = "formula"
+	GetRentalReportParamsGroupByLineKind GetRentalReportParamsGroupBy = "line_kind"
+	GetRentalReportParamsGroupByMode     GetRentalReportParamsGroupBy = "mode"
+	GetRentalReportParamsGroupByMonth    GetRentalReportParamsGroupBy = "month"
+	GetRentalReportParamsGroupByStatus   GetRentalReportParamsGroupBy = "status"
+	GetRentalReportParamsGroupByUnit     GetRentalReportParamsGroupBy = "unit"
+	GetRentalReportParamsGroupByWeek     GetRentalReportParamsGroupBy = "week"
+)
+
+// Valid indicates whether the value is a known member of the GetRentalReportParamsGroupBy enum.
+func (e GetRentalReportParamsGroupBy) Valid() bool {
+	switch e {
+	case GetRentalReportParamsGroupByCategory:
+		return true
+	case GetRentalReportParamsGroupByDay:
+		return true
+	case GetRentalReportParamsGroupByFormula:
+		return true
+	case GetRentalReportParamsGroupByLineKind:
+		return true
+	case GetRentalReportParamsGroupByMode:
+		return true
+	case GetRentalReportParamsGroupByMonth:
+		return true
+	case GetRentalReportParamsGroupByStatus:
+		return true
+	case GetRentalReportParamsGroupByUnit:
+		return true
+	case GetRentalReportParamsGroupByWeek:
 		return true
 	default:
 		return false
@@ -11602,7 +12667,7 @@ type AccrualsReport struct {
 	Period  ReportPeriod     `json:"period"`
 	Records []AccrualsRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -11904,7 +12969,7 @@ type AllocationWasteReport struct {
 	Period  ReportPeriod  `json:"period"`
 	Records []WasteRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report      ReportKey         `json:"report"`
 	Section     *string           `json:"section,omitempty"`
 	Suggestions []WasteSuggestion `json:"suggestions"`
@@ -12446,7 +13511,7 @@ type BerthRevenueReport struct {
 	Period  ReportPeriod         `json:"period"`
 	Records []BerthRevenueRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -13272,7 +14337,7 @@ type CashReport struct {
 	Period  ReportPeriod `json:"period"`
 	Records []CashRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -13837,7 +14902,7 @@ type ChargesReport struct {
 	Period  ReportPeriod    `json:"period"`
 	Records []ChargesRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -15186,7 +16251,7 @@ type CustomersReport struct {
 	Period  ReportPeriod      `json:"period"`
 	Records []CustomersRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -15993,7 +17058,7 @@ type EfficiencyReport struct {
 	Period  ReportPeriod       `json:"period"`
 	Records []EfficiencyRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -17880,7 +18945,7 @@ type LostDemandReport struct {
 	Period  ReportPeriod       `json:"period"`
 	Records []LostDemandRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -18082,7 +19147,7 @@ type MaintenanceReport struct {
 	Period  ReportPeriod              `json:"period"`
 	Records []MaintenanceReportRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -19221,7 +20286,7 @@ type OccupancyReport struct {
 	Period  ReportPeriod      `json:"period"`
 	Records []OccupancyRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -20191,7 +21256,7 @@ type PaymentsReport struct {
 	Period  ReportPeriod     `json:"period"`
 	Records []PaymentsRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -20608,7 +21673,7 @@ type PresencesReport struct {
 	Period  ReportPeriod      `json:"period"`
 	Records []PresencesRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -20660,7 +21725,9 @@ type PriceBlock struct {
 	RuleId    string         `json:"rule_id"`
 
 	// To Exclusive; may be after the departure (best_combination overshoot)
-	To   IsoDate  `json:"to"`
+	To IsoDate `json:"to"`
+
+	// Unit hour, half_day and day (and week) are accepted only on flat base rules of items with revenue class rental (M11, priced by RentalQuote, ignored by the mooring engine)
 	Unit TimeUnit `json:"unit"`
 }
 
@@ -20961,7 +22028,9 @@ type PriceMatrixCell struct {
 	Probe      PricingSimulateRequest `json:"probe"`
 	Row        int                    `json:"row"`
 	TotalCents *int64                 `json:"total_cents,omitempty"`
-	Unit       *TimeUnit              `json:"unit,omitempty"`
+
+	// Unit hour, half_day and day (and week) are accepted only on flat base rules of items with revenue class rental (M11, priced by RentalQuote, ignored by the mooring engine)
+	Unit *TimeUnit `json:"unit,omitempty"`
 }
 
 // PriceMatrixColumn defines model for PriceMatrixColumn.
@@ -21040,8 +22109,10 @@ type PriceRule struct {
 	Stage           PricingStage  `json:"stage"`
 	TargetItemIds   *[]string     `json:"target_item_ids,omitempty"`
 	TargetItemTypes *[]ItemType   `json:"target_item_types,omitempty"`
-	Unit            *TimeUnit     `json:"unit,omitempty"`
-	UnitCents       *int64        `json:"unit_cents,omitempty"`
+
+	// Unit hour, half_day and day (and week) are accepted only on flat base rules of items with revenue class rental (M11, priced by RentalQuote, ignored by the mooring engine)
+	Unit      *TimeUnit `json:"unit,omitempty"`
+	UnitCents *int64    `json:"unit_cents,omitempty"`
 }
 
 // PriceSummary defines model for PriceSummary.
@@ -21095,6 +22166,9 @@ type PricingScope struct {
 
 	// Periods Rate period codes
 	Periods *[]string `json:"periods,omitempty"`
+
+	// TimeBands Rental half-day band codes (M11, honoured by the rental quote only)
+	TimeBands *[]string `json:"time_bands,omitempty"`
 }
 
 // PricingSettings defines model for PricingSettings.
@@ -21221,7 +22295,7 @@ type ProductionReport struct {
 	Period  ReportPeriod       `json:"period"`
 	Records []ProductionRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -21974,7 +23048,7 @@ type ReceivablesReport struct {
 	Period  ReportPeriod        `json:"period"`
 	Records []ReceivablesRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -22494,6 +23568,1196 @@ type RenewalRequest struct {
 	ValidTo *IsoDate `json:"valid_to,omitempty"`
 }
 
+// RentalAvailability defines model for RentalAvailability.
+type RentalAvailability struct {
+	Skippers []struct {
+		Name        string `json:"name"`
+		SkipperId   string `json:"skipper_id"`
+		WithinHours bool   `json:"within_hours"`
+	} `json:"skippers"`
+	Units []struct {
+		Category        RentalCategory `json:"category"`
+		Code            string         `json:"code"`
+		FormulaIds      []string       `json:"formula_ids"`
+		LicenceRequired bool           `json:"licence_required"`
+		Seats           int            `json:"seats"`
+		UnitId          string         `json:"unit_id"`
+	} `json:"units"`
+}
+
+// RentalBand defines model for RentalBand.
+type RentalBand struct {
+	Code     string   `json:"code"`
+	FromSlot int      `json:"from_slot"`
+	Label    I18nText `json:"label"`
+	ToSlot   int      `json:"to_slot"`
+}
+
+// RentalBlock defines model for RentalBlock.
+type RentalBlock struct {
+	CreatedAt time.Time `json:"created_at"`
+
+	// From A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	From      RentalSlotPoint   `json:"from"`
+	Id        string            `json:"id"`
+	Note      string            `json:"note"`
+	Reason    RentalBlockReason `json:"reason"`
+	SkipperId *string           `json:"skipper_id,omitempty"`
+
+	// To A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	To        RentalSlotPoint `json:"to"`
+	UnitId    *string         `json:"unit_id,omitempty"`
+	UpdatedAt time.Time       `json:"updated_at"`
+	Version   int64           `json:"version"`
+}
+
+// RentalBlockInput defines model for RentalBlockInput.
+type RentalBlockInput struct {
+	// From A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	From      RentalSlotPoint   `json:"from"`
+	Note      *string           `json:"note,omitempty"`
+	Reason    RentalBlockReason `json:"reason"`
+	SkipperId *string           `json:"skipper_id,omitempty"`
+
+	// To A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	To     RentalSlotPoint `json:"to"`
+	UnitId *string         `json:"unit_id,omitempty"`
+}
+
+// RentalBlockList defines model for RentalBlockList.
+type RentalBlockList struct {
+	Items []RentalBlock `json:"items"`
+}
+
+// RentalBlockPatch defines model for RentalBlockPatch.
+type RentalBlockPatch struct {
+	// From A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	From   *RentalSlotPoint   `json:"from,omitempty"`
+	Note   *string            `json:"note,omitempty"`
+	Reason *RentalBlockReason `json:"reason,omitempty"`
+
+	// To A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	To *RentalSlotPoint `json:"to,omitempty"`
+}
+
+// RentalBlockReason defines model for RentalBlockReason.
+type RentalBlockReason string
+
+// RentalBooking defines model for RentalBooking.
+type RentalBooking struct {
+	AllowOutsideHours bool                     `json:"allow_outside_hours"`
+	CancelReason      *string                  `json:"cancel_reason,omitempty"`
+	CancelledAt       *time.Time               `json:"cancelled_at,omitempty"`
+	Channel           RentalChannel            `json:"channel"`
+	Charges           []RentalBookingChargeRef `json:"charges"`
+	CheckedOutAt      *time.Time               `json:"checked_out_at,omitempty"`
+	ClosedAt          *time.Time               `json:"closed_at,omitempty"`
+	CreatedAt         time.Time                `json:"created_at"`
+	CustomerId        *string                  `json:"customer_id,omitempty"`
+	Deposit           RentalDeposit            `json:"deposit"`
+
+	// End A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	End           RentalSlotPoint      `json:"end"`
+	EndsAt        time.Time            `json:"ends_at"`
+	EngineVersion int                  `json:"engine_version"`
+	Extras        []RentalBookingExtra `json:"extras"`
+
+	// FiscalMode receipt (commercial document through the FiscalDriver) unless the customer asked for an invoice
+	FiscalMode       RentalFiscalMode  `json:"fiscal_mode"`
+	FormulaCode      string            `json:"formula_code"`
+	FormulaId        string            `json:"formula_id"`
+	HoldExpiresAt    *time.Time        `json:"hold_expires_at,omitempty"`
+	Id               string            `json:"id"`
+	InvoiceRequested bool              `json:"invoice_requested"`
+	Kind             RentalFormulaKind `json:"kind"`
+	LicenceRequired  bool              `json:"licence_required"`
+	Lines            []RentalPriceLine `json:"lines"`
+	NoShowAt         *time.Time        `json:"no_show_at,omitempty"`
+	Note             string            `json:"note"`
+
+	// Number NL<year>-NNNNNN
+	Number    string `json:"number"`
+	PartySize *int   `json:"party_size,omitempty"`
+
+	// Renter Walk-in renter without a registry customer (encrypted at rest, never in events or logs)
+	Renter     *RentalRenter `json:"renter,omitempty"`
+	ReturnedAt *time.Time    `json:"returned_at,omitempty"`
+	SkipperId  *string       `json:"skipper_id,omitempty"`
+
+	// SlotsLost The rows of an expired hold were reclaimed by another booking
+	SlotsLost bool `json:"slots_lost"`
+
+	// Start A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	Start    RentalSlotPoint     `json:"start"`
+	StartsAt time.Time           `json:"starts_at"`
+	Status   RentalBookingStatus `json:"status"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents     `json:"total_cents"`
+	UnitCode   string    `json:"unit_code"`
+	UnitId     string    `json:"unit_id"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	Version    int64     `json:"version"`
+}
+
+// RentalBookingChargeRef defines model for RentalBookingChargeRef.
+type RentalBookingChargeRef struct {
+	ChargeId string `json:"charge_id"`
+
+	// FiscalMode receipt (commercial document through the FiscalDriver) unless the customer asked for an invoice
+	FiscalMode RentalFiscalMode           `json:"fiscal_mode"`
+	Kind       RentalBookingChargeRefKind `json:"kind"`
+
+	// PaidAmountCents Amount in integer cents of the marina currency
+	PaidAmountCents Cents  `json:"paid_amount_cents"`
+	Status          string `json:"status"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents `json:"total_cents"`
+}
+
+// RentalBookingChargeRefKind defines model for RentalBookingChargeRef.Kind.
+type RentalBookingChargeRefKind string
+
+// RentalBookingExtra defines model for RentalBookingExtra.
+type RentalBookingExtra struct {
+	ExtraId string `json:"extra_id"`
+	ItemId  string `json:"item_id"`
+
+	// QtyMilli Quantity in thousandths (1.5 = 1500)
+	QtyMilli QtyMilli                 `json:"qty_milli"`
+	Source   RentalBookingExtraSource `json:"source"`
+}
+
+// RentalBookingExtraSource defines model for RentalBookingExtra.Source.
+type RentalBookingExtraSource string
+
+// RentalBookingInput defines model for RentalBookingInput.
+type RentalBookingInput struct {
+	// AllowOutsideHours Book a skipper outside his weekly hours (audited)
+	AllowOutsideHours *bool   `json:"allow_outside_hours,omitempty"`
+	CustomerId        *string `json:"customer_id,omitempty"`
+
+	// End A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	End       RentalSlotPoint   `json:"end"`
+	Extras    *[]RentalExtraQty `json:"extras,omitempty"`
+	FormulaId string            `json:"formula_id"`
+
+	// Hold true = held option (desk_hold_minutes)
+	Hold             *bool   `json:"hold,omitempty"`
+	InvoiceRequested *bool   `json:"invoice_requested,omitempty"`
+	Note             *string `json:"note,omitempty"`
+	PartySize        *int    `json:"party_size,omitempty"`
+
+	// Renter Walk-in renter without a registry customer (encrypted at rest, never in events or logs)
+	Renter    *RentalRenter `json:"renter,omitempty"`
+	SkipperId *string       `json:"skipper_id,omitempty"`
+
+	// Start A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	Start  RentalSlotPoint `json:"start"`
+	UnitId string          `json:"unit_id"`
+}
+
+// RentalBookingList defines model for RentalBookingList.
+type RentalBookingList struct {
+	Items      []RentalBooking `json:"items"`
+	NextCursor *string         `json:"next_cursor"`
+}
+
+// RentalBookingPatch defines model for RentalBookingPatch.
+type RentalBookingPatch struct {
+	AllowOutsideHours *bool   `json:"allow_outside_hours,omitempty"`
+	CustomerId        *string `json:"customer_id,omitempty"`
+
+	// End A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	End              *RentalSlotPoint  `json:"end,omitempty"`
+	Extras           *[]RentalExtraQty `json:"extras,omitempty"`
+	FormulaId        *string           `json:"formula_id,omitempty"`
+	InvoiceRequested *bool             `json:"invoice_requested,omitempty"`
+
+	// KeepPrice Keep the price snapshot on a reschedule (marina.configure)
+	KeepPrice *bool   `json:"keep_price,omitempty"`
+	Note      *string `json:"note,omitempty"`
+	PartySize *int    `json:"party_size,omitempty"`
+
+	// Renter Walk-in renter without a registry customer (encrypted at rest, never in events or logs)
+	Renter    *RentalRenter `json:"renter,omitempty"`
+	SkipperId *string       `json:"skipper_id,omitempty"`
+
+	// Start A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	Start  *RentalSlotPoint `json:"start,omitempty"`
+	UnitId *string          `json:"unit_id,omitempty"`
+}
+
+// RentalBookingStatus defines model for RentalBookingStatus.
+type RentalBookingStatus string
+
+// RentalCategory defines model for RentalCategory.
+type RentalCategory string
+
+// RentalChannel defines model for RentalChannel.
+type RentalChannel string
+
+// RentalCheckInInput defines model for RentalCheckInInput.
+type RentalCheckInInput struct {
+	DepositDecision RentalCheckInInputDepositDecision `json:"deposit_decision"`
+
+	// Extras Consumed beyond the booked ones
+	Extras *[]RentalExtraQty `json:"extras,omitempty"`
+	Note   *string           `json:"note,omitempty"`
+
+	// RetainCents retain only
+	RetainCents    *int64    `json:"retain_cents,omitempty"`
+	ReturnedAt     time.Time `json:"returned_at"`
+	WaiveDamageIds *[]string `json:"waive_damage_ids,omitempty"`
+	WaiveReason    *string   `json:"waive_reason,omitempty"`
+}
+
+// RentalCheckInInputDepositDecision defines model for RentalCheckInInput.DepositDecision.
+type RentalCheckInInputDepositDecision string
+
+// RentalCheckInPreview defines model for RentalCheckInPreview.
+type RentalCheckInPreview struct {
+	// DamageEstimateCents Amount in integer cents of the marina currency
+	DamageEstimateCents Cents `json:"damage_estimate_cents"`
+
+	// DamageExcessCents Amount in integer cents of the marina currency
+	DamageExcessCents Cents `json:"damage_excess_cents"`
+
+	// DepositCents Amount in integer cents of the marina currency
+	DepositCents Cents `json:"deposit_cents"`
+
+	// DepositProposalCents Amount in integer cents of the marina currency
+	DepositProposalCents Cents `json:"deposit_proposal_cents"`
+
+	// ExtrasCents Amount in integer cents of the marina currency
+	ExtrasCents Cents `json:"extras_cents"`
+
+	// FuelCents Amount in integer cents of the marina currency
+	FuelCents Cents `json:"fuel_cents"`
+
+	// FuelLitresMilli Quantity in thousandths (1.5 = 1500)
+	FuelLitresMilli QtyMilli `json:"fuel_litres_milli"`
+
+	// LateFeeCents Amount in integer cents of the marina currency
+	LateFeeCents Cents             `json:"late_fee_cents"`
+	LateMinutes  int               `json:"late_minutes"`
+	Lines        []RentalPriceLine `json:"lines"`
+
+	// ReturnTotalCents Amount in integer cents of the marina currency
+	ReturnTotalCents Cents `json:"return_total_cents"`
+}
+
+// RentalCheckOutInput defines model for RentalCheckOutInput.
+type RentalCheckOutInput struct {
+	ActualAt *time.Time `json:"actual_at,omitempty"`
+	Note     *string    `json:"note,omitempty"`
+}
+
+// RentalChecklistEntry defines model for RentalChecklistEntry.
+type RentalChecklistEntry struct {
+	Key  string  `json:"key"`
+	Note *string `json:"note,omitempty"`
+	Ok   bool    `json:"ok"`
+}
+
+// RentalChecklistInput defines model for RentalChecklistInput.
+type RentalChecklistInput struct {
+	ClientRef        string                 `json:"client_ref"`
+	DeviceAt         *time.Time             `json:"device_at,omitempty"`
+	EngineHoursMilli *int64                 `json:"engine_hours_milli,omitempty"`
+	FuelEighths      *int                   `json:"fuel_eighths,omitempty"`
+	Items            []RentalChecklistEntry `json:"items"`
+	Notes            *string                `json:"notes,omitempty"`
+	RefuelMilli      *int64                 `json:"refuel_milli,omitempty"`
+}
+
+// RentalChecklistTemplateItem defines model for RentalChecklistTemplateItem.
+type RentalChecklistTemplateItem struct {
+	Categories []RentalCategory `json:"categories"`
+	Key        string           `json:"key"`
+	Label      I18nText         `json:"label"`
+}
+
+// RentalDamage defines model for RentalDamage.
+type RentalDamage struct {
+	BookingId string `json:"booking_id"`
+
+	// ChargedCents Amount in integer cents of the marina currency
+	ChargedCents Cents     `json:"charged_cents"`
+	CreatedAt    time.Time `json:"created_at"`
+	Description  string    `json:"description"`
+
+	// EstimateCents Amount in integer cents of the marina currency
+	EstimateCents Cents                `json:"estimate_cents"`
+	Files         []RentalHandoverFile `json:"files"`
+	Id            string               `json:"id"`
+
+	// RetainedCents Amount in integer cents of the marina currency
+	RetainedCents Cents              `json:"retained_cents"`
+	Status        RentalDamageStatus `json:"status"`
+	Version       int64              `json:"version"`
+	WaiveReason   *string            `json:"waive_reason,omitempty"`
+}
+
+// RentalDamageInput defines model for RentalDamageInput.
+type RentalDamageInput struct {
+	Description   string `json:"description"`
+	EstimateCents int64  `json:"estimate_cents"`
+}
+
+// RentalDamagePatch defines model for RentalDamagePatch.
+type RentalDamagePatch struct {
+	Description   *string `json:"description,omitempty"`
+	EstimateCents *int64  `json:"estimate_cents,omitempty"`
+	WaiveReason   *string `json:"waive_reason,omitempty"`
+	Waived        *bool   `json:"waived,omitempty"`
+}
+
+// RentalDamageStatus defines model for RentalDamageStatus.
+type RentalDamageStatus string
+
+// RentalDay defines model for RentalDay.
+type RentalDay struct {
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date       IsoDate          `json:"date"`
+	Late       []RentalDayEntry `json:"late"`
+	Out        []RentalDayEntry `json:"out"`
+	Pickups    []RentalDayEntry `json:"pickups"`
+	ReturnsDue []RentalDayEntry `json:"returns_due"`
+}
+
+// RentalDayEntry defines model for RentalDayEntry.
+type RentalDayEntry struct {
+	BookingId     string              `json:"booking_id"`
+	DepositStatus RentalDepositStatus `json:"deposit_status"`
+
+	// End A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	End    RentalSlotPoint `json:"end"`
+	EndsAt time.Time       `json:"ends_at"`
+
+	// Late Pickup later than no_show_after_minutes
+	Late        bool    `json:"late"`
+	LateMinutes *int    `json:"late_minutes,omitempty"`
+	Number      string  `json:"number"`
+	RenterName  *string `json:"renter_name,omitempty"`
+	SkipperId   *string `json:"skipper_id,omitempty"`
+
+	// Start A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	Start    RentalSlotPoint     `json:"start"`
+	StartsAt time.Time           `json:"starts_at"`
+	Status   RentalBookingStatus `json:"status"`
+	UnitCode string              `json:"unit_code"`
+	UnitId   string              `json:"unit_id"`
+
+	// UnpaidCents Amount in integer cents of the marina currency
+	UnpaidCents *Cents `json:"unpaid_cents,omitempty"`
+}
+
+// RentalDeposit defines model for RentalDeposit.
+type RentalDeposit struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents Cents `json:"amount_cents"`
+
+	// CheckoutQrSvg SVG of a QR of checkout_url (the renter scans it with their own phone); set with checkout_url
+	CheckoutQrSvg *string `json:"checkout_qr_svg,omitempty"`
+
+	// CheckoutUrl Pre-authorisation page while pending (shown as a QR)
+	CheckoutUrl *string `json:"checkout_url,omitempty"`
+
+	// DecisionCents Amount in integer cents of the marina currency
+	DecisionCents *Cents             `json:"decision_cents,omitempty"`
+	ExpiresAt     *time.Time         `json:"expires_at,omitempty"`
+	IntentId      *string            `json:"intent_id,omitempty"`
+	Mode          *RentalDepositMode `json:"mode,omitempty"`
+	PaymentId     *string            `json:"payment_id,omitempty"`
+
+	// RetainedCents Amount in integer cents of the marina currency
+	RetainedCents Cents               `json:"retained_cents"`
+	Status        RentalDepositStatus `json:"status"`
+	WaiveReason   *string             `json:"waive_reason,omitempty"`
+}
+
+// RentalDepositInput defines model for RentalDepositInput.
+type RentalDepositInput struct {
+	// AmountCents Default the unit's deposit
+	AmountCents  *int64            `json:"amount_cents,omitempty"`
+	Mode         RentalDepositMode `json:"mode"`
+	ProviderCode *string           `json:"provider_code,omitempty"`
+
+	// Reason waived only (required)
+	Reason     *string `json:"reason,omitempty"`
+	RegisterId *string `json:"register_id,omitempty"`
+}
+
+// RentalDepositMode defines model for RentalDepositMode.
+type RentalDepositMode string
+
+// RentalDepositStatus defines model for RentalDepositStatus.
+type RentalDepositStatus string
+
+// RentalExtra defines model for RentalExtra.
+type RentalExtra struct {
+	Active     bool                  `json:"active"`
+	Categories []RentalCategory      `json:"categories"`
+	ChargeMode RentalExtraChargeMode `json:"charge_mode"`
+
+	// DefaultQtyMilli Quantity in thousandths (1.5 = 1500)
+	DefaultQtyMilli QtyMilli `json:"default_qty_milli"`
+	Id              string   `json:"id"`
+	ItemCode        string   `json:"item_code"`
+	ItemId          string   `json:"item_id"`
+
+	// MaxQtyMilli Quantity in thousandths (1.5 = 1500)
+	MaxQtyMilli QtyMilli `json:"max_qty_milli"`
+	Name        I18nText `json:"name"`
+	Sort        int      `json:"sort"`
+	Version     int64    `json:"version"`
+}
+
+// RentalExtraChargeMode defines model for RentalExtraChargeMode.
+type RentalExtraChargeMode string
+
+// RentalExtraInput defines model for RentalExtraInput.
+type RentalExtraInput struct {
+	Active          *bool                  `json:"active,omitempty"`
+	Categories      *[]RentalCategory      `json:"categories,omitempty"`
+	ChargeMode      *RentalExtraChargeMode `json:"charge_mode,omitempty"`
+	DefaultQtyMilli *int64                 `json:"default_qty_milli,omitempty"`
+	ItemId          string                 `json:"item_id"`
+	MaxQtyMilli     *int64                 `json:"max_qty_milli,omitempty"`
+	Sort            *int                   `json:"sort,omitempty"`
+}
+
+// RentalExtraList defines model for RentalExtraList.
+type RentalExtraList struct {
+	Items []RentalExtra `json:"items"`
+}
+
+// RentalExtraPatch defines model for RentalExtraPatch.
+type RentalExtraPatch struct {
+	Active          *bool                  `json:"active,omitempty"`
+	Categories      *[]RentalCategory      `json:"categories,omitempty"`
+	ChargeMode      *RentalExtraChargeMode `json:"charge_mode,omitempty"`
+	DefaultQtyMilli *int64                 `json:"default_qty_milli,omitempty"`
+	MaxQtyMilli     *int64                 `json:"max_qty_milli,omitempty"`
+	Sort            *int                   `json:"sort,omitempty"`
+}
+
+// RentalExtraQty defines model for RentalExtraQty.
+type RentalExtraQty struct {
+	ExtraId  string `json:"extra_id"`
+	QtyMilli int64  `json:"qty_milli"`
+}
+
+// RentalFileKind defines model for RentalFileKind.
+type RentalFileKind string
+
+// RentalFiscalMode receipt (commercial document through the FiscalDriver) unless the customer asked for an invoice
+type RentalFiscalMode string
+
+// RentalFormula defines model for RentalFormula.
+type RentalFormula struct {
+	Active          bool                         `json:"active"`
+	BandCode        *string                      `json:"band_code,omitempty"`
+	Categories      []RentalCategory             `json:"categories"`
+	Code            string                       `json:"code"`
+	CreatedAt       time.Time                    `json:"created_at"`
+	Fuel            RentalFuelMode               `json:"fuel"`
+	FuelItemId      *string                      `json:"fuel_item_id,omitempty"`
+	GraceMinutes    int                          `json:"grace_minutes"`
+	Id              string                       `json:"id"`
+	Kind            RentalFormulaKind            `json:"kind"`
+	LateItemId      *string                      `json:"late_item_id,omitempty"`
+	LateStepMinutes RentalFormulaLateStepMinutes `json:"late_step_minutes"`
+	MaxDays         int                          `json:"max_days"`
+	MaxSlots        *int                         `json:"max_slots,omitempty"`
+	MinDays         int                          `json:"min_days"`
+	MinSlots        int                          `json:"min_slots"`
+	Name            I18nText                     `json:"name"`
+	Skipper         RentalSkipperMode            `json:"skipper"`
+	Sort            int                          `json:"sort"`
+	UpdatedAt       time.Time                    `json:"updated_at"`
+	Version         int64                        `json:"version"`
+}
+
+// RentalFormulaLateStepMinutes defines model for RentalFormula.LateStepMinutes.
+type RentalFormulaLateStepMinutes int
+
+// RentalFormulaInput defines model for RentalFormulaInput.
+type RentalFormulaInput struct {
+	Active          *bool                              `json:"active,omitempty"`
+	BandCode        *string                            `json:"band_code,omitempty"`
+	Categories      *[]RentalCategory                  `json:"categories,omitempty"`
+	Code            string                             `json:"code"`
+	Fuel            *RentalFuelMode                    `json:"fuel,omitempty"`
+	FuelItemId      *string                            `json:"fuel_item_id,omitempty"`
+	GraceMinutes    *int                               `json:"grace_minutes,omitempty"`
+	Kind            RentalFormulaKind                  `json:"kind"`
+	LateItemId      *string                            `json:"late_item_id,omitempty"`
+	LateStepMinutes *RentalFormulaInputLateStepMinutes `json:"late_step_minutes,omitempty"`
+	MaxDays         *int                               `json:"max_days,omitempty"`
+	MaxSlots        *int                               `json:"max_slots,omitempty"`
+	MinDays         *int                               `json:"min_days,omitempty"`
+	MinSlots        *int                               `json:"min_slots,omitempty"`
+	Name            I18nText                           `json:"name"`
+	Skipper         *RentalSkipperMode                 `json:"skipper,omitempty"`
+	Sort            *int                               `json:"sort,omitempty"`
+}
+
+// RentalFormulaInputLateStepMinutes defines model for RentalFormulaInput.LateStepMinutes.
+type RentalFormulaInputLateStepMinutes int
+
+// RentalFormulaKind defines model for RentalFormulaKind.
+type RentalFormulaKind string
+
+// RentalFormulaList defines model for RentalFormulaList.
+type RentalFormulaList struct {
+	Items []RentalFormula `json:"items"`
+}
+
+// RentalFormulaPatch defines model for RentalFormulaPatch.
+type RentalFormulaPatch struct {
+	Active          *bool                              `json:"active,omitempty"`
+	BandCode        *string                            `json:"band_code,omitempty"`
+	Categories      *[]RentalCategory                  `json:"categories,omitempty"`
+	Code            *string                            `json:"code,omitempty"`
+	Fuel            *RentalFuelMode                    `json:"fuel,omitempty"`
+	FuelItemId      *string                            `json:"fuel_item_id,omitempty"`
+	GraceMinutes    *int                               `json:"grace_minutes,omitempty"`
+	LateItemId      *string                            `json:"late_item_id,omitempty"`
+	LateStepMinutes *RentalFormulaPatchLateStepMinutes `json:"late_step_minutes,omitempty"`
+	MaxDays         *int                               `json:"max_days,omitempty"`
+	MaxSlots        *int                               `json:"max_slots,omitempty"`
+	MinDays         *int                               `json:"min_days,omitempty"`
+	MinSlots        *int                               `json:"min_slots,omitempty"`
+	Name            *I18nText                          `json:"name,omitempty"`
+	Skipper         *RentalSkipperMode                 `json:"skipper,omitempty"`
+	Sort            *int                               `json:"sort,omitempty"`
+}
+
+// RentalFormulaPatchLateStepMinutes defines model for RentalFormulaPatch.LateStepMinutes.
+type RentalFormulaPatchLateStepMinutes int
+
+// RentalFuelMode defines model for RentalFuelMode.
+type RentalFuelMode string
+
+// RentalFuelType defines model for RentalFuelType.
+type RentalFuelType string
+
+// RentalHandover defines model for RentalHandover.
+type RentalHandover struct {
+	ActualAt       *time.Time             `json:"actual_at,omitempty"`
+	BookingId      string                 `json:"booking_id"`
+	Checklist      []RentalChecklistEntry `json:"checklist"`
+	CompletedAt    *time.Time             `json:"completed_at,omitempty"`
+	ContractSigned *bool                  `json:"contract_signed,omitempty"`
+
+	// EngineHoursMilli Quantity in thousandths (1.5 = 1500)
+	EngineHoursMilli *QtyMilli            `json:"engine_hours_milli,omitempty"`
+	Files            []RentalHandoverFile `json:"files"`
+	FuelEighths      *int                 `json:"fuel_eighths,omitempty"`
+	Id               *string              `json:"id,omitempty"`
+
+	// Identity What the operator typed, masked (the number shows its last 3 characters only)
+	Identity *RentalIdentitySummary `json:"identity,omitempty"`
+
+	// Missing Steps still missing before check-out or check-in (the same list as handover_incomplete)
+	Missing []RentalHandoverMissing `json:"missing"`
+	Notes   string                  `json:"notes"`
+	Phase   RentalPhase             `json:"phase"`
+
+	// RefuelMilli Quantity in thousandths (1.5 = 1500)
+	RefuelMilli *QtyMilli `json:"refuel_milli,omitempty"`
+
+	// Version 0 = no draft saved yet
+	Version int64 `json:"version"`
+}
+
+// RentalHandoverMissing defines model for RentalHandover.Missing.
+type RentalHandoverMissing string
+
+// RentalHandoverFile defines model for RentalHandoverFile.
+type RentalHandoverFile struct {
+	ContentType string         `json:"content_type"`
+	CreatedAt   time.Time      `json:"created_at"`
+	DamageId    *string        `json:"damage_id,omitempty"`
+	FileId      string         `json:"file_id"`
+	Id          string         `json:"id"`
+	Kind        RentalFileKind `json:"kind"`
+}
+
+// RentalIdentityInput defines model for RentalIdentityInput.
+type RentalIdentityInput struct {
+	// DocumentExpiresOn Calendar date YYYY-MM-DD in the marina timezone
+	DocumentExpiresOn IsoDate                         `json:"document_expires_on"`
+	DocumentIssuer    *string                         `json:"document_issuer,omitempty"`
+	DocumentNumber    string                          `json:"document_number"`
+	DocumentType      RentalIdentityInputDocumentType `json:"document_type"`
+	LicenceCategory   *string                         `json:"licence_category,omitempty"`
+
+	// LicenceExpiresOn Calendar date YYYY-MM-DD in the marina timezone
+	LicenceExpiresOn *IsoDate `json:"licence_expires_on,omitempty"`
+	LicenceNumber    *string  `json:"licence_number,omitempty"`
+}
+
+// RentalIdentityInputDocumentType defines model for RentalIdentityInput.DocumentType.
+type RentalIdentityInputDocumentType string
+
+// RentalIdentitySummary What the operator typed, masked (the number shows its last 3 characters only)
+type RentalIdentitySummary struct {
+	// DocumentExpiresOn Calendar date YYYY-MM-DD in the marina timezone
+	DocumentExpiresOn    IsoDate                           `json:"document_expires_on"`
+	DocumentNumberMasked string                            `json:"document_number_masked"`
+	DocumentType         RentalIdentitySummaryDocumentType `json:"document_type"`
+	LicenceCategory      *string                           `json:"licence_category,omitempty"`
+
+	// LicenceExpiresOn Calendar date YYYY-MM-DD in the marina timezone
+	LicenceExpiresOn    *IsoDate `json:"licence_expires_on,omitempty"`
+	LicenceNumberMasked *string  `json:"licence_number_masked,omitempty"`
+	Purged              *bool    `json:"purged,omitempty"`
+}
+
+// RentalIdentitySummaryDocumentType defines model for RentalIdentitySummary.DocumentType.
+type RentalIdentitySummaryDocumentType string
+
+// RentalLicenceMode never, always, or threshold on the total engine power (rental_settings.licence_threshold_kw_milli)
+type RentalLicenceMode string
+
+// RentalOwnership defines model for RentalOwnership.
+type RentalOwnership string
+
+// RentalPhase defines model for RentalPhase.
+type RentalPhase string
+
+// RentalPlanner defines model for RentalPlanner.
+type RentalPlanner struct {
+	Bands       []RentalBand `json:"bands"`
+	BufferSlots int          `json:"buffer_slots"`
+
+	// From Calendar date YYYY-MM-DD in the marina timezone
+	From         IsoDate            `json:"from"`
+	OpenFromSlot int                `json:"open_from_slot"`
+	OpenToSlot   int                `json:"open_to_slot"`
+	Rows         []RentalPlannerRow `json:"rows"`
+
+	// To Calendar date YYYY-MM-DD in the marina timezone
+	To   IsoDate           `json:"to"`
+	View RentalPlannerView `json:"view"`
+}
+
+// RentalPlannerView defines model for RentalPlanner.View.
+type RentalPlannerView string
+
+// RentalPlannerRow defines model for RentalPlannerRow.
+type RentalPlannerRow struct {
+	Category *RentalCategory `json:"category,omitempty"`
+
+	// Code Unit code
+	Code     string                 `json:"code"`
+	Id       string                 `json:"id"`
+	Kind     RentalPlannerRowKind   `json:"kind"`
+	Seats    *int                   `json:"seats,omitempty"`
+	Segments []RentalPlannerSegment `json:"segments"`
+	Status   *RentalUnitStatus      `json:"status,omitempty"`
+}
+
+// RentalPlannerRowKind defines model for RentalPlannerRow.Kind.
+type RentalPlannerRowKind string
+
+// RentalPlannerSegment defines model for RentalPlannerSegment.
+type RentalPlannerSegment struct {
+	BlockId   *string `json:"block_id,omitempty"`
+	BookingId *string `json:"booking_id,omitempty"`
+
+	// From A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	From   RentalSlotPoint      `json:"from"`
+	Kind   RentalSlotKind       `json:"kind"`
+	Number *string              `json:"number,omitempty"`
+	Reason *RentalBlockReason   `json:"reason,omitempty"`
+	Status *RentalBookingStatus `json:"status,omitempty"`
+
+	// To A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	To RentalSlotPoint `json:"to"`
+}
+
+// RentalPriceLine defines model for RentalPriceLine.
+type RentalPriceLine struct {
+	// AmountCents Amount in integer cents of the marina currency
+	AmountCents      Cents               `json:"amount_cents"`
+	ItemCode         string              `json:"item_code"`
+	ItemId           string              `json:"item_id"`
+	Kind             RentalPriceLineKind `json:"kind"`
+	PriceIncludesVat bool                `json:"price_includes_vat"`
+
+	// QtyMilli Quantity in thousandths (1.5 = 1500)
+	QtyMilli QtyMilli  `json:"qty_milli"`
+	RuleIds  *[]string `json:"rule_ids,omitempty"`
+	Seq      int       `json:"seq"`
+
+	// UnitCents Amount in integer cents of the marina currency
+	UnitCents Cents `json:"unit_cents"`
+}
+
+// RentalPriceLineKind defines model for RentalPriceLine.Kind.
+type RentalPriceLineKind string
+
+// RentalQuickCashInput defines model for RentalQuickCashInput.
+type RentalQuickCashInput struct {
+	Method     RentalQuickCashInputMethod `json:"method"`
+	RegisterId *string                    `json:"register_id,omitempty"`
+
+	// Target Default open
+	Target *RentalQuickCashInputTarget `json:"target,omitempty"`
+}
+
+// RentalQuickCashInputMethod defines model for RentalQuickCashInput.Method.
+type RentalQuickCashInputMethod string
+
+// RentalQuickCashInputTarget Default open
+type RentalQuickCashInputTarget string
+
+// RentalQuickCashResult defines model for RentalQuickCashResult.
+type RentalQuickCashResult struct {
+	Charges           []RentalBookingChargeRef `json:"charges"`
+	FiscalDocumentIds []string                 `json:"fiscal_document_ids"`
+	LinkExpiresAt     *time.Time               `json:"link_expires_at,omitempty"`
+
+	// LinkQrSvg SVG of a QR of link_url (the renter scans it to pay on their own phone); set with link_url
+	LinkQrSvg  *string `json:"link_qr_svg,omitempty"`
+	LinkUrl    *string `json:"link_url,omitempty"`
+	PaymentId  *string `json:"payment_id,omitempty"`
+	ReceiptUrl *string `json:"receipt_url,omitempty"`
+}
+
+// RentalQuoteInput defines model for RentalQuoteInput.
+type RentalQuoteInput struct {
+	CustomerId *string `json:"customer_id,omitempty"`
+
+	// End A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	End    RentalSlotPoint   `json:"end"`
+	Extras *[]RentalExtraQty `json:"extras,omitempty"`
+
+	// FormulaId Omitted = every valid formula
+	FormulaId *string `json:"formula_id,omitempty"`
+	SkipperId *string `json:"skipper_id,omitempty"`
+
+	// Start A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	Start  RentalSlotPoint `json:"start"`
+	UnitId string          `json:"unit_id"`
+
+	// WithSkipper Price a skipper line without choosing one
+	WithSkipper *bool `json:"with_skipper,omitempty"`
+}
+
+// RentalQuoteOption defines model for RentalQuoteOption.
+type RentalQuoteOption struct {
+	EngineVersion   *int              `json:"engine_version,omitempty"`
+	FormulaCode     string            `json:"formula_code"`
+	FormulaId       string            `json:"formula_id"`
+	Kind            RentalFormulaKind `json:"kind"`
+	LicenceRequired bool              `json:"licence_required"`
+	Lines           []RentalPriceLine `json:"lines"`
+	Ok              bool              `json:"ok"`
+
+	// Problem Problem slug when not ok (no_price, formula_range_mismatch, outside_rental_hours, skipper_required, ...)
+	Problem *string `json:"problem,omitempty"`
+
+	// TotalCents Amount in integer cents of the marina currency
+	TotalCents Cents `json:"total_cents"`
+}
+
+// RentalQuoteResult defines model for RentalQuoteResult.
+type RentalQuoteResult struct {
+	Items []RentalQuoteOption `json:"items"`
+}
+
+// RentalRenter Walk-in renter without a registry customer (encrypted at rest, never in events or logs)
+type RentalRenter struct {
+	Email *string `json:"email,omitempty"`
+	Name  *string `json:"name,omitempty"`
+	Phone *string `json:"phone,omitempty"`
+}
+
+// RentalReport defines model for RentalReport.
+type RentalReport struct {
+	// Filters The applied filters as query parameters (round-trip of the request)
+	Filters map[string]string   `json:"filters"`
+	GroupBy *string             `json:"group_by,omitempty"`
+	Groups  []RentalReportGroup `json:"groups"`
+
+	// IgnoredFilters Filters accepted by the API but meaningless for this report
+	IgnoredFilters []string       `json:"ignored_filters"`
+	Notes          []ReportNote   `json:"notes"`
+	Page           ReportPageInfo `json:"page"`
+
+	// Period Inclusive period in the marina time zone (at most 400 days)
+	Period  ReportPeriod         `json:"period"`
+	Records []RentalReportRecord `json:"records"`
+
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
+	Report  ReportKey `json:"report"`
+	Section *string   `json:"section,omitempty"`
+
+	// Today Calendar date YYYY-MM-DD in the marina timezone
+	Today  IsoDate            `json:"today"`
+	Totals RentalReportTotals `json:"totals"`
+	View   RentalReportView   `json:"view"`
+}
+
+// RentalReportView defines model for RentalReport.View.
+type RentalReportView string
+
+// RentalReportGroup defines model for RentalReportGroup.
+type RentalReportGroup struct {
+	Key    string             `json:"key"`
+	Label  string             `json:"label"`
+	Totals RentalReportTotals `json:"totals"`
+}
+
+// RentalReportRecord One record of the selected view; fields not meaningful for the view are absent
+type RentalReportRecord struct {
+	AvailableSlots *int64              `json:"available_slots,omitempty"`
+	BookingId      *string             `json:"booking_id,omitempty"`
+	BookingNumber  *string             `json:"booking_number,omitempty"`
+	Category       *RentalCategory     `json:"category,omitempty"`
+	ChargeId       *string             `json:"charge_id,omitempty"`
+	DamageId       *string             `json:"damage_id,omitempty"`
+	DamageStatus   *RentalDamageStatus `json:"damage_status,omitempty"`
+
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date *IsoDate `json:"date,omitempty"`
+
+	// DepositCents Amount in integer cents of the marina currency
+	DepositCents  *Cents               `json:"deposit_cents,omitempty"`
+	DepositMode   *RentalDepositMode   `json:"deposit_mode,omitempty"`
+	DepositStatus *RentalDepositStatus `json:"deposit_status,omitempty"`
+
+	// EstimateCents Amount in integer cents of the marina currency
+	EstimateCents *Cents  `json:"estimate_cents,omitempty"`
+	FormulaCode   *string `json:"formula_code,omitempty"`
+	FormulaId     *string `json:"formula_id,omitempty"`
+
+	// GrossCents Amount in integer cents of the marina currency
+	GrossCents *Cents  `json:"gross_cents,omitempty"`
+	LineKind   *string `json:"line_kind,omitempty"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents *Cents `json:"net_cents,omitempty"`
+
+	// OutstandingCents Amount in integer cents of the marina currency
+	OutstandingCents *Cents `json:"outstanding_cents,omitempty"`
+
+	// Ref Link from a record to its entity page (ids and display codes only)
+	Ref ReportRef `json:"ref"`
+
+	// ReleasedCents Amount in integer cents of the marina currency
+	ReleasedCents *Cents `json:"released_cents,omitempty"`
+	RentedSlots   *int64 `json:"rented_slots,omitempty"`
+
+	// RetainedCents Amount in integer cents of the marina currency
+	RetainedCents *Cents  `json:"retained_cents,omitempty"`
+	UnitCode      *string `json:"unit_code,omitempty"`
+	UnitId        *string `json:"unit_id,omitempty"`
+	UtilisationBp *int64  `json:"utilisation_bp,omitempty"`
+
+	// VatCents Amount in integer cents of the marina currency
+	VatCents *Cents `json:"vat_cents,omitempty"`
+}
+
+// RentalReportTotals defines model for RentalReportTotals.
+type RentalReportTotals struct {
+	AvailableSlots *int64 `json:"available_slots,omitempty"`
+
+	// DepositCents Amount in integer cents of the marina currency
+	DepositCents *Cents `json:"deposit_cents,omitempty"`
+
+	// EstimateCents Amount in integer cents of the marina currency
+	EstimateCents *Cents `json:"estimate_cents,omitempty"`
+
+	// GrossCents Amount in integer cents of the marina currency
+	GrossCents *Cents `json:"gross_cents,omitempty"`
+
+	// NetCents Amount in integer cents of the marina currency
+	NetCents *Cents `json:"net_cents,omitempty"`
+
+	// OutstandingCents Amount in integer cents of the marina currency
+	OutstandingCents *Cents `json:"outstanding_cents,omitempty"`
+	Records          int64  `json:"records"`
+
+	// ReleasedCents Amount in integer cents of the marina currency
+	ReleasedCents *Cents `json:"released_cents,omitempty"`
+	RentedSlots   *int64 `json:"rented_slots,omitempty"`
+
+	// RetainedCents Amount in integer cents of the marina currency
+	RetainedCents *Cents `json:"retained_cents,omitempty"`
+	UtilisationBp *int64 `json:"utilisation_bp,omitempty"`
+
+	// VatCents Amount in integer cents of the marina currency
+	VatCents *Cents `json:"vat_cents,omitempty"`
+}
+
+// RentalSettings defines model for RentalSettings.
+type RentalSettings struct {
+	Bands                   []RentalBand                  `json:"bands"`
+	BufferSlots             int                           `json:"buffer_slots"`
+	CheckinMinPhotos        int                           `json:"checkin_min_photos"`
+	Checklist               []RentalChecklistTemplateItem `json:"checklist"`
+	CheckoutMinPhotos       int                           `json:"checkout_min_photos"`
+	DamageItemId            *string                       `json:"damage_item_id,omitempty"`
+	DefaultRegisterId       *string                       `json:"default_register_id,omitempty"`
+	DepositModes            []RentalSettingsDepositModes  `json:"deposit_modes"`
+	DeskHoldMinutes         int                           `json:"desk_hold_minutes"`
+	IdentityRetentionDays   int                           `json:"identity_retention_days"`
+	LicenceThresholdKwMilli int64                         `json:"licence_threshold_kw_milli"`
+	NoShowAfterMinutes      int                           `json:"no_show_after_minutes"`
+	OpenFromSlot            int                           `json:"open_from_slot"`
+	OpenToSlot              int                           `json:"open_to_slot"`
+
+	// PreauthAvailable An enabled provider supports pre-authorisation
+	PreauthAvailable bool    `json:"preauth_available"`
+	SkipperItemId    *string `json:"skipper_item_id,omitempty"`
+
+	// Version 0 = defaults
+	Version int64 `json:"version"`
+}
+
+// RentalSettingsDepositModes defines model for RentalSettings.DepositModes.
+type RentalSettingsDepositModes string
+
+// RentalSettingsInput defines model for RentalSettingsInput.
+type RentalSettingsInput struct {
+	Bands                   []RentalBand                      `json:"bands"`
+	BufferSlots             int                               `json:"buffer_slots"`
+	CheckinMinPhotos        int                               `json:"checkin_min_photos"`
+	Checklist               []RentalChecklistTemplateItem     `json:"checklist"`
+	CheckoutMinPhotos       int                               `json:"checkout_min_photos"`
+	DamageItemId            *string                           `json:"damage_item_id,omitempty"`
+	DefaultRegisterId       *string                           `json:"default_register_id,omitempty"`
+	DepositModes            []RentalSettingsInputDepositModes `json:"deposit_modes"`
+	DeskHoldMinutes         int                               `json:"desk_hold_minutes"`
+	IdentityRetentionDays   int                               `json:"identity_retention_days"`
+	LicenceThresholdKwMilli int64                             `json:"licence_threshold_kw_milli"`
+	NoShowAfterMinutes      int                               `json:"no_show_after_minutes"`
+	OpenFromSlot            int                               `json:"open_from_slot"`
+	OpenToSlot              int                               `json:"open_to_slot"`
+	SkipperItemId           *string                           `json:"skipper_item_id,omitempty"`
+}
+
+// RentalSettingsInputDepositModes defines model for RentalSettingsInput.DepositModes.
+type RentalSettingsInputDepositModes string
+
+// RentalSignInput defines model for RentalSignInput.
+type RentalSignInput struct {
+	DeviceLabel *string               `json:"device_label,omitempty"`
+	Driver      RentalSignInputDriver `json:"driver"`
+
+	// Email otp only
+	Email *string `json:"email,omitempty"`
+
+	// SignaturePng screen: base64 PNG of the drawn signature (at most 200 KiB decoded)
+	SignaturePng *string `json:"signature_png,omitempty"`
+	SignerName   *string `json:"signer_name,omitempty"`
+}
+
+// RentalSignInputDriver defines model for RentalSignInput.Driver.
+type RentalSignInputDriver string
+
+// RentalSignature defines model for RentalSignature.
+type RentalSignature struct {
+	DocumentId       string                `json:"document_id"`
+	Driver           RentalSignatureDriver `json:"driver"`
+	RequestId        string                `json:"request_id"`
+	SignedDocumentId *string               `json:"signed_document_id,omitempty"`
+	Status           string                `json:"status"`
+}
+
+// RentalSignatureDriver defines model for RentalSignature.Driver.
+type RentalSignatureDriver string
+
+// RentalSkipper A bookable skipper; name and contact are personal data shown only to rental.manage (never in events)
+type RentalSkipper struct {
+	Active    bool                    `json:"active"`
+	CreatedAt time.Time               `json:"created_at"`
+	Email     *string                 `json:"email,omitempty"`
+	Hours     []RentalSkipperHoursRow `json:"hours"`
+	Id        string                  `json:"id"`
+
+	// LicenceExpiresOn Calendar date YYYY-MM-DD in the marina timezone
+	LicenceExpiresOn *IsoDate  `json:"licence_expires_on,omitempty"`
+	Name             string    `json:"name"`
+	Phone            *string   `json:"phone,omitempty"`
+	Sort             int       `json:"sort"`
+	UpdatedAt        time.Time `json:"updated_at"`
+	UserId           *string   `json:"user_id,omitempty"`
+	Version          int64     `json:"version"`
+}
+
+// RentalSkipperHoursInput defines model for RentalSkipperHoursInput.
+type RentalSkipperHoursInput struct {
+	Hours []RentalSkipperHoursRow `json:"hours"`
+}
+
+// RentalSkipperHoursRow defines model for RentalSkipperHoursRow.
+type RentalSkipperHoursRow struct {
+	FromSlot int `json:"from_slot"`
+	ToSlot   int `json:"to_slot"`
+
+	// Weekday ISO weekday
+	Weekday int `json:"weekday"`
+}
+
+// RentalSkipperInput defines model for RentalSkipperInput.
+type RentalSkipperInput struct {
+	Active *bool   `json:"active,omitempty"`
+	Email  *string `json:"email,omitempty"`
+
+	// LicenceExpiresOn Calendar date YYYY-MM-DD in the marina timezone
+	LicenceExpiresOn *IsoDate `json:"licence_expires_on,omitempty"`
+	Name             string   `json:"name"`
+	Phone            *string  `json:"phone,omitempty"`
+	Sort             *int     `json:"sort,omitempty"`
+	UserId           *string  `json:"user_id,omitempty"`
+}
+
+// RentalSkipperList defines model for RentalSkipperList.
+type RentalSkipperList struct {
+	Items      []RentalSkipper `json:"items"`
+	NextCursor *string         `json:"next_cursor"`
+}
+
+// RentalSkipperMode defines model for RentalSkipperMode.
+type RentalSkipperMode string
+
+// RentalSkipperPatch defines model for RentalSkipperPatch.
+type RentalSkipperPatch struct {
+	Active           *bool               `json:"active,omitempty"`
+	Email            *string             `json:"email,omitempty"`
+	LicenceExpiresOn *openapi_types.Date `json:"licence_expires_on,omitempty"`
+	Name             *string             `json:"name,omitempty"`
+	Phone            *string             `json:"phone,omitempty"`
+	Sort             *int                `json:"sort,omitempty"`
+	UserId           *string             `json:"user_id,omitempty"`
+}
+
+// RentalSlotKind defines model for RentalSlotKind.
+type RentalSlotKind string
+
+// RentalSlotPoint A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+type RentalSlotPoint struct {
+	// Date Calendar date YYYY-MM-DD in the marina timezone
+	Date IsoDate `json:"date"`
+	Slot int     `json:"slot"`
+}
+
+// RentalTransitionInput defines model for RentalTransitionInput.
+type RentalTransitionInput struct {
+	Action RentalTransitionInputAction `json:"action"`
+
+	// End A point of the local wall-clock day in the marina time zone: slot s is the half hour [s x 30 min, (s+1) x 30 min); an end point is exclusive and may be 48 (24:00)
+	End *RentalSlotPoint `json:"end,omitempty"`
+
+	// FormulaId extend only: the formula the extended range is priced with (same unit category). Omitted, the booking keeps its formula, so a half_day or day booking that outgrows its band or the open window is 422 formula_range_mismatch and needs a formula that fits the new range (for example hourly or multi_day).
+	FormulaId *string `json:"formula_id,omitempty"`
+	Reason    *string `json:"reason,omitempty"`
+
+	// Until extend_hold only
+	Until *time.Time `json:"until,omitempty"`
+}
+
+// RentalTransitionInputAction defines model for RentalTransitionInput.Action.
+type RentalTransitionInputAction string
+
+// RentalUnit defines model for RentalUnit.
+type RentalUnit struct {
+	Category  RentalCategory `json:"category"`
+	Code      string         `json:"code"`
+	CreatedAt time.Time      `json:"created_at"`
+
+	// DepositCents Amount in integer cents of the marina currency
+	DepositCents Cents `json:"deposit_cents"`
+
+	// EngineHoursMilli Quantity in thousandths (1.5 = 1500)
+	EngineHoursMilli QtyMilli `json:"engine_hours_milli"`
+
+	// EngineKwMilli Total engine power of the vessel
+	EngineKwMilli int64          `json:"engine_kw_milli"`
+	FuelType      RentalFuelType `json:"fuel_type"`
+	HomeBerthCode *string        `json:"home_berth_code,omitempty"`
+	HomeBerthId   *string        `json:"home_berth_id,omitempty"`
+	Id            string         `json:"id"`
+	ItemId        string         `json:"item_id"`
+
+	// Licence never, always, or threshold on the total engine power (rental_settings.licence_threshold_kw_milli)
+	Licence RentalLicenceMode `json:"licence"`
+
+	// LicenceRequired Without a skipper (a skipper never needs the renter's licence)
+	LicenceRequired bool             `json:"licence_required"`
+	Note            string           `json:"note"`
+	OwnerCustomerId *string          `json:"owner_customer_id,omitempty"`
+	Ownership       RentalOwnership  `json:"ownership"`
+	Seats           int              `json:"seats"`
+	Sort            int              `json:"sort"`
+	Status          RentalUnitStatus `json:"status"`
+
+	// TankMilli Quantity in thousandths (1.5 = 1500)
+	TankMilli  QtyMilli  `json:"tank_milli"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	Version    int64     `json:"version"`
+	VesselId   string    `json:"vessel_id"`
+	VesselName string    `json:"vessel_name"`
+}
+
+// RentalUnitInput defines model for RentalUnitInput.
+type RentalUnitInput struct {
+	Category     RentalCategory `json:"category"`
+	Code         string         `json:"code"`
+	DepositCents *int64         `json:"deposit_cents,omitempty"`
+	FuelType     RentalFuelType `json:"fuel_type"`
+	HomeBerthId  *string        `json:"home_berth_id,omitempty"`
+	ItemId       string         `json:"item_id"`
+
+	// Licence never, always, or threshold on the total engine power (rental_settings.licence_threshold_kw_milli)
+	Licence         *RentalLicenceMode `json:"licence,omitempty"`
+	Note            *string            `json:"note,omitempty"`
+	OwnerCustomerId *string            `json:"owner_customer_id,omitempty"`
+	Ownership       *RentalOwnership   `json:"ownership,omitempty"`
+	Seats           int                `json:"seats"`
+	Sort            *int               `json:"sort,omitempty"`
+	Status          *RentalUnitStatus  `json:"status,omitempty"`
+	TankMilli       *int64             `json:"tank_milli,omitempty"`
+	VesselId        string             `json:"vessel_id"`
+}
+
+// RentalUnitList defines model for RentalUnitList.
+type RentalUnitList struct {
+	Items      []RentalUnit `json:"items"`
+	NextCursor *string      `json:"next_cursor"`
+}
+
+// RentalUnitPatch defines model for RentalUnitPatch.
+type RentalUnitPatch struct {
+	Category     *RentalCategory `json:"category,omitempty"`
+	Code         *string         `json:"code,omitempty"`
+	DepositCents *int64          `json:"deposit_cents,omitempty"`
+	FuelType     *RentalFuelType `json:"fuel_type,omitempty"`
+	HomeBerthId  *string         `json:"home_berth_id,omitempty"`
+	ItemId       *string         `json:"item_id,omitempty"`
+
+	// Licence never, always, or threshold on the total engine power (rental_settings.licence_threshold_kw_milli)
+	Licence         *RentalLicenceMode `json:"licence,omitempty"`
+	Note            *string            `json:"note,omitempty"`
+	OwnerCustomerId *string            `json:"owner_customer_id,omitempty"`
+	Ownership       *RentalOwnership   `json:"ownership,omitempty"`
+	Seats           *int               `json:"seats,omitempty"`
+	Sort            *int               `json:"sort,omitempty"`
+	Status          *RentalUnitStatus  `json:"status,omitempty"`
+	TankMilli       *int64             `json:"tank_milli,omitempty"`
+}
+
+// RentalUnitStatus defines model for RentalUnitStatus.
+type RentalUnitStatus string
+
 // ReplanInput defines model for ReplanInput.
 type ReplanInput struct {
 	Payment *PaymentPolicy `json:"payment,omitempty"`
@@ -22517,7 +24781,7 @@ type ReportEnvelope struct {
 	// Period Inclusive period in the marina time zone (at most 400 days)
 	Period ReportPeriod `json:"period"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -22534,7 +24798,7 @@ type ReportFormat string
 // ReportGranularity defines model for ReportGranularity.
 type ReportGranularity string
 
-// ReportKey Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+// ReportKey Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 type ReportKey string
 
 // ReportLengthBand LOA bands in cm (m7-plan D8)
@@ -22680,7 +24944,7 @@ type RevenueClassesReport struct {
 	Period  ReportPeriod    `json:"period"`
 	Records []ChargesRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -22975,7 +25239,7 @@ type RightsReport struct {
 	Period  ReportPeriod   `json:"period"`
 	Records []RightsRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -23164,10 +25428,12 @@ type SignatureOrderMode string
 
 // SignatureRequest defines model for SignatureRequest.
 type SignatureRequest struct {
-	CompletedAt      *time.Time             `json:"completed_at,omitempty"`
-	CreatedAt        time.Time              `json:"created_at"`
-	DocumentId       string                 `json:"document_id"`
-	Driver           SignatureDriver        `json:"driver"`
+	CompletedAt *time.Time `json:"completed_at,omitempty"`
+	CreatedAt   time.Time  `json:"created_at"`
+	DocumentId  string     `json:"document_id"`
+
+	// Driver Driver of a signature request; screen (on-screen signature, M11) is used only by rental contracts
+	Driver           SignatureRequestDriver `json:"driver"`
 	ExpiresAt        time.Time              `json:"expires_at"`
 	Id               string                 `json:"id"`
 	LastReminderAt   *time.Time             `json:"last_reminder_at,omitempty"`
@@ -23177,9 +25443,14 @@ type SignatureRequest struct {
 	Signers          []Signer               `json:"signers"`
 	Status           SignatureRequestStatus `json:"status"`
 	SubjectId        string                 `json:"subject_id"`
-	SubjectType      SignatureSubjectType   `json:"subject_type"`
-	Version          int                    `json:"version"`
+
+	// SubjectType rental is a rental contract (M11, subject id = rental booking id)
+	SubjectType SignatureSubjectType `json:"subject_type"`
+	Version     int                  `json:"version"`
 }
+
+// SignatureRequestDriver Driver of a signature request; screen (on-screen signature, M11) is used only by rental contracts
+type SignatureRequestDriver string
 
 // SignatureRequestInput defines model for SignatureRequestInput.
 type SignatureRequestInput struct {
@@ -23218,7 +25489,7 @@ type SignatureSettingsInput struct {
 	WebhookSecret *string `json:"webhook_secret,omitempty"`
 }
 
-// SignatureSubjectType defines model for SignatureSubjectType.
+// SignatureSubjectType rental is a rental contract (M11, subject id = rental booking id)
 type SignatureSubjectType string
 
 // Signer defines model for Signer.
@@ -23873,7 +26144,7 @@ type StorageReport struct {
 	Period  ReportPeriod          `json:"period"`
 	Records []StorageReportRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -24408,7 +26679,7 @@ type Tile struct {
 	// Drill The report that lists the records of the tile and its parameters (without from/to, which are the dashboard period); generated by the same code that parses the report request (m7-plan §6)
 	Drill *TileDrill `json:"drill,omitempty"`
 
-	// Key Manager dashboard tiles (m7-plan §4). yard_* are available from M10 (m10-plan §12); rental_* (M11) are returned with available=false.
+	// Key Manager dashboard tiles (m7-plan §4). yard_* are available from M10 (m10-plan §12); rental_* are available from M11 (m11-plan §11).
 	Key       TileKey    `json:"key"`
 	Numerator *int64     `json:"numerator,omitempty"`
 	Previous  *TileValue `json:"previous,omitempty"`
@@ -24437,11 +26708,11 @@ type TileBreakdown struct {
 type TileDrill struct {
 	Params map[string]string `json:"params"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report ReportKey `json:"report"`
 }
 
-// TileKey Manager dashboard tiles (m7-plan §4). yard_* are available from M10 (m10-plan §12); rental_* (M11) are returned with available=false.
+// TileKey Manager dashboard tiles (m7-plan §4). yard_* are available from M10 (m10-plan §12); rental_* are available from M11 (m11-plan §11).
 type TileKey string
 
 // TileSeriesPoint defines model for TileSeriesPoint.
@@ -24491,7 +26762,7 @@ type TimeEntryPatch struct {
 	WorkDate *IsoDate `json:"work_date,omitempty"`
 }
 
-// TimeUnit defines model for TimeUnit.
+// TimeUnit hour, half_day and day (and week) are accepted only on flat base rules of items with revenue class rental (M11, priced by RentalQuote, ignored by the mooring engine)
 type TimeUnit string
 
 // TimerStartInput defines model for TimerStartInput.
@@ -24745,7 +27016,7 @@ type UtilitiesReport struct {
 	Period  ReportPeriod            `json:"period"`
 	Records []UtilitiesReportRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -25294,7 +27565,7 @@ type VesselsReport struct {
 	Period  ReportPeriod    `json:"period"`
 	Records []VesselsRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -26500,7 +28771,7 @@ type YardReport struct {
 	Period  ReportPeriod       `json:"period"`
 	Records []YardReportRecord `json:"records"`
 
-	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10; rental (M11) is reserved and not served yet.
+	// Report Report keys of m7-plan §1.1 (path segment of GET .../reports/{key}). yard is served from M10, rental from M11.
 	Report  ReportKey `json:"report"`
 	Section *string   `json:"section,omitempty"`
 
@@ -26961,6 +29232,27 @@ type ReminderItemId = string
 // ReminderRunId defines model for ReminderRunId.
 type ReminderRunId = string
 
+// RentalBlockId defines model for RentalBlockId.
+type RentalBlockId = string
+
+// RentalBookingId defines model for RentalBookingId.
+type RentalBookingId = string
+
+// RentalDamageId defines model for RentalDamageId.
+type RentalDamageId = string
+
+// RentalExtraId defines model for RentalExtraId.
+type RentalExtraId = string
+
+// RentalFormulaId defines model for RentalFormulaId.
+type RentalFormulaId = string
+
+// RentalSkipperId defines model for RentalSkipperId.
+type RentalSkipperId = string
+
+// RentalUnitId defines model for RentalUnitId.
+type RentalUnitId = string
+
 // ReportAlignParam Alignment of the previous period (date = same calendar dates; weekday = shift by whole weeks)
 type ReportAlignParam = ReportAlign
 
@@ -27116,6 +29408,9 @@ type PreconditionRequired = Problem
 
 // PricingUnprocessable defines model for PricingUnprocessable.
 type PricingUnprocessable = Problem
+
+// RentalUnprocessable defines model for RentalUnprocessable.
+type RentalUnprocessable = Problem
 
 // ReportUnprocessable defines model for ReportUnprocessable.
 type ReportUnprocessable = Problem
@@ -29238,6 +31533,288 @@ type SendRenewalProposalParams struct {
 	IfMatch *IfMatch `json:"If-Match,omitempty"`
 }
 
+// SearchRentalAvailabilityParams defines parameters for SearchRentalAvailability.
+type SearchRentalAvailabilityParams struct {
+	// StartsOn Required; optional in the contract only so that another marina is 404 first (missing: 400)
+	StartsOn *IsoDate `form:"starts_on,omitempty" json:"starts_on,omitempty"`
+
+	// StartSlot Required; optional in the contract only so that another marina is 404 first (missing: 400)
+	StartSlot *int `form:"start_slot,omitempty" json:"start_slot,omitempty"`
+
+	// EndsOn Required; optional in the contract only so that another marina is 404 first (missing: 400)
+	EndsOn *IsoDate `form:"ends_on,omitempty" json:"ends_on,omitempty"`
+
+	// EndSlot Required; optional in the contract only so that another marina is 404 first (missing: 400)
+	EndSlot   *int            `form:"end_slot,omitempty" json:"end_slot,omitempty"`
+	FormulaId *string         `form:"formula_id,omitempty" json:"formula_id,omitempty"`
+	Category  *RentalCategory `form:"category,omitempty" json:"category,omitempty"`
+
+	// Skipper Also list free skippers
+	Skipper *bool `form:"skipper,omitempty" json:"skipper,omitempty"`
+}
+
+// ListRentalBlocksParams defines parameters for ListRentalBlocks.
+type ListRentalBlocksParams struct {
+	From      *IsoDate `form:"from,omitempty" json:"from,omitempty"`
+	To        *IsoDate `form:"to,omitempty" json:"to,omitempty"`
+	UnitId    *string  `form:"unit_id,omitempty" json:"unit_id,omitempty"`
+	SkipperId *string  `form:"skipper_id,omitempty" json:"skipper_id,omitempty"`
+}
+
+// CreateRentalBlockParams defines parameters for CreateRentalBlock.
+type CreateRentalBlockParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// DeleteRentalBlockParams defines parameters for DeleteRentalBlock.
+type DeleteRentalBlockParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdateRentalBlockParams defines parameters for UpdateRentalBlock.
+type UpdateRentalBlockParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListRentalBookingsParams defines parameters for ListRentalBookings.
+type ListRentalBookingsParams struct {
+	Cursor     *Cursor              `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit      *Limit               `form:"limit,omitempty" json:"limit,omitempty"`
+	From       *IsoDate             `form:"from,omitempty" json:"from,omitempty"`
+	To         *IsoDate             `form:"to,omitempty" json:"to,omitempty"`
+	Status     *RentalBookingStatus `form:"status,omitempty" json:"status,omitempty"`
+	UnitId     *string              `form:"unit_id,omitempty" json:"unit_id,omitempty"`
+	CustomerId *string              `form:"customer_id,omitempty" json:"customer_id,omitempty"`
+}
+
+// CreateRentalBookingParams defines parameters for CreateRentalBooking.
+type CreateRentalBookingParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateRentalBookingParams defines parameters for UpdateRentalBooking.
+type UpdateRentalBookingParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// CheckInRentalParams defines parameters for CheckInRental.
+type CheckInRentalParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// CheckOutRentalParams defines parameters for CheckOutRental.
+type CheckOutRentalParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// CloseRentalParams defines parameters for CloseRental.
+type CloseRentalParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// GetRentalContractPdfParams defines parameters for GetRentalContractPdf.
+type GetRentalContractPdfParams struct {
+	Exp *int64  `form:"exp,omitempty" json:"exp,omitempty"`
+	Sig *string `form:"sig,omitempty" json:"sig,omitempty"`
+}
+
+// SignRentalContractParams defines parameters for SignRentalContract.
+type SignRentalContractParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// CreateRentalDamageParams defines parameters for CreateRentalDamage.
+type CreateRentalDamageParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// StartRentalDepositParams defines parameters for StartRentalDeposit.
+type StartRentalDepositParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// SaveHandoverChecklistParams defines parameters for SaveHandoverChecklist.
+type SaveHandoverChecklistParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// PortoOfflineQueuedAt Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline.
+	PortoOfflineQueuedAt *OfflineQueuedAt `json:"Porto-Offline-Queued-At,omitempty"`
+}
+
+// GetRentalHandoverPdfParams defines parameters for GetRentalHandoverPdf.
+type GetRentalHandoverPdfParams struct {
+	Exp *int64  `form:"exp,omitempty" json:"exp,omitempty"`
+	Sig *string `form:"sig,omitempty" json:"sig,omitempty"`
+}
+
+// UploadHandoverPhotoParams defines parameters for UploadHandoverPhoto.
+type UploadHandoverPhotoParams struct {
+	// Kind Required; optional in the contract only so that another marina is 404 first (missing: 400)
+	Kind *UploadHandoverPhotoParamsKind `form:"kind,omitempty" json:"kind,omitempty"`
+
+	// DamageId Required for kind damage
+	DamageId  *string `form:"damage_id,omitempty" json:"damage_id,omitempty"`
+	ClientRef *string `form:"client_ref,omitempty" json:"client_ref,omitempty"`
+
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+
+	// PortoOfflineQueuedAt Enqueue instant of a replay from the offline queue (M6b): RFC 3339, not after now + 10 minutes, together with Idempotency-Key (else 422 validation_failed); recorded in the audit rows as offline_queued_at. Refused with 422 offline_not_allowed on operations without x-porto-offline.
+	PortoOfflineQueuedAt *OfflineQueuedAt `json:"Porto-Offline-Queued-At,omitempty"`
+}
+
+// UploadHandoverPhotoParamsKind defines parameters for UploadHandoverPhoto.
+type UploadHandoverPhotoParamsKind string
+
+// QuickCashRentalParams defines parameters for QuickCashRental.
+type QuickCashRentalParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// TransitionRentalBookingParams defines parameters for TransitionRentalBooking.
+type TransitionRentalBookingParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// DeleteRentalDamageParams defines parameters for DeleteRentalDamage.
+type DeleteRentalDamageParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// UpdateRentalDamageParams defines parameters for UpdateRentalDamage.
+type UpdateRentalDamageParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// GetRentalDayParams defines parameters for GetRentalDay.
+type GetRentalDayParams struct {
+	// Date Default today in the marina time zone
+	Date *IsoDate `form:"date,omitempty" json:"date,omitempty"`
+}
+
+// ListRentalExtrasParams defines parameters for ListRentalExtras.
+type ListRentalExtrasParams struct {
+	Active *bool `form:"active,omitempty" json:"active,omitempty"`
+}
+
+// CreateRentalExtraParams defines parameters for CreateRentalExtra.
+type CreateRentalExtraParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateRentalExtraParams defines parameters for UpdateRentalExtra.
+type UpdateRentalExtraParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListRentalFormulasParams defines parameters for ListRentalFormulas.
+type ListRentalFormulasParams struct {
+	Active *bool `form:"active,omitempty" json:"active,omitempty"`
+}
+
+// CreateRentalFormulaParams defines parameters for CreateRentalFormula.
+type CreateRentalFormulaParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateRentalFormulaParams defines parameters for UpdateRentalFormula.
+type UpdateRentalFormulaParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// GetRentalPlannerParams defines parameters for GetRentalPlanner.
+type GetRentalPlannerParams struct {
+	// From Required; optional in the contract only so that another marina is 404 first (missing: 400)
+	From *IsoDate `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Required; optional in the contract only so that another marina is 404 first (missing: 400)
+	To *IsoDate `form:"to,omitempty" json:"to,omitempty"`
+
+	// View Default days
+	View     *GetRentalPlannerParamsView `form:"view,omitempty" json:"view,omitempty"`
+	Category *RentalCategory             `form:"category,omitempty" json:"category,omitempty"`
+}
+
+// GetRentalPlannerParamsView defines parameters for GetRentalPlanner.
+type GetRentalPlannerParamsView string
+
+// PutRentalSettingsParams defines parameters for PutRentalSettings.
+type PutRentalSettingsParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListRentalSkippersParams defines parameters for ListRentalSkippers.
+type ListRentalSkippersParams struct {
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+	Active *bool   `form:"active,omitempty" json:"active,omitempty"`
+}
+
+// CreateRentalSkipperParams defines parameters for CreateRentalSkipper.
+type CreateRentalSkipperParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateRentalSkipperParams defines parameters for UpdateRentalSkipper.
+type UpdateRentalSkipperParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// PutRentalSkipperHoursParams defines parameters for PutRentalSkipperHours.
+type PutRentalSkipperHoursParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
+// ListRentalUnitsParams defines parameters for ListRentalUnits.
+type ListRentalUnitsParams struct {
+	Cursor   *Cursor           `form:"cursor,omitempty" json:"cursor,omitempty"`
+	Limit    *Limit            `form:"limit,omitempty" json:"limit,omitempty"`
+	Status   *RentalUnitStatus `form:"status,omitempty" json:"status,omitempty"`
+	Category *RentalCategory   `form:"category,omitempty" json:"category,omitempty"`
+}
+
+// CreateRentalUnitParams defines parameters for CreateRentalUnit.
+type CreateRentalUnitParams struct {
+	// IdempotencyKey 8 to 128 characters of [A-Za-z0-9_-:.]; the response is replayed for 24 hours, 7 days for offline operations (x-porto-offline).
+	IdempotencyKey *IdempotencyKey `json:"Idempotency-Key,omitempty"`
+}
+
+// UpdateRentalUnitParams defines parameters for UpdateRentalUnit.
+type UpdateRentalUnitParams struct {
+	// IfMatch The ETag of the version being changed. Missing is 428, stale is 412.
+	IfMatch *IfMatch `json:"If-Match,omitempty"`
+}
+
 // GetAccrualsReportParams defines parameters for GetAccrualsReport.
 type GetAccrualsReportParams struct {
 	// From First night of the period (default January 1 of the current year)
@@ -29666,6 +32243,34 @@ type GetReceivablesReportParamsGroupBy string
 
 // GetReceivablesReportParamsSection defines parameters for GetReceivablesReport.
 type GetReceivablesReportParamsSection string
+
+// GetRentalReportParams defines parameters for GetRentalReport.
+type GetRentalReportParams struct {
+	// From First night of the period (default January 1 of the current year)
+	From *ReportFrom `form:"from,omitempty" json:"from,omitempty"`
+
+	// To Last night of the period, inclusive (default today); at most 400 days after from
+	To     *ReportTo          `form:"to,omitempty" json:"to,omitempty"`
+	Format *ReportFormatParam `form:"format,omitempty" json:"format,omitempty"`
+
+	// Lang Language of CSV/Excel column labels (default the user's locale, else it); formats are Italian
+	Lang     *ReportLang       `form:"lang,omitempty" json:"lang,omitempty"`
+	Page     *ReportPageNumber `form:"page,omitempty" json:"page,omitempty"`
+	PageSize *ReportPageSize   `form:"page_size,omitempty" json:"page_size,omitempty"`
+
+	// View Default utilisation
+	View      *GetRentalReportParamsView    `form:"view,omitempty" json:"view,omitempty"`
+	GroupBy   *GetRentalReportParamsGroupBy `form:"group_by,omitempty" json:"group_by,omitempty"`
+	UnitId    *string                       `form:"unit_id,omitempty" json:"unit_id,omitempty"`
+	Category  *RentalCategory               `form:"category,omitempty" json:"category,omitempty"`
+	FormulaId *string                       `form:"formula_id,omitempty" json:"formula_id,omitempty"`
+}
+
+// GetRentalReportParamsView defines parameters for GetRentalReport.
+type GetRentalReportParamsView string
+
+// GetRentalReportParamsGroupBy defines parameters for GetRentalReport.
+type GetRentalReportParamsGroupBy string
 
 // GetRevenueClassesReportParams defines parameters for GetRevenueClassesReport.
 type GetRevenueClassesReportParams struct {
@@ -31509,6 +34114,84 @@ type DeclineRenewalProposalJSONRequestBody = ReasonInput
 
 // IncludeRenewalProposalJSONRequestBody defines body for IncludeRenewalProposal for application/json ContentType.
 type IncludeRenewalProposalJSONRequestBody = ReasonRequired
+
+// CreateRentalBlockJSONRequestBody defines body for CreateRentalBlock for application/json ContentType.
+type CreateRentalBlockJSONRequestBody = RentalBlockInput
+
+// UpdateRentalBlockJSONRequestBody defines body for UpdateRentalBlock for application/json ContentType.
+type UpdateRentalBlockJSONRequestBody = RentalBlockPatch
+
+// CreateRentalBookingJSONRequestBody defines body for CreateRentalBooking for application/json ContentType.
+type CreateRentalBookingJSONRequestBody = RentalBookingInput
+
+// UpdateRentalBookingJSONRequestBody defines body for UpdateRentalBooking for application/json ContentType.
+type UpdateRentalBookingJSONRequestBody = RentalBookingPatch
+
+// CheckInRentalJSONRequestBody defines body for CheckInRental for application/json ContentType.
+type CheckInRentalJSONRequestBody = RentalCheckInInput
+
+// PreviewRentalCheckInJSONRequestBody defines body for PreviewRentalCheckIn for application/json ContentType.
+type PreviewRentalCheckInJSONRequestBody = RentalCheckInInput
+
+// CheckOutRentalJSONRequestBody defines body for CheckOutRental for application/json ContentType.
+type CheckOutRentalJSONRequestBody = RentalCheckOutInput
+
+// SignRentalContractJSONRequestBody defines body for SignRentalContract for application/json ContentType.
+type SignRentalContractJSONRequestBody = RentalSignInput
+
+// CreateRentalDamageJSONRequestBody defines body for CreateRentalDamage for application/json ContentType.
+type CreateRentalDamageJSONRequestBody = RentalDamageInput
+
+// StartRentalDepositJSONRequestBody defines body for StartRentalDeposit for application/json ContentType.
+type StartRentalDepositJSONRequestBody = RentalDepositInput
+
+// SaveHandoverChecklistJSONRequestBody defines body for SaveHandoverChecklist for application/json ContentType.
+type SaveHandoverChecklistJSONRequestBody = RentalChecklistInput
+
+// PutHandoverIdentityJSONRequestBody defines body for PutHandoverIdentity for application/json ContentType.
+type PutHandoverIdentityJSONRequestBody = RentalIdentityInput
+
+// QuickCashRentalJSONRequestBody defines body for QuickCashRental for application/json ContentType.
+type QuickCashRentalJSONRequestBody = RentalQuickCashInput
+
+// TransitionRentalBookingJSONRequestBody defines body for TransitionRentalBooking for application/json ContentType.
+type TransitionRentalBookingJSONRequestBody = RentalTransitionInput
+
+// UpdateRentalDamageJSONRequestBody defines body for UpdateRentalDamage for application/json ContentType.
+type UpdateRentalDamageJSONRequestBody = RentalDamagePatch
+
+// CreateRentalExtraJSONRequestBody defines body for CreateRentalExtra for application/json ContentType.
+type CreateRentalExtraJSONRequestBody = RentalExtraInput
+
+// UpdateRentalExtraJSONRequestBody defines body for UpdateRentalExtra for application/json ContentType.
+type UpdateRentalExtraJSONRequestBody = RentalExtraPatch
+
+// CreateRentalFormulaJSONRequestBody defines body for CreateRentalFormula for application/json ContentType.
+type CreateRentalFormulaJSONRequestBody = RentalFormulaInput
+
+// UpdateRentalFormulaJSONRequestBody defines body for UpdateRentalFormula for application/json ContentType.
+type UpdateRentalFormulaJSONRequestBody = RentalFormulaPatch
+
+// QuoteRentalJSONRequestBody defines body for QuoteRental for application/json ContentType.
+type QuoteRentalJSONRequestBody = RentalQuoteInput
+
+// PutRentalSettingsJSONRequestBody defines body for PutRentalSettings for application/json ContentType.
+type PutRentalSettingsJSONRequestBody = RentalSettingsInput
+
+// CreateRentalSkipperJSONRequestBody defines body for CreateRentalSkipper for application/json ContentType.
+type CreateRentalSkipperJSONRequestBody = RentalSkipperInput
+
+// UpdateRentalSkipperJSONRequestBody defines body for UpdateRentalSkipper for application/json ContentType.
+type UpdateRentalSkipperJSONRequestBody = RentalSkipperPatch
+
+// PutRentalSkipperHoursJSONRequestBody defines body for PutRentalSkipperHours for application/json ContentType.
+type PutRentalSkipperHoursJSONRequestBody = RentalSkipperHoursInput
+
+// CreateRentalUnitJSONRequestBody defines body for CreateRentalUnit for application/json ContentType.
+type CreateRentalUnitJSONRequestBody = RentalUnitInput
+
+// UpdateRentalUnitJSONRequestBody defines body for UpdateRentalUnit for application/json ContentType.
+type UpdateRentalUnitJSONRequestBody = RentalUnitPatch
 
 // CreateRevenueClassJSONRequestBody defines body for CreateRevenueClass for application/json ContentType.
 type CreateRevenueClassJSONRequestBody = RevenueClassCreate
@@ -33488,6 +36171,144 @@ type ServerInterface interface {
 	// SendRenewalProposal Send (or resend, rotating the link) the proposal email (contracts.write)
 	// (POST /api/admin/v1/marinas/{marinaId}/renewal-proposals/{proposalId}/send)
 	SendRenewalProposal(w http.ResponseWriter, r *http.Request, marinaId MarinaId, proposalId ProposalId, params SendRenewalProposalParams)
+	// SearchRentalAvailability Units (and skippers) free for a range and formula (rental.manage); a pre-check only, the slot keys decide
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/availability)
+	SearchRentalAvailability(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params SearchRentalAvailabilityParams)
+	// ListRentalBlocks Blocks of units and skippers in a period (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/blocks)
+	ListRentalBlocks(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalBlocksParams)
+	// CreateRentalBlock Block a unit (maintenance, closure) or a skipper (day off); a booked slot is 409 rental_slot_taken (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/blocks)
+	CreateRentalBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalBlockParams)
+	// DeleteRentalBlock Delete a block (rental.manage)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/rental/blocks/{rentalBlockId})
+	DeleteRentalBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBlockId RentalBlockId, params DeleteRentalBlockParams)
+	// UpdateRentalBlock Change a block (rental.manage)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/rental/blocks/{rentalBlockId})
+	UpdateRentalBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBlockId RentalBlockId, params UpdateRentalBlockParams)
+	// ListRentalBookings Rental bookings, newest first (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings)
+	ListRentalBookings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalBookingsParams)
+	// CreateRentalBooking Create a held (hold true, desk option) or confirmed rental; a taken slot is 409 rental_slot_taken, a busy skipper 409 skipper_busy (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings)
+	CreateRentalBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalBookingParams)
+	// GetRentalBooking A rental booking with price lines, extras, deposit and charges (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId})
+	GetRentalBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId)
+	// UpdateRentalBooking Reschedule (unit, range, skipper) or edit a held or confirmed booking; slots rewritten in one transaction (rental.manage)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId})
+	UpdateRentalBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params UpdateRentalBookingParams)
+	// CheckInRental Take the boat back: return charge, deposit release or retention, damages, unit engine hours, close when nothing is pending (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-in)
+	CheckInRental(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params CheckInRentalParams)
+	// PreviewRentalCheckIn Stateless return totals: late fee, metered fuel, extras, damage excess and deposit proposal (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-in/preview)
+	PreviewRentalCheckIn(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId)
+	// CheckOutRental Hand the boat over: checks identity, licence, signed contract, deposit, checklist and photos (422 handover_incomplete with the missing steps) (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-out)
+	CheckOutRental(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params CheckOutRentalParams)
+	// CloseRental Close a returned booking whose deposit is final (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/close)
+	CloseRental(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params CloseRentalParams)
+	// GetRentalContractPdf The rental contract PDF, signed when available (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/contract/pdf)
+	GetRentalContractPdf(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params GetRentalContractPdfParams)
+	// SignRentalContract Sign the rental contract on screen (signature PNG, simple electronic signature), or start an OTP or paper signature (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/contract/sign)
+	SignRentalContract(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params SignRentalContractParams)
+	// CreateRentalDamage Record a damage found at return with an estimate (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/damages)
+	CreateRentalDamage(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params CreateRentalDamageParams)
+	// GetRentalDeposit Deposit state of a booking with the pre-authorisation URL while pending (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/deposit)
+	GetRentalDeposit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId)
+	// StartRentalDeposit Take the deposit: cash or card POS payment (kind deposit), pre-authorisation through a provider, or waived with a reason (rental.manage + payments.collect or payments.collect_cash)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/deposit)
+	StartRentalDeposit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params StartRentalDepositParams)
+	// GetHandover The check-out or check-in draft of a booking with its photos and missing steps (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase})
+	GetHandover(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, phase RentalPhase)
+	// SaveHandoverChecklist Save checklist, fuel, engine hours and notes of a handover (rental.manage)
+	// (PUT /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/checklist)
+	SaveHandoverChecklist(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, phase RentalPhase, params SaveHandoverChecklistParams)
+	// GetRentalHandoverPdf The handover PDF of a phase (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/pdf)
+	GetRentalHandoverPdf(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, phase RentalPhase, params GetRentalHandoverPdfParams)
+	// UploadHandoverPhoto Attach a photo to a handover (JPEG or PNG, at most 8 MiB, raw body), encrypted at rest (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/photos)
+	UploadHandoverPhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, phase RentalPhase, params UploadHandoverPhotoParams)
+	// PutHandoverIdentity Renter identity and licence typed by the operator, encrypted at rest (rental.manage); an expired licence is 422 licence_expired
+	// (PUT /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/identity)
+	PutHandoverIdentity(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId)
+	// QuickCashRental Collect the open rental charges in one step: cash or card POS with the commercial document (receipt mode), or a payment link (rental.manage + payments.collect, or payments.collect_cash for cash)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/quick-cash)
+	QuickCashRental(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params QuickCashRentalParams)
+	// TransitionRentalBooking confirm, cancel, no_show or extend_hold a booking (rental.manage); any other transition is 409 invalid_transition
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/transition)
+	TransitionRentalBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params TransitionRentalBookingParams)
+	// DeleteRentalDamage Delete an open damage before check-in (rental.manage)
+	// (DELETE /api/admin/v1/marinas/{marinaId}/rental/damages/{rentalDamageId})
+	DeleteRentalDamage(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalDamageId RentalDamageId, params DeleteRentalDamageParams)
+	// UpdateRentalDamage Update a damage (rental.manage)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/rental/damages/{rentalDamageId})
+	UpdateRentalDamage(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalDamageId RentalDamageId, params UpdateRentalDamageParams)
+	// GetRentalDay Day view of the rental desk and phone: pickups, out at sea, returns due and late (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/day)
+	GetRentalDay(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRentalDayParams)
+	// ListRentalExtras Rental extras (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/extras)
+	ListRentalExtras(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalExtrasParams)
+	// CreateRentalExtra Add a rental extra on a catalogue item (marina.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/extras)
+	CreateRentalExtra(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalExtraParams)
+	// UpdateRentalExtra Update a rental extra (marina.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/rental/extras/{rentalExtraId})
+	UpdateRentalExtra(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalExtraId RentalExtraId, params UpdateRentalExtraParams)
+	// ListRentalFormulas Rental formulas (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/formulas)
+	ListRentalFormulas(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalFormulasParams)
+	// CreateRentalFormula Add a rental formula (marina.configure)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/formulas)
+	CreateRentalFormula(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalFormulaParams)
+	// UpdateRentalFormula Update a rental formula (marina.configure)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/rental/formulas/{rentalFormulaId})
+	UpdateRentalFormula(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalFormulaId RentalFormulaId, params UpdateRentalFormulaParams)
+	// GetRentalPlanner Planner rows (units and skippers) with segments by state, blocks and buffers (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/planner)
+	GetRentalPlanner(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRentalPlannerParams)
+	// QuoteRental Stateless quote of a unit and range: one formula, or every valid formula sorted by total when omitted (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/quote)
+	QuoteRental(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// GetRentalSettings Rental settings: open window, bands, buffer, holds, checklist (rental.manage; defaults when never saved, version 0)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/settings)
+	GetRentalSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId)
+	// PutRentalSettings Save the rental settings (marina.configure; If-Match "0" for the first save)
+	// (PUT /api/admin/v1/marinas/{marinaId}/rental/settings)
+	PutRentalSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PutRentalSettingsParams)
+	// ListRentalSkippers Bookable skippers with their weekly hours (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/skippers)
+	ListRentalSkippers(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalSkippersParams)
+	// CreateRentalSkipper Add a skipper (rental.manage)
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/skippers)
+	CreateRentalSkipper(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalSkipperParams)
+	// UpdateRentalSkipper Update a skipper (rental.manage)
+	// (PATCH /api/admin/v1/marinas/{marinaId}/rental/skippers/{rentalSkipperId})
+	UpdateRentalSkipper(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalSkipperId RentalSkipperId, params UpdateRentalSkipperParams)
+	// PutRentalSkipperHours Replace the weekly working hours of a skipper (rental.manage; a soft rule, days off are blocks)
+	// (PUT /api/admin/v1/marinas/{marinaId}/rental/skippers/{rentalSkipperId}/hours)
+	PutRentalSkipperHours(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalSkipperId RentalSkipperId, params PutRentalSkipperHoursParams)
+	// ListRentalUnits Rental units of the fleet (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/units)
+	ListRentalUnits(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalUnitsParams)
+	// CreateRentalUnit Add a registry vessel of the marina to the rental fleet (rental.manage); the item must have revenue class rental
+	// (POST /api/admin/v1/marinas/{marinaId}/rental/units)
+	CreateRentalUnit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalUnitParams)
+	// GetRentalUnit A rental unit (rental.manage)
+	// (GET /api/admin/v1/marinas/{marinaId}/rental/units/{rentalUnitId})
+	GetRentalUnit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalUnitId RentalUnitId)
+	// UpdateRentalUnit Update a rental unit (rental.manage); maintenance and retired units are not bookable for new bookings
+	// (PATCH /api/admin/v1/marinas/{marinaId}/rental/units/{rentalUnitId})
+	UpdateRentalUnit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalUnitId RentalUnitId, params UpdateRentalUnitParams)
 	// GetAccrualsReport R7 competence, deferrals (risconti) and accruals (ratei) at the closing date to (reports.all)
 	// (GET /api/admin/v1/marinas/{marinaId}/reports/accruals)
 	GetAccrualsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetAccrualsReportParams)
@@ -33533,6 +36354,9 @@ type ServerInterface interface {
 	// GetReceivablesReport R12 receivables by age as of a date, scheduled instalments and reminders sent (reports.all)
 	// (GET /api/admin/v1/marinas/{marinaId}/reports/receivables)
 	GetReceivablesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetReceivablesReportParams)
+	// GetRentalReport R-rental: utilisation, revenue, damages, deposits (reports.rental or reports.all)
+	// (GET /api/admin/v1/marinas/{marinaId}/reports/rental)
+	GetRentalReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRentalReportParams)
 	// GetRevenueClassesReport R10 net revenue by revenue class and month (reports.all)
 	// (GET /api/admin/v1/marinas/{marinaId}/reports/revenue-classes)
 	GetRevenueClassesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRevenueClassesReportParams)
@@ -36731,6 +39555,282 @@ func (_ Unimplemented) SendRenewalProposal(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// SearchRentalAvailability Units (and skippers) free for a range and formula (rental.manage); a pre-check only, the slot keys decide
+// (GET /api/admin/v1/marinas/{marinaId}/rental/availability)
+func (_ Unimplemented) SearchRentalAvailability(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params SearchRentalAvailabilityParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListRentalBlocks Blocks of units and skippers in a period (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/blocks)
+func (_ Unimplemented) ListRentalBlocks(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalBlocksParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateRentalBlock Block a unit (maintenance, closure) or a skipper (day off); a booked slot is 409 rental_slot_taken (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/blocks)
+func (_ Unimplemented) CreateRentalBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalBlockParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteRentalBlock Delete a block (rental.manage)
+// (DELETE /api/admin/v1/marinas/{marinaId}/rental/blocks/{rentalBlockId})
+func (_ Unimplemented) DeleteRentalBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBlockId RentalBlockId, params DeleteRentalBlockParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateRentalBlock Change a block (rental.manage)
+// (PATCH /api/admin/v1/marinas/{marinaId}/rental/blocks/{rentalBlockId})
+func (_ Unimplemented) UpdateRentalBlock(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBlockId RentalBlockId, params UpdateRentalBlockParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListRentalBookings Rental bookings, newest first (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings)
+func (_ Unimplemented) ListRentalBookings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalBookingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateRentalBooking Create a held (hold true, desk option) or confirmed rental; a taken slot is 409 rental_slot_taken, a busy skipper 409 skipper_busy (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings)
+func (_ Unimplemented) CreateRentalBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalBookingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRentalBooking A rental booking with price lines, extras, deposit and charges (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId})
+func (_ Unimplemented) GetRentalBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateRentalBooking Reschedule (unit, range, skipper) or edit a held or confirmed booking; slots rewritten in one transaction (rental.manage)
+// (PATCH /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId})
+func (_ Unimplemented) UpdateRentalBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params UpdateRentalBookingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CheckInRental Take the boat back: return charge, deposit release or retention, damages, unit engine hours, close when nothing is pending (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-in)
+func (_ Unimplemented) CheckInRental(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params CheckInRentalParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PreviewRentalCheckIn Stateless return totals: late fee, metered fuel, extras, damage excess and deposit proposal (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-in/preview)
+func (_ Unimplemented) PreviewRentalCheckIn(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CheckOutRental Hand the boat over: checks identity, licence, signed contract, deposit, checklist and photos (422 handover_incomplete with the missing steps) (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-out)
+func (_ Unimplemented) CheckOutRental(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params CheckOutRentalParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CloseRental Close a returned booking whose deposit is final (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/close)
+func (_ Unimplemented) CloseRental(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params CloseRentalParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRentalContractPdf The rental contract PDF, signed when available (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/contract/pdf)
+func (_ Unimplemented) GetRentalContractPdf(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params GetRentalContractPdfParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SignRentalContract Sign the rental contract on screen (signature PNG, simple electronic signature), or start an OTP or paper signature (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/contract/sign)
+func (_ Unimplemented) SignRentalContract(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params SignRentalContractParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateRentalDamage Record a damage found at return with an estimate (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/damages)
+func (_ Unimplemented) CreateRentalDamage(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params CreateRentalDamageParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRentalDeposit Deposit state of a booking with the pre-authorisation URL while pending (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/deposit)
+func (_ Unimplemented) GetRentalDeposit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// StartRentalDeposit Take the deposit: cash or card POS payment (kind deposit), pre-authorisation through a provider, or waived with a reason (rental.manage + payments.collect or payments.collect_cash)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/deposit)
+func (_ Unimplemented) StartRentalDeposit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params StartRentalDepositParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetHandover The check-out or check-in draft of a booking with its photos and missing steps (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase})
+func (_ Unimplemented) GetHandover(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, phase RentalPhase) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// SaveHandoverChecklist Save checklist, fuel, engine hours and notes of a handover (rental.manage)
+// (PUT /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/checklist)
+func (_ Unimplemented) SaveHandoverChecklist(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, phase RentalPhase, params SaveHandoverChecklistParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRentalHandoverPdf The handover PDF of a phase (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/pdf)
+func (_ Unimplemented) GetRentalHandoverPdf(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, phase RentalPhase, params GetRentalHandoverPdfParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UploadHandoverPhoto Attach a photo to a handover (JPEG or PNG, at most 8 MiB, raw body), encrypted at rest (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/photos)
+func (_ Unimplemented) UploadHandoverPhoto(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, phase RentalPhase, params UploadHandoverPhotoParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PutHandoverIdentity Renter identity and licence typed by the operator, encrypted at rest (rental.manage); an expired licence is 422 licence_expired
+// (PUT /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/identity)
+func (_ Unimplemented) PutHandoverIdentity(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// QuickCashRental Collect the open rental charges in one step: cash or card POS with the commercial document (receipt mode), or a payment link (rental.manage + payments.collect, or payments.collect_cash for cash)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/quick-cash)
+func (_ Unimplemented) QuickCashRental(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params QuickCashRentalParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// TransitionRentalBooking confirm, cancel, no_show or extend_hold a booking (rental.manage); any other transition is 409 invalid_transition
+// (POST /api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/transition)
+func (_ Unimplemented) TransitionRentalBooking(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalBookingId RentalBookingId, params TransitionRentalBookingParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// DeleteRentalDamage Delete an open damage before check-in (rental.manage)
+// (DELETE /api/admin/v1/marinas/{marinaId}/rental/damages/{rentalDamageId})
+func (_ Unimplemented) DeleteRentalDamage(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalDamageId RentalDamageId, params DeleteRentalDamageParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateRentalDamage Update a damage (rental.manage)
+// (PATCH /api/admin/v1/marinas/{marinaId}/rental/damages/{rentalDamageId})
+func (_ Unimplemented) UpdateRentalDamage(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalDamageId RentalDamageId, params UpdateRentalDamageParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRentalDay Day view of the rental desk and phone: pickups, out at sea, returns due and late (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/day)
+func (_ Unimplemented) GetRentalDay(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRentalDayParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListRentalExtras Rental extras (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/extras)
+func (_ Unimplemented) ListRentalExtras(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalExtrasParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateRentalExtra Add a rental extra on a catalogue item (marina.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/extras)
+func (_ Unimplemented) CreateRentalExtra(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalExtraParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateRentalExtra Update a rental extra (marina.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/rental/extras/{rentalExtraId})
+func (_ Unimplemented) UpdateRentalExtra(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalExtraId RentalExtraId, params UpdateRentalExtraParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListRentalFormulas Rental formulas (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/formulas)
+func (_ Unimplemented) ListRentalFormulas(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalFormulasParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateRentalFormula Add a rental formula (marina.configure)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/formulas)
+func (_ Unimplemented) CreateRentalFormula(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalFormulaParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateRentalFormula Update a rental formula (marina.configure)
+// (PATCH /api/admin/v1/marinas/{marinaId}/rental/formulas/{rentalFormulaId})
+func (_ Unimplemented) UpdateRentalFormula(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalFormulaId RentalFormulaId, params UpdateRentalFormulaParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRentalPlanner Planner rows (units and skippers) with segments by state, blocks and buffers (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/planner)
+func (_ Unimplemented) GetRentalPlanner(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRentalPlannerParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// QuoteRental Stateless quote of a unit and range: one formula, or every valid formula sorted by total when omitted (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/quote)
+func (_ Unimplemented) QuoteRental(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRentalSettings Rental settings: open window, bands, buffer, holds, checklist (rental.manage; defaults when never saved, version 0)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/settings)
+func (_ Unimplemented) GetRentalSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PutRentalSettings Save the rental settings (marina.configure; If-Match "0" for the first save)
+// (PUT /api/admin/v1/marinas/{marinaId}/rental/settings)
+func (_ Unimplemented) PutRentalSettings(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params PutRentalSettingsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListRentalSkippers Bookable skippers with their weekly hours (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/skippers)
+func (_ Unimplemented) ListRentalSkippers(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalSkippersParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateRentalSkipper Add a skipper (rental.manage)
+// (POST /api/admin/v1/marinas/{marinaId}/rental/skippers)
+func (_ Unimplemented) CreateRentalSkipper(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalSkipperParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateRentalSkipper Update a skipper (rental.manage)
+// (PATCH /api/admin/v1/marinas/{marinaId}/rental/skippers/{rentalSkipperId})
+func (_ Unimplemented) UpdateRentalSkipper(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalSkipperId RentalSkipperId, params UpdateRentalSkipperParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// PutRentalSkipperHours Replace the weekly working hours of a skipper (rental.manage; a soft rule, days off are blocks)
+// (PUT /api/admin/v1/marinas/{marinaId}/rental/skippers/{rentalSkipperId}/hours)
+func (_ Unimplemented) PutRentalSkipperHours(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalSkipperId RentalSkipperId, params PutRentalSkipperHoursParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// ListRentalUnits Rental units of the fleet (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/units)
+func (_ Unimplemented) ListRentalUnits(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params ListRentalUnitsParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// CreateRentalUnit Add a registry vessel of the marina to the rental fleet (rental.manage); the item must have revenue class rental
+// (POST /api/admin/v1/marinas/{marinaId}/rental/units)
+func (_ Unimplemented) CreateRentalUnit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params CreateRentalUnitParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRentalUnit A rental unit (rental.manage)
+// (GET /api/admin/v1/marinas/{marinaId}/rental/units/{rentalUnitId})
+func (_ Unimplemented) GetRentalUnit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalUnitId RentalUnitId) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// UpdateRentalUnit Update a rental unit (rental.manage); maintenance and retired units are not bookable for new bookings
+// (PATCH /api/admin/v1/marinas/{marinaId}/rental/units/{rentalUnitId})
+func (_ Unimplemented) UpdateRentalUnit(w http.ResponseWriter, r *http.Request, marinaId MarinaId, rentalUnitId RentalUnitId, params UpdateRentalUnitParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // GetAccrualsReport R7 competence, deferrals (risconti) and accruals (ratei) at the closing date to (reports.all)
 // (GET /api/admin/v1/marinas/{marinaId}/reports/accruals)
 func (_ Unimplemented) GetAccrualsReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetAccrualsReportParams) {
@@ -36818,6 +39918,12 @@ func (_ Unimplemented) GetProductionReport(w http.ResponseWriter, r *http.Reques
 // GetReceivablesReport R12 receivables by age as of a date, scheduled instalments and reminders sent (reports.all)
 // (GET /api/admin/v1/marinas/{marinaId}/reports/receivables)
 func (_ Unimplemented) GetReceivablesReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetReceivablesReportParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// GetRentalReport R-rental: utilisation, revenue, damages, deposits (reports.rental or reports.all)
+// (GET /api/admin/v1/marinas/{marinaId}/reports/rental)
+func (_ Unimplemented) GetRentalReport(w http.ResponseWriter, r *http.Request, marinaId MarinaId, params GetRentalReportParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -60754,6 +63860,2754 @@ func (siw *ServerInterfaceWrapper) SendRenewalProposal(w http.ResponseWriter, r 
 	handler.ServeHTTP(w, r)
 }
 
+// SearchRentalAvailability operation middleware
+func (siw *ServerInterfaceWrapper) SearchRentalAvailability(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SearchRentalAvailabilityParams
+
+	// ------------- Optional query parameter "starts_on" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "starts_on", r.URL.Query(), &params.StartsOn, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "starts_on"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "starts_on", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "start_slot" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "start_slot", r.URL.Query(), &params.StartSlot, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "start_slot"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "start_slot", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "ends_on" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "ends_on", r.URL.Query(), &params.EndsOn, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "ends_on"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "ends_on", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "end_slot" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "end_slot", r.URL.Query(), &params.EndSlot, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "end_slot"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "end_slot", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "formula_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "formula_id", r.URL.Query(), &params.FormulaId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "formula_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "formula_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "skipper" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "skipper", r.URL.Query(), &params.Skipper, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "skipper"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "skipper", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SearchRentalAvailability(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListRentalBlocks operation middleware
+func (siw *ServerInterfaceWrapper) ListRentalBlocks(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListRentalBlocksParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "unit_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "unit_id", r.URL.Query(), &params.UnitId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "unit_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "unit_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "skipper_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "skipper_id", r.URL.Query(), &params.SkipperId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "skipper_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "skipper_id", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListRentalBlocks(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateRentalBlock operation middleware
+func (siw *ServerInterfaceWrapper) CreateRentalBlock(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateRentalBlockParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateRentalBlock(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteRentalBlock operation middleware
+func (siw *ServerInterfaceWrapper) DeleteRentalBlock(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBlockId" -------------
+	var rentalBlockId RentalBlockId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBlockId", chi.URLParam(r, "rentalBlockId"), &rentalBlockId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBlockId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteRentalBlockParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteRentalBlock(w, r, marinaId, rentalBlockId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateRentalBlock operation middleware
+func (siw *ServerInterfaceWrapper) UpdateRentalBlock(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBlockId" -------------
+	var rentalBlockId RentalBlockId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBlockId", chi.URLParam(r, "rentalBlockId"), &rentalBlockId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBlockId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateRentalBlockParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateRentalBlock(w, r, marinaId, rentalBlockId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListRentalBookings operation middleware
+func (siw *ServerInterfaceWrapper) ListRentalBookings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListRentalBookingsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "unit_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "unit_id", r.URL.Query(), &params.UnitId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "unit_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "unit_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "customer_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "customer_id", r.URL.Query(), &params.CustomerId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "customer_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "customer_id", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListRentalBookings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateRentalBooking operation middleware
+func (siw *ServerInterfaceWrapper) CreateRentalBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateRentalBookingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateRentalBooking(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRentalBooking operation middleware
+func (siw *ServerInterfaceWrapper) GetRentalBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRentalBooking(w, r, marinaId, rentalBookingId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateRentalBooking operation middleware
+func (siw *ServerInterfaceWrapper) UpdateRentalBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateRentalBookingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateRentalBooking(w, r, marinaId, rentalBookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CheckInRental operation middleware
+func (siw *ServerInterfaceWrapper) CheckInRental(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CheckInRentalParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CheckInRental(w, r, marinaId, rentalBookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PreviewRentalCheckIn operation middleware
+func (siw *ServerInterfaceWrapper) PreviewRentalCheckIn(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PreviewRentalCheckIn(w, r, marinaId, rentalBookingId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CheckOutRental operation middleware
+func (siw *ServerInterfaceWrapper) CheckOutRental(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CheckOutRentalParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CheckOutRental(w, r, marinaId, rentalBookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CloseRental operation middleware
+func (siw *ServerInterfaceWrapper) CloseRental(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CloseRentalParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CloseRental(w, r, marinaId, rentalBookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRentalContractPdf operation middleware
+func (siw *ServerInterfaceWrapper) GetRentalContractPdf(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetRentalContractPdfParams
+
+	// ------------- Optional query parameter "exp" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "exp", r.URL.Query(), &params.Exp, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "exp"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "exp", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "sig" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "sig", r.URL.Query(), &params.Sig, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sig"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sig", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRentalContractPdf(w, r, marinaId, rentalBookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SignRentalContract operation middleware
+func (siw *ServerInterfaceWrapper) SignRentalContract(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SignRentalContractParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SignRentalContract(w, r, marinaId, rentalBookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateRentalDamage operation middleware
+func (siw *ServerInterfaceWrapper) CreateRentalDamage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateRentalDamageParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateRentalDamage(w, r, marinaId, rentalBookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRentalDeposit operation middleware
+func (siw *ServerInterfaceWrapper) GetRentalDeposit(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRentalDeposit(w, r, marinaId, rentalBookingId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// StartRentalDeposit operation middleware
+func (siw *ServerInterfaceWrapper) StartRentalDeposit(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params StartRentalDepositParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.StartRentalDeposit(w, r, marinaId, rentalBookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetHandover operation middleware
+func (siw *ServerInterfaceWrapper) GetHandover(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "phase" -------------
+	var phase RentalPhase
+
+	err = runtime.BindStyledParameterWithOptions("simple", "phase", chi.URLParam(r, "phase"), &phase, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "phase", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetHandover(w, r, marinaId, rentalBookingId, phase)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SaveHandoverChecklist operation middleware
+func (siw *ServerInterfaceWrapper) SaveHandoverChecklist(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "phase" -------------
+	var phase RentalPhase
+
+	err = runtime.BindStyledParameterWithOptions("simple", "phase", chi.URLParam(r, "phase"), &phase, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "phase", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SaveHandoverChecklistParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Porto-Offline-Queued-At" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Offline-Queued-At")]; found {
+		var PortoOfflineQueuedAt OfflineQueuedAt
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Offline-Queued-At", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Offline-Queued-At", valueList[0], &PortoOfflineQueuedAt, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "date-time"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Offline-Queued-At", Err: err})
+			return
+		}
+
+		params.PortoOfflineQueuedAt = &PortoOfflineQueuedAt
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SaveHandoverChecklist(w, r, marinaId, rentalBookingId, phase, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRentalHandoverPdf operation middleware
+func (siw *ServerInterfaceWrapper) GetRentalHandoverPdf(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "phase" -------------
+	var phase RentalPhase
+
+	err = runtime.BindStyledParameterWithOptions("simple", "phase", chi.URLParam(r, "phase"), &phase, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "phase", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetRentalHandoverPdfParams
+
+	// ------------- Optional query parameter "exp" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "exp", r.URL.Query(), &params.Exp, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "exp"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "exp", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "sig" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "sig", r.URL.Query(), &params.Sig, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sig"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sig", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRentalHandoverPdf(w, r, marinaId, rentalBookingId, phase, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UploadHandoverPhoto operation middleware
+func (siw *ServerInterfaceWrapper) UploadHandoverPhoto(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "phase" -------------
+	var phase RentalPhase
+
+	err = runtime.BindStyledParameterWithOptions("simple", "phase", chi.URLParam(r, "phase"), &phase, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "phase", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UploadHandoverPhotoParams
+
+	// ------------- Optional query parameter "kind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "damage_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "damage_id", r.URL.Query(), &params.DamageId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "damage_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "damage_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "client_ref" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "client_ref", r.URL.Query(), &params.ClientRef, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "client_ref"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "client_ref", Err: err})
+		}
+		return
+	}
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	// ------------- Optional header parameter "Porto-Offline-Queued-At" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Porto-Offline-Queued-At")]; found {
+		var PortoOfflineQueuedAt OfflineQueuedAt
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Porto-Offline-Queued-At", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Porto-Offline-Queued-At", valueList[0], &PortoOfflineQueuedAt, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: "date-time"})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Porto-Offline-Queued-At", Err: err})
+			return
+		}
+
+		params.PortoOfflineQueuedAt = &PortoOfflineQueuedAt
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UploadHandoverPhoto(w, r, marinaId, rentalBookingId, phase, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutHandoverIdentity operation middleware
+func (siw *ServerInterfaceWrapper) PutHandoverIdentity(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutHandoverIdentity(w, r, marinaId, rentalBookingId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// QuickCashRental operation middleware
+func (siw *ServerInterfaceWrapper) QuickCashRental(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params QuickCashRentalParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.QuickCashRental(w, r, marinaId, rentalBookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// TransitionRentalBooking operation middleware
+func (siw *ServerInterfaceWrapper) TransitionRentalBooking(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalBookingId" -------------
+	var rentalBookingId RentalBookingId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalBookingId", chi.URLParam(r, "rentalBookingId"), &rentalBookingId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalBookingId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params TransitionRentalBookingParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.TransitionRentalBooking(w, r, marinaId, rentalBookingId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteRentalDamage operation middleware
+func (siw *ServerInterfaceWrapper) DeleteRentalDamage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalDamageId" -------------
+	var rentalDamageId RentalDamageId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalDamageId", chi.URLParam(r, "rentalDamageId"), &rentalDamageId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalDamageId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params DeleteRentalDamageParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteRentalDamage(w, r, marinaId, rentalDamageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateRentalDamage operation middleware
+func (siw *ServerInterfaceWrapper) UpdateRentalDamage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalDamageId" -------------
+	var rentalDamageId RentalDamageId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalDamageId", chi.URLParam(r, "rentalDamageId"), &rentalDamageId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalDamageId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateRentalDamageParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateRentalDamage(w, r, marinaId, rentalDamageId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRentalDay operation middleware
+func (siw *ServerInterfaceWrapper) GetRentalDay(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetRentalDayParams
+
+	// ------------- Optional query parameter "date" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "date", r.URL.Query(), &params.Date, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "date"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "date", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRentalDay(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListRentalExtras operation middleware
+func (siw *ServerInterfaceWrapper) ListRentalExtras(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListRentalExtrasParams
+
+	// ------------- Optional query parameter "active" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "active", r.URL.Query(), &params.Active, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "active"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "active", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListRentalExtras(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateRentalExtra operation middleware
+func (siw *ServerInterfaceWrapper) CreateRentalExtra(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateRentalExtraParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateRentalExtra(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateRentalExtra operation middleware
+func (siw *ServerInterfaceWrapper) UpdateRentalExtra(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalExtraId" -------------
+	var rentalExtraId RentalExtraId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalExtraId", chi.URLParam(r, "rentalExtraId"), &rentalExtraId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalExtraId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateRentalExtraParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateRentalExtra(w, r, marinaId, rentalExtraId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListRentalFormulas operation middleware
+func (siw *ServerInterfaceWrapper) ListRentalFormulas(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListRentalFormulasParams
+
+	// ------------- Optional query parameter "active" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "active", r.URL.Query(), &params.Active, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "active"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "active", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListRentalFormulas(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateRentalFormula operation middleware
+func (siw *ServerInterfaceWrapper) CreateRentalFormula(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateRentalFormulaParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateRentalFormula(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateRentalFormula operation middleware
+func (siw *ServerInterfaceWrapper) UpdateRentalFormula(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalFormulaId" -------------
+	var rentalFormulaId RentalFormulaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalFormulaId", chi.URLParam(r, "rentalFormulaId"), &rentalFormulaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalFormulaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateRentalFormulaParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateRentalFormula(w, r, marinaId, rentalFormulaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRentalPlanner operation middleware
+func (siw *ServerInterfaceWrapper) GetRentalPlanner(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetRentalPlannerParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "view" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "view", r.URL.Query(), &params.View, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "view"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "view", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRentalPlanner(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// QuoteRental operation middleware
+func (siw *ServerInterfaceWrapper) QuoteRental(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.QuoteRental(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRentalSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetRentalSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRentalSettings(w, r, marinaId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutRentalSettings operation middleware
+func (siw *ServerInterfaceWrapper) PutRentalSettings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PutRentalSettingsParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutRentalSettings(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListRentalSkippers operation middleware
+func (siw *ServerInterfaceWrapper) ListRentalSkippers(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListRentalSkippersParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "active" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "active", r.URL.Query(), &params.Active, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "active"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "active", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListRentalSkippers(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateRentalSkipper operation middleware
+func (siw *ServerInterfaceWrapper) CreateRentalSkipper(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateRentalSkipperParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateRentalSkipper(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateRentalSkipper operation middleware
+func (siw *ServerInterfaceWrapper) UpdateRentalSkipper(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalSkipperId" -------------
+	var rentalSkipperId RentalSkipperId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalSkipperId", chi.URLParam(r, "rentalSkipperId"), &rentalSkipperId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalSkipperId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateRentalSkipperParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateRentalSkipper(w, r, marinaId, rentalSkipperId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutRentalSkipperHours operation middleware
+func (siw *ServerInterfaceWrapper) PutRentalSkipperHours(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalSkipperId" -------------
+	var rentalSkipperId RentalSkipperId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalSkipperId", chi.URLParam(r, "rentalSkipperId"), &rentalSkipperId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalSkipperId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params PutRentalSkipperHoursParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutRentalSkipperHours(w, r, marinaId, rentalSkipperId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListRentalUnits operation middleware
+func (siw *ServerInterfaceWrapper) ListRentalUnits(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListRentalUnitsParams
+
+	// ------------- Optional query parameter "cursor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListRentalUnits(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateRentalUnit operation middleware
+func (siw *ServerInterfaceWrapper) CreateRentalUnit(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params CreateRentalUnitParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Idempotency-Key" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
+		var IdempotencyKey IdempotencyKey
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
+			return
+		}
+
+		params.IdempotencyKey = &IdempotencyKey
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateRentalUnit(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRentalUnit operation middleware
+func (siw *ServerInterfaceWrapper) GetRentalUnit(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalUnitId" -------------
+	var rentalUnitId RentalUnitId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalUnitId", chi.URLParam(r, "rentalUnitId"), &rentalUnitId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalUnitId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRentalUnit(w, r, marinaId, rentalUnitId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateRentalUnit operation middleware
+func (siw *ServerInterfaceWrapper) UpdateRentalUnit(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "rentalUnitId" -------------
+	var rentalUnitId RentalUnitId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "rentalUnitId", chi.URLParam(r, "rentalUnitId"), &rentalUnitId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "rentalUnitId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UpdateRentalUnitParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "If-Match" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("If-Match")]; found {
+		var IfMatch IfMatch
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "If-Match", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "If-Match", valueList[0], &IfMatch, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "If-Match", Err: err})
+			return
+		}
+
+		params.IfMatch = &IfMatch
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateRentalUnit(w, r, marinaId, rentalUnitId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetAccrualsReport operation middleware
 func (siw *ServerInterfaceWrapper) GetAccrualsReport(w http.ResponseWriter, r *http.Request) {
 
@@ -63338,6 +69192,178 @@ func (siw *ServerInterfaceWrapper) GetReceivablesReport(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetReceivablesReport(w, r, marinaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRentalReport operation middleware
+func (siw *ServerInterfaceWrapper) GetRentalReport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "marinaId" -------------
+	var marinaId MarinaId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "marinaId", chi.URLParam(r, "marinaId"), &marinaId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "marinaId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetRentalReportParams
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "format", r.URL.Query(), &params.Format, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "format"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "format", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "lang" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "lang", r.URL.Query(), &params.Lang, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "lang"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "lang", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", r.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "page_size" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page_size", r.URL.Query(), &params.PageSize, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "page_size"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "page_size", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "view" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "view", r.URL.Query(), &params.View, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "view"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "view", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "group_by" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "group_by", r.URL.Query(), &params.GroupBy, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "group_by"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "group_by", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "unit_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "unit_id", r.URL.Query(), &params.UnitId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "unit_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "unit_id", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "formula_id" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "formula_id", r.URL.Query(), &params.FormulaId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "formula_id"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "formula_id", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRentalReport(w, r, marinaId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -80146,6 +86172,147 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/yard", wrapper.GetYardReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/units", wrapper.ListRentalUnits)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/units", wrapper.CreateRentalUnit)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/units/{rentalUnitId}", wrapper.GetRentalUnit)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/units/{rentalUnitId}", wrapper.UpdateRentalUnit)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/skippers", wrapper.ListRentalSkippers)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/skippers", wrapper.CreateRentalSkipper)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/skippers/{rentalSkipperId}", wrapper.UpdateRentalSkipper)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/skippers/{rentalSkipperId}/hours", wrapper.PutRentalSkipperHours)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/formulas", wrapper.ListRentalFormulas)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/formulas", wrapper.CreateRentalFormula)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/formulas/{rentalFormulaId}", wrapper.UpdateRentalFormula)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/extras", wrapper.ListRentalExtras)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/extras", wrapper.CreateRentalExtra)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/extras/{rentalExtraId}", wrapper.UpdateRentalExtra)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/settings", wrapper.GetRentalSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/settings", wrapper.PutRentalSettings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/quote", wrapper.QuoteRental)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/planner", wrapper.GetRentalPlanner)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/availability", wrapper.SearchRentalAvailability)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings", wrapper.ListRentalBookings)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings", wrapper.CreateRentalBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}", wrapper.GetRentalBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}", wrapper.UpdateRentalBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/transition", wrapper.TransitionRentalBooking)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/blocks", wrapper.ListRentalBlocks)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/blocks", wrapper.CreateRentalBlock)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/blocks/{rentalBlockId}", wrapper.DeleteRentalBlock)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/blocks/{rentalBlockId}", wrapper.UpdateRentalBlock)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/day", wrapper.GetRentalDay)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}", wrapper.GetHandover)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/checklist", wrapper.SaveHandoverChecklist)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/photos", wrapper.UploadHandoverPhoto)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/identity", wrapper.PutHandoverIdentity)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/contract/sign", wrapper.SignRentalContract)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/contract/pdf", wrapper.GetRentalContractPdf)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/deposit", wrapper.GetRentalDeposit)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/deposit", wrapper.StartRentalDeposit)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-out", wrapper.CheckOutRental)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/damages", wrapper.CreateRentalDamage)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/damages/{rentalDamageId}", wrapper.DeleteRentalDamage)
+	})
+	r.Group(func(r chi.Router) {
+		r.Patch(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/damages/{rentalDamageId}", wrapper.UpdateRentalDamage)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-in/preview", wrapper.PreviewRentalCheckIn)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/check-in", wrapper.CheckInRental)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/close", wrapper.CloseRental)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/handovers/{phase}/pdf", wrapper.GetRentalHandoverPdf)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/rental/bookings/{rentalBookingId}/quick-cash", wrapper.QuickCashRental)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/api/admin/v1/marinas/{marinaId}/reports/rental", wrapper.GetRentalReport)
 	})
 
 	return r

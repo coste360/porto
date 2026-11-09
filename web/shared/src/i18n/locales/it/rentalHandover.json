@@ -1,0 +1,192 @@
+{
+  "nav": {
+    "phone": "Noleggio"
+  },
+  "title": "Noleggi del giorno",
+  "description": "Consegna e restituzione delle barche dal telefono.",
+  "pending": "Questa sezione sarà disponibile a breve.",
+  "back": "Indietro",
+  "next": "Avanti",
+  "finish": "Fine",
+  "progress": "Avanzamento",
+  "queued_one": "{{count}} operazione in attesa di connessione",
+  "queued_other": "{{count}} operazioni in attesa di connessione",
+  "tabs": {
+    "today": "Oggi",
+    "scan": "Scansiona",
+    "cash": "Cassa",
+    "new": "Nuovo"
+  },
+  "today": {
+    "pickups": "Partenze",
+    "out": "In mare",
+    "returns_due": "Rientri",
+    "late": "In ritardo",
+    "empty": "Nessun noleggio oggi",
+    "lateBadge": "Ritardo"
+  },
+  "scan": {
+    "label": "Codice del noleggio (PR1:…)",
+    "open": "Apri il noleggio"
+  },
+  "steps": {
+    "identity": "Identità",
+    "licence": "Patente",
+    "contract": "Contratto",
+    "deposit": "Cauzione",
+    "boat": "Barca",
+    "summary": "Riepilogo",
+    "return": "Rientro",
+    "damages": "Danni",
+    "extras": "Extra"
+  },
+  "phase": {
+    "checkout": "Consegna",
+    "checkin": "Rientro"
+  },
+  "missing": {
+    "identity": "Documento d'identità",
+    "licence": "Patente nautica",
+    "contract": "Contratto firmato",
+    "deposit": "Cauzione",
+    "checklist": "Controlli",
+    "photos": "Foto della barca",
+    "engine_hours": "Ore motore",
+    "fuel": "Carburante"
+  },
+  "identity": {
+    "number": "Numero del documento",
+    "expires": "Scadenza del documento",
+    "photo": "Foto del documento"
+  },
+  "licence": {
+    "number": "Numero della patente",
+    "expires": "Scadenza della patente",
+    "photo": "Foto della patente"
+  },
+  "sign": {
+    "hint": "Il noleggiatore firma con il dito nel riquadro (firma elettronica semplice).",
+    "pad": "Riquadro della firma",
+    "clear": "Cancella",
+    "submit": "Firma",
+    "paper": "Firma su carta",
+    "otp": "Firma con codice"
+  },
+  "deposit": {
+    "title": "Cauzione",
+    "amount": "Cauzione {{amount}}",
+    "take": "Incassa la cauzione",
+    "reason": "Motivo",
+    "openPage": "Apri la pagina di pre-autorizzazione",
+    "retained": "trattenuti {{amount}}",
+    "mode": {
+      "cash": "Contanti",
+      "card_pos": "Carta (POS)",
+      "preauth": "Pre-autorizzazione",
+      "waived": "Senza cauzione"
+    },
+    "status": {
+      "none": "Da prendere",
+      "pending": "In attesa",
+      "held": "Incassata",
+      "authorized": "Autorizzata",
+      "capture_pending": "In addebito",
+      "released": "Restituita",
+      "retained": "Trattenuta",
+      "partially_retained": "Trattenuta in parte",
+      "waived": "Non richiesta"
+    },
+    "qrAlt": "QR della pagina di pre-autorizzazione",
+    "qrHint": "Il cliente inquadra il QR con il proprio telefono per autorizzare la cauzione."
+  },
+  "boat": {
+    "allOk": "Tutto ok",
+    "fuel": "Carburante: {{value}}/8",
+    "fuelLabel": "Livello del carburante in ottavi",
+    "engineHours": "Ore motore",
+    "photos_one": "Foto della barca ({{count}})",
+    "photos_other": "Foto della barca ({{count}})",
+    "addPhoto": "Scatta una foto",
+    "save": "Salva i controlli"
+  },
+  "checkout": {
+    "title": "Consegna {{label}}",
+    "ready": "Tutto pronto per la consegna.",
+    "commit": "Consegna",
+    "done": "Barca consegnata"
+  },
+  "checkin": {
+    "title": "Rientro {{label}}",
+    "returnedAt": "Ora del rientro",
+    "late": "Ritardo ({{minutes}} min)",
+    "fuel": "Carburante",
+    "extras": "Extra",
+    "damageExcess": "Danni oltre la cauzione",
+    "total": "Da pagare al rientro",
+    "proposal": "Proposta di trattenuta",
+    "commit": "Rientro",
+    "done": "Rientro registrato"
+  },
+  "damages": {
+    "none": "Nessun danno",
+    "add": "Aggiungi un danno",
+    "photo": "Foto del danno",
+    "description": "Descrizione",
+    "estimate": "Preventivo (€)",
+    "save": "Salva il danno"
+  },
+  "extras": {
+    "less": "Togli",
+    "more": "Aggiungi"
+  },
+  "decision": {
+    "release": "Restituisci",
+    "retain_all": "Trattieni tutto",
+    "retain": "Trattieni",
+    "amount": "Importo trattenuto (€)"
+  },
+  "cash": {
+    "title": "Incasso",
+    "button": "Incassa {{amount}}",
+    "collect": "Incassa ora",
+    "done": "Incasso registrato",
+    "empty": "Nessun addebito da incassare",
+    "openLink": "Apri il link di pagamento",
+    "method": {
+      "cash": "Contanti",
+      "card_pos": "Carta (POS)",
+      "link": "Link di pagamento"
+    },
+    "target": {
+      "main": "Noleggio",
+      "return": "Addebito al rientro",
+      "open": "Tutti gli addebiti aperti"
+    },
+    "qrAlt": "QR del link di pagamento",
+    "qrHint": "Il cliente inquadra il QR con il proprio telefono per pagare.",
+    "linkNeedsCustomer": "Il link di pagamento richiede un cliente in anagrafica: per un cliente occasionale usa contanti o POS."
+  },
+  "panel": {
+    "title": "Consegna e rientro",
+    "ready": "Pronto"
+  },
+  "pdf": {
+    "contract": "Contratto",
+    "checkout": "Verbale di consegna",
+    "checkin": "Verbale di rientro"
+  },
+  "queue": {
+    "checklist": "Controlli del noleggio {{booking}}",
+    "photo": "Foto del noleggio {{booking}}"
+  },
+  "walkIn": {
+    "closed": "Fuori orario: nessun noleggio può partire adesso.",
+    "offline": "Senza connessione: il nuovo noleggio richiede la rete.",
+    "pickUnit": "Scegli l'unità",
+    "duration": "Durata",
+    "pickDuration": "Scegli la durata",
+    "hours_one": "{{count}} ora",
+    "hours_other": "{{count}} ore",
+    "confirm": "Conferma e vai alla consegna"
+  }
+}

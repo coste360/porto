@@ -211,6 +211,23 @@ func BackupTables() []string {
 		"equipment_bookings",
 		"equipment_slots",
 		"operator_slots",
+		// M11 rental (00023_rental_fleet, 00024_rental_bookings, 00025_rental_handovers). rental_bookings point to
+		// older payments and payment intents (deposit); rental_booking_charges to older charges.
+		"rental_settings",
+		"rental_units",
+		"rental_skippers",
+		"rental_skipper_hours",
+		"rental_formulas",
+		"rental_extras",
+		"rental_bookings",
+		"rental_booking_extras",
+		"rental_blocks",
+		"rental_slots",
+		"rental_skipper_slots",
+		"rental_booking_charges",
+		"rental_handovers",
+		"rental_damages",
+		"rental_handover_files",
 	}
 }
 

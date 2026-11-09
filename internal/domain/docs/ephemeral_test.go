@@ -43,7 +43,7 @@ func TestEphemeral_ExportSummaryRenders(t *testing.T) {
 	if _, err := ephemeralSchema(KindQuote); err != nil {
 		t.Fatalf("published kind: %v", err)
 	}
-	if _, err := ephemeralSchema(KindRentalContract); err == nil {
+	if _, err := ephemeralSchema(Kind("not_a_kind")); err == nil {
 		t.Fatal("non-ephemeral kind accepted")
 	}
 }

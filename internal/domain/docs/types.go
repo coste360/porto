@@ -120,8 +120,8 @@ func Catalogue() []KindInfo {
 		{Kind: KindChargeExportSummary, View: t(views.ChargeExportSummaryView{})},
 		{Kind: KindYardWorkOrder, View: t(YardWorkOrderView{})},
 		{Kind: KindYardQuote, View: t(YardQuoteView{})},
-		{Kind: KindRentalContract, AvailableFrom: "M11"},
-		{Kind: KindRentalHandover, AvailableFrom: "M11"},
+		{Kind: KindRentalContract, View: t(RentalContractView{}), AvailableFrom: "M11", SignatureRoles: []string{"customer"}},
+		{Kind: KindRentalHandover, View: t(RentalHandoverView{}), AvailableFrom: "M11"},
 	}
 }
 

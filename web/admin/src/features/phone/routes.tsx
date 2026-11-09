@@ -4,6 +4,7 @@ import type { MarinaRoute } from '../../router';
 import { DirectionPage } from './DirectionPage';
 import { DockPage } from './dock/DockPage';
 import { MaintenancePhonePage } from './maintenance/MaintenancePhonePage';
+import { RentalPhonePage } from './rental/RentalPhonePage';
 import { StoragePhonePage } from './storage/StoragePhonePage';
 import { YardPhonePage } from './yard/YardPhonePage';
 import { validateDirectionSearch, validateDockSearch } from './lib/tabs';
@@ -45,6 +46,13 @@ export function phoneRoutes(parent: MarinaRoute) {
       getParentRoute: () => parent,
       path: 'yard-phone',
       component: YardPhonePage,
+      staticData: { shell: 'phone' },
+    }),
+    // M11 (m11-plan §14.3): rental phone screen (HANDOVER) for the rental role.
+    createRoute({
+      getParentRoute: () => parent,
+      path: 'rental-phone',
+      component: RentalPhonePage,
       staticData: { shell: 'phone' },
     }),
   ] as const;

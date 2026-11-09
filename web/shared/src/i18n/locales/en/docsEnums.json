@@ -140,7 +140,8 @@
       "right": "Right of use",
       "vessel": "Vessel",
       "yard_quote": "Yard quote",
-      "yard_work_order": "Yard work order"
+      "yard_work_order": "Yard work order",
+      "rental": "Rental"
     },
     "holder": {
       "amount": "Amount",
@@ -402,6 +403,54 @@
       "net": "Planned net",
       "revenue": "Actual revenue",
       "charged": "Already charged"
+    },
+    "rental": {
+      "at": "Actual time",
+      "category": "Category",
+      "check_label": "Check item",
+      "check_note": "Check note",
+      "check_ok": "Passed",
+      "checklist": "Checks",
+      "damage_description": "Damage description",
+      "damage_estimate": "Damage estimate",
+      "damage_status": "Damage status",
+      "damages": "Damages",
+      "deposit": "Deposit",
+      "deposit_mode": "Deposit mode",
+      "deposit_released": "Deposit released",
+      "deposit_retained": "Deposit retained",
+      "end": "End",
+      "engine_hours": "Engine hours",
+      "formula": "Formula",
+      "fuel": "Fuel charged",
+      "fuel_eighths": "Fuel (eighths)",
+      "fuel_metered": "Metered fuel",
+      "grace_minutes": "Grace minutes",
+      "handover": "Report",
+      "handover_notes": "Report notes",
+      "kind": "Formula kind",
+      "late_fee": "Late fee",
+      "late_minutes": "Minutes late",
+      "late_step_minutes": "Late step (minutes)",
+      "licence_required": "Licence required",
+      "line_amount": "Amount",
+      "line_description": "Description",
+      "line_qty": "Quantity",
+      "line_seq": "Line",
+      "lines": "Price lines",
+      "notes": "Notes",
+      "number": "Number",
+      "operator": "Operator",
+      "phase": "Phase",
+      "photos": "Photos",
+      "qr": "Return code",
+      "renter": "Renter",
+      "return_total": "Return charge",
+      "seats": "Seats",
+      "skipper": "Skipper",
+      "start": "Start",
+      "total": "Total",
+      "unit_code": "Unit"
     }
   },
   "templateKind": {
@@ -610,7 +659,8 @@
   "signatureDriver": {
     "paper": "Paper signature",
     "otp": "Simple electronic signature (code)",
-    "provider": "External provider"
+    "provider": "External provider",
+    "screen": "On-screen signature"
   },
   "signatureStatus": {
     "pending_document": "Preparing document",

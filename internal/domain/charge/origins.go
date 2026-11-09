@@ -492,6 +492,20 @@ func (s *Service) rewriteTx(ctx context.Context, tx bun.IDB, scope store.MarinaS
 	return s.emit(ctx, tx, scope, event.ChargeChanged, event.ChargeChangedData{ChargeID: ch.ID, Change: event.ChangeUpdated})
 }
 
+// CancelTx cancels a charge inside the caller's transaction when it is still cancellable (open, to_invoice, unpaid,
+// never matched, not offset); false when it was not, and nothing changes. The origin's cancel hook runs in the same
+// transaction (rental replaces its main charge this way, m11-plan §9.1). The caller holds the lock on the origin.
+func (s *Service) CancelTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, actor audit.Actor, ch *store.Charge, reason string) (bool, error) {
+	if ch.PaymentStatus == store.ChargeCancelled {
+		return false, nil
+	}
+	matched, err := store.HasMatches(ctx, tx, scope, ch.ID)
+	if err != nil || matched {
+		return false, err
+	}
+	return s.cancelIfPossibleTx(ctx, tx, scope, actor, ch, reason)
+}
+
 // cancelIfPossibleTx cancels a charge while it is cancellable (open, to_invoice, unpaid, not offset); false when
 // it was not.
 func (s *Service) cancelIfPossibleTx(ctx context.Context, tx bun.IDB, scope store.MarinaScope, actor audit.Actor, ch *store.Charge, reason string) (bool, error) {

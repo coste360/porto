@@ -234,5 +234,17 @@ func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) er
 	if err := a.seedYardPlannerAssignments(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: yard assignments: %w", err)
 	}
+	// M11 (m11-plan §16.2): the rental fleet, skippers, formulas, the NOL-2027 price list and extras (FLEET), then
+	// bookings in every state, one expired hold and blocks (BOOKING), then completed handovers with damages and
+	// deposits (HANDOVER). Each part is a no-op when the demo marina already has its data.
+	if err := a.seedRentalFleet(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: rental fleet: %w", err)
+	}
+	if err := a.seedRentalBookings(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: rental bookings: %w", err)
+	}
+	if err := a.seedRentalHandovers(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: rental handovers: %w", err)
+	}
 	return nil
 }

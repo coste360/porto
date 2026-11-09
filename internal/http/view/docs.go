@@ -128,7 +128,7 @@ func GeneratedDocuments(ds []docs.Document, next string) api.GeneratedDocumentPa
 func SignatureRequest(r *signature.Request) api.SignatureRequest {
 	out := api.SignatureRequest{
 		Id: r.ID, SubjectType: api.SignatureSubjectType(r.SubjectType), SubjectId: r.SubjectID, DocumentId: r.DocumentID,
-		Driver: api.SignatureDriver(r.Driver), ProviderCode: String(r.ProviderCode), OrderMode: api.SignatureOrderMode(r.OrderMode),
+		Driver: api.SignatureRequestDriver(r.Driver), ProviderCode: String(r.ProviderCode), OrderMode: api.SignatureOrderMode(r.OrderMode),
 		Status: api.SignatureRequestStatus(r.Status), ExpiresAt: r.ExpiresAt.UTC(), LastReminderAt: Time(r.LastReminderAt),
 		SignedDocumentId: String(r.SignedDocumentID), CompletedAt: Time(r.CompletedAt), CreatedAt: r.CreatedAt.UTC(),
 		Version: r.Version, Signers: make([]api.Signer, 0, len(r.Signers)),

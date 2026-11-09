@@ -197,6 +197,26 @@ const (
 	EquipmentCapacityExceeded Type = "equipment_capacity_exceeded"
 	OperatorNotEnabled        Type = "operator_not_enabled"
 	OutsideLiftWindow         Type = "outside_lift_window"
+
+	// M11 (m11-plan §13.1).
+	RentalSlotTaken       Type = "rental_slot_taken"
+	SkipperBusy           Type = "skipper_busy"
+	RentalHoldExpired     Type = "rental_hold_expired"
+	FormulaRangeMismatch  Type = "formula_range_mismatch"
+	OutsideRentalHours    Type = "outside_rental_hours"
+	UnitNotBookable       Type = "unit_not_bookable"
+	SkipperRequired       Type = "skipper_required"
+	SkipperUnavailable    Type = "skipper_unavailable"
+	SkipperLicenceExpired Type = "skipper_licence_expired"
+	LicenceRequired       Type = "licence_required"
+	LicenceExpired        Type = "licence_expired"
+	HandoverIncomplete    Type = "handover_incomplete"
+	HandoverLocked        Type = "handover_locked"
+	EngineHoursDecreasing Type = "engine_hours_decreasing"
+	PreauthUnavailable    Type = "preauth_unavailable"
+	DepositExceeds        Type = "deposit_exceeds"
+	NothingToCollect      Type = "nothing_to_collect"
+	BandGapLtBuffer       Type = "band_gap_lt_buffer"
 )
 
 type typeInfo struct {
@@ -376,6 +396,25 @@ var registry = map[Type]typeInfo{
 	EquipmentCapacityExceeded: {http.StatusUnprocessableEntity, "The vessel is heavier than the equipment capacity"},
 	OperatorNotEnabled:        {http.StatusUnprocessableEntity, "The employee is not enabled on the equipment"},
 	OutsideLiftWindow:         {http.StatusUnprocessableEntity, "The window is outside the lifting hours"},
+	// M11
+	RentalSlotTaken:       {http.StatusConflict, "The rental unit is already booked or blocked in that window"},
+	SkipperBusy:           {http.StatusConflict, "The skipper is already booked or off in that window"},
+	RentalHoldExpired:     {http.StatusConflict, "The rental option expired and its window is no longer free"},
+	FormulaRangeMismatch:  {http.StatusUnprocessableEntity, "The window does not match the rental formula"},
+	OutsideRentalHours:    {http.StatusUnprocessableEntity, "The window is outside the rental hours"},
+	UnitNotBookable:       {http.StatusUnprocessableEntity, "The rental unit is in maintenance or retired"},
+	SkipperRequired:       {http.StatusUnprocessableEntity, "The formula requires a skipper"},
+	SkipperUnavailable:    {http.StatusUnprocessableEntity, "The skipper does not work in that window"},
+	SkipperLicenceExpired: {http.StatusUnprocessableEntity, "The skipper licence expires before the end of the rental"},
+	LicenceRequired:       {http.StatusUnprocessableEntity, "The renter licence is required for this unit"},
+	LicenceExpired:        {http.StatusUnprocessableEntity, "The licence is expired"},
+	HandoverIncomplete:    {http.StatusUnprocessableEntity, "Steps of the handover are missing (missing in details)"},
+	HandoverLocked:        {http.StatusConflict, "The handover is completed and can no longer change"},
+	EngineHoursDecreasing: {http.StatusUnprocessableEntity, "The engine hours are lower than the last recorded"},
+	PreauthUnavailable:    {http.StatusUnprocessableEntity, "No enabled payment provider supports pre-authorisation"},
+	DepositExceeds:        {http.StatusUnprocessableEntity, "The retention exceeds the deposit"},
+	NothingToCollect:      {http.StatusConflict, "Nothing to collect on the rental"},
+	BandGapLtBuffer:       {http.StatusUnprocessableEntity, "Two bands are closer than the buffer between rentals"},
 }
 
 // All returns every declared type (unordered). Used by tests that check parity with the OpenAPI spec and

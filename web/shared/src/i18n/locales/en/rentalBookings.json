@@ -1,0 +1,142 @@
+{
+  "nav": {
+    "planner": "Rental planner",
+    "bookings": "Rentals"
+  },
+  "title": "Rental planner",
+  "description": "Bookings of the rental units by hours, half days and days.",
+  "pending": "This section will be available soon.",
+  "planner": {
+    "from": "From",
+    "previous": "Previous period",
+    "next": "Next period",
+    "today": "Today",
+    "view": "View",
+    "views": {
+      "hours": "Hours",
+      "half_days": "Half days",
+      "days": "Days"
+    },
+    "category": "Category",
+    "allCategories": "All categories",
+    "gridLabel": "Rental units planner",
+    "cell": "{{row}}, {{date}} {{from}}-{{to}}",
+    "legend": "Legend"
+  },
+  "dialog": {
+    "title": "New rental",
+    "description": "{{unit}}, {{range}}",
+    "formula": "Formula",
+    "quoting": "Pricing…",
+    "noFormula": "No formula has a price for this range.",
+    "suggested": "suggested"
+  },
+  "fields": {
+    "skipper": "Skipper",
+    "noSkipper": "No skipper",
+    "extras": "Extras",
+    "renterName": "Customer name",
+    "renterPhone": "Phone",
+    "renterEmail": "Email",
+    "customerSearch": "Search the registry",
+    "customer": "Registry customer",
+    "noCustomer": "None",
+    "invoice": "The customer asks for an invoice",
+    "status": "Status",
+    "number": "Number",
+    "unit": "Unit",
+    "formula": "Formula",
+    "start": "Pick-up",
+    "end": "Return",
+    "total": "Total",
+    "holdExpires": "Option valid until",
+    "licence": "Boating licence",
+    "fiscalMode": "Document",
+    "cancelReason": "Cancellation reason",
+    "item": "Item",
+    "qty": "Quantity",
+    "unitPrice": "Unit price",
+    "amount": "Amount"
+  },
+  "actions": {
+    "close": "Close",
+    "hold": "Option",
+    "confirm": "Confirm",
+    "extendHold": "Extend the option",
+    "noShow": "No-show",
+    "cancel": "Cancel the rental"
+  },
+  "conflict": {
+    "rental_slot_taken": "The unit is already taken in this range: the conflicting bookings are highlighted on the planner.",
+    "skipper_busy": "The skipper is already busy in this range."
+  },
+  "toast": {
+    "held": "Option {{number}} saved",
+    "confirmed": "Rental {{number}} confirmed",
+    "moved": "Rental {{number}} moved",
+    "confirm": "Rental confirmed",
+    "cancel": "Rental cancelled",
+    "no_show": "No-show recorded",
+    "extend_hold": "Option extended",
+    "extend": "Rental extended"
+  },
+  "status": {
+    "held": "Option",
+    "confirmed": "Confirmed",
+    "checked_out": "At sea",
+    "returned": "Returned",
+    "closed": "Closed",
+    "cancelled": "Cancelled",
+    "no_show": "No-show",
+    "maintenance": "In maintenance"
+  },
+  "kind": {
+    "hold": "Option",
+    "booked": "Booked",
+    "buffer": "Buffer between rentals",
+    "block": "Out of service"
+  },
+  "reason": {
+    "maintenance": "Maintenance",
+    "closure": "Closure",
+    "day_off": "Day off",
+    "other": "Other"
+  },
+  "category": {
+    "rib": "RIB",
+    "open": "Open boat",
+    "cabin": "Cabin cruiser",
+    "sail": "Sailboat",
+    "pedalo": "Pedalo",
+    "sup": "SUP"
+  },
+  "list": {
+    "allStatuses": "All statuses",
+    "empty": "No rentals."
+  },
+  "booking": {
+    "title": "Rental {{number}}",
+    "actions": "Actions",
+    "lines": "Price",
+    "charges": "Charges",
+    "licenceYes": "Required",
+    "licenceNo": "Not required",
+    "slotsLost": "The option expired and the range was taken by another booking."
+  },
+  "fiscal": {
+    "receipt": "Commercial document",
+    "invoice": "Invoice (at export)"
+  },
+  "lineKind": {
+    "unit": "unit",
+    "skipper": "skipper",
+    "extra": "extra"
+  },
+  "chargeKind": {
+    "main": "Rental",
+    "return": "Return",
+    "adjustment": "Adjustment",
+    "replaced": "Replaced",
+    "deposit_retention": "Retained deposit"
+  }
+}

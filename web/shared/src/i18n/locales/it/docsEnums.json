@@ -140,7 +140,8 @@
       "right": "Diritto d'uso",
       "vessel": "Imbarcazione",
       "yard_quote": "Preventivo di cantiere",
-      "yard_work_order": "Commessa di cantiere"
+      "yard_work_order": "Commessa di cantiere",
+      "rental": "Noleggio"
     },
     "holder": {
       "amount": "Importo",
@@ -402,6 +403,54 @@
       "net": "Imponibile previsto",
       "revenue": "Ricavo a consuntivo",
       "charged": "Già addebitato"
+    },
+    "rental": {
+      "at": "Momento effettivo",
+      "category": "Categoria",
+      "check_label": "Voce di controllo",
+      "check_note": "Nota del controllo",
+      "check_ok": "Esito positivo",
+      "checklist": "Controlli",
+      "damage_description": "Descrizione del danno",
+      "damage_estimate": "Preventivo del danno",
+      "damage_status": "Stato del danno",
+      "damages": "Danni",
+      "deposit": "Cauzione",
+      "deposit_mode": "Modalità della cauzione",
+      "deposit_released": "Cauzione restituita",
+      "deposit_retained": "Cauzione trattenuta",
+      "end": "Fine",
+      "engine_hours": "Ore motore",
+      "formula": "Formula",
+      "fuel": "Carburante addebitato",
+      "fuel_eighths": "Carburante (ottavi)",
+      "fuel_metered": "Carburante a consumo",
+      "grace_minutes": "Minuti di tolleranza",
+      "handover": "Verbale",
+      "handover_notes": "Note del verbale",
+      "kind": "Tipo di formula",
+      "late_fee": "Supplemento ritardo",
+      "late_minutes": "Minuti di ritardo",
+      "late_step_minutes": "Blocco del ritardo (minuti)",
+      "licence_required": "Patente richiesta",
+      "line_amount": "Importo",
+      "line_description": "Descrizione",
+      "line_qty": "Quantità",
+      "line_seq": "Riga",
+      "lines": "Righe di prezzo",
+      "notes": "Note",
+      "number": "Numero",
+      "operator": "Operatore",
+      "phase": "Fase",
+      "photos": "Foto",
+      "qr": "Codice di riconsegna",
+      "renter": "Noleggiatore",
+      "return_total": "Addebito al rientro",
+      "seats": "Posti",
+      "skipper": "Skipper",
+      "start": "Inizio",
+      "total": "Totale",
+      "unit_code": "Unità"
     }
   },
   "templateKind": {
@@ -610,7 +659,8 @@
   "signatureDriver": {
     "paper": "Firma su carta",
     "otp": "Firma elettronica semplice (codice)",
-    "provider": "Fornitore esterno"
+    "provider": "Fornitore esterno",
+    "screen": "Firma su schermo"
   },
   "signatureStatus": {
     "pending_document": "Documento in preparazione",
