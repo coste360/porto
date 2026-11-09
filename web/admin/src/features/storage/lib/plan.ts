@@ -136,3 +136,35 @@ export function positionText(
   const m = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   return `x ${m.format(p.x_cm / 100)} m · y ${m.format(p.y_cm / 100)} m · ${(p.rotation_dd ?? 0) / 10}°`;
 }
+
+/** The tick dates of the axis: every first of the month on long windows, every 7 days on short ones. */
+export function timelineTicks(from: string, to: string): string[] {
+  const days = daysBetween(from, to);
+  const out: string[] = [];
+  if (days > 62) {
+    for (let d = from; daysBetween(d, to) >= 0; d = addDays(d, 1))
+      if (d.endsWith('-01')) out.push(d);
+    return out;
+  }
+  for (let d = from; daysBetween(d, to) >= 0; d = addDays(d, 7)) out.push(d);
+  return out;
+}
+
+/** Width of one character of a boat name in em (average of mixed-case names). */
+const NAME_EM = 0.56;
+
+/**
+ * Name of a boat drawn inside its box: along the longer side (turned on boats standing vertically), at most the
+ * characters that fit, with an ellipsis when cut (the full name is in the box tooltip and its accessible name).
+ */
+export function fitBoatName(
+  text: string,
+  w: number,
+  h: number,
+  font: number,
+): { text: string; vertical: boolean } {
+  const vertical = h > w * 1.2;
+  const room = (vertical ? h : w) * 0.9;
+  const max = Math.max(1, Math.floor(room / (font * NAME_EM)));
+  return { text: text.length > max ? `${text.slice(0, Math.max(1, max - 1))}…` : text, vertical };
+}

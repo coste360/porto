@@ -22,5 +22,6 @@ export const presenceLens: Lens = (el, ctx): LensStyle => {
     }
     return { colorToken: 'out', glyph: 'arrowOut', legendKey: 'out' };
   }
-  return { colorToken: 'muted', legendKey: 'none' };
+  // A vessel on the berth whose presence was never recorded.
+  return { colorToken: 'muted', legendKey: 'unrecorded' };
 };

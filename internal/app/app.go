@@ -136,6 +136,11 @@ type App struct {
 	Log     *slog.Logger
 	Clock   clock.Clock
 
+	// ext and opts are what the app was built with: the demo seed builds a second app on the same database with a
+	// clock in the past (seed_history.go).
+	ext  ext.Extensions
+	opts Options
+
 	Auth       *auth.Service
 	Team       *team.Service
 	Marinas    *marina.Service
@@ -224,7 +229,7 @@ func NewWithOptions(ctx context.Context, cfg *config.Config, version string, x e
 	if clk == nil {
 		clk = clock.System{}
 	}
-	a := &App{Config: cfg, Version: version, Log: log, Clock: clk, DB: o.DB, Desktop: o.Desktop, restart: make(chan struct{})}
+	a := &App{Config: cfg, Version: version, Log: log, Clock: clk, DB: o.DB, Desktop: o.Desktop, restart: make(chan struct{}), ext: x, opts: o}
 	if a.DB == nil {
 		db, err := store.Open(ctx, store.Options{PostgresURL: cfg.DatabaseURL, SQLitePath: sqlitePath(cfg)})
 		if err != nil {

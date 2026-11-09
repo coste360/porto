@@ -69,9 +69,16 @@ func seedM8Rows(t *testing.T, db *store.DB, marinaID, userID string) {
 	if err := db.NewSelect().Model(&doc).Where("marina_id = ?", marinaID).OrderExpr("id").Limit(1).Scan(ctx); err != nil {
 		t.Fatalf("document: %v", err)
 	}
+	ob := rows[2].(*store.OnlineBooking)
 	rows = append(rows, &store.OnlineBookingDocument{
-		ID: store.NewID(), MarinaID: marinaID, OnlineBookingID: rows[2].(*store.OnlineBooking).ID, DocumentID: doc.ID, CreatedAt: now,
+		ID: store.NewID(), MarinaID: marinaID, OnlineBookingID: ob.ID, DocumentID: doc.ID, CreatedAt: now,
 	})
+	// The demo seed enables online booking (settings and published texts): those rows are already there.
+	if n, err := db.NewSelect().Model((*store.OnlineBookingSettings)(nil)).Where("marina_id = ?", marinaID).Count(ctx); err != nil {
+		t.Fatal(err)
+	} else if n > 0 {
+		rows = rows[2:]
+	}
 	for _, row := range rows {
 		if _, err := db.NewInsert().Model(row).Exec(ctx); err != nil {
 			t.Fatalf("insert %T: %v", row, err)

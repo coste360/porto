@@ -31,6 +31,8 @@ export const MAP_TOKENS = {
   labelMuted: 'fill-muted-foreground',
   /** Structure names: drawn over berths, with a halo in the background colour (paint-order stroke). */
   structureLabel: 'fill-foreground stroke-background font-semibold',
+  /** Background of a structure name drawn over a line (structureLabelFit). */
+  structureLabelPill: 'fill-background/90 stroke-border',
   scaleBar: 'fill-foreground stroke-foreground',
   measure: 'stroke-chart-4 fill-chart-4',
   guide: 'stroke-chart-4',

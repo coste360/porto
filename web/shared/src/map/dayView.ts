@@ -208,10 +208,16 @@ export function schemaMinTileCm(pxPerCm: number, minPx = 11): number {
 
 /**
  * Schema-mode layout (spec 9.1): berths of each structure side keep their order but every tile is at least
- * minTileCm wide, so a pier gets longer than in scale. Returns the tile rect of each berth id; buoys and berths
- * without structure keep their geometry. Pure.
+ * minTileCm wide, so a pier gets longer than in scale. When the structures are given, a side never grows past the
+ * far end of its structure (a pier full of berths, or the berths across a pier head, keep their scale instead of
+ * running over the head, the next pier or the map edge); the tiles then share the available length. Returns the
+ * tile rect of each berth id; buoys and berths without structure keep their geometry. Pure.
  */
-export function schemaTiles(berths: readonly Berth[], minTileCm: number): Map<string, RectGeom> {
+export function schemaTiles(
+  berths: readonly Berth[],
+  minTileCm: number,
+  structures?: ReadonlyMap<string, Pick<Structure, 'points'>>,
+): Map<string, RectGeom> {
   const out = new Map<string, RectGeom>();
   const groups = new Map<string, Berth[]>();
   for (const b of berths) {
@@ -239,8 +245,9 @@ export function schemaTiles(berths: readonly Berth[], minTileCm: number): Map<st
     const dot = (last.anchor.x - first.anchor.x) * n.x + (last.anchor.y - first.anchor.y) * n.y;
     const sign = dot < 0 ? -1 : 1;
     let offset = -first.width_cm / 2;
+    const tile = Math.min(minTileCm, runCapCm(list, n, sign, structures?.get(first.structure_id!)));
     for (const b of list) {
-      const w = Math.max(b.width_cm, minTileCm);
+      const w = Math.max(b.width_cm, tile);
       const centre = offset + w / 2;
       out.set(b.id ?? b.key ?? '', {
         anchor: {
@@ -255,6 +262,30 @@ export function schemaTiles(berths: readonly Berth[], minTileCm: number): Map<st
     }
   }
   return out;
+}
+
+/**
+ * Largest tile width a structure side may use: the length from the start of its first berth to the farthest point
+ * of the structure along the run, shared by the berths (Infinity without the structure). Never below the widest
+ * berth, so a full side keeps its scale.
+ */
+function runCapCm(
+  list: readonly Berth[],
+  n: Pt,
+  sign: number,
+  structure: Pick<Structure, 'points'> | undefined,
+): number {
+  const points = structure?.points ?? [];
+  if (points.length === 0) return Infinity;
+  const first = list[0]!;
+  const ax = n.x * sign;
+  const ay = n.y * sign;
+  const startX = first.anchor.x - (ax * first.width_cm) / 2;
+  const startY = first.anchor.y - (ay * first.width_cm) / 2;
+  let available = 0;
+  for (const p of points)
+    available = Math.max(available, (p.x - startX) * ax + (p.y - startY) * ay);
+  return available / list.length;
 }
 
 /** The scene with berths replaced by their schema tiles (bounds recomputed by the caller's buildScene). */

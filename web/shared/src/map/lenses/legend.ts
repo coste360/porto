@@ -60,7 +60,7 @@ export const LENS_LEGEND: Readonly<Record<LensId, readonly LegendKey[]>> = {
     'other',
     'none',
   ],
-  presence: ['in', 'out', 'awayLong', 'arrival', 'departure', 'free', 'none'],
+  presence: ['in', 'out', 'awayLong', 'arrival', 'departure', 'free', 'unrecorded'],
   deadlines: ['ok', 'warn', 'bad', 'none'],
   fitness: ['ok', 'warn', 'bad', 'override', 'none'],
   utilities: ['power', 'water', 'none'],

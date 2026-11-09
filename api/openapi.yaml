@@ -29583,7 +29583,7 @@ components:
                  cancellation_tiers, approval_always, required_fields, texts, theme, show_feet]
       properties:
         enabled: { type: boolean, description: "marinas.booking_enabled; when false every other field is a default" }
-        payable: { type: boolean, description: "An online provider with checkout is enabled and the terms and privacy texts are published (without them details are refused with booking_rules consents texts_unpublished)" }
+        payable: { type: boolean, description: "An online provider with checkout is enabled (or allow_without_provider is set: bookings then go to approval) and the terms and privacy texts are published (without them details are refused with booking_rules consents texts_unpublished)" }
         currency: { type: string, minLength: 3, maxLength: 3 }
         rules: { $ref: "#/components/schemas/BookingRules" }
         categories:

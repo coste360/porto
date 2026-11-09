@@ -298,7 +298,7 @@ describe('map contexts', () => {
     expect(movementStyle({ ...base, vessel: v, departure_today: true }).legendKey).toBe(
       'departure',
     );
-    expect(movementStyle({ ...base, vessel: v }).legendKey).toBe('none');
+    expect(movementStyle({ ...base, vessel: v }).legendKey).toBe('noMovement');
   });
 
   it('counts the legend of the presence context', () => {

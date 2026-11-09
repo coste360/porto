@@ -12,7 +12,7 @@ codice e verificati nel servizio di dominio, come in Arenile (spec Arenile 16).
 | Clienti e barche | ✔ | ✔ | ✔ | lettura | lettura | lettura | | lettura | |
 | Preventivi, contratti, transiti, rinnovi | ✔ | ✔ | ✔ | | transiti al banco | | | | |
 | Spostamenti, rilasci, blocchi | ✔ | ✔ | ✔ | | ✔ | | | | |
-| Arrivi, partenze, presenze, letture | ✔ | ✔ | ✔ | | ✔ | | | | |
+| Arrivi, partenze, presenze, letture | ✔ | ✔ | ✔ | | ✔ | ✔ (alaggio e varo) | | | |
 | Deroga di compatibilità (`occupancy.override_fit`) | ✔ | ✔ | | | | | | | |
 | Diritti d'uso, cessioni, oneri, condominio | ✔ | ✔ | ✔ | ✔ | | | | | |
 | Addebiti, scadenzario, solleciti | ✔ | ✔ | ✔ | ✔ | | | | | |
@@ -24,7 +24,7 @@ codice e verificati nel servizio di dominio, come in Arenile (spec Arenile 16).
 | Cantiere: ore lavorate e attività proprie | ✔ | ✔ | | | | ✔ | ✔ | | |
 | Noleggio | ✔ | ✔ | ✔ | | | | | ✔ | |
 | Manutenzioni | ✔ | ✔ | ✔ | | ✔ | ✔ | segnalazione | segnalazione | |
-| Report ed esportazioni | ✔ | ✔ | operativi | ✔ | | cantiere | | noleggio | ✔ |
+| Report ed esportazioni | ✔ | ✔ | operativi | ✔ | | operativi e cantiere | | noleggio | ✔ |
 | Vista mappa | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 `dock` = ormeggiatore, `yard_mgr` = capo cantiere, `yard` = operaio, `rental` = addetto al noleggio. Ruoli

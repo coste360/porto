@@ -17,12 +17,12 @@ import { lodFor, structureLabelFontCm, type Lod } from './elements/common';
 import { DecorationElement } from './elements/Decoration';
 import { DynamicAreaElement } from './elements/DynamicArea';
 import { GlyphDefs } from './elements/Glyphs';
-import { LensFill, lensLod } from './elements/LensFill';
+import { LensFill, LensGlyph, lensGlyphShown, lensGlyphSize, lensLod } from './elements/LensFill';
 import { Vessel } from './elements/Vessel';
 import { Grid, NorthArrow, ScaleBar } from './elements/Overlays';
 import { PedestalElement } from './elements/Pedestal';
 import { ConcessionOutline, WaterLand } from './elements/Polygons';
-import { StructureElement, structureNominalFontCm } from './elements/Structure';
+import { StructureElement, StructureLabel, structureNominalFontCm } from './elements/Structure';
 import type { VesselItem } from './dayView';
 import { boxesIntersect, expandBox, type Box } from './geometry';
 import type { GlyphId, LensStyle } from './lenses/types';
@@ -234,6 +234,35 @@ export function HarborMap({
       ? vessels.filter((v) => boxesIntersect(vesselBox(v), cullBox) && v.beam * s >= VESSEL_MIN_PX)
       : [];
 
+  // With silhouettes drawn, the lens glyphs go above them (glyph layer) so a boat never hides them.
+  const glyphsOnTop = visibleVessels.length > 0;
+  const glyphItems =
+    glyphsOnTop && lensStyles
+      ? visible.filter((item) => {
+          if ((item.kind !== 'berth' && item.kind !== 'land') || !layers[LAYER_OF_KIND[item.kind]])
+            return false;
+          if (item.kind === 'berth' && isBuoy(item.el)) return false;
+          const st = lensStyles.get(item.ref);
+          if (!st) return false;
+          const size = Math.min(item.el.width_cm, item.el.length_cm);
+          return lensGlyphShown(
+            st,
+            lensLod(size, s),
+            dimmed?.has(item.ref) ?? false,
+            mode === 'schema',
+          );
+        })
+      : [];
+
+  // Stern length of each boat under its berth glyph (vessel-local x from 0, see berthVesselPose): the name avoids it.
+  const glyphReserve = new Map<string, number>();
+  const vesselOf = new Map(visibleVessels.map((v) => [v.ref, v]));
+  for (const item of glyphItems) {
+    if (item.kind !== 'berth') continue;
+    const v = vesselOf.get(item.ref);
+    if (v) glyphReserve.set(item.ref, v.loa - item.el.length_cm + lensGlyphSize(item.el) * 1.35);
+  }
+
   const render = (item: SceneItem, state: ElementState, isInteractive: boolean) => {
     if (!layers[LAYER_OF_KIND[item.kind]]) return null;
     const lod = itemLod(item, s, layers.labels);
@@ -241,16 +270,7 @@ export function HarborMap({
     const common = { refId: item.ref, state, lod, interactive: isInteractive, label };
     switch (item.kind) {
       case 'structure':
-        return (
-          <StructureElement
-            key={item.ref}
-            {...common}
-            el={item.el}
-            labelFontCm={
-              layers.labels ? structureLabelFontCm(structureNominalFontCm(item.el), s) : undefined
-            }
-          />
-        );
+        return <StructureElement key={item.ref} {...common} el={item.el} />;
       case 'berth':
       case 'land': {
         const lens = lensStyles?.get(item.ref);
@@ -275,6 +295,7 @@ export function HarborMap({
               selected={state === 'selected'}
               highlighted={highlight?.has(item.ref) ?? false}
               schema={mode === 'schema'}
+              glyphOnTop={glyphsOnTop}
               secondary={tileLabels?.get(item.ref)}
               glyphPrefix={uid}
               interactive={isInteractive}
@@ -394,8 +415,36 @@ export function HarborMap({
               showName={v.beam * s >= 14}
               pxPerCm={s}
               label={v.interactive && vesselLabel ? vesselLabel(v) : ''}
+              reserveCm={glyphReserve.get(v.ref) ?? 0}
             />
           ))}
+        </g>
+      ) : null}
+      {glyphItems.length > 0 ? (
+        <g data-layer="glyphs">
+          {glyphItems.map((item) =>
+            item.kind === 'berth' || item.kind === 'land' ? (
+              <LensGlyph
+                key={item.ref}
+                geom={item.el}
+                lensStyle={lensStyles!.get(item.ref)!}
+                glyphPrefix={uid}
+              />
+            ) : null,
+          )}
+        </g>
+      ) : null}
+      {layers.labels ? (
+        <g data-layer="labels">
+          {visible.map((item) =>
+            item.kind === 'structure' && layers[LAYER_OF_KIND.structure] ? (
+              <StructureLabel
+                key={item.ref}
+                el={item.el}
+                fontCm={structureLabelFontCm(structureNominalFontCm(item.el), s)}
+              />
+            ) : null,
+          )}
         </g>
       ) : null}
       {preview && preview.length > 0 ? (

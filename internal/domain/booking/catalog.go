@@ -143,6 +143,9 @@ func (s *Service) Config(ctx context.Context, slug string) (*Config, error) {
 		_, perr := s.d.Collect.OnlineCheckoutProvider(ctx, db, mc.scope)
 		out.Payable = perr == nil
 	}
+	// Without a checkout provider, allow_without_provider still takes bookings: /pay moves them to approval
+	// (bank transfer and manual driver, m8-plan §5.6, D7), so the page must let the customer go on.
+	out.Payable = out.Payable || mc.set.AllowWithoutProvider
 	cat, err := s.loadCatalogue(ctx, db, mc.scope)
 	if err != nil {
 		return nil, err

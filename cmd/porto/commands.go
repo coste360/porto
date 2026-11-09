@@ -312,6 +312,12 @@ func cmdSeedDemo(ctx context.Context, args []string, e env) error {
 	fmt.Fprintf(e.stdout, "harbour and registry: %s\n", m1)
 	fmt.Fprintf(e.stdout, "contracts, rights and documents (M4): %s\n", m4)
 	fmt.Fprintf(e.stdout, "charges, payments and cash (M5): %s\n", m5)
+	if res.HistoryContracts+res.HistoryTransits > 0 {
+		fmt.Fprintf(e.stdout, "previous year: contracts %d, transits %d, payments %d\n", res.HistoryContracts, res.HistoryTransits, res.HistoryPayments)
+	}
+	if res.OnlineSellable > 0 {
+		fmt.Fprintf(e.stdout, "online booking (M8): %d resources sold online, public page /b/%s\n", res.OnlineSellable, app.DemoMarinaSlug)
+	}
 	if pw == "" {
 		// Shown once: it is not stored anywhere in clear.
 		fmt.Fprintf(e.stdout, "generated password (shown once): %s\n", res.Password)

@@ -108,4 +108,47 @@ describe('schema tiles', () => {
     const scale = schemaTiles(bs, 10);
     expect(scale.get('b2')!.anchor.y).toBeCloseTo(300);
   });
+
+  it('never grows a side past the far end of its structure', () => {
+    const bs = [0, 1, 2].map((i) =>
+      berth({
+        id: `p${i}`,
+        key: undefined,
+        structure_id: 's',
+        position: i,
+        anchor: { x: 0, y: 150 + i * 300 },
+        width_cm: 300,
+      }),
+    );
+    const min = schemaMinTileCm(0.02);
+    // The pier runs to y = 1200: three tiles share the 1200 cm from the first berth start (400 each).
+    const pier = new Map([
+      [
+        's',
+        {
+          points: [
+            { x: 0, y: 0 },
+            { x: 0, y: 1200 },
+          ],
+        },
+      ],
+    ]);
+    const tiles = schemaTiles(bs, min, pier);
+    expect(tiles.get('p0')!.width_cm).toBeCloseTo(400);
+    const last = tiles.get('p2')!;
+    expect(last.anchor.y + last.width_cm / 2).toBeLessThanOrEqual(1200 + 1e-6);
+    // A pier already full of berths keeps its scale.
+    const full = new Map([
+      [
+        's',
+        {
+          points: [
+            { x: 0, y: 0 },
+            { x: 0, y: 900 },
+          ],
+        },
+      ],
+    ]);
+    expect(schemaTiles(bs, min, full).get('p1')!.anchor.y).toBeCloseTo(450);
+  });
 });

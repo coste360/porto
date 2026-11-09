@@ -60,7 +60,7 @@ export function opsScene(
 ): SceneItem[] {
   const entries = entriesOf(doc);
   if (mode === 'scale') return buildScene(entries);
-  const tiles = schemaTiles(doc.berths, minTileCm);
+  const tiles = schemaTiles(doc.berths, minTileCm, structuresById(doc));
   const swapped: SceneEntry[] = entries.map((e) => {
     if (e.kind !== 'berth') return e;
     const t = tiles.get(e.el.id ?? e.el.key ?? '');

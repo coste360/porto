@@ -59,6 +59,8 @@ export type LegendKey =
   | 'power'
   | 'water'
   | 'none'
+  | 'unrecorded'
+  | 'noMovement'
   | 'anomaly'
   | 'monohull_motor'
   | 'monohull_sail'

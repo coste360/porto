@@ -35,6 +35,8 @@ export type LensFillProps = {
   highlighted: boolean;
   /** Schema tile: code (and vessel name) centred, always filled. */
   schema: boolean;
+  /** The glyph is drawn by LensGlyph above the vessels (HarborMap), not here. */
+  glyphOnTop?: boolean;
   secondary?: string;
   glyphPrefix: string;
   interactive: boolean;
@@ -55,6 +57,7 @@ export const LensFill = memo(function LensFill({
   selected,
   highlighted,
   schema,
+  glyphOnTop = false,
   secondary,
   glyphPrefix,
   interactive,
@@ -70,7 +73,8 @@ export const LensFill = memo(function LensFill({
         : 'stroke-background';
   const strokeW = selected || highlighted ? 3 : 1;
   const state = selected ? 'selected' : 'normal';
-  const textCls = dimmed ? 'fill-muted-foreground' : 'fill-foreground';
+  // Codes and glyphs contrast with the fill they sit on (theme tokens, both themes).
+  const textCls = dimmed ? 'fill-muted-foreground' : cls.onFill;
   if (buoyRadiusCm !== undefined) {
     const r = buoyRadiusCm;
     return (
@@ -103,8 +107,8 @@ export const LensFill = memo(function LensFill({
   const l = geom.length_cm;
   const deg = geom.rotation_dd / 10;
   const font = Math.min(w * 0.42, l * 0.3);
-  const glyphSize = Math.min(w * 0.55, l * 0.3);
-  const showGlyph = !dimmed && lod === 'full' && !!style.glyph && !schema;
+  const glyphSize = lensGlyphSize(geom);
+  const showGlyph = !glyphOnTop && lensGlyphShown(style, lod, dimmed, schema);
   const showCode = (schema || lod === 'full') && font * pxPerCm >= LENS_TEXT_MIN_PX;
   const showBadge =
     !dimmed && lod === 'full' && !!style.badge && font * 0.7 * pxPerCm >= LENS_TEXT_MIN_PX;
@@ -129,15 +133,7 @@ export const LensFill = memo(function LensFill({
         data-lens={style.legendKey}
       />
       {showGlyph ? (
-        <use
-          href={`#${glyphSymbolId(glyphPrefix, style.glyph!)}`}
-          x={l - glyphSize * 1.1}
-          y={-glyphSize / 2}
-          width={glyphSize}
-          height={glyphSize}
-          className="fill-background"
-          transform={`rotate(${upright} ${l - glyphSize * 0.6} 0)`}
-        />
+        <GlyphUse geom={geom} glyph={style.glyph!} prefix={glyphPrefix} cls={cls.onFill} />
       ) : null}
       {showCode ? (
         <text
@@ -180,5 +176,79 @@ export const LensFill = memo(function LensFill({
         </text>
       ) : null}
     </ElementShell>
+  );
+});
+
+/** Size (cm) of the lens glyph of a rect: inside the berth whatever its proportions. */
+export function lensGlyphSize(geom: Pick<RectGeom, 'width_cm' | 'length_cm'>): number {
+  return Math.min(geom.width_cm * 0.55, geom.length_cm * 0.3);
+}
+
+/** Whether a lens glyph is drawn for a rect (full level of detail, not dimmed, scale mode). */
+export function lensGlyphShown(
+  style: LensStyle,
+  lod: LensLod,
+  dimmed: boolean,
+  schema: boolean,
+): boolean {
+  return !dimmed && lod === 'full' && !!style.glyph && !schema;
+}
+
+/** The glyph near the outer end of the rect, inside it with a margin, upright (berth-local coordinates). */
+function GlyphUse({
+  geom,
+  glyph,
+  prefix,
+  cls,
+}: {
+  geom: RectGeom;
+  glyph: NonNullable<LensStyle['glyph']>;
+  prefix: string;
+  cls: string;
+}) {
+  const l = geom.length_cm;
+  const g = lensGlyphSize(geom);
+  const cx = l - g * 0.75;
+  return (
+    <use
+      href={`#${glyphSymbolId(prefix, glyph)}`}
+      x={cx - g / 2}
+      y={-g / 2}
+      width={g}
+      height={g}
+      className={cls}
+      transform={`rotate(${uprightRotation(geom.rotation_dd)} ${cx} 0)`}
+    />
+  );
+}
+
+/**
+ * The lens glyph of a berth drawn above the vessel silhouettes (HarborMap glyph layer), so a boat filling its
+ * berth never hides the star or the arrow. Not interactive: the berth below takes the pointer.
+ */
+export const LensGlyph = memo(function LensGlyph({
+  geom,
+  lensStyle,
+  glyphPrefix,
+}: {
+  geom: RectGeom;
+  lensStyle: LensStyle;
+  glyphPrefix: string;
+}) {
+  if (!lensStyle.glyph) return null;
+  return (
+    <g
+      transform={`translate(${geom.anchor.x} ${geom.anchor.y}) rotate(${geom.rotation_dd / 10})`}
+      className="pointer-events-none"
+      aria-hidden
+      data-glyph={lensStyle.glyph}
+    >
+      <GlyphUse
+        geom={geom}
+        glyph={lensStyle.glyph}
+        prefix={glyphPrefix}
+        cls={TOKEN_CLASSES[lensStyle.colorToken].onFill}
+      />
+    </g>
   );
 });

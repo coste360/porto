@@ -284,6 +284,10 @@ func TestApproval_ApprovedNotTimedOut(t *testing.T) {
 			s.AllowWithoutProvider = true
 			s.Approval = store.JSON(`{"always":false,"hold_hours":2,"group_ids":[]}`)
 		})
+		// allow_without_provider takes bookings without a checkout provider: the page is payable (D7).
+		if cfg := w.pub.expect(t, 200, "GET", w.P+"/booking/config", nil); cfg["payable"] != true {
+			t.Fatalf("not payable with allow_without_provider: %v", cfg["payable"])
+		}
 		b := w.mustCreate(t, "k-apdl-0001")
 		w.details(t, b, "apdl@example.test")
 		if paid := w.pay(t, b); str(paid, "status") != "awaiting_approval" {

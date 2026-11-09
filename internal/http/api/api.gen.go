@@ -12673,7 +12673,7 @@ type BookingConfig struct {
 	// Enabled marinas.booking_enabled; when false every other field is a default
 	Enabled bool `json:"enabled"`
 
-	// Payable An online provider with checkout is enabled and the terms and privacy texts are published (without them details are refused with booking_rules consents texts_unpublished)
+	// Payable An online provider with checkout is enabled (or allow_without_provider is set: bookings then go to approval) and the terms and privacy texts are published (without them details are refused with booking_rules consents texts_unpublished)
 	Payable        bool                   `json:"payable"`
 	PaymentMode    OnlinePaymentMode      `json:"payment_mode"`
 	RequiredFields BookingRequiredFields  `json:"required_fields"`

@@ -127,13 +127,13 @@ export function DayMap({
           if ((MAP_CONTEXTS as readonly string[]).includes(v)) setCtx(v as MapContext);
         }}
         aria-label={t('phone:dock.map.context')}
-        className="flex w-full flex-wrap"
+        className="flex w-full"
       >
         {MAP_CONTEXTS.map((c) => (
           <ToggleGroupItem
             key={c}
             value={c}
-            className="min-h-11 flex-1"
+            className="h-auto min-h-11 flex-1 px-1 text-xs leading-tight whitespace-normal"
             data-testid={`phone-map-context-${c}`}
           >
             {t(`phone:dock.map.contexts.${c}`)}

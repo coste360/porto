@@ -154,7 +154,8 @@
   },
   "dashboard": {
     "title": "Overview",
-    "description": "From here you manage the team, integrations and marina settings."
+    "description": "How the marina is doing in the period compared with the previous year, with today's deadlines and activities.",
+    "descriptionNoReports": "Today's deadlines and activities at the marina."
   },
   "picker": {
     "title": "Choose a marina",

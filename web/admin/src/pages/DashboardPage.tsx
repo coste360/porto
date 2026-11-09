@@ -9,6 +9,7 @@ import { PageHeader } from '@porto/shared/ui/patterns';
 
 import { useCurrentMarina } from '../auth/hooks';
 import { ManagerDashboard } from '../features/dashboard/ManagerDashboard';
+import { useCanSeeDashboard } from '../features/dashboard/lib/access';
 import { LocalModeCard } from '../features/desktop/LocalModeCard';
 import { DeadlinesCard } from '../features/registry/deadlines/DeadlinesCard';
 import { preferFullVersion } from '../features/phone/lib/fullVersion';
@@ -18,6 +19,7 @@ export function DashboardPage() {
   const { t } = useT();
   const { marina, marinaId, can } = useCurrentMarina();
   const isMobile = useIsMobile();
+  const canSeeTiles = useCanSeeDashboard();
   // On a phone (< 768 px) each role lands on its phone screen (m6b-plan §6.1, landingFor), unless the user chose
   // "Versione completa" in this browser session.
   const landing = landingFor(marina?.permissions ?? [], 'mobile', marinaId);
@@ -36,7 +38,9 @@ export function DashboardPage() {
     <>
       <PageHeader
         title={marina?.name ?? t('common:dashboard.title')}
-        description={t('common:dashboard.description')}
+        description={t(
+          canSeeTiles ? 'common:dashboard.description' : 'common:dashboard.descriptionNoReports',
+        )}
       />
       <div className="flex flex-col gap-6">
         <ManagerDashboard />

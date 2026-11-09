@@ -144,10 +144,12 @@ var rolePermissions = map[Role][]Permission{
 		PermPresenceWrite, PermPaymentsCollectCash, PermStorageRead, PermMaintenanceManage, PermMaintenanceReport,
 		PermMapView, PermPricingRead, PermContractsRead,
 	},
+	// yard_mgr records haul-out and launch (presence.write) and reads the operational reports (storage,
+	// maintenance and utilities without money, M9) besides the yard report (product decision after M10).
 	RoleYardMgr: {
-		PermMarinaRead, PermDevicesPairSelf, PermCustomersRead, PermStorageManage, PermStorageRead,
-		PermYardManage, PermYardRead, PermYardTimesheets, PermMaintenanceManage, PermMaintenanceReport,
-		PermReportsYard, PermMapView, PermPricingRead,
+		PermMarinaRead, PermDevicesPairSelf, PermCustomersRead, PermPresenceWrite, PermStorageManage,
+		PermStorageRead, PermYardManage, PermYardRead, PermYardTimesheets, PermMaintenanceManage,
+		PermMaintenanceReport, PermReportsOperational, PermReportsYard, PermMapView, PermPricingRead,
 	},
 	RoleYard: {
 		PermMarinaRead, PermDevicesPairSelf, PermYardTimesheets, PermMaintenanceReport, PermMapView,

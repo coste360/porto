@@ -113,5 +113,13 @@ describe('ManagerDashboard', () => {
     expect(await screen.findByRole('heading', { name: 'Marina Prova' })).toBeInTheDocument();
     expect(screen.queryByTestId('manager-dashboard')).not.toBeInTheDocument();
     expect(calls.some((c) => c.url.pathname.endsWith('/dashboard'))).toBe(false);
+    expect(screen.getByText('Scadenze e attività del giorno del porto.')).toBeInTheDocument();
+  });
+
+  it('describes the manager dashboard, not the team settings, in the subtitle', async () => {
+    renderApp(`/m/${MARINA_ID}`, routes(['marina.read', 'reports.operational']));
+    expect(await screen.findByRole('heading', { name: 'Marina Prova' })).toBeInTheDocument();
+    expect(screen.getByText(/confrontato con l'anno precedente/)).toBeInTheDocument();
+    expect(screen.queryByText(/gestisci il team/)).not.toBeInTheDocument();
   });
 });

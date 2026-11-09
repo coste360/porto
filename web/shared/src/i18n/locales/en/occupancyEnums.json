@@ -210,6 +210,8 @@
       "power": "With pedestal",
       "water": "With water",
       "none": "None",
+      "unrecorded": "Presence not recorded",
+      "noMovement": "No movement today",
       "anomaly": "With anomalies",
       "monohull_motor": "Motor",
       "monohull_sail": "Sail",

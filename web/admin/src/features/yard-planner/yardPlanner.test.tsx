@@ -5,9 +5,13 @@ import { describe, expect, it } from 'vitest';
 import type { Planner } from '@porto/shared/api';
 
 import { MARINA_ID, makeMe, renderApp } from '../../test/renderApp';
+import { todayIn } from '../registry/lib/today';
 import { API, baseRoutes } from '../desk/test/fixtures';
+import { addDays, periodOf } from './lib/planner';
 
 const PERMS = ['marina.read', 'yard.read', 'yard.manage', 'map.view'] as const;
+// The page opens on the week of the marina's today: the fixture follows the calendar.
+const WEEK = periodOf('week', todayIn('Europe/Rome')).from;
 
 function planner(from: string): Planner {
   const days = Array.from({ length: 7 }, (_, i) => {
@@ -60,7 +64,7 @@ const routes = (
   ...baseRoutes(makeMe({}, [...PERMS])),
   ...extra,
   { path: `${API}/yard/qualifications`, body: { items: [] } },
-  { path: `${API}/yard/planner`, body: planner('2026-11-02') },
+  { path: `${API}/yard/planner`, body: planner(WEEK) },
 ];
 
 describe('yard planner page', () => {
@@ -96,7 +100,7 @@ describe('yard planner page', () => {
         {
           task_id: 't1',
           employee_id: 'e1',
-          work_date: '2026-11-03',
+          work_date: addDays(WEEK, 1),
           hours_milli: 4000,
           task_version: 3,
         },

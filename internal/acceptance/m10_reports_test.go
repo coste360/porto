@@ -69,6 +69,18 @@ func TestAcceptance_M10_Reports(t *testing.T) {
 			}
 		}
 		mgr.expect(t, http.StatusOK, "GET", A+"/marinas/"+h.marina+"/reports/yard?view=load&group_by=bay", nil)
+		// yard_mgr also reads the operational storage and maintenance reports and their tiles, not the money ones.
+		mgr.expect(t, http.StatusOK, "GET", A+"/marinas/"+h.marina+"/reports/storage", nil)
+		mgr.expect(t, http.StatusOK, "GET", A+"/marinas/"+h.marina+"/reports/maintenance", nil)
+		mgr.expect(t, http.StatusForbidden, "GET", A+"/marinas/"+h.marina+"/reports/production", nil)
+		md := mgr.expect(t, http.StatusOK, "GET", A+"/marinas/"+h.marina+"/dashboard", nil)
+		mgrTiles := map[string]bool{}
+		for _, x := range md["tiles"].([]any) {
+			mgrTiles[str(x.(map[string]any), "key")] = true
+		}
+		if !mgrTiles["yard_hours"] {
+			t.Errorf("yard_mgr dashboard misses the yard tiles: %v", mgrTiles)
+		}
 		office := h.login(t, auth.RoleOffice)
 		office.expect(t, http.StatusForbidden, "GET", A+"/marinas/"+h.marina+"/reports/yard", nil)
 		od := office.expect(t, http.StatusOK, "GET", A+"/marinas/"+h.marina+"/dashboard", nil)

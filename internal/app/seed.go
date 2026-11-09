@@ -84,6 +84,14 @@ type SeedResult struct {
 	PaymentRequests  int
 	ReminderItems    int
 	DunningExclusion int
+
+	// M8 count (0 when online booking was already enabled): resources sold online by the demo.
+	OnlineSellable int
+
+	// Previous-year history counts (0 when the marina already had contracts before 1 January).
+	HistoryContracts int
+	HistoryTransits  int
+	HistoryPayments  int
 }
 
 // SeedDemo creates a minimal demo: organization "Porto Demo", marina "Marina Demo" (slug demo) and one user per
@@ -194,6 +202,14 @@ func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) er
 	}
 	if err := a.seedCash(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: cash: %w", err)
+	}
+	// The previous year (seed_history.go): the dashboard comparisons have a season Y−1 to compare with.
+	if err := a.seedHistory(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: history: %w", err)
+	}
+	// M8 (m8-plan §3, D7): online booking on the demo page /b/demo.
+	if err := a.seedOnlineBooking(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: online booking: %w", err)
 	}
 	// M9 (m9-plan §15.2): shed and yard storage contracts with one scenario (STORAGE), then equipment, meters,
 	// readings and maintenance plans (UTILITIES). Each part is a no-op when the demo marina already has its data.

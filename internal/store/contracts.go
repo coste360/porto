@@ -419,3 +419,31 @@ func ContractByLine(ctx context.Context, db bun.IDB, s MarinaScope, lineID strin
 	}
 	return c, nil
 }
+
+// SeedPlacement is a mooring contract of the demo with its berth (the previous-year history seed).
+type SeedPlacement struct {
+	CustomerID string `bun:"customer_id"`
+	VesselID   string `bun:"vessel_id"`
+	Term       string `bun:"term"`
+	ResourceID string `bun:"resource_id"`
+}
+
+// SeedMooringPlacements returns the mooring contracts of a marina starting on startsOn with their first berth
+// allocation, in contract number order (the demo previous-year history replays them one year earlier).
+func SeedMooringPlacements(ctx context.Context, db bun.IDB, s MarinaScope, startsOn calendar.Date) ([]SeedPlacement, error) {
+	out := []SeedPlacement{}
+	err := db.NewSelect().TableExpr("contracts AS c").
+		ColumnExpr("c.customer_id, c.vessel_id, c.term, al.resource_id").
+		Join("JOIN contract_lines AS l ON l.contract_id = c.id AND l.marina_id = c.marina_id").
+		Join("JOIN allocations AS al ON al.contract_line_id = l.id AND al.marina_id = c.marina_id").
+		Where("c.marina_id = ?", s.ID()).Where("c.kind = 'mooring'").Where("c.starts_on = ?", startsOn).
+		Where("c.customer_id IS NOT NULL").Where("al.resource_type = ?", ResourceBerth).
+		Where("al.kind = 'contract'").Where("al.first_night = c.starts_on").
+		OrderExpr("c.number, al.id").Scan(ctx, &out)
+	return out, err
+}
+
+// CountContractsBefore counts the contracts of a marina starting before day (idempotency of the history seed).
+func CountContractsBefore(ctx context.Context, db bun.IDB, s MarinaScope, day calendar.Date) (int, error) {
+	return toInt(db.NewSelect().Model((*Contract)(nil)).Where("marina_id = ?", s.ID()).Where("starts_on < ?", day).Count(ctx))
+}

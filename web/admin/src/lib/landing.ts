@@ -7,8 +7,9 @@ import type { Device, Permission } from '@porto/shared/api';
  *
  * | Permissions (first match)                         | Roles today                      | Phone landing        |
  * |---------------------------------------------------|----------------------------------|----------------------|
- * | presence.write, or map.view with transits.desk    | owner, director, office, dock    | /m/<id>/dock         |
+ * | map.view with transits.desk                       | owner, director, office, dock    | /m/<id>/dock         |
  * | yard.timesheets or yard.manage (M10)              | yard_mgr, yard                   | /m/<id>/yard-phone   |
+ * | presence.write (haul-out and launch without desk) | (none today: yard_mgr lands above) | /m/<id>/dock       |
  * | storage.manage (M9)                               | (none today)                     | /m/<id>/storage-phone |
  * | maintenance.report (M9)                           | rental                           | /m/<id>/maintenance-phone |
  * | reports.all or marina.configure                   | accounting, viewer               | /m/<id>/direction    |
@@ -29,8 +30,10 @@ export function landingFor(
   const base = `/m/${id}`;
   if (kind !== 'mobile') return base;
   const has = (p: Permission) => permissions.includes(p);
-  if (has('presence.write') || (has('map.view') && has('transits.desk'))) return `${base}/dock`;
+  if (has('map.view') && has('transits.desk')) return `${base}/dock`;
+  // yard_mgr holds presence.write (haul-out and launch) but lands on the yard screen.
   if (has('yard.timesheets') || has('yard.manage')) return `${base}/yard-phone`;
+  if (has('presence.write')) return `${base}/dock`;
   if (has('storage.manage')) return `${base}/storage-phone`;
   if (has('maintenance.report')) return `${base}/maintenance-phone`;
   if (has('reports.all') || has('marina.configure')) return `${base}/direction`;

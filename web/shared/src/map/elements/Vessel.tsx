@@ -16,6 +16,8 @@ export type VesselProps = {
   showName: boolean;
   pxPerCm: number;
   label: string;
+  /** Length (cm) kept free from the stern (local x from 0) for the berth glyph drawn above; the name avoids it. */
+  reserveCm?: number;
 };
 
 /**
@@ -30,32 +32,42 @@ export const Vessel = memo(function Vessel({
   showName,
   pxPerCm,
   label,
+  reserveCm = 0,
 }: VesselProps) {
   const d = vesselPath({ loa_cm: item.loa, beam_cm: item.beam, hull_type: item.hull });
   if (!d) return null;
-  const cls = dimmed ? TOKEN_CLASSES.muted.fill : TOKEN_CLASSES[token].fill;
+  const tc = dimmed ? TOKEN_CLASSES.muted : TOKEN_CLASSES[token];
+  const cls = tc.fill;
   const deg = item.rotationDd / 10;
-  const font = item.beam * 0.4;
+  const reserve = Math.min(Math.max(0, reserveCm), item.loa * 0.5);
+  const room = item.loa - reserve;
+  // The name fits the free length of the hull (never under the glyph of the berth).
+  const font = Math.min(item.beam * 0.4, (room * 0.9) / (Math.max(1, item.name.length) * 0.56));
+  const nameX = reserve + room / 2;
+  // The name has a halo in the hull colour (paint-order stroke) that keeps the deck lines out of the letters.
   // Keep the name readable: flip it when the bow points left.
   const flip = deg > 90 && deg < 270;
   const content = (
     <>
       <path
         d={d}
-        className={`${cls} ${selected ? 'stroke-ring' : 'stroke-foreground/70'}`}
+        className={`${cls} ${selected ? 'stroke-ring' : tc.onStroke}`}
         strokeWidth={selected ? 3 : 1}
         vectorEffect="non-scaling-stroke"
         fillRule="evenodd"
       />
       {showName && font * pxPerCm >= LENS_TEXT_MIN_PX ? (
         <text
-          x={item.loa / 2}
+          x={nameX}
           y={0}
           fontSize={font}
           textAnchor="middle"
           dominantBaseline="central"
-          transform={flip ? `rotate(180 ${item.loa / 2} 0)` : undefined}
-          className="fill-background font-semibold"
+          transform={flip ? `rotate(180 ${nameX} 0)` : undefined}
+          className={`${tc.onFill} ${tc.stroke} font-semibold`}
+          strokeWidth={font * 0.4}
+          strokeLinejoin="round"
+          paintOrder="stroke"
         >
           {item.name}
         </text>

@@ -210,6 +210,8 @@
       "power": "Con colonnina",
       "water": "Con acqua",
       "none": "Nessuna",
+      "unrecorded": "Presenza non registrata",
+      "noMovement": "Nessun movimento oggi",
       "anomaly": "Con anomalie",
       "monohull_motor": "Motore",
       "monohull_sail": "Vela",

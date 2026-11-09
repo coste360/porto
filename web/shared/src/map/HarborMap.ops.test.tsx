@@ -74,6 +74,31 @@ describe('HarborMap operational props', () => {
     expect(v.textContent).toBe('Aurora');
   });
 
+  it('draws codes, outlines and glyphs in a colour that contrasts with the fill, glyphs above the boats', () => {
+    const { container } = renderWithProviders(
+      <HarborMap
+        meta={meta}
+        scene={scene}
+        viewport={close}
+        lensStyles={styles}
+        vessels={[vessel]}
+      />,
+    );
+    // Solid annual fill: background-coloured code and boat outline; translucent fills keep the foreground.
+    const code = container.querySelector('[data-ref="b1"] text');
+    if (code) expect(code.getAttribute('class')).toContain('fill-background');
+    const hull = container.querySelector('[data-vessel="al-1"] path')!;
+    expect(hull.getAttribute('class')).toContain('stroke-background');
+    expect(hull.getAttribute('class')).not.toContain('stroke-foreground');
+    // The star of b1 is drawn once, in the glyph layer after the vessels, not inside the berth.
+    expect(container.querySelector('[data-ref="b1"] use')).toBeNull();
+    const layers = [...container.querySelectorAll('[data-layer]')].map((g) =>
+      g.getAttribute('data-layer'),
+    );
+    expect(layers.indexOf('glyphs')).toBeGreaterThan(layers.indexOf('vessels'));
+    expect(container.querySelector('[data-layer="glyphs"] [data-glyph="star"] use')).not.toBeNull();
+  });
+
   it('draws no silhouette and no glyph when berths are a few pixels wide', () => {
     const far = fitToView({ minX: 0, minY: 0, maxX: 1_000_000, maxY: 500_000 }, 800, 400);
     const { container } = renderWithProviders(

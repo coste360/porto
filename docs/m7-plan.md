@@ -645,7 +645,7 @@ horizontal page scroll.
 | D14 | `opening_balance` charges are excluded from the default origins of `charged` and charge reports (selectable). |
 | D15 | Corrispettivi totals use issued fiscal documents; voided ones are listed separately, not netted. |
 | D16 | Export cap 200 000 rows (`report_too_large`); CSV labels follow the user locale, number/date formats are always Italian. |
-| D17 | Permission split: `reports.operational` → occupancy, efficiency, waste (no money), lost demand (no value), presences (no revenue), vessels; everything with money needs `reports.all`. `reports.yard`/`reports.rental` reserved for M10/M11. |
+| D17 | Permission split: `reports.operational` → occupancy, efficiency, waste (no money), lost demand (no value), presences (no revenue), vessels; everything with money needs `reports.all`. `reports.yard`/`reports.rental` reserved for M10/M11. `reports.operational` is granted to office and, since the post-M10 decision (m10-plan D35), to yard_mgr. |
 | D18 | Dashboard default period year-to-date; previous = same dates one year back with date alignment (weekday selectable); trend from the delta sign; series day/week/month by period length. |
 | D19 | Weekday alignment shift = 7 × round(365.2425 k / 7) days (364 for one year). |
 | D20 | No new demo data: the acceptance test uses the existing seed (billing history reaches back 400 days, occupancy is mostly the current year). |

@@ -18180,7 +18180,7 @@ export interface components {
         BookingConfig: {
             /** @description marinas.booking_enabled; when false every other field is a default */
             enabled: boolean;
-            /** @description An online provider with checkout is enabled and the terms and privacy texts are published (without them details are refused with booking_rules consents texts_unpublished) */
+            /** @description An online provider with checkout is enabled (or allow_without_provider is set: bookings then go to approval) and the terms and privacy texts are published (without them details are refused with booking_rules consents texts_unpublished) */
             payable: boolean;
             currency: string;
             rules: components["schemas"]["BookingRules"];

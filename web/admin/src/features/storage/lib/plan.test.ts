@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
-import { addDays, compareRows, daysBetween, planDraftItems, presentOn, timelineRows } from './plan';
+import {
+  addDays,
+  compareRows,
+  daysBetween,
+  fitBoatName,
+  planDraftItems,
+  presentOn,
+  timelineRows,
+  timelineTicks,
+} from './plan';
 
 describe('storage plan helpers', () => {
   it('keeps boats only and reads positions', () => {
@@ -93,5 +102,31 @@ describe('storage plan helpers', () => {
   it('does date arithmetic on ISO dates', () => {
     expect(addDays('2026-02-27', 2)).toBe('2026-03-01');
     expect(daysBetween('2026-01-01', '2026-03-01')).toBe(59);
+  });
+});
+
+describe('timeline axis and boat names', () => {
+  it('ticks every 7 days on short windows and on the first of the month on long ones', () => {
+    expect(timelineTicks('2026-11-01', '2026-11-20')).toEqual([
+      '2026-11-01',
+      '2026-11-08',
+      '2026-11-15',
+    ]);
+    expect(timelineTicks('2026-10-15', '2027-01-20')).toEqual([
+      '2026-11-01',
+      '2026-12-01',
+      '2027-01-01',
+    ]);
+  });
+
+  it('turns the name of a vertical boat and cuts a long name with an ellipsis', () => {
+    expect(fitBoatName('Nausicaa VI', 300, 800, 80)).toEqual({
+      text: 'Nausicaa VI',
+      vertical: true,
+    });
+    const cut = fitBoatName('Nausicaa VI', 300, 300, 80);
+    expect(cut.vertical).toBe(false);
+    expect(cut.text.endsWith('…')).toBe(true);
+    expect(cut.text.startsWith('Na')).toBe(true);
   });
 });

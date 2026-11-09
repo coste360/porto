@@ -26,10 +26,10 @@ export function movementStyle(s: DaySubject['subject']): LensStyle {
   if (s.departure_today)
     return { colorToken: 'departure', glyph: 'arrowOut', legendKey: 'departure' };
   if (s.arrival_today) return { colorToken: 'arrival', glyph: 'arrowIn', legendKey: 'arrival' };
-  return { colorToken: 'muted', legendKey: 'none' };
+  return { colorToken: 'muted', legendKey: 'noMovement' };
 }
 
-const MOVEMENT_KEYS = ['arrival', 'departure', 'free', 'none'] as const;
+const MOVEMENT_KEYS = ['arrival', 'departure', 'free', 'noMovement'] as const;
 const PAYMENT_TOKENS: Record<string, LensStyle['colorToken']> = {
   ok: 'ok',
   due_soon: 'warn',

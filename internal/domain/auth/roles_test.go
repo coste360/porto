@@ -189,7 +189,7 @@ var reportRoutePermissions = map[string][]Permission{
 }
 
 // TestReports_RouteTableMatchesContract: every M7 operation is in the contract with known permissions, and the
-// role matrix of spec 26.1 holds (office operational only; dock, yard and rental without reports).
+// role matrix of spec 26.1 holds (office and yard_mgr operational only; dock, yard and rental without reports).
 func TestReports_RouteTableMatchesContract(t *testing.T) {
 	src := string(apispec.OpenAPI)
 	for op, perms := range reportRoutePermissions {
@@ -213,9 +213,16 @@ func TestReports_RouteTableMatchesContract(t *testing.T) {
 	if !Can(RoleOffice, PermReportsOperational) || Can(RoleOffice, PermReportsAll) {
 		t.Error("office must have reports.operational only")
 	}
-	for _, r := range []Role{RoleDock, RoleYard, RoleYardMgr, RoleRental} {
+	for _, r := range []Role{RoleDock, RoleYard, RoleRental} {
 		if Can(r, PermReportsAll) || Can(r, PermReportsOperational) {
 			t.Errorf("role %s must not see the M7 reports", r)
 		}
+	}
+	// yard_mgr reads the operational reports (storage and maintenance without money), never the money ones.
+	if !Can(RoleYardMgr, PermReportsOperational) || !Can(RoleYardMgr, PermReportsYard) || Can(RoleYardMgr, PermReportsAll) {
+		t.Error("yard_mgr must have reports.operational and reports.yard, not reports.all")
+	}
+	if !Can(RoleYardMgr, PermPresenceWrite) {
+		t.Error("yard_mgr must record haul-out and launch (presence.write)")
 	}
 }

@@ -10,6 +10,7 @@ import {
   type DraftGrid,
   type DraftItem,
 } from '../lib/draft';
+import { fitBoatName } from '../lib/plan';
 
 // Plan of a surface area at a date (spec 17.2, m9-plan §12.1): the cell grid at scale in an SVG whose units are
 // centimetres (ADR 0004), exits and fixed obstacles as cells, one rectangle per boat present that night. Boats
@@ -196,6 +197,7 @@ export function PlanGrid({
             onPointerDown={(e) => onDown(e, b)}
             onKeyDown={(e) => onKey(e, b)}
           >
+            <title>{boatLabel(b)}</title>
             {cells.map((c) => {
               const r = cellRect(c, grid);
               return (
@@ -223,17 +225,15 @@ export function PlanGrid({
               strokeWidth={isSel || b.issue || style?.outline ? grid.cellCm / 5 : grid.cellCm / 20}
               strokeDasharray={b.issue ? `${grid.cellCm / 3}` : undefined}
             />
-            <text
-              x={it.at.x + (w * grid.cellCm) / 2}
-              y={it.at.y + (h * grid.cellCm) / 2}
-              textAnchor="middle"
-              dominantBaseline="central"
-              fontSize={grid.cellCm * 0.8}
-              className="fill-foreground pointer-events-none"
-            >
-              {style?.badge ? `${style.badge} · ` : ''}
-              {b.label}
-            </text>
+            <BoatName
+              x={it.at.x}
+              y={it.at.y}
+              w={w * grid.cellCm}
+              h={h * grid.cellCm}
+              font={grid.cellCm * 0.8}
+              text={`${style?.badge ? `${style.badge} · ` : ''}${b.label}`}
+              className={TOKEN_CLASSES[token].onFill}
+            />
           </g>
         );
       })}
@@ -250,5 +250,42 @@ export function PlanGrid({
         />
       ) : null}
     </svg>
+  );
+}
+
+function BoatName({
+  x,
+  y,
+  w,
+  h,
+  font,
+  text,
+  className,
+}: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  font: number;
+  text: string;
+  className: string;
+}) {
+  const across = Math.min(w, h);
+  const size = Math.min(font, across * 0.7);
+  const fit = fitBoatName(text, w, h, size);
+  const cx = x + w / 2;
+  const cy = y + h / 2;
+  return (
+    <text
+      x={cx}
+      y={cy}
+      textAnchor="middle"
+      dominantBaseline="central"
+      fontSize={size}
+      transform={fit.vertical ? `rotate(-90 ${cx} ${cy})` : undefined}
+      className={cn(className, 'pointer-events-none')}
+    >
+      {fit.text}
+    </text>
   );
 }

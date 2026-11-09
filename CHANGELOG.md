@@ -504,6 +504,33 @@ M0 — Fondamenta (spec 32.3):
 
 ### Changed
 
+Polish after M10 (demo review):
+
+- Roles (product decision, spec 26.1, m10-plan D35): `yard_mgr` gets `reports.operational` (storage, maintenance,
+  utilities and the other operational reports and dashboard tiles, never money) and `presence.write` (haul-out and
+  launch). On a phone `yard_mgr` still lands on the yard screen.
+- Demo seed: online booking works on `/b/demo` (booking enabled, terms and privacy published, the transit berths,
+  pier C with a 25 % online quota and the alongside side of pier T sold online, `allow_without_provider` so a
+  booking goes to the desk for approval and is paid by transfer with the manual driver).
+- Demo seed: a previous year, written by a second app on the same database with its clock walking through Y−1
+  (price list LST-(Y−1), most annual and seasonal contracts replayed on the same berths, about 150 guest transits
+  with arrival and departure presences, instalments issued on their days, payments on their due dates), so the
+  "Anno precedente" of the dashboard and the comparison are no longer zero.
+- Manager dashboard subtitle describes the dashboard (it/en), with a variant for roles without reports.
+- Harbour map: codes, glyphs and boat outlines use a theme token that contrasts with the fill (background on the
+  solid lens colours, foreground on the translucent ones), in both themes; lens glyphs are drawn above the boats
+  and the boat name keeps clear of them; structure names are drawn in a top layer, on a background pill over lines,
+  shrunk or turned to stay inside closed outlines (IMBOCCATURA, DIGA).
+- Schema mode (phone dock map, operations view): a structure side never grows past the far end of its structure,
+  so piers no longer run off the map and the pier E head no longer crosses the other piers; the presence legend
+  says "Presenza non registrata" (and "Nessun movimento oggi" in arrivals and departures) instead of "Nessuna"; the
+  context switch wraps its labels on a phone.
+- Storage planner: boat names turn along vertical boats and end with an ellipsis when cut (full name in the
+  tooltip); the timeline has a date axis, names on the left, light bars on theme tokens and the date cursor.
+- The public booking configuration is `payable` also when `allow_without_provider` is set (m8-plan D7): the page
+  no longer blocks a marina that takes bookings without a checkout provider.
+- The yard planner Vitest fixture follows the week of today (it failed once the calendar left the week of
+  2 November 2026).
 - `scripts/with-postgres.sh` keeps the PostgreSQL data directory in memory (tmpfs) and removes the container with its
   volumes, so test runs no longer leave anonymous volumes behind.
 
@@ -563,16 +590,14 @@ M4 review, fix round 1:
 
 ### Known gaps
 
-- M9, open for a product decision: report access for `yard_mgr` (today refused every report, storage included) and
-  `presence.write` for `yard_mgr` to record haul-out and launch. A storage contract price preview needs an end date
-  (seasonal and annual ends are derived by the server only at creation).
+- M9: a storage contract price preview needs an end date (seasonal and annual ends are derived by the server only
+  at creation).
 
 - M6a: the window build was not opened on a real display in CI; Windows and Linux webview builds are compiled
   only by the `desktop.yml` jobs; the Linux AppImage step needs `APPIMAGETOOL_SHA256` (repository variable) or a
   local `APPIMAGETOOL`. Signing and notarisation need Coste360 certificates. M6b (PWA offline queue, per-role phone
   screens, remote mode, kiosk, local peripherals bridge) is not built.
-- M7: the demo seed has no activity in the previous year, so the previous-year tiles are zero and the
-  drill-down equality is exercised for real on the current year only; seeded inquiries all arrive in the future,
+- M7: seeded inquiries all arrive in the future,
   so lost demand is zero for periods ending today. The dashboard page offers only period, comparison and
   alignment (the API also accepts map/structure filters).
 - Demo seed: the 2 tacit-renewal contracts and the charter fleet of 8 vessels on pier E (m4-plan §10) are not

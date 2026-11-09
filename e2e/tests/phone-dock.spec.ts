@@ -96,6 +96,8 @@ test("dock phone screen: today, map, cash and more, online", async ({
   await page.getByTestId("phone-map-context-payments").click();
   await expect(canvas).toHaveAttribute("data-context", "payments");
   await page.getByTestId("phone-map-context-presence").click();
+  // The presence legend names its entries (no bare "Nessuna"): a boat without a recorded presence is labelled.
+  await expect(page.getByTestId("phone-map-legend-none")).toHaveCount(0);
   const berth = canvas.getByRole("button", {
     name: new RegExp(`^${day.berths[1]!.code},`),
   });

@@ -29,6 +29,8 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   accounting: ['reports.all', 'map.view', 'payments.collect', 'contracts.read'],
   dock: ['presence.write', 'transits.desk', 'map.view', 'payments.collect_cash', 'contracts.read'],
   yard_mgr: [
+    'presence.write',
+    'reports.operational',
     'yard.manage',
     'yard.timesheets',
     'storage.manage',

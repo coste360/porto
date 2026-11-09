@@ -846,3 +846,4 @@ bill final, book the travel lift twice on the same slot and see the 409.
 | D32 | Yard report money is visible with `reports.yard` (yard_mgr) as well as `reports.all`; tiles `yard_*` become available. |
 | D33 | Quotes need an existing customer and vessel (yard_mgr has `customers.read`, not write): office creates new customers. |
 | D34 | Events and SSE carry ids, enums, dates and order amounts only; employee and supplier names never leave the DB in events or logs. |
+| D35 | Product decision after M10 (closes the M9 open gap): `yard_mgr` also gets `reports.operational` (storage, maintenance, utilities and the other operational reports without money, with their dashboard tiles; never `reports.all`) and `presence.write` (haul-out and launch from the dock screens). Spec 26.1 and the m0-plan table updated. |

@@ -827,7 +827,7 @@ CREATE INDEX message_log_marina_created_idx ON message_log (marina_id, created_a
 | PermContractsWrite | `contracts.write` | owner, director, office |
 | PermTransitsDesk | `transits.desk` | owner, director, office, dock |
 | PermOccupancyMove | `occupancy.move` | owner, director, office, dock |
-| PermPresenceWrite | `presence.write` | owner, director, office, dock |
+| PermPresenceWrite | `presence.write` | owner, director, office, dock, yard_mgr (haul-out and launch, added after M10) |
 | PermOccupancyOverrideFit | `occupancy.override_fit` | owner, director |
 | PermRightsManage | `rights.manage` | owner, director, office, accounting |
 | PermChargesManage | `charges.manage` | owner, director, office, accounting |
@@ -844,7 +844,7 @@ CREATE INDEX message_log_marina_created_idx ON message_log (marina_id, created_a
 | PermMaintenanceManage | `maintenance.manage` | owner, director, office, dock, yard_mgr |
 | PermMaintenanceReport | `maintenance.report` | owner, director, office, dock, yard_mgr, yard, rental |
 | PermReportsAll | `reports.all` | owner, director, accounting, viewer |
-| PermReportsOperational | `reports.operational` | owner, director, accounting, viewer, office |
+| PermReportsOperational | `reports.operational` | owner, director, accounting, viewer, office, yard_mgr (added after M10) |
 | PermReportsYard | `reports.yard` | owner, director, accounting, viewer, yard_mgr |
 | PermReportsRental | `reports.rental` | owner, director, accounting, viewer, rental |
 | PermMapView | `map.view` | all |

@@ -154,7 +154,8 @@
   },
   "dashboard": {
     "title": "Panoramica",
-    "description": "Da qui gestisci il team, le integrazioni e le impostazioni del porto."
+    "description": "Andamento del porto nel periodo, confrontato con l'anno precedente, con le scadenze e le attività del giorno.",
+    "descriptionNoReports": "Scadenze e attività del giorno del porto."
   },
   "picker": {
     "title": "Scegli un porto",
