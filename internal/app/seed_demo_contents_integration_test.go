@@ -125,6 +125,14 @@ func TestSeed_DemoOperationalContents(t *testing.T) {
 			t.Errorf("lifting invariants %+v %v", vs, err)
 		}
 
+		// Dock: boats expected to arrive and to leave today.
+		mv, err := a.Presence.Movements(ctx, demoOwnerPrincipal(ctx, t, a, res), res.MarinaID, &today, "")
+		if err != nil {
+			t.Fatal(err)
+		}
+		atLeast("arrivals expected today", len(mv.ArrivalsExpected), 2)
+		atLeast("departures expected today", len(mv.DeparturesExpected), 2)
+
 		// Rental.
 		atLeast("rental units", count("rental_units", ""), 8)
 		for st, want := range map[string]int{

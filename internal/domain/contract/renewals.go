@@ -224,6 +224,10 @@ type Proposal struct {
 	Row       store.RenewalProposal
 	Source    *store.Contract
 	Successor *store.Contract
+	// Customer and Vessel of the source contract, for the campaign table (the customer's name only with
+	// customers.read; nil when not loaded).
+	Customer *Party
+	Vessel   *store.Vessel
 	// HoldExpiresAt is the earliest expiry of the successor draft's active holds (zero = none).
 	HoldExpiresAt time.Time
 	Warnings      []string
@@ -460,7 +464,13 @@ func (s *Service) GetRenewalProposal(ctx context.Context, p *auth.Principal, mar
 	if err != nil {
 		return nil, err
 	}
-	return s.proposal(ctx, s.d.DB.DB, scope, id)
+	out, err := s.proposal(ctx, s.d.DB.DB, scope, id)
+	if err != nil {
+		return nil, err
+	}
+	ps := []Proposal{*out}
+	s.withParties(ctx, s.d.DB.DB, scope, s.can(ctx, p, marinaID, auth.PermCustomersRead), ps)
+	return &ps[0], nil
 }
 
 // releaseSuccessorTx cancels the successor of a closed proposal unless it is active (holds released at once).

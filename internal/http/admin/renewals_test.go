@@ -26,7 +26,15 @@ func TestRenewalHandlers_Scenario(t *testing.T) {
 		t.Fatalf("preview %+v", prev.Proposals.Items)
 	}
 	pr := prev.Proposals.Items[0]
-	c.expect(t, 200, "", "GET", M+"/renewal-proposals/"+pr.Id, nil, nil)
+	// The campaign table shows the customer and the boat of each proposal.
+	if pr.Customer == nil || pr.Customer.DisplayName == nil || *pr.Customer.DisplayName == "" || pr.Vessel == nil || pr.Vessel.Id != ds.vessel || pr.Vessel.Name == "" {
+		t.Fatalf("preview proposal without customer or vessel: %+v %+v", pr.Customer, pr.Vessel)
+	}
+	var one api.RenewalProposal
+	c.expect(t, 200, "", "GET", M+"/renewal-proposals/"+pr.Id, nil, &one)
+	if one.Customer == nil || one.Customer.DisplayName == nil || one.Vessel == nil || one.Vessel.Id != ds.vessel {
+		t.Fatalf("proposal without customer or vessel: %+v %+v", one.Customer, one.Vessel)
+	}
 	ds.other.expect(t, 404, "not_found", "GET", ds.otherM+"/renewal-proposals/"+pr.Id, nil, nil)
 	c.expect(t, 409, "invalid_transition", "POST", M+"/renewal-proposals/"+pr.Id+"/accept", map[string]any{}, nil, "If-Match", etag(pr.Version))
 	c.expect(t, 200, "", "GET", R+"/proposals?format=csv", nil, nil)

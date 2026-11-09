@@ -204,7 +204,7 @@ func (s *Service) ListCampaignProposals(ctx context.Context, p *auth.Principal, 
 	if err != nil {
 		return store.Page[Proposal]{}, err
 	}
-	return store.Page[Proposal]{NextCursor: page.NextCursor, Items: s.withContracts(ctx, db, scope, page.Items)}, nil
+	return store.Page[Proposal]{NextCursor: page.NextCursor, Items: s.withContracts(ctx, db, scope, page.Items, s.can(ctx, p, marinaID, auth.PermCustomersRead))}, nil
 }
 
 // AllCampaignProposals returns every proposal of a campaign with its contracts (CSV export, contracts.read).
@@ -225,10 +225,12 @@ func (s *Service) AllCampaignProposals(ctx context.Context, p *auth.Principal, m
 	if err != nil {
 		return nil, err
 	}
-	return s.withContracts(ctx, db, scope, rows), nil
+	return s.withContracts(ctx, db, scope, rows, s.can(ctx, p, marinaID, auth.PermCustomersRead)), nil
 }
 
-func (s *Service) withContracts(ctx context.Context, db bun.IDB, scope store.MarinaScope, rows []store.RenewalProposal) []Proposal {
+// withContracts attaches the source and successor contracts, the successor's hold expiry, and the customer and
+// vessel of the source contract (the customer's name only when withNames).
+func (s *Service) withContracts(ctx context.Context, db bun.IDB, scope store.MarinaScope, rows []store.RenewalProposal, withNames bool) []Proposal {
 	var ids []string
 	for _, r := range rows {
 		ids = append(ids, r.SourceContractID)
@@ -252,7 +254,43 @@ func (s *Service) withContracts(ctx context.Context, db bun.IDB, scope store.Mar
 	for _, r := range rows {
 		out = append(out, Proposal{Row: r, Source: byID[r.SourceContractID], Successor: byID[r.NewContractID], HoldExpiresAt: holds[r.NewContractID]})
 	}
+	s.withParties(ctx, db, scope, withNames, out)
 	return out
+}
+
+// withParties sets the customer and vessel of each proposal from its source contract. Read errors leave them
+// unset: the table then shows the contract code alone.
+func (s *Service) withParties(ctx context.Context, db bun.IDB, scope store.MarinaScope, withNames bool, ps []Proposal) {
+	var cids, vids []string
+	for i := range ps {
+		if c := ps[i].Source; c != nil {
+			cids = append(cids, c.CustomerID)
+			if c.VesselID != "" {
+				vids = append(vids, c.VesselID)
+			}
+		}
+	}
+	if len(cids) == 0 {
+		return
+	}
+	parts, err := parties(ctx, db, scope, cids, withNames)
+	if err != nil {
+		return
+	}
+	vs, err := store.VesselsByIDs(ctx, db, scope, vids)
+	if err != nil {
+		return
+	}
+	vByID := make(map[string]*store.Vessel, len(vs))
+	for i := range vs {
+		vByID[vs[i].ID] = &vs[i]
+	}
+	for i := range ps {
+		if c := ps[i].Source; c != nil {
+			ps[i].Customer = partyOf(parts, c.CustomerID)
+			ps[i].Vessel = vByID[c.VesselID]
+		}
+	}
 }
 
 // UpdateRenewalCampaign changes a draft campaign (contracts.write, If-Match).

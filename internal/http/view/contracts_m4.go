@@ -234,8 +234,14 @@ func RenewalProposal(p *contract.Proposal) api.RenewalProposal {
 	if p.Source != nil {
 		out.SourceContract = m4ContractBrief(p.Source)
 		out.Customer = &api.CustomerBrief{Id: p.Source.CustomerID}
+		if p.Customer != nil {
+			out.Customer.DisplayName = String(p.Customer.Name)
+		}
 	} else {
 		out.SourceContract = api.ContractBrief{Id: r.SourceContractID}
+	}
+	if v := p.Vessel; v != nil {
+		out.Vessel = &api.VesselBrief{Id: v.ID, Name: v.Name, LoaCm: v.LOACm, BeamCm: v.BeamCm, HullType: api.HullType(v.HullType)}
 	}
 	if s := p.Successor; s != nil {
 		b := m4ContractBrief(s)

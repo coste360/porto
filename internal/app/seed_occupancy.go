@@ -457,8 +457,8 @@ func (s *seedOcc) firstCustomer() string {
 	return s.guest
 }
 
-// arriveDepart records the arrival (at 15:00 of the arrival day) and, when the departure is past, the departure
-// (at 10:00) of a confirmed transit.
+// arriveDepart records the arrival (at 15:00 of the arrival day) and, when the departure day is before today, the
+// departure (at 10:00) of a confirmed transit. Today's departures stay expected, so the dock has boats to see off.
 func (s *seedOcc) arriveDepart(c *contract.Detail, arr, dep calendar.Date) error {
 	loc := time.UTC
 	if l, err := calendar.LoadLocation("Europe/Rome"); err == nil {
@@ -472,7 +472,7 @@ func (s *seedOcc) arriveDepart(c *contract.Detail, arr, dep calendar.Date) error
 		return err
 	}
 	s.res.Presences++
-	if dep.After(s.today) {
+	if !dep.Before(s.today) {
 		return nil
 	}
 	out := dep.Time(loc).Add(10 * time.Hour)

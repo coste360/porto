@@ -661,6 +661,10 @@ Polish after M10 (demo review):
 
 ### Fixed
 
+- Renewal campaigns: the proposals table showed empty Cliente and Barca columns, because the API sent only the
+  customer id. Proposals now carry the customer's display name (with `customers.read`) and the boat.
+- Demo seed: transits leaving today stay expected instead of being marked departed, so the dock has departures to
+  record.
 - Demo seed: the current year's contracts, charges and payments are no longer all dated on the seed day. Contracts
   are signed through a fake clock (annual ones in early January, seasonal in March, transits 3 to 30 days before
   arrival) on four payment clauses, and the instalments are issued and settled day by day up to today, as the
