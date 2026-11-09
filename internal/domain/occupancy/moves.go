@@ -946,6 +946,20 @@ func (s *Service) Undo(ctx context.Context, p *auth.Principal, marinaID, undoID 
 			changed = append(changed, *a)
 			res, maps = append(res, a.ResourceID), append(maps, a.MapID)
 		}
+		// While a source was detached its moved_from neighbours outside this undo may have taken its nights (a
+		// successor resized earlier, a predecessor extended): giving them back would break the chain (INV-11).
+		for _, e := range pl.Entries {
+			a := byID[e.AllocationID]
+			if a.Status != store.AllocActive {
+				continue
+			}
+			if err := checkChainOrder(ctx, tx, scope, a, a.FirstNight, a.LastNight); err != nil {
+				if errors.Is(err, auth.ErrInvalidInput) {
+					return ErrUndoUnavailable
+				}
+				return err
+			}
+		}
 		// Quote option holds moved by the undone operation point back to their source.
 		for _, c := range pl.Created {
 			a := byID[c.AllocationID]

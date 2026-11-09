@@ -536,6 +536,10 @@ Polish after M10 (demo review):
 
 ### Fixed
 
+- Undoing a move no longer breaks a `moved_from` chain (INV-11): when, while the source was detached, a successor
+  of another move was resized onto its nights or its predecessor was extended over them, the undo is unavailable
+  instead of restoring overlapping allocations (`TestOccupancy_UndoKeepsChainOrdered`).
+
 M9 review:
 
 - A scenario apply prices the boats brought in from the "Da collocare" tray like a desk layout save (read-only

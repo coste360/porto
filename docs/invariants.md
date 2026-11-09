@@ -107,10 +107,11 @@ con più allocazioni: ogni allocazione scaduta che chiude una catena viva è ria
 **INV-11 — Le catene `moved_from_id` sono ordinate.** Un'allocazione attiva che deriva da un'altra
 (`moved_from_id`) ha la stessa riga di contratto e la stessa imbarcazione e, se il predecessore è ancora attivo,
 comincia dopo la sua ultima notte; nessuna operazione (spostamento, spostamento a intervallo, estensione,
-ridimensionamento) porta un'allocazione prima di un predecessore attivo o dopo l'inizio di un successore attivo
-(`ResizeTx` rifiuta questi intervalli come `validation_failed`). Verificata da: query Q12 di
-`store.CheckOccupancyInvariants`, `TestAllocation_RowsMatchFootprint` (property test, anche con
-`-rapid.checks=2000`). Stato: implemented.
+ridimensionamento, annullamento) porta un'allocazione prima di un predecessore attivo o dopo l'inizio di un successore
+attivo (`ResizeTx` rifiuta questi intervalli come `validation_failed`; l'annullamento di uno spostamento che
+restituirebbe a una sorgente notti prese nel frattempo da un suo vicino di catena è `ErrUndoUnavailable`). Verificata
+da: query Q12 di `store.CheckOccupancyInvariants`, `TestOccupancy_UndoKeepsChainOrdered`,
+`TestAllocation_RowsMatchFootprint` (property test, anche con `-rapid.checks=2000`). Stato: implemented.
 
 **INV-12 — Le quote online sono contatori nel database.** Per ogni `(gruppo, notte)` di `online_quota_usage`:
 `used` = numero delle righe di `online_quota_claims` e `0 <= used <= cap`, anche con 100 prenotazioni online

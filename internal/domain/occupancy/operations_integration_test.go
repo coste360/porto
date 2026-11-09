@@ -143,6 +143,73 @@ func TestOccupancy_MoveScenario(t *testing.T) {
 
 func boolp(b bool) *bool { return &b }
 
+// INV-11: an undo that would give a source back nights its moved_from neighbours took while it was detached (a
+// successor resized before it, a predecessor extended after it) is unavailable and changes nothing. Found by
+// TestAllocation_RowsMatchFootprint, where the state built by earlier iterations made it intermittent.
+func TestOccupancy_UndoKeepsChainOrdered(t *testing.T) {
+	testdb.Run(t, func(t *testing.T, db *store.DB) {
+		h := newHarbour(t, db)
+		d := h.today.AddDays(5)
+		move := func(t *testing.T, id string, from calendar.Date, to string) MoveResult {
+			t.Helper()
+			a := h.alloc(t, id)
+			res, err := h.s.Move(ctxT(), h.Owner, h.MarinaID, MoveInput{AllocationID: id, Version: a.Version, FromNight: &from, Target: berthTarget(to)})
+			if err != nil {
+				t.Fatal(err)
+			}
+			return res
+		}
+		createdOn := func(t *testing.T, res MoveResult, resource string) string {
+			t.Helper()
+			for _, x := range res.Allocations {
+				if x.ResourceID == resource && x.Status == store.AllocActive {
+					return x.ID
+				}
+			}
+			t.Fatalf("no allocation on %s in %+v", resource, res.Allocations)
+			return ""
+		}
+		resize := func(t *testing.T, id string, first, last calendar.Date) {
+			t.Helper()
+			if err := db.RunInTx(ctxT(), func(ctx context.Context, tx bun.Tx) error {
+				return h.s.ResizeTx(ctx, tx, h.scope, h.s.now(), id, first, last)
+			}); err != nil {
+				t.Fatal(err)
+			}
+		}
+		undoUnavailable := func(t *testing.T, undoID string, restored string) {
+			t.Helper()
+			before := h.alloc(t, restored)
+			if _, err := h.s.Undo(ctxT(), h.Owner, h.MarinaID, undoID); !errors.Is(err, ErrUndoUnavailable) {
+				t.Fatalf("undo: %v", err)
+			}
+			if after := h.alloc(t, restored); after.Status != before.Status || after.Version != before.Version {
+				t.Fatalf("a refused undo changed the source: %+v", after)
+			}
+			h.assertInvariants(t)
+		}
+
+		t.Run("successor resized into the source nights", func(t *testing.T) {
+			v := h.vessel(t, 1000, 350)
+			p := h.mustAllocate(t, transit(v, berthSpec(h.berths[0], d, d.AddDays(2))))
+			s := createdOn(t, move(t, p.ID, d.AddDays(2), h.berths[1]), h.berths[1]) // p: d..d+1, s: d+2
+			resB := move(t, p.ID, d, h.berths[2])                                    // p superseded
+			resize(t, s, d, d)                                                       // p is not active: allowed
+			h.assertInvariants(t)
+			undoUnavailable(t, resB.UndoID, p.ID)
+		})
+		t.Run("predecessor extended over the source nights", func(t *testing.T) {
+			v := h.vessel(t, 1000, 350)
+			p := h.mustAllocate(t, transit(v, berthSpec(h.berths[3], d, d.AddDays(2))))
+			s := createdOn(t, move(t, p.ID, d.AddDays(1), h.berths[4]), h.berths[4]) // p: d, s: d+1..d+2
+			resB := move(t, s, d.AddDays(1), h.berths[5])                            // s superseded
+			resize(t, p.ID, d, d.AddDays(2))                                         // s is not active: allowed
+			h.assertInvariants(t)
+			undoUnavailable(t, resB.UndoID, s)
+		})
+	})
+}
+
 func TestOccupancy_LayoutSaveExchangePlaces(t *testing.T) {
 	testdb.Run(t, func(t *testing.T, db *store.DB) {
 		h := newHarbour(t, db)
