@@ -1,6 +1,8 @@
 ; Inno Setup 6 script of the Porto desktop edition: per-user install (no administrator rights) into
 ; %LOCALAPPDATA%\Programs\Porto, Start menu shortcut, uninstaller that keeps the data folder (%LOCALAPPDATA%\Porto).
-; Defines passed by scripts/desktop/package-windows.sh: AppVersion, SourceDir, OutputDir, OutputName.
+; Defines passed by scripts/desktop/package-windows.sh: AppVersion, SourceDir, OutputDir, OutputName, and PortoSign
+; with the sign tool "porto" (/Sporto=...) when WINDOWS_SIGN_CMD is set: Inno Setup then signs the uninstaller it
+; embeds and the setup itself with the same hook as porto-desktop.exe (scripts/desktop/inno-sign.sh).
 
 #ifndef AppVersion
   #define AppVersion "0.0.0"
@@ -27,6 +29,10 @@ Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
 CloseApplications=yes
+#ifdef PortoSign
+SignTool=porto
+SignedUninstaller=yes
+#endif
 
 [Languages]
 Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"

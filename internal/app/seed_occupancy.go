@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/coste360/porto/internal/calendar"
+	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/contract"
 	"github.com/coste360/porto/internal/domain/occupancy"
@@ -20,7 +21,11 @@ import (
 // Demo occupancy (m3-plan §10): annual, seasonal and monthly contracts, transits around today with presences,
 // releases (some resold), blocks, a closure, vessels out, quotes and inquiries, all through the domain services
 // as the demo owner. Expected refusals (a taken berth, a vessel that does not fit, a stay without price) skip that
-// item: the demo is built from what the engine accepts, so the invariants hold by construction.
+// item: the demo is built from what the engine accepts, so the invariants hold by construction. Contracts and
+// confirmed transits are created on the day they would have been signed (annual ones in the first weeks of
+// January, seasonal ones in March, transits three days before arrival, never after now) through an App on a fake
+// clock, with the payment clauses of seedSignedPolicy, so their deposits and charges are issued over the year
+// instead of all on the day the seed runs.
 
 // seedSkippable reports the refusals the seed tolerates.
 func seedSkippable(err error) bool {
@@ -47,6 +52,29 @@ type seedOcc struct {
 	yearTo calendar.Date // last night priced by the active list
 	res    *SeedResult
 	guest  string
+
+	// Signing clock (current year only; nil for the history, whose App already walks through Y−1).
+	past *App
+	fake *clock.Fake
+	loc  *time.Location
+}
+
+// on returns the App to write with on the given moment: the fake-clock App set to when (capped at now), or the
+// seed's own App when there is no signing clock.
+func (s *seedOcc) on(when time.Time) *App {
+	if s.fake == nil {
+		return s.a
+	}
+	if now := s.a.Clock.Now(); when.After(now) {
+		when = now
+	}
+	s.fake.Set(when)
+	return s.past
+}
+
+// signedOn is the moment, on day d at 10:00 in the marina time zone, a contract is signed.
+func (s *seedOcc) signedOn(d calendar.Date) time.Time {
+	return d.Time(s.locOrUTC()).Add(10 * time.Hour)
 }
 
 func (s *seedOcc) skip(err error) error {
@@ -76,10 +104,16 @@ func (a *App) seedOccupancy(ctx context.Context, p *auth.Principal, res *SeedRes
 		return err
 	}
 	today := calendar.In(a.Clock.Now(), loc)
+	past, fake, err := a.seedClockApp(ctx, a.Clock.Now())
+	if err != nil {
+		return err
+	}
+	defer func() { _ = past.Close() }()
 	s := &seedOcc{
 		a: a, ctx: ctx, p: p, m: res.MarinaID, res: res, today: today,
 		rng:    rand.New(rand.NewPCG(31, 4)), //nolint:gosec // demo data: deterministic by design
 		yearTo: calendar.New(today.Year(), time.December, 31),
+		past:   past, fake: fake, loc: loc,
 	}
 	berths, areas, lands, err := store.SeedResources(ctx, a.DB.DB, scope)
 	if err != nil {
@@ -105,6 +139,11 @@ func (s *seedOcc) owners(scope store.MarinaScope, vessels []store.Vessel) (map[s
 	for _, v := range vessels {
 		ids = append(ids, v.ID)
 	}
+	return s.ownersOf(scope, ids)
+}
+
+// ownersOf maps vessel ids to a customer (the owner party, else the first party).
+func (s *seedOcc) ownersOf(scope store.MarinaScope, ids []string) (map[string]string, error) {
 	parties, err := store.PartiesOfVessels(s.ctx, s.a.DB.DB, scope, ids)
 	if err != nil {
 		return nil, err
@@ -152,12 +191,16 @@ func (s *seedOcc) run(scope store.MarinaScope, berths []store.Berth, areas []sto
 		in := contract.MooringInput{
 			Term: term, CustomerID: owners[v.ID], VesselID: v.ID, StartsOn: from, EndsOn: &to, Activate: true,
 			Placements: []contract.Segment{{ResourceType: store.ResourceBerth, ResourceID: b.ID, First: from, Last: to.AddDays(-1)}},
-			Extras:     extras,
+			Extras:     extras, Policy: seedSignedPolicy(term, len(annual)),
 		}
 		if override {
 			in.FitOverride = &contract.FitOverrideInput{Reason: "misure in deroga"}
 		}
-		c, err := s.a.Contracts.CreateContract(s.ctx, s.p, s.m, in)
+		signed := seedSignedOn(term, from)
+		if term == contract.TermAnnual {
+			signed = seedAnnualSignedOn(jan1, len(annual), 200)
+		}
+		c, err := s.on(s.signedOn(signed)).Contracts.CreateContract(s.ctx, s.p, s.m, in)
 		if err != nil {
 			if errors.Is(err, occupancy.ErrFitBlocked) {
 				misfit[v.ID]++
@@ -264,9 +307,10 @@ func (s *seedOcc) run(scope store.MarinaScope, berths []store.Berth, areas []sto
 					continue
 				}
 				x := (from + off + int64(k)*10) / 10 * 10
-				c, err := s.a.Contracts.CreateContract(s.ctx, s.p, s.m, contract.MooringInput{
+				c, err := s.on(s.signedOn(seedAnnualSignedOn(jan1, 200, 200))).Contracts.CreateContract(s.ctx, s.p, s.m, contract.MooringInput{
 					Term: contract.TermAnnual, CustomerID: owners[v.ID], VesselID: v.ID, StartsOn: jan1, EndsOn: &nextJan1, Activate: true,
 					Placements: []contract.Segment{{ResourceType: store.ResourceArea, ResourceID: ar.ID, X: &x, First: jan1, Last: nextJan1.AddDays(-1)}},
+					Policy:     seedSignedPolicy(contract.TermAnnual, k),
 				})
 				if err := s.skip(err); err != nil {
 					return fmt.Errorf("area contract: %w", err)
@@ -336,7 +380,13 @@ func (s *seedOcc) transits(free []*store.Berth) error {
 		default:
 			in.Confirm = &contract.ManualConfirmation{Reference: "demo"}
 		}
-		c, err := s.a.Contracts.CreateTransit(s.ctx, s.p, s.m, in)
+		// A confirmed transit is booked 3 to 30 days before its arrival (seedTransitBookedOn), its charge issued
+		// then. Holds are taken now, so that they do not expire before the demo is viewed.
+		w := s.a
+		if in.Confirm != nil {
+			w = s.on(seedTransitBookedOn(arr, s.today, s.rng).Time(s.locOrUTC()).Add(11 * time.Hour))
+		}
+		c, err := w.Contracts.CreateTransit(s.ctx, s.p, s.m, in)
 		if err := s.skip(err); err != nil {
 			return fmt.Errorf("transit: %w", err)
 		}
@@ -362,6 +412,32 @@ func (s *seedOcc) transits(free []*store.Berth) error {
 		}
 	}
 	return nil
+}
+
+func (s *seedOcc) locOrUTC() *time.Location {
+	if s.loc == nil {
+		return time.UTC
+	}
+	return s.loc
+}
+
+// seedTransitBookedOn is the day a demo transit arriving on arr was booked: 3 to 30 days before (as in the
+// previous-year history); a booking that would fall after today was made in the last 30 days instead.
+func seedTransitBookedOn(arr, today calendar.Date, rng *rand.Rand) calendar.Date {
+	d := arr.AddDays(-3 - rng.IntN(28))
+	if d.After(today) {
+		d = today.AddDays(-rng.IntN(30))
+	}
+	return d
+}
+
+// seedSignedOn is the day a current-year demo contract (other than annual: seedAnnualSignedOn) starting on from
+// is signed: seasonal ones on 2 March (as the previous-year history), the others two days before they start.
+func seedSignedOn(term string, from calendar.Date) calendar.Date {
+	if term == contract.TermSeasonal {
+		return calendar.New(from.Year(), time.March, 2)
+	}
+	return from.AddDays(-2)
 }
 
 // firstCustomer is the demo customer guest transits are billed to ("" when the registry is empty).

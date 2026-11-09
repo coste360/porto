@@ -27,10 +27,10 @@ import { ToggleGroup, ToggleGroupItem } from '@porto/shared/ui/toggle-group';
 import { useCurrentMarina } from '../../../auth/hooks';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../../components/PageStates';
 import { localName } from '../../maps/lib';
+import { useElementSize } from '../../../lib/useElementSize';
 import { useMarinaToday } from '../../registry/lib/today';
 import { addDays, daysBetween, nightsOf, weekdayOf } from '../lib/dates';
 import {
-  COL_PX,
   HEADER_PX,
   LABEL_PX,
   LANE_PX,
@@ -39,6 +39,7 @@ import {
   barRect,
   columnAt,
   dragColumns,
+  fitColumnPx,
   isFree,
   layoutBars,
   moveForDrop,
@@ -108,7 +109,7 @@ export function PlannerPage() {
             </Select>
           </Field>
         ) : null}
-        <Field className="lg:max-w-56">
+        <Field className="lg:w-auto">
           <FieldLabel htmlFor="planner-from">{t('desk:planner.from')}</FieldLabel>
           <div className="flex gap-1">
             <Button
@@ -119,11 +120,13 @@ export function PlannerPage() {
             >
               <ChevronLeftIcon />
             </Button>
-            <DatePicker
-              id="planner-from"
-              value={from}
-              onChange={(d) => d && setSearch({ from: d })}
-            />
+            <div className="w-40">
+              <DatePicker
+                id="planner-from"
+                value={from}
+                onChange={(d) => d && setSearch({ from: d })}
+              />
+            </div>
             <Button
               variant="outline"
               size="icon"
@@ -249,8 +252,11 @@ export function PlannerGrid({
     [allocations, from, days],
   );
   const layout = useMemo(() => rowLayout(rows, lanes), [rows, lanes]);
+  // 14 and 31 nights stretch their columns to fill the available width (62 nights scroll).
+  const [boxRef, box] = useElementSize<HTMLDivElement>();
+  const col = fitColumnPx(box.width - 2, days);
   const height = (layout.at(-1)?.y ?? HEADER_PX) + (layout.at(-1)?.h ?? 0);
-  const width = LABEL_PX + days * COL_PX;
+  const width = LABEL_PX + days * col;
   const nights = nightsOf(from, addDays(from, days - 1));
   const svgRef = useRef<SVGSVGElement>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
@@ -285,7 +291,7 @@ export function PlannerGrid({
         setChange({ kind: 'move', allocation: a, move, targetCode: layout[targetIndex]!.row.code });
       return;
     }
-    const delta = dragColumns(d.dx);
+    const delta = dragColumns(d.dx, col);
     if (delta !== 0 && draggable(a) && a.contract) {
       const stay = stayChangeForDrag(a, delta, d.mode, {
         arrivalFrozen: a.contract.status === 'arrived',
@@ -341,189 +347,191 @@ export function PlannerGrid({
       {rows.length === 0 ? (
         <p className="text-muted-foreground text-sm">{t('desk:planner.empty')}</p>
       ) : (
-        <ScrollArea className="border-border w-full rounded-md border">
-          <svg
-            ref={svgRef}
-            width={width}
-            height={height}
-            viewBox={`0 0 ${width} ${height}`}
-            role="grid"
-            aria-label={t('desk:planner.gridLabel', { from: formatIsoDate(from), count: days })}
-            data-testid="desk-planner"
-            className="touch-none select-none"
-            onPointerMove={(e) => {
-              if (drag) setDrag({ ...drag, dx: e.clientX - drag.x0, dy: e.clientY - drag.y0 });
-              else if (select) {
-                const c = columnAt(localX(e), days);
-                if (c !== null && c !== select.c2) setSelect({ ...select, c2: c });
-              }
-            }}
-            onPointerUp={() => {
-              if (drag) {
-                finishDrag(drag);
-                setDrag(null);
-              } else if (select) {
-                const row = layout[select.rowIndex]!.row;
-                const lo = Math.min(select.c1, select.c2);
-                const hi = Math.max(select.c1, select.c2);
-                if (
-                  row.resource_type !== 'dynamic_area' &&
-                  isFree(bars.get(row.resource_id), lo, hi)
-                ) {
-                  setCreate({
-                    target: { resource_type: row.resource_type, resource_id: row.resource_id },
-                    ...selectionStay(from, select.c1, select.c2),
-                  });
+        <div ref={boxRef} className="w-full">
+          <ScrollArea className="border-border w-full rounded-md border">
+            <svg
+              ref={svgRef}
+              width={width}
+              height={height}
+              viewBox={`0 0 ${width} ${height}`}
+              role="grid"
+              aria-label={t('desk:planner.gridLabel', { from: formatIsoDate(from), count: days })}
+              data-testid="desk-planner"
+              className="touch-none select-none"
+              onPointerMove={(e) => {
+                if (drag) setDrag({ ...drag, dx: e.clientX - drag.x0, dy: e.clientY - drag.y0 });
+                else if (select) {
+                  const c = columnAt(localX(e), days, col);
+                  if (c !== null && c !== select.c2) setSelect({ ...select, c2: c });
                 }
-                setSelect(null);
-              }
-            }}
-          >
-            {nights.map((n, i) => (
-              <g key={n}>
-                <rect
-                  x={LABEL_PX + i * COL_PX}
-                  y={0}
-                  width={COL_PX}
-                  height={height}
-                  className={
-                    n === today
-                      ? 'fill-accent'
-                      : weekdayOf(n) % 6 === 0
-                        ? 'fill-muted'
-                        : 'fill-background'
+              }}
+              onPointerUp={() => {
+                if (drag) {
+                  finishDrag(drag);
+                  setDrag(null);
+                } else if (select) {
+                  const row = layout[select.rowIndex]!.row;
+                  const lo = Math.min(select.c1, select.c2);
+                  const hi = Math.max(select.c1, select.c2);
+                  if (
+                    row.resource_type !== 'dynamic_area' &&
+                    isFree(bars.get(row.resource_id), lo, hi)
+                  ) {
+                    setCreate({
+                      target: { resource_type: row.resource_type, resource_id: row.resource_id },
+                      ...selectionStay(from, select.c1, select.c2),
+                    });
                   }
-                />
-                <text
-                  x={LABEL_PX + i * COL_PX + COL_PX / 2}
-                  y={14}
-                  textAnchor="middle"
-                  className="fill-muted-foreground text-xs"
-                >
-                  {weekdays[weekdayOf(n)] ?? ''}
-                </text>
-                <text
-                  x={LABEL_PX + i * COL_PX + COL_PX / 2}
-                  y={30}
-                  textAnchor="middle"
-                  className="fill-foreground text-xs"
-                >
-                  {n.slice(8)}
-                </text>
-              </g>
-            ))}
-            {layout.map(({ row, y, h }, rowIndex) => (
-              <g
-                key={row.resource_id}
-                role="row"
-                aria-label={row.code}
-                data-testid={`desk-planner-row-${row.code}`}
-              >
-                <rect
-                  x={LABEL_PX}
-                  y={y}
-                  width={days * COL_PX}
-                  height={h}
-                  className="fill-transparent stroke-border"
-                  onPointerDown={(e) => {
-                    if (!canCreate || row.resource_type === 'dynamic_area') return;
-                    const c = columnAt(localX(e), days);
-                    if (c !== null) setSelect({ rowIndex, c1: c, c2: c });
-                  }}
-                />
-                <text x={8} y={y + h / 2 + 4} className="fill-foreground text-xs font-medium">
-                  {row.code}
-                </text>
-                {select && select.rowIndex === rowIndex ? (
+                  setSelect(null);
+                }
+              }}
+            >
+              {nights.map((n, i) => (
+                <g key={n}>
                   <rect
-                    x={LABEL_PX + Math.min(select.c1, select.c2) * COL_PX}
-                    y={y + 2}
-                    width={(Math.abs(select.c2 - select.c1) + 1) * COL_PX}
-                    height={h - 4}
-                    className="fill-primary opacity-30"
-                    pointerEvents="none"
+                    x={LABEL_PX + i * col}
+                    y={0}
+                    width={col}
+                    height={height}
+                    className={
+                      n === today
+                        ? 'fill-accent'
+                        : weekdayOf(n) % 6 === 0
+                          ? 'fill-muted'
+                          : 'fill-background'
+                    }
                   />
-                ) : null}
-                {(bars.get(row.resource_id) ?? []).map((bar) => {
-                  const a = bar.allocation;
-                  const r = barRect(bar, y);
-                  const dragging = drag?.bar.allocation.id === a.id ? drag : null;
-                  const dx = dragging
-                    ? dragging.mode === 'move'
-                      ? dragColumns(dragging.dx) * COL_PX
-                      : 0
-                    : 0;
-                  const dw =
-                    dragging && dragging.mode === 'resize-end'
-                      ? dragColumns(dragging.dx) * COL_PX
+                  <text
+                    x={LABEL_PX + i * col + col / 2}
+                    y={14}
+                    textAnchor="middle"
+                    className="fill-muted-foreground text-xs"
+                  >
+                    {weekdays[weekdayOf(n)] ?? ''}
+                  </text>
+                  <text
+                    x={LABEL_PX + i * col + col / 2}
+                    y={30}
+                    textAnchor="middle"
+                    className="fill-foreground text-xs"
+                  >
+                    {n.slice(8)}
+                  </text>
+                </g>
+              ))}
+              {layout.map(({ row, y, h }, rowIndex) => (
+                <g
+                  key={row.resource_id}
+                  role="row"
+                  aria-label={row.code}
+                  data-testid={`desk-planner-row-${row.code}`}
+                >
+                  <rect
+                    x={LABEL_PX}
+                    y={y}
+                    width={days * col}
+                    height={h}
+                    className="fill-transparent stroke-border"
+                    onPointerDown={(e) => {
+                      if (!canCreate || row.resource_type === 'dynamic_area') return;
+                      const c = columnAt(localX(e), days, col);
+                      if (c !== null) setSelect({ rowIndex, c1: c, c2: c });
+                    }}
+                  />
+                  <text x={8} y={y + h / 2 + 4} className="fill-foreground text-xs font-medium">
+                    {row.code}
+                  </text>
+                  {select && select.rowIndex === rowIndex ? (
+                    <rect
+                      x={LABEL_PX + Math.min(select.c1, select.c2) * col}
+                      y={y + 2}
+                      width={(Math.abs(select.c2 - select.c1) + 1) * col}
+                      height={h - 4}
+                      className="fill-primary opacity-30"
+                      pointerEvents="none"
+                    />
+                  ) : null}
+                  {(bars.get(row.resource_id) ?? []).map((bar) => {
+                    const a = bar.allocation;
+                    const r = barRect(bar, y, col);
+                    const dragging = drag?.bar.allocation.id === a.id ? drag : null;
+                    const dx = dragging
+                      ? dragging.mode === 'move'
+                        ? dragColumns(dragging.dx, col) * col
+                        : 0
                       : 0;
-                  const dy = dragging ? dragging.dy : 0;
-                  const label = t('desk:planner.barLabel', {
-                    code: a.contract?.code ?? t(`occupancyEnums:allocationKind.${a.kind}`),
-                    vessel: a.vessel?.name ?? '',
-                    from: formatIsoDate(a.first_night),
-                    to: formatIsoDate(a.last_night),
-                  });
-                  return (
-                    <g
-                      key={a.id}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={label}
-                      data-testid="desk-planner-bar"
-                      data-allocation-id={a.id}
-                      onKeyDown={(e) => onBarKey(e, a)}
-                      onPointerDown={(e) => {
-                        if (!draggable(a) && !canMove) return;
-                        e.stopPropagation();
-                        const right = r.x + r.width - localX(e) < RESIZE_HANDLE_PX;
-                        setDrag({
-                          bar,
-                          rowIndex,
-                          mode: right ? 'resize-end' : 'move',
-                          x0: e.clientX,
-                          y0: e.clientY,
-                          dx: 0,
-                          dy: 0,
-                        });
-                      }}
-                    >
-                      <rect
-                        x={r.x + dx}
-                        y={r.y + dy}
-                        width={Math.max(COL_PX / 2, r.width + dw)}
-                        height={r.height}
-                        rx={4}
-                        className={`${barFillClass(a)} ${dragging ? 'opacity-70' : ''}`}
-                      />
-                      {a.released.map((rel) => {
-                        const c = layoutReleased(rel, from, days);
-                        return c ? (
-                          <rect
-                            key={`${rel.from}-${rel.to}`}
-                            x={LABEL_PX + c.s * COL_PX + 1}
-                            y={r.y + r.height - 5}
-                            width={(c.e - c.s + 1) * COL_PX - 2}
-                            height={4}
-                            className="fill-harbor-released"
-                          />
-                        ) : null;
-                      })}
-                      <text
-                        x={r.x + dx + 4}
-                        y={r.y + dy + r.height / 2 + 4}
-                        className="fill-background pointer-events-none text-xs"
+                    const dw =
+                      dragging && dragging.mode === 'resize-end'
+                        ? dragColumns(dragging.dx, col) * col
+                        : 0;
+                    const dy = dragging ? dragging.dy : 0;
+                    const label = t('desk:planner.barLabel', {
+                      code: a.contract?.code ?? t(`occupancyEnums:allocationKind.${a.kind}`),
+                      vessel: a.vessel?.name ?? '',
+                      from: formatIsoDate(a.first_night),
+                      to: formatIsoDate(a.last_night),
+                    });
+                    return (
+                      <g
+                        key={a.id}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={label}
+                        data-testid="desk-planner-bar"
+                        data-allocation-id={a.id}
+                        onKeyDown={(e) => onBarKey(e, a)}
+                        onPointerDown={(e) => {
+                          if (!draggable(a) && !canMove) return;
+                          e.stopPropagation();
+                          const right = r.x + r.width - localX(e) < RESIZE_HANDLE_PX;
+                          setDrag({
+                            bar,
+                            rowIndex,
+                            mode: right ? 'resize-end' : 'move',
+                            x0: e.clientX,
+                            y0: e.clientY,
+                            dx: 0,
+                            dy: 0,
+                          });
+                        }}
                       >
-                        {a.vessel?.name ?? t(`occupancyEnums:allocationKind.${a.kind}`)}
-                      </text>
-                    </g>
-                  );
-                })}
-              </g>
-            ))}
-          </svg>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+                        <rect
+                          x={r.x + dx}
+                          y={r.y + dy}
+                          width={Math.max(col / 2, r.width + dw)}
+                          height={r.height}
+                          rx={4}
+                          className={`${barFillClass(a)} ${dragging ? 'opacity-70' : ''}`}
+                        />
+                        {a.released.map((rel) => {
+                          const c = layoutReleased(rel, from, days);
+                          return c ? (
+                            <rect
+                              key={`${rel.from}-${rel.to}`}
+                              x={LABEL_PX + c.s * col + 1}
+                              y={r.y + r.height - 5}
+                              width={(c.e - c.s + 1) * col - 2}
+                              height={4}
+                              className="fill-harbor-released"
+                            />
+                          ) : null;
+                        })}
+                        <text
+                          x={r.x + dx + 4}
+                          y={r.y + dy + r.height / 2 + 4}
+                          className="fill-background pointer-events-none text-xs"
+                        >
+                          {a.vessel?.name ?? t(`occupancyEnums:allocationKind.${a.kind}`)}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </g>
+              ))}
+            </svg>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
       )}
       <p className="text-muted-foreground text-xs">{t('desk:planner.hint')}</p>
       {change ? (

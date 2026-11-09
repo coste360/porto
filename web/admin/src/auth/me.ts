@@ -30,6 +30,11 @@ export function ensureMe(queryClient: QueryClient, api: ApiClient): Promise<Me |
   return queryClient.ensureQueryData(meQueryOptions(api));
 }
 
+/** Fetches the principal again, ignoring the cached copy (a marina created since, a cache restored offline). */
+export function refreshMe(queryClient: QueryClient, api: ApiClient): Promise<Me | null> {
+  return queryClient.fetchQuery({ ...meQueryOptions(api), staleTime: 0 });
+}
+
 export function findMarina(me: Me | null | undefined, marinaId: string): MeMarina | undefined {
   return me?.marinas.find((m) => m.id === marinaId);
 }

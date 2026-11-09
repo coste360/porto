@@ -8,6 +8,39 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+Public release preparation (ADR 0018, docs/release.md):
+
+- Licence decision recorded in ADR 0018 (Business Source License 1.1, Additional Use Grant for Marina Facilities,
+  AGPL-3.0 or later three years after each release, brand excluded); `CONTRIBUTING.md` rewritten for outside
+  contributions (no CLA or DCO required for now, open decision D15); `SECURITY.md` (security@coste360.it,
+  supported versions).
+- Release workflow `.github/workflows/release.yml`: on a `vX.Y.Z` tag it checks the tag and the changelog section,
+  publishes the multi-arch image `ghcr.io/coste360/porto` (SBOM, provenance, `BUSL-1.1` label) and the GitHub
+  Release with the notes and `api/openapi.yaml`; only `GITHUB_TOKEN`. Procedure in `docs/release.md`.
+- Deployment templates: `deploy/coolify` (SQLite and PostgreSQL compose), `deploy/caprover` (`captain-definition`,
+  one-click app) and `deploy/demo` (public demo instance with a nightly reset script).
+- Desktop: the version check reads the shared Coste360 updates service
+  (`https://updates.coste360.it/porto/latest.json`, its manifest format with the extra top-level `url`; unknown
+  fields ignored, `release_notes` as fallback link) with the User-Agent `porto/<version> (desktop; <goos>/<goarch>)`
+  (m6a-plan D16 closed).
+- Packaging: macOS notarisation waits at most `MACOS_NOTARY_TIMEOUT` (default 45m) and fails with the submission id
+  when still pending, or with Apple's log when rejected; the Windows uninstaller and installer are signed by Inno
+  Setup with the same `WINDOWS_SIGN_CMD` hook (`scripts/desktop/inno-sign.sh`); the Linux AppImage falls back to the
+  browser build whenever the window build cannot start (missing WebKitGTK 4.1, older glibc), checked in CI.
+- Demo: `porto seed demo --reset` (only with `PORTO_DEMO_INSTANCE=true`, refused unless the database holds only the
+  demo organization, recognised by the `demo-organization` marker in the data directory so that visitors renaming
+  it or adding marinas do not block the reset) wipes the database and the stored files and seeds again, used by
+  `deploy/demo/reset.sh` for the nightly reset of a public demo (`docs/demo.md`). The seed now prints the counts of yard, lifting, rental,
+  online booking and sensor data and the seed time, and adds online bookings in every state, the seasonal renewal
+  history (dashboard "Tasso di rinnovo"), a fuller yard (quotes in every state, work orders across the board with
+  hours, materials and external costs, planner assignments, lifting schedule), rental days with handovers, and
+  one open sensor alert of every kind.
+- UI polish before the first release: every navigation item has an icon (collapsed sidebar shows icons and the
+  avatar only); the rental planner day header shows month labels only where they fit, hour bookings are drawn
+  above the margins with their code fitted to the bar, half-day columns show the band label; the berth calendar
+  stretches the 14- and 31-night views to the width; the shed planner accessibility lens colours every boat and
+  shows a key; the operational map and the phone map fill the window height.
+
 M12 "Sensori e scheda pubblica" (spec 24, 25, 9.2, 10.6, 12.5, 23, 27, 30, m12-plan, ADR 0017):
 
 - Sensor devices (berth, segment `[from_cm, to_cm)` of a linear area, or pedestal socket) with model, firmware, map
@@ -628,6 +661,26 @@ Polish after M10 (demo review):
 
 ### Fixed
 
+- Demo seed: the current year's contracts, charges and payments are no longer all dated on the seed day. Contracts
+  are signed through a fake clock (annual ones in early January, seasonal in March, transits 3 to 30 days before
+  arrival) on four payment clauses, and the instalments are issued and settled day by day up to today, as the
+  previous-year history (which replays the same clauses): the dashboard "Mese in corso" compares with last year at
+  a believable ratio. Opening balances date from the start of the history.
+- Demo seed: today's rentals use fixed bands within the rental hours instead of the seed moment, so the rental
+  phone screen no longer turns every card into "Ritardo" a few hours later (one rental is late on purpose).
+- Admin app: a marina missing from the cached `me` (created since, or restored from the offline cache) refetches
+  `me` once before showing "Pagina non trovata".
+- SQLite: the rows of one allocation are read through the allocation index (sorted in Go instead of `ORDER BY
+  night`, which made the planner walk every occupancy row of the marina): confirming a transit on a busy marina no
+  longer scans the whole season (the demo seed runs in half the time).
+- `PORTO_LOGIN_ATTEMPTS_PER_MINUTE` (default 30, raised only with `PORTO_DEV=true`): the end-to-end server raises
+  the per-address login limit, so a full run no longer hits "Troppi tentativi"; production keeps 30 a minute and
+  the per-account failure limit.
+
+- Lifting equipment page: the grid scrolls inside its box instead of widening the page and hiding "Prenota mezzo"
+  and "Pianifica" (the shell content area no longer grows past the window on any page); the berth calendar
+  "next" arrow is visible again; with Diritti d'uso, Pagamenti or Sensori on, no map lens tab looks selected.
+- VAT rates in quotes, work orders and billing tables read "22%" instead of "22% %".
 - Undoing a move no longer breaks a `moved_from` chain (INV-11): when, while the source was detached, a successor
   of another move was resized onto its nights or its predecessor was extended over them, the undo is unavailable
   instead of restoring overlapping allocations (`TestOccupancy_UndoKeepsChainOrdered`).

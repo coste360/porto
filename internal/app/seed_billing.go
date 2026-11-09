@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math/rand/v2"
 	"strings"
+	"time"
 
 	"github.com/coste360/porto/internal/calendar"
 	"github.com/coste360/porto/internal/domain/auth"
@@ -22,7 +23,8 @@ import (
 // 22 %, SUBENTRO 22 %, PENALE N1, RIMBORSO 22 %, CAUZIONE N1, SALDO N1: VAT choices are demo data), the backfill of
 // the M4 instalments and holder instalments seeded before the settings existed, a termination charge when a
 // terminated contract has an amount, two exports (instalments, reconciled with invoice numbers FT-<n>; holder
-// instalments) leaving transits and the rest to_invoice, and twelve opening balances. It is a no-op once the
+// instalments) leaving transits and the rest to_invoice, and twelve opening balances (dated at the start of the
+// demo history). It is a no-op once the
 // billing settings were saved (the hooks already charged what the earlier seeds issued).
 func (a *App) seedBilling(ctx context.Context, p *auth.Principal, res *SeedResult) error {
 	m := res.MarinaID
@@ -102,7 +104,15 @@ func (a *App) seedBilling(ctx context.Context, p *auth.Principal, res *SeedResul
 			return fmt.Errorf("reconcile: %w", err)
 		}
 	}
-	n, err := a.seedOpeningBalances(ctx, p, scope, today)
+	// The opening balances come from the software used before Porto: imported on the day the demo history
+	// starts (1 December Y−2, seed_history.go), not in the current month.
+	opened := calendar.New(today.Year()-2, time.December, 1)
+	past, _, err := a.seedClockApp(ctx, opened.Time(loc).Add(9*time.Hour))
+	if err != nil {
+		return err
+	}
+	defer func() { _ = past.Close() }()
+	n, err := past.seedOpeningBalances(ctx, p, scope, opened)
 	if err != nil {
 		return fmt.Errorf("opening balances: %w", err)
 	}

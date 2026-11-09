@@ -1,0 +1,67 @@
+# documentation: https://github.com/coste360/porto#readme
+# slogan: Gestionale per porti turistici, approdi e cantieri nautici (codice sorgente disponibile, BSL 1.1), con PostgreSQL.
+# tags: porto turistico,marina,ormeggi,posti barca,cantiere nautico,rimessaggio,booking,gestionale,postgresql
+# logo: https://raw.githubusercontent.com/coste360/porto/main/assets/brand/porto/03_Icone_App_SVG/porto_app_navy.svg
+# port: 8080
+#
+# Coolify template (Docker Compose), PostgreSQL 17: several marinas or an infrastructure already based on
+# PostgreSQL. Coolify generates SERVICE_PASSWORD_POSTGRES; set PORTO_SECRET_KEY by hand (openssl rand -base64 32).
+# The porto-data volume still holds the files that are not in the database (mail directory, backups).
+
+services:
+  porto:
+    image: ghcr.io/coste360/porto:${PORTO_VERSION:-latest}
+    restart: unless-stopped
+    environment:
+      - SERVICE_FQDN_PORTO_8080
+      - PORTO_ADDR=:8080
+      - PORTO_DATA_DIR=/data
+      - PORTO_BASE_URL=${SERVICE_URL_PORTO}
+      - DATABASE_URL=postgres://porto:${SERVICE_PASSWORD_POSTGRES}@postgres:5432/porto?sslmode=disable
+      - PORTO_SECRET_KEY=${PORTO_SECRET_KEY:?}
+      - PORTO_AUTO_MIGRATE=${PORTO_AUTO_MIGRATE:-true}
+      - PORTO_SMTP_URL=${PORTO_SMTP_URL:-}
+      - PORTO_MAIL_FROM=${PORTO_MAIL_FROM:-}
+      - PORTO_HOLD_TTL=${PORTO_HOLD_TTL:-10m}
+      - PORTO_LOG_LEVEL=${PORTO_LOG_LEVEL:-info}
+      - PORTO_TRUSTED_PROXIES=${PORTO_TRUSTED_PROXIES:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
+      - PORTO_REQUIRE_TOTP_FOR_OWNERS=${PORTO_REQUIRE_TOTP_FOR_OWNERS:-false}
+      - PORTO_TELEMETRY=false
+      - PORTO_BOOTSTRAP_OWNER_EMAIL=${PORTO_BOOTSTRAP_OWNER_EMAIL:-}
+      - PORTO_BOOTSTRAP_OWNER_NAME=${PORTO_BOOTSTRAP_OWNER_NAME:-}
+      - PORTO_BOOTSTRAP_OWNER_ORG=${PORTO_BOOTSTRAP_OWNER_ORG:-}
+      - PORTO_ADMIN_PASSWORD=${PORTO_ADMIN_PASSWORD:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - porto-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=porto
+      - POSTGRES_DB=porto
+      - POSTGRES_PASSWORD=${SERVICE_PASSWORD_POSTGRES}
+    volumes:
+      - porto-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U porto -d porto"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  porto-data:
+  porto-pg-data:

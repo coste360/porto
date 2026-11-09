@@ -84,7 +84,10 @@ export function DayGrid({
             }
             return (
               <tr key={e.id} className="border-t">
-                <th scope="row" className="bg-card sticky left-0 p-2 text-left font-medium">
+                <th
+                  scope="row"
+                  className="bg-card sticky left-0 min-w-28 p-2 text-left font-medium"
+                >
                   <div>{e.code}</div>
                   <div className="text-muted-foreground font-normal">{e.name}</div>
                   {e.out_of_service ? (

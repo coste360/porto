@@ -56,6 +56,11 @@ describe('StoragePlannerPage', () => {
     ).toHaveAttribute('data-allocation', 'al-a');
     // Read only without storage.manage.
     expect(screen.queryByTestId('storage-save')).not.toBeInTheDocument();
+    // Turning the lens off goes back to the contract colours and hides the lens legend.
+    expect(screen.getByTestId('storage-lens-legend')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('switch', { name: 'Lente Accessibilità' }));
+    expect(boat('al-a')).not.toHaveAttribute('data-lens');
+    expect(screen.queryByTestId('storage-lens-legend')).not.toBeInTheDocument();
   });
 
   it('moves a boat with the keyboard, evaluates the draft and saves only the changed boat', async () => {

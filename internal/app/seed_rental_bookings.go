@@ -15,10 +15,10 @@ import (
 	"github.com/coste360/porto/internal/store"
 )
 
-// seedRentalBookings adds the M11 demo of BOOKING (m11-plan §16.2): bookings over two weeks around today (held,
-// confirmed, cancelled, no-show, one expired hold whose job has not run yet) and blocks of a unit and a skipper.
-// Checked-out, returned and closed rentals come from the handover demo, which checks out some of today's
-// confirmed bookings. Everything goes through the reservation service as the demo owner; a no-op when the marina
+// seedRentalBookings adds the M11 demo of BOOKING (m11-plan §16.2): about twenty bookings over the week ahead on
+// the whole fleet, with skippers and extras (held, confirmed, cancelled, yesterday's no-show, one expired hold whose
+// job has not run yet) and blocks of a unit and a skipper. Checked-out, returned and closed rentals come from the
+// handover demo, which checks out four of today's confirmed bookings and replays the last three days. Everything goes through the reservation service as the demo owner; a no-op when the marina
 // already has rental bookings or no fleet.
 func (a *App) seedRentalBookings(ctx context.Context, p *auth.Principal, res *SeedResult) error {
 	if a.RentalBookings == nil {
@@ -79,17 +79,34 @@ func (a *App) seedRentalBookings(ctx context.Context, p *auth.Principal, res *Se
 		extras        bool
 		then          string // cancel, no_show
 	}
+	// Today: the first four (by start, seedRentalToday) are handed over by the handover seed (two out at sea, two
+	// back), the others wait for their check-out in the evening; then the week ahead, a cancellation and
+	// yesterday's no-show. Today's times are fixed bands within the rental hours (08:00–19:00), not the moment the
+	// seed runs, so the phone screen reads the same whenever the demo is opened during the day: one rental out at
+	// sea is late on purpose (due back at 09:30), the other returns at closing time, the pickups start from 17:00.
 	demos := []demo{
-		{SeedRentalUnitGOM58, SeedRentalHourly, span(0, 20, 0, 24), -1, false, "Cliente Demo Uno", true, ""},
-		{SeedRentalUnitOPEN, SeedRentalMorning, span(0, 16, 0, 26), 0, false, "Cliente Demo Due", false, ""},
-		{SeedRentalUnitSUP, SeedRentalHourly, span(0, 30, 0, 34), -1, false, "Cliente Demo Tre", false, ""},
-		{SeedRentalUnitGOM65, SeedRentalDay, span(1, 16, 1, 38), -1, false, "Cliente Demo Quattro", false, ""},
-		{SeedRentalUnitGOM58, SeedRentalAfternoon, span(1, 28, 1, 38), -1, true, "Cliente Demo Cinque", false, ""},
-		{SeedRentalUnitSAIL, SeedRentalMultiDay, span(2, 18, 4, 36), 1, false, "Cliente Demo Sei", true, ""},
-		{SeedRentalUnitGOM58, SeedRentalHourly, span(5, 22, 5, 28), -1, true, "Cliente Demo Sette", false, ""},
-		{SeedRentalUnitGOM58, SeedRentalWeek, span(7, 16, 13, 38), -1, false, "Cliente Demo Otto", false, ""},
-		{SeedRentalUnitOPEN, SeedRentalHourly, span(3, 20, 3, 24), -1, false, "Cliente Demo Nove", false, "cancel"},
-		{SeedRentalUnitGOM65, SeedRentalHourly, span(-1, 20, -1, 24), -1, false, "Cliente Demo Dieci", false, "no_show"},
+		{SeedRentalUnitGOM58, SeedRentalHourly, span(0, 16, 0, 19), -1, false, seedRenters[0], true, ""},
+		{SeedRentalUnitSAIL, SeedRentalDay, span(0, 16, 0, 38), 1, false, seedRenters[2], true, ""},
+		{SeedRentalUnitOPEN, SeedRentalHourly, span(0, 17, 0, 26), 0, false, seedRenters[1], false, ""},
+		{SeedRentalUnitSUP, SeedRentalHourly, span(0, 18, 0, 20), -1, false, seedRenters[3], false, ""},
+		{SeedRentalUnitGOM70, SeedRentalHourly, span(0, 34, 0, 38), -1, false, seedRenters[4], false, ""},
+		{SeedRentalUnitGOM50, SeedRentalHourly, span(0, 35, 0, 38), -1, false, seedRenters[5], true, ""},
+		{SeedRentalUnitOPEN60, SeedRentalHourly, span(0, 36, 0, 38), -1, false, seedRenters[6], false, ""},
+		{SeedRentalUnitSUP2, SeedRentalHourly, span(0, 36, 0, 38), -1, true, seedRenters[7], false, ""},
+		{SeedRentalUnitGOM65, SeedRentalDay, span(1, 16, 1, 38), 2, false, seedRenters[8], false, ""},
+		{SeedRentalUnitGOM58, SeedRentalAfternoon, span(1, 28, 1, 38), -1, true, seedRenters[9], false, ""},
+		{SeedRentalUnitSAIL32, SeedRentalMultiDay, span(1, 18, 3, 36), 0, false, seedRenters[10], true, ""},
+		{SeedRentalUnitOPEN, SeedRentalDay, span(1, 16, 1, 38), -1, false, seedRenters[11], true, ""},
+		{SeedRentalUnitSAIL, SeedRentalMultiDay, span(2, 18, 4, 36), 1, false, seedRenters[12], true, ""},
+		{SeedRentalUnitGOM70, SeedRentalMorning, span(2, 16, 2, 26), 2, false, seedRenters[13], false, ""},
+		{SeedRentalUnitSUP, SeedRentalHourly, span(2, 20, 2, 24), -1, false, seedRenters[14], false, ""},
+		{SeedRentalUnitGOM50, SeedRentalDay, span(3, 16, 3, 38), -1, false, seedRenters[15], false, ""},
+		{SeedRentalUnitOPEN60, SeedRentalAfternoon, span(4, 28, 4, 38), -1, true, seedRenters[16], false, ""},
+		{SeedRentalUnitGOM58, SeedRentalHourly, span(5, 22, 5, 28), -1, true, seedRenters[17], false, ""},
+		{SeedRentalUnitGOM65, SeedRentalMorning, span(5, 16, 5, 26), 0, false, seedRenters[18], false, ""},
+		{SeedRentalUnitGOM58, SeedRentalWeek, span(7, 16, 13, 38), -1, false, seedRenters[19], false, ""},
+		{SeedRentalUnitOPEN, SeedRentalHourly, span(3, 20, 3, 24), -1, false, seedRenters[20], false, "cancel"},
+		{SeedRentalUnitGOM65, SeedRentalHourly, span(-1, 20, -1, 24), -1, false, seedRenters[21], false, "no_show"},
 	}
 	extras, err := a.RentalFleet.ListExtras(ctx, p, m, nil)
 	if err != nil {
@@ -127,7 +144,7 @@ func (a *App) seedRentalBookings(ctx context.Context, p *auth.Principal, res *Se
 	past := a.RentalBookings.WithClock(clock.NewFake(a.Clock.Now().Add(-2 * time.Hour)))
 	if _, err := past.Create(ctx, p, m, reservation.CreateInput{
 		UnitID: unit[SeedRentalUnitGOM65], FormulaID: formula[SeedRentalHourly], Range: span(6, 20, 6, 24), Hold: true,
-		Renter: &reservation.Renter{Name: "Cliente Demo Opzione"},
+		Renter: &reservation.Renter{Name: seedRenters[22]},
 	}); err != nil {
 		return fmt.Errorf("rental expired hold: %w", err)
 	}
@@ -145,4 +162,13 @@ func (a *App) seedRentalBookings(ctx context.Context, p *auth.Principal, res *Se
 		}
 	}
 	return nil
+}
+
+// seedRenters are the (invented) renters of the rental demo.
+var seedRenters = []string{
+	"Marco Bianchi", "Giulia Romano", "Luca Colombo", "Sara Ricci", "Davide Marino", "Elena Greco", "Paolo Bruno",
+	"Chiara Gallo", "Matteo Conti", "Francesca De Luca", "Andrea Mancini", "Valentina Costa", "Simone Giordano",
+	"Martina Rizzo", "Alessandro Lombardi", "Federica Moretti", "Roberto Barbieri", "Ilaria Fontana", "Stefano Santoro",
+	"Laura Mariani", "Giorgio Rinaldi", "Anna Caruso", "Fabio Ferrara", "Silvia Galli", "Nicola Martini", "Elisa Leone",
+	"Riccardo Longo", "Marta Gentile",
 }

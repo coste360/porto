@@ -1,0 +1,162 @@
+name: Release
+
+# Started by a version tag (docs/release.md). Publishes the multi-arch container image to GHCR and then the GitHub
+# Release (notes from CHANGELOG.md, API contract attached). No binaries are attached here: the desktop packages and
+# the server archives are built, signed and uploaded by the private build pipeline, which polls the latest GitHub
+# Release and writes https://updates.coste360.it/porto/latest.json. Only GITHUB_TOKEN is used.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/coste360/porto
+
+jobs:
+  verify:
+    name: Tag and changelog
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
+      prerelease: ${{ steps.tag.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check the tag
+        id: tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if ! printf '%s' "$TAG" | grep -Eq '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$'; then
+            echo "::error::tag $TAG is not vMAJOR.MINOR.PATCH[-prerelease]"
+            exit 1
+          fi
+          version="${TAG#v}"
+          prerelease=false
+          case "$version" in *-*) prerelease=true ;; esac
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+
+      - name: Extract the release notes from CHANGELOG.md
+        env:
+          VERSION: ${{ steps.tag.outputs.version }}
+        run: |
+          set -euo pipefail
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" { if (found) exit; if (index($0, "## [" v "]") == 1) { found = 1; next } }
+            found { print }
+            END { if (!found) exit 1 }
+          ' CHANGELOG.md > release-notes.md || {
+            echo "::error::CHANGELOG.md has no '## [$VERSION]' section (docs/release.md)"
+            exit 1
+          }
+          test -s release-notes.md || { echo "::error::the '## [$VERSION]' section of CHANGELOG.md is empty"; exit 1; }
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-notes
+          path: release-notes.md
+          retention-days: 1
+          if-no-files-found: error
+
+  image:
+    name: Container image (amd64, arm64)
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-qemu-action@v4
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.IMAGE }}
+          # "latest" and the moving major/minor tags only for stable versions.
+          flavor: |
+            latest=auto
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.') }}
+          labels: |
+            org.opencontainers.image.title=Porto
+            org.opencontainers.image.description=Gestionale per porti turistici e cantieri nautici (codice sorgente disponibile, BSL 1.1)
+            org.opencontainers.image.vendor=Coste360 SRL
+            org.opencontainers.image.licenses=BUSL-1.1
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: deploy/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ github.ref_name }}
+          provenance: mode=max
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test of the published image
+        env:
+          TAG: ${{ needs.verify.outputs.version }}
+        run: |
+          set -euo pipefail
+          docker run --rm "$IMAGE:$TAG" version
+
+  release:
+    name: GitHub Release (notes and API contract, no binaries)
+    needs: [verify, image]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: release-notes
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          PRERELEASE: ${{ needs.verify.outputs.prerelease }}
+        run: |
+          set -euo pipefail
+          flags=(--verify-tag --title "Porto $TAG" --notes-file release-notes.md)
+          if [ "$PRERELEASE" = true ]; then flags+=(--prerelease); else flags+=(--latest); fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "release $TAG already exists: updating notes and contract"
+            gh release edit "$TAG" --notes-file release-notes.md
+            gh release upload "$TAG" api/openapi.yaml --clobber
+          else
+            gh release create "$TAG" "${flags[@]}" api/openapi.yaml
+          fi

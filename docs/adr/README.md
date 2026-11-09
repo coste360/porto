@@ -26,3 +26,4 @@ unique, 0004 prezzi puri, 0005 OpenAPI spec-first, 0009 shadcn, 0012 kit della m
 | [0015](0015-cantiere-m10.md) | Cantiere (M10): formule pure in virgola fissa, preventivo riproducibile dallo snapshot, commessa creata nell'accettazione, mezzi senza doppie prenotazioni per vincolo del DB, magazzino rinviato | proposta |
 | [0016](0016-noleggio-m11.md) | Noleggio (M11): slot di 30 minuti con buffer per vincolo del DB, hold come la vendita online, prezzi dai listini, cauzione mai ricavo finché non trattenuta, vendita online rinviata | proposta |
 | [0017](0017-sensori-scheda-pubblica-m12.md) | Sensori e scheda pubblica (M12): i sensori segnalano e propongono, mai cambiano occupazioni o contratti; chiavi con hash e verificatore cifrato, letture idempotenti escluse dal backup, scheda senza dati personali | proposta |
+| [0018](0018-licenza.md) | Licenza: Business Source License 1.1, gratuita per i porti, AGPL dopo tre anni | accettata |

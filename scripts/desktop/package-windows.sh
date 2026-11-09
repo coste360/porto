@@ -3,8 +3,10 @@
 # (CGO for WebView2), windres and Inno Setup 6 (iscc).
 #
 # Signing hook (docs/desktop-build.md), never faked:
-#   WINDOWS_SIGN_CMD   command run with the file path appended (signtool, AzureSignTool…), for the exe and the
-#                      installer. Without it the file name says -unsigned.
+#   WINDOWS_SIGN_CMD   command run with the file path appended (signtool, AzureSignTool…), for the exe, the
+#                      uninstaller and the installer. Without it the file name says -unsigned. The uninstaller and
+#                      the installer are signed by Inno Setup itself (SignTool, SignedUninstaller) through
+#                      scripts/desktop/inno-sign.sh, which runs the same hook.
 set -euo pipefail
 . "$(dirname "$0")/common.sh"
 
@@ -45,12 +47,21 @@ rm -f "$syso"
 sign "$exe"
 
 suffix="-unsigned"
-[ -n "${WINDOWS_SIGN_CMD:-}" ] && suffix=""
+sign_args=()
+if [ -n "${WINDOWS_SIGN_CMD:-}" ]; then
+	suffix=""
+	# ISCC runs the sign tool with CreateProcess, not through this shell: start bash.exe on inno-sign.sh, which
+	# inherits WINDOWS_SIGN_CMD. $q is a quote and $f the quoted path of the file, expanded by ISCC.
+	bash_w="$(cygpath -w "$(command -v bash)")"
+	hook_w="$(cygpath -w "$DESKTOP_ROOT/scripts/desktop/inno-sign.sh")"
+	sign_args=("/DPortoSign=1" "/Sporto=\$q${bash_w}\$q \$q${hook_w}\$q \$f")
+fi
 name="${APP_NAME}_${NUMERIC_VERSION}_windows_amd64_setup${suffix}"
-"$ISCC" /Q "/DAppVersion=$NUMERIC_VERSION" "/DSourceDir=$(cygpath -w "$work" 2>/dev/null || echo "$work")" \
+# Every path below is already in Windows form: keep MSYS from rewriting the "/X" switches as paths.
+MSYS2_ARG_CONV_EXCL='*' MSYS_NO_PATHCONV=1 "$ISCC" /Q "/DAppVersion=$NUMERIC_VERSION" \
+	"/DSourceDir=$(cygpath -w "$work" 2>/dev/null || echo "$work")" \
 	"/DOutputDir=$(cygpath -w "$DESKTOP_DIST" 2>/dev/null || echo "$DESKTOP_DIST")" "/DOutputName=$name" \
-	"$PACKAGING/windows/porto.iss"
+	"${sign_args[@]}" "$PACKAGING/windows/porto.iss"
 installer="$DESKTOP_DIST/$name.exe"
-sign "$installer"
 sha256_file "$installer"
 echo "packaged $installer"

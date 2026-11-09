@@ -24,6 +24,11 @@ const (
 	SeedRentalUnitOPEN    = "OPEN55"
 	SeedRentalUnitSAIL    = "VELA26"
 	SeedRentalUnitSUP     = "SUP1"
+	SeedRentalUnitGOM50   = "GOM50"
+	SeedRentalUnitGOM70   = "GOM70"
+	SeedRentalUnitOPEN60  = "OPEN60"
+	SeedRentalUnitSAIL32  = "VELA32"
+	SeedRentalUnitSUP2    = "SUP2"
 	SeedRentalHourly      = "ORARIA"
 	SeedRentalMorning     = "MEZZA-MATTINA"
 	SeedRentalAfternoon   = "MEZZA-POMERIGGIO"
@@ -33,7 +38,7 @@ const (
 	seedRentalListCodeFmt = "NOL-%d"
 )
 
-// seedRentalFleet adds the M11 demo of FLEET (m11-plan §16.2): 5 units (2 rib, open, sail, sup), 2 skippers, the
+// seedRentalFleet adds the M11 demo of FLEET (m11-plan §16.2): 10 units (4 rib, 2 open, 2 sail, 2 sup), 3 skippers, the
 // formulas ORARIA, MEZZA-MATTINA, MEZZA-POMERIGGIO, GIORNATA, PIU-GIORNI, SETTIMANA, the price list NOL-<year> of
 // m11-plan §5.3 (period alta = July and August, prices VAT included), extras, fuel, late and damage items, and the
 // settings with the skipper and damage items. Everything goes through the services as the demo owner; a no-op when
@@ -137,6 +142,11 @@ func (a *App) seedRentalFleet(ctx context.Context, p *auth.Principal, res *SeedR
 		{SeedRentalUnitOPEN, "Sirena", "monohull_motor", store.RentalCategoryOpen, "NOL-OPEN", store.RentalFuelPetrol, store.RentalLicenceThreshold, 550, 220, 29, 6, 40_000, 30_000},
 		{SeedRentalUnitSAIL, "Maestrale", "monohull_sail", store.RentalCategorySail, "NOL-VELA", store.RentalFuelDiesel, store.RentalLicenceAlways, 790, 280, 15, 6, 30_000, 100_000},
 		{SeedRentalUnitSUP, "Tavola 1", "other", store.RentalCategorySUP, "NOL-SUP", store.RentalFuelNone, store.RentalLicenceNever, 320, 80, 0, 1, 0, 5_000},
+		{SeedRentalUnitGOM50, "Delfino", "rib", store.RentalCategoryRIB, "NOL-GOM58", store.RentalFuelPetrol, store.RentalLicenceThreshold, 500, 220, 30, 6, 50_000, 40_000},
+		{SeedRentalUnitGOM70, "Albatros", "rib", store.RentalCategoryRIB, "NOL-GOM65", store.RentalFuelPetrol, store.RentalLicenceThreshold, 700, 280, 150, 12, 150_000, 100_000},
+		{SeedRentalUnitOPEN60, "Ondina", "monohull_motor", store.RentalCategoryOpen, "NOL-OPEN", store.RentalFuelPetrol, store.RentalLicenceThreshold, 600, 240, 40, 7, 60_000, 40_000},
+		{SeedRentalUnitSAIL32, "Libeccio", "monohull_sail", store.RentalCategorySail, "NOL-VELA", store.RentalFuelDiesel, store.RentalLicenceAlways, 980, 330, 20, 8, 60_000, 150_000},
+		{SeedRentalUnitSUP2, "Tavola 2", "other", store.RentalCategorySUP, "NOL-SUP", store.RentalFuelNone, store.RentalLicenceNever, 320, 80, 0, 1, 0, 5_000},
 	} {
 		name, hull, loa, beam, fuel := "Noleggio "+u.name, u.hull, u.loa, u.beam, u.fuel
 		patch := vessel.Patch{Name: &name, HullType: &hull, LOACm: &loa, BeamCm: &beam, Flag: ptrOf("IT")}
@@ -158,7 +168,7 @@ func (a *App) seedRentalFleet(ctx context.Context, p *auth.Principal, res *SeedR
 	}
 
 	// Skippers: Monday to Saturday 08:00-19:00.
-	for i, name := range []string{"Skipper Demo Uno", "Skipper Demo Due"} {
+	for i, name := range []string{"Skipper Demo Uno", "Skipper Demo Due", "Skipper Demo Tre"} {
 		k, err := a.RentalFleet.CreateSkipper(ctx, p, m, fleet.SkipperInput{
 			Name: name, Phone: "+39 000 000000" + strconv.Itoa(i), LicenceExpiresOn: calendar.New(y+3, 12, 31), Sort: i,
 		})

@@ -229,8 +229,10 @@ reacquired by the OS lock semantics; `instance.json` is rewritten at each start.
 - Folder unavailable (USB stick removed): write to `<data>/backups` and report `fallback: true` in the status.
 - **Version check** (`internal/desktop/update.go`): when `update_check` is on, at start + every 24 h,
   `GET <update URL>` through the egress client (`event.NewEgress`: https, public addresses only), default URL
-  `https://download.coste360.it/porto/desktop/latest.json` (D16), body ≤ 64 KiB
-  `{"version":"1.2.3","url":"https://…","published_at":"…"}`, User-Agent `Porto-Desktop/<version> (<goos>; <goarch>)`
+  `https://updates.coste360.it/porto/latest.json` (D16, closed: the shared Coste360 updates service), body ≤ 64 KiB,
+  the service's `latest.json` (`version`, `tag`, `published_at`, `release_notes`, `checksums`, `files[]`, plus the
+  top-level `url` the banner opens; unknown fields ignored; without `url` the banner opens `release_notes`),
+  User-Agent `porto/<version> (desktop; <goos>/<goarch>)`
   only: no cookies, no identifiers, no marina data. Newer semver than the running one → `update` in the status →
   dismissible banner in the desktop window (dismissal per version). Any failure: debug log, no banner, no retry
   storm. Off → **no request at all**. Never auto-downloads or installs.
@@ -563,7 +565,7 @@ never echo values), `TestServerEnv_Build`, `TestSettings_RoundTripPreservesUnkno
 `TestBackupName_ParseFormat`, `TestBackup_PruneCandidates` (property test with `rapid`: never removes manual,
 pre-restore or the newest valid file; keeps exactly N per kind), `TestBackupScheduler_DailyDueAcrossRestarts`
 (`clock.Fake`), `TestBackup_FallbackFolder`, `TestUpdate_DisabledMakesNoRequest`, `TestUpdate_FailureIsSilent`,
-`TestUpdate_UserAgentHasNoIdentifiers`, `TestUpdate_NewerVersionOnly`, `TestLogFile_Rotation`,
+`TestUpdate_UserAgentHasNoIdentifiers`, `TestUpdate_NewerVersionOnly`, `TestUpdate_ReleaseManifest`, `TestLogFile_Rotation`,
 `TestBrandIcons_MatchKit`; integration: `TestLauncher_StartStop` (fake `Window`, `FileStore`, temp dir: `/readyz`
 200, first run pending, stop writes an exit backup and releases the lock), `TestLauncher_RestoreSwapsDatabase`
 (pre-restore backup exists, live DB untouched on a corrupt archive), `TestConcurrency_FirstRunSingleOwner`
@@ -702,7 +704,7 @@ running → the window comes to the front.
 | D13 | Leaf certificate 397 days, re-issued < 30 days before expiry, on address change or on request; CA 10 years; ECDSA P-256; private keys KeyRing-encrypted at rest. |
 | D14 | Backups: existing portable format, daily (≥ 24 h since the newest daily, checked every 15 min) + on exit + manual + pre-restore; keep 14 daily and 5 exit; manual/pre-restore never pruned; fallback folder when the chosen one is unavailable. |
 | D15 | Restore swaps the database and file store after a safety backup and restarts the in-process server; the window stays open. |
-| D16 | Version check **on by default** (spec: "disattivabile"), off in first run/settings/`PORTO_UPDATE_CHECK=false`; daily, default URL `https://download.coste360.it/porto/desktop/latest.json` (to be confirmed and published by Coste360), only version/OS in the User-Agent, notify only, never install. |
+| D16 | Version check **on by default** (spec: "disattivabile"), off in first run/settings/`PORTO_UPDATE_CHECK=false`; daily, default URL `https://updates.coste360.it/porto/latest.json` (**closed**: the shared Coste360 updates service, `latest.json` written by the private build pipeline for each stable release, see `docs/release.md`), only product, version and platform in the User-Agent (`porto/<version> (desktop; <goos>/<goarch>)`), notify only, never install. |
 | D17 | Closing the window quits the app on every OS in M6a; tray and keep-running are M6b. |
 | D18 | Downloads/print/external links in the window through a small JS bridge (`window.portoDesktop`); the browser keeps native behaviour. |
 | D19 | Desktop administration (settings, LAN, backups, restore, secret key) is **owner only** and **loopback only**; no new permission constant (`IsOwnerAnywhere`). |

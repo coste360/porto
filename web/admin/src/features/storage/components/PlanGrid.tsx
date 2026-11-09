@@ -1,6 +1,6 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 
-import { TOKEN_CLASSES, type AccessibilityStyle } from '@porto/shared/map';
+import { accessibilityOf, TOKEN_CLASSES, type AccessibilityStyle } from '@porto/shared/map';
 import { cn } from '@porto/shared/lib/utils';
 
 import {
@@ -179,7 +179,8 @@ export function PlanGrid({
         const it = b.item;
         if (!it.at) return null;
         const { w, h } = boxCells(it, it.at.rotation, grid.cellCm);
-        const style = lens?.get(it.allocationId);
+        // Lens on: every boat takes its accessibility colour (a boat without an event of the day is free).
+        const style = lens ? accessibilityOf(lens, it.allocationId) : undefined;
         const token = style ? style.colorToken : b.token;
         const isSel = selected === it.allocationId;
         const cells = b.serverCells ?? boxIndexes(it, grid);

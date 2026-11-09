@@ -22,16 +22,18 @@ import (
 // Demo previous-year history (spec 21.2 comparisons, m7-plan §4): the season Y−1 of the demo marina, so that the
 // "Anno precedente" of the dashboard and the period comparison have something to compare with. It is written by a
 // second App on the same database whose clock walks through Y−1 (clock.Fake), so every service sees the day it
-// would have seen: the price list LST-(Y−1) and the annual contracts are created in December Y−2, the seasonal
-// ones in March Y−1, each guest transit a few days before its arrival with its arrival and departure presences at
-// their time, and a weekly pass runs the instalment issue job and records the payments of the charges falling due
-// (92 % paid on their due date, the rest left as old receivables). Contracts replay most of the annual and seasonal
+// would have seen: the price list LST-(Y−1) is created in December Y−2, the annual contracts in the first weeks of
+// January Y−1 with the payment clause of the contract of Y they replay, the seasonal ones in March Y−1,
+// each guest transit a few days before its arrival with its arrival and departure presences at their time, and a
+// pass on every issue day runs the instalment issue job and a weekly one records the payments of the charges
+// falling due (92 % paid on their due date, the rest left as old receivables). Contracts replay most of the annual and seasonal
 // contracts of Y one year earlier on the same berth with the same customer and vessel (a few berths changed hands,
 // so Y has new customers). The engine refusals tolerated by the current-year seed skip an item, so the invariants
 // hold by construction. The step is a no-op when the marina already has a contract starting before 1 January Y.
 
-// historyTransits is the number of guest transits of the previous-year history.
-const historyTransits = 150
+// historyTransits is the number of guest transits of the previous-year history: 100 in the summer and 140 around
+// the same day one year ago (as many as the current-year seed creates around today, seedOcc.transits).
+const historyTransits = 240
 
 // seedHistory seeds the previous year (see above) and adds the counts to res.
 func (a *App) seedHistory(ctx context.Context, p *auth.Principal, res *SeedResult) error {
@@ -61,10 +63,7 @@ func (a *App) seedHistory(ctx context.Context, p *auth.Principal, res *SeedResul
 		return err // no current year to mirror
 	}
 	at := func(d calendar.Date, hour int) time.Time { return d.Time(loc).Add(time.Duration(hour) * time.Hour) }
-	fake := clock.NewFake(at(prevJan1.AddDays(-31), 10))
-	past, err := NewWithOptions(ctx, a.Config, a.Version, a.ext, a.Log, Options{
-		DB: a.DB, Clock: fake, Argon2: a.opts.Argon2, Transport: a.opts.Transport,
-	})
+	past, fake, err := a.seedClockApp(ctx, at(prevJan1.AddDays(-31), 10))
 	if err != nil {
 		return err
 	}
@@ -86,7 +85,7 @@ func (a *App) seedHistory(ctx context.Context, p *auth.Principal, res *SeedResul
 		createdOn        calendar.Date
 		keepPercent      int
 	}{
-		{contract.TermAnnual, jan1, prevJan1, jan1, prevJan1.AddDays(-31), 88},
+		{contract.TermAnnual, jan1, prevJan1, jan1, prevJan1, 88},
 		{contract.TermSeasonal, calendar.New(y, time.May, 1), calendar.New(y-1, time.May, 1), calendar.New(y-1, time.October, 1), calendar.New(y-1, time.March, 2), 75},
 	} {
 		fake.Set(at(term.createdOn, 10))
@@ -94,14 +93,18 @@ func (a *App) seedHistory(ctx context.Context, p *auth.Principal, res *SeedResul
 		if err != nil {
 			return err
 		}
-		for _, pl := range placements {
+		for i, pl := range placements {
 			if pl.Term != term.name || used[pl.ResourceID] || h.rng.IntN(100) >= term.keepPercent {
 				continue
+			}
+			if term.name == contract.TermAnnual {
+				fake.Set(at(seedAnnualSignedOn(prevJan1, i, len(placements)), 10))
 			}
 			to := term.prevTo
 			c, err := past.Contracts.CreateContract(ctx, p, res.MarinaID, contract.MooringInput{
 				Term: term.name, CustomerID: pl.CustomerID, VesselID: pl.VesselID, StartsOn: term.prevFrom, EndsOn: &to, Activate: true,
 				Placements: []contract.Segment{{ResourceType: store.ResourceBerth, ResourceID: pl.ResourceID, First: term.prevFrom, Last: to.AddDays(-1)}},
+				Policy:     seedPolicyOf(pl.Policy),
 			})
 			if err := h.skip(err); err != nil {
 				return fmt.Errorf("%s contract: %w", term.name, err)
@@ -125,19 +128,50 @@ func (a *App) seedHistory(ctx context.Context, p *auth.Principal, res *SeedResul
 	if err := h.historyTransits(fake, at, free, today.AddDays(-365), now); err != nil {
 		return err
 	}
-	// Weekly pass through Y−1: issue the instalments falling due and record the payments due by then.
+	// Pass through Y−1: issue the instalments on their issue days (seedInstallmentDays) and, weekly, record the
+	// payments due by then (on their due date).
 	decided := map[string]bool{}
 	pay := rand.New(rand.NewPCG(2025, 51)) //nolint:gosec // demo data: deterministic by design
-	for d := prevJan1.AddDays(-28); d.Before(jan1) && at(d, 9).Before(now); d = d.AddDays(7) {
+	start := prevJan1.AddDays(-28)
+	days, err := seedInstallmentDays(ctx, a, scope, jan1.AddDays(-1))
+	if err != nil {
+		return err
+	}
+	issueOn := map[calendar.Date]bool{}
+	for _, d := range days {
+		issueOn[d] = true
+	}
+	for d := start; d.Before(jan1) && at(d, 9).Before(now); d = d.AddDays(1) {
+		weekly := start.DaysUntil(d)%7 == 0
+		if !weekly && !issueOn[d] {
+			continue
+		}
 		fake.Set(at(d, 9))
 		if _, err := past.Contracts.IssueMarina(ctx, res.MarinaID); err != nil {
 			return fmt.Errorf("issue: %w", err)
+		}
+		if !weekly {
+			continue
 		}
 		if err := past.seedHistoryPayments(ctx, p, scope, d, jan1, decided, pay, res); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+// seedClockApp returns a second App on the same database whose clock is a clock.Fake starting at start: the demo
+// seed writes through the services on the day each record would have been written, so audit rows, outbox events,
+// issue dates and receipt dates carry that day. The caller closes it.
+func (a *App) seedClockApp(ctx context.Context, start time.Time) (*App, *clock.Fake, error) {
+	fake := clock.NewFake(start)
+	past, err := NewWithOptions(ctx, a.Config, a.Version, a.ext, a.Log, Options{
+		DB: a.DB, Clock: fake, Argon2: a.opts.Argon2, Transport: a.opts.Transport,
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+	return past, fake, nil
 }
 
 // seedPreviousPriceList creates and activates LST-(year) from the demo list document (same rules as LST-Y).
@@ -167,23 +201,23 @@ func (a *App) seedPreviousPriceList(ctx context.Context, p *auth.Principal, m st
 	return err
 }
 
-// historyTransits creates the guest transits of the previous year: two thirds in the summer (June–September),
-// the rest within ±30 days of the same day one year ago. Each is created and confirmed three days before its
-// arrival, arrives at 15:00 and leaves at 10:00 of its departure day, the clock set to each moment; a few no-shows.
+// historyTransits creates the guest transits of the previous year: 100 in the summer (June–September), 140 from
+// 20 days before to 30 days after the same day one year ago (the window of the current-year transits). Each is
+// created and confirmed 3 to 30 days before its arrival (seedTransitBookedOn), arrives at 15:00 and leaves at 10:00 of its departure day, the clock set to each moment; a few no-shows.
 func (s *seedOcc) historyTransits(fake *clock.Fake, at func(calendar.Date, int) time.Time, free []*store.Berth, aroundDay calendar.Date, now time.Time) error {
 	if len(free) == 0 {
 		return nil
 	}
 	y := aroundDay.Year()
 	summer := [2]calendar.Date{calendar.New(y, time.June, 1), calendar.New(y, time.September, 30)}
-	around := [2]calendar.Date{aroundDay.AddDays(-30), aroundDay.AddDays(30)}
+	around := [2]calendar.Date{aroundDay.AddDays(-20), aroundDay.AddDays(30)}
 	if around[1].After(s.yearTo) {
 		around[1] = s.yearTo
 	}
 	done, noShow := 0, 0
 	for i := 0; i < 3*historyTransits && done < historyTransits; i++ {
 		win := summer
-		if i%3 == 2 {
+		if i%12 < 7 {
 			win = around
 		}
 		span := win[0].DaysUntil(win[1])
@@ -206,7 +240,7 @@ func (s *seedOcc) historyTransits(fake *clock.Fake, at func(calendar.Date, int) 
 		if s.rng.IntN(3) == 0 {
 			hull = "monohull_motor"
 		}
-		fake.Set(at(arr.AddDays(-3), 11))
+		fake.Set(at(seedTransitBookedOn(arr, s.today, s.rng), 11))
 		c, err := s.a.Contracts.CreateTransit(s.ctx, s.p, s.m, contract.TransitInput{
 			NewVessel: &contract.NewVessel{
 				Name: fmt.Sprintf("%s %d", seedGuestNames[(i+7)%len(seedGuestNames)], 200+i), LOACm: loa, BeamCm: beam, HullType: hull,

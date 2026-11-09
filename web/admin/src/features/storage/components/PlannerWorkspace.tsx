@@ -10,9 +10,16 @@ import {
 } from 'lucide-react';
 
 import type { StorageAccessEntry, StorageItemIssue } from '@porto/shared/api';
+import { cn } from '@porto/shared/lib/utils';
 import { useT } from '@porto/shared/i18n';
 import { formatCm, formatIsoDate } from '@porto/shared/lib/format';
-import { accessibilityStyles, blockedExitsByDate, type HarborToken } from '@porto/shared/map';
+import {
+  ACCESSIBILITY_LEGEND,
+  accessibilityStyles,
+  blockedExitsByDate,
+  TOKEN_CLASSES,
+  type HarborToken,
+} from '@porto/shared/map';
 import { Badge } from '@porto/shared/ui/badge';
 import { Button } from '@porto/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@porto/shared/ui/card';
@@ -161,9 +168,12 @@ export function PlannerWorkspace(p: PlannerWorkspaceProps) {
             </Button>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Switch id={`${p.idPrefix}-lens`} checked={p.lens} onCheckedChange={p.onLens} />
-          <Label htmlFor={`${p.idPrefix}-lens`}>{t('storage:planner.lens')}</Label>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <Switch id={`${p.idPrefix}-lens`} checked={p.lens} onCheckedChange={p.onLens} />
+            <Label htmlFor={`${p.idPrefix}-lens`}>{t('storage:planner.lens')}</Label>
+          </div>
+          {p.lens ? <AccessibilityLegend /> : null}
         </div>
         {p.toolbar}
       </div>
@@ -349,5 +359,32 @@ export function PlannerWorkspace(p: PlannerWorkspaceProps) {
         </div>
       </div>
     </div>
+  );
+}
+
+/** Colour key of the Accessibilità lens (shown while the lens is on). */
+const LEGEND_SWATCH: Record<(typeof ACCESSIBILITY_LEGEND)[number], string> = {
+  blocked: TOKEN_CLASSES.bad.bg,
+  blocking: cn(TOKEN_CLASSES.free.bg, 'ring-destructive opacity-40 ring-2'),
+  leaving: TOKEN_CLASSES.departure.bg,
+  arrival_blocked: TOKEN_CLASSES.warn.bg,
+  ok: cn(TOKEN_CLASSES.free.bg, 'opacity-40'),
+};
+
+function AccessibilityLegend() {
+  const { t } = useT();
+  return (
+    <ul
+      className="text-muted-foreground flex flex-wrap gap-3 text-xs"
+      aria-label={t('storage:planner.lens')}
+      data-testid="storage-lens-legend"
+    >
+      {ACCESSIBILITY_LEGEND.map((k) => (
+        <li key={k} className="flex items-center gap-1">
+          <span className={cn('inline-block size-3 rounded-sm', LEGEND_SWATCH[k])} />
+          {t(`storage:lens.${k}`)}
+        </li>
+      ))}
+    </ul>
   );
 }

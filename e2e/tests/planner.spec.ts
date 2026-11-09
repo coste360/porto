@@ -11,9 +11,8 @@ import { today } from '../support/opsmap';
 import { createVessel, dayFromToday, uniq } from '../support/registry';
 import { login } from '../support/session';
 
-// Berth calendar (9.7, m3-plan §9.5): dragging the right edge of a transit bar extends the stay.
-
-const COL_PX = 32;
+// Berth calendar (9.7, m3-plan §9.5): dragging the right edge of a transit bar extends the stay. The columns
+// stretch to fill the width (14 and 31 nights), so the column width is read from the 3-night bar.
 
 let harbour: string | null = null;
 test.afterEach(async ({ page }) => {
@@ -46,6 +45,8 @@ test('planner: extend a transit by dragging its bar', async ({ page }) => {
   await expect(bar).toBeVisible();
   const box = (await bar.locator('rect').first().boundingBox())!;
   const y = box.y + box.height / 2;
+  // A bar of n nights is n columns wide minus a 2 px gap.
+  const COL_PX = (box.width + 2) / 3;
   await page.mouse.move(box.x + box.width - 3, y);
   await page.mouse.down();
   await page.mouse.move(box.x + box.width - 3 + COL_PX, y, { steps: 4 });

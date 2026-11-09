@@ -12,6 +12,8 @@
 @source '../../../admin/src';
 @source '../../../booking/src';
 @source '../';
+/* Map panels that fill the viewport (admin/src/lib/fillHeight.ts): heights built at runtime in steps of 8 units. */
+@source inline('{,lg:}h-{64..400..8}');
 
 @custom-variant dark (&:is(.dark *));
 

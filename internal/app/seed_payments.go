@@ -56,8 +56,8 @@ func (a *App) seedPayments(ctx context.Context, p *auth.Principal, res *SeedResu
 	}
 	var overpaid, goodwill string
 	for i, ch := range open {
-		if ch.CustomerID == "" || ch.DueOn.After(today.AddDays(15)) {
-			continue
+		if ch.CustomerID == "" || ch.DueOn.After(today) {
+			continue // not due yet: the scadenzario shows what falls due next
 		}
 		x := rng.IntN(100)
 		if x >= 75 {
@@ -70,9 +70,9 @@ func (a *App) seedPayments(ctx context.Context, p *auth.Principal, res *SeedResu
 		if amount <= 0 {
 			continue
 		}
-		on := ch.DueOn
-		if on.After(today) || on.Before(ch.IssuedOn) {
-			on = today
+		on := ch.DueOn // paid on its due date
+		if on.Before(ch.IssuedOn) {
+			on = ch.IssuedOn
 		}
 		in := payment.RecordInput{
 			CustomerID: ch.CustomerID, Kind: store.PaymentKindPayment, Method: method(), Amount: amount, ReceivedOn: on,

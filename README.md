@@ -263,7 +263,7 @@ Tutte le milestone da M0 a M12 sono implementate: fondamenta, mappa e anagrafich
 
 ## Installazione in 5 minuti
 
-**Dove si scarica.** Su GitHub trovi il codice sorgente e le istruzioni per compilarlo ed eseguirlo: i binari pronti **non** vengono pubblicati qui. L'immagine Docker `ghcr.io/coste360/porto` sarà pubblica e gratuita a partire dal primo rilascio; fino ad allora si compila dai sorgenti con un comando (vedi sotto). I pacchetti pronti dell'app desktop per Windows, macOS e Linux saranno distribuiti da Coste360 *(indirizzo di download in arrivo)*. <!-- TODO(release): link alla pagina di download dell'app desktop e conferma della pubblicazione su GHCR. -->
+**Dove si scarica.** Su GitHub trovi il codice sorgente e le istruzioni per compilarlo ed eseguirlo: i binari pronti **non** vengono allegati ai rilasci di GitHub. L'immagine Docker `ghcr.io/coste360/porto` (amd64 e arm64) è pubblica e gratuita e viene pubblicata a ogni rilascio, a partire dal primo; fino ad allora si compila dai sorgenti con un comando (vedi sotto). I pacchetti firmati dell'app desktop si scaricano da Coste360, sempre all'ultima versione: [Windows](https://updates.coste360.it/porto/download/latest/windows/x64), [macOS](https://updates.coste360.it/porto/download/latest/macos) (Apple Silicon e Intel), [Linux](https://updates.coste360.it/porto/download/latest/linux/x86_64) (AppImage); i link funzionano dal primo rilascio. Come nasce un rilascio: [docs/release.md](docs/release.md).
 
 **Quale installazione?**
 
@@ -289,6 +289,8 @@ PORTO_BOOTSTRAP_OWNER_ORG="Marina Prova SRL" PORTO_ADMIN_PASSWORD=password-di-pr
 Poi apri `http://localhost:8080/admin/` e accedi con le credenziali indicate (la password deve avere almeno 12 caratteri); le email inviate si leggono in Mailpit su `http://localhost:8025`. Per caricare il porto dimostrativo, con un utente per ogni ruolo: `docker compose exec porto /porto seed demo`. Il file `compose.yaml` nella radice usa la modalità sviluppo: non usarlo in produzione.
 
 **Installazione su un server**
+
+Con [Coolify](https://coolify.io) o [CapRover](https://caprover.com) usa i modelli pronti in [`deploy/coolify`](deploy/coolify/README.md) (SQLite o PostgreSQL) e [`deploy/caprover`](deploy/caprover/README.md) (one-click app); per una demo pubblica che si azzera ogni notte c'è [`deploy/demo`](deploy/demo/README.md). Altrimenti, con Docker Compose:
 
 **1. Prepara la configurazione** partendo da [`.env.example`](.env.example) e dal compose di produzione [`deploy/docker-compose.yml`](deploy/docker-compose.yml) (SQLite) o [`deploy/docker-compose.postgres.yml`](deploy/docker-compose.postgres.yml) (PostgreSQL 17):
 
@@ -381,6 +383,7 @@ Tutta la configurazione del server avviene tramite variabili d'ambiente, documen
 | `PORTO_MAIL_DIR` | vuoto | Senza SMTP, cartella in cui scrivere le email come file `.eml` (sviluppo e test); vuota = solo log |
 | `PORTO_REQUIRE_TOTP_FOR_OWNERS` | `false` | Rende obbligatoria l'autenticazione a due fattori per titolari e amministrazione |
 | `PORTO_PUBLIC_READS_PER_MINUTE` | `120` | Richieste al minuto per rete di provenienza sull'API pubblica |
+| `PORTO_LOGIN_ATTEMPTS_PER_MINUTE` | `30` | Tentativi di accesso al minuto per indirizzo; oltre 30 solo con `PORTO_DEV=true` (test end-to-end) |
 | `PORTO_HOLD_TTL` | `10m` | Durata del blocco temporaneo del posto durante una prenotazione online |
 | `PORTO_SENSOR_RAW_RETENTION` | `30d` | Conservazione delle letture grezze dei sensori (escluse dal backup) |
 | `PORTO_LOG_LEVEL` | `info` | Livello di log (`debug`, `info`, `warn`, `error`) |

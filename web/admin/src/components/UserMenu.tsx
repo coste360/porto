@@ -60,7 +60,9 @@ export function UserMenu({ variant = 'button' }: { variant?: 'button' | 'sidebar
         <Button
           variant="ghost"
           className={
-            variant === 'sidebar' ? 'h-auto w-full justify-start gap-2 px-2 py-2' : 'gap-2'
+            variant === 'sidebar'
+              ? 'h-auto w-full justify-start gap-2 px-2 py-2 group-data-[collapsible=icon]:px-0'
+              : 'gap-2'
           }
         >
           {/* Visible text stays part of the accessible name (WCAG 2.5.3), so no aria-label here. */}
@@ -72,11 +74,11 @@ export function UserMenu({ variant = 'button' }: { variant?: 'button' | 'sidebar
           </Avatar>
           {variant === 'sidebar' ? (
             <>
-              <span className="flex min-w-0 flex-1 flex-col text-left">
+              <span className="flex min-w-0 flex-1 flex-col text-left group-data-[collapsible=icon]:hidden">
                 <span className="truncate text-sm font-medium">{name}</span>
                 <span className="truncate text-xs opacity-80">{me.user.email}</span>
               </span>
-              <ChevronsUpDownIcon className="size-4" />
+              <ChevronsUpDownIcon className="size-4 group-data-[collapsible=icon]:hidden" />
             </>
           ) : null}
         </Button>

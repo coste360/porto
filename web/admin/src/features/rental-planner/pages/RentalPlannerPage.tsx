@@ -27,6 +27,7 @@ import { ToggleGroup, ToggleGroupItem } from '@porto/shared/ui/toggle-group';
 
 import { useCurrentMarina } from '../../../auth/hooks';
 import { LoadingState, QueryErrorState, RequirePermission } from '../../../components/PageStates';
+import { localText } from '../../pricing/lib/enums';
 import { useMarinaToday } from '../../registry/lib/today';
 import { BookingDialog, type BookingDraft } from '../components/BookingDialog';
 import { gridOf, viewDays, viewWindow } from '../lib/plan';
@@ -41,7 +42,7 @@ const ALL = '__all__';
  * it. Live through SSE rental.changed (query invalidation). A 409 highlights the bookings in the way.
  */
 export function RentalPlannerPage() {
-  const { t } = useT();
+  const { t, i18n } = useT();
   const { marinaId, can } = useCurrentMarina();
   const navigate = useNavigate();
   const today = useMarinaToday();
@@ -61,20 +62,23 @@ export function RentalPlannerPage() {
   );
   const move = useMoveRentalBooking(marinaId);
   const p = planner.data;
-  const axis = useMemo(
-    () =>
-      p
-        ? buildAxis({
-            view,
-            from: win.from,
-            days: viewDays(view),
-            openFrom: p.open_from_slot,
-            openTo: p.open_to_slot,
-            bands: p.bands,
-          })
-        : null,
-    [p, view, win.from],
-  );
+  const axis = useMemo(() => {
+    if (!p) return null;
+    const a = buildAxis({
+      view,
+      from: win.from,
+      days: viewDays(view),
+      openFrom: p.open_from_slot,
+      openTo: p.open_to_slot,
+      bands: p.bands,
+    });
+    // Half-day columns carry the band code: show the band label in the UI language instead.
+    const bandLabels = new Map(p.bands.map((b) => [b.code, localText(b.label, i18n.language)]));
+    return {
+      ...a,
+      cells: a.cells.map((c) => (c.band ? { ...c, label: bandLabels.get(c.band) || c.label } : c)),
+    };
+  }, [p, view, win.from, i18n.language]);
   const grid = useMemo(
     () =>
       p

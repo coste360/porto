@@ -50,5 +50,8 @@ export function portoEnv(): Record<string, string> {
     PORTO_LOG_LEVEL: 'warn',
     PORTO_WEBHOOKS_ALLOW_PRIVATE: 'true',
     PORTO_STRIPE_API_BASE: STRIPE_STUB_URL,
+    // The whole suite signs in from 127.0.0.1: the per-address login limit (30 a minute in production) is raised
+    // for the test server only; the per-account failure limit stays as in production.
+    PORTO_LOGIN_ATTEMPTS_PER_MINUTE: '10000',
   };
 }

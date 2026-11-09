@@ -13,9 +13,11 @@ Decisioni da prendere prima della milestone indicata. Ognuna, una volta presa, d
 | D10 | App nativa per i diportisti | La PWA della pagina pubblica copre la prenotazione; un'app nativa solo se emerge una richiesta (account del diportista su più porti) | dopo M8 |
 | D12 | Ormeggio in seconda fila (affiancamento) | Escluso dalla prima versione; richiederebbe allocazioni dipendenti da un'altra barca | dopo M12 |
 | D14 | Dimensione minima di una categoria nell'occupazione aggregata pubblica (24.5) | Con una categoria di uno o due posti il conteggio rivela lo stato di un singolo posto (INV-103). Proposta: soglia minima di posti (per esempio 3) sotto la quale la categoria non si può pubblicare oppure il conteggio è mostrato a fasce; serve una scelta di prodotto sul numero e sul comportamento | M12 |
+| D15 | Contributi esterni: CLA o DCO | Con il rilascio pubblico (BSL 1.1, ADR 0018) i contributi sono benvenuti alle condizioni della licenza; decidere se chiedere un accordo di licenza dei contributi (CLA, come l'altro prodotto Coste360) o solo la firma DCO (`Signed-off-by`), e con quale testo, prima di accettare la prima pull request esterna | primo rilascio pubblico |
 
 Decise e tolte dalla tabella dopo l'ultimo ADR:
 
 - **D2 — Licenza (decisa il 2026-11-09):** BSL 1.1 come Arenile, conversione AGPL (AGPL-3.0 o successiva tre anni
   dopo il primo rilascio pubblico di ogni versione); concessione d'uso gratuita per i porti, gli approdi, i cantieri
-  e i rimessaggi gestiti direttamente. Testo vincolante in [`LICENSE`](../../LICENSE); l'ADR è da scrivere.
+  e i rimessaggi gestiti direttamente. Testo vincolante in [`LICENSE`](../../LICENSE); decisione registrata in
+  [ADR 0018](../adr/0018-licenza.md).

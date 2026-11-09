@@ -5,10 +5,13 @@ import {
   addDays,
   buildAxis,
   cellsRange,
+  dateHeaders,
   dragReducer,
   dragResult,
+  fitLabel,
   IDLE,
   keyReducer,
+  paintOrder,
   pointAt,
   pointX,
   rangeRect,
@@ -223,5 +226,53 @@ describe('planner model', () => {
     expect(segmentClass('buffer', 'confirmed')).toContain('fill-muted/60');
     expect(segmentClass('block')).toContain('fill-secondary');
     expect(segmentDashed('booked', 'confirmed')).toBe(false);
+  });
+});
+
+describe('header labels', () => {
+  const axisOf = (view: 'hours' | 'half_days' | 'days', from: string, days: number) =>
+    buildAxis({ view, from, days, openFrom: 16, openTo: 38, bands });
+
+  it('writes every date when a date is wide enough (half days)', () => {
+    const h = dateHeaders(axisOf('half_days', '2027-06-12', 3), 72);
+    expect(h.map((x) => [x.date, x.compact])).toEqual([
+      ['2027-06-12', false],
+      ['2027-06-13', false],
+      ['2027-06-14', false],
+    ]);
+  });
+
+  it('writes a compact month on the first day and on month starts when days are narrow', () => {
+    const h = dateHeaders(axisOf('days', '2027-06-20', 14), 72);
+    expect(h.map((x) => [x.date, x.compact])).toEqual([
+      ['2027-06-20', true],
+      ['2027-07-01', true],
+    ]);
+    // A month start right after the first cell would overlap it: skipped.
+    expect(dateHeaders(axisOf('days', '2027-06-30', 14), 72).map((x) => x.date)).toEqual([
+      '2027-06-30',
+    ]);
+  });
+
+  it('writes no date on the hours view', () => {
+    expect(dateHeaders(axisOf('hours', '2027-06-12', 1), 72)).toEqual([]);
+  });
+
+  it('cuts a column label to its width', () => {
+    expect(fitLabel('Mattina', 56)).toBe('Mattina');
+    expect(fitLabel('Pomeriggio', 56)).toBe('Pomerig…');
+    expect(fitLabel('Pomeriggio', 8)).toBe('');
+  });
+});
+
+describe('paintOrder', () => {
+  it('draws buffers and blocks before bookings', () => {
+    const order = paintOrder([
+      { key: 'a', bookingId: 'b1', kind: 'booked' },
+      { key: 'b', kind: 'buffer' },
+      { key: 'c', bookingId: 'b2', kind: 'hold' },
+      { key: 'd', kind: 'block' },
+    ]);
+    expect(order.map((s) => s.key)).toEqual(['b', 'd', 'a', 'c']);
   });
 });

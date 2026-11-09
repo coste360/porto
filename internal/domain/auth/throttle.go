@@ -168,11 +168,15 @@ type LoginThrottle struct {
 	ips      *slidingWindow
 }
 
-// NewLoginThrottle returns a LoginThrottle.
-func NewLoginThrottle(c clock.Clock) *LoginThrottle {
+// NewLoginThrottle returns a LoginThrottle; perIP overrides the attempts per minute per IP prefix (0 = the
+// default 30; PORTO_LOGIN_ATTEMPTS_PER_MINUTE, raised only in development and tests). The account limit is fixed.
+func NewLoginThrottle(c clock.Clock, perIP int) *LoginThrottle {
+	if perIP <= 0 {
+		perIP = loginAttemptsPerIP
+	}
 	return &LoginThrottle{
 		accounts: newSlidingWindow(c, loginFailuresPerAccount, loginFailureWindow),
-		ips:      newSlidingWindow(c, loginAttemptsPerIP, loginIPWindow),
+		ips:      newSlidingWindow(c, perIP, loginIPWindow),
 	}
 }
 

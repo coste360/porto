@@ -1,0 +1,71 @@
+captainVersion: 4
+services:
+  $$cap_appname:
+    image: ghcr.io/coste360/porto:$$cap_porto_version
+    restart: unless-stopped
+    volumes:
+      - $$cap_appname-data:/data
+    environment:
+      PORTO_ADDR: ":8080"
+      PORTO_DATA_DIR: "/data"
+      PORTO_BASE_URL: "https://$$cap_appname.$$cap_root_domain"
+      PORTO_SECRET_KEY: $$cap_secret_key
+      PORTO_AUTO_MIGRATE: "true"
+      PORTO_SMTP_URL: $$cap_smtp_url
+      PORTO_MAIL_FROM: $$cap_mail_from
+      PORTO_LOG_LEVEL: "info"
+      # CapRover's nginx reaches the container over the private Docker overlay network.
+      PORTO_TRUSTED_PROXIES: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+      PORTO_TELEMETRY: "false"
+      PORTO_BOOTSTRAP_OWNER_EMAIL: $$cap_owner_email
+      PORTO_BOOTSTRAP_OWNER_NAME: $$cap_owner_name
+      PORTO_BOOTSTRAP_OWNER_ORG: $$cap_owner_org
+      PORTO_ADMIN_PASSWORD: $$cap_owner_password
+    caproverExtra:
+      containerHttpPort: "8080"
+caproverOneClickApp:
+  variables:
+    - id: $$cap_porto_version
+      label: Versione di Porto
+      defaultValue: latest
+      description: Tag dell'immagine ghcr.io/coste360/porto (latest, 1.2 per ricevere le correzioni, oppure 1.2.0).
+      validRegex: /^[A-Za-z0-9._-]+$/
+    - id: $$cap_secret_key
+      label: Chiave segreta (PORTO_SECRET_KEY)
+      description: 32 byte in base64, generala con "openssl rand -base64 32" e conservala insieme ai backup.
+      validRegex: /^[A-Za-z0-9+\/]{43}=$/
+    - id: $$cap_owner_email
+      label: Email del titolare
+      description: Il primo utente viene creato all'avvio, solo se il database non ha ancora utenti (l'immagine non ha una shell).
+      validRegex: /^[^@\s]+@[^@\s]+$/
+    - id: $$cap_owner_name
+      label: Nome del titolare
+      defaultValue: Titolare
+      validRegex: /.+/
+    - id: $$cap_owner_org
+      label: Nome dell'organizzazione (es. Marina Esempio SRL)
+      validRegex: /.+/
+    - id: $$cap_owner_password
+      label: Password del titolare
+      description: Almeno 12 caratteri. Dopo il primo accesso puoi togliere la variabile PORTO_ADMIN_PASSWORD dall'app.
+      validRegex: /^.{12,}$/
+    - id: $$cap_smtp_url
+      label: Server SMTP (facoltativo)
+      defaultValue: ""
+      description: smtp://utente:password@host:587 oppure smtps://...:465, per inviti, conferme e promemoria.
+    - id: $$cap_mail_from
+      label: Mittente email (facoltativo)
+      defaultValue: ""
+      description: Per esempio "Marina Esempio <prenotazioni@mio-marina.it>" (dominio reale se usi SMTP).
+  instructions:
+    start: >-
+      Porto è il gestionale per porti turistici, approdi e cantieri nautici di Coste360 (codice sorgente
+      disponibile, Business Source License 1.1). Usa SQLite nella cartella persistente /data.
+    end: >-
+      Porto è in avvio. Abilita HTTPS e Force HTTPS nella scheda dell'app, poi apri
+      https://$$cap_appname.$$cap_root_domain/admin/ e accedi con l'email e la password del titolare. Se usi un
+      dominio personalizzato aggiorna PORTO_BASE_URL. Conserva PORTO_SECRET_KEY insieme ai backup.
+  displayName: Porto
+  isOfficial: false
+  description: Gestionale per porti turistici, approdi e cantieri nautici, con prenotazione online senza commissioni.
+  documentation: https://github.com/coste360/porto#readme

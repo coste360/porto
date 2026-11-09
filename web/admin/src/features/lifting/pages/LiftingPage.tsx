@@ -36,7 +36,7 @@ export function LiftingPage() {
   const [actions, setActions] = useState<EquipmentBooking | null>(null);
   return (
     <RequirePermission allowed={can('yard.read') || can('storage.read') || write}>
-      <div className="flex w-full flex-col gap-4">
+      <div className="flex w-full min-w-0 flex-col gap-4">
         <PageHeader
           title={t('lifting:title')}
           description={t('lifting:description')}

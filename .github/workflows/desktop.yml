@@ -1,7 +1,8 @@
 name: Desktop
 
 # Builds the unsigned desktop packages (docs/desktop-build.md) and smoke-tests the launcher. No artefact is
-# uploaded: distribution is from the Coste360 portal after signing outside CI.
+# uploaded: the signed packages of a release are built by the private build pipeline and served by the Coste360
+# updates service (docs/release.md).
 on:
   pull_request:
     paths:
@@ -126,3 +127,9 @@ jobs:
         run: |
           dist/desktop/linux/Porto.AppDir/usr/bin/porto-desktop -version | grep -q '(browser)'
           dist/desktop/linux/Porto.AppDir/usr/bin/porto-desktop-webview -version | grep -q '(window)'
+          # AppRun picks the window build when it can start, the browser build otherwise (old glibc, no WebKitGTK).
+          dist/desktop/linux/Porto.AppDir/AppRun -version | grep -q '(window)'
+          broken="$RUNNER_TEMP/broken.AppDir"
+          cp -R dist/desktop/linux/Porto.AppDir "$broken"
+          printf '#!/bin/sh\nexit 127\n' > "$broken/usr/bin/porto-desktop-webview"
+          "$broken/AppRun" -version | grep -q '(browser)'

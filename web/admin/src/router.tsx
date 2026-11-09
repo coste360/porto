@@ -11,7 +11,7 @@ import {
 import type { ApiClient } from '@porto/shared/api';
 import { marinaBlockingEntry, noteMarinaSwitchBlocked } from '@porto/shared/offline';
 
-import { ensureMe, findMarina } from './auth/me';
+import { ensureMe, findMarina, refreshMe } from './auth/me';
 import { MarinaLayout } from './components/MarinaLayout';
 import { PlainLayout } from './components/PlainLayout';
 import { RootLayout } from './components/RootLayout';
@@ -165,16 +165,23 @@ const marinaRoute = createRoute({
   getParentRoute: () => authRoute,
   path: 'm/$marinaId',
   beforeLoad: async ({ context, params }) => {
-    // Unknown and foreign marinas look the same (the API answers 404 too).
-    const marina = findMarina(context.me, params.marinaId);
+    // A marina missing from the cached `me` may be newer than the cache (created since, or a copy restored from
+    // the offline cache): ask the server once before answering not found. Unknown and foreign marinas look the
+    // same (the API answers 404 too).
+    let me = context.me;
+    let marina = findMarina(me, params.marinaId);
+    if (!marina) {
+      me = (await refreshMe(context.queryClient, context.api).catch(() => null)) ?? me;
+      marina = findMarina(me, params.marinaId);
+    }
     if (!marina) throw notFound();
     // Unsent offline ops of another marina: back there, whatever link led here (D9, INV-84).
-    const blocking = await marinaBlockingEntry(context.me.user.id, marina.id);
-    if (blocking && findMarina(context.me, blocking)) {
+    const blocking = await marinaBlockingEntry(me.user.id, marina.id);
+    if (blocking && findMarina(me, blocking)) {
       noteMarinaSwitchBlocked();
       throw redirect({ to: '/m/$marinaId', params: { marinaId: blocking } });
     }
-    return { marina };
+    return { marina, me };
   },
   // AppShell, or PhoneShell for the phone screens (M6b, staticData.shell).
   component: MarinaLayout,

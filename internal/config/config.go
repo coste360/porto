@@ -20,6 +20,9 @@ import (
 	"github.com/coste360/porto/internal/crypto"
 )
 
+// DefaultLoginAttemptsPerMinute is the production limit of login attempts per minute per client (m0-plan §5).
+const DefaultLoginAttemptsPerMinute = 30
+
 // Config is the validated configuration.
 type Config struct {
 	Addr        string
@@ -57,6 +60,10 @@ type Config struct {
 	Dev                  bool
 	WebhooksAllowPrivate bool
 	PublicReadsPerMinute int
+	// LoginAttemptsPerMinute is the login attempts allowed per minute per client (PORTO_LOGIN_ATTEMPTS_PER_MINUTE,
+	// DefaultLoginAttemptsPerMinute); above the default only with PORTO_DEV=true (the end-to-end suite signs in
+	// from one address). The per-account failure limit is not configurable.
+	LoginAttemptsPerMinute int
 	// StripeAPIBase overrides https://api.stripe.com for the optional Stripe driver (M5); honoured only with
 	// PORTO_DEV=true (local fake servers in tests and development).
 	StripeAPIBase string
@@ -307,6 +314,10 @@ func Load(env func(string) (string, bool)) (*Config, error) {
 
 	c.WebhooksAllowPrivate = l.bool("PORTO_WEBHOOKS_ALLOW_PRIVATE", false)
 	c.PublicReadsPerMinute = l.int("PORTO_PUBLIC_READS_PER_MINUTE", 120, 1, 10000)
+	c.LoginAttemptsPerMinute = l.int("PORTO_LOGIN_ATTEMPTS_PER_MINUTE", DefaultLoginAttemptsPerMinute, 1, 100000)
+	if c.LoginAttemptsPerMinute > DefaultLoginAttemptsPerMinute && !c.Dev {
+		l.fail("PORTO_LOGIN_ATTEMPTS_PER_MINUTE", "may exceed %d only with PORTO_DEV=true", DefaultLoginAttemptsPerMinute)
+	}
 
 	if base := l.get("PORTO_STRIPE_API_BASE", ""); base != "" {
 		u, err := url.Parse(base)

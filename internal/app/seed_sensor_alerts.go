@@ -39,9 +39,28 @@ func (a *App) seedSensorAlerts(ctx context.Context, p *auth.Principal, res *Seed
 	if err := a.seedSensorArrival(ctx, p, res.MarinaID); err != nil {
 		return err
 	}
-	_, err = a.SensorWatch.SeedDemo(ctx, p, res.MarinaID)
+	if _, err = a.SensorWatch.SeedDemo(ctx, p, res.MarinaID); err != nil {
+		return err
+	}
+	// The demo readings stop at the seed (the fake source is in memory): with the default thresholds the whole pier
+	// would turn offline after half an hour and raise a silent alert per device after three. The demo keeps the
+	// devices online for a day (a demo instance is reseeded nightly); the alerts of the seed stay open.
+	if set, err = a.Sensors.GetSettings(ctx, p, res.MarinaID); err != nil {
+		return err
+	}
+	in := sensor.SettingsInput{
+		HysteresisReadings: set.HysteresisReadings, HysteresisMinutes: set.HysteresisMinutes, OfflineAfterMinutes: seedSensorQuietMinutes,
+		SilentAlertMinutes: max(set.SilentAlertMinutes, seedSensorQuietMinutes), BatteryLowPct: set.BatteryLowPct,
+		UnexpectedAfterMinutes: set.UnexpectedAfterMinutes, DepartureCutoffMinutes: set.DepartureCutoffMinutes,
+		PresenceEffectEnabled: set.PresenceEffectEnabled, PresenceOutAfterHours: set.PresenceOutAfterHours,
+		ReleaseProposalAfterDays: set.ReleaseProposalAfterDays, ReleaseProposalNights: set.ReleaseProposalNights,
+	}
+	_, err = a.Sensors.PutSettings(ctx, p, res.MarinaID, set.Version, in)
 	return err
 }
+
+// seedSensorQuietMinutes is the demo's offline and silent-alert threshold (one day, the maximum offline_after).
+const seedSensorQuietMinutes = 1440
 
 // seedSensorArrival books a confirmed transit arriving today on a free berth with a sensor (the transit arrival
 // proposal of the demo), unless one already arrives today or yesterday on such a berth. Taken berths are skipped.

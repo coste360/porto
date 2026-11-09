@@ -3,9 +3,10 @@ import { expect, test, type Page } from '@playwright/test';
 import { OWNER } from './env';
 
 /**
- * Signs in through the login form and waits until the admin shell is shown. The server limits login attempts
- * per IP prefix (30 a minute) and the whole suite signs in from 127.0.0.1, so a 429 is waited out (Retry-After)
- * and the form submitted again; the limit itself is never relaxed for tests.
+ * Signs in through the login form and waits until the admin shell is shown. The whole suite signs in from
+ * 127.0.0.1: the test server raises the per-address limit (PORTO_LOGIN_ATTEMPTS_PER_MINUTE in support/env.ts,
+ * production keeps 30 a minute); a 429 (the per-account limit, or a run against another server) is still waited
+ * out (Retry-After) and the form submitted again.
  */
 export async function login(
   page: Page,

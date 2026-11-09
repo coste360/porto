@@ -1,8 +1,18 @@
 #!/bin/sh
-# AppImage entry point of Porto: the window build (WebKitGTK 4.1) when the library is installed, else the browser
-# build (the panel opens in the default browser).
+# AppImage entry point of Porto: the window build (WebKitGTK 4.1) when it can start on this system, else the browser
+# build (the panel opens in the default browser). "Can start" is checked by running the window build with -version,
+# which loads every shared library it links: a missing WebKitGTK 4.1, a glibc older than the build machine's or any
+# other loader error falls back to the browser build instead of failing. PORTO_APPIMAGE_UI=browser forces the
+# browser build, =window skips the probe.
 HERE="$(dirname "$(readlink -f "$0")")"
-if command -v ldconfig >/dev/null 2>&1 && ldconfig -p 2>/dev/null | grep -q 'libwebkit2gtk-4\.1\.so\.0'; then
-	exec "$HERE/usr/bin/porto-desktop-webview" "$@"
+WINDOW="$HERE/usr/bin/porto-desktop-webview"
+BROWSER="$HERE/usr/bin/porto-desktop"
+case "${PORTO_APPIMAGE_UI:-}" in
+browser) exec "$BROWSER" "$@" ;;
+window) exec "$WINDOW" "$@" ;;
+esac
+if "$WINDOW" -version >/dev/null 2>&1; then
+	exec "$WINDOW" "$@"
 fi
-exec "$HERE/usr/bin/porto-desktop" "$@"
+echo "porto: the window build cannot start on this system (WebKitGTK 4.1 or a recent glibc is missing); opening Porto in the browser" >&2
+exec "$BROWSER" "$@"

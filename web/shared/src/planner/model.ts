@@ -143,6 +143,39 @@ export function buildAxis(input: AxisInput): Axis {
   return { view, first: input.from, cells, width: cells.length * width };
 }
 
+/** A date written on the first header line. */
+export type DateHeader = { index: number; x: number; date: string; compact: boolean };
+
+/** The dates written on the first header line: every date start when one date is at least `minWidth` pixels wide
+ * (half days), else a compact month label on the first cell and on the first day of each month (days), skipping a
+ * label that would overlap the previous one. The hours view shows one date, written by the date field. */
+export function dateHeaders(axis: Axis, minWidth: number): DateHeader[] {
+  if (axis.view === 'hours') return [];
+  const starts = axis.cells.filter((c) => c.dayStart);
+  const span = starts.length > 1 ? starts[1]!.x - starts[0]!.x : axis.width;
+  const compact = span < minWidth;
+  const out: DateHeader[] = [];
+  let last = -Infinity;
+  for (const c of starts) {
+    if (compact && c.index !== 0 && !c.date.endsWith('-01')) continue;
+    if (c.x - last < minWidth) continue;
+    out.push({ index: c.index, x: c.x, date: c.date, compact });
+    last = c.x;
+  }
+  return out;
+}
+
+/** Average glyph width of the header font (text-xs) used to keep a label inside its column. */
+const GLYPH_WIDTH = 6.5;
+
+/** A header label cut with an ellipsis to fit `width` pixels (the column), padding included. */
+export function fitLabel(label: string, width: number): string {
+  const max = Math.floor((width - 4) / GLYPH_WIDTH);
+  if (label.length <= max) return label;
+  if (max <= 1) return '';
+  return `${label.slice(0, max - 1)}…`;
+}
+
 /** The x of a point on the axis: linear inside a cell; a point between cells snaps to the next cell start. */
 export function pointX(axis: Axis, p: SlotPoint): number {
   const abs = absSlot(axis.first, p);
@@ -302,6 +335,16 @@ export function keyReducer(
     default:
       return sel;
   }
+}
+
+// ---- drawing order ----
+
+/** Segments in drawing order: buffers and blocks first, bookings on top, so a margin never covers a booking. */
+export function paintOrder<T extends { bookingId?: string; kind: string }>(
+  segments: readonly T[],
+): T[] {
+  const rank = (s: T) => (s.bookingId && s.kind !== 'buffer' ? 1 : 0);
+  return [...segments].sort((a, b) => rank(a) - rank(b));
 }
 
 // ---- colours (theme tokens only) ----

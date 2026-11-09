@@ -81,6 +81,7 @@ import { PrintMapButton } from '../documents/public';
 import { DateSelector } from './components/DateSelector';
 import { ElementList, type ListGroup } from './components/ElementList';
 import { LegendFilter } from './components/LegendFilter';
+import { useFillHeight } from '../../lib/fillHeight';
 import { LensTabs } from './components/LensTabs';
 import { PaymentsLegend } from './components/PaymentsLegend';
 import { RightsLegend } from './components/RightsLegend';
@@ -197,6 +198,20 @@ export function OpsPage() {
   );
   const { viewport, setViewport, bindContainer, bindSvg, gestures, fit, zoomBy, mapPoint } =
     useMapViewport(content);
+  // On large screens the map fills the window below its top (at least 640 px, the page padding left free).
+  const [fillRef, mapHeight] = useFillHeight<HTMLDivElement>({
+    reserve: 24,
+    minUnits: 160,
+    variant: 'lg:',
+    fallback: 'lg:h-160',
+  });
+  const mapContainerRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      bindContainer(el);
+      fillRef(el);
+    },
+    [bindContainer, fillRef],
+  );
   const fitScale = pxPerCm(fitToView(content, viewport.screenW, viewport.screenH));
   const minTile = schemaMinTileCm(fitScale);
   const scene = useMemo(() => (doc ? opsScene(doc, mode, minTile) : []), [doc, mode, minTile]);
@@ -651,6 +666,7 @@ export function OpsPage() {
           <div className="flex flex-wrap items-center gap-2">
             <LensTabs
               lens={lens}
+              overlay={rightsOn || paymentsOn || sensorsOn}
               onChange={(l) => {
                 rememberLens(userId, l);
                 setHidden(new Set());
@@ -807,8 +823,8 @@ export function OpsPage() {
                     ) : null}
                   </div>
                   <div
-                    ref={bindContainer}
-                    className={`bg-muted w-full overflow-hidden rounded-md border ${mapAspectClass(doc.width_cm, doc.height_cm)} max-h-svh lg:aspect-auto lg:h-160`}
+                    ref={mapContainerRef}
+                    className={`bg-muted w-full overflow-hidden rounded-md border ${mapAspectClass(doc.width_cm, doc.height_cm)} max-h-svh lg:aspect-auto ${mapHeight}`}
                     data-testid="ops-map"
                     data-date={dv?.date}
                     data-lens={lens}

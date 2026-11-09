@@ -45,11 +45,11 @@ export function BillingBadge({
   return <Badge variant={variant}>{t(`billingEnums:${group}.${value}`)}</Badge>;
 }
 
-/** A VAT rate in percent ("22 %"), or the nature code at rate 0. */
+/** A VAT rate in percent ("22%", formatBp adds the sign), or the nature code at rate 0. */
 export function VatRate({ bp, nature }: { bp: number; nature?: string | null | undefined }) {
   const { i18n } = useT();
   if (bp === 0 && nature) return <span>{nature}</span>;
-  return <span className="tabular-nums">{`${formatBp(bp, i18n.language)} %`}</span>;
+  return <span className="tabular-nums">{formatBp(bp, i18n.language)}</span>;
 }
 
 /** A summary tile (label, value, optional hint). */

@@ -1,6 +1,7 @@
 package store
 
 import (
+	"cmp"
 	"context"
 	"fmt"
 	"slices"
@@ -135,7 +136,10 @@ func OccupancyOwners(ctx context.Context, tx bun.IDB, s MarinaScope, resourceTyp
 func RowsOfAllocation(ctx context.Context, db bun.IDB, s MarinaScope, a *Allocation) ([]OccRow, error) {
 	f := FamilyOf(a.ResourceType)
 	var owners []OccOwner
-	err := ownerSelect(db, f).Where("o.marina_id = ?", s.ID()).Where("o.allocation_id = ?", a.ID).OrderExpr("o.night, cell").Scan(ctx, &owners)
+	// Sorted here, not by ORDER BY night: with that ORDER BY the SQLite planner walks every row of the marina
+	// through the (marina_id, night) index to save the sort instead of looking the allocation up by its index,
+	// which made each transit confirmation scan the season of a busy marina.
+	err := ownerSelect(db, f).Where("o.marina_id = ?", s.ID()).Where("o.allocation_id = ?", a.ID).Scan(ctx, &owners)
 	if err != nil {
 		return nil, err
 	}
@@ -143,6 +147,15 @@ func RowsOfAllocation(ctx context.Context, db bun.IDB, s MarinaScope, a *Allocat
 	for i, o := range owners {
 		out[i] = OccRow{Resource: o.Resource, Cell: o.Cell, Night: o.Night}
 	}
+	slices.SortStableFunc(out, func(x, y OccRow) int {
+		switch {
+		case x.Night.Before(y.Night):
+			return -1
+		case y.Night.Before(x.Night):
+			return 1
+		}
+		return cmp.Compare(x.Cell, y.Cell)
+	})
 	return out, nil
 }
 

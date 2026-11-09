@@ -1,7 +1,22 @@
 # Contributing to Porto
 
-The repository is private for now: contributions come from the Coste360 SRL team and its coding agents. Read
+Porto is developed by Coste360 SRL and published as source-available software under the
+[Business Source License 1.1](LICENSE) (ADR 0018). Bug reports, ideas and pull requests are welcome. Read
 `AGENTS.md` first; the specification in `docs/spec/` (Italian) is authoritative.
+
+## How to contribute
+
+- **Security problems**: never in a public issue. Follow [SECURITY.md](SECURITY.md) (security@coste360.it).
+- **Bugs**: open an issue with the version (`porto version`, or the image tag), the edition (server, Docker,
+  desktop), the database (SQLite or PostgreSQL), the steps to reproduce and what you expected. Never attach real
+  customer data, logs with personal data or your `PORTO_SECRET_KEY`.
+- **Features**: open an issue before writing code. Porto follows its specification and the decisions in
+  `docs/adr/`; a change of behaviour may need a spec change or a new ADR, and some topics are deliberately open
+  (`docs/spec/33-decisioni-aperte.md`).
+- **Pull requests**: small and focused, one topic each, with tests. Issues and pull requests may be written in
+  Italian or English; code, identifiers and comments are in English.
+- **Translations**: Italian is the source language; English is required for every string. Corrections to either
+  are welcome.
 
 ## Setup and daily commands
 
@@ -40,12 +55,24 @@ docker compose up --build   # empty instance on http://localhost:8080, mail in M
 
 - Small, scoped changes. [Conventional Commits](https://www.conventionalcommits.org/):
   `feat(team): add invitation resend`, `fix(auth): rotate session on TOTP confirm`, `docs: ...`, `ci: ...`.
-- Before opening a pull request run `make check-full` (or the `/pre-pr-check` skill) and fill in
+- Before opening a pull request run `make check-full` (maintainers' coding agents: the `/pre-pr-check` skill) and fill in
   `.github/pull_request_template.md`: spec sections, invariants touched, test results.
 - Add an entry under `## [Unreleased]` in `CHANGELOG.md` for user-visible changes.
 - CI must be green: Go on SQLite and PostgreSQL, web, generated code, licences, Docker, e2e, naming.
+- Releases are cut by the maintainers ([docs/release.md](docs/release.md)).
 
-## Licence
+## Licence of contributions
 
-Copyright (c) 2026 Coste360 SRL. All rights reserved (see `LICENSE`). The brand files in `assets/brand/` are
-reserved and not covered by any code licence.
+Porto is licensed under the Business Source License 1.1 with the Additional Use Grant for Marina Facilities in
+[`LICENSE`](LICENSE); each version converts to the GNU AGPL v3.0 or later three years after its first public
+release (ADR 0018). By opening a pull request you agree that your contribution is provided under the same terms as
+the repository and that you have the right to submit it (it is your own work, or you include the licence and
+copyright notices of the work it comes from, which must be compatible with these terms).
+
+No contributor licence agreement (CLA) or DCO sign-off is required at the moment. Whether one will be asked for is
+an open decision (D15 in `docs/spec/33-decisioni-aperte.md`); if that changes, this file will say so before it
+applies to new pull requests.
+
+The name Porto, the logo and every file in `assets/brand/` are reserved by Coste360 SRL and not covered by the code
+licence (ADR 0007): do not change them in a pull request, and give a fork its own name and logo. Copyright (c) 2026
+Coste360 SRL.

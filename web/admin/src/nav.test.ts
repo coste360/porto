@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { NAV_ITEMS, UPCOMING_MODULES, visibleNavItems } from './nav';
+import { NAV_ICONS } from './navIcons';
 
 describe('nav', () => {
   it('shows everything to an owner', () => {
@@ -161,5 +162,12 @@ describe('nav', () => {
       'imports',
       'contract-settings',
     ]);
+  });
+});
+
+describe('nav icons', () => {
+  it('maps every navigation item to an icon (the collapsed sidebar shows icons only)', () => {
+    expect(NAV_ITEMS.filter((i) => !NAV_ICONS[i.id]).map((i) => i.id)).toEqual([]);
+    expect(Object.keys(NAV_ICONS).filter((id) => !NAV_ITEMS.some((i) => i.id === id))).toEqual([]);
   });
 });

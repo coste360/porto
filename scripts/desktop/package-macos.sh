@@ -5,15 +5,46 @@
 # Signing hooks (docs/desktop-build.md), never faked:
 #   MACOS_SIGN_IDENTITY    "Developer ID Application: …": hardened-runtime signature with a timestamp
 #   MACOS_NOTARY_PROFILE   notarytool keychain profile (needs the identity): notarisation and stapling
+#   MACOS_NOTARY_TIMEOUT   longest wait for Apple's verdict (notarytool --timeout syntax, default 45m). A submission
+#                          still pending after it fails the build with its id, so it can be inspected and retried.
 # Without them the app gets the ad-hoc signature Apple Silicon requires and the file name says -unsigned.
 set -euo pipefail
 . "$(dirname "$0")/common.sh"
 
 [ "$(uname -s)" = Darwin ] || die "package-macos.sh runs on macOS"
-require clang lipo iconutil codesign hdiutil
+require clang lipo iconutil codesign hdiutil plutil
 if [ -n "${MACOS_NOTARY_PROFILE:-}" ] && [ -z "${MACOS_SIGN_IDENTITY:-}" ]; then
 	die "MACOS_NOTARY_PROFILE needs MACOS_SIGN_IDENTITY"
 fi
+
+# notarize DMG: submits to Apple and waits at most MACOS_NOTARY_TIMEOUT. Only "Accepted" passes; "Invalid" or
+# "Rejected" print Apple's log, a submission still "In Progress" after the timeout is a distinct failure.
+notarize() {
+	local file="$1" timeout="${MACOS_NOTARY_TIMEOUT:-45m}" out rc=0 status id
+	out="$work/notary-submit.json"
+	log "notarising (waiting at most $timeout)"
+	xcrun notarytool submit "$file" --keychain-profile "$MACOS_NOTARY_PROFILE" --wait --timeout "$timeout" \
+		--output-format json > "$out" || rc=$?
+	status="$(plutil -extract status raw -o - "$out" 2>/dev/null || true)"
+	id="$(plutil -extract id raw -o - "$out" 2>/dev/null || true)"
+	case "$status" in
+	Accepted)
+		[ "$rc" -eq 0 ] || die "notarytool exited with $rc although the submission ${id:-?} was accepted"
+		log "notarisation accepted (${id})"
+		;;
+	"In Progress" | "")
+		if [ -z "$id" ]; then
+			cat "$out" >&2 || true
+			die "notarytool submit failed (exit $rc) before a submission id was returned"
+		fi
+		die "notarisation of submission $id still pending after $timeout: check it later with \"xcrun notarytool info $id --keychain-profile <profile>\" and re-run the packaging (or raise MACOS_NOTARY_TIMEOUT)"
+		;;
+	*)
+		xcrun notarytool log "$id" --keychain-profile "$MACOS_NOTARY_PROFILE" >&2 || true
+		die "notarisation of submission ${id:-?} ended with status \"$status\""
+		;;
+	esac
+}
 
 work="$DESKTOP_DIST/macos"
 rm -rf "$work"
@@ -73,8 +104,7 @@ hdiutil create -volname "$APP_NAME" -srcfolder "$stage" -ov -format UDZO "$dmg" 
 if [ -n "${MACOS_SIGN_IDENTITY:-}" ]; then
 	codesign --force --timestamp --sign "$MACOS_SIGN_IDENTITY" "$dmg"
 	if [ -n "${MACOS_NOTARY_PROFILE:-}" ]; then
-		log "notarising"
-		xcrun notarytool submit "$dmg" --keychain-profile "$MACOS_NOTARY_PROFILE" --wait
+		notarize "$dmg"
 		xcrun stapler staple "$dmg"
 	fi
 fi

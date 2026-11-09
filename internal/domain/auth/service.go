@@ -48,6 +48,9 @@ type Options struct {
 	RequireTOTPForOwners bool
 	// Argon2 overrides the hashing cost (tests); zero means DefaultArgon2Params.
 	Argon2 Argon2Params
+	// LoginAttemptsPerIP overrides the login attempts per minute per IP prefix (PORTO_LOGIN_ATTEMPTS_PER_MINUTE);
+	// zero means the default 30.
+	LoginAttemptsPerIP int
 }
 
 // Service is the authentication service.
@@ -78,7 +81,7 @@ func NewService(db *store.DB, c clock.Clock, keys *crypto.KeyRing, aw *audit.Wri
 	}
 	return &Service{
 		db: db, clock: c, keys: keys, audit: aw, mailer: n, log: log, opts: o, hasher: h, dummy: dummy,
-		throttle: NewLoginThrottle(c), resets: newResetThrottle(c),
+		throttle: NewLoginThrottle(c, o.LoginAttemptsPerIP), resets: newResetThrottle(c),
 	}, nil
 }
 

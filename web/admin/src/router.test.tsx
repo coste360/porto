@@ -1,6 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
+import { queryKeys } from '@porto/shared/api';
+
 import { MARINA_ID, makeMe, meRoute, renderApp } from './test/renderApp';
 
 describe('router guards', () => {
@@ -28,6 +30,31 @@ describe('router guards', () => {
   it('shows not found for a marina the user cannot access', async () => {
     renderApp('/m/other-marina', [meRoute(makeMe())]);
     expect(await screen.findByText('Pagina non trovata.')).toBeInTheDocument();
+  });
+
+  it('refetches a stale me once before answering not found for a marina created since', async () => {
+    const created = {
+      ...makeMe().marinas[0]!,
+      id: '0190a000-0000-7000-8000-000000000002',
+      slug: 'nuova',
+      name: 'Marina Nuova',
+    };
+    const fresh = makeMe({ marinas: [...makeMe().marinas, created] });
+    const { router, calls } = renderApp(`/m/${created.id}`, [meRoute(fresh)], (qc) =>
+      qc.setQueryData(queryKeys.me, makeMe()),
+    );
+    expect(await screen.findByRole('heading', { name: 'Marina Nuova' })).toBeInTheDocument();
+    expect(screen.queryByText('Pagina non trovata.')).not.toBeInTheDocument();
+    expect(router.state.location.pathname).toBe(`/m/${created.id}`);
+    expect(calls.filter((c) => c.url.pathname === '/api/admin/v1/auth/me')).toHaveLength(1);
+  });
+
+  it('still shows not found when the refetched me lacks the marina', async () => {
+    const { calls } = renderApp('/m/other-marina', [meRoute(makeMe())], (qc) =>
+      qc.setQueryData(queryKeys.me, makeMe()),
+    );
+    expect(await screen.findByText('Pagina non trovata.')).toBeInTheDocument();
+    expect(calls.filter((c) => c.url.pathname === '/api/admin/v1/auth/me')).toHaveLength(1);
   });
 
   it('serves the QR pairing and desktop first-run pages without a session (M6a)', async () => {

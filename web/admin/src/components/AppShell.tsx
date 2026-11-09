@@ -24,6 +24,7 @@ import {
 import { useCurrentMarina } from '../auth/hooks';
 import { UpdateBanner } from '../features/desktop/UpdateBanner';
 import { UPCOMING_MODULES, visibleNavItems } from '../nav';
+import { navIcon } from '../navIcons';
 import { MarinaSwitcher } from './MarinaSwitcher';
 import { UserMenu } from './UserMenu';
 
@@ -56,10 +57,12 @@ export function AppShell() {
               {items.map((item) => {
                 const href = item.to.replace('$marinaId', marinaId);
                 const active = pathname.replace(/\/$/, '').endsWith(href);
+                const Icon = navIcon(item.id);
                 return (
                   <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton asChild isActive={active} tooltip={t(item.labelKey)}>
                       <Link to={item.to} params={{ marinaId }}>
+                        <Icon aria-hidden="true" />
                         <span>{t(item.labelKey)}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -93,13 +96,14 @@ export function AppShell() {
           <MadeByCoste360 className="mx-auto group-data-[collapsible=icon]:hidden" />
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset>
+      {/* min-w-0: a wide table or grid scrolls inside its own box instead of widening the page. */}
+      <SidebarInset className="min-w-0">
         <header className="flex h-14 items-center gap-2 border-b px-4">
           <SidebarTrigger aria-label={t('common:nav.openMenu')} title={t('common:nav.openMenu')} />
           <Separator orientation="vertical" className="h-4" />
           <span className="truncate text-sm font-medium">{marina?.name}</span>
         </header>
-        <div className="flex-1 p-6">
+        <div className="min-w-0 flex-1 p-6">
           <UpdateBanner />
           <Outlet />
         </div>

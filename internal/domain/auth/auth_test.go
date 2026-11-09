@@ -230,7 +230,7 @@ func TestRecoveryCodes(t *testing.T) {
 
 func TestLoginThrottle(t *testing.T) {
 	c := clock.NewFake(time.Date(2026, 11, 6, 10, 0, 0, 0, time.UTC))
-	th := NewLoginThrottle(c)
+	th := NewLoginThrottle(c, 0)
 	ip := netip.MustParseAddr("203.0.113.7")
 	for range 5 {
 		if ok, _ := th.Check(ip, "Anna@example.test"); !ok {
@@ -285,6 +285,35 @@ func TestLoginThrottle(t *testing.T) {
 	}
 	if ok, _ := th.Check(netip.MustParseAddr("198.51.101.1"), "other@y.z"); !ok {
 		t.Fatal("other /24 blocked")
+	}
+}
+
+// TestLoginThrottle_PerIPOverride: the per-IP limit follows PORTO_LOGIN_ATTEMPTS_PER_MINUTE (the end-to-end
+// server raises it) while the per-account failure limit stays at 5 in 15 minutes.
+func TestLoginThrottle_PerIPOverride(t *testing.T) {
+	c := clock.NewFake(time.Date(2026, 11, 6, 10, 0, 0, 0, time.UTC))
+	th := NewLoginThrottle(c, 500)
+	ip := netip.MustParseAddr("127.0.0.1")
+	for i := range 500 {
+		if ok, _ := th.Check(ip, "owner@porto.test"); !ok {
+			t.Fatalf("attempt %d blocked under the raised limit", i)
+		}
+		th.Success("owner@porto.test")
+		th.Release("owner@porto.test")
+	}
+	if ok, _ := th.Check(ip, "owner@porto.test"); ok {
+		t.Fatal("attempt 501 in the minute allowed")
+	}
+	c.Advance(time.Minute + time.Second)
+	for range 5 {
+		if ok, _ := th.Check(ip, "anna@example.test"); !ok {
+			t.Fatal("blocked early")
+		}
+		th.Failure(ip, "anna@example.test")
+		th.Release("anna@example.test")
+	}
+	if ok, _ := th.Check(ip, "anna@example.test"); ok {
+		t.Fatal("the account limit was raised with the IP limit")
 	}
 }
 

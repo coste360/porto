@@ -8,9 +8,10 @@ import (
 	"strings"
 )
 
-// DefaultUpdateURL is the version manifest of the desktop edition (m6a-plan §2.8, D16). It is only read when the
-// version check is on; Porto never needs it to work.
-const DefaultUpdateURL = "https://download.coste360.it/porto/desktop/latest.json"
+// DefaultUpdateURL is the version manifest of the desktop edition (m6a-plan §2.8, D16): the latest.json of the
+// shared Coste360 updates service, written by the private build pipeline for every stable release
+// (docs/release.md). It is only read when the version check is on; Porto never needs it to work.
+const DefaultUpdateURL = "https://updates.coste360.it/porto/latest.json"
 
 // Keyring modes of PORTO_DESKTOP_KEYRING.
 const (

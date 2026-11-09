@@ -1030,6 +1030,7 @@ api_key.*). `webhook.test` is not published to SSE.
 | `PORTO_DEV` | `false` | dev mode: generated secret, non-Secure cookies over http, text logs |
 | `PORTO_WEBHOOKS_ALLOW_PRIVATE` | `false` | disables private-address egress check and allows http (dev/tests only) |
 | `PORTO_PUBLIC_READS_PER_MINUTE` | `120` | int 1..10000, per IP prefix on `/api/public/v1` |
+| `PORTO_LOGIN_ATTEMPTS_PER_MINUTE` | `30` | int 1..30 (up to 100000 only with `PORTO_DEV=true`, the e2e server), login attempts per minute per client; the per-account limit is fixed |
 | `PORTO_BOOTSTRAP_OWNER_EMAIL` / `_NAME` / `_ORG` | empty | all three or none; with `PORTO_ADMIN_PASSWORD` creates the first owner on `serve` when there are no users |
 | `PORTO_ADMIN_PASSWORD` | empty | password for `admin create` / bootstrap / `seed demo`; never logged |
 | `PORTO_TEST_POSTGRES_URL` | empty | tests only (not read by `config`) |

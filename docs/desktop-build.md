@@ -43,8 +43,10 @@ builds). Builds are reproducible: `-trimpath -buildvcs=false -ldflags "-s -w -bu
   ImageMagick), `-H windowsgui`, Inno Setup 6 installer into `%LOCALAPPDATA%\Programs\Porto` without
   administrator rights, Start menu shortcut, uninstaller that keeps the data folder. SmartScreen warns on first
   run until the installer is signed.
-- Linux: the AppImage carries the window build and the browser build; `AppRun` starts the window build when
-  `libwebkit2gtk-4.1.so.0` is installed (`ldconfig -p`), else the browser build. `appimagetool` is never run
+- Linux: the AppImage carries the window build and the browser build; `AppRun` test-starts the window build with
+  `-version` (which loads every linked library) and starts it when that works, else the browser build, so a
+  missing WebKitGTK 4.1 or an older glibc falls back instead of failing (`PORTO_APPIMAGE_UI=browser|window` forces
+  one). `appimagetool` is never run
   unverified: set `APPIMAGETOOL` to a binary you trust, or `APPIMAGETOOL_SHA256` to the checksum of the pinned
   download in `scripts/desktop/package-linux.sh` (in CI: the repository variable `APPIMAGETOOL_SHA256`; without it
   the CI job builds and smoke-tests the AppDir only).
@@ -140,8 +142,8 @@ the panel. Phones work only while the app is open: closing the window quits Port
 ### Version check
 
 On by default, switchable in the first run, in *App desktop* and with `PORTO_UPDATE_CHECK=false`. Once a day it
-reads `https://download.coste360.it/porto/desktop/latest.json` with a User-Agent of product, version and OS only
-(no cookies, identifiers or marina data). A newer version shows a dismissible banner; nothing is ever downloaded
+reads `https://updates.coste360.it/porto/latest.json` (the release manifest, `docs/release.md`) with the
+User-Agent `porto/<version> (desktop; <goos>/<goarch>)` only (no cookies, identifiers or marina data). A newer version shows a dismissible banner; nothing is ever downloaded
 or installed, and a failure is silent.
 
 ### Local CA for phones (M6b)

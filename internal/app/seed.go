@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/coste360/porto/internal/crypto"
 	"github.com/coste360/porto/internal/domain/auth"
@@ -131,6 +132,10 @@ func (a *App) SeedDemo(ctx context.Context, password string) (*SeedResult, error
 	if err != nil {
 		return nil, fmt.Errorf("seed: owner: %w", err)
 	}
+	// Before the rest of the seed, so that a reset after a partial seed still recognises the demo organization.
+	if err := a.writeDemoMarker(res.OrganizationID); err != nil {
+		return nil, fmt.Errorf("seed: demo marker: %w", err)
+	}
 	out := &SeedResult{
 		Created: true, OrganizationID: res.OrganizationID, MarinaID: res.MarinaID, OwnerEmail: owner,
 		Password: password, Users: []string{owner},
@@ -207,9 +212,16 @@ func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) er
 	if err := a.seedHistory(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: history: %w", err)
 	}
+	// The seasonal renewals of Y−1 and Y (seed_renewals.go): the renewal rate of the dashboard has a value.
+	if err := a.seedSeasonalRenewals(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: seasonal renewals: %w", err)
+	}
 	// M8 (m8-plan §3, D7): online booking on the demo page /b/demo.
 	if err := a.seedOnlineBooking(ctx, p, res); err != nil {
 		return fmt.Errorf("seed: online booking: %w", err)
+	}
+	if err := a.seedOnlineBookings(ctx, p, res); err != nil {
+		return fmt.Errorf("seed: online bookings: %w", err)
 	}
 	// M9 (m9-plan §15.2): shed and yard storage contracts with one scenario (STORAGE), then equipment, meters,
 	// readings and maintenance plans (UTILITIES). Each part is a no-op when the demo marina already has its data.
@@ -259,4 +271,33 @@ func (a *App) seedM1(ctx context.Context, p *auth.Principal, res *SeedResult) er
 		return fmt.Errorf("seed: profile: %w", err)
 	}
 	return nil
+}
+
+// DemoSummary describes the operational data of the demo marina that SeedResult does not count (yard, lifting,
+// rental, online bookings, sensors), for the output of `porto seed demo`.
+func (a *App) DemoSummary(ctx context.Context, marinaID string) (string, error) {
+	var out []string
+	for _, c := range []struct{ label, table, where string }{
+		{"yard_quotes", "yard_quotes", ""},
+		{"work_orders", "work_orders", ""},
+		{"task_assignments", "task_assignments", ""},
+		{"timesheets", "timesheets", ""},
+		{"lifting_bookings", "equipment_bookings", ""},
+		{"rental_units", "rental_units", ""},
+		{"rental_bookings", "rental_bookings", ""},
+		{"online_bookings", "online_bookings", ""},
+		{"sensor_devices", "sensor_devices", ""},
+		{"open_sensor_alerts", "sensor_alerts", "status = 'open'"},
+	} {
+		q := a.DB.NewSelect().TableExpr(c.table).Where("marina_id = ?", marinaID)
+		if c.where != "" {
+			q = q.Where(c.where)
+		}
+		n, err := q.Count(ctx)
+		if err != nil {
+			return "", err
+		}
+		out = append(out, fmt.Sprintf("%s %d", c.label, n))
+	}
+	return strings.Join(out, ", "), nil
 }

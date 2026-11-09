@@ -37,11 +37,25 @@ func TestConfig_Defaults(t *testing.T) {
 		c.DatabaseURL != "", !c.AutoMigrate, c.MailFrom != "Porto <noreply@localhost>", c.HoldTTL != 10*time.Minute,
 		c.LogLevel != slog.LevelInfo, c.LogFormat != "json", c.RequireTOTPForOwners, c.Telemetry,
 		c.SensorRawRetention != 30*24*time.Hour, c.Dev, c.WebhooksAllowPrivate, c.PublicReadsPerMinute != 120,
+		c.LoginAttemptsPerMinute != 30,
 		c.Keys == nil, c.UsesPostgres(), c.DemoPairingEnabled(), c.BootstrapOwnerEnabled(), !c.SecureCookies():
 		t.Fatalf("unexpected defaults: %+v", c)
 	}
 	if c.SQLitePath() != filepath.Join("data", "porto.db") {
 		t.Fatalf("sqlite path %s", c.SQLitePath())
+	}
+}
+
+// TestConfig_LoginAttemptsPerMinute: production may lower the login limit, only development (the end-to-end
+// server) may raise it.
+func TestConfig_LoginAttemptsPerMinute(t *testing.T) {
+	c, err := Load(envOf(map[string]string{"PORTO_SECRET_KEY": validKey(t), "PORTO_LOGIN_ATTEMPTS_PER_MINUTE": "10"}))
+	if err != nil || c.LoginAttemptsPerMinute != 10 {
+		t.Fatalf("lowered: %v %v", c, err)
+	}
+	c, err = Load(envOf(map[string]string{"PORTO_DEV": "true", "PORTO_LOGIN_ATTEMPTS_PER_MINUTE": "1000"}))
+	if err != nil || c.LoginAttemptsPerMinute != 1000 {
+		t.Fatalf("raised in dev: %v %v", c, err)
 	}
 }
 
@@ -127,6 +141,8 @@ func TestConfig_Invalid(t *testing.T) {
 		{"fake channel without dev", "PORTO_DEV_FAKE_CHANNEL", "true", "PORTO_DEV_FAKE_CHANNEL"},
 		{"allow private", "PORTO_WEBHOOKS_ALLOW_PRIVATE", "2", "PORTO_WEBHOOKS_ALLOW_PRIVATE"},
 		{"public reads", "PORTO_PUBLIC_READS_PER_MINUTE", "0", "PORTO_PUBLIC_READS_PER_MINUTE"},
+		{"login attempts", "PORTO_LOGIN_ATTEMPTS_PER_MINUTE", "0", "PORTO_LOGIN_ATTEMPTS_PER_MINUTE"},
+		{"login attempts raised without dev", "PORTO_LOGIN_ATTEMPTS_PER_MINUTE", "1000", "PORTO_LOGIN_ATTEMPTS_PER_MINUTE"},
 		{"bootstrap half", "PORTO_BOOTSTRAP_OWNER_EMAIL", "a@b.c", "PORTO_BOOTSTRAP_OWNER_NAME"},
 	}
 	for _, tc := range cases {

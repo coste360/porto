@@ -18,8 +18,8 @@ import (
 	"github.com/coste360/porto/pkg/ext"
 )
 
-// TestSeed_DemoYardOrdersCoherent (m10-plan §16.2): the demo has the order of the accepted quote with approved and
-// pending hours, materials and an external cost, an invoiced order; Q30, Q32, Q33 hold; a second run adds nothing.
+// TestSeed_DemoYardOrdersCoherent (m10-plan §16.2): the demo has the orders of the five accepted quotes with approved
+// and pending hours, materials and external costs, three orders without a quote (one invoiced); Q30, Q32, Q33 hold; a second run adds nothing.
 func TestSeed_DemoYardOrdersCoherent(t *testing.T) {
 	testdb.Run(t, func(t *testing.T, db *store.DB) {
 		key := make([]byte, 32)
@@ -57,13 +57,13 @@ func TestSeed_DemoYardOrdersCoherent(t *testing.T) {
 		if orders == 0 {
 			t.Skip("no yard catalogue in the demo (catalogue seed not active)")
 		}
-		if orders != 2 || count("work_orders", "status = ?", store.WorkOrderInvoiced) != 1 || count("work_orders", "quote_id IS NOT NULL") != 1 {
+		if orders != 8 || count("work_orders", "status = ?", store.WorkOrderInvoiced) != 1 || count("work_orders", "quote_id IS NOT NULL") != 5 {
 			t.Fatal("orders seed incomplete")
 		}
 		if count("timesheets", "status = ?", store.TimesheetApproved) == 0 || count("timesheets", "status = ?", store.TimesheetSubmitted) == 0 {
 			t.Fatal("timesheets seed incomplete")
 		}
-		if count("work_order_billings", "kind = ?", store.WOBillingFinal) != 1 || count("work_order_external_costs", "") != 1 {
+		if count("work_order_billings", "kind = ?", store.WOBillingFinal) != 1 || count("work_order_external_costs", "") != 2 {
 			t.Fatal("billings or external costs missing")
 		}
 		vs, err := store.CheckYardInvariants(ctx, db.DB, res.MarinaID)

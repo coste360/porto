@@ -1,5 +1,5 @@
 import { MaximizeIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import {
   useDayView,
@@ -27,6 +27,7 @@ import { ToggleGroup, ToggleGroupItem } from '@porto/shared/ui/toggle-group';
 
 import { useCurrentMarina } from '../../../auth/hooks';
 import { LoadingState, QueryErrorState } from '../../../components/PageStates';
+import { useFillHeight } from '../../../lib/fillHeight';
 import { mapAspectClass } from '../../maps/lib';
 import { opsScene } from '../../operations/lib/opsScene';
 import { useOpsLabels } from '../../operations/lib/useOpsLabels';
@@ -70,6 +71,18 @@ export function DayMap({
     [doc?.width_cm, doc?.height_cm],
   );
   const { viewport, bindContainer, bindSvg, gestures, fit, zoomBy } = useMapViewport(content);
+  // The canvas fills the screen below its top, leaving room for the legend and the tab bar (tall phones).
+  const [fillRef, canvasHeight] = useFillHeight<HTMLDivElement>({
+    reserve: 160,
+    fallback: doc ? mapAspectClass(doc.width_cm, doc.height_cm) : 'aspect-4/3',
+  });
+  const canvasRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      bindContainer(el);
+      fillRef(el);
+    },
+    [bindContainer, fillRef],
+  );
   const minTile = schemaMinTileCm(pxPerCm(fitToView(content, viewport.screenW, viewport.screenH)));
   const scene = useMemo(() => (doc ? opsScene(doc, 'schema', minTile) : []), [doc, minTile]);
   const index = useMemo(() => indexScene(scene), [scene]);
@@ -165,8 +178,8 @@ export function DayMap({
         </Button>
       </div>
       <div
-        ref={bindContainer}
-        className={`bg-muted w-full touch-none overflow-hidden rounded-md border ${mapAspectClass(doc.width_cm, doc.height_cm)} max-h-svh`}
+        ref={canvasRef}
+        className={`bg-muted w-full touch-none overflow-hidden rounded-md border ${canvasHeight} max-h-svh`}
         data-testid="phone-map-canvas"
         data-context={ctx}
         data-date={dv?.date}

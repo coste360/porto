@@ -1,0 +1,47 @@
+# documentation: https://github.com/coste360/porto#readme
+# slogan: Gestionale per porti turistici, approdi e cantieri nautici (codice sorgente disponibile, BSL 1.1): mappa del porto, contratti, transiti e prenotazione online senza commissioni.
+# tags: porto turistico,marina,ormeggi,posti barca,cantiere nautico,rimessaggio,booking,gestionale
+# logo: https://raw.githubusercontent.com/coste360/porto/main/assets/brand/porto/03_Icone_App_SVG/porto_app_navy.svg
+# port: 8080
+#
+# Coolify template (Docker Compose), SQLite in the porto-data volume: the recommended choice for one marina.
+# Coolify fills SERVICE_FQDN_PORTO_8080 / SERVICE_URL_PORTO from the domain assigned to the "porto" service.
+# PORTO_SECRET_KEY must be set by hand in "Environment Variables" (openssl rand -base64 32) and kept with the
+# backups: without it the encrypted data cannot be recovered. See deploy/coolify/README.md.
+
+services:
+  porto:
+    image: ghcr.io/coste360/porto:${PORTO_VERSION:-latest}
+    restart: unless-stopped
+    environment:
+      - SERVICE_FQDN_PORTO_8080
+      - PORTO_ADDR=:8080
+      - PORTO_DATA_DIR=/data
+      - PORTO_BASE_URL=${SERVICE_URL_PORTO}
+      - PORTO_SECRET_KEY=${PORTO_SECRET_KEY:?}
+      - PORTO_AUTO_MIGRATE=${PORTO_AUTO_MIGRATE:-true}
+      - PORTO_SMTP_URL=${PORTO_SMTP_URL:-}
+      - PORTO_MAIL_FROM=${PORTO_MAIL_FROM:-}
+      - PORTO_HOLD_TTL=${PORTO_HOLD_TTL:-10m}
+      - PORTO_LOG_LEVEL=${PORTO_LOG_LEVEL:-info}
+      # Coolify's proxy (Traefik or Caddy) reaches the container over a private Docker network.
+      - PORTO_TRUSTED_PROXIES=${PORTO_TRUSTED_PROXIES:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
+      - PORTO_REQUIRE_TOTP_FOR_OWNERS=${PORTO_REQUIRE_TOTP_FOR_OWNERS:-false}
+      - PORTO_TELEMETRY=false
+      # First owner, created at start only while the database has no users.
+      - PORTO_BOOTSTRAP_OWNER_EMAIL=${PORTO_BOOTSTRAP_OWNER_EMAIL:-}
+      - PORTO_BOOTSTRAP_OWNER_NAME=${PORTO_BOOTSTRAP_OWNER_NAME:-}
+      - PORTO_BOOTSTRAP_OWNER_ORG=${PORTO_BOOTSTRAP_OWNER_ORG:-}
+      - PORTO_ADMIN_PASSWORD=${PORTO_ADMIN_PASSWORD:-}
+    volumes:
+      - porto-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  porto-data:

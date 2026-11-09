@@ -136,3 +136,50 @@ func TestCLI_SeedBackupRestore(t *testing.T) {
 		t.Fatalf("restore into a new instance: %+v", r)
 	}
 }
+
+// TestSeedDemo_ResetNeedsDemoInstance: `seed demo --reset` wipes the database only with PORTO_DEMO_INSTANCE set to
+// exactly "true"; any other value is a usage error that leaves the database alone. With "true" the command reaches
+// the database guard, which refuses a database holding a real organization, again without wiping it.
+func TestSeedDemo_ResetNeedsDemoInstance(t *testing.T) {
+	vars := testEnv(t, map[string]string{"PORTO_ADMIN_PASSWORD": "demo-password-123"})
+	owner := []string{
+		"admin", "create", "--email", "owner@marina-vera.test", "--name", "Owner", "--org", "Marina Vera SRL",
+		"--marina", "Marina Vera", "--slug", "vera", "--password-stdin",
+	}
+	if r := runCLI(t, vars, "real-password-123\n", owner...); r.code != 0 {
+		t.Fatalf("admin create: %+v", r)
+	}
+	stillThere := func(t *testing.T) {
+		t.Helper()
+		if r := runCLI(t, vars, "real-password-123\n", owner...); r.code != 1 || !strings.Contains(r.stderr, "already exists") {
+			t.Fatalf("the database was changed: %+v", r)
+		}
+	}
+	for _, tc := range []struct {
+		name, value string
+		set         bool
+		code        int
+		stderr      string
+	}{
+		{name: "unset", code: 2, stderr: "PORTO_DEMO_INSTANCE=true"},
+		{name: "false", value: "false", set: true, code: 2, stderr: "PORTO_DEMO_INSTANCE=true"},
+		{name: "one", value: "1", set: true, code: 2, stderr: "PORTO_DEMO_INSTANCE=true"},
+		{name: "upper", value: "TRUE", set: true, code: 2, stderr: "PORTO_DEMO_INSTANCE=true"},
+		{name: "true", value: "true", set: true, code: 1, stderr: "not a demo database"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			v := make(map[string]string, len(vars)+1)
+			for k, x := range vars {
+				v[k] = x
+			}
+			if tc.set {
+				v["PORTO_DEMO_INSTANCE"] = tc.value
+			}
+			r := runCLI(t, v, "", "seed", "demo", "--reset")
+			if r.code != tc.code || !strings.Contains(r.stderr, tc.stderr) || strings.Contains(r.stdout, "wiped") {
+				t.Fatalf("%+v", r)
+			}
+			stillThere(t)
+		})
+	}
+}

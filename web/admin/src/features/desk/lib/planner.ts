@@ -136,11 +136,11 @@ export function layoutBars(
 }
 
 /** Pixel rectangle of a bar inside its row (x from the label column). */
-export function barRect(bar: Bar, rowY: number) {
+export function barRect(bar: Bar, rowY: number, col: number = COL_PX) {
   return {
-    x: LABEL_PX + bar.startCol * COL_PX + 1,
+    x: LABEL_PX + bar.startCol * col + 1,
     y: rowY + 3 + bar.lane * LANE_PX,
-    width: (bar.endCol - bar.startCol + 1) * COL_PX - 2,
+    width: (bar.endCol - bar.startCol + 1) * col - 2,
     height: LANE_PX - 4,
   };
 }
@@ -173,14 +173,25 @@ export function barFillClass(a: MapAllocation): string {
 }
 
 /** Column under a pointer x (relative to the SVG), clamped to the range; null over the label column. */
-export function columnAt(x: number, days: number): number | null {
+export function columnAt(x: number, days: number, col: number = COL_PX): number | null {
   if (x < LABEL_PX) return null;
-  return Math.min(days - 1, Math.max(0, Math.floor((x - LABEL_PX) / COL_PX)));
+  return Math.min(days - 1, Math.max(0, Math.floor((x - LABEL_PX) / col)));
 }
 
 /** Whole columns moved by a horizontal drag of dx pixels (half a column rounds). */
-export function dragColumns(dx: number): number {
-  return Math.round(dx / COL_PX);
+export function dragColumns(dx: number, col: number = COL_PX): number {
+  return Math.round(dx / col);
+}
+
+/** Widest column a night may take: 31 and 14 nights stretch up to this to fill the width. */
+export const MAX_COL_PX = 96;
+
+/** Column width that fills `available` pixels (label column included) with `days` nights, never narrower than
+ * COL_PX (the grid scrolls) nor wider than MAX_COL_PX; COL_PX before the width is known. */
+export function fitColumnPx(available: number, days: number): number {
+  if (available <= 0 || days <= 0) return COL_PX;
+  const col = Math.floor((available - LABEL_PX) / days);
+  return Math.max(COL_PX, Math.min(MAX_COL_PX, col));
 }
 
 export type DragMode = 'move' | 'resize-end';

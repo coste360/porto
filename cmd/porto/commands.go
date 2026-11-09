@@ -13,6 +13,7 @@ import (
 	"runtime"
 	"strings"
 	"text/tabwriter"
+	"time"
 
 	"golang.org/x/term"
 
@@ -266,10 +267,16 @@ func cmdAdminCreate(ctx context.Context, args []string, e env) error {
 
 func cmdSeedDemo(ctx context.Context, args []string, e env) error {
 	fs := newFlags("seed demo", e)
-	var fromStdin bool
+	var fromStdin, reset bool
 	fs.BoolVar(&fromStdin, "password-stdin", false, "read the demo password from the first line of stdin")
+	fs.BoolVar(&reset, "reset", false, "wipe the demo database and files first (public demo instance, needs PORTO_DEMO_INSTANCE=true)")
 	if err := parse(fs, args); err != nil {
 		return err
+	}
+	if reset {
+		if v, _ := e.lookup("PORTO_DEMO_INSTANCE"); v != "true" {
+			return usagef("seed demo --reset wipes the database: it runs only with PORTO_DEMO_INSTANCE=true")
+		}
 	}
 	a, err := newApp(ctx, e)
 	if err != nil {
@@ -283,9 +290,22 @@ func cmdSeedDemo(ctx context.Context, args []string, e env) error {
 	if err != nil {
 		return err
 	}
+	started := a.Clock.Now()
+	if reset {
+		if err := a.ResetDemo(ctx); err != nil {
+			return err
+		}
+		fmt.Fprintln(e.stdout, "demo reset: database and files wiped")
+	}
 	res, err := a.SeedDemo(ctx, pw)
 	if err != nil {
 		return describe(err)
+	}
+	defer func() {
+		fmt.Fprintf(e.stdout, "seed time: %s\n", a.Clock.Now().Sub(started).Round(time.Second))
+	}()
+	if sum, err := a.DemoSummary(ctx, res.MarinaID); err == nil && len(sum) > 0 {
+		defer fmt.Fprintf(e.stdout, "yard, rental, online booking and sensors: %s\n", sum)
 	}
 	m1 := fmt.Sprintf("maps %d, berths %d, customers %d, vessels %d, documents %d, items %d, price_lists %d, price_rules %d, "+
 		"contracts %d, transits %d, quotes %d, inquiries %d, allocations %d, rows berth/cell/land %d/%d/%d, releases %d, presences %d",

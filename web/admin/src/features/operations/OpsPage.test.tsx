@@ -60,6 +60,18 @@ describe('OpsPage', () => {
     expect(screen.getByTestId('ops-legend-count-in')).toHaveTextContent('1');
   });
 
+  it('shows one active lens: an overlay lens deselects the lens tabs, a tab switches the overlay off', async () => {
+    renderApp(`/m/${MARINA_ID}/ops?date=${DATE}`, routes());
+    const occupancy = await screen.findByTestId('ops-lens-tab-occupancy');
+    expect(occupancy).toHaveAttribute('data-state', 'on');
+    await userEvent.click(screen.getByTestId('ops-payments-lens'));
+    expect(screen.getByTestId('ops-payments-lens')).toHaveAttribute('aria-pressed', 'true');
+    expect(occupancy).toHaveAttribute('data-state', 'off');
+    await userEvent.click(occupancy);
+    expect(screen.getByTestId('ops-payments-lens')).toHaveAttribute('aria-pressed', 'false');
+    expect(occupancy).toHaveAttribute('data-state', 'on');
+  });
+
   it('filters by free text: counts follow the filter', async () => {
     renderApp(`/m/${MARINA_ID}/ops?date=${DATE}`, routes());
     await userEvent.type(await screen.findByLabelText('Cerca'), 'brezza');

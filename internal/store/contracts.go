@@ -426,14 +426,16 @@ type SeedPlacement struct {
 	VesselID   string `bun:"vessel_id"`
 	Term       string `bun:"term"`
 	ResourceID string `bun:"resource_id"`
+	Policy     JSON   `bun:"policy"`
 }
 
 // SeedMooringPlacements returns the mooring contracts of a marina starting on startsOn with their first berth
-// allocation, in contract number order (the demo previous-year history replays them one year earlier).
+// allocation and policy, in contract number order (the demo previous-year history replays them one year earlier
+// with the same clauses).
 func SeedMooringPlacements(ctx context.Context, db bun.IDB, s MarinaScope, startsOn calendar.Date) ([]SeedPlacement, error) {
 	out := []SeedPlacement{}
 	err := db.NewSelect().TableExpr("contracts AS c").
-		ColumnExpr("c.customer_id, c.vessel_id, c.term, al.resource_id").
+		ColumnExpr("c.customer_id, c.vessel_id, c.term, al.resource_id, c.policy").
 		Join("JOIN contract_lines AS l ON l.contract_id = c.id AND l.marina_id = c.marina_id").
 		Join("JOIN allocations AS al ON al.contract_line_id = l.id AND al.marina_id = c.marina_id").
 		Where("c.marina_id = ?", s.ID()).Where("c.kind = 'mooring'").Where("c.starts_on = ?", startsOn).

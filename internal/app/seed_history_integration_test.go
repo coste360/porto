@@ -22,7 +22,8 @@ import (
 )
 
 // TestSeed_DemoHistoryAndOnlineBooking: the demo has a previous year (contracts, transits with presences, charges
-// issued and payments received in Y−1, written on the clock of Y−1) and a working public booking page (enabled,
+// issued and payments received in Y−1, written on the clock of Y−1, the current year spread over the months alike)
+// and a working public booking page (enabled,
 // payable, terms and privacy published, resources sold online); the billing, payment, contract and occupancy
 // invariants hold; a second run adds nothing.
 func TestSeed_DemoHistoryAndOnlineBooking(t *testing.T) {
@@ -90,6 +91,8 @@ func TestSeed_DemoHistoryAndOnlineBooking(t *testing.T) {
 				t.Fatalf("%s invariant violations: %+v", name, vs)
 			}
 		}
+		// The current year's ledger is spread over the months like the history (seed_spread_integration_test.go).
+		assertLedgerSpread(ctx, t, db, res.MarinaID, now)
 		cfgB, err := a.Booking.Config(ctx, app.DemoMarinaSlug)
 		if err != nil {
 			t.Fatal(err)

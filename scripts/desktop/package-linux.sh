@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Packages the Linux x86_64 AppImage with two launchers: the WebKitGTK 4.1 window build and the browser build;
-# AppRun starts the window build when libwebkit2gtk-4.1 is installed, else the browser one.
+# AppRun starts the window build when it can start on the host (it probes it with -version, so a missing
+# libwebkit2gtk-4.1 or an older glibc are both caught), else the browser one.
 # Needs libwebkit2gtk-4.1-dev and libgtk-3-dev for the window build, and appimagetool.
 #
 # APPIMAGETOOL          path to an appimagetool binary you trust; or

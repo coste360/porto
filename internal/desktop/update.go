@@ -17,7 +17,8 @@ import (
 	"github.com/coste360/porto/internal/desktopport"
 )
 
-// Version check (m6a-plan §2.8, D16): notify only, never download or install, never required.
+// Version check (m6a-plan §2.8, D16, ADR 0010): notify only, never download or install, never required. The manifest
+// is the latest.json of the shared Coste360 updates service (docs/release.md).
 const (
 	UpdateInterval  = 24 * time.Hour
 	maxUpdateBody   = 64 << 10
@@ -40,15 +41,26 @@ type Updater struct {
 	latest *desktopport.UpdateInfo
 }
 
+// updateManifest is the part of latest.json the banner needs. The document also carries checksums and files[]
+// (one entry per package, read by the updates service for its download redirects): unknown fields are ignored.
 type updateManifest struct {
-	Version     string `json:"version"`
-	URL         string `json:"url"`
-	PublishedAt string `json:"published_at"`
+	Version string `json:"version"`
+	Tag     string `json:"tag"`
+	// URL is the page the banner opens (the download page or the release notes); ReleaseNotes is the fallback
+	// when a manifest has no top-level url.
+	URL          string `json:"url"`
+	ReleaseNotes string `json:"release_notes"`
+	PublishedAt  string `json:"published_at"`
 }
 
-// UserAgent is the only thing the request says about this installation: product, version and OS.
+// UserAgent is the only thing the request says about this installation: product, version, edition and platform,
+// in the form the updates service counts ("porto/1.2.3 (desktop; windows/amd64)").
 func (u *Updater) UserAgent() string {
-	return fmt.Sprintf("Porto-Desktop/%s (%s; %s)", u.Version, u.GOOS, u.GOARCH)
+	v := strings.TrimPrefix(strings.TrimSpace(u.Version), "v")
+	if v == "" || strings.ContainsAny(v, " ()/;") {
+		v = "dev"
+	}
+	return fmt.Sprintf("porto/%s (desktop; %s/%s)", v, u.GOOS, u.GOARCH)
 }
 
 // Latest returns the newer version found by the last successful check, nil when none (or the check is off).
@@ -103,6 +115,9 @@ func (u *Updater) fetch(ctx context.Context) (*desktopport.UpdateInfo, error) {
 	if err := json.NewDecoder(io.LimitReader(res.Body, maxUpdateBody)).Decode(&m); err != nil {
 		return nil, fmt.Errorf("manifest: %w", err)
 	}
+	if m.Version == "" {
+		m.Version = m.Tag
+	}
 	latest, ok := parseSemver(m.Version)
 	if !ok {
 		return nil, errors.New("manifest: bad version")
@@ -111,8 +126,12 @@ func (u *Updater) fetch(ctx context.Context) (*desktopport.UpdateInfo, error) {
 	if !ok || !semverLess(current, latest) {
 		return nil, nil
 	}
-	link, err := url.Parse(m.URL)
-	if err != nil || link.Scheme != "https" || link.Host == "" || len(m.URL) > maxUpdateURLLen {
+	page := m.URL
+	if page == "" {
+		page = m.ReleaseNotes
+	}
+	link, err := url.Parse(page)
+	if err != nil || link.Scheme != "https" || link.Host == "" || link.User != nil || len(page) > maxUpdateURLLen {
 		return nil, errors.New("manifest: bad url")
 	}
 	return &desktopport.UpdateInfo{Version: strings.TrimPrefix(m.Version, "v"), URL: link.String()}, nil

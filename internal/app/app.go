@@ -283,7 +283,7 @@ func (a *App) wire(x ext.Extensions, o Options) error {
 	a.Outbox = event.NewOutbox(clk)
 	a.Notify = notify.NewService(db, clk, cfg.Keys, transport, cfg.BaseURL.String(), log)
 	authSvc, err := auth.NewService(db, clk, cfg.Keys, aw, a.Notify, log, auth.Options{
-		RequireTOTPForOwners: cfg.RequireTOTPForOwners, Argon2: o.Argon2,
+		RequireTOTPForOwners: cfg.RequireTOTPForOwners, Argon2: o.Argon2, LoginAttemptsPerIP: cfg.LoginAttemptsPerMinute,
 	})
 	if err != nil {
 		return err

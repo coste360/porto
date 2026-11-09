@@ -1,4 +1,4 @@
-import { QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider, type QueryClient } from '@tanstack/react-query';
 import { RouterProvider, createMemoryHistory } from '@tanstack/react-router';
 import { render } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
@@ -49,10 +49,12 @@ export function makeMe(
   };
 }
 
-/** Renders the whole admin app at `path` (under /admin) against mocked API routes. */
-export function renderApp(path: string, routes: MockRoute[]) {
+/** Renders the whole admin app at `path` (under /admin) against mocked API routes; `seed` prepares the query
+ * cache before the first render (a cache restored offline, a stale `me`). */
+export function renderApp(path: string, routes: MockRoute[], seed?: (qc: QueryClient) => void) {
   const mock = createFetchMock(routes);
   const queryClient = createTestQueryClient();
+  seed?.(queryClient);
   const api = createApiClient({
     fetch: mock.fetch,
     baseUrl: 'http://localhost',

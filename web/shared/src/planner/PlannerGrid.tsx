@@ -1,12 +1,15 @@
-import { useReducer, useState, type KeyboardEvent } from 'react';
+import { useId, useReducer, useState, type KeyboardEvent } from 'react';
 
 import {
   cellsRange,
+  dateHeaders,
   dragGhost,
   dragReducer,
   dragResult,
+  fitLabel,
   IDLE,
   keyReducer,
+  paintOrder,
   rangeRect,
   segmentClass,
   segmentDashed,
@@ -52,8 +55,10 @@ export type PlannerGridProps = {
   label: string;
   /** Accessible name of a free cell: row label, cell header text. */
   cellLabel: (row: PlannerGridRow, cellIndex: number) => string;
-  /** Header text of a date (days and half days views). */
+  /** Header text of a date (half days view, and days view when a day is wide enough). */
   dateLabel?: (date: string) => string;
+  /** Compact header text of the month of a date (days view with narrow days); default MM/YYYY. */
+  monthLabel?: (date: string) => string;
   onCreate?: (rowId: string, range: SlotRange) => void;
   onMove?: (bookingId: string, fromRowId: string, rowId: string, range: SlotRange) => void;
   onSegment?: (segment: PlannerGridSegment) => void;
@@ -64,6 +69,10 @@ export type PlannerGridProps = {
 };
 
 const HEADER = 36;
+/** Width a full date label needs on the first header line (a dd/mm/yyyy date at text-xs). */
+const DATE_LABEL_WIDTH = 72;
+
+const defaultMonthLabel = (date: string) => `${date.slice(5, 7)}/${date.slice(0, 4)}`;
 
 /**
  * Shared time planner (m11-plan §14.2): an SVG grid of rows by time cells (30-minute slots, half-day bands or days,
@@ -75,6 +84,7 @@ export function PlannerGrid(props: PlannerGridProps) {
   const { axis, rows, segments, rowHeight = 32, labelWidth = 160 } = props;
   const [drag, dispatch] = useReducer(dragReducer, IDLE);
   const [sel, setSel] = useState<KeySelection | null>(null);
+  const clipBase = `pc${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   const height = HEADER + rows.length * rowHeight;
   const width = labelWidth + axis.width;
   const rowIndex = new Map(rows.map((r, i) => [r.id, i]));
@@ -136,17 +146,20 @@ export function PlannerGrid(props: PlannerGridProps) {
       >
         {/* Header: dates on the first line, cell labels on the second. */}
         <g className="fill-muted-foreground">
+          {dateHeaders(axis, DATE_LABEL_WIDTH).map((h) => (
+            <text key={`d${h.index}`} x={labelWidth + h.x + 4} y={14} data-testid="planner-date">
+              {h.compact
+                ? (props.monthLabel ?? defaultMonthLabel)(h.date)
+                : props.dateLabel
+                  ? props.dateLabel(h.date)
+                  : h.date}
+            </text>
+          ))}
           {axis.cells.map((c) => (
-            <g key={`h${c.index}`}>
-              {c.dayStart && axis.view !== 'hours' ? (
-                <text x={labelWidth + c.x + 4} y={14}>
-                  {props.dateLabel ? props.dateLabel(c.date) : c.date}
-                </text>
-              ) : null}
-              <text x={labelWidth + c.x + 2} y={30}>
-                {c.label}
-              </text>
-            </g>
+            <text key={`h${c.index}`} x={labelWidth + c.x + 2} y={30}>
+              {axis.view === 'hours' ? c.label : fitLabel(c.label, c.w)}
+              {c.label && axis.view !== 'hours' ? <title>{c.label}</title> : null}
+            </text>
           ))}
         </g>
         {rows.map((r, i) => {
@@ -185,7 +198,7 @@ export function PlannerGrid(props: PlannerGridProps) {
             </g>
           );
         })}
-        {segments.map((s) => {
+        {paintOrder(segments).map((s) => {
           const i = rowIndex.get(s.rowId);
           const rect = rangeRect(axis, s.range);
           if (i === undefined || !rect) return null;
@@ -246,15 +259,27 @@ export function PlannerGrid(props: PlannerGridProps) {
                 strokeWidth={hot ? 3 : 1}
                 strokeDasharray={segmentDashed(s.kind, s.status) ? '4 2' : undefined}
               />
-              {rect.w > 24 ? (
-                <text
-                  x={labelWidth + rect.x + 5}
-                  y={y + rowHeight / 2 + 1}
-                  className={`${segmentTextClass(s.kind, s.status)} pointer-events-none`}
-                >
-                  {s.label}
-                </text>
+              {rect.w > 24 && s.label ? (
+                <>
+                  <clipPath id={`${clipBase}-${s.key}`}>
+                    <rect
+                      x={labelWidth + rect.x + 1}
+                      y={y}
+                      width={Math.max(rect.w - 4, 2)}
+                      height={rowHeight - 6}
+                    />
+                  </clipPath>
+                  <text
+                    x={labelWidth + rect.x + 5}
+                    y={y + rowHeight / 2 + 1}
+                    clipPath={`url(#${clipBase}-${s.key})`}
+                    className={`${segmentTextClass(s.kind, s.status)} pointer-events-none`}
+                  >
+                    {s.label}
+                  </text>
+                </>
               ) : null}
+              <title>{s.ariaLabel}</title>
             </g>
           );
         })}

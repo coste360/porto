@@ -1,0 +1,37 @@
+# Porto public demo instance: the demo marina of "porto seed demo", reset every night by reset.sh (see README.md).
+# Not for a real marina: the demo password is public and every change is discarded at the next reset.
+#
+#   cp deploy/demo/demo.env.example deploy/demo/.env      # set PORTO_BASE_URL and PORTO_SECRET_KEY
+#   docker compose -f deploy/demo/docker-compose.yml up -d
+#   deploy/demo/reset.sh                                   # first load, then nightly from cron
+
+name: porto-demo
+
+services:
+  porto:
+    image: ghcr.io/coste360/porto:${PORTO_VERSION:-latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      PORTO_ADDR: ":8080"
+      PORTO_DATA_DIR: /data
+      # A demo never sends mail: messages are written as .eml files in the volume and dropped at the reset.
+      PORTO_SMTP_URL: ""
+      PORTO_MAIL_DIR: /data/mail
+      PORTO_TELEMETRY: "false"
+    ports:
+      - "127.0.0.1:${PORTO_PUBLISH_PORT:-8080}:8080"
+    volumes:
+      - porto-demo-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  porto-demo-data:

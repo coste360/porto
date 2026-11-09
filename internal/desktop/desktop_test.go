@@ -691,8 +691,17 @@ func TestUpdate_UserAgentHasNoIdentifiers(t *testing.T) {
 	if req == nil {
 		t.Fatal("no request")
 	}
-	if ua := req.Header.Get("User-Agent"); ua != "Porto-Desktop/1.2.3 (darwin; arm64)" {
+	// The form the Coste360 updates service counts: product/version (edition; goos/goarch).
+	if ua := req.Header.Get("User-Agent"); ua != "porto/1.2.3 (desktop; darwin/arm64)" {
 		t.Fatalf("User-Agent %q", ua)
+	}
+	for v, want := range map[string]string{
+		"v1.2.3": "porto/1.2.3 (desktop; darwin/arm64)", "": "porto/dev (desktop; darwin/arm64)",
+		"dev": "porto/dev (desktop; darwin/arm64)", "1.0.0 (x)": "porto/dev (desktop; darwin/arm64)",
+	} {
+		if got := (&Updater{Version: v, GOOS: "darwin", GOARCH: "arm64"}).UserAgent(); got != want {
+			t.Errorf("UserAgent(%q) = %q", v, got)
+		}
 	}
 	if req.URL.RawQuery != "" || len(req.Cookies()) != 0 || req.Header.Get("Authorization") != "" {
 		t.Fatalf("identifying request: %v %v", req.URL, req.Header)
@@ -729,6 +738,64 @@ func TestUpdate_NewerVersionOnly(t *testing.T) {
 			t.Errorf("%s -> %s: banner %v", c.running, c.latest, got)
 		}
 		srv.Close()
+	}
+}
+
+// releaseManifest is a latest.json as the private build pipeline writes it (updates service format plus the
+// top-level url of the banner).
+const releaseManifest = `{
+  "version": "1.4.0",
+  "url": "https://github.com/coste360/porto/releases/tag/v1.4.0",
+  "tag": "v1.4.0",
+  "published_at": "2027-03-01T10:00:00Z",
+  "release_notes": "https://github.com/coste360/porto/releases/tag/v1.4.0",
+  "checksums": "https://assets.coste360.it/updates/porto/1.4.0/SHA256SUMS",
+  "files": [
+    {"name": "Porto_1.4.0_macos_universal.dmg", "edition": "desktop", "os": "macos", "arch": "universal",
+     "size": 41234567, "sha256": "aa", "url": "https://assets.coste360.it/updates/porto/1.4.0/Porto_1.4.0_macos_universal.dmg"},
+    {"name": "porto_1.4.0_linux_amd64.tar.gz", "edition": "server", "os": "linux", "arch": "amd64",
+     "size": 21234567, "sha256": "bb", "url": "https://assets.coste360.it/updates/porto/1.4.0/porto_1.4.0_linux_amd64.tar.gz"}
+  ],
+  "future_field": {"ignored": true}
+}`
+
+func TestUpdate_ReleaseManifest(t *testing.T) {
+	serve := func(body string) *Updater {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write([]byte(body))
+		}))
+		t.Cleanup(srv.Close)
+		var on atomic.Bool
+		on.Store(true)
+		u := updaterFor(srv, "1.3.2", &on)
+		u.Check(context.Background())
+		return u
+	}
+	got := serve(releaseManifest).Latest()
+	if got == nil || got.Version != "1.4.0" || got.URL != "https://github.com/coste360/porto/releases/tag/v1.4.0" {
+		t.Fatalf("release manifest: %+v", got)
+	}
+	// Without a top-level url the banner opens the release notes; without version the tag is used.
+	got = serve(`{"tag":"v1.5.0","release_notes":"https://github.com/coste360/porto/releases/tag/v1.5.0","files":[]}`).Latest()
+	if got == nil || got.Version != "1.5.0" || got.URL != "https://github.com/coste360/porto/releases/tag/v1.5.0" {
+		t.Fatalf("fallbacks: %+v", got)
+	}
+	for _, body := range []string{
+		`{"version":"1.5.0","files":[]}`,
+		`{"version":"1.5.0","url":"https://user:pw@example.com/x"}`,
+		`{"version":"1.5.0","url":"","release_notes":"http://example.com/notes"}`,
+		`{"version":"1.5.0","url":"https://example.com/x","files":"` + strings.Repeat("a", 65<<10) + `"}`,
+	} {
+		if got := serve(body).Latest(); got != nil {
+			t.Errorf("banner from %.60q: %+v", body, got)
+		}
+	}
+}
+
+func TestUpdate_DefaultURL(t *testing.T) {
+	if DefaultUpdateURL != "https://updates.coste360.it/porto/latest.json" {
+		t.Fatalf("DefaultUpdateURL %q", DefaultUpdateURL)
 	}
 }
 
