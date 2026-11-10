@@ -2,7 +2,7 @@
 # Node, Docker (for scripts/with-postgres.sh and compose) and gh come from devcontainer features.
 FROM mcr.microsoft.com/devcontainers/go:1-bookworm
 
-ARG GO_VERSION=1.27.2
+ARG GO_VERSION=1.27.4
 ARG GOLANGCI_LINT_VERSION=v2.15.0
 ARG AIR_VERSION=v1.67.4
 

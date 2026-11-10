@@ -674,6 +674,8 @@ Polish after M10 (demo review):
 - Desktop packages: the Linux window build links against webkit2gtk-4.1 (Ubuntu 24.04 no longer ships 4.0, which
   webview_go asks for), and the Windows installer gets absolute paths (Inno Setup resolved the relative ones from
   the folder of `porto.iss`).
+- Go 1.27.4 (GO-2026-6809 in `crypto/x509` of 1.27.2, reached by the SMTP transport).
+- macOS dmg: `hdiutil create` is retried, it fails now and then on hosted runners.
 - CI image smoke test: the marina slug `ci` was too short (3 characters minimum); it is now `marina-ci`.
 - Security: `golang.org/x/net` 0.62.0 (CVE-2026-78661, denial of service in `x/net/html`).
 - CI on GitHub runners: pull requests run the quick checks (integration tests on SQLite without the four slowest
