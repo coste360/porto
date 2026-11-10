@@ -18,7 +18,7 @@ You move from one to another with a backup and a restore ([Backup and restore](/
 ## Desktop app
 
 Server and data (SQLite) live on the office PC; other PCs and the dock staff's phones connect over the marina Wi-Fi.
-No Coste360 service is needed. Signed packages are downloaded from Coste360 from the first release:
+No Coste360 service is needed. Signed packages are downloaded from Coste360:
 
 - [Windows](https://updates.coste360.it/porto/download/latest/windows/x64)
 - [macOS](https://updates.coste360.it/porto/download/latest/macos) (Apple Silicon and Intel)

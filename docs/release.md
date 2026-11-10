@@ -32,7 +32,8 @@ source.
 
 ## Steps
 
-1. **Freeze.** `main` is green in CI (`ci.yml`, and `desktop.yml` when desktop files changed). Locally:
+1. **Freeze.** The last run of `ci.yml` on `main` (push, nightly or manual: the full suite, not the quick
+   pull request checks) is green, and `desktop.yml` too when desktop files changed. Locally:
    `make check-full`.
 2. **API version.** Set `info.version` in `api/openapi.yaml` to `X.Y.Z` and run `make gen` (API first: never edit
    the generated files). Commit with the changelog.
@@ -60,7 +61,8 @@ source.
    ```
 
    A failed build is not retried by itself: fix the cause and start `Build` by hand with the tag.
-8. **Announce**: release notes link, README status table if a feature moved, and the public demo (deploy/demo)
+8. **Announce**: release notes link, the feature status table of the docs site
+   (`docs-site/src/content/docs/installazione/index.mdx` and its English twin) if a feature moved, and the public demo (deploy/demo)
    picks the new image at its next nightly reset when it follows `latest`.
 
 ## The image on GHCR

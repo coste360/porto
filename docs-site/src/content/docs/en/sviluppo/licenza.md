@@ -22,15 +22,35 @@ text is the `LICENSE` file; this summary does not replace it.
 - **Becomes AGPL-3.0 after 3 years.** Each version converts to the
   [GNU AGPL-3.0 or later](https://www.gnu.org/licenses/agpl-3.0.html) three years after its first public release.
 
-Embedding the booking page or the widget in a website needs no licence, as long as whoever does it does not install,
-host, configure or support Porto. The full summary, with the cases of agencies, consortia and installation templates,
-is in the [README](https://github.com/coste360/porto#in-english) and the licence text.
+## Practical cases
+
+- **Direct operation.** You operate a facility directly if you, or a company of your group, hold its concession (for
+  example the state maritime concession), licence or title, or you run it on your own account and not as a supplier
+  of someone else. The ancillary services of the same site are included, such as berthing, fuel, rentals, boatyard
+  work, bar and restaurant.
+- **Agencies, technicians and software houses.** Installing, configuring, customising, hosting, maintaining or
+  supporting Porto for other marinas for a fee requires a commercial licence. The operator can install it themselves,
+  with their own employees or on a server they rent.
+- **Consortia and associations.** Each member marina uses Porto for free for itself; a consortium or association that
+  does not control its member marinas does not operate them directly and needs a commercial licence to offer Porto to
+  its members.
+- **Websites.** Embedding the booking page or the widget in a website or an app needs no licence, as long as whoever
+  does it does not install, host, configure, customise, maintain or support Porto.
+- **Free help.** Helping an operator for free is allowed, as long as the help does not serve to sell or promote a paid
+  offer tied to Porto or to the marina's operations, bookings or website.
+- **Installation templates.** A generic or "one-click" template, with which the operator starts Porto by themselves on
+  a server they rent, is allowed if the provider does not run Porto for them and does not sell an offer dedicated to
+  Porto.
+
+The decision and its reasons are in [ADR 0018](https://github.com/coste360/porto/blob/main/docs/adr/0018-licenza.md)
+(Italian); more questions in the [FAQ](/en/installazione/domande-frequenti/).
 
 ## Trademark
 
 The **Porto** name, the logo and the files in `assets/brand/porto/` belong to Coste360 SRL, all rights reserved, and
 are **not covered by the code licence**. A fork must have its own name and logo. The usage rules are in
-[ADR 0007](https://github.com/coste360/porto/blob/main/docs/adr/0007-marchio.md).
+[ADR 0007](https://github.com/coste360/porto/blob/main/docs/adr/0007-marchio.md) and the
+[trademark policy](https://github.com/coste360/porto/blob/main/TRADEMARK.md).
 
 ## Dependencies
 

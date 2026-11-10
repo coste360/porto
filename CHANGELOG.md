@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-10
+
 ### Added
 
 Public release preparation (ADR 0018, docs/release.md):
@@ -627,6 +629,14 @@ M0 — Fondamenta (spec 32.3):
 
 ### Changed
 
+- Dependabot is off for now (`.github/dependabot.yml` removed): dependency updates are batched by the maintainers.
+- README slimmed to about 100 lines (what Porto is, presentation video, downloads, local quick try, documentation
+  links, contributing and security, licence summary, English section); the details moved to docs.portomarina.app
+  in Italian and English: feature status, known limits, roadmap and accessibility in `installazione/` (Cos'è Porto),
+  the FAQ in the new `installazione/domande-frequenti` page, the practical licence cases in `sviluppo/licenza`, and
+  the dev-only desktop variables `PORTO_UPDATE_URL`, `PORTO_DESKTOP_LAN_LOOPBACK`, `PORTO_DESKTOP_FIRST_RUN_FILE`
+  in `installazione/configurazione`. Video poster in `assets/readme/video-poster.jpg`; the feature request template
+  links the roadmap on the docs site.
 - Licence: Business Source License 1.1 with an Additional Use Grant for marinas, berthing points, boatyards and dry-storage facilities operated directly, converting to AGPL-3.0-or-later three years after each release (decision D2); README rewritten for the public release with screenshots in `docs/screenshots/`.
 
 Polish after M10 (demo review):
@@ -661,6 +671,19 @@ Polish after M10 (demo review):
 
 ### Fixed
 
+- Desktop packages: the Linux window build links against webkit2gtk-4.1 (Ubuntu 24.04 no longer ships 4.0, which
+  webview_go asks for), and the Windows installer gets absolute paths (Inno Setup resolved the relative ones from
+  the folder of `porto.iss`).
+- Go 1.27.4 (GO-2026-6809 in `crypto/x509` of 1.27.2, reached by the SMTP transport).
+- Linux AppImage: appimagetool runs without `SOURCE_DATE_EPOCH` (its mksquashfs refused both); `desktop-file-utils` is
+  a build dependency.
+- macOS dmg: `hdiutil create` is retried, it fails now and then on hosted runners.
+- CI image smoke test: the marina slug `ci` was too short (3 characters minimum); it is now `marina-ci`.
+- Security: `golang.org/x/net` 0.62.0 (CVE-2026-78661, denial of service in `x/net/html`).
+- CI on GitHub runners: pull requests run the quick checks (integration tests on SQLite without the four slowest
+  packages, about 10 minutes); main, a nightly schedule and manual runs add the full suite on both dialects in four
+  parallel shards, the race tests and the map performance budget. A retried map performance run no longer fails on
+  the price lists created by the first attempt.
 - Renewal campaigns: the proposals table showed empty Cliente and Barca columns, because the API sent only the
   customer id. Proposals now carry the customer's display name (with `customers.read`) and the boat.
 - Demo seed: transits leaving today stay expected instead of being marked departed, so the dock has departures to

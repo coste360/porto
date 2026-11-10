@@ -19,8 +19,7 @@ Si passa da un modo all'altro con un backup e un ripristino
 ## App desktop
 
 Server e archivio (SQLite) stanno sul PC dell'ufficio; gli altri PC e i telefoni degli ormeggiatori si collegano
-sulla Wi-Fi del porto. Nessun servizio di Coste360 è necessario. I pacchetti firmati si scaricano da Coste360 a
-partire dal primo rilascio:
+sulla Wi-Fi del porto. Nessun servizio di Coste360 è necessario. I pacchetti firmati si scaricano da Coste360:
 
 - [Windows](https://updates.coste360.it/porto/download/latest/windows/x64)
 - [macOS](https://updates.coste360.it/porto/download/latest/macos) (Apple Silicon e Intel)

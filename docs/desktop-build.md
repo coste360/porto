@@ -21,7 +21,7 @@ Window build prerequisites:
 - macOS: Xcode command line tools (`xcode-select --install`).
 - Windows: MSYS2 / Git Bash with MinGW-w64 gcc and binutils (`windres`); the WebView2 runtime on the target PC
   (preinstalled on Windows 10/11; without it the launcher opens the browser).
-- Linux: `libwebkit2gtk-4.1-dev`, `libgtk-3-dev`, `pkg-config`.
+- Linux: `libwebkit2gtk-4.1-dev`, `libgtk-3-dev`, `pkg-config`, `desktop-file-utils` (used by appimagetool).
 
 ## Packages (unsigned)
 

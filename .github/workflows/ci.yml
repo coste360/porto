@@ -1,9 +1,14 @@
 name: CI
 
+# Two levels (docs/release.md): pull requests run the quick checks (about 10 minutes, integration tests on SQLite
+# without the four slowest packages); main, the nightly schedule and manual runs add the full suite on SQLite and
+# PostgreSQL, the race tests and the map performance budget. A release is cut only from a main with a green full run.
 on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "17 2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -11,7 +16,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Only pull requests cancel an older run: on main every merge keeps its full run.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   GOLANGCI_LINT_VERSION: v2.15.0
@@ -21,9 +27,66 @@ env:
 
 jobs:
   go:
-    name: Go (lint, unit, integration SQLite + PostgreSQL, race, vulns)
+    name: Go (lint, unit, vulns)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Download modules
+        run: go mod download
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          # Built from source with the job's toolchain, so it can analyse a module on the newest Go release.
+          install-mode: goinstall
+          args: --timeout=5m
+
+      - name: Unit tests
+        run: go test ./...
+
+      - name: govulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+
+  # Pull requests only: integration tests on SQLite (no PORTO_TEST_POSTGRES_URL) for every package except the four
+  # slowest ones, which the full run covers on both dialects.
+  go-integration-quick:
+    name: Go integration (SQLite, quick)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Integration tests (SQLite)
+        run: |
+          pkgs="$(go list ./... | grep -vE '/internal/(app|acceptance|domain/report|backup)$')"
+          go test -tags=integration -timeout 20m $pkgs
+
+  # The integration suite runs every test on SQLite and PostgreSQL. On a hosted runner it takes well over an hour in
+  # one job, so it is split into shards by the slowest packages (measured with `make test-db`); `rest` is every other
+  # package, so a new package is always covered.
+  go-integration:
+    name: Go integration (${{ matrix.shard }})
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [app, acceptance, report-backup, rest]
     services:
       postgres:
         image: postgres:17-alpine
@@ -61,28 +124,63 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Download modules
-        run: go mod download
-
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v9
-        with:
-          version: ${{ env.GOLANGCI_LINT_VERSION }}
-          # Built from source with the job's toolchain, so it can analyse a module on the newest Go release.
-          install-mode: goinstall
-          args: --timeout=5m
-
-      - name: Unit tests
-        run: go test ./...
-
       - name: Integration tests (SQLite + PostgreSQL)
-        run: make test-db
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          case "$SHARD" in
+            app) pkgs="./internal/app" ;;
+            acceptance) pkgs="./internal/acceptance" ;;
+            report-backup) pkgs="./internal/domain/report ./internal/backup" ;;
+            rest) pkgs="$(go list ./... | grep -vE '/internal/(app|acceptance|domain/report|backup)$' | tr '\n' ' ')" ;;
+            *) echo "unknown shard $SHARD"; exit 1 ;;
+          esac
+          make test-db PKG="$pkgs" TEST_DB_TIMEOUT=80m
+
+  go-race:
+    name: Go concurrency tests (race detector)
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: porto
+          POSTGRES_PASSWORD: porto
+          POSTGRES_DB: porto_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U porto -d porto_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+          --shm-size 1g
+    env:
+      # Read by internal/testutil/testdb and scripts/with-postgres.sh: integration tests run on both dialects.
+      PORTO_TEST_POSTGRES_URL: postgres://porto:porto@localhost:5432/porto_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v7
+
+      # The M5 integration tests lock many tables per transaction (same setting as scripts/with-postgres.sh).
+      - name: Raise the PostgreSQL lock table
+        run: |
+          docker exec ${{ job.services.postgres.id }} psql -U porto -d porto_test -c "ALTER SYSTEM SET max_locks_per_transaction = 512"
+          docker exec ${{ job.services.postgres.id }} psql -U porto -d porto_test -c "ALTER SYSTEM SET max_connections = 300"
+          docker restart ${{ job.services.postgres.id }}
+          for _ in $(seq 1 60); do
+            docker exec ${{ job.services.postgres.id }} pg_isready -U porto -d porto_test && break
+            sleep 1
+          done
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
 
       - name: Concurrency tests with the race detector (SQLite + PostgreSQL)
         run: make test-race
-
-      - name: govulncheck
-        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 
   web:
     name: Web (lint, format, typecheck, test, build, budget)
@@ -219,7 +317,7 @@ jobs:
           curl -fsS http://127.0.0.1:8080/healthz
           docker exec porto-smoke /porto version
           docker exec -e PORTO_ADMIN_PASSWORD="$SMOKE_PASSWORD" porto-smoke /porto admin create \
-            --email owner@porto.test --name "Owner CI" --org "Porto CI SRL" --marina "Marina CI" --slug ci
+            --email owner@porto.test --name "Owner CI" --org "Porto CI SRL" --marina "Marina CI" --slug marina-ci
           status="$(curl -s -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json' \
             -d "{\"email\":\"owner@porto.test\",\"password\":\"${SMOKE_PASSWORD}\"}" \
             http://127.0.0.1:8080/api/admin/v1/auth/login)"
@@ -274,6 +372,7 @@ jobs:
 
   e2e-perf:
     name: Map performance budget (Playwright)
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

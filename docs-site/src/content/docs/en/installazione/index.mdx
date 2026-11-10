@@ -40,16 +40,96 @@ the public marina profile and reports.
   ([Cash register and daily takings](/en/gestore/cassa-e-corrispettivi/)).
 - It ships no drivers for specific invoicing software, advanced signature providers, third-party booking portals or
   real fiscal printer models: these are extension points ([Extensions](/en/sviluppo/estensioni/)).
+- Tax compliance of the configuration (VAT rates, issuing documents, retention) remains the responsibility of the
+  marina and its accountant.
 
 ## Where to get it
 
 The source code is on [GitHub](https://github.com/coste360/porto); ready-made binaries are not attached to GitHub
-releases. The Docker image `ghcr.io/coste360/porto` (amd64 and arm64) is public and published with every release,
-starting from the first one; until then you build from source. The desktop packages are downloaded from Coste360.
-See [Choose how to install](/en/installazione/scegli-come-installare/).
+releases. The Docker image `ghcr.io/coste360/porto` (amd64 and arm64) is public and published with every release. The desktop packages are downloaded from
+[portomarina.app/download](https://portomarina.app/download/). Nothing needs to be installed on phones: the panel
+opens in the browser and can be added to the home screen as an app (PWA). See
+[Choose how to install](/en/installazione/scegli-come-installare/).
 
 :::caution[Project status]
-All milestones of the specification (M0 to M12) are implemented and covered by automated tests; the first public
-release is being prepared. Porto is provided as is, without warranty: for a supported installation contact
+All milestones of the specification (M0 to M12) are implemented and covered by automated tests; version 1.0.0 is
+the first public release. Porto is provided as is, without warranty: for a supported installation contact
 [Coste360](https://www.coste360.it/contatti).
 :::
+
+## Feature status
+
+Legend: **Available** = implemented and covered by automated tests · **Interface** = extension point ready, no
+driver included · **Planned** = foreseen, not started yet. The milestones, with their acceptance criteria, are in
+section 32 of the [specification](https://github.com/coste360/porto/blob/main/docs/spec/32-test-qualita-roadmap.md)
+(Italian); the changes of each version are in the [CHANGELOG](https://github.com/coste360/porto/blob/main/CHANGELOG.md).
+
+| Area | Features | Milestone | Status |
+|---|---|:-:|---|
+| Foundations | Configuration from environment variables, CLI, SQLite and PostgreSQL migrations, authentication and roles, audit log, outbox, jobs, SSE, signed webhooks | M0 | Available |
+| Map | Editor, generators, validations, calibrated background and georeferencing, land resources, pedestals, CSV import of berths | M1 | Available |
+| Records | Customers, vessels, encrypted documents, expiries, consents, merge, export and anonymisation | M1 | Available |
+| Pricing | Items, price lists by period, pure engine, simulator, matrix, coverage, renewal | M2 | Available |
+| Occupancy | Database constraints against double occupancy, fit check, search, options, moves, swaps, releases, closures | M3 | Available |
+| Operations | To-scale and schematic operational view with lenses, transits, quotes, presence, berth calendar | M3 | Available |
+| Contracts | Quote → contract, instalments and schedule, renewals and campaigns, charter, addenda, waiting list | M4 | Available |
+| Berth rights | Holders, transfers, mandates, charges, ownership tables, condominium charges, concession | M4 | Available |
+| Documents | Print templates, PDF, paper, OTP and on-screen signature, communications, deadlines | M4 | Available (advanced or qualified signature: Interface) |
+| Charges | Charges from every source, adjustments, credits, "to invoice" export in CSV, Excel and PDF, invoice matching | M5 | Available (format of a specific invoicing software: Interface) |
+| Payments | Allocation, refunds, deposits, statements, reminders, payment requests, SEPA mandates, Stripe | M5 | Available |
+| Cash desk | Z report, counter sales, courtesy receipts, daily takings | M5 | Available |
+| Desktop | App for Windows, macOS and Linux, backup and restore, local network with QR pairing | M6 | Available |
+| Phone and offline | PWA panel, role screens, offline queue without duplicates, remote mode, kiosk, peripheral bridge | M6 | Available (real fiscal printers: Interface) |
+| Reports | Reports, dashboard with drill-down, year comparison, CSV and Excel exports | M7 | Available |
+| Online booking | Public page, widget, prepayment, approval, customer area, allotments | M8 | Available |
+| Channels | Connection to third-party booking portals | M8 | Interface |
+| Dry storage | Contracts, planner, scenarios, optimizer, exit accessibility | M9 | Available |
+| Maintenance and utilities | Plans, jobs, out of service, meters, readings, charged consumption | M9 | Available |
+| Boatyard | Catalogue and formulas, guided quote, work orders, hours, materials, final account, planner, lifting equipment | M10 | Available (full warehouse: Planned) |
+| Rentals | Fleet, skippers, formulas, planner, handover and return from the phone, deposits | M11 | Available (online sale of rentals: Planned) |
+| Sensors | Ingestion, hysteresis, reconciliation, alerts, *Sensors* lens on the map | M12 | Available (reference hardware partner: to be decided) |
+| Public profile | Marina profile with a simplified map, transit prices and aggregated free berths | M12 | Available |
+
+## Known limits
+
+- The desktop packages build from source, but signing and notarisation need Coste360's certificates: the signed
+  packages are the ones on [portomarina.app/download](https://portomarina.app/download/).
+- No drivers are included for specific invoicing software, advanced signature providers, third-party booking channels
+  or real fiscal printer models: they are [interfaces](/en/sviluppo/estensioni/).
+- The boatyard warehouse is limited to the materials booked on work orders.
+- Rentals cannot be sold from the public page yet.
+- There is no reference hardware partner for sensors yet.
+- Double berthing (a boat moored alongside another) is not handled.
+
+## Roadmap
+
+After the first version: InfoCert signature, exporters for the most common invoicing software, a hardware partner for
+sensors, online sale of rentals and the boatyard warehouse. Under evaluation: mandatory reporting, foreign markets,
+double berthing and an app for boaters; the
+[open decisions](https://github.com/coste360/porto/blob/main/docs/spec/33-decisioni-aperte.md) are not taken in code.
+A native mobile app for staff is not part of this repository.
+
+## Accessibility
+
+Porto targets **WCAG 2.1 level AA** (European standard EN 301 549) on the public booking page, the widget and the
+customer area, and applies the same checks to the main pages of the admin panel.
+
+- **A map that works without sight**: every berth is a button with a full name (code, status, boat) and the **List**
+  button shows the same data as a list.
+- **Colour is not the only cue**: every map status also has a glyph, explained in the legend.
+- **Contrast** of the light theme, the dark theme and the map lenses is checked by automated tests.
+- **Two languages**, Italian and English, for the panel, the public page and emails.
+
+The end-to-end tests run axe-core with the WCAG 2.0 and 2.1 level A and AA rules, in light and dark theme, on the
+booking page, the customer area, login, the dashboard, reports and the main panel pages: a serious or critical
+violation fails the tests.
+
+Since 28 June 2025 the European Accessibility Act (EU Directive 2019/882, in Italy Legislative Decree 82/2022)
+requires online booking services for consumers to be accessible and the provider to state it; micro-enterprises are
+exempt. Porto provides the tool, but the service remains the marina's responsibility.
+
+Limits: the payment page belongs to the provider (Stripe); texts, photos and the site hosting the widget depend on the
+marina; the map editor is designed for mouse or touch; no audit with users of assistive technologies has been done
+yet.
+
+Questions about the licence, offline use or invoicing? See the [FAQ](/en/installazione/domande-frequenti/).

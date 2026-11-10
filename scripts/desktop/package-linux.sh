@@ -2,7 +2,7 @@
 # Packages the Linux x86_64 AppImage with two launchers: the WebKitGTK 4.1 window build and the browser build;
 # AppRun starts the window build when it can start on the host (it probes it with -version, so a missing
 # libwebkit2gtk-4.1 or an older glibc are both caught), else the browser one.
-# Needs libwebkit2gtk-4.1-dev and libgtk-3-dev for the window build, and appimagetool.
+# Needs libwebkit2gtk-4.1-dev and libgtk-3-dev for the window build, appimagetool and desktop-file-utils.
 #
 # APPIMAGETOOL          path to an appimagetool binary you trust; or
 # APPIMAGETOOL_SHA256   expected sha256 of the pinned download below (the script never runs an unverified tool)
@@ -24,6 +24,19 @@ rm -rf "$work"
 appdir="$work/Porto.AppDir"
 mkdir -p "$appdir/usr/bin" "$appdir/usr/share/metainfo" "$appdir/usr/share/icons/hicolor/256x256/apps"
 
+# webview_go asks pkg-config for webkit2gtk-4.0, which current distributions (Ubuntu 24.04) no longer ship; 4.1 has
+# the same API for what the window uses. A local alias lets the window build link against 4.1.
+if ! pkg-config --exists webkit2gtk-4.0; then
+	pcdir="$(cd "$work" && pwd)/pkgconfig"
+	mkdir -p "$pcdir"
+	cat > "$pcdir/webkit2gtk-4.0.pc" <<PC
+Name: webkit2gtk-4.0
+Description: alias of webkit2gtk-4.1 for webview_go
+Version: $(pkg-config --modversion webkit2gtk-4.1)
+Requires: webkit2gtk-4.1
+PC
+	export PKG_CONFIG_PATH="$pcdir${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+fi
 go_build "$appdir/usr/bin/porto-desktop-webview" linux amd64 webview
 go_build "$appdir/usr/bin/porto-desktop" linux amd64 ""
 "$appdir/usr/bin/porto-desktop" -version
@@ -52,6 +65,7 @@ if [ -n "${LINUX_SIGN_KEY:-}" ]; then
 	suffix=""
 fi
 out="$DESKTOP_DIST/${APP_NAME}_${NUMERIC_VERSION}_linux_x86_64${suffix}.AppImage"
-ARCH=x86_64 APPIMAGE_EXTRACT_AND_RUN=1 "$tool" --no-appstream "${sign_args[@]}" "$appdir" "$out"
+# appimagetool passes its own timestamps to mksquashfs, which refuses them when SOURCE_DATE_EPOCH is also set.
+env -u SOURCE_DATE_EPOCH ARCH=x86_64 APPIMAGE_EXTRACT_AND_RUN=1 "$tool" --no-appstream "${sign_args[@]}" "$appdir" "$out"
 sha256_file "$out"
 echo "packaged $out"

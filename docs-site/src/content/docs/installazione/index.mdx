@@ -39,16 +39,97 @@ posti barca, sensori di occupazione, scheda pubblica del porto e report.
   ([Cassa e corrispettivi](/gestore/cassa-e-corrispettivi/)).
 - Non include driver per software di fatturazione specifici, provider di firma avanzata, portali di prenotazione di
   terzi o modelli reali di registratori telematici: sono punti di estensione ([Estensioni](/sviluppo/estensioni/)).
+- La conformità fiscale della configurazione (aliquote IVA, emissione dei documenti, conservazione) resta
+  responsabilità del gestore e del suo consulente.
 
 ## Dove si scarica
 
 Il codice sorgente è su [GitHub](https://github.com/coste360/porto); i binari pronti non vengono allegati ai rilasci
-di GitHub. L'immagine Docker `ghcr.io/coste360/porto` (amd64 e arm64) è pubblica e viene pubblicata a ogni rilascio,
-a partire dal primo; fino ad allora si compila dai sorgenti. I pacchetti dell'app desktop si scaricano da Coste360.
-Vedi [Scegli come installare](/installazione/scegli-come-installare/).
+di GitHub. L'immagine Docker `ghcr.io/coste360/porto` (amd64 e arm64) è pubblica e viene pubblicata a ogni rilascio. I pacchetti dell'app desktop si scaricano da
+[portomarina.app/download](https://portomarina.app/download/). Sul telefono non serve installare nulla: il pannello si
+apre dal browser e si aggiunge alla schermata Home come app (PWA). Vedi
+[Scegli come installare](/installazione/scegli-come-installare/).
 
 :::caution[Stato del progetto]
-Tutte le milestone della specifica (da M0 a M12) sono implementate e verificate da test automatici; il primo rilascio
-pubblico è in preparazione. Porto è fornito così com'è, senza garanzie: per un'installazione con assistenza scrivi a
+Tutte le milestone della specifica (da M0 a M12) sono implementate e verificate da test automatici; la versione 1.0.0
+è il primo rilascio pubblico. Porto è fornito così com'è, senza garanzie: per un'installazione con assistenza scrivi a
 [Coste360](https://www.coste360.it/contatti).
 :::
+
+## Stato delle funzionalità
+
+Legenda: **Disponibile** = implementato e verificato da test automatici · **Interfaccia** = punto di estensione
+pronto, nessun driver incluso · **Pianificato** = previsto, non ancora iniziato. Il dettaglio delle milestone, con i
+criteri di accettazione, è nella sezione 32 della
+[specifica](https://github.com/coste360/porto/blob/main/docs/spec/32-test-qualita-roadmap.md); le modifiche di ogni
+versione sono nel [CHANGELOG](https://github.com/coste360/porto/blob/main/CHANGELOG.md).
+
+| Area | Funzionalità | Milestone | Stato |
+|---|---|:-:|---|
+| Fondamenta | Configurazione da variabili d'ambiente, CLI, migrazioni SQLite e PostgreSQL, autenticazione e ruoli, audit log, outbox, job, SSE, webhook firmati | M0 | Disponibile |
+| Mappa | Editor, generatori, validazioni, sfondo calibrato e georeferenziazione, risorse a terra, colonnine, importazione CSV dei posti | M1 | Disponibile |
+| Anagrafiche | Clienti, barche, documenti cifrati, scadenze, consensi, unione, esportazione e anonimizzazione | M1 | Disponibile |
+| Prezzi | Articoli, listini per periodi, motore puro, simulatore, matrice, copertura, rinnovo | M2 | Disponibile |
+| Occupazione | Vincoli del database contro le doppie occupazioni, compatibilità, ricerca, opzioni, spostamenti, scambi, rilasci, chiusure | M3 | Disponibile |
+| Operatività | Vista operativa in scala e a schema con i contesti, transiti, preventivi, presenze, calendario dei posti | M3 | Disponibile |
+| Contratti | Preventivo → contratto, rate e scadenzario, rinnovi e campagne, charter, addendum, lista d'attesa | M4 | Disponibile |
+| Diritti d'uso | Titolari, cessioni, mandati, oneri, tabelle millesimali, spese condominiali, concessione | M4 | Disponibile |
+| Documenti | Modelli di stampa, PDF, firma su carta, con OTP e su schermo, comunicazioni, scadenze | M4 | Disponibile (firma avanzata o qualificata: Interfaccia) |
+| Addebiti | Addebiti da ogni origine, rettifiche, crediti, esportazione "da fatturare" CSV, Excel e PDF, riscontro delle fatture | M5 | Disponibile (formato del singolo software di fatturazione: Interfaccia) |
+| Incassi | Abbinamenti, rimborsi, cauzioni, estratto conto, solleciti, richieste di pagamento, mandati SEPA, Stripe | M5 | Disponibile |
+| Cassa | Riepilogo Z, vendite al banco, ricevute di cortesia, corrispettivi | M5 | Disponibile |
+| Desktop | App per Windows, macOS e Linux, backup e ripristino, rete locale con abbinamento tramite QR | M6 | Disponibile |
+| Telefono e offline | Pannello PWA, schermate per ruolo, coda offline senza doppioni, modalità remota, chiosco, ponte verso le periferiche | M6 | Disponibile (registratori telematici reali: Interfaccia) |
+| Report | Report, cruscotto con drill-down, confronto tra anni, esportazioni CSV ed Excel | M7 | Disponibile |
+| Prenotazione online | Pagina pubblica, widget, pagamento anticipato, approvazione, area del cliente, contingenti | M8 | Disponibile |
+| Canali | Collegamento a portali di prenotazione di terzi | M8 | Interfaccia |
+| Rimessaggio | Contratti, planner, ipotesi, ottimizzatore, accessibilità delle uscite | M9 | Disponibile |
+| Manutenzioni e utenze | Piani, interventi, fuori servizio, contatori, letture, consumi addebitati | M9 | Disponibile |
+| Cantiere | Catalogo e formule, preventivo guidato, commesse, ore, materiali, consuntivo, planner, mezzi di sollevamento | M10 | Disponibile (magazzino completo: Pianificato) |
+| Noleggio | Flotta, skipper, formule, planner, consegna e riconsegna dal telefono, cauzioni | M11 | Disponibile (vendita online del noleggio: Pianificato) |
+| Sensori | Ingestione, isteresi, riconciliazione, avvisi, contesto *Sensori* sulla mappa | M12 | Disponibile (partner hardware di riferimento: da definire) |
+| Scheda pubblica | Profilo del porto con mappa semplificata, prezzi dei transiti e posti liberi aggregati | M12 | Disponibile |
+
+## Limiti noti
+
+- I pacchetti dell'app desktop si compilano dai sorgenti, ma la firma e la notarizzazione richiedono i certificati di
+  Coste360: i pacchetti firmati sono quelli di [portomarina.app/download](https://portomarina.app/download/).
+- Non sono inclusi driver per software di fatturazione specifici, provider di firma avanzata, canali di prenotazione
+  di terzi o modelli reali di registratori telematici: sono [interfacce](/sviluppo/estensioni/).
+- Il magazzino del cantiere si limita ai materiali scaricati sulle commesse.
+- Il noleggio non si vende ancora dalla pagina pubblica.
+- Non c'è ancora un partner hardware di riferimento per i sensori.
+- L'ormeggio in seconda fila (una barca affiancata a un'altra) non è gestito.
+
+## Roadmap
+
+Dopo la prima versione sono previsti la firma InfoCert, gli esportatori per i software di fatturazione più usati, un
+partner hardware per i sensori, la vendita online del noleggio e il magazzino del cantiere. Sono da valutare le
+comunicazioni obbligatorie, i mercati esteri, l'ormeggio in seconda fila e un'app per i diportisti; le
+[decisioni aperte](https://github.com/coste360/porto/blob/main/docs/spec/33-decisioni-aperte.md) non si prendono nel
+codice. Un'app mobile nativa per lo staff non fa parte di questo repository.
+
+## Accessibilità
+
+Porto punta al livello **AA delle WCAG 2.1** (norma europea EN 301 549) sulla pagina pubblica di prenotazione, sul
+widget e sull'area del cliente, e applica gli stessi controlli alle pagine principali del pannello.
+
+- **Mappa leggibile anche senza vista**: ogni posto è un pulsante con un nome completo (codice, stato, barca) e il
+  pulsante **Elenco** mostra gli stessi dati come lista.
+- **Il colore non è l'unico segnale**: ogni stato della mappa ha anche un glifo, spiegato nella legenda.
+- **Contrasto** dei colori del tema chiaro, del tema scuro e dei contesti della mappa verificato da test automatici.
+- **Due lingue**, italiano e inglese, per pannello, pagina pubblica ed email.
+
+I test end-to-end eseguono axe-core con le regole WCAG 2.0 e 2.1 di livello A e AA, in tema chiaro e scuro, sulla
+pagina di prenotazione, sull'area del cliente, sul login, sul cruscotto, sui report e sulle pagine principali del
+pannello: una violazione grave o critica fa fallire i test.
+
+Dal 28 giugno 2025 l'European Accessibility Act (direttiva UE 2019/882, in Italia D.Lgs. 82/2022) chiede che i
+servizi di prenotazione online per i consumatori siano accessibili e che il fornitore lo dichiari; le microimprese
+sono esentate. Porto fornisce lo strumento, ma la responsabilità del servizio resta del porto.
+
+Limiti: la pagina di pagamento è del provider (Stripe); testi, foto e il sito che ospita il widget dipendono dal
+porto; l'editor della mappa è pensato per mouse o touch; non è ancora stato fatto un audit con utenti di tecnologie
+assistive.
+
+Domande sulla licenza, sull'uso offline o sulla fatturazione? Vedi le [domande frequenti](/installazione/domande-frequenti/).

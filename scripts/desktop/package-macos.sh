@@ -99,7 +99,13 @@ mkdir -p "$stage"
 cp -R "$app" "$stage/"
 ln -s /Applications "$stage/Applications"
 rm -f "$dmg"
-hdiutil create -volname "$APP_NAME" -srcfolder "$stage" -ov -format UDZO "$dmg" >/dev/null
+# hdiutil fails now and then on hosted runners ("No space left on device", "Resource busy"): retry a few times.
+for attempt in 1 2 3 4; do
+	hdiutil create -volname "$APP_NAME" -srcfolder "$stage" -ov -format UDZO "$dmg" >/dev/null && break
+	[ "$attempt" -lt 4 ] || die "hdiutil create failed $attempt times"
+	log "hdiutil create failed, retrying ($attempt)"
+	sleep $((attempt * 5))
+done
 
 if [ -n "${MACOS_SIGN_IDENTITY:-}" ]; then
 	codesign --force --timestamp --sign "$MACOS_SIGN_IDENTITY" "$dmg"
