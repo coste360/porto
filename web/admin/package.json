@@ -10,7 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.9.2",
+    "@hookform/resolvers": "^7.0.3",
     "@porto/shared": "*",
     "@tanstack/react-query": "^5.104.5",
     "@tanstack/react-router": "^1.170.45",
