@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Fixed
+
+- Tests: the acceptance clients wait up to 60 s (a full-season shed layout save takes over 10 s on a CI runner,
+  issue #15), and the phone dock e2e test reads the presences of the marina's day, not the UTC one (it failed
+  between midnight and 1 a.m. in Italy).
+
 ## [1.0.0] - 2026-11-10
 
 ### Added

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { archiveOpsHarbour } from "../support/occupancy";
+import { archiveOpsHarbour, marinaDay } from "../support/occupancy";
 import {
   TINY_PNG,
   expectPhoneLayout,
@@ -52,7 +52,7 @@ test("dock phone screen: today, map, cash and more, online", async ({
   await expect(dock).toContainText("Arrivate: 1");
   await expect(page.getByTestId("offline-pending")).toHaveCount(0);
   const presences = await page.request.get(
-    `/api/admin/v1/marinas/${day.marinaId}/presences?date=${new Date().toISOString().slice(0, 10)}`,
+    `/api/admin/v1/marinas/${day.marinaId}/presences?date=${marinaDay()}`,
   );
   const items = (
     (await presences.json()) as {
