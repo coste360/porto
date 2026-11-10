@@ -317,7 +317,7 @@ jobs:
           curl -fsS http://127.0.0.1:8080/healthz
           docker exec porto-smoke /porto version
           docker exec -e PORTO_ADMIN_PASSWORD="$SMOKE_PASSWORD" porto-smoke /porto admin create \
-            --email owner@porto.test --name "Owner CI" --org "Porto CI SRL" --marina "Marina CI" --slug ci
+            --email owner@porto.test --name "Owner CI" --org "Porto CI SRL" --marina "Marina CI" --slug marina-ci
           status="$(curl -s -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json' \
             -d "{\"email\":\"owner@porto.test\",\"password\":\"${SMOKE_PASSWORD}\"}" \
             http://127.0.0.1:8080/api/admin/v1/auth/login)"
