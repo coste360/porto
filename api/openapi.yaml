@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Porto API
-  version: 0.1.0
+  version: 1.0.0
   summary: Marina and boatyard management system (Coste360 SRL).
   description: |
     Single spec-first contract of Porto's REST API (spec 27). M0 covers the platform foundations; M1 adds the

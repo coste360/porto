@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-10
+
 ### Added
 
 Public release preparation (ADR 0018, docs/release.md):
@@ -627,6 +629,7 @@ M0 — Fondamenta (spec 32.3):
 
 ### Changed
 
+- Dependabot is off for now (`.github/dependabot.yml` removed): dependency updates are batched by the maintainers.
 - README slimmed to about 100 lines (what Porto is, presentation video, downloads, local quick try, documentation
   links, contributing and security, licence summary, English section); the details moved to docs.portomarina.app
   in Italian and English: feature status, known limits, roadmap and accessibility in `installazione/` (Cos'è Porto),
@@ -668,6 +671,9 @@ Polish after M10 (demo review):
 
 ### Fixed
 
+- Desktop packages: the Linux window build links against webkit2gtk-4.1 (Ubuntu 24.04 no longer ships 4.0, which
+  webview_go asks for), and the Windows installer gets absolute paths (Inno Setup resolved the relative ones from
+  the folder of `porto.iss`).
 - Security: `golang.org/x/net` 0.62.0 (CVE-2026-78661, denial of service in `x/net/html`).
 - CI on GitHub runners: pull requests run the quick checks (integration tests on SQLite without the four slowest
   packages, about 10 minutes); main, a nightly schedule and manual runs add the full suite on both dialects in four

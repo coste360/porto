@@ -16,7 +16,7 @@ Mappa del porto in scala reale, contratti di ormeggio e transiti, prenotazione o
 [![Docker](https://img.shields.io/badge/Docker-ghcr.io%2Fcoste360%2Fporto-2496ED?logo=docker&logoColor=white)](https://github.com/coste360/porto/pkgs/container/porto)
 [![SQLite | PostgreSQL](https://img.shields.io/badge/DB-SQLite%20%7C%20PostgreSQL-003B57?logo=sqlite&logoColor=white)](https://docs.portomarina.app/installazione/database/)
 [![CI](https://github.com/coste360/porto/actions/workflows/ci.yml/badge.svg)](https://github.com/coste360/porto/actions)
-<!-- TODO(release): badge della versione e link alle note di rilascio quando esiste il primo tag. -->
+[![Versione 1.0.0](https://img.shields.io/badge/versione-1.0.0-brightgreen.svg)](https://github.com/coste360/porto/releases/tag/v1.0.0)
 
 **[Documentazione](https://docs.portomarina.app)** · [portomarina.app](https://portomarina.app) · [Demo](https://demo.portomarina.app) · [Scarica](#scarica) · [Licenza](#licenza-e-marchio)
 
@@ -39,13 +39,13 @@ Mappa del porto in scala reale, contratti di ormeggio e transiti, prenotazione o
 - **Rimessaggio, cantiere, noleggio, sensori di occupazione e report** nella stessa installazione, con più marine e ruoli.
 - **App desktop** per Windows, macOS e Linux che lavora senza internet; ormeggiatori e cantiere usano il pannello dal telefono, anche offline.
 
-Tutte le milestone della specifica, da M0 a M12, sono implementate e verificate da test automatici; il primo rilascio pubblico è in preparazione. Porto è fornito così com'è, senza garanzie (vedi [LICENSE](LICENSE)): per un'installazione verificata e con assistenza scrivi a [Coste360](https://www.coste360.it/contatti).
+Tutte le milestone della specifica, da M0 a M12, sono implementate e verificate da test automatici; la versione 1.0.0 è il primo rilascio pubblico. Porto è fornito così com'è, senza garanzie (vedi [LICENSE](LICENSE)): per un'installazione verificata e con assistenza scrivi a [Coste360](https://www.coste360.it/contatti).
 
 ## Scarica
 
 | | Dove |
 |---|---|
-| **Server** (VPS, mini PC, NAS) | Immagine Docker `ghcr.io/coste360/porto`, pubblicata dal primo rilascio · [guida all'installazione](https://docs.portomarina.app/installazione/scegli-come-installare/) |
+| **Server** (VPS, mini PC, NAS) | Immagine Docker `ghcr.io/coste360/porto` · [guida all'installazione](https://docs.portomarina.app/installazione/scegli-come-installare/) |
 | **App desktop** (Windows, macOS, Linux) | [portomarina.app/download](https://portomarina.app/download/) |
 | **Telefono dello staff** | Nessuna app da installare: il pannello si apre dal browser (PWA) collegandosi al server o all'app desktop |
 
@@ -93,6 +93,6 @@ Il testo vincolante è il file [LICENSE](LICENSE); i casi pratici (agenzie, cons
 
 ## In English
 
-**Porto** is a free, self-hosted, source-available management system for marinas, tourist ports, berthing points and boatyards, developed by [Coste360 SRL](https://www.coste360.it/). It covers the whole marina cycle: a to-scale harbour map with a nightly operational view, customers and vessels, price lists, mooring contracts and transits, berth-use rights and condominium charges, charges and payments, dry storage, boatyard, rentals, occupancy sensors and reports. Online berth booking can be embedded in any website, with no booking commissions: payments go through the marina's own Stripe account. Porto does not issue invoices; charges are exported to the marina's invoicing software. It ships as a single Go binary and Docker image (`ghcr.io/coste360/porto`, published from the first release) with SQLite by default and optional PostgreSQL, and as a desktop app that works offline, available from [portomarina.app/download](https://portomarina.app/download/). Staff phones use the panel in the browser (PWA). It contains no AI features and no telemetry.
+**Porto** is a free, self-hosted, source-available management system for marinas, tourist ports, berthing points and boatyards, developed by [Coste360 SRL](https://www.coste360.it/). It covers the whole marina cycle: a to-scale harbour map with a nightly operational view, customers and vessels, price lists, mooring contracts and transits, berth-use rights and condominium charges, charges and payments, dry storage, boatyard, rentals, occupancy sensors and reports. Online berth booking can be embedded in any website, with no booking commissions: payments go through the marina's own Stripe account. Porto does not issue invoices; charges are exported to the marina's invoicing software. It ships as a single Go binary and Docker image (`ghcr.io/coste360/porto`) with SQLite by default and optional PostgreSQL, and as a desktop app that works offline, available from [portomarina.app/download](https://portomarina.app/download/). Staff phones use the panel in the browser (PWA). It contains no AI features and no telemetry.
 
 It is source-available under the [Business Source License 1.1](LICENSE): free for marinas, boatyards and dry-storage facilities that run it for sites they own or operate directly; offering it to third parties for a fee or other commercial advantage requires a commercial license from Coste360 SRL. Each version converts to AGPL-3.0 or later three years after its first public release. The Porto name and logo are not covered by the code licence. Documentation: [docs.portomarina.app/en](https://docs.portomarina.app/en/).

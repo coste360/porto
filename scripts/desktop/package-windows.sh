@@ -57,10 +57,13 @@ if [ -n "${WINDOWS_SIGN_CMD:-}" ]; then
 	sign_args=("/DPortoSign=1" "/Sporto=\$q${bash_w}\$q \$q${hook_w}\$q \$f")
 fi
 name="${APP_NAME}_${NUMERIC_VERSION}_windows_amd64_setup${suffix}"
+# ISCC resolves relative paths from the directory of porto.iss, not from here: pass absolute ones.
+work_abs="$(cd "$work" && pwd)"
+dist_abs="$(cd "$DESKTOP_DIST" && pwd)"
 # Every path below is already in Windows form: keep MSYS from rewriting the "/X" switches as paths.
 MSYS2_ARG_CONV_EXCL='*' MSYS_NO_PATHCONV=1 "$ISCC" /Q "/DAppVersion=$NUMERIC_VERSION" \
-	"/DSourceDir=$(cygpath -w "$work" 2>/dev/null || echo "$work")" \
-	"/DOutputDir=$(cygpath -w "$DESKTOP_DIST" 2>/dev/null || echo "$DESKTOP_DIST")" "/DOutputName=$name" \
+	"/DSourceDir=$(cygpath -w "$work_abs" 2>/dev/null || echo "$work_abs")" \
+	"/DOutputDir=$(cygpath -w "$dist_abs" 2>/dev/null || echo "$dist_abs")" "/DOutputName=$name" \
 	"${sign_args[@]}" "$PACKAGING/windows/porto.iss"
 installer="$DESKTOP_DIST/$name.exe"
 sha256_file "$installer"
