@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@porto/shared": "*",
-    "@tanstack/react-query": "^5.104.5",
+    "@tanstack/react-query": "^5.107.1",
     "i18next": "^26.5.5",
     "lucide-react": "^1.61.0",
     "openapi-fetch": "^0.17.0",
