@@ -675,6 +675,8 @@ Polish after M10 (demo review):
   webview_go asks for), and the Windows installer gets absolute paths (Inno Setup resolved the relative ones from
   the folder of `porto.iss`).
 - Go 1.27.4 (GO-2026-6809 in `crypto/x509` of 1.27.2, reached by the SMTP transport).
+- Linux AppImage: appimagetool runs without `SOURCE_DATE_EPOCH` (its mksquashfs refused both); `desktop-file-utils` is
+  a build dependency.
 - macOS dmg: `hdiutil create` is retried, it fails now and then on hosted runners.
 - CI image smoke test: the marina slug `ci` was too short (3 characters minimum); it is now `marina-ci`.
 - Security: `golang.org/x/net` 0.62.0 (CVE-2026-78661, denial of service in `x/net/html`).

@@ -65,6 +65,7 @@ if [ -n "${LINUX_SIGN_KEY:-}" ]; then
 	suffix=""
 fi
 out="$DESKTOP_DIST/${APP_NAME}_${NUMERIC_VERSION}_linux_x86_64${suffix}.AppImage"
-ARCH=x86_64 APPIMAGE_EXTRACT_AND_RUN=1 "$tool" --no-appstream "${sign_args[@]}" "$appdir" "$out"
+# appimagetool passes its own timestamps to mksquashfs, which refuses them when SOURCE_DATE_EPOCH is also set.
+env -u SOURCE_DATE_EPOCH ARCH=x86_64 APPIMAGE_EXTRACT_AND_RUN=1 "$tool" --no-appstream "${sign_args[@]}" "$appdir" "$out"
 sha256_file "$out"
 echo "packaged $out"
