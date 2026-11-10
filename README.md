@@ -16,6 +16,8 @@ Mappa del porto in scala reale, contratti di ormeggio e transiti, prenotazione o
 [![Docker](https://img.shields.io/badge/Docker-ghcr.io%2Fcoste360%2Fporto-2496ED?logo=docker&logoColor=white)](https://github.com/coste360/porto/pkgs/container/porto)
 [![SQLite | PostgreSQL](https://img.shields.io/badge/DB-SQLite%20%7C%20PostgreSQL-003B57?logo=sqlite&logoColor=white)](#architettura)
 [![CI](https://github.com/coste360/porto/actions/workflows/ci.yml/badge.svg)](https://github.com/coste360/porto/actions)
+
+[portomarina.app](https://portomarina.app) · [Documentazione](https://docs.portomarina.app) · [Demo](https://demo.portomarina.app)
 <!-- TODO(release): badge della versione e link alle note di rilascio quando esiste il primo tag. -->
 
 [Perché Porto](#gestionale-per-porti-turistici-marine-e-cantieri-navali-gratuito-e-a-codice-sorgente-disponibile) ·
@@ -263,7 +265,7 @@ Tutte le milestone da M0 a M12 sono implementate: fondamenta, mappa e anagrafich
 
 ## Installazione in 5 minuti
 
-**Dove si scarica.** Su GitHub trovi il codice sorgente e le istruzioni per compilarlo ed eseguirlo: i binari pronti **non** vengono allegati ai rilasci di GitHub. L'immagine Docker `ghcr.io/coste360/porto` (amd64 e arm64) è pubblica e gratuita e viene pubblicata a ogni rilascio, a partire dal primo; fino ad allora si compila dai sorgenti con un comando (vedi sotto). I pacchetti firmati dell'app desktop si scaricano da Coste360, sempre all'ultima versione: [Windows](https://updates.coste360.it/porto/download/latest/windows/x64), [macOS](https://updates.coste360.it/porto/download/latest/macos) (Apple Silicon e Intel), [Linux](https://updates.coste360.it/porto/download/latest/linux/x86_64) (AppImage); i link funzionano dal primo rilascio. Come nasce un rilascio: [docs/release.md](docs/release.md).
+**Dove si scarica.** Su GitHub trovi il codice sorgente e le istruzioni per compilarlo ed eseguirlo: i binari pronti **non** vengono allegati ai rilasci di GitHub. L'immagine Docker `ghcr.io/coste360/porto` (amd64 e arm64) è pubblica e gratuita e viene pubblicata a ogni rilascio, a partire dal primo; fino ad allora si compila dai sorgenti con un comando (vedi sotto). I pacchetti firmati dell'app desktop si scaricano da [portomarina.app/download](https://portomarina.app/download/), senza registrazione, sempre all'ultima versione: [Windows](https://updates.coste360.it/porto/download/latest/windows/x64), [macOS](https://updates.coste360.it/porto/download/latest/macos) (Apple Silicon e Intel), [Linux](https://updates.coste360.it/porto/download/latest/linux/x86_64) (AppImage); i link funzionano dal primo rilascio. Come nasce un rilascio: [docs/release.md](docs/release.md). La **documentazione completa** (installazione, guida del gestore, API e sviluppo, in italiano e inglese) è su [docs.portomarina.app](https://docs.portomarina.app), generata da [`docs-site/`](docs-site/) (in locale: `make docs-dev`).
 
 **Quale installazione?**
 
@@ -559,7 +561,7 @@ porto/
 ├── assets/               # marchio Porto (diritti riservati) e kit di illustrazioni della mappa
 ├── .claude/              # regole, skill, subagent e hook per gli agenti di sviluppo
 ├── AGENTS.md  CLAUDE.md  Makefile
-└── LICENSE  CONTRIBUTING.md  CHANGELOG.md
+└── LICENSE  CONTRIBUTING.md  CODE_OF_CONDUCT.md  SECURITY.md  TRADEMARK.md  CLA.md  CHANGELOG.md
 ```
 
 ---
@@ -603,7 +605,7 @@ Riguarda solo gli strumenti con cui si sviluppa Porto. **Il prodotto non contien
 
 Segnalazioni dai porti e dai cantieri sul campo, correzioni, traduzioni, driver di pagamento, esportatori per i software di fatturazione e documentazione sono benvenuti.
 
-1. Leggi [CONTRIBUTING.md](CONTRIBUTING.md), [`AGENTS.md`](AGENTS.md) e la [specifica](docs/spec/README.md), che è autorevole.
+1. Leggi [CONTRIBUTING.md](CONTRIBUTING.md), il [Codice di condotta](CODE_OF_CONDUCT.md), [`AGENTS.md`](AGENTS.md) e la [specifica](docs/spec/README.md), che è autorevole.
 2. Apri una issue prima di una modifica non banale: le [decisioni aperte](docs/spec/33-decisioni-aperte.md) non si decidono nel codice.
 3. Usa Conventional Commits, aggiungi una riga al [CHANGELOG](CHANGELOG.md) ed esegui `make check` (e `make check-full` per modifiche a occupazione, prezzi, addebiti, pagamenti, migrazioni o flusso pubblico).
 
@@ -639,7 +641,7 @@ Porto è **source available** (codice sorgente disponibile) con licenza **[Busin
 
 Il testo vincolante è quello del file [LICENSE](LICENSE); questa sintesi non lo sostituisce.
 
-Il nome **Porto**, il logo e i file del marchio in [`assets/brand/porto/`](assets/brand/porto/NOTICE.md) sono di Coste360 SRL, con tutti i diritti riservati, ed **esclusi dalla licenza del codice**: la licenza non concede alcun diritto sul nome o sul logo. Le regole d'uso sono nell'[ADR 0007](docs/adr/0007-marchio.md).
+Il nome **Porto**, il logo e i file del marchio in [`assets/brand/porto/`](assets/brand/porto/NOTICE.md) sono di Coste360 SRL, con tutti i diritti riservati, ed **esclusi dalla licenza del codice**: la licenza non concede alcun diritto sul nome o sul logo. Le regole d'uso sono nella [politica sul marchio](TRADEMARK.md) e nell'[ADR 0007](docs/adr/0007-marchio.md): i fork devono usare un nome e un logo diversi.
 
 ---
 

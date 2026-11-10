@@ -1,0 +1,61 @@
+---
+title: Guida del gestore
+description: Come è organizzato il pannello di Porto, i ruoli e dove trovare ogni funzione.
+sidebar:
+  order: 1
+  label: Panoramica
+---
+
+import { Screenshot } from '~/components';
+
+Il **pannello** di Porto si apre su `https://<tuo-dominio>/admin/` (o nella finestra dell'app desktop). Funziona dal
+computer dell'ufficio, dal tablet e dal telefono, in italiano o in inglese, con tema chiaro o scuro.
+
+<Screenshot
+  name="harbour-map-piers"
+  dark="harbour-map-dark-theme"
+  alt="Il pannello di Porto con la barra laterale di navigazione e la vista operativa del porto dimostrativo."
+/>
+
+## Organizzazione e marine
+
+Un'**organizzazione** (la società che gestisce) può avere più **marine**, ciascuno con mappe, listini, contratti,
+utenti e pagina pubblica propri. Si passa da un marina all'altro dal selettore in alto nella barra laterale.
+
+## La barra laterale
+
+Le voci compaiono secondo i permessi del tuo ruolo:
+
+| Area | Voci principali | Guida |
+|---|---|---|
+| Lavoro quotidiano | *Panoramica*, *Vista operativa*, *Calendario posti*, *Transiti*, *Preventivi*, *Contratti*, *Richieste* | [Vista operativa](/gestore/vista-operativa/), [Contratti e transiti](/gestore/contratti-e-transiti/) |
+| Prenotazioni online | *Prenotazioni online* | [Prenotazione online](/gestore/prenotazione-online/) |
+| Rimessaggio e manutenzioni | *Rimessaggio*, *Manutenzioni*, *Consumi e contatori* | [Rimessaggio](/gestore/rimessaggio/), [Manutenzioni e utenze](/gestore/manutenzioni-e-utenze/) |
+| Cantiere | *Barche in lavorazione*, *Preventivi cantiere*, *Planner cantiere*, *Carico di lavoro*, *Mezzi di sollevamento*, *Approvazione ore*, *Dipendenti*, *Catalogo cantiere* | [Cantiere](/gestore/cantiere/) |
+| Noleggio | *Planner noleggi*, *Noleggi*, *Flotta* | [Noleggio](/gestore/noleggio/) |
+| Anagrafiche e configurazione | *Clienti*, *Imbarcazioni*, *Scadenze*, *Mappe*, *Listini*, *Articoli e servizi* | [Clienti](/gestore/clienti-e-imbarcazioni/), [Mappa](/gestore/mappa-del-porto/), [Listini](/gestore/listini-e-prezzi/) |
+| Contratti e diritti | *Scadenzario*, *Rinnovi*, *Charter*, *Lista d'attesa*, *Diritti d'uso*, *Cessioni*, *Mandati*, *Oneri di gestione*, *Spese comuni*, *Firme*, *Comunicazioni*, *Modelli di stampa* | [Rinnovi, modelli e firma](/gestore/rinnovi-modelli-e-firma/), [Diritti d'uso](/gestore/diritti-d-uso-e-spese-comuni/) |
+| Addebiti e pagamenti | *Addebiti*, *Pagamenti*, *Cassa*, *Corrispettivi*, *Sospesi e scadenze*, *Solleciti*, *Richieste di pagamento*, *Esportazioni* | [Addebiti e incassi](/gestore/addebiti-e-incassi/), [Cassa](/gestore/cassa-e-corrispettivi/) |
+| Report | *Report* | [Report e cruscotto](/gestore/report-e-cruscotto/) |
+| Amministrazione | *Team*, *Chiavi API*, *Dispositivi*, *Webhook*, *Registro attività*, impostazioni | [Team e sicurezza](/gestore/team-e-sicurezza/) |
+
+## Ruoli
+
+| Ruolo | Che cosa fa |
+|---|---|
+| Titolare | tutto, compresi utenti, ruoli e credenziali dei provider |
+| Direzione | configurazione del marina, mappa, listini, modelli e tutta l'operatività |
+| Ufficio | clienti, preventivi, contratti, transiti, incassi, rimessaggio, noleggio |
+| Amministrazione | addebiti, incassi, rimborsi, esportazione per la fatturazione, diritti d'uso e condominio |
+| Ormeggiatore | banchina: arrivi, partenze, spostamenti, letture, incassi in contanti, transiti al banco |
+| Capo cantiere | cantiere: preventivi, commesse, planner, ore; rimessaggio |
+| Operaio | le proprie ore e attività di cantiere, segnalazioni di manutenzione |
+| Addetto al noleggio | noleggio, consegne, riconsegne e incassi |
+| Sola lettura | consultazione della mappa e dei report |
+
+Un utente può avere ruoli diversi in marine diversi. Dettagli in [Team e sicurezza](/gestore/team-e-sicurezza/).
+
+## Tempo reale
+
+Le modifiche fatte in ufficio, in banchina o dalla pagina di prenotazione compaiono subito sugli altri schermi, senza
+ricaricare la pagina.

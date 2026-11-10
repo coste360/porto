@@ -1,0 +1,77 @@
+---
+title: Vista operativa
+description: La mappa della notte scelta con i contesti, la ricerca del posto, il pontile dinamico, arrivi e partenze.
+sidebar:
+  order: 3
+---
+
+import { Screenshot } from '~/components';
+
+*Vista operativa* mostra il porto nella **notte scelta**: chi c'è, chi arriva, chi parte, che cosa è libero.
+
+<Screenshot
+  name="harbour-map-piers"
+  dark="harbour-map-dark-theme"
+  alt="Vista operativa: pontili in scala con i posti colorati per occupazione, legenda con i conteggi e pannello Imbarcazione in ingresso."
+/>
+
+## In scala o a schema
+
+- **In scala**: geometria reale e sagome delle barche, ideale con un'ortofoto.
+- **Schema**: ogni posto è una tessera leggibile con il codice e il nome della barca, nello stesso ordine lungo il
+  pontile. È la vista più comoda al banco. Aree dinamiche e capannoni restano sempre in scala.
+
+Le schede in alto scelgono la mappa (specchio acqueo, piazzale, capannone, parcheggi e box) e la data; *Elenco*
+mostra gli stessi dati come lista, utile anche con i lettori di schermo. *Stampa mappa* produce la mappa del giorno.
+
+## Contesti
+
+La stessa mappa si colora secondo il **contesto**: *Occupazione*, *Tipo di contratto*, *Presenze*, *Anomalie*,
+*Diritti d'uso*, *Pagamenti* e, nel menu *Altri*, tipo di imbarcazione, scadenze, adeguatezza barca/posto,
+manutenzione, sensori e utenze.
+
+**La legenda è il filtro**: ogni voce ha una casella e il conteggio degli elementi in quello stato. Togli la spunta
+per spegnerli. I filtri (pontile, gruppo, categoria, testo libero) rendono grigi gli elementi esclusi. Oltre al colore,
+ogni stato ha un glifo (stella per l'annuale, valigia per il transito, orologio per l'opzione, chiave per la
+manutenzione).
+
+<Screenshot name="harbour-map-payments-lens" alt="La mappa nel contesto Pagamenti." caption="Contesto Pagamenti: a colpo d'occhio chi è in regola e chi ha rate scadute." />
+
+## Scheda del posto
+
+Un tocco su un posto apre la scheda: barca, cliente, contratto, saldo e rate scadute, presenza, documenti in scadenza,
+letture del sensore. Da lì, secondo i permessi: nuovo transito o preventivo, arrivo e partenza, sposta, rilascia
+notti, blocca, apri manutenzione, incassa, apri contratto o cliente.
+
+## Imbarcazione in ingresso
+
+Il pannello a destra cerca il posto per una barca: **Transito** o **Contratto**, dove cercare (posto barca, area
+dinamica, risorsa a terra), misure (lunghezza, larghezza, pescaggio, tipo di scafo) o barca registrata, date, colonnina,
+acqua e cambi di posto ammessi. Porto propone le soluzioni compatibili con il prezzo del listino; un tocco crea il
+preventivo o il transito.
+
+Con **Considera liberi i posti con la barca fuori** la ricerca include i posti dei contratti la cui barca è assente:
+la soluzione richiede il rilascio delle notti secondo le regole del contratto. Una ricerca senza soluzioni può essere
+salvata come richiesta non evasa, per il report della domanda persa.
+
+## Pontile dinamico e spostamenti
+
+Ogni barca si sposta **trascinandola**. Durante il trascinamento Porto mostra se lo spazio è libero e compatibile per
+tutto il periodo (verde), compatibile con avvisi (giallo) o in conflitto (rosso). Al rilascio chiede da quando vale lo
+spostamento (oggi, da una data, per un intervallo) e mostra l'effetto sul prezzo se cambia categoria. Le misure della
+barca non si stirano: vengono dalla sua scheda.
+
+Sulle aree dinamiche e nei capannoni si lavora in **bozza**: sposti, togli e aggiungi più barche, poi *Salva* (tutte le
+mosse insieme) o *Ripristina*. La **compattazione** avvicina le barche di un'area per liberare spazio. Gli spostamenti si
+possono annullare entro 24 ore.
+
+## Arrivi, partenze e presenze
+
+Sotto la mappa ci sono arrivi e partenze del giorno e le barche fuori. Arrivi e partenze si registrano dalla scheda,
+dall'elenco o dal telefono dell'ormeggiatore ([Telefono e offline](/gestore/telefono-e-offline/)). *Arrivo non previsto*
+registra una barca arrivata senza prenotazione su un posto libero, da completare poi in ufficio.
+
+## Calendario posti
+
+*Calendario posti* è la vista a griglia **posti × giorni**: trascina una barra in orizzontale per cambiare le date, in
+verticale per cambiare posto, oppure crea un transito su uno spazio libero.

@@ -1,0 +1,81 @@
+name: Task per agente
+description: Task piccolo e verificabile, pronto per un agente di coding o per un contributore.
+title: "[Task]: "
+labels: ["agent-task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Un task tocca al massimo **un'area di dominio** e il relativo endpoint. I motori puri (`layout`, `fit`, `pricing`, `accrual`, `formula`, `optimizer`) si sviluppano prima come librerie con test; l'interfaccia arriva quando l'endpoint è su `main`.
+        Ogni criterio di accettazione deve tradursi in un test. Vedi `AGENTS.md`, `docs/invariants.md` e la sezione 32 della specifica. Le [decisioni aperte](https://github.com/coste360/porto/blob/main/docs/spec/33-decisioni-aperte.md) non si decidono in un task.
+  - type: textarea
+    id: obiettivo
+    attributes:
+      label: Obiettivo
+      description: Una frase sul risultato atteso.
+      placeholder: "Aggiungere l'endpoint GET /api/admin/v1/berths/{id}/history che elenca le occupazioni passate di un posto."
+    validations:
+      required: true
+  - type: textarea
+    id: contesto
+    attributes:
+      label: Contesto
+      description: Sezioni della specifica, invarianti e ADR da leggere.
+      placeholder: |
+        - docs/spec/10-motore-di-occupazione.md
+        - docs/spec/27-api-eventi-estensioni.md §27.1, §27.2
+        - docs/invariants.md INV-01
+    validations:
+      required: true
+  - type: textarea
+    id: perimetro
+    attributes:
+      label: Perimetro
+      description: Package e file che si prevede di toccare.
+      placeholder: |
+        - api/openapi.yaml
+        - internal/http/admin/
+        - internal/domain/occupancy/
+    validations:
+      required: true
+  - type: textarea
+    id: fuori-perimetro
+    attributes:
+      label: Fuori perimetro
+      description: Cosa non va modificato.
+      placeholder: |
+        - migrazioni già su main
+        - pkg/ext
+        - frontend
+    validations:
+      required: true
+  - type: textarea
+    id: criteri
+    attributes:
+      label: Criteri di accettazione
+      description: Elenco verificabile, ogni voce traducibile in un test.
+      placeholder: |
+        - [ ] Restituisce solo le occupazioni del marina dell'utente autenticato (marina_id dal contesto)
+        - [ ] Risponde 401 senza sessione valida e 403 senza il permesso richiesto
+        - [ ] La risposta è valida rispetto a openapi.yaml
+    validations:
+      required: true
+  - type: checkboxes
+    id: test
+    attributes:
+      label: Test richiesti
+      options:
+        - label: Unit
+        - label: Integrazione su SQLite e PostgreSQL (make test-db)
+        - label: Concorrenza (TestConcurrency_*, -race)
+        - label: Property test / casi condivisi in testdata/
+        - label: End-to-end (Playwright)
+  - type: dropdown
+    id: verifica
+    attributes:
+      label: Comando di verifica
+      options:
+        - make check
+        - make check-full
+    validations:
+      required: true

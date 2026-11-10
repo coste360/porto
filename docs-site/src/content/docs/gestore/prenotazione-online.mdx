@@ -1,0 +1,86 @@
+---
+title: Prenotazione online
+description: La pagina pubblica di prenotazione dei transiti, le regole, l'approvazione, l'area del cliente e il widget per il sito.
+sidebar:
+  order: 11
+---
+
+import { Screenshot } from '~/components';
+
+Il diportista prenota un transito sulla **pagina pubblica** del marina, `https://<host>/b/<slug>`, in pochi passaggi e
+senza creare un account. La disponibilità è quella reale del gestionale: **nessuna doppia vendita** tra banco, pagina
+online, API e canali, perché il posto è garantito dal database.
+
+<Screenshot name="phone-online-booking" alt="Pagina pubblica di prenotazione su smartphone: categorie di posto barca con il prezzo per le date e le misure indicate." />
+
+La pagina pubblica funziona solo se l'istanza è raggiungibile da internet (non con la sola app desktop).
+
+## Il percorso del diportista
+
+1. Date di arrivo e partenza e misure della barca: per ogni categoria di posto la pagina dice se c'è posto e il prezzo
+   del listino.
+2. Preferenze, extra e condizioni.
+3. Conferma: Porto tiene un posto concreto per qualche minuto (`PORTO_HOLD_TTL`, predefinito 10 minuti).
+4. Dati del cliente e della barca, documenti (licenza, polizza) da verificare in ufficio.
+5. Pagamento dell'anticipo o del totale: con Stripe online, oppure con bonifico (driver manuale).
+6. Email di conferma con le istruzioni di arrivo e il **QR del transito** per l'ormeggiatore.
+
+Il transito si conferma **solo** quando arriva il pagamento (webhook firmato di Stripe o incasso registrato in ufficio),
+mai al ritorno del browser. Un pagamento arrivato dopo la scadenza del blocco recupera lo stesso posto se è ancora
+libero, altrimenti viene rimborsato per intero.
+
+## In ufficio
+
+*Prenotazioni online* elenca le prenotazioni dalla pagina pubblica e dai canali, con approvazioni, documenti e
+pagamenti. Il posto è assegnato al momento della prenotazione; l'ufficio può spostare la barca prima dell'arrivo senza
+effetti per il cliente se la categoria non cambia.
+
+**Approvazione**: le barche oltre una lunghezza o i gruppi configurati restano in attesa di approvazione; il pagamento è
+una preautorizzazione catturata all'approvazione, con una scadenza.
+
+## Impostazioni
+
+In *Prenotazione online*:
+
+- **regole**: soggiorno minimo e massimo, anticipo minimo e massimo, orari di arrivo, giorni di chiusura;
+- **pagamenti**: acconto o totale, politica di cancellazione per fasce di anticipo (rimborso o credito);
+- **approvazione** e campi obbligatori (documenti, assicurazione, persone a bordo);
+- **testi** versionati: condizioni, privacy, consenso marketing;
+- **quote**: quanti posti di ogni gruppo si possono vendere online per notte (banchina e API non sono limitate);
+- **incorporamento**: i domini autorizzati a mostrare la pagina nel proprio sito e l'aspetto.
+
+## Area del cliente
+
+Con un **link magico** via email il cliente vede prenotazioni, documenti, ricevute e saldo, carica documenti, cambia le
+date (secondo disponibilità) e cancella secondo la politica, con l'anteprima del rimborso.
+
+## Incorporare il widget nel sito
+
+La pagina si può linkare direttamente (`https://<host>/b/<slug>`, con `?lang=en` per l'inglese) o incorporare.
+
+**Script (consigliato)**: crea l'iframe, ne adatta l'altezza al contenuto e segnala i passi della prenotazione.
+
+```html
+<div data-porto="marina-esempio" data-lang="it"></div>
+<script src="https://<host>/embed.js" async></script>
+```
+
+**Iframe**, dove è possibile incollare solo HTML (altezza fissa):
+
+```html
+<iframe src="https://<host>/b/marina-esempio?embed=1"
+        style="width:100%;height:720px;border:0" allow="payment" loading="lazy"
+        title="Prenota un posto barca"></iframe>
+```
+
+- Funziona con WordPress (blocco "HTML personalizzato"), Wix, Squarespace, Joomla e qualsiasi sito.
+- `embed.js` rilancia sul contenitore l'evento `porto:booking` a ogni passo, utile per misurare le conversioni.
+  Attributi facoltativi: `data-title` e `data-height`.
+- L'incorporamento è consentito solo dai domini autorizzati; non si usano cookie di terze parti.
+- Il pagamento si apre a tutta finestra; al termine la pagina mostra l'esito con "Torna al sito".
+- In primo piano c'è il nome del porto, con un discreto "powered by Porto".
+
+## Canali esterni
+
+Porto ha un'interfaccia per collegare portali di prenotazione degli ormeggi, ma **non include alcun canale di terzi**
+([Estensioni](/sviluppo/estensioni/)).

@@ -1,0 +1,39 @@
+---
+title: Report e cruscotto
+description: Il cruscotto con il confronto sull'anno precedente, i report con drill-down fino ai record e le esportazioni.
+sidebar:
+  order: 18
+---
+
+import { Screenshot } from '~/components';
+
+## Cruscotto
+
+*Panoramica* è il cruscotto del marina: ogni riquadro mostra il valore del periodo, il confronto con lo stesso periodo
+dell'anno precedente e l'andamento.
+
+<Screenshot name="manager-dashboard" alt="Cruscotto del gestore con produzione, addebitato, incassato, sospesi, occupazione ed efficienza allocativa." />
+
+Riquadri: produzione, addebitato e incassato, sospesi, occupazione ed efficienza allocativa, ricavo per metro di posto e
+per notte di transito, clientela e rinnovi, imbarcazioni ospitate, cantiere e noleggio. **Ogni riquadro apre il report
+che lo compone**, con gli stessi filtri, e il suo valore coincide con la somma di quei record.
+
+## Report
+
+| Report | Che cosa misura |
+|---|---|
+| Occupazione | notti-posto occupate su disponibili, fisica e contrattuale |
+| Efficienza e spreco allocativo | quanto spazio del posto usa davvero la barca; ricavo potenziale perso e suggerimenti di scambio |
+| Domanda persa | richieste non evase per motivo, periodo, fascia di lunghezza e canale |
+| Clientela, imbarcazioni | clienti per categoria, nazionalità, anzianità, valore, rinnovi; barche per tipo, lunghezza, bandiera |
+| Produzione, competenze, ratei e risconti | il valore di contratti e transiti ripartito per giorni di competenza |
+| Addebiti, incassi, classi di ricavo | per periodo, cliente, articolo, origine, stato di pagamento e di fatturazione, IVA |
+| Scadenzario e crediti | aperti per anzianità e solleciti inviati |
+| Presenze | arrivi, partenze, assenze dei contratti annuali, rilasci e rivendite |
+| Diritti d'uso, cassa | titolari, oneri e riparti; sessioni di cassa e corrispettivi |
+| Rimessaggio, manutenzioni, utenze | occupazione delle aree, interventi, consumi |
+| Cantiere, noleggio, sensori | ore e margini; utilizzo della flotta e cauzioni; discordanze dei sensori |
+| Comparazione | qualsiasi indicatore tra due periodi o anni, allineati per data o per giorno della settimana |
+
+Il confronto arriva fino a **5 anni**. Ogni report si esporta in **CSV** (in italiano: separatore `;`, virgola decimale)
+ed **Excel**. Quali report si vedono dipende dal ruolo ([Panoramica](/gestore/#ruoli)).

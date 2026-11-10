@@ -1,0 +1,163 @@
+---
+title: Porto, il gestionale per porti turistici e cantieri nautici
+description: Documentazione di Porto, il gestionale gratuito con codice sorgente disponibile per porti turistici, marine, approdi e cantieri nautici di Coste360 SRL.
+template: splash
+editUrl: false
+lastUpdated: false
+hero:
+  title: Il gestionale per porti turistici, marine e cantieri nautici
+  tagline: Mappa del porto in scala reale, contratti di ormeggio e transiti, prenotazione online dei posti barca senza commissioni, addebiti e incassi, rimessaggio, cantiere e noleggio. Un unico binario sul tuo server, oppure un'app desktop che lavora anche senza internet.
+  actions:
+    - text: Guida del gestore
+      link: gestore/
+      icon: open-book
+    - text: Installa Porto
+      link: installazione/scegli-come-installare/
+      variant: minimal
+      icon: right-arrow
+home:
+  facts: Gratuito per chi gestisce il proprio porto · Zero commissioni · I dati restano tuoi
+  shot:
+    light: harbour-map-piers
+    dark: harbour-map-dark-theme
+    alt: Vista operativa di Porto sul porto dimostrativo, con i pontili C, D ed E in scala, la legenda con i conteggi e la ricerca del posto per un'imbarcazione in arrivo.
+  phone:
+    name: phone-online-booking
+    alt: Pagina pubblica di prenotazione su smartphone, con le categorie di posto barca e il prezzo per le date scelte.
+  techLink:
+    text: 'Per tecnici e sviluppatori: installazione, API e architettura'
+    link: /installazione/
+---
+
+import { Card, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
+import { Faq, Screenshot } from '~/components';
+
+## Tutto il porto in un unico gestionale
+
+Porto copre l'intero ciclo di un marina e di un cantiere. Usa solo i moduli che ti servono: un cantiere senza posti in
+acqua può lavorare solo con piazzale, capannoni, commesse e mezzi di sollevamento.
+
+<CardGrid>
+  <Card title="Mappa del porto in scala" icon="template">
+    Banchine, pontili, finger, campi boe, aree dinamiche, piazzali, capannoni, parcheggi e box misurati in
+    centimetri, con generatori e sfondo calibrato. [Mappa del porto](/gestore/mappa-del-porto/)
+  </Card>
+  <Card title="Vista operativa" icon="magnifier">
+    La notte scelta con i contesti (occupazione, presenze, pagamenti, scadenze, anomalie…), la ricerca del posto per
+    misure e il pontile dinamico. [Vista operativa](/gestore/vista-operativa/)
+  </Card>
+  <Card title="Contratti e transiti" icon="document">
+    Dal preventivo al contratto, rate e scadenzario, rinnovi e campagne, charter, lista d'attesa, transiti dal banco.
+    [Contratti e transiti](/gestore/contratti-e-transiti/)
+  </Card>
+  <Card title="Diritti d'uso e spese comuni" icon="padlock">
+    Titolari e quote, cessioni, mandati di gestione, oneri e riparto delle spese condominiali al centesimo.
+    [Diritti d'uso](/gestore/diritti-d-uso-e-spese-comuni/)
+  </Card>
+  <Card title="Addebiti e incassi" icon="approve-check">
+    Addebiti da ogni origine, incassi, rimborsi, solleciti, Stripe facoltativo ed esportazione "da fatturare": la
+    fattura resta al tuo software. [Addebiti e incassi](/gestore/addebiti-e-incassi/)
+  </Card>
+  <Card title="Rimessaggio" icon="puzzle">
+    Planner in scala di piazzali e capannoni, ipotesi separate dallo stato reale e ottimizzatore che controlla le
+    uscite. [Rimessaggio](/gestore/rimessaggio/)
+  </Card>
+  <Card title="Cantiere" icon="setting">
+    Catalogo con formule, preventivo guidato, commesse, ore, materiali, consuntivo e mezzi di sollevamento.
+    [Cantiere](/gestore/cantiere/)
+  </Card>
+  <Card title="Noleggio" icon="clock">
+    Flotta, skipper, formule orarie e giornaliere, planner senza doppie prenotazioni, consegna e riconsegna dal
+    telefono. [Noleggio](/gestore/noleggio/)
+  </Card>
+  <Card title="Prenotazione online" icon="laptop">
+    Il diportista prenota e paga il transito sul tuo sito, senza account e senza commissioni alla piattaforma.
+    [Prenotazione online](/gestore/prenotazione-online/)
+  </Card>
+  <Card title="Sensori di occupazione" icon="signal">
+    Stato fisico dei posti da qualsiasi sensore, riconciliato con i contratti: i sensori propongono, l'operatore
+    decide. [Sensori](/gestore/sensori/)
+  </Card>
+  <Card title="Report e cruscotto" icon="analytics">
+    Occupazione, efficienza, produzione, incassi, crediti, cantiere e noleggio, confrontati fino a 5 anni.
+    [Report e cruscotto](/gestore/report-e-cruscotto/)
+  </Card>
+  <Card title="App desktop e telefono" icon="desktop">
+    App per Windows, macOS e Linux che lavora senza internet; telefoni in banchina con coda offline.
+    [App desktop](/gestore/app-desktop/)
+  </Card>
+</CardGrid>
+
+<Screenshot
+  name="manager-dashboard"
+  alt="Cruscotto del gestore: produzione, addebitato, incassato, sospesi, occupazione ed efficienza allocativa confrontati con l'anno precedente."
+  caption="Il cruscotto: ogni riquadro apre il report che lo compone, con gli stessi filtri."
+/>
+
+## Perché Porto
+
+- **Gratuito per chi gestisce il proprio porto**: nessun canone e nessun limite di posti, contratti o utenti.
+  Codice sorgente disponibile con licenza BSL 1.1, che diventa AGPL-3.0 dopo 3 anni ([licenza](/sviluppo/licenza/)).
+- **Zero commissioni sui transiti online**: i pagamenti passano dal tuo account Stripe oppure da bonifico e cassa.
+- **Funziona anche senza internet**: l'app desktop tiene server e archivio sul PC dell'ufficio.
+- **Mappa in scala reale**: due barche nello stesso spazio nella stessa notte sono impedite dal database.
+- **La fattura resta al tuo software**: Porto esporta gli addebiti "da fatturare" e non li cambia più.
+- **Nessuna intelligenza artificiale, nessuna telemetria**: i dati del porto non vanno a nessuno, nemmeno a Coste360.
+
+## Come si comincia
+
+<Steps>
+
+1. **Scegli dove installarlo**: app desktop sul PC dell'ufficio, server in sede o server online con Docker.
+   [Scegli come installare](/installazione/scegli-come-installare/)
+
+2. **Crea il titolare e il marina** al primo avvio, oppure carica il porto dimostrativo per provare tutto.
+   [Primo avvio](/installazione/primo-avvio/) · [Dati dimostrativi](/installazione/dati-demo/)
+
+3. **Disegna la mappa** con i generatori o importa i posti da CSV. [Mappa del porto](/gestore/mappa-del-porto/)
+
+4. **Prepara i listini** e controlla i prezzi con il simulatore. [Listini e prezzi](/gestore/listini-e-prezzi/)
+
+5. **Inizia a lavorare**: contratti, transiti, incassi e, se vuoi, la prenotazione online.
+   [Contratti e transiti](/gestore/contratti-e-transiti/)
+
+</Steps>
+
+## Domande frequenti
+
+<Faq
+  items={[
+    {
+      q: 'Porto è davvero gratuito?',
+      a: "Sì, per chi gestisce la propria struttura: porti, approdi, cantieri e rimessaggi che possiedi o gestisci direttamente, senza canoni né limiti di posti, contratti o utenti. Serve una licenza commerciale di Coste360 SRL solo per offrire Porto come servizio a terzi (hosting, installazione, assistenza, rivendita).",
+    },
+    {
+      q: 'Porto emette le fatture elettroniche?',
+      a: "No. Porto calcola gli addebiti (rate, transiti, servizi, consumi, commesse, noleggi, oneri) e li esporta \"da fatturare\" in CSV, Excel o PDF per il software di fatturazione che usi già. Poi il riscontro collega le fatture emesse agli addebiti.",
+    },
+    {
+      q: 'Ci sono commissioni sui transiti prenotati online?',
+      a: "No. I pagamenti online passano dal tuo account Stripe e paghi solo le commissioni del circuito. Puoi anche non attivarli e confermare i transiti dal banco con bonifico o in cassa.",
+    },
+    {
+      q: 'Funziona senza internet?',
+      a: "Sì, con l'app desktop: server e archivio stanno sul PC dell'ufficio e i telefoni si collegano sulla Wi-Fi del porto. Servono internet solo la prenotazione online, i pagamenti online e la firma a distanza.",
+    },
+    {
+      q: 'Posso gestire più marine?',
+      a: "Sì. Un'unica installazione gestisce più marine, ciascuna con le proprie mappe, listini, contratti, utenti e pagina di prenotazione. Oltre i 300 posti o con più marine è consigliato PostgreSQL.",
+    },
+    {
+      q: "Porto usa l'intelligenza artificiale?",
+      a: "No. Porto non contiene funzioni di IA, non invia dati a servizi di IA e non ha telemetria: i dati dei documenti li inserisce l'operatore.",
+    },
+  ]}
+/>
+
+## Per tecnici e sviluppatori
+
+<CardGrid>
+  <LinkCard title="Installazione e gestione" description="Docker, configurazione, database, HTTPS, backup e aggiornamenti." href="/installazione/" />
+  <LinkCard title="API e webhook" description="API REST in OpenAPI 3.1, webhook firmati, riferimento completo." href="/api/" />
+  <LinkCard title="Sviluppo ed estensioni" description="Architettura, invarianti, punti di estensione e come contribuire." href="/sviluppo/" />
+</CardGrid>

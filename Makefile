@@ -41,6 +41,8 @@ HAS_WEB     = $(wildcard web/package.json)
 HAS_WEB_LCK = $(wildcard web/package-lock.json)
 HAS_E2E     = $(wildcard e2e/package.json)
 HAS_E2E_LCK = $(wildcard e2e/package-lock.json)
+HAS_DOCS    = $(wildcard docs-site/package.json)
+HAS_DOCS_LCK= $(wildcard docs-site/package-lock.json)
 HAS_API     = $(wildcard api/openapi.yaml)
 HAS_API_CFG = $(wildcard api/oapi-codegen.yaml)
 HAS_CMD     = $(wildcard cmd/porto/*.go)
@@ -91,7 +93,10 @@ setup: ## Download Go modules, install golangci-lint into ./bin, install web/e2e
 	if [ -n "$(HAS_E2E)" ]; then \
 		if [ -n "$(HAS_E2E_LCK)" ]; then npm --prefix e2e ci; else npm --prefix e2e install; fi; \
 		(cd e2e && npx playwright install chromium); \
-	else $(call skip,setup e2e,e2e/package.json); fi
+	else $(call skip,setup e2e,e2e/package.json); fi; \
+	if [ -n "$(HAS_DOCS)" ]; then \
+		if [ -n "$(HAS_DOCS_LCK)" ]; then npm --prefix docs-site ci; else npm --prefix docs-site install; fi; \
+	else $(call skip,setup docs,docs-site/package.json); fi
 
 .PHONY: dev
 dev: ## Run backend (air if installed, else go run) and web dev servers
@@ -154,7 +159,7 @@ gen-check: ## Fail if generated files are out of date (content changes after mak
 	echo "gen-check: generated files up to date"
 
 # Non-generated Go files (generated files carry "Code generated ... DO NOT EDIT").
-GO_SOURCES = $(shell find . -name '*.go' -not -path './node_modules/*' -not -path './web/*' -not -path './e2e/*' -not -path './tmp/*' -not -name '*.gen.go' -not -name '*_gen.go' 2>/dev/null)
+GO_SOURCES = $(shell find . -name '*.go' -not -path './node_modules/*' -not -path './web/*' -not -path './e2e/*' -not -path './docs-site/*' -not -path './tmp/*' -not -name '*.gen.go' -not -name '*_gen.go' 2>/dev/null)
 
 .PHONY: fmt
 fmt: ## Format Go (gofumpt, goimports) and web sources
@@ -242,6 +247,37 @@ build: web-build ## Build bin/porto (static, no CGO) with the embedded SPAs
 	echo "built bin/porto $(VERSION)"
 
 # ---------------------------------------------------------------------------
+# Documentation site (docs-site/, Astro Starlight, own npm package; docs-site/README.md)
+# ---------------------------------------------------------------------------
+
+DOCS_ENV := ASTRO_TELEMETRY_DISABLED=1
+
+.PHONY: docs-dev
+docs-dev: ## Documentation site with live reload (http://localhost:4321)
+	@if [ -z "$(HAS_DOCS)" ]; then $(call skip,docs-dev,docs-site/package.json); exit 0; fi; \
+	$(DOCS_ENV) npm --prefix docs-site run dev
+
+.PHONY: docs-build
+docs-build: ## Static documentation in docs-site/dist (search, API reference from api/openapi.yaml, internal link check)
+	@if [ -z "$(HAS_DOCS)" ]; then $(call skip,docs-build,docs-site/package.json); exit 0; fi; \
+	$(DOCS_ENV) npm --prefix docs-site run build
+
+.PHONY: docs-check
+docs-check: ## Type check the documentation site (astro check: components, content, configuration)
+	@if [ -z "$(HAS_DOCS)" ]; then $(call skip,docs-check,docs-site/package.json); exit 0; fi; \
+	$(DOCS_ENV) npm --prefix docs-site run check
+
+.PHONY: docs-preview
+docs-preview: ## Serve the static documentation built by docs-build (http://localhost:4321)
+	@if [ -z "$(HAS_DOCS)" ]; then $(call skip,docs-preview,docs-site/package.json); exit 0; fi; \
+	$(DOCS_ENV) npm --prefix docs-site run preview
+
+.PHONY: docs-screenshots
+docs-screenshots: ## Convert docs/screenshots/*.png into the WebP files of the documentation (DOCS_ONLY=name,name for a subset)
+	@if [ -z "$(HAS_DOCS)" ]; then $(call skip,docs-screenshots,docs-site/package.json); exit 0; fi; \
+	npm --prefix docs-site run screenshots
+
+# ---------------------------------------------------------------------------
 # Desktop edition (M6a): bin/porto stays CGO_ENABLED=0; only the webview build of the launcher needs CGO
 # ---------------------------------------------------------------------------
 
@@ -311,7 +347,7 @@ licenses: ## Check third-party Go and npm licences against the allow-list (Porto
 .PHONY: clean
 clean: ## Remove build outputs (keeps bin/golangci-lint and .gitkeep files)
 	@set -euo pipefail; \
-	rm -rf bin/porto bin/porto-desktop tmp dist web/*/dist e2e/test-results e2e/playwright-report; \
+	rm -rf bin/porto bin/porto-desktop tmp dist web/*/dist e2e/test-results e2e/playwright-report docs-site/dist docs-site/.astro; \
 	for app in admin booking; do \
 		[ -d "$(STATIC_DIR)/$$app" ] && find "$(STATIC_DIR)/$$app" -mindepth 1 -not -name .gitkeep -exec rm -rf {} + || true; \
 	done

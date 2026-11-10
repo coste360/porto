@@ -1,0 +1,60 @@
+---
+title: Charges and payments
+description: Charges from every origin, payments and allocations, refunds, credits, reminders, online payments and the "to invoice" export.
+sidebar:
+  order: 9
+---
+
+**Porto does not issue invoices.** It computes what each customer owes, records payments and refunds, follows due dates
+and reminders and exports charges to the invoicing software or to the accountant, who issues the invoices.
+
+## Charges
+
+A **charge** (*Addebiti*) is an amount owed by the customer. It comes from contract instalments, transits, desk services,
+utility consumption, fees and common charges, boatyard work orders, rentals and transfer fees. It has lines with item,
+quantity, price, discount and VAT rate, the service period and a due date.
+
+- **Payment state**: open → partially paid → paid, or cancelled with a reason.
+- **Invoicing state**: to invoice → exported → invoiced (with the external invoice number and date).
+- An exported charge **never changes**: a correction is an **adjustment charge** linked to the original, which goes into
+  the next export.
+
+## Payments
+
+*Pagamenti* records payments (bank transfer, cash, card terminal, cheque, or online) and **allocates** them to one or more
+charges, also partially; what is left becomes customer **credit**. Refunds (through the provider or manual) and
+**deposits**, which are not revenue until retained, are handled here too. *Saldi di apertura* records customer balances
+when you start using Porto.
+
+## Due dates and reminders
+
+- *Sospesi e scadenze* (Receivables) shows charges and instalments by due date and age, per customer, contract and group.
+- *Richieste di pagamento* sends the customer a link to pay online or the bank details.
+- *Solleciti* (Reminders) runs every day: notices before and on the due date and reminders on several levels (polite,
+  formal, final notice); the last level is approved before sending. Customers on a repayment plan and disputed charges
+  can be excluded; reminders stop as soon as the payment is recorded.
+- The customer **statement** (charges, payments, balance) downloads as PDF.
+
+## Online payments
+
+Optional: without configuration Porto collects by bank transfer, cash and card terminal. In *Pagamenti online* you can
+enable **Stripe** with your own account keys (cards, wallets, SEPA direct debit and mandates for instalments). An online
+payment is confirmed only by Stripe's signed webhook ([Payment drivers](/en/sviluppo/driver-di-pagamento/)).
+
+## The "to invoice" export
+
+*Esportazioni* takes the charges to invoice of a period (filtered by customer, origin and revenue class) and exports them
+as **Excel, CSV** (Italian format, one row per charge line with the customer's tax data, VAT rate, nature, service
+period, contract and boat) and a summary **PDF**. Exported charges become "exported": **each appears in one export only**.
+
+Then **reconciliation**: upload the CSV or Excel file from the invoicing software and the charges receive the invoice
+number and date. A direct exporter to a specific software is an extension point, not included.
+
+:::note[Tax note]
+Porto sends nothing to the Italian e-invoicing exchange (SdI). Whether the configuration complies (VAT rates, issuing of
+documents, retention) remains the responsibility of the marina and its adviser.
+:::
+
+*Attività ufficio* (Office worklist) gathers the to-dos that arise from charges, payments, reminders and deadlines.
+*Impostazioni addebiti* holds the marina's choices: due dates, items for automatic charges, reminders, arrears,
+receipts and cash registers.

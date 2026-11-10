@@ -1,0 +1,168 @@
+---
+title: Porto, management software for marinas and boatyards
+description: Documentation of Porto, the free, source-available management system for marinas, tourist ports, berthing points and boatyards by Coste360 SRL.
+template: splash
+editUrl: false
+lastUpdated: false
+hero:
+  title: Management software for marinas, tourist ports and boatyards
+  tagline: A to-scale harbour map, mooring contracts and transits, commission-free online berth booking, charges and payments, dry storage, boatyard and rentals. One binary on your server, or a desktop app that works without internet.
+  actions:
+    - text: Operator guide
+      link: gestore/
+      icon: open-book
+    - text: Install Porto
+      link: installazione/scegli-come-installare/
+      variant: minimal
+      icon: right-arrow
+home:
+  facts: Free for marinas you run yourself · No commissions · Your data stays yours
+  shot:
+    light: harbour-map-piers
+    dark: harbour-map-dark-theme
+    alt: Porto's operational view of the demo marina, with piers C, D and E to scale, the legend with counts and the berth search for an incoming vessel.
+  phone:
+    name: phone-online-booking
+    alt: Public booking page on a phone, with the berth categories and the price for the chosen dates.
+  techLink:
+    text: 'For technical readers and developers: installation, API and architecture'
+    link: /en/installazione/
+---
+
+import { Card, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
+import { Faq, Screenshot } from '~/components';
+
+:::note
+The user interface of Porto is in Italian and English. The guide quotes the Italian labels of the panel where it
+helps to find them; switch the panel to English from your account menu.
+:::
+
+## The whole marina in one system
+
+Porto covers the full cycle of a marina and a boatyard. Use only the modules you need: a boatyard without berths in
+the water can work with yards, sheds, work orders and lifting equipment alone.
+
+<CardGrid>
+  <Card title="To-scale harbour map" icon="template">
+    Quays, piers, fingers, buoy fields, dynamic areas, yards, sheds, parking and boxes measured in centimetres, with
+    generators and a calibrated background. [Harbour map](/en/gestore/mappa-del-porto/)
+  </Card>
+  <Card title="Operational view" icon="magnifier">
+    The chosen night through lenses (occupancy, presence, payments, deadlines, anomalies…), berth search by size and
+    the dynamic pier. [Operational view](/en/gestore/vista-operativa/)
+  </Card>
+  <Card title="Contracts and transits" icon="document">
+    From quote to contract, instalments, renewals and campaigns, charters, waiting list, transits at the desk.
+    [Contracts and transits](/en/gestore/contratti-e-transiti/)
+  </Card>
+  <Card title="Berth rights and common charges" icon="padlock">
+    Holders and shares, transfers, management mandates, fees and condominium charges split to the cent.
+    [Berth rights](/en/gestore/diritti-d-uso-e-spese-comuni/)
+  </Card>
+  <Card title="Charges and payments" icon="approve-check">
+    Charges from every origin, payments, refunds, reminders, optional Stripe and the "to invoice" export: invoices
+    stay in your own software. [Charges and payments](/en/gestore/addebiti-e-incassi/)
+  </Card>
+  <Card title="Dry storage" icon="puzzle">
+    To-scale planner of yards and sheds, scenarios kept apart from the real state and an optimizer that checks every
+    exit. [Dry storage](/en/gestore/rimessaggio/)
+  </Card>
+  <Card title="Boatyard" icon="setting">
+    Catalogue with formulas, guided quotes, work orders, hours, materials, final accounts and lifting equipment.
+    [Boatyard](/en/gestore/cantiere/)
+  </Card>
+  <Card title="Rentals" icon="clock">
+    Fleet, skippers, hourly and daily formulas, a planner with no double bookings, check-out and return from a
+    phone. [Rentals](/en/gestore/noleggio/)
+  </Card>
+  <Card title="Online booking" icon="laptop">
+    Boaters book and pay their transit on your website, with no account and no platform commission.
+    [Online booking](/en/gestore/prenotazione-online/)
+  </Card>
+  <Card title="Occupancy sensors" icon="signal">
+    Physical berth state from any sensor, reconciled with contracts: sensors propose, the operator decides.
+    [Sensors](/en/gestore/sensori/)
+  </Card>
+  <Card title="Reports and dashboard" icon="analytics">
+    Occupancy, efficiency, revenue, payments, receivables, boatyard and rentals, compared over up to 5 years.
+    [Reports and dashboard](/en/gestore/report-e-cruscotto/)
+  </Card>
+  <Card title="Desktop app and phones" icon="desktop">
+    An app for Windows, macOS and Linux that works without internet; phones on the dock with an offline queue.
+    [Desktop app](/en/gestore/app-desktop/)
+  </Card>
+</CardGrid>
+
+<Screenshot
+  name="manager-dashboard"
+  alt="Manager dashboard: revenue, charged, collected, receivables, occupancy and allocation efficiency compared with last year."
+  caption="The dashboard: every tile opens the report it is made of, with the same filters."
+/>
+
+## Why Porto
+
+- **Free for marinas you run yourself**: no fee and no limit on berths, contracts or users. Source available under
+  the BSL 1.1, which becomes AGPL-3.0 after 3 years ([licence](/en/sviluppo/licenza/)).
+- **No commission on online transits**: payments go through your own Stripe account, or bank transfer and cash.
+- **Works without internet**: the desktop app keeps server and data on the office PC.
+- **To-scale map**: two boats in the same space on the same night are prevented by the database.
+- **Invoices stay in your software**: Porto exports charges "to invoice" and never changes them afterwards.
+- **No artificial intelligence, no telemetry**: marina data goes to nobody, Coste360 included.
+
+## Getting started
+
+<Steps>
+
+1. **Choose where to install it**: desktop app on the office PC, on-site server or online server with Docker.
+   [Choose how to install](/en/installazione/scegli-come-installare/)
+
+2. **Create the owner and the marina** on first start, or load the demo marina to try everything.
+   [First start](/en/installazione/primo-avvio/) · [Demo data](/en/installazione/dati-demo/)
+
+3. **Draw the map** with the generators or import the berths from CSV. [Harbour map](/en/gestore/mappa-del-porto/)
+
+4. **Prepare the price lists** and check prices with the simulator. [Price lists](/en/gestore/listini-e-prezzi/)
+
+5. **Start working**: contracts, transits, payments and, if you want, online booking.
+   [Contracts and transits](/en/gestore/contratti-e-transiti/)
+
+</Steps>
+
+## Frequently asked questions
+
+<Faq
+  items={[
+    {
+      q: 'Is Porto really free?',
+      a: 'Yes, for the facilities you run: marinas, berthing points, boatyards and dry-storage sites you own or operate directly, with no fee and no limit on berths, contracts or users. A commercial licence from Coste360 SRL is needed only to offer Porto as a service to third parties (hosting, installation, support, resale).',
+    },
+    {
+      q: 'Does Porto issue electronic invoices?',
+      a: 'No. Porto computes charges (instalments, transits, services, utilities, work orders, rentals, fees) and exports them "to invoice" as CSV, Excel or PDF for the invoicing software you already use. Reconciliation then links the issued invoices to the charges.',
+    },
+    {
+      q: 'Are there commissions on transits booked online?',
+      a: 'No. Online payments go through your own Stripe account and you pay only the card network fees. You can also leave online payments off and confirm transits at the desk by bank transfer or cash.',
+    },
+    {
+      q: 'Does it work without internet?',
+      a: 'Yes, with the desktop app: server and data live on the office PC and phones connect over the marina Wi-Fi. Only online booking, online payments and remote signatures need internet.',
+    },
+    {
+      q: 'Can I manage several marinas?',
+      a: 'Yes. One installation manages several marinas, each with its own maps, price lists, contracts, users and booking page. Above 300 berths or with several marinas PostgreSQL is recommended.',
+    },
+    {
+      q: 'Does Porto use artificial intelligence?',
+      a: 'No. Porto has no AI features, sends no data to AI services and has no telemetry: document data is entered by the operator.',
+    },
+  ]}
+/>
+
+## For technical readers and developers
+
+<CardGrid>
+  <LinkCard title="Installation and operations" description="Docker, configuration, database, HTTPS, backups and updates." href="/en/installazione/" />
+  <LinkCard title="API and webhooks" description="REST API in OpenAPI 3.1, signed webhooks, full reference." href="/en/api/" />
+  <LinkCard title="Development and extensions" description="Architecture, invariants, extension points and how to contribute." href="/en/sviluppo/" />
+</CardGrid>

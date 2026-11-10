@@ -4,12 +4,21 @@ Porto is developed by Coste360 SRL and published as source-available software un
 [Business Source License 1.1](LICENSE) (ADR 0018). Bug reports, ideas and pull requests are welcome. Read
 `AGENTS.md` first; the specification in `docs/spec/` (Italian) is authoritative.
 
+Everyone taking part in the project follows the [Code of Conduct](CODE_OF_CONDUCT.md) (Italian, adapted from the
+Contributor Covenant 2.1); report unacceptable behaviour to info@coste360.it.
+
 ## How to contribute
+
+Open issues with the forms in `.github/ISSUE_TEMPLATE/`: bug report, feature request, new driver (`pkg/ext`) and
+agent task. Questions go to GitHub Discussions; verified installations, support and commercial licences to
+[Coste360](https://www.coste360.it/contatti).
 
 - **Security problems**: never in a public issue. Follow [SECURITY.md](SECURITY.md) (security@coste360.it).
 - **Bugs**: open an issue with the version (`porto version`, or the image tag), the edition (server, Docker,
   desktop), the database (SQLite or PostgreSQL), the steps to reproduce and what you expected. Never attach real
   customer data, logs with personal data or your `PORTO_SECRET_KEY`.
+- **Drivers** (payment, export to invoicing software, signature, sensors, booking channels): open a *new driver*
+  issue before writing code, to agree on the `pkg/ext` interface and on whether the driver belongs in the core.
 - **Features**: open an issue before writing code. Porto follows its specification and the decisions in
   `docs/adr/`; a change of behaviour may need a spec change or a new ADR, and some topics are deliberately open
   (`docs/spec/33-decisioni-aperte.md`).
@@ -70,9 +79,11 @@ the repository and that you have the right to submit it (it is your own work, or
 copyright notices of the work it comes from, which must be compatible with these terms).
 
 No contributor licence agreement (CLA) or DCO sign-off is required at the moment. Whether one will be asked for is
-an open decision (D15 in `docs/spec/33-decisioni-aperte.md`); if that changes, this file will say so before it
-applies to new pull requests.
+an open decision (D15 in `docs/spec/33-decisioni-aperte.md`). [`CLA.md`](CLA.md) holds the proposed text, a draft
+not yet in force and not yet reviewed by legal counsel; if D15 adopts it, this file will say so before it applies
+to new pull requests.
 
 The name Porto, the logo and every file in `assets/brand/` are reserved by Coste360 SRL and not covered by the code
-licence (ADR 0007): do not change them in a pull request, and give a fork its own name and logo. Copyright (c) 2026
+licence (ADR 0007): do not change them in a pull request, and give a fork its own name and logo. What is allowed is
+in the trademark policy, [`TRADEMARK.md`](TRADEMARK.md). Copyright (c) 2026
 Coste360 SRL.

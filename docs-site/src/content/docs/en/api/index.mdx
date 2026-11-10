@@ -1,0 +1,43 @@
+---
+title: API overview
+description: The surfaces of Porto's REST API, the OpenAPI contract and the common conventions.
+sidebar:
+  order: 1
+---
+
+The panel, the public page and the desktop app use only the documented REST API: whatever they do, an integration
+can do too. The contract is a single OpenAPI 3.1 file,
+[`api/openapi.yaml`](https://github.com/coste360/porto/blob/main/api/openapi.yaml), the source of truth from which the
+Go server and the TypeScript client are generated. The [API reference](/api/riferimento/) of this site is generated
+from the same file on every build.
+
+## Surfaces
+
+| Prefix | Use | Authentication |
+|---|---|---|
+| `/api/admin/v1` | panel and integrations | panel session, API key or device token |
+| `/api/device/v1` | paired devices (phones, remote desktop app) | device token |
+| `/api/public/v1/{slug}` | booking page, widget, marina profile, customer area | none or magic link; per-network limits |
+| `/api/ingest/v1` | sensor readings | device or gateway key ([Sensor ingestion](/en/api/ingestione-sensori/)) |
+| `/webhooks/{payments,signature,channels}/…` | provider callbacks | provider signature |
+| `/api/desktop/v1`, `/api/bridge/v1` | desktop app and local peripherals | only on the app's local interface, 404 elsewhere |
+
+`GET /api/admin/v1/meta` returns the version and capabilities of the instance.
+
+## Conventions
+
+- Errors are `application/problem+json` (RFC 9457) with a stable `type` ([Errors and conventions](/en/api/convenzioni/)).
+- Money in **integer cents** (`*_cents`), lengths in **integer centimetres** (`*_cm`), percentages in basis points
+  (`*_bp`, 1 % = 100), fractional quantities in thousandths (`*_milli`): the API never uses decimal numbers.
+- Calendar dates `YYYY-MM-DD` in the marina time zone, instants RFC 3339 in UTC, UUID ids, `snake_case` JSON names.
+- Cursor pagination (`?cursor=&limit=`, default 50, max 200).
+- `Idempotency-Key` on creating `POST`s; `ETag` and `If-Match` on versioned resources.
+- Every operational resource belongs to a marina: a resource of another marina answers **404**, never 403.
+
+## In this section
+
+- [Authentication](/en/api/autenticazione/): sessions, API keys, devices.
+- [Errors and conventions](/en/api/convenzioni/): errors, idempotency, concurrency, pagination.
+- [Events and webhooks](/en/api/eventi-e-webhook/): signed webhooks and live updates.
+- [Sensor ingestion](/en/api/ingestione-sensori/): the protocol for sensor vendors.
+- [API reference](/api/riferimento/): every operation, generated from the contract (English summaries).

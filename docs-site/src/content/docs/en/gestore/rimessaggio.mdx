@@ -1,0 +1,43 @@
+---
+title: Dry storage
+description: Dry storage contracts, to-scale planner of yards and sheds, scenarios, exit accessibility and the optimizer.
+sidebar:
+  order: 13
+---
+
+import { Screenshot } from '~/components';
+
+*Rimessaggio* lists yard and shed areas with occupied surface, boats present and blocked exits over the next 30 days.
+
+<Screenshot name="dry-storage-shed-planner" alt="Planning a shed to scale, with draggable boats, the exit accessibility lens and the timeline below the plan." caption="The shed plan to scale with the timeline below." />
+
+## Dry storage contracts
+
+A dry storage contract puts a boat on land in a yard or shed for a period (winter, annual, by months), on its own or the
+marina's cradle, with linked services (haul-out, launch, washing…). The price comes from the price list (per m², by
+band, by month, by area type). The boat occupies the cells of its footprint: two boats cannot be in the same space on the
+same day.
+
+## Planner
+
+For each area: the **plan** to scale on the chosen date and the **timeline** with each boat's entry and exit. Moving the
+date shows arrivals and exits. Boats are dragged and rotated, also from the keyboard; you work on a draft with *Salva* and
+*Ripristina*, with the panel of boats **to place**.
+
+## Exit accessibility
+
+A boat in a full shed can get trapped. Porto checks for every boat whether there is a free path to a wide enough gate
+and, if not, which boats block it. A planned exit of a blocked boat is a **warning** in the planner and in the list of
+moves.
+
+## Scenarios and optimizer
+
+- A **scenario** is a working copy of an area's placements: you change it freely **without touching the real state**,
+  with indicators (surface used, blocked boats, moves needed, boats to place) and a comparison with the real state or
+  with another scenario.
+- The **optimizer** proposes a layout that places every boat, keeps those leaving first near the gates, reduces moves and
+  leaves the largest free surface. It is a proposal, never applied by itself.
+- **Applying** a scenario runs all its moves together, rechecked against the current state: a single conflict cancels
+  everything. The applied moves form the list of yard moves, available on the phone.
+
+Haul-outs and launches are booked on the [lifting equipment](/en/gestore/cantiere/#lifting-equipment).

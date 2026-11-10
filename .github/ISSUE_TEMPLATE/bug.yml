@@ -1,0 +1,127 @@
+name: Segnalazione bug
+description: Qualcosa non funziona come previsto in Porto.
+title: "[Bug]: "
+labels: ["bug", "da-valutare"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Grazie per la segnalazione. Prima di inviarla cerca tra le [issue esistenti](https://github.com/coste360/porto/issues?q=is%3Aissue).
+        **Vulnerabilità di sicurezza:** non usare questo modulo, segui [SECURITY.md](https://github.com/coste360/porto/blob/main/SECURITY.md).
+        **Non incollare dati personali reali** (nomi, email, telefoni, documenti di clienti e diportisti, targhe e matricole delle barche) né chiavi, token o la `PORTO_SECRET_KEY`.
+  - type: textarea
+    id: descrizione
+    attributes:
+      label: Descrizione
+      description: Cosa succede? Descrivi il problema in modo chiaro e conciso.
+    validations:
+      required: true
+  - type: textarea
+    id: passi
+    attributes:
+      label: Passi per riprodurre
+      description: Elenca i passi minimi per riprodurre il problema, se possibile sul porto demo (`make seed`).
+      placeholder: |
+        1. Apri la vista operativa sul pontile C
+        2. Seleziona la notte 2027-08-14
+        3. Sposta il transito di una barca di 12 m sul posto C18
+        4. Compare l'errore ...
+    validations:
+      required: true
+  - type: textarea
+    id: atteso
+    attributes:
+      label: Comportamento atteso
+    validations:
+      required: true
+  - type: textarea
+    id: osservato
+    attributes:
+      label: Comportamento osservato
+      description: Includi messaggi di errore, screenshot (senza dati personali) o il corpo della risposta `problem+json`.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Mappa del porto ed editor
+        - Vista operativa, occupazione e presenze
+        - Clienti, imbarcazioni e documenti
+        - Listini e prezzi
+        - Preventivi, contratti di ormeggio e transiti
+        - Diritti d'uso, cessioni, oneri e spese condominiali
+        - Modelli, PDF e firma
+        - Addebiti, incassi ed esportazione da fatturare
+        - Cassa e corrispettivi
+        - Pagamenti online
+        - Rimessaggio e manutenzioni
+        - Cantiere
+        - Noleggio
+        - Prenotazione online, widget e scheda pubblica
+        - Sensori di occupazione
+        - Report e cruscotto
+        - Notifiche e comunicazioni
+        - Utenti, ruoli e accesso
+        - API e webhook
+        - App desktop, rete locale e telefono offline
+        - Installazione, CLI, backup e aggiornamento
+        - Altro
+    validations:
+      required: true
+  - type: input
+    id: versione
+    attributes:
+      label: Versione
+      description: Output di `porto version`, la pagina *App desktop* delle impostazioni, il tag dell'immagine o il commit.
+      placeholder: "v0.1.0 / main@abc1234"
+    validations:
+      required: true
+  - type: dropdown
+    id: database
+    attributes:
+      label: Database
+      options:
+        - SQLite (predefinito)
+        - PostgreSQL
+        - Non so
+    validations:
+      required: true
+  - type: dropdown
+    id: installazione
+    attributes:
+      label: Modalità di installazione
+      options:
+        - App desktop (Windows)
+        - App desktop (macOS)
+        - App desktop (Linux)
+        - Docker / docker compose
+        - Binario
+        - Coolify
+        - CapRover
+        - Sorgenti (make dev)
+        - Altro
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser e dispositivo (se pertinente)
+      placeholder: "Safari 18 su iPhone in banchina, Chrome 130 sul PC dell'ufficio"
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: Log rilevanti con `PORTO_LOG_LEVEL=debug`. Controlla che non contengano dati personali o segreti.
+      render: text
+  - type: checkboxes
+    id: verifiche
+    attributes:
+      label: Verifiche
+      options:
+        - label: Ho cercato tra le issue esistenti e non ho trovato duplicati.
+          required: true
+        - label: La segnalazione non contiene dati personali reali né segreti.
+          required: true

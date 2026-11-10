@@ -1,0 +1,53 @@
+---
+/**
+ * <Faq items={[{ q: '…', a: '…' }]} /> — questions as disclosure widgets plus
+ * the matching schema.org FAQPage data, built from the same strings so the
+ * visible text and the structured data never drift apart. Answers are plain
+ * text.
+ */
+interface Props {
+  items: { q: string; a: string }[];
+}
+const { items } = Astro.props;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+};
+---
+
+<div class="porto-faq not-content">
+  {
+    items.map(({ q, a }) => (
+      <details>
+        <summary>{q}</summary>
+        <p>{a}</p>
+      </details>
+    ))
+  }
+</div>
+<script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+
+<style>
+  .porto-faq {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  details {
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: var(--radius);
+    background: var(--card);
+    padding: 0.9rem 1.1rem;
+  }
+  summary {
+    cursor: pointer;
+    color: var(--sl-color-white);
+    font-weight: 600;
+  }
+  details p {
+    margin: 0.6rem 0 0;
+    color: var(--sl-color-gray-2);
+    line-height: 1.6;
+  }
+</style>

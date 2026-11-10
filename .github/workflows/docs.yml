@@ -1,0 +1,110 @@
+name: Docs
+
+# Documentation site (docs-site/, Astro Starlight, docs-site/README.md).
+#
+# - Pull requests and main: type check and static build (Pagefind search, API reference generated from
+#   api/openapi.yaml, internal link check). The site is uploaded as an artifact.
+# - GitHub Pages deploy from main and release tags, only when the repository variable DOCS_PAGES is "true".
+#   The canonical origin and base path come from the repository variables DOCS_SITE_URL (e.g.
+#   https://docs.example.org) and DOCS_BASE_PATH (e.g. /porto/); when DOCS_SITE_URL is unset the Pages URL of the
+#   repository is used. No domain is hard-coded: it is not decided yet.
+#
+# Only documentation is published here, never binaries.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - "docs-site/**"
+      - "docs/screenshots/**"
+      - "api/openapi.yaml"
+      - "web/shared/src/styles/globals.css"
+      - "assets/brand/**"
+      - ".github/workflows/docs.yml"
+  pull_request:
+    paths:
+      - "docs-site/**"
+      - "docs/screenshots/**"
+      - "api/openapi.yaml"
+      - "web/shared/src/styles/globals.css"
+      - "assets/brand/**"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  NODE_VERSION: "22"
+  ASTRO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  build:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: docs-site/package-lock.json
+
+      # The theme is read from web/shared/src/styles/globals.css as a file: web/ dependencies are not needed.
+      - name: Install dependencies
+        run: npm --prefix docs-site ci
+
+      - name: Type check
+        run: make docs-check
+
+      # Pages origin and base path, used only when DOCS_SITE_URL is not set.
+      - name: Pages settings
+        id: pages
+        if: ${{ vars.DOCS_PAGES == 'true' && github.event_name != 'pull_request' && vars.DOCS_SITE_URL == '' }}
+        uses: actions/configure-pages@v5
+
+      - name: Build site (search, API reference, link check)
+        env:
+          PORTO_DOCS_VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
+          PORTO_DOCS_SITE: ${{ vars.DOCS_SITE_URL || steps.pages.outputs.origin }}
+          PORTO_DOCS_BASE: ${{ vars.DOCS_BASE_PATH || steps.pages.outputs.base_path }}
+        run: make docs-build
+
+      - name: Upload site
+        uses: actions/upload-artifact@v7
+        with:
+          name: docs-site-${{ github.sha }}
+          path: docs-site/dist
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Upload Pages artifact
+        if: ${{ vars.DOCS_PAGES == 'true' && github.event_name != 'pull_request' }}
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs-site/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: >-
+      vars.DOCS_PAGES == 'true' && github.event_name != 'pull_request' &&
+      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

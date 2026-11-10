@@ -1,0 +1,61 @@
+---
+title: Addebiti e incassi
+description: Addebiti da ogni origine, incassi e abbinamenti, rimborsi, crediti, solleciti, pagamenti online ed esportazione "da fatturare".
+sidebar:
+  order: 9
+---
+
+**Porto non emette fatture.** Calcola quanto deve pagare ogni cliente, registra incassi e rimborsi, segue scadenze e
+solleciti ed esporta gli addebiti al software di fatturazione o al commercialista, che emette le fatture.
+
+## Addebiti
+
+Un **addebito** (*Addebiti*) è un importo dovuto dal cliente. Nasce da rate dei contratti, transiti, servizi al banco,
+consumi delle utenze, oneri e spese comuni, commesse di cantiere, noleggi e diritti di subentro. Ha righe con articolo,
+quantità, prezzo, sconto e aliquota IVA, il periodo di competenza e una scadenza.
+
+- **Stato di pagamento**: aperto → parzialmente pagato → pagato, oppure annullato con motivazione.
+- **Stato di fatturazione**: da fatturare → esportato → fatturato (con numero e data della fattura esterna).
+- Un addebito esportato **non si modifica**: una correzione è un **addebito di rettifica** collegato all'originale, che
+  finisce nella prossima esportazione.
+
+## Incassi
+
+*Pagamenti* registra gli incassi (bonifico, contanti, POS, assegno, oppure online) e li **abbina** a uno o più addebiti,
+anche in parte; ciò che resta diventa **credito** del cliente. Da qui anche rimborsi (tramite il provider o manuali) e
+**cauzioni**, che non sono ricavi finché non vengono trattenute. *Saldi di apertura* registra i saldi dei clienti quando
+inizi a usare Porto.
+
+## Scadenze e solleciti
+
+- *Sospesi e scadenze* mostra addebiti e rate per scadenza e anzianità, per cliente, contratto e gruppo.
+- *Richieste di pagamento* invia al cliente un link per pagare online o le coordinate bancarie.
+- *Solleciti* esegue ogni giorno avvisi prima e alla scadenza e solleciti su più livelli (cortese, formale, diffida);
+  l'ultimo livello si approva prima dell'invio. Si escludono clienti con piano di rientro e addebiti contestati; i
+  solleciti si fermano appena il pagamento è registrato.
+- L'**estratto conto** del cliente (addebiti, incassi, saldo) si scarica in PDF.
+
+## Pagamenti online
+
+Facoltativi: senza configurazione Porto incassa con bonifico, contanti e POS. In *Pagamenti online* puoi attivare
+**Stripe** con le chiavi del tuo account (carte, wallet, addebito SEPA e mandati per le rate). Un pagamento online si
+conferma solo con il webhook firmato di Stripe ([Driver di pagamento](/sviluppo/driver-di-pagamento/)).
+
+## Esportazione "da fatturare"
+
+*Esportazioni* prende gli addebiti da fatturare di un periodo (filtrabili per cliente, origine e classe di ricavo) e li
+esporta in **Excel, CSV** (in italiano, una riga per riga di addebito con i dati fiscali del cliente, aliquota, natura,
+competenza, contratto e barca) e **PDF** riepilogativo. Gli addebiti esportati passano a "esportato": **ognuno compare in
+una sola esportazione**.
+
+Poi la **riconciliazione**: carichi il CSV o l'Excel del software di fatturazione e gli addebiti ricevono numero e data
+della fattura. Un esportatore diretto verso un software specifico è un punto di estensione, non incluso.
+
+:::note[Nota fiscale]
+Porto non trasmette nulla al Sistema di Interscambio. La conformità della configurazione (aliquote IVA, emissione dei
+documenti, conservazione) resta responsabilità del gestore e del suo consulente.
+:::
+
+*Attività ufficio* raccoglie le cose da fare che nascono da addebiti, pagamenti, solleciti e scadenze. *Impostazioni
+addebiti* contiene le scelte del marina: scadenze, articoli per gli addebiti automatici, solleciti, morosità, ricevute
+e casse.

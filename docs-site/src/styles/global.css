@@ -1,0 +1,44 @@
+/*
+ * Documentation theme: Starlight's own variables mapped onto the Porto tokens
+ * generated from web/shared/src/styles/globals.css (scripts/sync-theme.mjs),
+ * so the docs have the colours, font and radius of the panel. No new palette
+ * is defined here; Starlight's grey scale is kept.
+ */
+@import './generated/theme.css';
+
+:root {
+  --sl-font: var(--porto-font);
+  --sl-color-black: var(--background);
+  --sl-color-white: var(--foreground);
+  --sl-color-bg-nav: var(--background);
+  --sl-color-bg-sidebar: var(--background);
+  --sl-color-hairline-light: var(--border);
+  --sl-color-hairline: var(--border);
+  --sl-color-hairline-shade: var(--border);
+}
+
+/* Dark: sky on navy, links in the lighter sky of the theme. */
+:root[data-theme='dark'] {
+  --sl-color-accent-low: var(--accent);
+  --sl-color-accent: var(--primary);
+  --sl-color-accent-high: var(--link);
+  --sl-color-text-accent: var(--link);
+  --sl-color-bg-sidebar: var(--sidebar);
+}
+
+/* Light: navy brand, links in the contrast-checked blue of the theme. */
+:root[data-theme='light'] {
+  --sl-color-accent-low: var(--accent);
+  --sl-color-accent: var(--link);
+  --sl-color-accent-high: var(--primary);
+  --sl-color-text-accent: var(--link);
+  --sl-color-black: var(--background);
+  --sl-color-white: var(--foreground);
+  --sl-color-bg-nav: var(--background);
+  --sl-color-bg-sidebar: var(--sidebar);
+}
+
+/* Headings in the weight of the panel's titles. */
+.sl-markdown-content :is(h1, h2, h3) {
+  font-weight: 700;
+}

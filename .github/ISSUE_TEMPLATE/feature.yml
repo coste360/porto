@@ -1,0 +1,76 @@
+name: Richiesta di funzionalità
+description: Proponi una nuova funzionalità o un miglioramento.
+title: "[Funzionalità]: "
+labels: ["enhancement", "da-valutare"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Grazie per la proposta. Controlla prima la [roadmap](https://github.com/coste360/porto#roadmap), la [specifica](https://github.com/coste360/porto/blob/main/docs/spec/README.md) e le [decisioni aperte](https://github.com/coste360/porto/blob/main/docs/spec/33-decisioni-aperte.md): la funzionalità potrebbe essere già prevista o in attesa di una decisione.
+        Ricorda i principi del progetto: **la configurazione è fatta di dati** (mappe, categorie dei posti, listini, periodi, modelli e regole di prenotazione, non casi speciali nel codice); Porto **non emette fatture** ma esporta gli addebiti; **nessuna intelligenza artificiale** e nessun servizio esterno obbligatorio.
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema
+      description: Quale problema concreto incontri nella gestione del porto, del cantiere o del rimessaggio? Descrivi la situazione reale.
+      placeholder: "In agosto molti transiti arrivano dopo la chiusura dell'ufficio e oggi l'ormeggiatore deve..."
+    validations:
+      required: true
+  - type: textarea
+    id: soluzione
+    attributes:
+      label: Soluzione proposta
+      description: Come immagini che funzioni? Chi la usa (direzione, ufficio, ormeggiatore, cantiere, noleggio, diportista online)?
+    validations:
+      required: true
+  - type: textarea
+    id: alternative
+    attributes:
+      label: Alternative considerate
+      description: Si può già ottenere con listini, regole di prenotazione, modelli o configurazione? Come la risolvono altri strumenti?
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Mappa del porto ed editor
+        - Vista operativa, occupazione e presenze
+        - Clienti, imbarcazioni e documenti
+        - Listini e prezzi
+        - Preventivi, contratti di ormeggio e transiti
+        - Diritti d'uso, cessioni, oneri e spese condominiali
+        - Modelli, PDF e firma
+        - Addebiti, incassi ed esportazione da fatturare
+        - Cassa e corrispettivi
+        - Pagamenti online
+        - Rimessaggio e manutenzioni
+        - Cantiere
+        - Noleggio
+        - Prenotazione online, widget e scheda pubblica
+        - Sensori di occupazione
+        - Report e cruscotto
+        - Notifiche e comunicazioni
+        - Utenti, ruoli e accesso
+        - API e webhook
+        - App desktop, rete locale e telefono offline
+        - Installazione e operatività
+        - Altro
+    validations:
+      required: true
+  - type: dropdown
+    id: ruolo
+    attributes:
+      label: Chi sei
+      options:
+        - Gestore o personale di un porto turistico, marina o approdo
+        - Gestore o personale di un cantiere o rimessaggio
+        - Sviluppatore / integratore
+        - Fornitore di hosting o assistenza
+        - Altro
+  - type: checkboxes
+    id: contributo
+    attributes:
+      label: Contributo
+      options:
+        - label: Sono disponibile a contribuire all'implementazione.

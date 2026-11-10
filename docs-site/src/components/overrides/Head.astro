@@ -1,0 +1,37 @@
+---
+/**
+ * Starlight's head plus schema.org data of the home pages (frontmatter
+ * `home`): Porto as a free SoftwareApplication published by Coste360 SRL.
+ * Absolute URLs only when the canonical origin is configured.
+ */
+import Default from '@astrojs/starlight/components/Head.astro';
+import { COSTE360_URL } from '~/lib/constants.mjs';
+
+const route = Astro.locals.starlightRoute;
+const { data } = route.entry;
+const site = Astro.site;
+const abs = (path: string) =>
+  site ? new URL(`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}${path}`, site).href : undefined;
+const it = route.lang === 'it';
+
+const jsonLd = data.home
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'Porto',
+      ...(site ? { url: new URL(Astro.url.pathname, site).href, image: abs('og.png') } : {}),
+      description: data.description,
+      inLanguage: route.lang,
+      applicationCategory: 'BusinessApplication',
+      applicationSubCategory: it ? 'Gestionale per porti turistici e cantieri nautici' : 'Marina and boatyard management',
+      operatingSystem: 'Web, Windows, macOS, Linux',
+      license: 'https://spdx.org/licenses/BUSL-1.1.html',
+      isAccessibleForFree: true,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+      publisher: { '@type': 'Organization', name: 'Coste360 SRL', url: COSTE360_URL },
+    }
+  : null;
+---
+
+<Default />
+{jsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />}

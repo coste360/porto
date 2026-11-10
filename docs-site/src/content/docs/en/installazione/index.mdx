@@ -1,0 +1,55 @@
+---
+title: What Porto is
+description: What Porto does, how it is built and where it runs.
+sidebar:
+  order: 1
+---
+
+import { Screenshot } from '~/components';
+
+**Porto** is the free, source-available management system for marinas, tourist ports, berthing points and
+boatyards. It is developed by [Coste360 SRL](https://www.coste360.it/).
+
+It covers the whole marina cycle: a to-scale harbour map (quays, piers, fingers, buoy fields, dynamic areas, yards,
+sheds, parking and boxes), customers and vessels, price lists, mooring contracts and transits, berth rights and
+condominium charges, charges and payments, dry storage, boatyard, rentals, online berth booking, occupancy sensors,
+the public marina profile and reports.
+
+<Screenshot
+  name="harbour-map-payments-lens"
+  alt="Harbour map in the Payments lens: berths coloured by the payment status of the customer."
+  caption="The same map in the Payments lens."
+/>
+
+## How it is built
+
+- **One Go binary** (`porto`) with the REST API, the admin panel, the public booking page and the marina profile.
+  No mandatory external service: no Redis, queues or object storage.
+- **Database**: SQLite built in (one file in the data folder) or optional PostgreSQL, with the same schema.
+- **Desktop app** for Windows, macOS and Linux: runs the same server on the office PC and works without internet.
+- **Interface** in Italian and English, light and dark theme, usable from a phone (PWA).
+- **No artificial intelligence and no telemetry**
+  ([ADR 0008](https://github.com/coste360/porto/blob/main/docs/adr/0008-nessuna-intelligenza-artificiale.md)): the
+  marina's data stays on the computer or server you choose.
+
+## What Porto does not do
+
+- **It does not issue invoices** and sends nothing to the Italian e-invoicing exchange (SdI): it exports charges "to
+  invoice" for the marina's invoicing software ([Charges and payments](/en/gestore/addebiti-e-incassi/)).
+- **It is not a fiscal cash register**: receipts printed by Porto are courtesy receipts, not fiscal documents
+  ([Cash register and daily takings](/en/gestore/cassa-e-corrispettivi/)).
+- It ships no drivers for specific invoicing software, advanced signature providers, third-party booking portals or
+  real fiscal printer models: these are extension points ([Extensions](/en/sviluppo/estensioni/)).
+
+## Where to get it
+
+The source code is on [GitHub](https://github.com/coste360/porto); ready-made binaries are not attached to GitHub
+releases. The Docker image `ghcr.io/coste360/porto` (amd64 and arm64) is public and published with every release,
+starting from the first one; until then you build from source. The desktop packages are downloaded from Coste360.
+See [Choose how to install](/en/installazione/scegli-come-installare/).
+
+:::caution[Project status]
+All milestones of the specification (M0 to M12) are implemented and covered by automated tests; the first public
+release is being prepared. Porto is provided as is, without warranty: for a supported installation contact
+[Coste360](https://www.coste360.it/contatti).
+:::

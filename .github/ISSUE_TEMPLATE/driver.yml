@@ -1,0 +1,90 @@
+name: Nuovo driver (pagamento, esportazione, firma, sensori, canali)
+description: Proponi un nuovo driver tramite i punti di estensione di pkg/ext.
+title: "[Driver]: "
+labels: ["driver", "extension", "da-valutare"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        I driver si aggiungono tramite le interfacce pubbliche di `pkg/ext` (sezione 27.5 della [specifica](https://github.com/coste360/porto/blob/main/docs/spec/27-api-eventi-estensioni.md)), senza modificare il core.
+        Apri questa issue **prima** di scrivere codice, per concordare l'interfaccia e capire se il driver va nel core o in un modulo esterno.
+        Porto funziona senza alcun driver esterno: il driver di pagamento manuale (bonifico, cassa) c'è sempre e un transito si conferma solo dal webhook del provider o dal driver manuale. Porto non emette fatture: gli esportatori consegnano gli addebiti al software di fatturazione del gestore. Nessun driver può chiamare servizi di intelligenza artificiale ([ADR 0008](https://github.com/coste360/porto/blob/main/docs/adr/0008-nessuna-intelligenza-artificiale.md)).
+        Non incollare chiavi, credenziali, segreti dei webhook o certificati.
+        Porto è distribuito con la Business Source License 1.1 (SPDX `BUSL-1.1`, diventa AGPL-3.0 tre anni dopo il primo rilascio pubblico di ogni versione): i driver inclusi nel core sono distribuiti con la stessa licenza (vedi [CONTRIBUTING.md](https://github.com/coste360/porto/blob/main/CONTRIBUTING.md)). Offrire il driver o Porto a terzi come servizio a pagamento richiede una licenza commerciale di Coste360 SRL.
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo di driver
+      options:
+        - Pagamento online o metodo di incasso (PaymentProvider)
+        - Esportazione verso il software di fatturazione (ChargeExporter)
+        - Firma elettronica (SignatureProvider)
+        - Sensori di occupazione o gateway (SensorSource)
+        - Canale di prenotazione esterno (BookingChannel)
+        - Corrispettivi / registratore telematico (FiscalDriver)
+        - Notifiche, SMS, WhatsApp (Notifier)
+        - Autenticazione / SSO (AuthProvider)
+        - Protezione anti-bot (BotProtection)
+        - Altro
+    validations:
+      required: true
+  - type: input
+    id: servizio
+    attributes:
+      label: Servizio, dispositivo o protocollo
+      placeholder: "Satispay Business / software di fatturazione XYZ / sensori LoRaWAN del produttore XYZ / portale di prenotazione XYZ"
+    validations:
+      required: true
+  - type: textarea
+    id: motivazione
+    attributes:
+      label: Motivazione
+      description: Quanti porti, marine o cantieri lo usano? Perché è utile alla comunità?
+    validations:
+      required: true
+  - type: textarea
+    id: documentazione
+    attributes:
+      label: Documentazione tecnica
+      description: Link alla documentazione ufficiale dell'API o del protocollo, SDK disponibili, ambiente di prova (sandbox).
+    validations:
+      required: true
+  - type: textarea
+    id: capacita
+    attributes:
+      label: Capacità supportate
+      description: |
+        Pagamenti (spec 16.2): pagina di pagamento ospitata, mandato e addebito SEPA, webhook firmati, rimborsi totali o parziali, idempotenza, lettura dello stato per la riconciliazione, importi in centesimi con valuta.
+        Esportazione (spec 16.5): formato del file o API, anagrafica fiscale, aliquote, riscontro delle fatture emesse.
+        Firma (spec 15.4): firmatari, stato della richiesta, documento firmato, callback.
+        Sensori (spec 24.3): lettura periodica o push, identificativo del dispositivo, stato, distanza, batteria.
+        Canali (spec 23.2): disponibilità, tariffe, prenotazioni in ingresso, webhook.
+    validations:
+      required: true
+  - type: textarea
+    id: test
+    attributes:
+      label: Strategia di test
+      description: Come si testa senza rete e senza credenziali reali (fixture firmate, simulatore, provider finto, orologio iniettato)? I test unitari non devono richiedere rete.
+    validations:
+      required: true
+  - type: textarea
+    id: dipendenze
+    attributes:
+      label: Nuove dipendenze
+      description: Moduli Go o servizi esterni necessari, con licenza (SPDX) e motivazione. Sono ammesse MIT, BSD-2/3-Clause, Apache-2.0, ISC e MPL-2.0, compatibili sia con la BSL 1.1 sia con la AGPL-3.0.
+  - type: textarea
+    id: normativa
+    attributes:
+      label: Aspetti normativi
+      description: Per pagamenti, firma, corrispettivi ed esportazione indica certificazioni, qualifiche o vincoli normativi noti. La conformità della configurazione resta responsabilità del gestore.
+  - type: checkboxes
+    id: impegni
+    attributes:
+      label: Impegni
+      options:
+        - label: Ho letto CONTRIBUTING.md e la sezione 27.5 della specifica (punti di estensione).
+          required: true
+        - label: Accetto che il driver, se incluso nel core, sia distribuito con la licenza del progetto (BSL 1.1, poi AGPL-3.0).
+          required: true
+        - label: Sono disponibile a implementare e mantenere il driver.

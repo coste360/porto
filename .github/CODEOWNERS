@@ -1,0 +1,30 @@
+# Code owners: required reviewers (https://docs.github.com/articles/about-code-owners).
+# The last matching rule wins: keep the specific entries below the default.
+
+# Default: the whole repository.
+*                                     @massimo-me
+
+# Licence, contribution terms and brand (ADR 0007, ADR 0018).
+/LICENSE                              @massimo-me
+/CLA.md                               @massimo-me
+/TRADEMARK.md                         @massimo-me
+/assets/brand/                        @massimo-me
+
+# Specification, decisions and invariants (authoritative).
+/docs/spec/                           @massimo-me
+/docs/adr/                            @massimo-me
+/docs/invariants.md                   @massimo-me
+
+# Critical domain areas (docs/invariants.md): occupancy, geometry, pricing, contracts, charges, payments.
+/internal/domain/occupancy/           @massimo-me
+/internal/domain/layout/              @massimo-me
+/internal/domain/fit/                 @massimo-me
+/internal/domain/pricing/             @massimo-me
+/internal/domain/contract/            @massimo-me
+/internal/domain/charge/              @massimo-me
+/internal/domain/payment/             @massimo-me
+/internal/migrations/                 @massimo-me
+
+# Public surfaces: extension API and OpenAPI contract.
+/pkg/ext/                             @massimo-me
+/api/openapi.yaml                     @massimo-me

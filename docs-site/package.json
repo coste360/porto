@@ -1,0 +1,33 @@
+{
+  "name": "porto-docs",
+  "private": true,
+  "type": "module",
+  "description": "Sito della documentazione di Porto (Astro Starlight): guida del gestore, installazione, API e sviluppo.",
+  "license": "BUSL-1.1",
+  "scripts": {
+    "sync-theme": "node scripts/sync-theme.mjs",
+    "predev": "node scripts/sync-theme.mjs",
+    "dev": "astro dev",
+    "prebuild": "node scripts/sync-theme.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "precheck": "node scripts/sync-theme.mjs",
+    "check": "astro check",
+    "screenshots": "node scripts/screenshots.mjs"
+  },
+  "dependencies": {
+    "@astrojs/markdown-satteri": "^0.4.5",
+    "@astrojs/starlight": "^0.42.6",
+    "@fontsource/titillium-web": "^5.3.0",
+    "astro": "7.4.1",
+    "picomatch": "^4.0.7",
+    "satteri": "^0.11.7",
+    "starlight-links-validator": "^0.27.0",
+    "starlight-openapi": "^0.27.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/picomatch": "^4.0.3",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,62 @@
+---
+title: Operator guide
+description: How Porto's panel is organised, the roles and where to find each feature.
+sidebar:
+  order: 1
+  label: Overview
+---
+
+import { Screenshot } from '~/components';
+
+Porto's **panel** opens at `https://<your-domain>/admin/` (or in the desktop app window). It works on the office
+computer, on a tablet and on a phone, in Italian or English, with a light or dark theme. This guide quotes the Italian
+labels of the panel in italics, with the English label where it helps.
+
+<Screenshot
+  name="harbour-map-piers"
+  dark="harbour-map-dark-theme"
+  alt="Porto's panel with the navigation sidebar and the operational view of the demo marina."
+/>
+
+## Organization and marinas
+
+An **organization** (the operating company) can have several **marinas**, each with its own maps, price lists,
+contracts, users and public page. Switch marina from the selector at the top of the sidebar.
+
+## The sidebar
+
+Items appear according to the permissions of your role:
+
+| Area | Main items | Guide |
+|---|---|---|
+| Daily work | *Panoramica* (Overview), *Vista operativa* (Operations), *Calendario posti* (Berth calendar), *Transiti*, *Preventivi* (Quotes), *Contratti*, *Richieste* (Inquiries) | [Operational view](/en/gestore/vista-operativa/), [Contracts and transits](/en/gestore/contratti-e-transiti/) |
+| Online booking | *Prenotazioni online* | [Online booking](/en/gestore/prenotazione-online/) |
+| Dry storage and maintenance | *Rimessaggio*, *Manutenzioni*, *Consumi e contatori* | [Dry storage](/en/gestore/rimessaggio/), [Maintenance and utilities](/en/gestore/manutenzioni-e-utenze/) |
+| Boatyard | *Barche in lavorazione*, *Preventivi cantiere*, *Planner cantiere*, *Carico di lavoro*, *Mezzi di sollevamento*, *Approvazione ore*, *Dipendenti*, *Catalogo cantiere* | [Boatyard](/en/gestore/cantiere/) |
+| Rentals | *Planner noleggi*, *Noleggi*, *Flotta* | [Rentals](/en/gestore/noleggio/) |
+| Registry and setup | *Clienti*, *Imbarcazioni*, *Scadenze*, *Mappe*, *Listini*, *Articoli e servizi* | [Customers](/en/gestore/clienti-e-imbarcazioni/), [Map](/en/gestore/mappa-del-porto/), [Price lists](/en/gestore/listini-e-prezzi/) |
+| Contracts and rights | *Scadenzario*, *Rinnovi*, *Charter*, *Lista d'attesa*, *Diritti d'uso*, *Cessioni*, *Mandati*, *Oneri di gestione*, *Spese comuni*, *Firme*, *Comunicazioni*, *Modelli di stampa* | [Renewals, templates and signature](/en/gestore/rinnovi-modelli-e-firma/), [Berth rights](/en/gestore/diritti-d-uso-e-spese-comuni/) |
+| Charges and payments | *Addebiti*, *Pagamenti*, *Cassa*, *Corrispettivi*, *Sospesi e scadenze*, *Solleciti*, *Richieste di pagamento*, *Esportazioni* | [Charges and payments](/en/gestore/addebiti-e-incassi/), [Cash register](/en/gestore/cassa-e-corrispettivi/) |
+| Reports | *Report* | [Reports and dashboard](/en/gestore/report-e-cruscotto/) |
+| Administration | *Team*, *Chiavi API*, *Dispositivi*, *Webhook*, *Registro attività*, settings | [Team and security](/en/gestore/team-e-sicurezza/) |
+
+## Roles
+
+| Role | What it does |
+|---|---|
+| Owner | everything, including users, roles and provider credentials |
+| Management | marina setup, map, price lists, templates and all operations |
+| Office | customers, quotes, contracts, transits, payments, dry storage, rentals |
+| Accounting | charges, payments, refunds, invoicing export, berth rights and condominium |
+| Dock staff | dock: arrivals, departures, moves, readings, cash payments, desk transits |
+| Yard manager | boatyard: quotes, work orders, planner, hours; dry storage |
+| Yard worker | own hours and yard tasks, maintenance reports |
+| Rental staff | rentals, check-outs, returns and payments |
+| Read only | map and reports |
+
+A user can have different roles in different marinas. Details in [Team and security](/en/gestore/team-e-sicurezza/).
+
+## Live updates
+
+Changes made at the office, on the dock or from the booking page show up at once on the other screens, without
+reloading the page.

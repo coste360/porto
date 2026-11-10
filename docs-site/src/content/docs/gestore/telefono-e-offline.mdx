@@ -1,0 +1,40 @@
+---
+title: Telefono e offline
+description: Il pannello dal telefono per banchina, direzione, cantiere, rimessaggio e noleggio, l'abbinamento con QR e la coda offline.
+sidebar:
+  order: 19
+---
+
+import { Screenshot } from '~/components';
+
+Il pannello funziona anche dal telefono e si può **installare** come app (PWA). Le schermate si adattano al ruolo.
+
+<Screenshot name="phone-dock-today" alt="Pannello dell'ormeggiatore sul telefono: arrivi previsti di oggi con i pulsanti Arrivato e Incassa." />
+
+## Schermate per ruolo
+
+- **Banchina** (ormeggiatore): *Oggi* con arrivi e partenze previsti, barche in porto, fuori e arrivate senza
+  prenotazione; *Mappa*; *Scansiona* per il QR del transito; *Cassa*; *Altro* con rilasci e blocchi. Pulsanti
+  *Arrivato*, *Partito*, *Incassa*, foto, nota, misura della barca e *Arrivo non previsto*. Una partenza con saldo
+  scaduto è segnalata, mai bloccata.
+- **Direzione**: cruscotto, mappa e scadenze dei prossimi 30 giorni.
+- **Cantiere**: attività del giorno, timer delle ore, checklist e foto.
+- **Rimessaggio e mezzi di sollevamento**: movimenti del piazzale e calendario del giorno.
+- **Noleggio**: consegne e riconsegne con firma su schermo.
+
+Dal telefono si apre sempre anche la versione completa del pannello.
+
+## Abbinare un telefono
+
+In *Dispositivi* genera il codice o il QR di abbinamento e inquadralo con il telefono: il dispositivo riceve un token
+legato all'utente e al marina, revocabile in ogni momento. Con l'app desktop i telefoni si collegano sulla Wi-Fi del
+porto ([App desktop](/gestore/app-desktop/#rete-locale)).
+
+## Coda offline
+
+Quando la rete di banchina cade, il pannello mette in **coda** le operazioni ammesse: arrivi e partenze, foto,
+letture dei contatori, ore lavorate, esiti delle manutenzioni, checklist del noleggio e incassi. Le invia al ritorno
+della connessione, **senza doppioni**: ogni operazione porta un identificativo e il server la applica una volta sola.
+L'indicatore in alto mostra lo stato della rete e le operazioni in coda.
+
+Le altre operazioni (per esempio creare un contratto) richiedono la rete.

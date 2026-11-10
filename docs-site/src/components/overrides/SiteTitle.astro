@@ -1,0 +1,35 @@
+---
+/**
+ * Site title: the horizontal Porto logo, never redrawn (ADR 0007). The files
+ * are byte-identical copies of assets/brand/porto/outlined/ (wordmark in
+ * Titillium Web outlines): `primary` on light backgrounds,
+ * `inverted_2color` on dark ones. Shown at 2.4rem high, i.e. above the
+ * 120 px minimum width of the horizontal logo.
+ */
+const { siteTitleHref } = Astro.locals.starlightRoute;
+const logo = (file: string) => `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}brand/porto/${file}`;
+---
+
+<a href={siteTitleHref} class="site-title" translate="no">
+  <img src={logo('porto_logo_horizontal_primary.svg')} width="655" height="202" alt="Porto" class="dark:sl-hidden" />
+  <img
+    src={logo('porto_logo_horizontal_inverted_2color.svg')}
+    width="655"
+    height="202"
+    alt="Porto"
+    class="light:sl-hidden"
+  />
+</a>
+
+<style>
+  .site-title {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    text-decoration: none;
+  }
+  .site-title img {
+    height: 2.4rem;
+    width: auto;
+  }
+</style>

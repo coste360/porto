@@ -1,0 +1,54 @@
+---
+title: Cos'è Porto
+description: Che cosa fa Porto, come è fatto e dove si installa.
+sidebar:
+  order: 1
+---
+
+import { Screenshot } from '~/components';
+
+**Porto** è il gestionale gratuito, con codice sorgente disponibile, per porti turistici, marine, approdi e cantieri
+nautici. Lo sviluppa [Coste360 SRL](https://www.coste360.it/).
+
+Copre l'intero ciclo di un marina: la mappa del porto in scala reale (banchine, pontili, finger, campi boe, aree
+dinamiche, piazzali, capannoni, parcheggi e box), clienti e imbarcazioni, listini, contratti di ormeggio e transiti,
+diritti d'uso e spese condominiali, addebiti e incassi, rimessaggio, cantiere, noleggio, prenotazione online dei
+posti barca, sensori di occupazione, scheda pubblica del porto e report.
+
+<Screenshot
+  name="harbour-map-payments-lens"
+  alt="Mappa del porto nel contesto Pagamenti: i posti colorati per stato dei pagamenti del cliente."
+  caption="La stessa mappa nel contesto Pagamenti."
+/>
+
+## Com'è fatto
+
+- **Un solo binario** Go (`porto`) che contiene l'API REST, il pannello di gestione, la pagina pubblica di
+  prenotazione e la scheda del porto. Nessun servizio esterno obbligatorio: niente Redis, code o object storage.
+- **Database**: SQLite incluso (un file nella cartella dati) oppure PostgreSQL facoltativo, con lo stesso schema.
+- **App desktop** per Windows, macOS e Linux: avvia lo stesso server sul PC dell'ufficio e lavora senza internet.
+- **Interfaccia** in italiano e in inglese, tema chiaro e scuro, utilizzabile anche da telefono (PWA).
+- **Nessuna intelligenza artificiale e nessuna telemetria** ([ADR 0008](https://github.com/coste360/porto/blob/main/docs/adr/0008-nessuna-intelligenza-artificiale.md)):
+  i dati del porto restano sul computer o sul server che scegli tu.
+
+## Cosa Porto non fa
+
+- **Non emette fatture** e non trasmette nulla al Sistema di Interscambio: esporta gli addebiti "da fatturare" per il
+  software di fatturazione del gestore ([Addebiti e incassi](/gestore/addebiti-e-incassi/)).
+- **Non è un registratore telematico**: le ricevute stampate da Porto sono di cortesia, non fiscali
+  ([Cassa e corrispettivi](/gestore/cassa-e-corrispettivi/)).
+- Non include driver per software di fatturazione specifici, provider di firma avanzata, portali di prenotazione di
+  terzi o modelli reali di registratori telematici: sono punti di estensione ([Estensioni](/sviluppo/estensioni/)).
+
+## Dove si scarica
+
+Il codice sorgente è su [GitHub](https://github.com/coste360/porto); i binari pronti non vengono allegati ai rilasci
+di GitHub. L'immagine Docker `ghcr.io/coste360/porto` (amd64 e arm64) è pubblica e viene pubblicata a ogni rilascio,
+a partire dal primo; fino ad allora si compila dai sorgenti. I pacchetti dell'app desktop si scaricano da Coste360.
+Vedi [Scegli come installare](/installazione/scegli-come-installare/).
+
+:::caution[Stato del progetto]
+Tutte le milestone della specifica (da M0 a M12) sono implementate e verificate da test automatici; il primo rilascio
+pubblico è in preparazione. Porto è fornito così com'è, senza garanzie: per un'installazione con assistenza scrivi a
+[Coste360](https://www.coste360.it/contatti).
+:::

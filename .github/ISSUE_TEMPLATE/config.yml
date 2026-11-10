@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Segnalare una vulnerabilità di sicurezza
+    url: https://github.com/coste360/porto/security/advisories/new
+    about: Segnalazione privata. Non aprire issue pubbliche per le vulnerabilità (vedi SECURITY.md, security@coste360.it).
+  - name: Domande e supporto
+    url: https://github.com/coste360/porto/discussions
+    about: Domande su installazione, configurazione e uso del gestionale.
+  - name: Installazione verificata, assistenza e licenza commerciale
+    url: https://www.coste360.it/contatti
+    about: Per un'installazione con assistenza o per offrire Porto come servizio a terzi, contatta Coste360 SRL.

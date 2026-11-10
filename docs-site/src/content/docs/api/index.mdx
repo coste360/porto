@@ -1,0 +1,43 @@
+---
+title: Panoramica dell'API
+description: Le superfici dell'API REST di Porto, il contratto OpenAPI e le convenzioni comuni.
+sidebar:
+  order: 1
+---
+
+Il pannello, la pagina pubblica e l'app desktop usano solo l'API REST documentata: tutto quello che fanno si può fare
+anche da un'integrazione. Il contratto è un unico file OpenAPI 3.1,
+[`api/openapi.yaml`](https://github.com/coste360/porto/blob/main/api/openapi.yaml), fonte di verità da cui sono
+generati il server Go e il client TypeScript. Il [riferimento API](/api/riferimento/) di questo sito è generato dallo
+stesso file a ogni build.
+
+## Superfici
+
+| Prefisso | Uso | Autenticazione |
+|---|---|---|
+| `/api/admin/v1` | pannello e integrazioni | sessione del pannello, chiave API o token di dispositivo |
+| `/api/device/v1` | dispositivi abbinati (telefoni, app desktop remota) | token di dispositivo |
+| `/api/public/v1/{slug}` | pagina di prenotazione, widget, scheda del porto, area del cliente | nessuna o link magico; limiti per rete |
+| `/api/ingest/v1` | letture dei sensori | chiave del dispositivo o del gateway ([Sensori](/api/ingestione-sensori/)) |
+| `/webhooks/{payments,signature,channels}/…` | callback dei provider | firma del provider |
+| `/api/desktop/v1`, `/api/bridge/v1` | app desktop e periferiche locali | solo sull'interfaccia locale dell'app, 404 altrove |
+
+`GET /api/admin/v1/meta` restituisce versione e capacità dell'istanza.
+
+## Convenzioni
+
+- Errori `application/problem+json` (RFC 9457) con un `type` stabile ([Errori e convenzioni](/api/convenzioni/)).
+- Importi in **centesimi interi** (`*_cents`), lunghezze in **centimetri interi** (`*_cm`), percentuali in punti base
+  (`*_bp`, 1 % = 100), quantità frazionarie in millesimi (`*_milli`): l'API non usa mai numeri decimali.
+- Date di calendario `YYYY-MM-DD` nel fuso del marina, istanti RFC 3339 in UTC, id UUID, nomi JSON in `snake_case`.
+- Paginazione a cursore (`?cursor=&limit=`, predefinito 50, massimo 200).
+- `Idempotency-Key` sulle `POST` di creazione; `ETag` e `If-Match` sulle risorse versionate.
+- Ogni risorsa operativa appartiene a un marina: una risorsa di un altro marina risponde **404**, mai 403.
+
+## In questa sezione
+
+- [Autenticazione](/api/autenticazione/): sessioni, chiavi API, dispositivi.
+- [Errori e convenzioni](/api/convenzioni/): errori, idempotenza, concorrenza, paginazione.
+- [Eventi e webhook](/api/eventi-e-webhook/): webhook firmati e aggiornamenti in tempo reale.
+- [Ingestione dei sensori](/api/ingestione-sensori/): il protocollo per i produttori di sensori.
+- [Riferimento API](/api/riferimento/): tutte le operazioni, generate dal contratto.

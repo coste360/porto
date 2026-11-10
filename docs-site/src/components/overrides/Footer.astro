@@ -1,0 +1,35 @@
+---
+/**
+ * Starlight's footer (edit link, last update, pagination) followed by the
+ * product line: Porto by Coste360, licence (source available, BSL 1.1) and,
+ * when the build sets PORTO_DOCS_VERSION, the release the docs describe.
+ */
+import Default from '@astrojs/starlight/components/Footer.astro';
+import Coste360Mark from '../Coste360Mark.astro';
+
+const version = process.env.PORTO_DOCS_VERSION?.trim() ?? '';
+const t = Astro.locals.t;
+---
+
+<Default />
+<div class="product">
+  <Coste360Mark />
+  <p>{t('porto.footer.product')}</p>
+  {version && <p>{t('porto.footer.version', { version })}</p>}
+</div>
+
+<style>
+  .product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 2rem;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    text-align: center;
+  }
+  .product p {
+    margin: 0;
+  }
+</style>

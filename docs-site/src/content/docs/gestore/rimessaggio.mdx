@@ -1,0 +1,45 @@
+---
+title: Rimessaggio
+description: Contratti di rimessaggio, planner in scala di piazzali e capannoni, ipotesi, accessibilità delle uscite e ottimizzatore.
+sidebar:
+  order: 13
+---
+
+import { Screenshot } from '~/components';
+
+*Rimessaggio* elenca le aree di piazzale e capannone con la superficie occupata, le barche presenti e le uscite bloccate
+dei prossimi 30 giorni.
+
+<Screenshot name="dry-storage-shed-planner" alt="Pianificazione di un capannone in scala, con le barche trascinabili, la lente di accessibilità delle uscite e la cronologia sotto la pianta." caption="La pianta del capannone in scala con la cronologia sotto." />
+
+## Contratti di rimessaggio
+
+Il contratto di rimessaggio mette una barca a terra su piazzale o in capannone per un periodo (invernale, annuale, a
+mesi), con invaso proprio o del marina e servizi collegati (alaggio, varo, lavaggio…). Il prezzo viene dal listino (al
+m², a fascia, a mese, per tipo di area). La barca occupa le celle del suo ingombro: due barche non possono stare sullo
+stesso spazio nello stesso giorno.
+
+## Planner
+
+Per ogni area: la **pianta** in scala alla data scelta e la **linea del tempo** con entrata e uscita di ogni barca.
+Scorrendo la data vedi arrivi e uscite. Le barche si trascinano e si ruotano, anche da tastiera; si lavora in bozza con
+*Salva* e *Ripristina*, con il riquadro delle barche **da collocare**.
+
+## Accessibilità delle uscite
+
+Una barca in un capannone pieno può restare intrappolata. Porto verifica per ogni barca se esiste un percorso libero
+fino a un varco abbastanza largo e, se no, quali barche la bloccano. Un'uscita prevista di una barca bloccata è un
+**avviso** nel planner e nell'elenco dei movimenti.
+
+## Ipotesi e ottimizzatore
+
+- Un'**ipotesi** è una copia di lavoro delle collocazioni di un'area: si modifica liberamente **senza toccare lo stato
+  reale**, con gli indicatori (superficie usata, barche bloccate, movimentazioni necessarie, barche da collocare) e il
+  confronto con lo stato reale o con un'altra ipotesi.
+- L'**ottimizzatore** propone una disposizione che colloca tutte le barche, tiene vicino ai varchi quelle che escono
+  prima, riduce le movimentazioni e lascia libera la superficie più ampia possibile. È una proposta, mai applicata da
+  sola.
+- **Applicare** un'ipotesi esegue tutte le mosse insieme, ricontrollate sullo stato attuale: un solo conflitto annulla
+  tutto. Le mosse applicate formano la lista dei movimenti per il piazzale, consultabile dal telefono.
+
+Alaggi e vari si prenotano sui [mezzi di sollevamento](/gestore/cantiere/#mezzi-di-sollevamento).

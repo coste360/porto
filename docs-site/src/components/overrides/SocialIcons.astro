@@ -1,0 +1,21 @@
+---
+/**
+ * Starlight's social links preceded by the maker ("di Coste360.it"). Starlight
+ * renders this component both in the header (wide screens) and in the footer
+ * of the mobile menu, so the credit is visible at every width without
+ * overriding the header layout.
+ */
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+import Coste360Mark from '../Coste360Mark.astro';
+---
+
+<span class="porto-maker sl-flex"><Coste360Mark /></span>
+<Default />
+
+<style>
+  .porto-maker {
+    align-items: center;
+    padding-inline-end: 1rem;
+    border-inline-end: 1px solid var(--sl-color-gray-5);
+  }
+</style>

@@ -1,0 +1,38 @@
+---
+/**
+ * "di Coste360.it": the maker of Porto (ADR 0007, D1), linked to the company
+ * site. Shows the company's original logotype unchanged
+ * (public/brand/coste360/logo-{primary,white}.svg, byte-identical copies of
+ * assets/brand/coste360/, checked by scripts/sync-theme.mjs): primary on the
+ * light theme, white on the dark one. Never redrawn or recoloured.
+ */
+import { COSTE360_URL } from '~/lib/constants.mjs';
+
+const brand = (file: string) => `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}brand/coste360/${file}`;
+const t = Astro.locals.t;
+---
+
+<a href={COSTE360_URL} class="maker" title={t('porto.header.makerTitle')} rel="noopener noreferrer">
+  <span class="maker-by">{t('porto.header.by')}</span>
+  <img src={brand('logo-primary.svg')} alt="Coste360.it" width="84" height="21" class="dark:sl-hidden" />
+  <img src={brand('logo-white.svg')} alt="Coste360.it" width="84" height="21" class="light:sl-hidden" />
+</a>
+
+<style>
+  .maker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .maker:hover {
+    color: var(--sl-color-white);
+  }
+  .maker img {
+    height: 1.05rem;
+    width: auto;
+  }
+</style>
