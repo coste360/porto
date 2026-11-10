@@ -27,7 +27,7 @@ mkdir -p "$appdir/usr/bin" "$appdir/usr/share/metainfo" "$appdir/usr/share/icons
 # webview_go asks pkg-config for webkit2gtk-4.0, which current distributions (Ubuntu 24.04) no longer ship; 4.1 has
 # the same API for what the window uses. A local alias lets the window build link against 4.1.
 if ! pkg-config --exists webkit2gtk-4.0; then
-	pcdir="$work/pkgconfig"
+	pcdir="$(cd "$work" && pwd)/pkgconfig"
 	mkdir -p "$pcdir"
 	cat > "$pcdir/webkit2gtk-4.0.pc" <<PC
 Name: webkit2gtk-4.0
