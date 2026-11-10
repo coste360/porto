@@ -44,6 +44,11 @@ type syncBuffer struct {
 	buf bytes.Buffer
 }
 
+// clientTimeout bounds one request of the acceptance clients. The scenarios check behaviour, not latency (the
+// performance budgets have their own tests): on a shared CI runner, with every scenario of the package running on
+// PostgreSQL at once, a large request such as saving a whole shed layout can take well over 10 seconds.
+const clientTimeout = 60 * time.Second
+
 func (b *syncBuffer) Write(p []byte) (int, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -106,11 +111,11 @@ type client struct {
 
 func (h *harness) cookieClient() *client {
 	jar, _ := cookiejar.New(nil)
-	return &client{h: h, http: &http.Client{Jar: jar, Timeout: 10 * time.Second}}
+	return &client{h: h, http: &http.Client{Jar: jar, Timeout: clientTimeout}}
 }
 
 func (h *harness) bearerClient(token string) *client {
-	return &client{h: h, http: &http.Client{Timeout: 10 * time.Second}, bearer: token}
+	return &client{h: h, http: &http.Client{Timeout: clientTimeout}, bearer: token}
 }
 
 type response struct {
