@@ -627,6 +627,13 @@ M0 — Fondamenta (spec 32.3):
 
 ### Changed
 
+- README slimmed to about 100 lines (what Porto is, presentation video, downloads, local quick try, documentation
+  links, contributing and security, licence summary, English section); the details moved to docs.portomarina.app
+  in Italian and English: feature status, known limits, roadmap and accessibility in `installazione/` (Cos'è Porto),
+  the FAQ in the new `installazione/domande-frequenti` page, the practical licence cases in `sviluppo/licenza`, and
+  the dev-only desktop variables `PORTO_UPDATE_URL`, `PORTO_DESKTOP_LAN_LOOPBACK`, `PORTO_DESKTOP_FIRST_RUN_FILE`
+  in `installazione/configurazione`. Video poster in `assets/readme/video-poster.jpg`; the feature request template
+  links the roadmap on the docs site.
 - Licence: Business Source License 1.1 with an Additional Use Grant for marinas, berthing points, boatyards and dry-storage facilities operated directly, converting to AGPL-3.0-or-later three years after each release (decision D2); README rewritten for the public release with screenshots in `docs/screenshots/`.
 
 Polish after M10 (demo review):

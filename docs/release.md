@@ -61,7 +61,8 @@ source.
    ```
 
    A failed build is not retried by itself: fix the cause and start `Build` by hand with the tag.
-8. **Announce**: release notes link, README status table if a feature moved, and the public demo (deploy/demo)
+8. **Announce**: release notes link, the feature status table of the docs site
+   (`docs-site/src/content/docs/installazione/index.mdx` and its English twin) if a feature moved, and the public demo (deploy/demo)
    picks the new image at its next nightly reset when it follows `latest`.
 
 ## The image on GHCR

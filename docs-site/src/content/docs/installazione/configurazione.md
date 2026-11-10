@@ -68,6 +68,9 @@ Da non usare in produzione.
 | `PORTO_DEV` | `false` | Modalità sviluppo: chiave generata in `PORTO_DATA_DIR/secret.key`, cookie senza `Secure` su `http`, log testuali |
 | `PORTO_WEBHOOKS_ALLOW_PRIVATE` | `false` | Webhook verso indirizzi privati e `http` |
 | `PORTO_DEV_FAKE_CHANNEL`, `PORTO_STRIPE_API_BASE` | `false`, vuoto | Solo con `PORTO_DEV=true`: canale di prenotazione finto e API Stripe finta per i test |
+| `PORTO_UPDATE_URL` | vuoto | App desktop, solo con `PORTO_DEV=true`: URL del manifest della versione al posto di quello di Coste360 |
+| `PORTO_DESKTOP_LAN_LOOPBACK` | `false` | App desktop, solo con `PORTO_DEV=true`: la rete locale ascolta su `127.0.0.1` (test) |
+| `PORTO_DESKTOP_FIRST_RUN_FILE` | `false` | App desktop, solo con `PORTO_DEV=true`: scrive in un file della cartella dati l'URL del primo avvio (test) |
 
 ## File compose
 
