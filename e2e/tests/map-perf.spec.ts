@@ -36,8 +36,9 @@ test('operational view: 3 040 berths, 2 000 occupied, pans within the frame budg
 }) => {
   test.setTimeout(15 * 60_000);
   const { marinaId, mapId } = await perfHarbour(page);
-  // Transits are priced on creation (no_price otherwise); the perf job runs on its own server.
-  await setupPrices(page, marinaId);
+  // Transits are priced on creation (no_price otherwise); the perf job runs on its own server. A retry (CI) runs on
+  // the same server, where the price lists of the first attempt are still active: creating them again is a 409.
+  if (test.info().retry === 0) await setupPrices(page, marinaId);
   await seedPerfOccupancy(page, marinaId, mapId, 2000);
   await openOps(page, marinaId, mapId, { lens: 'occupancy', mode: 'scale' });
   await expect(page.getByTestId('ops-legend-count-transit')).toHaveText('2000', {

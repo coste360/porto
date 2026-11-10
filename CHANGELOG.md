@@ -661,6 +661,9 @@ Polish after M10 (demo review):
 
 ### Fixed
 
+- Security: `golang.org/x/net` 0.62.0 (CVE-2026-78661, denial of service in `x/net/html`).
+- CI on GitHub runners: the integration suite runs in four parallel shards (it took longer than one job's limit),
+  and a retried map performance run no longer fails on the price lists created by the first attempt.
 - Renewal campaigns: the proposals table showed empty Cliente and Barca columns, because the API sent only the
   customer id. Proposals now carry the customer's display name (with `customers.read`) and the boat.
 - Demo seed: transits leaving today stay expected instead of being marked departed, so the dock has departures to
