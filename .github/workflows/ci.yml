@@ -1,9 +1,14 @@
 name: CI
 
+# Two levels (docs/release.md): pull requests run the quick checks (about 10 minutes, integration tests on SQLite
+# without the four slowest packages); main, the nightly schedule and manual runs add the full suite on SQLite and
+# PostgreSQL, the race tests and the map performance budget. A release is cut only from a main with a green full run.
 on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "17 2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -11,7 +16,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Only pull requests cancel an older run: on main every merge keeps its full run.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   GOLANGCI_LINT_VERSION: v2.15.0
@@ -49,11 +55,32 @@ jobs:
       - name: govulncheck
         run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 
+  # Pull requests only: integration tests on SQLite (no PORTO_TEST_POSTGRES_URL) for every package except the four
+  # slowest ones, which the full run covers on both dialects.
+  go-integration-quick:
+    name: Go integration (SQLite, quick)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Integration tests (SQLite)
+        run: |
+          pkgs="$(go list ./... | grep -vE '/internal/(app|acceptance|domain/report|backup)$')"
+          go test -tags=integration -timeout 20m $pkgs
+
   # The integration suite runs every test on SQLite and PostgreSQL. On a hosted runner it takes well over an hour in
   # one job, so it is split into shards by the slowest packages (measured with `make test-db`); `rest` is every other
   # package, so a new package is always covered.
   go-integration:
     name: Go integration (${{ matrix.shard }})
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:
@@ -112,6 +139,7 @@ jobs:
 
   go-race:
     name: Go concurrency tests (race detector)
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     services:
@@ -344,6 +372,7 @@ jobs:
 
   e2e-perf:
     name: Map performance budget (Playwright)
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

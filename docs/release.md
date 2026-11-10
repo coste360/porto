@@ -32,7 +32,8 @@ source.
 
 ## Steps
 
-1. **Freeze.** `main` is green in CI (`ci.yml`, and `desktop.yml` when desktop files changed). Locally:
+1. **Freeze.** The last run of `ci.yml` on `main` (push, nightly or manual: the full suite, not the quick
+   pull request checks) is green, and `desktop.yml` too when desktop files changed. Locally:
    `make check-full`.
 2. **API version.** Set `info.version` in `api/openapi.yaml` to `X.Y.Z` and run `make gen` (API first: never edit
    the generated files). Commit with the changelog.
