@@ -2,7 +2,8 @@
 /**
  * Starlight's head plus schema.org data of the home pages (frontmatter
  * `home`): Porto as a free SoftwareApplication published by Coste360 SRL.
- * Absolute URLs only when the canonical origin is configured.
+ * Absolute URLs only when the canonical origin is configured. Every page also
+ * loads the visit statistics (src/scripts/analytics.ts).
  */
 import Default from '@astrojs/starlight/components/Head.astro';
 import { COSTE360_URL } from '~/lib/constants.mjs';
@@ -35,3 +36,6 @@ const jsonLd = data.home
 
 <Default />
 {jsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />}
+<script>
+  import '~/scripts/analytics';
+</script>
