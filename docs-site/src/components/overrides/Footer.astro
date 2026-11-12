@@ -2,13 +2,16 @@
 /**
  * Starlight's footer (edit link, last update, pagination) followed by the
  * product line: Porto by Coste360, licence (source available, BSL 1.1) and,
- * when the build sets PORTO_DOCS_VERSION, the release the docs describe.
+ * when the build sets PORTO_DOCS_VERSION, the release the docs describe, and
+ * the privacy notice (portomarina.app's, which covers this site).
  */
 import Default from '@astrojs/starlight/components/Footer.astro';
 import Coste360Mark from '../Coste360Mark.astro';
+import { PRIVACY_URL } from '~/lib/constants.mjs';
 
 const version = process.env.PORTO_DOCS_VERSION?.trim() ?? '';
 const t = Astro.locals.t;
+const privacy = PRIVACY_URL[Astro.locals.starlightRoute.lang === 'en' ? 'en' : 'it'];
 ---
 
 <Default />
@@ -16,6 +19,7 @@ const t = Astro.locals.t;
   <Coste360Mark />
   <p>{t('porto.footer.product')}</p>
   {version && <p>{t('porto.footer.version', { version })}</p>}
+  <p><a href={privacy}>{t('porto.footer.privacy')}</a></p>
 </div>
 
 <style>
@@ -31,5 +35,8 @@ const t = Astro.locals.t;
   }
   .product p {
     margin: 0;
+  }
+  .product a {
+    color: inherit;
   }
 </style>
