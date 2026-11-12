@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+
+- Documentation site: visits counted with Matomo on Coste360's own server (analytics.coste360.it), without cookies
+  and honouring Do Not Track, only on the published origin; the footer links the privacy notice of portomarina.app.
+  The Porto program itself still has no telemetry.
+
 ### Fixed
 
 - Tests: the acceptance clients wait up to 60 s (a full-season shed layout save takes over 10 s on a CI runner,
