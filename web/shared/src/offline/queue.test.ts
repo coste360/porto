@@ -11,6 +11,7 @@ import {
   resetQueueMemory,
   resolvePath,
   retryOpAsNew,
+  saveOps,
   validateNewOp,
 } from './queue';
 import { resetDbForTests } from './db';
@@ -198,6 +199,26 @@ describe('enqueue', () => {
     const blob = await readBlob(photo.id);
     expect(new Uint8Array(blob!.bytes)).toEqual(new Uint8Array([0xff, 0xd8, 0xff, 1, 2, 3]));
     expect(getOps()).toHaveLength(2);
+  });
+
+  it('keeps every op of concurrent enqueues in the snapshot (two photos taken in a row)', async () => {
+    const parent = await enqueueOp(presenceNewOp('v1'));
+    const [a, b] = await Promise.all([
+      enqueueOp(photoNewOp('v1', parent.id)),
+      enqueueOp(photoNewOp('v1', parent.id)),
+    ]);
+    const ids = getOps().map((o) => o.id);
+    expect(ids).toContain(a.id);
+    expect(ids).toContain(b.id);
+    expect(ids).toHaveLength(3);
+  });
+
+  it('keeps a state saved during a reload (the reload does not bring back the older copy)', async () => {
+    const q = await enqueueOp(presenceNewOp('v1'));
+    const reload = reloadOps();
+    await saveOps([{ ...q, state: 'done' }]);
+    await reload;
+    expect(getOps().find((o) => o.id === q.id)?.state).toBe('done');
   });
 
   it('retries as a new operation with a new key and moves the dependents', async () => {

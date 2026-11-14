@@ -30,6 +30,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Emails with a generated PDF attached (quotes, contracts, renewals) no longer wait a minute when the mail is
   picked up before the PDF is ready: the message waits for the document without counting a failed attempt and goes
   out as soon as the document is ready.
+- Phone offline queue: two photos taken in a row (rental check-out and check-in, presences) are both kept. A
+  concurrent save could drop an operation from the in-memory queue or bring back an older copy of one already sent,
+  which was then sent again without its photo (deleted after the first send) and ended as a conflict, the photo
+  lost.
 - Demo: the yard always has hours waiting for approval today; seeded early in the morning, today's first
   assignments were too short to log and left none.
 - Tests: no wait on a fixed time or latency bound any more (SSE proxy, job runner, offline replay, live updates in
