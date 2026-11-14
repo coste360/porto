@@ -54,8 +54,9 @@ test('sensors map: live occupied berth, arrival proposal confirmed on the dock p
   await expect(page.getByTestId('sensors-legend-count-occupied')).toHaveText('0');
   const res = await postSignedReadings(request, created.data.key, readingPair(ext, 'occupied'));
   expect(res.accepted).toBe(2);
-  // Live, without a reload: the SSE stream invalidates the Sensori context.
-  await expect(page.getByTestId('sensors-legend-count-occupied')).toHaveText('1', { timeout: 2_000 });
+  // Live, without a reload: the SSE stream invalidates the Sensori context. The page is never reloaded, so the
+  // count can only change through the stream; no latency bound (machine speed is not under test).
+  await expect(page.getByTestId('sensors-legend-count-occupied')).toHaveText('1');
 
   // The reconciliation (woken by the ingestion) proposes the arrival: inbox, then the dock phone at 390 px.
   await page.goto(`/admin/m/${marinaId}/sensors`);

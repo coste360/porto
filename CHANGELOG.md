@@ -12,8 +12,33 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   and honouring Do Not Track, only on the published origin; the footer links the privacy notice of portomarina.app.
   The Porto program itself still has no telemetry.
 
+### Changed
+
+- CI on two levels (ADR 0019): pull requests run the essential checks (lint, unit tests, SQLite integration without
+  the slowest packages, web, generated code, licences, Docker image and smoke test, the essential Playwright specs
+  of `make e2e-smoke`); every merge on main, the nightly run and manual runs add PostgreSQL, the race tests, every
+  Playwright spec (server and desktop), govulncheck and Trivy. Wall-clock budgets and the M12 load test moved to the
+  new Performance workflow (`perf.yml`, `make test-perf`, `make e2e-perf`), which never gates a merge or a release:
+  no test of the gates fails on a duration any more. One re-run of the single failed test, never of the job:
+  Playwright `retries: 1` in CI, Go integration and race tests on main through `scripts/gotest.sh` (gotestsum,
+  `GOTEST_RERUN_FAILS=1`), none on pull requests.
+
 ### Fixed
 
+- Sensors: an ingestion and a device change (move, unbind) at the same moment no longer deadlock on PostgreSQL
+  (the device row is locked FOR NO KEY UPDATE, which does not conflict with the foreign keys of the readings).
+- Emails with a generated PDF attached (quotes, contracts, renewals) no longer wait a minute when the mail is
+  picked up before the PDF is ready: the message waits for the document without counting a failed attempt and goes
+  out as soon as the document is ready.
+- Phone offline queue: two photos taken in a row (rental check-out and check-in, presences) are both kept. A
+  concurrent save could drop an operation from the in-memory queue or bring back an older copy of one already sent,
+  which was then sent again without its photo (deleted after the first send) and ended as a conflict, the photo
+  lost.
+- Demo: the yard always has hours waiting for approval today; seeded early in the morning, today's first
+  assignments were too short to log and left none.
+- Tests: no wait on a fixed time or latency bound any more (SSE proxy, job runner, offline replay, live updates in
+  the e2e specs, blocked embed); the storage optimizer acceptance stops at its iteration budget, not at a deadline;
+  the demo seed tests run at a fixed moment instead of the real clock; the race test run has an explicit timeout.
 - Tests: the acceptance clients wait up to 60 s (a full-season shed layout save takes over 10 s on a CI runner,
   issue #15), and the phone dock e2e test reads the presences of the marina's day, not the UTC one (it failed
   between midnight and 1 a.m. in Italy).

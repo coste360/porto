@@ -8,7 +8,6 @@ import (
 	"encoding/base64"
 	"log/slog"
 	"testing"
-	"time"
 
 	"github.com/coste360/porto/internal/app"
 	"github.com/coste360/porto/internal/calendar"
@@ -35,7 +34,7 @@ func TestSeed_DemoM4Coherent(t *testing.T) {
 			t.Fatal(err)
 		}
 		a, err := app.NewWithOptions(context.Background(), cfg, "test", ext.Extensions{}, slog.New(slog.DiscardHandler),
-			app.Options{DB: db, Argon2: auth.TestArgon2Params, Transport: &fixture.Mailbox{}})
+			app.Options{DB: db, Argon2: auth.TestArgon2Params, Transport: &fixture.Mailbox{}, Clock: seedTestClock()})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -57,7 +56,7 @@ func TestSeed_DemoM4Coherent(t *testing.T) {
 			t.Fatalf("contract invariant violations: %+v", vs)
 		}
 		loc, _ := calendar.LoadLocation("Europe/Rome")
-		if vs, err = store.CheckOccupancyInvariants(ctx, db.DB, res.MarinaID, calendar.In(time.Now(), loc)); err != nil {
+		if vs, err = store.CheckOccupancyInvariants(ctx, db.DB, res.MarinaID, calendar.In(seedTestNow, loc)); err != nil {
 			t.Fatal(err)
 		} else if len(vs) != 0 {
 			t.Fatalf("occupancy invariant violations: %+v", vs)

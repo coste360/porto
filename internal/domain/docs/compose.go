@@ -237,6 +237,12 @@ func (s *Service) RenderPending(ctx context.Context, documentID string) error {
 	for _, h := range s.readyHooks() {
 		h(ctx, row.MarinaID, row.ID)
 	}
+	// Emails queued before their attachment was ready go out now, not at their safety-net recheck.
+	if s.d.Notify != nil {
+		if err := s.d.Notify.AttachmentReady(ctx, row.MarinaID); err != nil {
+			s.d.Log.WarnContext(ctx, "document ready: waking emails failed", "document_id", row.ID, "error", err)
+		}
+	}
 	return nil
 }
 

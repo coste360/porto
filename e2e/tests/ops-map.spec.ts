@@ -137,9 +137,8 @@ test.describe('operational map', () => {
       departure: dayFromToday(1),
       confirm: true,
     });
-    await expect(lensFill(page, b3!.id)).toHaveAttribute('data-lens', 'transit', {
-      timeout: 3_000,
-    });
+    // Live through SSE (the page is not reloaded); no latency bound.
+    await expect(lensFill(page, b3!.id)).toHaveAttribute('data-lens', 'transit');
     await other.close();
 
     // List alternative by structure.

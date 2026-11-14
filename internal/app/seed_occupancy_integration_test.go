@@ -8,7 +8,6 @@ import (
 	"encoding/base64"
 	"log/slog"
 	"testing"
-	"time"
 
 	"github.com/coste360/porto/internal/app"
 	"github.com/coste360/porto/internal/calendar"
@@ -34,7 +33,7 @@ func TestSeed_DemoOccupancyCoherent(t *testing.T) {
 			t.Fatal(err)
 		}
 		a, err := app.NewWithOptions(context.Background(), cfg, "test", ext.Extensions{}, slog.New(slog.DiscardHandler),
-			app.Options{DB: db, Argon2: auth.TestArgon2Params, Transport: &fixture.Mailbox{}})
+			app.Options{DB: db, Argon2: auth.TestArgon2Params, Transport: &fixture.Mailbox{}, Clock: seedTestClock()})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -50,7 +49,7 @@ func TestSeed_DemoOccupancyCoherent(t *testing.T) {
 			t.Fatalf("seed counts %+v", res)
 		}
 		loc, _ := calendar.LoadLocation("Europe/Rome")
-		today := calendar.In(time.Now(), loc)
+		today := calendar.In(seedTestNow, loc)
 		vs, err := store.CheckOccupancyInvariants(ctx, db.DB, res.MarinaID, today)
 		if err != nil {
 			t.Fatal(err)
