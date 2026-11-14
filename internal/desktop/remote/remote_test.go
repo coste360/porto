@@ -197,10 +197,13 @@ type upstream struct {
 	headers  []http.Header
 	revoked  atomic.Bool
 	indexVer atomic.Int32
+	// sseAck receives one value from the SSE test each time it has read an event: the stream sends the next event
+	// only then, so the test proves per-event flushing without measuring time.
+	sseAck chan struct{}
 }
 
 func newUpstream(t *testing.T) *upstream {
-	u := &upstream{}
+	u := &upstream{sseAck: make(chan struct{})}
 	u.indexVer.Store(1)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/admin/v1/echo", func(w http.ResponseWriter, r *http.Request) {
@@ -234,10 +237,13 @@ func newUpstream(t *testing.T) *upstream {
 		for i := range 3 {
 			_, _ = io.WriteString(w, "data: "+strconv.Itoa(i)+"\n\n")
 			fl.Flush()
+			if i == 2 {
+				return
+			}
 			select {
 			case <-r.Context().Done():
 				return
-			case <-time.After(50 * time.Millisecond):
+			case <-u.sseAck:
 			}
 		}
 	})
@@ -450,29 +456,43 @@ func TestRemoteProxy_TokenNeverReachesPage(t *testing.T) {
 	}
 }
 
+// TestRemoteProxy_SSEStreams: the proxy flushes every event as it arrives. The upstream sends an event and waits for
+// the test to have read it before sending the next one, so a proxy that buffered the stream would never deliver the
+// first event: the read deadline is only a guard against hanging, not a measure.
 func TestRemoteProxy_SSEStreams(t *testing.T) {
 	e := newProxyEnv(t)
 	e.enter(t)
-	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, e.base+"/api/admin/v1/events", nil)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, e.base+"/api/admin/v1/events", nil)
 	res, err := e.client.Do(req)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer res.Body.Close()
 	sc := bufio.NewScanner(res.Body)
-	start := time.Now()
-	var first time.Duration
 	n := 0
 	for sc.Scan() {
-		if strings.HasPrefix(sc.Text(), "data: ") {
-			if n == 0 {
-				first = time.Since(start)
+		if !strings.HasPrefix(sc.Text(), "data: ") {
+			continue
+		}
+		if want := "data: " + strconv.Itoa(n); sc.Text() != want {
+			t.Fatalf("event %d: %q, want %q", n, sc.Text(), want)
+		}
+		n++
+		if n < 3 {
+			select {
+			case e.up.sseAck <- struct{}{}:
+			case <-ctx.Done():
+				t.Fatalf("upstream never asked for event %d", n)
 			}
-			n++
 		}
 	}
-	if n != 3 || first > 90*time.Millisecond {
-		t.Fatalf("events %d, first after %v (not flushed per event)", n, first)
+	if ctx.Err() != nil {
+		t.Fatalf("events %d before the guard expired: the proxy does not flush per event", n)
+	}
+	if n != 3 {
+		t.Fatalf("events %d, want 3", n)
 	}
 }
 

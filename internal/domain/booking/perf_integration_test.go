@@ -19,17 +19,16 @@ import (
 	"github.com/coste360/porto/internal/domain/booking"
 	"github.com/coste360/porto/internal/store"
 	"github.com/coste360/porto/internal/testutil/fixture"
+	"github.com/coste360/porto/internal/testutil/perfbudget"
 	"github.com/coste360/porto/internal/testutil/testdb"
 	"github.com/coste360/porto/pkg/ext"
 )
 
 // TestBooking_AvailabilityBudget (m8-plan §3.2): on the demo seed with every berth sold online, the public
-// availability search answers with p95 < 300 ms (SQLite; × 3 under -race; PostgreSQL is measured and logged only).
-// Skipped with -short.
+// availability search answers with p95 < 300 ms (SQLite; × 3 under -race; PostgreSQL is measured and logged only;
+// runs only with PORTO_PERF_BUDGET=1, perfbudget.Require: make test-perf, Performance workflow).
 func TestBooking_AvailabilityBudget(t *testing.T) {
-	if testing.Short() {
-		t.Skip("performance budget")
-	}
+	perfbudget.Require(t)
 	testdb.Run(t, func(t *testing.T, db *store.DB) {
 		now := time.Date(2026, time.May, 4, 8, 0, 0, 0, time.UTC)
 		key := make([]byte, 32)
@@ -106,8 +105,8 @@ func TestBooking_AvailabilityBudget(t *testing.T) {
 			limit *= 3
 		}
 		t.Logf("availability p50 %v p95 %v max %v (%d runs, %d with availability)", took[len(took)/2], p95, took[len(took)-1], runs, available)
-		if !db.IsPostgres() && p95 > limit {
-			t.Errorf("availability p95 %v, budget %v", p95, limit)
+		if !db.IsPostgres() {
+			perfbudget.Check(t, "availability p95", p95, limit)
 		}
 	})
 }

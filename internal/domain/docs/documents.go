@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"image"
 	_ "image/jpeg" // logo decoding
@@ -98,7 +99,8 @@ func (s *Service) GetDocumentRow(ctx context.Context, db bun.IDB, scope store.Ma
 }
 
 // LoadAttachment implements notify.AttachmentLoader: a ready generated document or a stored file of the marina.
-// A document still rendering is an error, so the email is retried later.
+// A document still pending or rendering is notify.ErrAttachmentPending: the email waits for it (the render wakes it,
+// renderRow's ready hooks); a failed document is an ordinary error, retried and eventually given up.
 func (s *Service) LoadAttachment(ctx context.Context, marinaID string, ref notify.AttachmentRef) (*notify.Attachment, error) {
 	scope, err := store.SystemMarinaScope(ctx, s.d.DB.DB, marinaID)
 	if err != nil {
@@ -106,6 +108,9 @@ func (s *Service) LoadAttachment(ctx context.Context, marinaID string, ref notif
 	}
 	if ref.DocumentID != "" {
 		b, row, err := s.DocumentPDF(ctx, s.d.DB.DB, scope, ref.DocumentID)
+		if errors.Is(err, ErrNotReady) && row != nil && (row.Status == store.DocPending || row.Status == store.DocRendering) {
+			return nil, fmt.Errorf("%w: %w", notify.ErrAttachmentPending, err)
+		}
 		if err != nil {
 			return nil, err
 		}

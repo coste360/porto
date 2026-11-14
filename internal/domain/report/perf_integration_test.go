@@ -11,16 +11,16 @@ import (
 	"github.com/coste360/porto/internal/domain/report"
 	"github.com/coste360/porto/internal/domain/report/calc"
 	"github.com/coste360/porto/internal/store"
+	"github.com/coste360/porto/internal/testutil/perfbudget"
 	"github.com/coste360/porto/internal/testutil/testdb"
 )
 
 // TestReport_PerformanceBudget (m7-plan §11.5): on the demo data, a 366-day period, first page: every report
 // ≤ 500 ms (occupancy, efficiency and waste with suggestions ≤ 1 s), the dashboard with the previous year ≤ 2 s,
-// the occupancy export of the year ≤ 2 s. Budgets × 3 under -race; PostgreSQL is measured and logged only.
+// the occupancy export of the year ≤ 2 s. Budgets × 3 under -race; PostgreSQL is measured and logged only. The
+// test runs only with PORTO_PERF_BUDGET=1 (perfbudget.Require: make test-perf, Performance workflow).
 func TestReport_PerformanceBudget(t *testing.T) {
-	if testing.Short() {
-		t.Skip("performance budget")
-	}
+	perfbudget.Require(t)
 	testdb.Run(t, func(t *testing.T, db *store.DB) {
 		d := seedDemo(t, db)
 		p := d.principal(auth.RoleOwner)
@@ -38,10 +38,11 @@ func TestReport_PerformanceBudget(t *testing.T) {
 				t.Fatalf("%s: %v", name, err)
 			}
 			took := time.Since(start)
-			t.Logf("%s: %v", name, took)
-			if !db.IsPostgres() && took > limit*factor {
-				t.Errorf("%s took %v, budget %v", name, took, limit*factor)
+			if db.IsPostgres() {
+				t.Logf("%s: %v", name, took)
+				return
 			}
+			perfbudget.Check(t, name, took, limit*factor)
 		}
 		q := report.Params{From: from, To: to}
 		slow := map[report.Key]bool{calc.KeyOccupancy: true, calc.KeyEfficiency: true, calc.KeyAllocationWaste: true}

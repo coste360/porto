@@ -88,9 +88,10 @@ func (c *client) send(method, path string, body []byte, contentType string, head
 	return response{status: res.StatusCode, header: res.Header, body: b}, nil
 }
 
-// replayUntilDone sends the same request until it is not 409 idempotency_in_progress.
+// replayUntilDone sends the same request until it is not 409 idempotency_in_progress. The deadline only guards
+// against a hang: the first execution finishing is what ends the loop.
 func (c *client) replayUntilDone(method, path string, body []byte, contentType string, headers ...string) (response, error) {
-	for range 400 {
+	for deadline := time.Now().Add(time.Minute); time.Now().Before(deadline); {
 		r, err := c.send(method, path, body, contentType, headers...)
 		if err != nil {
 			return r, err

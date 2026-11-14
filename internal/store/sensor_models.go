@@ -325,9 +325,26 @@ func GetSensorDevice(ctx context.Context, db bun.IDB, s MarinaScope, id string) 
 	return getSensorRow[SensorDevice](ctx, db, s, id, false)
 }
 
-// LockSensorDevice locks a device row (PostgreSQL FOR UPDATE; SQLite has one writer) and returns it.
+// LockSensorDevice locks a device row (PostgreSQL FOR NO KEY UPDATE; SQLite has one writer) and returns it.
+//
+// NO KEY UPDATE, not UPDATE: readings and state changes reference the device by foreign key, and every insert into
+// them takes FOR KEY SHARE on the device row. An ingest holds the state row and then inserts readings, while a device
+// update holds the device row and then locks the state row: with FOR UPDATE the two wait for each other (deadlock
+// 40P01). The callers never change the device key, so NO KEY UPDATE still serialises them without blocking the
+// foreign key checks.
 func LockSensorDevice(ctx context.Context, db bun.IDB, s MarinaScope, id string) (*SensorDevice, error) {
-	return getSensorRow[SensorDevice](ctx, db, s, id, true)
+	if !ValidID(id) {
+		return nil, ErrNotFound
+	}
+	row := new(SensorDevice)
+	q := db.NewSelect().Model(row).Where("marina_id = ?", s.ID()).Where("id = ?", id)
+	if IsPostgres(db) {
+		q = q.For("NO KEY UPDATE")
+	}
+	if err := q.Scan(ctx); err != nil {
+		return nil, notFound(err)
+	}
+	return row, nil
 }
 
 // GetSensorAlert returns an alert of the marina.

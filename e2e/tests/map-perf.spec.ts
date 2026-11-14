@@ -5,9 +5,10 @@ import { seedPerfOccupancy, setupPrices } from '../support/occupancy';
 import { measureFrames, openOps, opsSvg, panFor } from '../support/opsmap';
 import { login } from '../support/session';
 
-// Rendering budget (m3-plan §9.5, D26), gated by PORTO_E2E_PERF=1 (CI job e2e-perf). Blocking from M3 on the
-// operational view: 3 040 berths with 2 000 occupied, avg frame ≤ 20 ms and p95 ≤ 34 ms over three pans
-// (overview, 4× zoom with silhouettes, after a lens switch). A 4× CPU-throttled run is logged only.
+// Rendering budget (m3-plan §9.5, D26), gated by PORTO_E2E_PERF=1 (make e2e-perf, Performance workflow; never a
+// merge gate, ADR 0019). On the operational view: 3 040 berths with 2 000 occupied, avg frame ≤ 20 ms and
+// p95 ≤ 34 ms over three pans (overview, 4× zoom with silhouettes, after a lens switch). A 4× CPU-throttled run is
+// logged only.
 test.skip(
   process.env.PORTO_E2E_PERF !== '1',
   'set PORTO_E2E_PERF=1 to run the map performance test',

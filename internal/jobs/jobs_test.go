@@ -97,22 +97,25 @@ func TestRunner_NoOverlapAndPanic(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Go(func() { _ = r.RunNow(context.Background(), "slow") })
 	<-entered
+	// While the first run holds the job, every other RunNow returns at once: wait for all of them (not for a
+	// fixed time), then release the first run.
 	var busy atomic.Int32
+	var others sync.WaitGroup
 	for range 100 {
-		wg.Go(func() {
+		others.Go(func() {
 			if errors.Is(r.RunNow(context.Background(), "slow"), ErrBusy) {
 				busy.Add(1)
 			}
 		})
 	}
-	time.Sleep(20 * time.Millisecond)
+	others.Wait()
 	close(release)
 	wg.Wait()
 	if maxActive.Load() != 1 {
 		t.Fatalf("overlapping runs: %d", maxActive.Load())
 	}
-	if busy.Load() == 0 {
-		t.Fatal("no concurrent run was refused")
+	if busy.Load() != 100 {
+		t.Fatalf("%d of 100 concurrent runs refused while the first one was running", busy.Load())
 	}
 	if err := r.RunNow(context.Background(), "boom"); err == nil {
 		t.Fatal("panic not turned into an error")

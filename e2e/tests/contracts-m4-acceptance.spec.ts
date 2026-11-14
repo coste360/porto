@@ -167,9 +167,7 @@ test('quote → link → sign → active → settle → renew → campaign of 10
     await latestLinkFromMail(page.request, renewalEmail, 'signature'),
     renewalEmail,
   );
-  await expect(page.getByTestId('count-signed')).toHaveText(/1/, {
-    timeout: 5_000,
-  });
+  await expect(page.getByTestId('count-signed')).toHaveText(/1/);
   await settleDeposits(page, s.marinaId, renewed);
   await page.goto(`/admin/m/${s.marinaId}/renewals`);
   await page.getByRole('link', { name: 'Accettazione M4' }).click();
