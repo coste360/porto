@@ -62,6 +62,23 @@ func NewService(db *store.DB, c clock.Clock, keys *crypto.KeyRing, t Transport, 
 // Wake is signalled after a commit that queued a message.
 func (s *Service) Wake() <-chan struct{} { return s.wake }
 
+// ErrAttachmentPending is returned by an AttachmentLoader for a document still being generated: the message waits
+// for it (AttachmentReady) without counting a failed attempt.
+var ErrAttachmentPending = errors.New("notify: attachment not ready yet")
+
+// AttachmentReady makes the messages of the marina waiting for an attachment due now and wakes the delivery: called
+// by the document service after a document became ready.
+func (s *Service) AttachmentReady(ctx context.Context, marinaID string) error {
+	n, err := store.WakeWaitingMessages(ctx, s.db.DB, marinaID, store.UTC(s.clock.Now()))
+	if err != nil {
+		return fmt.Errorf("notify: wake waiting: %w", err)
+	}
+	if n > 0 {
+		s.kick()
+	}
+	return nil
+}
+
 func (s *Service) kick() {
 	select {
 	case s.wake <- struct{}{}:
@@ -180,6 +197,15 @@ func (s *Service) DeliverDue(ctx context.Context, limit int) (int, error) {
 					"recipient_hash", row.RecipientHash)
 				continue
 			}
+		}
+		if errors.Is(err, ErrAttachmentPending) {
+			// The attachment is still being generated: not a failed attempt. The document service wakes the message
+			// when the document is ready (AttachmentReady); the delay is only a safety net.
+			s.log.DebugContext(ctx, "email waiting for its attachment", "message_id", row.ID, "template", row.Template)
+			if err := store.MarkMessageWaiting(ctx, s.db.DB, row.ID, store.UTC(s.clock.Now().Add(retryBase)), store.UTC(s.clock.Now())); err != nil {
+				return sent, fmt.Errorf("notify: mark waiting: %w", err)
+			}
+			continue
 		}
 		attempts := row.Attempts + 1
 		var next time.Time

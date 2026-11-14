@@ -27,3 +27,4 @@ unique, 0004 prezzi puri, 0005 OpenAPI spec-first, 0009 shadcn, 0012 kit della m
 | [0016](0016-noleggio-m11.md) | Noleggio (M11): slot di 30 minuti con buffer per vincolo del DB, hold come la vendita online, prezzi dai listini, cauzione mai ricavo finché non trattenuta, vendita online rinviata | proposta |
 | [0017](0017-sensori-scheda-pubblica-m12.md) | Sensori e scheda pubblica (M12): i sensori segnalano e propongono, mai cambiano occupazioni o contratti; chiavi con hash e verificatore cifrato, letture idempotenti escluse dal backup, scheda senza dati personali | proposta |
 | [0018](0018-licenza.md) | Licenza: Business Source License 1.1, gratuita per i porti, AGPL dopo tre anni | accettata |
+| [0019](0019-test-deterministici-e-ci.md) | Test deterministici, CI a due livelli, budget di tempo fuori dai gate | accettata |

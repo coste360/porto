@@ -1,0 +1,81 @@
+name: Performance
+
+# Wall-clock budgets of the spec (m3-plan §9.5 map frames, m7-plan §11.5 reports, m8-plan §3.2 availability,
+# m9-plan §6.4 storage optimizer, m11 check-out/check-in) and the M12 sensor load test (ADR 0019).
+# A duration on a shared runner depends on the runner as much as on the code, so these checks never gate a pull
+# request, a merge or a release (ci.yml): a red run here is a signal to measure, not a broken main. Nightly and on
+# demand; every duration is in the job log either way.
+on:
+  schedule:
+    - cron: "43 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: perf-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22"
+  GOTOOLCHAIN: local
+
+jobs:
+  go-perf:
+    name: Go time budgets (make test-perf)
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: make test-perf
+        run: make test-perf
+
+  map-perf:
+    name: End-to-end time budgets (make e2e-perf, map)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            web/package-lock.json
+            e2e/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm --prefix web ci
+          npm --prefix e2e ci
+
+      - name: Install Playwright Chromium
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium
+
+      # Operational map with 3,040 berths and 2,000 occupied: avg frame <= 20 ms and p95 <= 34 ms (m3-plan §9.5).
+      - name: make e2e-perf
+        run: make e2e-perf
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-perf-report
+          path: |
+            e2e/playwright-report
+            e2e/test-results
+          retention-days: 7

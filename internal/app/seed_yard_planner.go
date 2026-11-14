@@ -210,11 +210,16 @@ func (a *App) seedPlannedHours(ctx context.Context, p *auth.Principal, scope sto
 			if pending == 3 {
 				continue
 			}
-			pending++
 			h /= 2
 		}
+		// An assignment too short to log half of it in manual steps is skipped before it takes one of today's three
+		// pending entries: otherwise, depending on the time of day the plan starts from, today's first assignments
+		// round to zero and the demo has no hours to approve.
 		if h = seedStep(h); h <= 0 {
 			continue
+		}
+		if x.WorkDate == today {
+			pending++
 		}
 		hm := qty.Milli(h)
 		v, err := a.WorkOrders.CreateEntry(ctx, p, m, workorder.EntryInput{

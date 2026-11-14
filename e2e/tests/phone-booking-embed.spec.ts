@@ -162,8 +162,14 @@ test("a marina that does not allow the host origin cannot be framed", async ({
   const api = await page.request.get(`/api/public/v1/${OWNER.slug}`);
   expect(api.headers()["x-frame-options"]).toBe("DENY");
 
+  // Wait for the framed page's own response and for the frame to finish loading (the browser refuses to render it),
+  // instead of a fixed pause: then the booking app must not be there.
+  const framed = page.waitForResponse(
+    (r) => r.url().includes(`/b/${OWNER.slug}`) && r.frame() !== page.mainFrame(),
+  );
   await page.goto(`${HOST_URL}/host.html?slug=${OWNER.slug}`);
   await expect(page.locator("iframe")).toHaveCount(1);
-  await page.waitForTimeout(2_000);
+  const frame = (await framed).frame();
+  await frame.waitForLoadState("load");
   await expect(page.frameLocator("iframe").locator("#root")).toHaveCount(0);
 });

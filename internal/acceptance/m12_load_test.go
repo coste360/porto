@@ -21,6 +21,7 @@ import (
 	"github.com/coste360/porto/internal/clock"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/store"
+	"github.com/coste360/porto/internal/testutil/perfbudget"
 	"github.com/coste360/porto/internal/testutil/sensorsim"
 	"github.com/coste360/porto/internal/testutil/testdb"
 )
@@ -88,10 +89,10 @@ type sseEvent struct {
 
 // TestAcceptance_M12_SensorLoad is the M12 acceptance criterion (L1–L6 of m12-plan §14.2).
 // PORTO_M12_LOAD_DURATION (default 3m) and PORTO_M12_LOAD_PREFILL_DAYS (default 1) tune the run.
+// A real-time load test (wall clock, latency percentiles): it runs only with PORTO_PERF_BUDGET=1
+// (perfbudget.Require: make test-perf, Performance workflow), never in the merge gates.
 func TestAcceptance_M12_SensorLoad(t *testing.T) {
-	if testing.Short() {
-		t.Skip("load acceptance skipped with -short")
-	}
+	perfbudget.Require(t)
 	duration := envDuration(t, "PORTO_M12_LOAD_DURATION", 3*time.Minute)
 	prefillDays := envInt(t, "PORTO_M12_LOAD_PREFILL_DAYS", 1)
 	// One warm-up minute on top of the duration: the first two readings of each device confirm its initial state,

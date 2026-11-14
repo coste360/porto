@@ -23,6 +23,20 @@ POSTGRES_IMAGE        ?= postgres:17-alpine
 PKG                   ?= ./...
 # The M3 season simulation alone takes up to 10 minutes on PostgreSQL (m3-plan §9.4).
 TEST_DB_TIMEOUT       ?= 60m
+# The race detector slows the acceptance package to about 10 minutes, the default `go test` timeout.
+TEST_RACE_TIMEOUT     ?= 30m
+
+# Wall-clock budgets and load tests (internal/testutil/perfbudget): they run only in make test-perf (Performance
+# workflow), never in the merge gates. The other tests log their durations and never fail on them.
+PERF_TESTS := ^(TestReport_PerformanceBudget|TestBooking_AvailabilityBudget|TestAcceptance_M12_SensorLoad|TestAcceptance_M9_StorageShed|TestAcceptance_M11_CheckOutCheckIn)$$
+PERF_PKGS  := ./internal/domain/report ./internal/domain/booking ./internal/acceptance
+
+# The essential end-to-end specs of a pull request (make e2e-smoke): sign-in, the main screens and one flow per area.
+# main runs every spec (make e2e, make e2e-desktop).
+E2E_SMOKE := tests/login.spec.ts tests/password-reset.spec.ts tests/dashboard.spec.ts tests/customers.spec.ts \
+             tests/vessels.spec.ts tests/contracts.spec.ts tests/charges.spec.ts tests/payments-matching.spec.ts \
+             tests/cash-session.spec.ts tests/booking.spec.ts tests/desk-transit.spec.ts tests/ops-map.spec.ts \
+             tests/map-editor.spec.ts tests/phone-dock.spec.ts tests/reports.spec.ts tests/documents.spec.ts
 
 BIN_DIR       := $(CURDIR)/bin
 GOLANGCI_LINT := $(BIN_DIR)/golangci-lint
@@ -200,7 +214,7 @@ test: ## Run Go unit tests and web unit tests
 
 .PHONY: test-db
 test-db: ## Run Go integration tests on SQLite and an ephemeral PostgreSQL
-	@scripts/with-postgres.sh go test -tags=integration -timeout $(TEST_DB_TIMEOUT) $(PKG)
+	@scripts/with-postgres.sh scripts/gotest.sh "$(PKG)" -tags=integration -timeout $(TEST_DB_TIMEOUT)
 
 .PHONY: test-race
 test-race: ## Run the TestConcurrency_* tests with the race detector (SQLite + PostgreSQL)
@@ -208,7 +222,11 @@ test-race: ## Run the TestConcurrency_* tests with the race detector (SQLite + P
 	n="$$(go test -tags=integration -list '^TestConcurrency' ./internal/... | grep -c '^TestConcurrency' || true)"; \
 	if [ "$$n" -eq 0 ]; then echo "test-race: no TestConcurrency_* tests found"; exit 1; fi; \
 	echo "test-race: $$n TestConcurrency_* tests"; \
-	scripts/with-postgres.sh go test -race -tags=integration -run '^TestConcurrency' ./internal/...
+	scripts/with-postgres.sh scripts/gotest.sh "./internal/..." -race -tags=integration -timeout $(TEST_RACE_TIMEOUT) -run '^TestConcurrency'
+
+.PHONY: test-perf
+test-perf: ## Run the wall-clock budgets and the M12 load test (SQLite, PORTO_PERF_BUDGET=1; Performance workflow)
+	PORTO_PERF_BUDGET=1 go test -tags=integration -timeout 60m -run '$(PERF_TESTS)' $(PERF_PKGS)
 
 .PHONY: e2e
 e2e: ## Build the binary and run the Playwright end-to-end tests
@@ -216,6 +234,20 @@ e2e: ## Build the binary and run the Playwright end-to-end tests
 	if [ -z "$(HAS_E2E)" ]; then $(call skip,e2e,e2e/package.json); exit 0; fi; \
 	$(MAKE) build; \
 	cd e2e && npx playwright test
+
+.PHONY: e2e-smoke
+e2e-smoke: ## Build the binary and run the essential Playwright specs of a pull request (E2E_SMOKE)
+	@set -euo pipefail; \
+	if [ -z "$(HAS_E2E)" ]; then $(call skip,e2e-smoke,e2e/package.json); exit 0; fi; \
+	$(MAKE) build; \
+	cd e2e && npx playwright test $(E2E_SMOKE)
+
+.PHONY: e2e-perf
+e2e-perf: ## Build the binary and run the map rendering budget (PORTO_E2E_PERF=1; Performance workflow)
+	@set -euo pipefail; \
+	if [ -z "$(HAS_E2E)" ]; then $(call skip,e2e-perf,e2e/package.json); exit 0; fi; \
+	$(MAKE) build; \
+	cd e2e && PORTO_E2E_PERF=1 npx playwright test tests/map-perf.spec.ts
 
 .PHONY: check
 check: gen-check lint test ## Fast gate: gen-check, lint, test (target < 2 min)

@@ -372,7 +372,7 @@ func TestBroker_FanOutAndDrop(t *testing.T) {
 		t.Fatal("channel not closed")
 	}
 	cancel()
-	deadline := time.Now().Add(time.Second)
+	deadline := time.Now().Add(30 * time.Second) // a guard against a hang, not a measure
 	for b.Subscribers() != 0 && time.Now().Before(deadline) {
 		time.Sleep(5 * time.Millisecond)
 	}

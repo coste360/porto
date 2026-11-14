@@ -242,6 +242,8 @@ let snapshot: readonly QueuedOp[] = [];
 let loaded: Promise<void> | null = null;
 /** Bumped by resetQueueMemory: a read of the old database that finishes later is ignored. */
 let generation = 0;
+/** Bumped by every local write of ops: a reload that read the store before the write reads it again. */
+let writes = 0;
 let channel: BroadcastChannel | null = null;
 const kickers = new Set<() => void>();
 
@@ -270,9 +272,16 @@ export async function reloadOps(): Promise<readonly QueuedOp[]> {
   if (!offlineStorageAvailable()) return snapshot;
   const gen = generation;
   try {
-    const ops = await dbGetAll<QueuedOp>('ops');
-    if (gen !== generation) return snapshot;
-    snapshot = ops.sort(byAge);
+    // A save that lands while the store is read would be undone by an older read: read again until no local write
+    // happened in between (a few rounds at most; the last snapshot is kept otherwise).
+    for (let round = 0; round < 5; round++) {
+      const w = writes;
+      const ops = await dbGetAll<QueuedOp>('ops');
+      if (gen !== generation) return snapshot;
+      if (w !== writes) continue;
+      snapshot = ops.sort(byAge);
+      break;
+    }
   } catch {
     // keep the last snapshot
   }
@@ -300,11 +309,13 @@ export function getOps(): readonly QueuedOp[] {
 /** Writes changed ops (store and snapshot) and tells the other tabs. */
 export async function saveOps(changed: readonly QueuedOp[]): Promise<void> {
   if (changed.length === 0) return;
+  for (const o of changed) await dbPut('ops', o);
+  writes++;
+  // Merge into the snapshot as it is now, after the writes, not as it was before them: a concurrent save (two
+  // photos taken in a row, the runner recording a send) changed it meanwhile, and a copy taken before the awaits
+  // would drop its ops or bring back their older state (an op already sent, its photo deleted, sent again).
   const map = new Map(snapshot.map((o) => [o.id, o]));
-  for (const o of changed) {
-    await dbPut('ops', o);
-    map.set(o.id, o);
-  }
+  for (const o of changed) map.set(o.id, o);
   snapshot = [...map.values()].sort(byAge);
   emit();
   broadcast();
@@ -316,6 +327,7 @@ async function removeOps(ids: readonly string[]): Promise<void> {
     await dbDelete('ops', id);
     await dbDelete('blobs', id);
   }
+  writes++;
   const drop = new Set(ids);
   snapshot = snapshot.filter((o) => !drop.has(o.id));
   emit();

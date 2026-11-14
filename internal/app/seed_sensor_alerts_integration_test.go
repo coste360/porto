@@ -33,7 +33,7 @@ func TestSeed_DemoSensorAlerts(t *testing.T) {
 			t.Fatal(err)
 		}
 		a, err := app.NewWithOptions(context.Background(), cfg, "test", ext.Extensions{}, slog.New(slog.DiscardHandler),
-			app.Options{DB: db, Argon2: auth.TestArgon2Params, Transport: &fixture.Mailbox{}})
+			app.Options{DB: db, Argon2: auth.TestArgon2Params, Transport: &fixture.Mailbox{}, Clock: seedTestClock()})
 		if err != nil {
 			t.Fatal(err)
 		}

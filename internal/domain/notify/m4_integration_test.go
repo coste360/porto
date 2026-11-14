@@ -14,12 +14,18 @@ import (
 	"github.com/coste360/porto/internal/testutil/testdb"
 )
 
-type loader struct{ calls int }
+type loader struct {
+	calls    int
+	rendered bool // the "rendering" document is ready
+}
 
 func (l *loader) LoadAttachment(_ context.Context, _ string, ref AttachmentRef) (*Attachment, error) {
 	l.calls++
 	if ref.DocumentID == "missing" {
 		return nil, errors.New("not ready")
+	}
+	if ref.DocumentID == "rendering" && !l.rendered {
+		return nil, ErrAttachmentPending
 	}
 	return &Attachment{Name: "doc.pdf", ContentType: "application/pdf", Content: []byte("%PDF-1.7")}, nil
 }
@@ -63,6 +69,39 @@ func TestNotify_Attachments(t *testing.T) {
 		var m store.Message
 		if err := db.NewSelect().Model(&m).Where("dedupe_key = ?", "k2").Scan(ctx); err != nil || m.Status != store.MessageQueued || m.Attempts != 1 {
 			t.Fatalf("not-ready attachment should retry: %+v %v", m, err)
+		}
+
+		// A document still rendering: the message waits without a failed attempt and goes out as soon as the document
+		// service reports it ready, with no time passing.
+		queue("k3", AttachmentRef{DocumentID: "rendering"})
+		if _, err := s.DeliverDue(ctx, 10); err != nil {
+			t.Fatal(err)
+		}
+		var w store.Message
+		if err := db.NewSelect().Model(&w).Where("dedupe_key = ?", "k3").Scan(ctx); err != nil {
+			t.Fatal(err)
+		}
+		if w.Status != store.MessageQueued || w.Attempts != 0 || w.LastError != store.MessageWaitingAttachment {
+			t.Fatalf("pending attachment: %+v", w)
+		}
+		if sent, err := s.DeliverDue(ctx, 10); err != nil || sent != 0 {
+			t.Fatalf("waiting message delivered before its attachment: %d %v", sent, err)
+		}
+		l.rendered = true
+		if err := s.AttachmentReady(ctx, w.MarinaID); err != nil {
+			t.Fatal(err)
+		}
+		select {
+		case <-s.Wake():
+		default:
+			t.Fatal("AttachmentReady did not wake the delivery")
+		}
+		before := len(tr.sent)
+		if _, err := s.DeliverDue(ctx, 10); err != nil {
+			t.Fatal(err)
+		}
+		if len(tr.sent) != before+1 {
+			t.Fatalf("waiting message not sent after AttachmentReady: %d sent", len(tr.sent)-before)
 		}
 	})
 }

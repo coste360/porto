@@ -34,7 +34,8 @@ source.
 
 1. **Freeze.** The last run of `ci.yml` on `main` (push, nightly or manual: the full suite, not the quick
    pull request checks) is green, and `desktop.yml` too when desktop files changed. Locally:
-   `make check-full`.
+   `make check-full`. Look at the last `perf.yml` run (Performance: wall-clock budgets and the M12 load test,
+   ADR 0019): it does not block the release, but a budget over its limit is worth a measure before tagging.
 2. **API version.** Set `info.version` in `api/openapi.yaml` to `X.Y.Z` and run `make gen` (API first: never edit
    the generated files). Commit with the changelog.
 3. **Changelog.** In `CHANGELOG.md` rename `## [Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD`, add a new empty

@@ -1,8 +1,14 @@
 name: CI
 
-# Two levels (docs/release.md): pull requests run the quick checks (about 10 minutes, integration tests on SQLite
-# without the four slowest packages); main, the nightly schedule and manual runs add the full suite on SQLite and
-# PostgreSQL, the race tests and the map performance budget. A release is cut only from a main with a green full run.
+# Two levels (docs/adr/0019-test-deterministici-e-ci.md, docs/release.md):
+# - pull requests: the essential checks, about 10 minutes: lint, unit tests, integration tests on SQLite without the
+#   four slowest packages, web, generated code, licences, the Docker image with its smoke test, the essential
+#   Playwright specs (make e2e-smoke);
+# - main (every merge), the nightly schedule and manual runs: the full suite: integration tests on SQLite and
+#   PostgreSQL, the race tests, every Playwright spec (server and desktop), govulncheck and Trivy.
+# No job of this workflow fails on a duration: wall-clock budgets and load tests run in the Performance workflow
+# (perf.yml), which is informative and never gates a merge or a release. A release is cut only from a main with a
+# green full run.
 on:
   push:
     branches: [main]
@@ -52,7 +58,10 @@ jobs:
       - name: Unit tests
         run: go test ./...
 
+      # The vulnerability database changes every day: a new advisory is not caused by the pull request, so the check
+      # runs on main and nightly only.
       - name: govulncheck
+        if: github.event_name != 'pull_request'
         run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 
   # Pull requests only: integration tests on SQLite (no PORTO_TEST_POSTGRES_URL) for every package except the four
@@ -105,6 +114,9 @@ jobs:
     env:
       # Read by internal/testutil/testdb and scripts/with-postgres.sh: integration tests run on both dialects.
       PORTO_TEST_POSTGRES_URL: postgres://porto:porto@localhost:5432/porto_test?sslmode=disable
+      # Main only (never pull requests, ADR 0019): scripts/gotest.sh re-runs a failed test once through gotestsum,
+      # never the whole package; a test that passes only on the re-run is listed in the log and must be fixed.
+      GOTEST_RERUN_FAILS: "1"
     steps:
       - uses: actions/checkout@v7
 
@@ -141,7 +153,7 @@ jobs:
     name: Go concurrency tests (race detector)
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 50
     services:
       postgres:
         image: postgres:17-alpine
@@ -160,6 +172,9 @@ jobs:
     env:
       # Read by internal/testutil/testdb and scripts/with-postgres.sh: integration tests run on both dialects.
       PORTO_TEST_POSTGRES_URL: postgres://porto:porto@localhost:5432/porto_test?sslmode=disable
+      # Main only (never pull requests, ADR 0019): scripts/gotest.sh re-runs a failed test once through gotestsum,
+      # never the whole package; a test that passes only on the re-run is listed in the log and must be fixed.
+      GOTEST_RERUN_FAILS: "1"
     steps:
       - uses: actions/checkout@v7
 
@@ -289,7 +304,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # Same reason as govulncheck: main and nightly only.
       - name: Trivy vulnerability scan
+        if: github.event_name != 'pull_request'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: porto:ci
@@ -324,10 +341,55 @@ jobs:
           echo "login: HTTP $status"
           test "$status" = 200
 
+  # Pull requests only: the essential specs (E2E_SMOKE in the Makefile).
+  e2e-smoke:
+    name: End-to-end (Playwright, essential)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            web/package-lock.json
+            e2e/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm --prefix web ci
+          npm --prefix e2e ci
+
+      - name: Install Playwright Chromium
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: make e2e-smoke
+        run: make e2e-smoke
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            e2e/playwright-report
+            e2e/test-results
+          retention-days: 7
+
   e2e:
     name: End-to-end (Playwright)
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7
 
@@ -365,52 +427,6 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report
-          path: |
-            e2e/playwright-report
-            e2e/test-results
-          retention-days: 7
-
-  e2e-perf:
-    name: Map performance budget (Playwright)
-    if: github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-go@v7
-        with:
-          go-version-file: go.mod
-          cache: true
-
-      - uses: actions/setup-node@v7
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: |
-            web/package-lock.json
-            e2e/package-lock.json
-
-      - name: Install dependencies
-        run: |
-          npm --prefix web ci
-          npm --prefix e2e ci
-
-      - name: Install Playwright Chromium
-        working-directory: e2e
-        run: npx playwright install --with-deps chromium
-
-      # Operational map with 3,000 berths and 2,000 occupied: avg frame <= 20 ms and p95 <= 34 ms (m3-plan §9.5).
-      - name: Map performance spec
-        run: |
-          make build
-          cd e2e && PORTO_E2E_PERF=1 npx playwright test tests/map-perf.spec.ts
-
-      - name: Upload Playwright report
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-perf-report
           path: |
             e2e/playwright-report
             e2e/test-results

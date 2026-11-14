@@ -16,6 +16,7 @@ import (
 
 	"github.com/coste360/porto/internal/store"
 	"github.com/coste360/porto/internal/testutil/fixture"
+	"github.com/coste360/porto/internal/testutil/perfbudget"
 	"github.com/coste360/porto/internal/testutil/testdb"
 	"github.com/coste360/porto/pkg/ext"
 )
@@ -128,14 +129,13 @@ func hoPNG(t *testing.T, shade uint8) []byte {
 	return b.Bytes()
 }
 
-// timed sends a request, checks the status and that it answers within a second (criterion 2, server side).
+// timed sends a request, checks the status and measures that it answers within a second (criterion 2, server
+// side; the budget fails the test only with PORTO_PERF_BUDGET=1, perfbudget).
 func (w *hoWorld) timed(t *testing.T, want int, method, path string, body any, headers ...string) map[string]any {
 	t.Helper()
 	start := time.Now() //nolint:forbidigo // wall time of the request, not domain time
 	out := w.owner.expect(t, want, method, path, body, headers...)
-	if d := time.Since(start); d > time.Second { //nolint:forbidigo // wall time
-		t.Fatalf("%s %s took %v", method, path, d)
-	}
+	perfbudget.Check(t, method+" "+path, time.Since(start), time.Second) //nolint:forbidigo // wall time
 	return out
 }
 

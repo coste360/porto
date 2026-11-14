@@ -12,6 +12,7 @@ import (
 
 	"github.com/coste360/porto/internal/calendar"
 	"github.com/coste360/porto/internal/store"
+	"github.com/coste360/porto/internal/testutil/perfbudget"
 	"github.com/coste360/porto/internal/testutil/testdb"
 )
 
@@ -208,8 +209,8 @@ func TestAcceptance_M9_StorageShed(t *testing.T) {
 		if ind["unplaced"].(float64) != 0 || ind["exits_blocked"].(float64) != 0 {
 			t.Fatalf("indicators %v", ind)
 		}
-		if !storageRace && !db.IsPostgres() && took >= 3*time.Second {
-			t.Fatalf("optimize took %v", took)
+		if !storageRace && !db.IsPostgres() {
+			perfbudget.Check(t, "storage optimize", took, 3*time.Second)
 		}
 
 		// Apply: every allocation is where the scenario put it.

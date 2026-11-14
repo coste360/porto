@@ -263,6 +263,37 @@ func MarkMessageRetry(ctx context.Context, db bun.IDB, id, lastErr string, next,
 	return err
 }
 
+// MessageWaitingAttachment is the last_error of a queued message waiting for an attachment still being generated
+// (MarkMessageWaiting): not a failed attempt.
+const MessageWaitingAttachment = "waiting_attachment"
+
+// MarkMessageWaiting puts a claimed message back in the queue without counting an attempt: an attachment is still
+// being generated. next is the safety-net recheck; WakeWaitingMessages makes it due as soon as a document is ready.
+func MarkMessageWaiting(ctx context.Context, db bun.IDB, id string, next, at time.Time) error {
+	_, err := db.NewUpdate().Table("message_log").
+		Set("status = ?", MessageQueued).Set("locked_until = NULL").Set("last_error = ?", MessageWaitingAttachment).
+		Set("next_attempt_at = ?", next).Set("updated_at = ?", at).Where("id = ?", id).Exec(ctx)
+	return err
+}
+
+// WakeWaitingMessages makes the queued messages of the marina (marinaID "": messages without a marina) waiting for an
+// attachment due at now and returns how many there were.
+func WakeWaitingMessages(ctx context.Context, db bun.IDB, marinaID string, now time.Time) (int64, error) {
+	q := db.NewUpdate().Table("message_log").
+		Set("next_attempt_at = ?", now).Set("updated_at = ?", now).
+		Where("status = ?", MessageQueued).Where("last_error = ?", MessageWaitingAttachment)
+	if marinaID == "" {
+		q = q.Where("marina_id IS NULL")
+	} else {
+		q = q.Where("marina_id = ?", marinaID)
+	}
+	res, err := q.Exec(ctx)
+	if err != nil {
+		return 0, err
+	}
+	return res.RowsAffected()
+}
+
 // GetMessage returns one message by id.
 func GetMessage(ctx context.Context, db bun.IDB, id string) (*Message, error) {
 	if !ValidID(id) {
