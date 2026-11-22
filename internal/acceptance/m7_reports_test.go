@@ -10,7 +10,6 @@ import (
 	"encoding/csv"
 	"log/slog"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"slices"
@@ -27,6 +26,7 @@ import (
 	"github.com/coste360/porto/internal/store"
 	"github.com/coste360/porto/internal/testutil/fixture"
 	"github.com/coste360/porto/internal/testutil/testdb"
+	"github.com/coste360/porto/internal/testutil/testjar"
 	"github.com/coste360/porto/internal/xlsx"
 	"github.com/coste360/porto/pkg/ext"
 )
@@ -77,7 +77,7 @@ func newM7Harness(t *testing.T, db *store.DB) *m7Harness {
 // login returns a cookie client logged in as the demo user of role.
 func (h *m7Harness) login(t *testing.T, role auth.Role) *client {
 	t.Helper()
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	c := &client{h: h.harness, http: &http.Client{Jar: clockJar{jar}, Timeout: 60 * time.Second}}
 	c.expect(t, http.StatusOK, "POST", A+"/auth/login", map[string]string{"email": string(role) + "@" + app.DemoEmailDomain, "password": m7Password})
 	return c

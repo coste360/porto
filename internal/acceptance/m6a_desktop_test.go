@@ -12,7 +12,6 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
-	"net/http/cookiejar"
 	"net/url"
 	"strconv"
 	"strings"
@@ -28,6 +27,7 @@ import (
 	"github.com/coste360/porto/internal/store"
 	"github.com/coste360/porto/internal/testutil/fixture"
 	"github.com/coste360/porto/internal/testutil/testdb"
+	"github.com/coste360/porto/internal/testutil/testjar"
 	"github.com/coste360/porto/pkg/ext"
 )
 
@@ -182,7 +182,7 @@ type webClient struct {
 }
 
 func newWebClient(base string, tlsFingerprint string) *webClient {
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	c := &http.Client{Jar: jar, Timeout: 10 * time.Second}
 	if tlsFingerprint != "" {
 		c.Transport = &http.Transport{TLSClientConfig: lan.PinnedClientConfig(tlsFingerprint)}

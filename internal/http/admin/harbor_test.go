@@ -13,7 +13,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"os"
@@ -29,6 +28,7 @@ import (
 	"github.com/coste360/porto/internal/geo"
 	"github.com/coste360/porto/internal/http/api"
 	"github.com/coste360/porto/internal/http/view"
+	"github.com/coste360/porto/internal/testutil/testjar"
 	"github.com/coste360/porto/pkg/ext"
 )
 
@@ -85,7 +85,7 @@ func (r harborResp) problem() string {
 
 func (s *harborSrv) login(t *testing.T, email string) *harborClient {
 	t.Helper()
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	c := &harborClient{s: s, http: &http.Client{Jar: jar, Timeout: 20 * time.Second}}
 	if r := c.do(t, "POST", "/api/admin/v1/auth/login", map[string]string{"email": email, "password": harborPW}); r.status != 200 {
 		t.Fatalf("login %s: %d %s", email, r.status, r.body)

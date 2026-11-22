@@ -95,6 +95,8 @@ linters:
           msg: inject a clock.Clock (internal/clock); time.Now is allowed only in internal/clock, cmd/ and tests
         - pattern: ^fmt\.Print(f|ln)?$
           msg: use log/slog (or write to an io.Writer); fmt.Print* is allowed only in cmd/
+        - pattern: ^cookiejar\.New$
+          msg: use testjar.New (internal/testutil/testjar); cookiejar expires cookies on the wall clock, not the fake one (ADR 0019)
     depguard:
       rules:
         # Shared primitives: standard library only.
@@ -516,6 +518,10 @@ linters:
       - path: _test\.go$
         linters: [forbidigo]
         text: time\.Now
+      # The test jar wraps the standard one.
+      - path: (^|/)internal/testutil/testjar/
+        linters: [forbidigo]
+        text: cookiejar\.New
       # The CLI prints to the terminal.
       - path: (^|/)cmd/
         linters: [forbidigo]

@@ -36,7 +36,11 @@ codice fosse sbagliato, e una pull request è fallita per un e2e che passava al 
 2. **Attese su condizioni, non sul tempo.** Un test aspetta un evento (risposta, messaggio, stato) e usa un limite
    di tempo solo come protezione contro un blocco, largo rispetto al caso normale. Gli algoritmi con un limite di
    tempo (ottimizzatore) nei test si fermano al proprio budget di iterazioni, così il risultato dipende solo dal
-   seme. I test che dipendono da "oggi" usano un orologio finto a un istante fisso.
+   seme. I test che dipendono da "oggi" usano un orologio finto a un istante fisso, e nulla di quanto è calcolato
+   su quell'orologio va confrontato con l'ora reale: i client HTTP dei test usano `testutil/testjar` (il
+   `net/http/cookiejar` scarta il cookie di sessione quando la data reale supera la scadenza calcolata
+   sull'orologio finto, e dal 20/11/2026 i test con `fixture.T0` ricevevano 401), le verifiche x509 passano
+   `CurrentTime`. La scadenza la controlla il server sul proprio orologio iniettato.
 3. **CI a due livelli** (`ci.yml`):
    - **pull request** (circa 10 minuti): lint, test unitari, integrazione su SQLite senza i quattro pacchetti più
      lenti, web, codice generato, licenze, immagine Docker con smoke test, spec Playwright essenziali

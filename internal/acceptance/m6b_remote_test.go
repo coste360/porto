@@ -16,7 +16,6 @@ import (
 	"math/big"
 	"net"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"strconv"
@@ -32,6 +31,7 @@ import (
 	"github.com/coste360/porto/internal/peripheral"
 	"github.com/coste360/porto/internal/store"
 	"github.com/coste360/porto/internal/testutil/testdb"
+	"github.com/coste360/porto/internal/testutil/testjar"
 )
 
 // M6b remote desktop mode and fiscal bridge (m6b-plan §7, §8.4, §10.3).
@@ -258,7 +258,7 @@ func TestAcceptance_M6bRemote(t *testing.T) {
 		srv := &http.Server{Handler: proxy, ReadHeaderTimeout: 5 * time.Second}
 		go func() { _ = srv.Serve(ln) }()
 		defer srv.Close()
-		jar, _ := cookiejar.New(nil)
+		jar := testjar.New()
 		pcl := &proxyClient{base: "http://127.0.0.1:" + strconv.Itoa(port), http: &http.Client{Jar: jar, Timeout: 30 * time.Second}}
 		enter, _ := proxy.EnterURL("")
 		k := enter[strings.Index(enter, "#k=")+3:]

@@ -7,7 +7,6 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"os"
@@ -25,6 +24,7 @@ import (
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/http/api"
 	"github.com/coste360/porto/internal/peripheral"
+	"github.com/coste360/porto/internal/testutil/testjar"
 )
 
 func validRemoteSettings() FileSettings {
@@ -224,7 +224,7 @@ func newRemoteEnv(t *testing.T) *remoteEnv {
 	srv.Start()
 	t.Cleanup(srv.Close)
 	e.base = "http://127.0.0.1:" + strconv.Itoa(port)
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	e.client = &http.Client{Jar: jar, Timeout: 30 * time.Second}
 	enter, _ := e.proxy.EnterURL("")
 	k := enter[strings.Index(enter, "#k=")+3:]
