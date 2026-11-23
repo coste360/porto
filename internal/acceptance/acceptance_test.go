@@ -14,7 +14,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"regexp"
@@ -33,6 +32,7 @@ import (
 	"github.com/coste360/porto/internal/testutil/fixture"
 	"github.com/coste360/porto/internal/testutil/httpsink"
 	"github.com/coste360/porto/internal/testutil/testdb"
+	"github.com/coste360/porto/internal/testutil/testjar"
 	"github.com/coste360/porto/pkg/ext"
 )
 
@@ -110,7 +110,7 @@ type client struct {
 }
 
 func (h *harness) cookieClient() *client {
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	return &client{h: h, http: &http.Client{Jar: jar, Timeout: clientTimeout}}
 }
 

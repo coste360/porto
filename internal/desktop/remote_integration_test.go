@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"os"
@@ -21,6 +20,7 @@ import (
 	"github.com/coste360/porto/internal/config"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/domain/device"
+	"github.com/coste360/porto/internal/testutil/testjar"
 	"github.com/coste360/porto/pkg/ext"
 )
 
@@ -118,7 +118,7 @@ func TestLauncher_PairRemoteAndUnpair(t *testing.T) {
 			t.Error("launcher did not stop")
 		}
 	}()
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	r := &running{t: t, dir: dir, url: first, ui: ui, done: done, http: &http.Client{Jar: jar, Timeout: 30 * time.Second}}
 	r.waitReady()
 	_, tok, _ := strings.Cut(first, "#t=")

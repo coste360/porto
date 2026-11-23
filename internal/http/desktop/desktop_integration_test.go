@@ -15,7 +15,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"path/filepath"
@@ -36,6 +35,7 @@ import (
 	"github.com/coste360/porto/internal/store" //nolint:depguard // test setup: testdb hands the database to the test
 	"github.com/coste360/porto/internal/testutil/fixture"
 	"github.com/coste360/porto/internal/testutil/testdb"
+	"github.com/coste360/porto/internal/testutil/testjar"
 	"github.com/coste360/porto/pkg/ext"
 )
 
@@ -95,7 +95,7 @@ type client struct {
 }
 
 func (h *harness) client(t *testing.T) *client {
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	return &client{t: t, base: h.srv.URL, http: &http.Client{Jar: jar}}
 }
 

@@ -11,7 +11,6 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"net/http/cookiejar"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -25,6 +24,7 @@ import (
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/lan"
 	"github.com/coste360/porto/internal/reqctx"
+	"github.com/coste360/porto/internal/testutil/testjar"
 )
 
 const testPassword = "launcher password 2026"
@@ -72,7 +72,7 @@ func startLauncherWith(t *testing.T, dir string, extra map[string]string, newLAN
 	case <-time.After(30 * time.Second):
 		t.Fatal("launcher not ready")
 	}
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	r.http = &http.Client{Jar: jar, Timeout: 30 * time.Second}
 	return r
 }

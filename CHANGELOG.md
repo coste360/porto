@@ -25,6 +25,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- Tests: the HTTP test clients no longer drop the session cookie on the real date. The servers under test run on a
+  fake clock (fixture.T0, 2026-11-06), so the cookie expired on 2026-11-20 by the wall clock and
+  `TestRegistryHandlers_Operations` and `TestAcceptance_M1_Registry` answered 401 on main from that day on. The
+  clients use `internal/testutil/testjar`, which leaves the expiry to the server's clock; the LAN certificate test
+  verifies at the fake time instead of today (it would have failed from July 2027).
 - Sensors: an ingestion and a device change (move, unbind) at the same moment no longer deadlock on PostgreSQL
   (the device row is locked FOR NO KEY UPDATE, which does not conflict with the foreign keys of the readings).
 - Emails with a generated PDF attached (quotes, contracts, renewals) no longer wait a minute when the mail is

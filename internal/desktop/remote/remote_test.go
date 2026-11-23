@@ -16,7 +16,6 @@ import (
 	"math/big"
 	"net"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"strconv"
@@ -27,6 +26,7 @@ import (
 	"time"
 
 	"github.com/coste360/porto/internal/desktopport"
+	"github.com/coste360/porto/internal/testutil/testjar"
 )
 
 const testToken = "po_dev_abcdefgh_SECRETSECRETSECRET"
@@ -294,7 +294,7 @@ func newProxyEnv(t *testing.T) *proxyEnv {
 	srv.Start()
 	t.Cleanup(srv.Close)
 	env.base = "http://127.0.0.1:" + strconv.Itoa(port)
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	env.client = &http.Client{Jar: jar, Timeout: 5 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error {
 		return http.ErrUseLastResponse
 	}}
@@ -368,7 +368,7 @@ func TestRemoteProxy_RequiresLaunchCookieAndHost(t *testing.T) {
 		t.Fatalf("enter: %d", r.StatusCode)
 	}
 	// Single use.
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	other := &proxyEnv{p: e.p, base: e.base, client: &http.Client{Jar: jar, Timeout: 5 * time.Second}}
 	if r := other.do(t, http.MethodPost, EnterPath, "k="+k, map[string]string{"Content-Type": "application/x-www-form-urlencoded", "Origin": e.base}); r.StatusCode != http.StatusUnauthorized {
 		t.Fatalf("second exchange: %d", r.StatusCode)

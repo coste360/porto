@@ -35,7 +35,7 @@ func TestLANCert_NameConstraints(t *testing.T) {
 	roots := x509.NewCertPool()
 	roots.AddCert(certs.CA)
 	for _, host := range []string{"192.168.1.20", "127.0.0.1", "ufficio.local", "localhost"} {
-		if _, err := certs.Leaf.Verify(x509.VerifyOptions{Roots: roots, DNSName: host}); err != nil {
+		if _, err := certs.Leaf.Verify(x509.VerifyOptions{Roots: roots, DNSName: host, CurrentTime: t0}); err != nil {
 			t.Errorf("leaf for %s refused: %v", host, err)
 		}
 	}

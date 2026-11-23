@@ -15,7 +15,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"strings"
@@ -27,6 +26,7 @@ import (
 	"github.com/coste360/porto/internal/config"
 	"github.com/coste360/porto/internal/domain/auth"
 	"github.com/coste360/porto/internal/testutil/fixture"
+	"github.com/coste360/porto/internal/testutil/testjar"
 	"github.com/coste360/porto/pkg/ext"
 )
 
@@ -96,7 +96,7 @@ func (r resp) problem() string {
 
 func (s *server) login(t *testing.T, email string) *client {
 	t.Helper()
-	jar, _ := cookiejar.New(nil)
+	jar := testjar.New()
 	c := &client{s: s, http: &http.Client{Jar: jar, Timeout: 10 * time.Second}}
 	if r := c.do(t, "POST", "/api/admin/v1/auth/login", map[string]string{"email": email, "password": pw}); r.status != 200 {
 		t.Fatalf("login %s: %d %s", email, r.status, r.body)
